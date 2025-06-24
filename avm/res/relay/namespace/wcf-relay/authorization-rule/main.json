@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3054703452311403412"
+      "version": "0.36.1.42791",
+      "templateHash": "4209715248189250565"
     },
     "name": "WCF Relay Authorization Rules",
-    "description": "This module deploys a WCF Relay Authorization Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a WCF Relay Authorization Rule."
   },
   "parameters": {
     "name": {

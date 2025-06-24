@@ -1,0 +1,635 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "5125179963375806993"
+    },
+    "name": "avm/ptn/network/private-link-private-dns-zones",
+    "description": "Private Link Private DNS Zones"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "virtualNetworkLinkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "minLength": 1,
+          "maxLength": 80,
+          "metadata": {
+            "description": "Optional. The resource name."
+          }
+        },
+        "virtualNetworkResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the virtual network to link."
+          }
+        },
+        "registrationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource tags."
+          }
+        },
+        "resolutionPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Default",
+            "NxDomainRedirect"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resolution type of the private-dns-zone fallback mechanism."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the virtual network link.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/virtual-network-link.bicep"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings for the Private Link Private DNS Zones created."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Private Link Private DNS Zones created."
+      }
+    },
+    "privateLinkPrivateDnsZones": {
+      "type": "array",
+      "defaultValue": [
+        "privatelink.{regionName}.azurecontainerapps.io",
+        "privatelink.api.azureml.ms",
+        "privatelink.notebooks.azure.net",
+        "privatelink.cognitiveservices.azure.com",
+        "privatelink.openai.azure.com",
+        "privatelink.services.ai.azure.com",
+        "privatelink.directline.botframework.com",
+        "privatelink.token.botframework.com",
+        "privatelink.servicebus.windows.net",
+        "privatelink.datafactory.azure.net",
+        "privatelink.adf.azure.com",
+        "privatelink.azurehdinsight.net",
+        "privatelink.{regionName}.kusto.windows.net",
+        "privatelink.blob.core.windows.net",
+        "privatelink.queue.core.windows.net",
+        "privatelink.table.core.windows.net",
+        "privatelink.file.core.windows.net",
+        "privatelink.web.core.windows.net",
+        "privatelink.dfs.core.windows.net",
+        "privatelink.afs.azure.net",
+        "privatelink.analysis.windows.net",
+        "privatelink.pbidedicated.windows.net",
+        "privatelink.tip1.powerquery.microsoft.com",
+        "privatelink.azuredatabricks.net",
+        "privatelink.batch.azure.com",
+        "privatelink-global.wvd.microsoft.com",
+        "privatelink.wvd.microsoft.com",
+        "privatelink.{regionName}.azmk8s.io",
+        "privatelink.azurecr.io",
+        "{regionName}.data.privatelink.azurecr.io",
+        "privatelink.database.windows.net",
+        "privatelink.documents.azure.com",
+        "privatelink.mongo.cosmos.azure.com",
+        "privatelink.cassandra.cosmos.azure.com",
+        "privatelink.gremlin.cosmos.azure.com",
+        "privatelink.table.cosmos.azure.com",
+        "privatelink.analytics.cosmos.azure.com",
+        "privatelink.postgres.cosmos.azure.com",
+        "privatelink.mariadb.database.azure.com",
+        "privatelink.postgres.database.azure.com",
+        "privatelink.mysql.database.azure.com",
+        "privatelink.redis.cache.windows.net",
+        "privatelink.redisenterprise.cache.azure.net",
+        "privatelink.his.arc.azure.com",
+        "privatelink.guestconfiguration.azure.com",
+        "privatelink.dp.kubernetesconfiguration.azure.com",
+        "privatelink.eventgrid.azure.net",
+        "privatelink.azure-api.net",
+        "privatelink.azurehealthcareapis.com",
+        "privatelink.workspace.azurehealthcareapis.com",
+        "privatelink.fhir.azurehealthcareapis.com",
+        "privatelink.dicom.azurehealthcareapis.com",
+        "privatelink.azure-devices.net",
+        "privatelink.azure-devices-provisioning.net",
+        "privatelink.api.adu.microsoft.com",
+        "privatelink.azureiotcentral.com",
+        "privatelink.digitaltwins.azure.net",
+        "privatelink.media.azure.net",
+        "privatelink.azure-automation.net",
+        "privatelink.{regionCode}.backup.windowsazure.com",
+        "privatelink.siterecovery.windowsazure.com",
+        "privatelink.monitor.azure.com",
+        "privatelink.oms.opinsights.azure.com",
+        "privatelink.ods.opinsights.azure.com",
+        "privatelink.agentsvc.azure-automation.net",
+        "privatelink.purview.azure.com",
+        "privatelink.purviewstudio.azure.com",
+        "privatelink.prod.migration.windowsazure.com",
+        "privatelink.grafana.azure.com",
+        "privatelink.vaultcore.azure.net",
+        "privatelink.managedhsm.azure.net",
+        "privatelink.azconfig.io",
+        "privatelink.attest.azure.net",
+        "privatelink.search.windows.net",
+        "privatelink.azurewebsites.net",
+        "privatelink.service.signalr.net",
+        "privatelink.azurestaticapps.net",
+        "privatelink.azuresynapse.net",
+        "privatelink.dev.azuresynapse.net",
+        "privatelink.sql.azuresynapse.net",
+        "privatelink.webpubsub.azure.com"
+      ],
+      "metadata": {
+        "description": "Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.\n\n**NOTE:**\n\n- Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.\n- Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.\n\n**IMPORTANT:**\n\nThe folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:\n\n- `{subzone}.privatelink.{regionName}.azmk8s.io`\n- `privatelink.{dnsPrefix}.database.windows.net`\n- `privatelink.{partitionId}.azurestaticapps.net`\n\nWe have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:\n\n- `privatelink.azure.com`.\n"
+      }
+    },
+    "privateLinkPrivateDnsZonesToExclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` ."
+      }
+    },
+    "additionalPrivateLinkPrivateDnsZonesToInclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`."
+      }
+    },
+    "virtualNetworkResourceIdsToLinkTo": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID."
+      }
+    },
+    "virtualNetworkLinks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkLinkType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId'. The 'vnetResourceId' is a resource ID of a vNet to link."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "privateLinkPrivateDnsZonesReplacedWithRegionCode",
+        "count": "[length(variables('privateLinkPrivateDnsZonesWithExclusions'))]",
+        "input": "[replace(variables('privateLinkPrivateDnsZonesWithExclusions')[copyIndex('privateLinkPrivateDnsZonesReplacedWithRegionCode')], '{regionCode}', variables('azureRegionGeoCodeShortNameAsKey')[variables('locationLoweredAndSpacesRemoved')])]"
+      },
+      {
+        "name": "privateLinkPrivateDnsZonesReplacedWithRegionName",
+        "count": "[length(variables('privateLinkPrivateDnsZonesReplacedWithRegionCode'))]",
+        "input": "[replace(variables('privateLinkPrivateDnsZonesReplacedWithRegionCode')[copyIndex('privateLinkPrivateDnsZonesReplacedWithRegionName')], '{regionName}', variables('locationLoweredAndSpacesRemoved'))]"
+      },
+      {
+        "name": "toDeprecateVirtualNetworkResourceIdsToLinkToObject",
+        "count": "[length(parameters('virtualNetworkResourceIdsToLinkTo'))]",
+        "input": {
+          "virtualNetworkResourceId": "[parameters('virtualNetworkResourceIdsToLinkTo')[copyIndex('toDeprecateVirtualNetworkResourceIdsToLinkToObject')]]"
+        }
+      }
+    ],
+    "combinedPrivateLinkPrivateDnsZonesProvided": "[union(parameters('privateLinkPrivateDnsZones'), coalesce(parameters('additionalPrivateLinkPrivateDnsZonesToInclude'), createArray()))]",
+    "privateLinkPrivateDnsZonesWithExclusions": "[filter(variables('combinedPrivateLinkPrivateDnsZonesProvided'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
+    "azureRegionGeoCodeShortNameAsKey": {
+      "uaenorth": "uan",
+      "northcentralus": "ncus",
+      "malaysiawest": "myw",
+      "eastus": "eus",
+      "uksouth": "uks",
+      "westcentralus": "wcus",
+      "israelcentral": "ilc",
+      "southeastasia": "sea",
+      "malaysiasouth": "mys",
+      "koreacentral": "krc",
+      "northeurope": "ne",
+      "australiaeast": "ae",
+      "southafricanorth": "san",
+      "norwaywest": "nww",
+      "norwayeast": "nwe",
+      "westus3": "wus3",
+      "eastus2euap": "ecy",
+      "centralus": "cus",
+      "mexicocentral": "mxc",
+      "canadacentral": "cnc",
+      "japaneast": "jpe",
+      "swedencentral": "sdc",
+      "taiwannorth": "twn",
+      "germanynorth": "gn",
+      "centralindia": "inc",
+      "westindia": "inw",
+      "newzealandnorth": "nzn",
+      "australiacentral": "acl",
+      "ukwest": "ukw",
+      "germanywestcentral": "gwc",
+      "brazilsouth": "brs",
+      "francecentral": "frc",
+      "brazilsoutheast": "bse",
+      "westus2": "wus2",
+      "eastus2": "eus2",
+      "centraluseuap": "ccy",
+      "australiacentral2": "acl2",
+      "francesouth": "frs",
+      "southafricawest": "saw",
+      "koreasouth": "krs",
+      "southindia": "ins",
+      "canadaeast": "cne",
+      "qatarcentral": "qac",
+      "spaincentral": "spc",
+      "westeurope": "we",
+      "japanwest": "jpw",
+      "southcentralus": "scus",
+      "polandcentral": "plc",
+      "switzerlandwest": "szw",
+      "australiasoutheast": "ase",
+      "switzerlandnorth": "szn",
+      "italynorth": "itn",
+      "uaecentral": "uac",
+      "eastasia": "ea",
+      "chilecentral": "clc",
+      "westus": "wus",
+      "swedensouth": "sds",
+      "usgovvirginia": "ugv",
+      "usgovtexas": "ugt",
+      "usgovarizona": "uga",
+      "usdodeast": "ude",
+      "usdodcentral": "udc",
+      "indonesiacentral": "idc"
+    },
+    "azureRegionShortNameDisplayNameAsKey": {
+      "australia southeast": "australiasoutheast",
+      "west central us": "westcentralus",
+      "chile central": "chilecentral",
+      "east us 2 euap": "eastus2euap",
+      "japan west": "japanwest",
+      "west us 2": "westus2",
+      "uae central": "uaecentral",
+      "france central": "francecentral",
+      "east us 2": "eastus2",
+      "malaysia west": "malaysiawest",
+      "korea south": "koreasouth",
+      "switzerland west": "switzerlandwest",
+      "west us": "westus",
+      "australia central 2": "australiacentral2",
+      "north europe": "northeurope",
+      "switzerland north": "switzerlandnorth",
+      "uae north": "uaenorth",
+      "australia east": "australiaeast",
+      "new zealand north": "newzealandnorth",
+      "japan east": "japaneast",
+      "norway east": "norwayeast",
+      "south india": "southindia",
+      "korea central": "koreacentral",
+      "malaysia south": "malaysiasouth",
+      "uk south": "uksouth",
+      "qatar central": "qatarcentral",
+      "canada east": "canadaeast",
+      "north central us": "northcentralus",
+      "east asia": "eastasia",
+      "uk west": "ukwest",
+      "brazil southeast": "brazilsoutheast",
+      "canada central": "canadacentral",
+      "germany north": "germanynorth",
+      "west india": "westindia",
+      "italy north": "italynorth",
+      "israel central": "israelcentral",
+      "brazil south": "brazilsouth",
+      "central us euap": "centraluseuap",
+      "germany west central": "germanywestcentral",
+      "south africa north": "southafricanorth",
+      "sweden south": "swedensouth",
+      "poland central": "polandcentral",
+      "spain central": "spaincentral",
+      "south central us": "southcentralus",
+      "east us": "eastus",
+      "southeast asia": "southeastasia",
+      "france south": "francesouth",
+      "australia central": "australiacentral",
+      "central us": "centralus",
+      "central india": "centralindia",
+      "norway west": "norwaywest",
+      "mexico central": "mexicocentral",
+      "west europe": "westeurope",
+      "south africa west": "southafricawest",
+      "west us 3": "westus3",
+      "taiwan north": "taiwannorth",
+      "sweden central": "swedencentral",
+      "usgov virginia": "usgovvirginia",
+      "usgov texas": "usgovtexas",
+      "usgov arizona": "usgovarizona",
+      "usdod east": "usdodeast",
+      "usdod central": "usdodcentral",
+      "indonesia central": "indonesiacentral"
+    },
+    "locationLowered": "[toLower(parameters('location'))]",
+    "locationLoweredAndSpacesRemoved": "[if(contains(variables('locationLowered'), ' '), variables('azureRegionShortNameDisplayNameAsKey')[variables('locationLowered')], variables('locationLowered'))]",
+    "combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink": "[map(range(0, length(variables('privateLinkPrivateDnsZonesReplacedWithRegionName'))), lambda('i', createObject('pdnsZoneName', variables('privateLinkPrivateDnsZonesReplacedWithRegionName')[lambdaVariables('i')], 'virtualNetworkLinks', union(variables('toDeprecateVirtualNetworkResourceIdsToLinkToObject'), coalesce(parameters('virtualNetworkLinks'), createArray())))))]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.ptn.network-privatelinkprivatednszones.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "pdnsZones": {
+      "copy": {
+        "name": "pdnsZones",
+        "count": "[length(variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink'))]"
+      },
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2024-06-01",
+      "name": "[variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName]",
+      "location": "global",
+      "tags": "[parameters('tags')]"
+    },
+    "pdnsZonesLock": {
+      "copy": {
+        "name": "pdnsZonesLock",
+        "count": "[length(variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink'))]"
+      },
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/privateDnsZones/{0}', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName)]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "[format('pdnsZones[{0}]', copyIndex())]"
+      ]
+    },
+    "pdnsZoneVnetLinks": {
+      "copy": {
+        "name": "pdnsZoneVnetLinks",
+        "count": "[length(variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-pdns-zone-vnet-links-loop', uniqueString(deployment().name, variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "privateDnsZoneName": {
+            "value": "[variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName]"
+          },
+          "virtualNetworkLinks": {
+            "value": "[variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].virtualNetworkLinks]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "12110149055103431833"
+            },
+            "name": "Private DNS Zone Virtual Network Link Child Module",
+            "description": "This module deploys a Private DNS Zone Virtual Network Link."
+          },
+          "definitions": {
+            "virtualNetworkLinkType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "metadata": {
+                    "description": "Optional. The resource name."
+                  }
+                },
+                "virtualNetworkResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the virtual network to link."
+                  }
+                },
+                "registrationEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource tags."
+                  }
+                },
+                "resolutionPolicy": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Default",
+                    "NxDomainRedirect"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resolution type of the private-dns-zone fallback mechanism."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the virtual network link."
+              }
+            }
+          },
+          "parameters": {
+            "privateDnsZoneName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Private DNS zone. Required if the template is used in a standalone deployment."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "global",
+              "metadata": {
+                "description": "Optional. The location of the PrivateDNSZone. Should be global."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Private Link Private DNS Zones created."
+              }
+            },
+            "virtualNetworkLinks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/virtualNetworkLinkType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet."
+              }
+            }
+          },
+          "resources": {
+            "privateDnsZone": {
+              "existing": true,
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2024-06-01",
+              "name": "[parameters('privateDnsZoneName')]"
+            },
+            "virtualNetworkLink": {
+              "copy": {
+                "name": "virtualNetworkLink",
+                "count": "[length(coalesce(parameters('virtualNetworkLinks'), createArray()))]"
+              },
+              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+              "apiVersion": "2024-06-01",
+              "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'name'), format('{0}-vnetlink', last(split(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId, '/')))))]",
+              "location": "[parameters('location')]",
+              "tags": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]",
+              "properties": {
+                "registrationEnabled": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'registrationEnabled'), false())]",
+                "resolutionPolicy": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'resolutionPolicy'), 'Default')]",
+                "virtualNetwork": {
+                  "id": "[coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId]"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "pdnsZones"
+      ]
+    }
+  },
+  "outputs": {
+    "combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink": {
+      "type": "array",
+      "metadata": {
+        "description": "The final array of objects of private link private DNS zones to link to virtual networks including the region name replacements as required."
+      },
+      "value": "[variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')]"
+    },
+    "resourceGroupResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the resource group that the Private DNS Zones are deployed into."
+      },
+      "value": "[resourceGroup().id]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group that the Private DNS Zones are deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -45,10 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
   name: 'networkSecurityGroupDeployment'
   params: {
-    // Required parameters
     name: 'nnsgmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -58,23 +55,31 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nnsgmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-security-group:<version>'
+
+param name = 'nnsgmin001'
 ```
 
 </details>
@@ -112,11 +117,13 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     }
     roleAssignments: [
       {
+        name: 'b6d38ee8-4058-42b1-af6a-b8d585cf61ef'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -230,7 +237,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -265,11 +272,13 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     "roleAssignments": {
       "value": [
         {
+          "name": "b6d38ee8-4058-42b1-af6a-b8d585cf61ef",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -386,6 +395,148 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-security-group:<version>'
+
+// Required parameters
+param name = 'nnsgmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'b6d38ee8-4058-42b1-af6a-b8d585cf61ef'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityRules = [
+  {
+    name: 'Specific'
+    properties: {
+      access: 'Allow'
+      description: 'Tests specific IPs and ports'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '8080'
+      direction: 'Inbound'
+      priority: 100
+      protocol: '*'
+      sourceAddressPrefix: '*'
+      sourcePortRange: '*'
+    }
+  }
+  {
+    name: 'Ranges'
+    properties: {
+      access: 'Allow'
+      description: 'Tests Ranges'
+      destinationAddressPrefixes: [
+        '10.2.0.0/16'
+        '10.3.0.0/16'
+      ]
+      destinationPortRanges: [
+        '90'
+        '91'
+      ]
+      direction: 'Inbound'
+      priority: 101
+      protocol: '*'
+      sourceAddressPrefixes: [
+        '10.0.0.0/16'
+        '10.1.0.0/16'
+      ]
+      sourcePortRanges: [
+        '80'
+        '81'
+      ]
+    }
+  }
+  {
+    name: 'Port_8082'
+    properties: {
+      access: 'Allow'
+      description: 'Allow inbound access on TCP 8082'
+      destinationApplicationSecurityGroupResourceIds: [
+        '<applicationSecurityGroupResourceId>'
+      ]
+      destinationPortRange: '8082'
+      direction: 'Inbound'
+      priority: 102
+      protocol: '*'
+      sourceApplicationSecurityGroupResourceIds: [
+        '<applicationSecurityGroupResourceId>'
+      ]
+      sourcePortRange: '*'
+    }
+  }
+  {
+    name: 'Deny-All-Inbound'
+    properties: {
+      access: 'Deny'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '*'
+      direction: 'Inbound'
+      priority: 4095
+      protocol: '*'
+      sourceAddressPrefix: '*'
+      sourcePortRange: '*'
+    }
+  }
+  {
+    name: 'Allow-AzureCloud-Tcp'
+    properties: {
+      access: 'Allow'
+      destinationAddressPrefix: 'AzureCloud'
+      destinationPortRange: '443'
+      direction: 'Outbound'
+      priority: 250
+      protocol: 'Tcp'
+      sourceAddressPrefixes: [
+        '10.10.10.0/24'
+        '192.168.1.0/24'
+      ]
+      sourcePortRange: '*'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -402,7 +553,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     // Required parameters
     name: 'nnsgwaf001'
     // Non-required parameters
-    location: '<location>'
     securityRules: [
       {
         name: 'deny-hop-outbound'
@@ -435,7 +585,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -447,9 +597,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       "value": "nnsgwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "securityRules": {
       "value": [
         {
@@ -484,6 +631,43 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-security-group:<version>'
+
+// Required parameters
+param name = 'nnsgwaf001'
+// Non-required parameters
+param securityRules = [
+  {
+    name: 'deny-hop-outbound'
+    properties: {
+      access: 'Deny'
+      destinationAddressPrefix: '*'
+      destinationPortRanges: [
+        '22'
+        '3389'
+      ]
+      direction: 'Outbound'
+      priority: 200
+      protocol: 'Tcp'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -691,6 +875,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -707,6 +898,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -753,6 +945,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -861,6 +1060,8 @@ Required. The priority of the rule. The value can be between 100 and 4096. The p
 
 - Required: Yes
 - Type: int
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.protocol`
 
@@ -964,7 +1165,6 @@ Tags of the NSG resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -976,7 +1176,11 @@ Tags of the NSG resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

@@ -5,36 +5,653 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "5922198770832880671"
+      "version": "0.35.1.17967",
+      "templateHash": "9737790900108778620"
     },
     "name": "Log Analytics Workspaces",
-    "description": "This module deploys a Log Analytics Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "diagnosticSettingType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "useThisWorkspace": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored."
           }
         },
-        "userAssignedResourceIds": {
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      }
+    },
+    "gallerySolutionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
+          }
+        },
+        "plan": {
+          "$ref": "#/definitions/solutionPlanType",
+          "metadata": {
+            "description": "Required. Plan for solution object supported by the OperationsManagement resource provider."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the gallery solutions to be created in the log analytics workspace."
+      }
+    },
+    "storageInsightsConfigType": {
+      "type": "object",
+      "properties": {
+        "storageAccountResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the storage account to be linked."
+          }
+        },
+        "containers": {
           "type": "array",
           "items": {
             "type": "string"
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The names of the blob containers that the workspace should read."
+          }
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of tables to be read by the workspace."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the storage insights configuration."
+      }
+    },
+    "linkedServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the linked service."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+          }
+        },
+        "writeAccessResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the linked service."
+      }
+    },
+    "linkedStorageAccountType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the link."
+          }
+        },
+        "storageAccountIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "metadata": {
+            "description": "Required. Linked storage accounts resources Ids."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the linked storage account."
+      }
+    },
+    "savedSearchType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the saved search."
+          }
+        },
+        "etag": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ETag of the saved search. To override an existing saved search, use \"*\" or specify the current Etag."
+          }
+        },
+        "category": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The category of the saved search. This helps the user to find a saved search faster."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Display name for the search."
+          }
+        },
+        "functionAlias": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The function alias if query serves as a function."
+          }
+        },
+        "functionParameters": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The optional function parameters if query serves as a function. Value should be in the following format: 'param-name1:type1 = default_value1, param-name2:type2 = default_value2'. For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions."
+          }
+        },
+        "query": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The query expression for the saved search."
+          }
+        },
+        "tags": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags attached to the saved search."
+          }
+        },
+        "version": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version number of the query language. The current version is 2 and is the default."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the saved search."
+      }
+    },
+    "dataExportType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the data export."
+          }
+        },
+        "destination": {
+          "$ref": "#/definitions/destinationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The destination of the data export."
+          }
+        },
+        "enable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable the data export."
+          }
+        },
+        "tableNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The list of table names to export."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the data export."
+      }
+    },
+    "dataSourceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the data source."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The kind of data source."
+          }
+        },
+        "linkedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource id of the resource that will be linked to the workspace."
+          }
+        },
+        "eventLogName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the event log to configure when kind is WindowsEvent."
+          }
+        },
+        "eventTypes": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The event types to configure when kind is WindowsEvent."
+          }
+        },
+        "objectName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+          }
+        },
+        "instanceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+          }
+        },
+        "intervalSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+          }
+        },
+        "performanceCounters": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of counters to configure when the kind is LinuxPerformanceObject."
+          }
+        },
+        "counterName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
+          }
+        },
+        "state": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
+          }
+        },
+        "syslogName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. System log to configure when kind is LinuxSyslog."
+          }
+        },
+        "syslogSeverities": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Severities to configure when kind is LinuxSyslog."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to configure in the resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the data source."
+      }
+    },
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the table."
+          }
+        },
+        "plan": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The plan for the table."
+          }
+        },
+        "restoredLogs": {
+          "$ref": "#/definitions/restoredLogsType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The restored logs for the table."
+          }
+        },
+        "schema": {
+          "$ref": "#/definitions/schemaType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The schema for the table."
+          }
+        },
+        "searchResults": {
+          "$ref": "#/definitions/searchResultsType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The search results for the table."
+          }
+        },
+        "retentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The retention in days for the table."
+          }
+        },
+        "totalRetentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The total retention in days for the table."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The role assignments for the table."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties of the custom table."
+      }
+    },
+    "workspaceFeaturesType": {
+      "type": "object",
+      "properties": {
+        "disableLocalAuth": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Disable Non-EntraID based Auth. Default is true."
+          }
+        },
+        "enableDataExport": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag that indicate if data should be exported."
+          }
+        },
+        "enableLogAccessUsingOnlyResourcePermissions": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable log access using only resource permissions. Default is false."
+          }
+        },
+        "immediatePurgeDataOn30Days": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag that describes if we want to remove the data after 30 days."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Features of the workspace."
+      }
+    },
+    "_1.columnType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The column name."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "boolean",
+            "dateTime",
+            "dynamic",
+            "guid",
+            "int",
+            "long",
+            "real",
+            "string"
+          ],
+          "metadata": {
+            "description": "Required. The column type."
+          }
+        },
+        "dataTypeHint": {
+          "type": "string",
+          "allowedValues": [
+            "armPath",
+            "guid",
+            "ip",
+            "uri"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The column data type logical hint."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The column description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Column display name."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The parameters of the table column.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
+    },
+    "destinationType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The destination resource ID."
+          }
+        },
+        "metaData": {
+          "type": "object",
+          "properties": {
+            "eventHubName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The destination metadata."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The data export destination properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "data-export/main.bicep"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -59,193 +676,262 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "restoredLogsType": {
+      "type": "object",
+      "properties": {
+        "sourceTable": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table to restore data from."
+          }
+        },
+        "startRestoreTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to start the restore from (UTC)."
+          }
+        },
+        "endRestoreTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to end the restore by (UTC)."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The parameters of the restore operation that initiated the table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
+    "schemaType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The table name."
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.columnType"
           },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
+          "metadata": {
+            "description": "Required. A list of table custom columns."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The table display name."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "The table schema.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
+    },
+    "searchResultsType": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The search job query."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The search description."
+          }
+        },
+        "limit": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Limit the search job to return up to specified number of rows."
+          }
+        },
+        "startSearchTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to start the search from (UTC)."
+          }
+        },
+        "endSearchTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timestamp to end the search by (UTC)."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The parameters of the search job that initiated the table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table/main.bicep"
+        }
+      }
+    },
+    "solutionPlanType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the solution to be created.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, it can be anything.\nThe solution type is case-sensitive.\nIf not provided, the value of the `name` parameter will be used."
+          }
+        },
+        "product": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The product name of the deployed solution.\nFor Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.\nFor a third party solution, it can be anything.\nThis is case sensitive."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -290,58 +976,89 @@
     },
     "storageInsightsConfigs": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/storageInsightsConfigType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of storage accounts to be read by the workspace."
       }
     },
     "linkedServices": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/linkedServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of services to be linked."
       }
     },
     "linkedStorageAccounts": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/linkedStorageAccountType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Conditional. List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 'true' and 'savedSearches' is not empty."
       }
     },
     "savedSearches": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/savedSearchType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Kusto Query Language searches to save."
       }
     },
     "dataExports": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/dataExportType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. LAW data export instances to be deployed."
       }
     },
     "dataSources": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/dataSourceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. LAW data sources to configure."
       }
     },
     "tables": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/tableType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. LAW custom tables to be deployed."
       }
     },
     "gallerySolutions": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/gallerySolutionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of gallerySolutions to be created in the log analytics workspace."
+      }
+    },
+    "onboardWorkspaceToSentinel": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions."
       }
     },
     "dataRetention": {
@@ -384,20 +1101,25 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
       }
     },
-    "useResourcePermissions": {
-      "type": "bool",
-      "defaultValue": false,
+    "features": {
+      "$ref": "#/definitions/workspaceFeaturesType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions."
+        "description": "Optional. The workspace features."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
@@ -411,12 +1133,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -437,6 +1164,14 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -447,7 +1182,7 @@
       "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "Security Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb1c8493-542b-48eb-b624-b4c8fea62acd')]",
       "Security Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '39bc4728-0917-49c7-9d2c-d95423bc2eb4')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
@@ -476,14 +1211,17 @@
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
         "features": {
           "searchVersion": 1,
-          "enableLogAccessUsingOnlyResourcePermissions": "[parameters('useResourcePermissions')]"
+          "enableLogAccessUsingOnlyResourcePermissions": "[coalesce(tryGet(parameters('features'), 'enableLogAccessUsingOnlyResourcePermissions'), false())]",
+          "disableLocalAuth": "[coalesce(tryGet(parameters('features'), 'disableLocalAuth'), true())]",
+          "enableDataExport": "[tryGet(parameters('features'), 'enableDataExport')]",
+          "immediatePurgeDataOn30Days": "[tryGet(parameters('features'), 'immediatePurgeDataOn30Days')]"
         },
         "sku": {
           "name": "[parameters('skuName')]",
@@ -530,12 +1268,23 @@
           }
         ],
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "workspaceId": "[if(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'useThisWorkspace'), false()), resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId'))]",
         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
+      "dependsOn": [
+        "logAnalyticsWorkspace"
+      ]
+    },
+    "logAnalyticsWorkspace_sentinelOnboarding": {
+      "condition": "[and(not(empty(filter(coalesce(parameters('gallerySolutions'), createArray()), lambda('item', startsWith(lambdaVariables('item').name, 'SecurityInsights'))))), parameters('onboardWorkspaceToSentinel'))]",
+      "type": "Microsoft.SecurityInsights/onboardingStates",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
+      "name": "default",
+      "properties": {},
       "dependsOn": [
         "logAnalyticsWorkspace"
       ]
@@ -557,20 +1306,20 @@
     "logAnalyticsWorkspace_roleAssignments": {
       "copy": {
         "name": "logAnalyticsWorkspace_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "logAnalyticsWorkspace"
@@ -579,7 +1328,7 @@
     "logAnalyticsWorkspace_storageInsightConfigs": {
       "copy": {
         "name": "logAnalyticsWorkspace_storageInsightConfigs",
-        "count": "[length(parameters('storageInsightsConfigs'))]"
+        "count": "[length(coalesce(parameters('storageInsightsConfigs'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -593,10 +1342,14 @@
           "logAnalyticsWorkspaceName": {
             "value": "[parameters('name')]"
           },
-          "containers": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'containers'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].containers), createObject('value', createArray()))]",
-          "tables": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'tables'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].tables), createObject('value', createArray()))]",
+          "containers": {
+            "value": "[tryGet(coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()], 'containers')]"
+          },
+          "tables": {
+            "value": "[tryGet(coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()], 'tables')]"
+          },
           "storageAccountResourceId": {
-            "value": "[parameters('storageInsightsConfigs')[copyIndex()].storageAccountResourceId]"
+            "value": "[coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()].storageAccountResourceId]"
           }
         },
         "template": {
@@ -606,12 +1359,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "16775981135504794519"
+              "version": "0.35.1.17967",
+              "templateHash": "2043978404537017691"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
-            "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -635,14 +1387,20 @@
             },
             "containers": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The names of the blob containers that the workspace should read."
               }
             },
             "tables": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The names of the Azure tables that the workspace should read."
               }
@@ -665,12 +1423,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2023-09-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "storageinsightconfig": {
               "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -678,13 +1436,9 @@
                 "tables": "[parameters('tables')]",
                 "storageAccount": {
                   "id": "[parameters('storageAccountResourceId')]",
-                  "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
+                  "key": "[listKeys('storageAccount', '2022-09-01').keys[0].value]"
                 }
-              },
-              "dependsOn": [
-                "storageAccount",
-                "workspace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -719,7 +1473,7 @@
     "logAnalyticsWorkspace_linkedServices": {
       "copy": {
         "name": "logAnalyticsWorkspace_linkedServices",
-        "count": "[length(parameters('linkedServices'))]"
+        "count": "[length(coalesce(parameters('linkedServices'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -734,10 +1488,14 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('linkedServices')[copyIndex()].name]"
+            "value": "[coalesce(parameters('linkedServices'), createArray())[copyIndex()].name]"
           },
-          "resourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'resourceId'), createObject('value', parameters('linkedServices')[copyIndex()].resourceId), createObject('value', ''))]",
-          "writeAccessResourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId'), createObject('value', parameters('linkedServices')[copyIndex()].writeAccessResourceId), createObject('value', ''))]"
+          "resourceId": {
+            "value": "[tryGet(coalesce(parameters('linkedServices'), createArray())[copyIndex()], 'resourceId')]"
+          },
+          "writeAccessResourceId": {
+            "value": "[tryGet(coalesce(parameters('linkedServices'), createArray())[copyIndex()], 'writeAccessResourceId')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -746,12 +1504,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11327223922004680974"
+              "version": "0.35.1.17967",
+              "templateHash": "15624488954958814427"
             },
             "name": "Log Analytics Workspace Linked Services",
-            "description": "This module deploys a Log Analytics Workspace Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Linked Service."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -768,14 +1525,14 @@
             },
             "resourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+                "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
               }
             },
             "writeAccessResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
               }
@@ -792,21 +1549,18 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2023-09-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "linkedService": {
               "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "resourceId": "[parameters('resourceId')]",
-                "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+                "writeAccessResourceId": "[parameters('writeAccessResourceId')]"
+              }
             }
           },
           "outputs": {
@@ -841,7 +1595,7 @@
     "logAnalyticsWorkspace_linkedStorageAccounts": {
       "copy": {
         "name": "logAnalyticsWorkspace_linkedStorageAccounts",
-        "count": "[length(parameters('linkedStorageAccounts'))]"
+        "count": "[length(coalesce(parameters('linkedStorageAccounts'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -856,24 +1610,24 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('linkedStorageAccounts')[copyIndex()].name]"
+            "value": "[coalesce(parameters('linkedStorageAccounts'), createArray())[copyIndex()].name]"
           },
-          "resourceId": {
-            "value": "[parameters('linkedStorageAccounts')[copyIndex()].resourceId]"
+          "storageAccountIds": {
+            "value": "[coalesce(parameters('linkedStorageAccounts'), createArray())[copyIndex()].storageAccountIds]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "16393542404456450187"
+              "version": "0.35.1.17967",
+              "templateHash": "8250559094478594611"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
-            "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -894,25 +1648,33 @@
                 "description": "Required. Name of the link."
               }
             },
-            "resourceId": {
-              "type": "string",
+            "storageAccountIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1,
               "metadata": {
-                "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+                "description": "Required. Linked storage accounts resources Ids."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('logAnalyticsWorkspaceName')]"
+            },
+            "linkedStorageAccount": {
               "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "properties": {
-                "storageAccountIds": [
-                  "[parameters('resourceId')]"
-                ]
+                "storageAccountIds": "[parameters('storageAccountIds')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -945,7 +1707,7 @@
     "logAnalyticsWorkspace_savedSearches": {
       "copy": {
         "name": "logAnalyticsWorkspace_savedSearches",
-        "count": "[length(parameters('savedSearches'))]"
+        "count": "[length(coalesce(parameters('savedSearches'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -960,28 +1722,31 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[format('{0}{1}', parameters('savedSearches')[copyIndex()].name, uniqueString(deployment().name))]"
+            "value": "[format('{0}{1}', coalesce(parameters('savedSearches'), createArray())[copyIndex()].name, uniqueString(deployment().name))]"
           },
           "etag": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'etag')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'etag')]"
           },
           "displayName": {
-            "value": "[parameters('savedSearches')[copyIndex()].displayName]"
+            "value": "[coalesce(parameters('savedSearches'), createArray())[copyIndex()].displayName]"
           },
           "category": {
-            "value": "[parameters('savedSearches')[copyIndex()].category]"
+            "value": "[coalesce(parameters('savedSearches'), createArray())[copyIndex()].category]"
           },
           "query": {
-            "value": "[parameters('savedSearches')[copyIndex()].query]"
+            "value": "[coalesce(parameters('savedSearches'), createArray())[copyIndex()].query]"
           },
           "functionAlias": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionAlias')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'functionAlias')]"
           },
           "functionParameters": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionParameters')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'functionParameters')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'tags')]"
           },
           "version": {
-            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'version')]"
+            "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'version')]"
           }
         },
         "template": {
@@ -991,12 +1756,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "18166536793397048488"
+              "version": "0.35.1.17967",
+              "templateHash": "5149844663841891327"
             },
             "name": "Log Analytics Workspace Saved Searches",
-            "description": "This module deploys a Log Analytics Workspace Saved Search.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Saved Search."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -1069,12 +1833,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2023-09-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "savedSearch": {
               "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "properties": {
                 "etag": "[parameters('etag')]",
@@ -1085,10 +1849,7 @@
                 "functionAlias": "[parameters('functionAlias')]",
                 "functionParameters": "[parameters('functionParameters')]",
                 "version": "[parameters('version')]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1124,7 +1885,7 @@
     "logAnalyticsWorkspace_dataExports": {
       "copy": {
         "name": "logAnalyticsWorkspace_dataExports",
-        "count": "[length(parameters('dataExports'))]"
+        "count": "[length(coalesce(parameters('dataExports'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1139,24 +1900,63 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('dataExports')[copyIndex()].name]"
+            "value": "[coalesce(parameters('dataExports'), createArray())[copyIndex()].name]"
           },
-          "destination": "[if(contains(parameters('dataExports')[copyIndex()], 'destination'), createObject('value', parameters('dataExports')[copyIndex()].destination), createObject('value', createObject()))]",
-          "enable": "[if(contains(parameters('dataExports')[copyIndex()], 'enable'), createObject('value', parameters('dataExports')[copyIndex()].enable), createObject('value', false()))]",
-          "tableNames": "[if(contains(parameters('dataExports')[copyIndex()], 'tableNames'), createObject('value', parameters('dataExports')[copyIndex()].tableNames), createObject('value', createArray()))]"
+          "destination": {
+            "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'destination')]"
+          },
+          "enable": {
+            "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'enable')]"
+          },
+          "tableNames": {
+            "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'tableNames')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7136569845646186437"
+              "version": "0.35.1.17967",
+              "templateHash": "1695158270142527557"
             },
             "name": "Log Analytics Workspace Data Exports",
-            "description": "This module deploys a Log Analytics Workspace Data Export.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Data Export."
+          },
+          "definitions": {
+            "destinationType": {
+              "type": "object",
+              "properties": {
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The destination resource ID."
+                  }
+                },
+                "metaData": {
+                  "type": "object",
+                  "properties": {
+                    "eventHubName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Allows to define an Event Hub name. Not applicable when destination is Storage Account."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The destination metadata."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The data export destination properties."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -1174,8 +1974,8 @@
               }
             },
             "destination": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/destinationType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Destination properties."
               }
@@ -1189,16 +1989,25 @@
             },
             "tableNames": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1,
               "metadata": {
-                "description": "Optional. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
+                "description": "Required. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('workspaceName')]"
+            },
+            "dataExport": {
               "type": "Microsoft.OperationalInsights/workspaces/dataExports",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "destination": "[parameters('destination')]",
@@ -1206,7 +2015,7 @@
                 "tableNames": "[parameters('tableNames')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1239,7 +2048,7 @@
     "logAnalyticsWorkspace_dataSources": {
       "copy": {
         "name": "logAnalyticsWorkspace_dataSources",
-        "count": "[length(parameters('dataSources'))]"
+        "count": "[length(coalesce(parameters('dataSources'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1254,22 +2063,47 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('dataSources')[copyIndex()].name]"
+            "value": "[coalesce(parameters('dataSources'), createArray())[copyIndex()].name]"
           },
           "kind": {
-            "value": "[parameters('dataSources')[copyIndex()].kind]"
+            "value": "[coalesce(parameters('dataSources'), createArray())[copyIndex()].kind]"
           },
-          "linkedResourceId": "[if(contains(parameters('dataSources')[copyIndex()], 'linkedResourceId'), createObject('value', parameters('dataSources')[copyIndex()].linkedResourceId), createObject('value', ''))]",
-          "eventLogName": "[if(contains(parameters('dataSources')[copyIndex()], 'eventLogName'), createObject('value', parameters('dataSources')[copyIndex()].eventLogName), createObject('value', ''))]",
-          "eventTypes": "[if(contains(parameters('dataSources')[copyIndex()], 'eventTypes'), createObject('value', parameters('dataSources')[copyIndex()].eventTypes), createObject('value', createArray()))]",
-          "objectName": "[if(contains(parameters('dataSources')[copyIndex()], 'objectName'), createObject('value', parameters('dataSources')[copyIndex()].objectName), createObject('value', ''))]",
-          "instanceName": "[if(contains(parameters('dataSources')[copyIndex()], 'instanceName'), createObject('value', parameters('dataSources')[copyIndex()].instanceName), createObject('value', ''))]",
-          "intervalSeconds": "[if(contains(parameters('dataSources')[copyIndex()], 'intervalSeconds'), createObject('value', parameters('dataSources')[copyIndex()].intervalSeconds), createObject('value', 60))]",
-          "counterName": "[if(contains(parameters('dataSources')[copyIndex()], 'counterName'), createObject('value', parameters('dataSources')[copyIndex()].counterName), createObject('value', ''))]",
-          "state": "[if(contains(parameters('dataSources')[copyIndex()], 'state'), createObject('value', parameters('dataSources')[copyIndex()].state), createObject('value', ''))]",
-          "syslogName": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogName'), createObject('value', parameters('dataSources')[copyIndex()].syslogName), createObject('value', ''))]",
-          "syslogSeverities": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogSeverities'), createObject('value', parameters('dataSources')[copyIndex()].syslogSeverities), createObject('value', createArray()))]",
-          "performanceCounters": "[if(contains(parameters('dataSources')[copyIndex()], 'performanceCounters'), createObject('value', parameters('dataSources')[copyIndex()].performanceCounters), createObject('value', createArray()))]"
+          "linkedResourceId": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'linkedResourceId')]"
+          },
+          "eventLogName": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'eventLogName')]"
+          },
+          "eventTypes": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'eventTypes')]"
+          },
+          "objectName": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'objectName')]"
+          },
+          "instanceName": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'instanceName')]"
+          },
+          "intervalSeconds": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'intervalSeconds')]"
+          },
+          "counterName": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'counterName')]"
+          },
+          "state": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'state')]"
+          },
+          "syslogName": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'syslogName')]"
+          },
+          "syslogSeverities": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'syslogSeverities')]"
+          },
+          "performanceCounters": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'performanceCounters')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'tags')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1278,12 +2112,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13864187993066263466"
+              "version": "0.35.1.17967",
+              "templateHash": "3062149733782372246"
             },
             "name": "Log Analytics Workspace Datasources",
-            "description": "This module deploys a Log Analytics Workspace Data Source.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Data Source."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -1295,7 +2128,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of the solution."
+                "description": "Required. Name of the data source."
               }
             },
             "kind": {
@@ -1312,7 +2145,7 @@
                 "LinuxPerformanceCollection"
               ],
               "metadata": {
-                "description": "Required. The kind of the DataSource."
+                "description": "Optional. The kind of the data source."
               }
             },
             "tags": {
@@ -1324,14 +2157,14 @@
             },
             "linkedResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the resource to be linked."
               }
             },
             "eventLogName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
               }
@@ -1345,7 +2178,7 @@
             },
             "objectName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
               }
@@ -1373,21 +2206,21 @@
             },
             "counterName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
               }
             },
             "state": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
               }
             },
             "syslogName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. System log to configure when kind is LinuxSyslog."
               }
@@ -1404,12 +2237,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2023-09-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "dataSource": {
               "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "kind": "[parameters('kind')]",
               "tags": "[parameters('tags')]",
@@ -1425,10 +2258,7 @@
                 "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
                 "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
                 "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1463,7 +2293,7 @@
     "logAnalyticsWorkspace_tables": {
       "copy": {
         "name": "logAnalyticsWorkspace_tables",
-        "count": "[length(parameters('tables'))]"
+        "count": "[length(coalesce(parameters('tables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1478,28 +2308,28 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('tables')[copyIndex()].name]"
+            "value": "[coalesce(parameters('tables'), createArray())[copyIndex()].name]"
           },
           "plan": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'plan')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'plan')]"
           },
           "schema": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'schema')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'schema')]"
           },
           "retentionInDays": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'retentionInDays')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'retentionInDays')]"
           },
           "totalRetentionInDays": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'totalRetentionInDays')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'totalRetentionInDays')]"
           },
           "restoredLogs": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'restoredLogs')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'restoredLogs')]"
           },
           "searchResults": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'searchResults')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'searchResults')]"
           },
           "roleAssignments": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'roleAssignments')]"
           }
         },
         "template": {
@@ -1509,79 +2339,256 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "9332283068393802804"
+              "version": "0.35.1.17967",
+              "templateHash": "5855172714151847939"
             },
             "name": "Log Analytics Workspace Tables",
-            "description": "This module deploys a Log Analytics Workspace Table.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Table."
           },
           "definitions": {
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+            "restoredLogsType": {
+              "type": "object",
+              "properties": {
+                "sourceTable": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The table to restore data from."
+                  }
+                },
+                "startRestoreTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to start the restore from (UTC)."
+                  }
+                },
+                "endRestoreTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to end the restore by (UTC)."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The parameters of the restore operation that initiated the table."
+              }
+            },
+            "schemaType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The table name."
+                  }
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/columnType"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of table custom columns."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The table description."
+                  }
+                },
+                "displayName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The table display name."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The table schema."
+              }
+            },
+            "columnType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The column name."
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "boolean",
+                    "dateTime",
+                    "dynamic",
+                    "guid",
+                    "int",
+                    "long",
+                    "real",
+                    "string"
+                  ],
+                  "metadata": {
+                    "description": "Required. The column type."
+                  }
+                },
+                "dataTypeHint": {
+                  "type": "string",
+                  "allowedValues": [
+                    "armPath",
+                    "guid",
+                    "ip",
+                    "uri"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The column data type logical hint."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The column description."
+                  }
+                },
+                "displayName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Column display name."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The parameters of the table column."
+              }
+            },
+            "searchResultsType": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The search job query."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The search description."
+                  }
+                },
+                "limit": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Limit the search job to return up to specified number of rows."
+                  }
+                },
+                "startSearchTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to start the search from (UTC)."
+                  }
+                },
+                "endSearchTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The timestamp to end the search by (UTC)."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The parameters of the search job that initiated the table."
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -1609,8 +2616,8 @@
               }
             },
             "restoredLogs": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/restoredLogsType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Restore parameters."
               }
@@ -1625,15 +2632,15 @@
               }
             },
             "schema": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/schemaType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Table's schema."
               }
             },
             "searchResults": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/searchResultsType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Parameters of the search job that initiated this table."
               }
@@ -1648,13 +2655,24 @@
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
@@ -1663,7 +2681,7 @@
               "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
@@ -1671,12 +2689,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2023-09-01",
               "name": "[parameters('workspaceName')]"
             },
             "table": {
               "type": "Microsoft.OperationalInsights/workspaces/tables",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "plan": "[parameters('plan')]",
@@ -1685,28 +2703,25 @@
                 "schema": "[parameters('schema')]",
                 "searchResults": "[parameters('searchResults')]",
                 "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "table_roleAssignments": {
               "copy": {
                 "name": "table_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}/tables/{1}', parameters('workspaceName'), parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "table"
@@ -1745,7 +2760,7 @@
     "logAnalyticsWorkspace_solutions": {
       "copy": {
         "name": "logAnalyticsWorkspace_solutions",
-        "count": "[length(parameters('gallerySolutions'))]"
+        "count": "[length(coalesce(parameters('gallerySolutions'), createArray()))]"
       },
       "condition": "[not(empty(parameters('gallerySolutions')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1758,7 +2773,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('gallerySolutions')[copyIndex()].name]"
+            "value": "[coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1766,30 +2781,68 @@
           "logAnalyticsWorkspaceName": {
             "value": "[parameters('name')]"
           },
-          "product": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), createObject('value', parameters('gallerySolutions')[copyIndex()].product), createObject('value', 'OMSGallery'))]",
-          "publisher": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), createObject('value', parameters('gallerySolutions')[copyIndex()].publisher), createObject('value', 'Microsoft'))]",
+          "plan": {
+            "value": "[coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].plan]"
+          },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(parameters('gallerySolutions')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "18444780972506374592"
+              "version": "0.30.23.60470",
+              "templateHash": "1867653058254938383"
             },
             "name": "Operations Management Solutions",
             "description": "This module deploys an Operations Management Solution.",
             "owner": "Azure/module-maintainers"
           },
+          "definitions": {
+            "solutionPlanType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the solution to be created.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, it can be anything.\nThe solution type is case-sensitive.\nIf not provided, the value of the `name` parameter will be used."
+                  }
+                },
+                "product": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The product name of the deployed solution.\nFor Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.\nFor a third party solution, it can be anything.\nThis is case sensitive."
+                  }
+                },
+                "publisher": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
           "parameters": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of the solution. For Microsoft published gallery solution the target solution resource name will be composed as `{name}({logAnalyticsWorkspaceName})`."
+                "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
+              }
+            },
+            "plan": {
+              "$ref": "#/definitions/solutionPlanType",
+              "metadata": {
+                "description": "Required. Plan for solution object supported by the OperationsManagement resource provider."
               }
             },
             "logAnalyticsWorkspaceName": {
@@ -1805,20 +2858,6 @@
                 "description": "Optional. Location for all resources."
               }
             },
-            "product": {
-              "type": "string",
-              "defaultValue": "OMSGallery",
-              "metadata": {
-                "description": "Optional. The product of the deployed solution. For Microsoft published gallery solution it should be `OMSGallery` and the target solution resource product will be composed as `OMSGallery/{name}`. For third party solution, it can be anything. This is case sensitive."
-              }
-            },
-            "publisher": {
-              "type": "string",
-              "defaultValue": "Microsoft",
-              "metadata": {
-                "description": "Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`."
-              }
-            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -1827,16 +2866,12 @@
               }
             }
           },
-          "variables": {
-            "solutionName": "[if(equals(parameters('publisher'), 'Microsoft'), format('{0}({1})', parameters('name'), parameters('logAnalyticsWorkspaceName')), parameters('name'))]",
-            "solutionProduct": "[if(equals(parameters('publisher'), 'Microsoft'), format('OMSGallery/{0}', parameters('name')), parameters('product'))]"
-          },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1852,36 +2887,45 @@
                 }
               }
             },
-            {
+            "logAnalyticsWorkspace": {
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('logAnalyticsWorkspaceName')]"
+            },
+            "solution": {
               "type": "Microsoft.OperationsManagement/solutions",
               "apiVersion": "2015-11-01-preview",
-              "name": "[variables('solutionName')]",
+              "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "properties": {
                 "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
               },
               "plan": {
-                "name": "[variables('solutionName')]",
+                "name": "[coalesce(tryGet(parameters('plan'), 'name'), parameters('name'))]",
                 "promotionCode": "",
-                "product": "[variables('solutionProduct')]",
-                "publisher": "[parameters('publisher')]"
-              }
+                "product": "[parameters('plan').product]",
+                "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
+              },
+              "dependsOn": [
+                "logAnalyticsWorkspace"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The name of the deployed solution."
               },
-              "value": "[variables('solutionName')]"
+              "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the deployed solution."
               },
-              "value": "[resourceId('Microsoft.OperationsManagement/solutions', variables('solutionName'))]"
+              "value": "[resourceId('Microsoft.OperationsManagement/solutions', parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -1895,7 +2939,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.OperationsManagement/solutions', variables('solutionName')), '2015-11-01-preview', 'full').location]"
+              "value": "[reference('solution', '2015-11-01-preview', 'full').location]"
             }
           }
         }
@@ -1939,14 +2983,29 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('logAnalyticsWorkspace', '2022-10-01', 'full').location]"
+      "value": "[reference('logAnalyticsWorkspace', '2023-09-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('logAnalyticsWorkspace', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2023-09-01', 'full'), 'identity'), 'principalId')]"
+    },
+    "primarySharedKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary shared key of the log analytics workspace."
+      },
+      "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey]"
+    },
+    "secondarySharedKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary shared key of the log analytics workspace."
+      },
+      "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').secondarySharedKey]"
     }
   }
 }

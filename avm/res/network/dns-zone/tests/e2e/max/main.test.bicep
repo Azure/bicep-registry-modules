@@ -197,11 +197,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: 'a8697438-70e8-4f40-baa4-6e90a57fe1dc'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -243,7 +245,7 @@ module testDeployment '../../../main.bicep' = [
             email: 'azuredns-hostmaster.microsoft.com'
             expireTime: 2419200
             host: 'ns1-04.azure-dns.com.'
-            minimumTtl: 300
+            minimumTTL: 300
             refreshTime: 3600
             retryTime: 300
             serialNumber: 1

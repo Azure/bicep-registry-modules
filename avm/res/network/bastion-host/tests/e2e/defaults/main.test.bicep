@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -54,8 +54,5 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

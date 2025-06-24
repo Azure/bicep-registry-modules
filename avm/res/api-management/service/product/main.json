@@ -4,18 +4,24 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13125454306061578309"
+      "version": "0.33.13.18514",
+      "templateHash": "7427869826758534329"
     },
     "name": "API Management Service Products",
-    "description": "This module deploys an API Management Service Product.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Product."
   },
   "parameters": {
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 300,
+      "metadata": {
+        "description": "Required. API Management Service Products name. Must be 1 to 300 characters long."
       }
     },
     "approvalRequired": {
@@ -88,7 +94,7 @@
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
-        "displayName": "[parameters('name')]",
+        "displayName": "[parameters('displayName')]",
         "terms": "[parameters('terms')]",
         "subscriptionRequired": "[parameters('subscriptionRequired')]",
         "approvalRequired": "[if(parameters('subscriptionRequired'), parameters('approvalRequired'), null())]",
@@ -126,12 +132,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4018261656720912671"
+              "version": "0.33.13.18514",
+              "templateHash": "6881101310103461222"
             },
             "name": "API Management Service Products APIs",
-            "description": "This module deploys an API Management Service Product API.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an API Management Service Product API."
           },
           "parameters": {
             "apiManagementServiceName": {
@@ -216,12 +221,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "6078964374640716249"
+              "version": "0.33.13.18514",
+              "templateHash": "7173352386317054073"
             },
             "name": "API Management Service Products Groups",
-            "description": "This module deploys an API Management Service Product Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an API Management Service Product Group."
           },
           "parameters": {
             "apiManagementServiceName": {

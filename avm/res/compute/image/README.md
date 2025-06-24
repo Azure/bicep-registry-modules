@@ -16,7 +16,7 @@ This module deploys a Compute Image.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/images` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/images) |
+| `Microsoft.Compute/images` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/images) |
 
 ## Usage examples
 
@@ -49,8 +49,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     osDiskBlobUri: '<osDiskBlobUri>'
     osDiskCaching: 'ReadWrite'
     osType: 'Windows'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -60,7 +58,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -82,13 +80,27 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     },
     "osType": {
       "value": "Windows"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/image:<version>'
+
+// Required parameters
+param name = 'cimin001'
+param osAccountType = 'Standard_LRS'
+param osDiskBlobUri = '<osDiskBlobUri>'
+param osDiskCaching = 'ReadWrite'
+param osType = 'Windows'
 ```
 
 </details>
@@ -121,11 +133,13 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     osState: 'Generalized'
     roleAssignments: [
       {
+        name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -151,7 +165,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -193,11 +207,13 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "2dfcdedd-220c-4b6b-b8bd-58e22e0c5434",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -226,6 +242,55 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/image:<version>'
+
+// Required parameters
+param name = 'cimax001'
+param osAccountType = 'Premium_LRS'
+param osDiskBlobUri = '<osDiskBlobUri>'
+param osDiskCaching = 'ReadWrite'
+param osType = 'Windows'
+// Non-required parameters
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param diskSizeGB = 128
+param hyperVGeneration = 'V1'
+param location = '<location>'
+param osState = 'Generalized'
+param roleAssignments = [
+  {
+    name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneResilient = true
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -249,7 +314,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     diskSizeGB: 128
     hyperVGeneration: 'V1'
-    location: '<location>'
     osState: 'Generalized'
     tags: {
       Environment: 'Non-Prod'
@@ -266,7 +330,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -299,9 +363,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     "hyperVGeneration": {
       "value": "V1"
     },
-    "location": {
-      "value": "<location>"
-    },
     "osState": {
       "value": "Generalized"
     },
@@ -322,6 +383,34 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/image:<version>'
+
+// Required parameters
+param name = 'ciwaf001'
+param osAccountType = 'Premium_LRS'
+param osDiskBlobUri = '<osDiskBlobUri>'
+param osDiskCaching = 'ReadWrite'
+param osType = 'Windows'
+// Non-required parameters
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param diskSizeGB = 128
+param hyperVGeneration = 'V1'
+param osState = 'Generalized'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneResilient = true
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -330,8 +419,10 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the image. |
+| [`osAccountType`](#parameter-osaccounttype) | string | Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. |
 | [`osDiskBlobUri`](#parameter-osdiskbloburi) | string | The Virtual Hard Disk. |
-| [`osType`](#parameter-ostype) | string | This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. - Windows or Linux. |
+| [`osDiskCaching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. |
+| [`osType`](#parameter-ostype) | string | This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. |
 
 **Optional parameters**
 
@@ -342,11 +433,9 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 | [`diskSizeGB`](#parameter-disksizegb) | int | Specifies the size of empty data disks in gigabytes. This element can be used to overwrite the name of the disk in a virtual machine image. This value cannot be larger than 1023 GB. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the Image. |
-| [`hyperVGeneration`](#parameter-hypervgeneration) | string | Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2. |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | Gets the HyperVGenerationType of the VirtualMachine created from the image. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`managedDiskResourceId`](#parameter-manageddiskresourceid) | string | The managedDisk. |
-| [`osAccountType`](#parameter-osaccounttype) | string | Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. - Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS. |
-| [`osDiskCaching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. - None, ReadOnly, ReadWrite. |
 | [`osState`](#parameter-osstate) | string | The OS State. For managed images, use Generalized. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`snapshotResourceId`](#parameter-snapshotresourceid) | string | The snapshot resource ID. |
@@ -361,6 +450,22 @@ The name of the image.
 - Required: Yes
 - Type: string
 
+### Parameter: `osAccountType`
+
+Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
 ### Parameter: `osDiskBlobUri`
 
 The Virtual Hard Disk.
@@ -368,12 +473,34 @@ The Virtual Hard Disk.
 - Required: Yes
 - Type: string
 
-### Parameter: `osType`
+### Parameter: `osDiskCaching`
 
-This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. - Windows or Linux.
+Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `osType`
+
+This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
 
 ### Parameter: `dataDisks`
 
@@ -389,7 +516,6 @@ Specifies the customer managed disk encryption set resource ID for the managed i
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diskSizeGB`
 
@@ -413,15 +539,21 @@ The extended location of the Image.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `hyperVGeneration`
 
-Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2.
+Gets the HyperVGenerationType of the VirtualMachine created from the image.
 
 - Required: No
 - Type: string
 - Default: `'V1'`
+- Allowed:
+  ```Bicep
+  [
+    'V1'
+    'V2'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -436,21 +568,6 @@ Location for all resources.
 The managedDisk.
 
 - Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `osAccountType`
-
-Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. - Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osDiskCaching`
-
-Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. - None, ReadOnly, ReadWrite.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `osState`
@@ -474,6 +591,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -490,6 +613,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -540,6 +664,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -563,7 +694,6 @@ The snapshot resource ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `sourceVirtualMachineResourceId`
 
@@ -571,7 +701,6 @@ The source virtual machine from which Image is created.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -588,7 +717,6 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -600,7 +728,11 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

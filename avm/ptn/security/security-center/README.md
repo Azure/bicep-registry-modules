@@ -8,7 +8,6 @@ This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -61,7 +60,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -81,6 +80,23 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/security/security-center:<version>'
+
+// Required parameters
+param scope = '<scope>'
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -121,7 +137,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -160,6 +176,31 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/security/security-center:<version>'
+
+// Required parameters
+param scope = '<scope>'
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param deviceSecurityGroupProperties = {}
+param ioTSecuritySolutionProperties = {}
+param location = '<location>'
+param securityContactProperties = {
+  alertNotifications: 'Off'
+  alertsToAdmins: 'Off'
+  email: 'foo@contoso.com'
+  phone: '+12345678'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -187,7 +228,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -212,6 +253,22 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/security/security-center:<version>'
+
+// Required parameters
+param scope = '<scope>'
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -510,17 +567,12 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the security center. |
 | `workspaceResourceId` | string | The resource ID of the used log analytics workspace. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

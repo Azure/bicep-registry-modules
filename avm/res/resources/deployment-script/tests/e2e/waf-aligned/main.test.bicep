@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    azCliVersion: '2.9.1'
+    azCliVersion: '2.52.0'
     kind: 'AzureCLI'
     retentionInterval: 'P1D'
     cleanupPreference: 'Always'
@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = {
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }

@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShor
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'akcmax'
+param serviceShort string = 'kcmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
+    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
   }
 }
 
@@ -62,10 +62,10 @@ module testDeployment '../../../main.bicep' = [
       autoScaleMin: 3
       autoScaleMax: 6
       enableAutoScale: true
-      principalAssignments: [
+      clusterPrincipalAssignments: [
         {
-          principalId: nestedDependencies.outputs.entraIdGroupDisplayName
-          principalType: 'Group'
+          principalId: nestedDependencies.outputs.managedIdentityClientId
+          principalType: 'App'
           role: 'AllDatabasesViewer'
         }
       ]
@@ -97,11 +97,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -113,6 +115,23 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+      databases: [
+        {
+          name: 'myReadWriteDatabase'
+          kind: 'ReadWrite'
+          readWriteProperties: {
+            softDeletePeriod: 'P7D'
+            hotCachePeriod: 'P1D'
+          }
+          databasePrincipalAssignments: [
+            {
+              principalId: nestedDependencies.outputs.managedIdentityClientId
+              principalType: 'App'
+              role: 'Viewer'
+            }
+          ]
         }
       ]
     }

@@ -8,7 +8,6 @@ This module deploys a Role Assignment at a Management Group, Subscription or Res
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -60,7 +59,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +82,24 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = 'Resource Policy Contributor'
+// Non-required parameters
+param location = '<location>'
+param principalType = 'ServicePrincipal'
 ```
 
 </details>
@@ -118,7 +135,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -147,6 +164,26 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = 'Management Group Reader'
+// Non-required parameters
+param description = 'Role Assignment (management group scope)'
+param location = '<location>'
+param managementGroupId = '<managementGroupId>'
+param principalType = 'ServicePrincipal'
 ```
 
 </details>
@@ -182,7 +219,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -211,6 +248,26 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+// Non-required parameters
+param location = '<location>'
+param principalType = 'ServicePrincipal'
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -247,7 +304,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -284,6 +341,27 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = 'Reader'
+// Non-required parameters
+param description = 'Role Assignment (resource group scope)'
+param location = '<location>'
+param principalType = 'ServicePrincipal'
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
 ### Example 5: _Role Assignments (Subscription scope)_
 
 This module deploys a Role Assignment at a Subscription scope using minimal parameters.
@@ -313,7 +391,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -339,6 +417,25 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = '<roleDefinitionIdOrName>'
+// Non-required parameters
+param location = '<location>'
+param principalType = 'ServicePrincipal'
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -374,7 +471,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -408,6 +505,25 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = 'Reader'
+// Non-required parameters
+param description = 'Role Assignment (subscription scope)'
+param location = '<location>'
+param principalType = 'ServicePrincipal'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -544,7 +660,6 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -552,10 +667,6 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 | `name` | string | The GUID of the Role Assignment. |
 | `resourceId` | string | The resource ID of the Role Assignment. |
 | `scope` | string | The scope this Role Assignment applies to. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

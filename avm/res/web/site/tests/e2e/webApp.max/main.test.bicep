@@ -41,13 +41,14 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
+    apiManagementName: 'dep-${namePrefix}-apim-${serviceShort}'
     location: resourceLocation
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -72,6 +73,14 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+      dnsConfiguration: {
+        dnsMaxCacheTimeout: 45
+        dnsRetryAttemptCount: 3
+        dnsRetryAttemptTimeout: 5
+        dnsServers: [
+          '168.63.129.16'
+        ]
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -106,9 +115,13 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneResourceIds: [
-                nestedDependencies.outputs.privateDNSZoneResourceId
-              ]
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -117,6 +130,14 @@ module testDeployment '../../../main.bicep' = [
               service: 'sites-slot1'
             }
           ]
+          dnsConfiguration: {
+            dnsMaxCacheTimeout: 45
+            dnsRetryAttemptCount: 3
+            dnsRetryAttemptTimeout: 5
+            dnsServers: [
+              '168.63.129.20'
+            ]
+          }
           basicPublishingCredentialsPolicies: [
             {
               name: 'ftp'
@@ -129,11 +150,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
+              name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
+              name: guid('Custom seed ${namePrefix}${serviceShort}')
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -156,11 +179,16 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
           hybridConnectionRelays: [
             {
-              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
               sendKeyName: 'defaultSender'
             }
           ]
@@ -175,16 +203,25 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
         }
       ]
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -193,13 +230,18 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
       ]
       roleAssignments: [
         {
+          name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -227,8 +269,43 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
+      configs: [
+        {
+          // Persisted on service in 'Settings/Environment variables'
+          name: 'appsettings'
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+        }
+        {
+          // Persisted on service in 'Monitoring/App Service logs'
+          name: 'logs'
+          properties: {
+            applicationLogs: { fileSystem: { level: 'Verbose' } }
+            detailedErrorMessages: { enabled: true }
+            failedRequestsTracing: { enabled: true }
+            httpLogs: { fileSystem: { enabled: true, retentionInDays: 1, retentionInMb: 35 } }
+          }
+        }
+        {
+          // Persisted on service in 'API/API Management'
+          name: 'web'
+          properties: {
+            ipSecurityRestrictions: [
+              {
+                action: 'Allow'
+                description: 'Test IP Restriction'
+                tag: 'ServiceTag'
+                name: 'Test Restriction'
+                priority: 200
+                ipAddress: 'ApiManagement'
+              }
+            ]
+            apiManagementConfig: {
+              id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
+            }
+          }
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -247,7 +324,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]
@@ -257,9 +334,5 @@ module testDeployment '../../../main.bicep' = [
       vnetRouteAllEnabled: true
       publicNetworkAccess: 'Disabled'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

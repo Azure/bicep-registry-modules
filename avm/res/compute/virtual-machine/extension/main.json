@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "8063436714999902780"
+      "version": "0.34.44.8038",
+      "templateHash": "8482591295619883067"
     },
     "name": "Virtual Machine Extensions",
-    "description": "This module deploys a Virtual Machine Extension.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine Extension."
   },
   "parameters": {
     "virtualMachineName": {
@@ -121,10 +120,7 @@
         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
         "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
         "suppressFailures": "[parameters('supressFailures')]"
-      },
-      "dependsOn": [
-        "virtualMachine"
-      ]
+      }
     }
   },
   "outputs": {

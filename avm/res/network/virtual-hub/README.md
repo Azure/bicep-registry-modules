@@ -17,9 +17,10 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs) |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubRouteTables) |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/routingIntent` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/routingIntent) |
 
 ## Usage examples
 
@@ -31,7 +32,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Routing Intent](#example-3-using-routing-intent)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -49,9 +51,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     // Required parameters
     addressPrefix: '10.0.0.0/16'
     name: 'nvhmin'
-    virtualWanId: '<virtualWanId>'
-    // Non-required parameters
-    location: '<location>'
+    virtualWanResourceId: '<virtualWanResourceId>'
   }
 }
 ```
@@ -61,7 +61,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,15 +75,27 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "name": {
       "value": "nvhmin"
     },
-    "virtualWanId": {
-      "value": "<virtualWanId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.0.0.0/16'
+param name = 'nvhmin'
+param virtualWanResourceId = '<virtualWanResourceId>'
 ```
 
 </details>
@@ -105,17 +117,18 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
     name: 'nvhmax'
-    virtualWanId: '<virtualWanId>'
+    virtualWanResourceId: '<virtualWanResourceId>'
     // Non-required parameters
     hubRouteTables: [
       {
         name: 'routeTable1'
+        routes: []
       }
     ]
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
-        remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
         routingConfiguration: {
           associatedRouteTable: {
             id: '<id>'
@@ -126,9 +139,21 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
                 id: '<id>'
               }
             ]
-            labels: [
-              'none'
+            labels: []
+          }
+          vnetRoutes: {
+            staticRoutes: [
+              {
+                addressPrefixes: [
+                  '10.150.0.0/24'
+                ]
+                name: 'route1'
+                nextHopIpAddress: '10.150.0.5'
+              }
             ]
+            staticRoutesConfig: {
+              vnetLocalRouteOverrideCriteria: 'Contains'
+            }
           }
         }
       }
@@ -138,10 +163,14 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    sku: 'Standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    virtualRouterAutoScaleConfiguration: {
+      minCount: 2
     }
   }
 }
@@ -152,7 +181,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -166,14 +195,15 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "name": {
       "value": "nvhmax"
     },
-    "virtualWanId": {
-      "value": "<virtualWanId>"
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
     },
     // Non-required parameters
     "hubRouteTables": {
       "value": [
         {
-          "name": "routeTable1"
+          "name": "routeTable1",
+          "routes": []
         }
       ]
     },
@@ -181,7 +211,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": [
         {
           "name": "connection1",
-          "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
+          "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>",
           "routingConfiguration": {
             "associatedRouteTable": {
               "id": "<id>"
@@ -192,9 +222,21 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
                   "id": "<id>"
                 }
               ],
-              "labels": [
-                "none"
-              ]
+              "labels": []
+            },
+            "vnetRoutes": {
+              "staticRoutes": [
+                {
+                  "addressPrefixes": [
+                    "10.150.0.0/24"
+                  ],
+                  "name": "route1",
+                  "nextHopIpAddress": "10.150.0.5"
+                }
+              ],
+              "staticRoutesConfig": {
+                "vnetLocalRouteOverrideCriteria": "Contains"
+              }
             }
           }
         }
@@ -209,11 +251,19 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "sku": {
+      "value": "Standard"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "virtualRouterAutoScaleConfiguration": {
+      "value": {
+        "minCount": 2
       }
     }
   }
@@ -223,7 +273,190 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.1.0.0/16'
+param name = 'nvhmax'
+param virtualWanResourceId = '<virtualWanResourceId>'
+// Non-required parameters
+param hubRouteTables = [
+  {
+    name: 'routeTable1'
+    routes: []
+  }
+]
+param hubVirtualNetworkConnections = [
+  {
+    name: 'connection1'
+    remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: '<id>'
+      }
+      propagatedRouteTables: {
+        ids: [
+          {
+            id: '<id>'
+          }
+        ]
+        labels: []
+      }
+      vnetRoutes: {
+        staticRoutes: [
+          {
+            addressPrefixes: [
+              '10.150.0.0/24'
+            ]
+            name: 'route1'
+            nextHopIpAddress: '10.150.0.5'
+          }
+        ]
+        staticRoutesConfig: {
+          vnetLocalRouteOverrideCriteria: 'Contains'
+        }
+      }
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param sku = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualRouterAutoScaleConfiguration = {
+  minCount: 2
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using Routing Intent_
+
+This instance deploys the module the Virtual WAN hub with Routing Intent enabled; requires an existing Virtual Hub, as well the firewall Resource ID.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  name: 'virtualHubDeployment'
+  params: {
+    // Required parameters
+    addressPrefix: '10.10.0.0/23'
+    name: 'nvhrtint'
+    virtualWanResourceId: '<virtualWanResourceId>'
+    // Non-required parameters
+    azureFirewallResourceId: '<azureFirewallResourceId>'
+    hubRoutingPreference: 'ASPath'
+    hubVirtualNetworkConnections: [
+      {
+        name: 'connection1'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+      }
+    ]
+    routingIntent: {
+      internetToFirewall: false
+      privateToFirewall: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefix": {
+      "value": "10.10.0.0/23"
+    },
+    "name": {
+      "value": "nvhrtint"
+    },
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
+    },
+    // Non-required parameters
+    "azureFirewallResourceId": {
+      "value": "<azureFirewallResourceId>"
+    },
+    "hubRoutingPreference": {
+      "value": "ASPath"
+    },
+    "hubVirtualNetworkConnections": {
+      "value": [
+        {
+          "name": "connection1",
+          "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
+        }
+      ]
+    },
+    "routingIntent": {
+      "value": {
+        "internetToFirewall": false,
+        "privateToFirewall": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.10.0.0/23'
+param name = 'nvhrtint'
+param virtualWanResourceId = '<virtualWanResourceId>'
+// Non-required parameters
+param azureFirewallResourceId = '<azureFirewallResourceId>'
+param hubRoutingPreference = 'ASPath'
+param hubVirtualNetworkConnections = [
+  {
+    name: 'connection1'
+    remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+  }
+]
+param routingIntent = {
+  internetToFirewall: false
+  privateToFirewall: true
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -239,7 +472,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
     name: 'nvhwaf'
-    virtualWanId: '<virtualWanId>'
+    virtualWanResourceId: '<virtualWanResourceId>'
     // Non-required parameters
     hubRouteTables: [
       {
@@ -249,7 +482,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
-        remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
         routingConfiguration: {
           associatedRouteTable: {
             id: '<id>'
@@ -267,11 +500,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -286,7 +514,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -300,8 +528,8 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "name": {
       "value": "nvhwaf"
     },
-    "virtualWanId": {
-      "value": "<virtualWanId>"
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
     },
     // Non-required parameters
     "hubRouteTables": {
@@ -315,7 +543,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": [
         {
           "name": "connection1",
-          "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
+          "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>",
           "routingConfiguration": {
             "associatedRouteTable": {
               "id": "<id>"
@@ -334,15 +562,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -357,6 +576,53 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.1.0.0/16'
+param name = 'nvhwaf'
+param virtualWanResourceId = '<virtualWanResourceId>'
+// Non-required parameters
+param hubRouteTables = [
+  {
+    name: 'routeTable1'
+  }
+]
+param hubVirtualNetworkConnections = [
+  {
+    name: 'connection1'
+    remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+    routingConfiguration: {
+      associatedRouteTable: {
+        id: '<id>'
+      }
+      propagatedRouteTables: {
+        ids: [
+          {
+            id: '<id>'
+          }
+        ]
+        labels: [
+          'none'
+        ]
+      }
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -366,7 +632,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-addressprefix) | string | Address-prefix for this VirtualHub. |
 | [`name`](#parameter-name) | string | The virtual hub name. |
-| [`virtualWanId`](#parameter-virtualwanid) | string | Resource ID of the virtual WAN to link to. |
+| [`virtualWanResourceId`](#parameter-virtualwanresourceid) | string | Resource ID of the virtual WAN to link to. |
 
 **Optional parameters**
 
@@ -375,23 +641,25 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | Flag to control transit for VirtualRouter hub. |
 | [`azureFirewallResourceId`](#parameter-azurefirewallresourceid) | string | Resource ID of the Azure Firewall to link to. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`expressRouteGatewayId`](#parameter-expressroutegatewayid) | string | Resource ID of the Express Route Gateway to link to. |
+| [`expressRouteGatewayResourceId`](#parameter-expressroutegatewayresourceid) | string | Resource ID of the Express Route Gateway to link to. |
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
 | [`hubRoutingPreference`](#parameter-hubroutingpreference) | string | The preferred routing preference for this virtual hub. |
 | [`hubVirtualNetworkConnections`](#parameter-hubvirtualnetworkconnections) | array | Virtual network connections to create for the virtual hub. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`p2SVpnGatewayId`](#parameter-p2svpngatewayid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
+| [`p2SVpnGatewayResourceId`](#parameter-p2svpngatewayresourceid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | VirtualHub route tables. |
-| [`securityPartnerProviderId`](#parameter-securitypartnerproviderid) | string | ID of the Security Partner Provider to link to. |
+| [`routingIntent`](#parameter-routingintent) | object | The routing intent configuration to create for the virtual hub. |
+| [`securityPartnerProviderResourceId`](#parameter-securitypartnerproviderresourceid) | string | ID of the Security Partner Provider to link to. |
 | [`securityProviderName`](#parameter-securityprovidername) | string | The Security Provider name. |
 | [`sku`](#parameter-sku) | string | The sku of this VirtualHub. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualHubRouteTableV2s`](#parameter-virtualhubroutetablev2s) | array | List of all virtual hub route table v2s associated with this VirtualHub. |
 | [`virtualRouterAsn`](#parameter-virtualrouterasn) | int | VirtualRouter ASN. |
+| [`virtualRouterAutoScaleConfiguration`](#parameter-virtualrouterautoscaleconfiguration) | object | The auto scale configuration for the virtual router. |
 | [`virtualRouterIps`](#parameter-virtualrouterips) | array | VirtualRouter IPs. |
-| [`vpnGatewayId`](#parameter-vpngatewayid) | string | Resource ID of the VPN Gateway to link to. |
+| [`vpnGatewayResourceId`](#parameter-vpngatewayresourceid) | string | Resource ID of the VPN Gateway to link to. |
 
 ### Parameter: `addressPrefix`
 
@@ -407,7 +675,7 @@ The virtual hub name.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualWanId`
+### Parameter: `virtualWanResourceId`
 
 Resource ID of the virtual WAN to link to.
 
@@ -428,7 +696,6 @@ Resource ID of the Azure Firewall to link to.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -438,13 +705,12 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `expressRouteGatewayId`
+### Parameter: `expressRouteGatewayResourceId`
 
 Resource ID of the Express Route Gateway to link to.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `hubRouteTables`
 
@@ -452,7 +718,97 @@ Route tables to create for the virtual hub.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-hubroutetablesname) | string | The route table name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`labels`](#parameter-hubroutetableslabels) | array | List of labels associated with this route table. |
+| [`routes`](#parameter-hubroutetablesroutes) | array | List of all routes. |
+
+### Parameter: `hubRouteTables.name`
+
+The route table name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubRouteTables.labels`
+
+List of labels associated with this route table.
+
+- Required: No
+- Type: array
+
+### Parameter: `hubRouteTables.routes`
+
+List of all routes.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinations`](#parameter-hubroutetablesroutesdestinations) | array | The address prefix for the route. |
+| [`destinationType`](#parameter-hubroutetablesroutesdestinationtype) | string | The destination type for the route. |
+| [`name`](#parameter-hubroutetablesroutesname) | string | The name of the route. |
+| [`nextHop`](#parameter-hubroutetablesroutesnexthop) | string | The next hop IP address for the route. |
+| [`nextHopType`](#parameter-hubroutetablesroutesnexthoptype) | string | The next hop type for the route. |
+
+### Parameter: `hubRouteTables.routes.destinations`
+
+The address prefix for the route.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `hubRouteTables.routes.destinationType`
+
+The destination type for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CIDR'
+  ]
+  ```
+
+### Parameter: `hubRouteTables.routes.name`
+
+The name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubRouteTables.routes.nextHop`
+
+The next hop IP address for the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubRouteTables.routes.nextHopType`
+
+The next hop type for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ResourceId'
+  ]
+  ```
 
 ### Parameter: `hubRoutingPreference`
 
@@ -460,11 +816,9 @@ The preferred routing preference for this virtual hub.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'ASPath'
     'ExpressRoute'
     'VpnGateway'
@@ -477,7 +831,48 @@ Virtual network connections to create for the virtual hub.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-hubvirtualnetworkconnectionsname) | string | The connection name. |
+| [`remoteVirtualNetworkResourceId`](#parameter-hubvirtualnetworkconnectionsremotevirtualnetworkresourceid) | string | Resource ID of the virtual network to link to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableInternetSecurity`](#parameter-hubvirtualnetworkconnectionsenableinternetsecurity) | bool | Enable internet security. |
+| [`routingConfiguration`](#parameter-hubvirtualnetworkconnectionsroutingconfiguration) | object | Routing Configuration indicating the associated and propagated route tables for this connection. |
+
+### Parameter: `hubVirtualNetworkConnections.name`
+
+The connection name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubVirtualNetworkConnections.remoteVirtualNetworkResourceId`
+
+Resource ID of the virtual network to link to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubVirtualNetworkConnections.enableInternetSecurity`
+
+Enable internet security.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworkConnections.routingConfiguration`
+
+Routing Configuration indicating the associated and propagated route tables for this connection.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -523,13 +918,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `p2SVpnGatewayId`
+### Parameter: `p2SVpnGatewayResourceId`
 
 Resource ID of the Point-to-Site VPN Gateway to link to.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `preferredRoutingGateway`
 
@@ -537,11 +931,9 @@ The preferred routing gateway types.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'ExpressRoute'
     'None'
     'VpnGateway'
@@ -554,9 +946,36 @@ VirtualHub route tables.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `securityPartnerProviderId`
+### Parameter: `routingIntent`
+
+The routing intent configuration to create for the virtual hub.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`internetToFirewall`](#parameter-routingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
+| [`privateToFirewall`](#parameter-routingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
+
+### Parameter: `routingIntent.internetToFirewall`
+
+Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
+
+- Required: No
+- Type: bool
+
+### Parameter: `routingIntent.privateToFirewall`
+
+Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
+
+- Required: No
+- Type: bool
+
+### Parameter: `securityPartnerProviderResourceId`
 
 ID of the Security Partner Provider to link to.
 
@@ -609,22 +1028,39 @@ VirtualRouter ASN.
 - Required: No
 - Type: int
 
+### Parameter: `virtualRouterAutoScaleConfiguration`
+
+The auto scale configuration for the virtual router.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCount`](#parameter-virtualrouterautoscaleconfigurationmincount) | int | The minimum number of virtual routers in the scale set. |
+
+### Parameter: `virtualRouterAutoScaleConfiguration.minCount`
+
+The minimum number of virtual routers in the scale set.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `virtualRouterIps`
 
 VirtualRouter IPs.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `vpnGatewayId`
+### Parameter: `vpnGatewayResourceId`
 
 Resource ID of the VPN Gateway to link to.
 
 - Required: No
 - Type: string
-- Default: `''`
-
 
 ## Outputs
 
@@ -637,7 +1073,11 @@ Resource ID of the VPN Gateway to link to.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

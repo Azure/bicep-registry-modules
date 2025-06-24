@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "12117465982320735659"
+      "version": "0.35.1.17967",
+      "templateHash": "9180559400189977195"
     },
     "name": "Eventgrid Namespace CA Certificates",
-    "description": "This module deploys an Eventgrid Namespace CA Certificate.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace CA Certificate."
   },
   "parameters": {
     "namespaceName": {
@@ -53,10 +52,7 @@
       "properties": {
         "description": "[parameters('description')]",
         "encodedCertificate": "[parameters('encodedCertificate')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     }
   },
   "outputs": {

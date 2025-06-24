@@ -67,7 +67,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,6 +84,22 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-zone:<version>'
+
+// Required parameters
+param name = 'ndzmin001.com'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -296,11 +312,13 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     ]
     roleAssignments: [
       {
+        name: 'a8697438-70e8-4f40-baa4-6e90a57fe1dc'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -335,7 +353,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           email: 'azuredns-hostmaster.microsoft.com'
           expireTime: 2419200
           host: 'ns1-04.azure-dns.com.'
-          minimumTtl: 300
+          minimumTTL: 300
           refreshTime: 3600
           retryTime: 300
           serialNumber: 1
@@ -418,7 +436,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -640,11 +658,13 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "a8697438-70e8-4f40-baa4-6e90a57fe1dc",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -681,7 +701,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             "email": "azuredns-hostmaster.microsoft.com",
             "expireTime": 2419200,
             "host": "ns1-04.azure-dns.com.",
-            "minimumTtl": 300,
+            "minimumTTL": 300,
             "refreshTime": 3600,
             "retryTime": 300,
             "serialNumber": 1
@@ -769,6 +789,327 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-zone:<version>'
+
+// Required parameters
+param name = 'ndzmax001.com'
+// Non-required parameters
+param a = [
+  {
+    aRecords: [
+      {
+        ipv4Address: '10.240.4.4'
+      }
+    ]
+    name: 'A_10.240.4.4'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param aaaa = [
+  {
+    aaaaRecords: [
+      {
+        ipv6Address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+      }
+    ]
+    name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
+    ttl: 3600
+  }
+]
+param caa = [
+  {
+    caaRecords: [
+      {
+        flags: 0
+        tag: 'issue'
+        value: 'ca.contoso.com'
+      }
+    ]
+    name: 'CAA_test'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param cname = [
+  {
+    cnameRecord: {
+      cname: 'test'
+    }
+    name: 'CNAME_test'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+  {
+    name: 'CNAME_aliasRecordSet'
+    targetResourceId: '<targetResourceId>'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param mx = [
+  {
+    mxRecords: [
+      {
+        exchange: 'contoso.com'
+        preference: 100
+      }
+    ]
+    name: 'MX_contoso'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param ns = [
+  {
+    name: 'NS_test'
+    nsRecords: [
+      {
+        nsdname: 'ns.contoso.com'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param ptr = [
+  {
+    name: 'PTR_contoso'
+    ptrRecords: [
+      {
+        ptrdname: 'contoso.com'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param roleAssignments = [
+  {
+    name: 'a8697438-70e8-4f40-baa4-6e90a57fe1dc'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param soa = [
+  {
+    name: '@'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    soaRecord: {
+      email: 'azuredns-hostmaster.microsoft.com'
+      expireTime: 2419200
+      host: 'ns1-04.azure-dns.com.'
+      minimumTTL: 300
+      refreshTime: 3600
+      retryTime: 300
+      serialNumber: 1
+    }
+    ttl: 3600
+  }
+]
+param srv = [
+  {
+    name: 'SRV_contoso'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    srvRecords: [
+      {
+        port: 9332
+        priority: 0
+        target: 'test.contoso.com'
+        weight: 0
+      }
+    ]
+    ttl: 3600
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param txt = [
+  {
+    name: 'TXT_test'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+    txtRecords: [
+      {
+        value: [
+          'test'
+        ]
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -804,7 +1145,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -839,6 +1180,30 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-zone:<version>'
+
+// Required parameters
+param name = 'ndzwaf001.com'
+// Non-required parameters
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -938,6 +1303,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -954,6 +1331,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-aroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-aroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-aroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-aroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `a.roleAssignments.principalId`
@@ -1000,6 +1378,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `a.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `a.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1098,6 +1483,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1114,6 +1511,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-aaaaroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-aaaaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-aaaaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aaaaroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-aaaaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `aaaa.roleAssignments.principalId`
@@ -1160,6 +1558,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `aaaa.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1245,6 +1650,8 @@ The flags for this CAA record as an integer between 0 and 255.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 255
 
 ### Parameter: `caa.caaRecords.tag`
 
@@ -1273,6 +1680,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1289,6 +1708,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-caaroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-caaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-caaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-caaroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-caaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `caa.roleAssignments.principalId`
@@ -1335,6 +1755,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `caa.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `caa.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1426,6 +1853,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1442,6 +1881,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-cnameroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-cnameroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-cnameroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-cnameroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-cnameroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `cname.roleAssignments.principalId`
@@ -1488,6 +1928,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `cname.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1645,6 +2092,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1661,6 +2120,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-mxroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-mxroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-mxroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-mxroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-mxroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `mx.roleAssignments.principalId`
@@ -1707,6 +2167,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `mx.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1797,6 +2264,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1813,6 +2292,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-nsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-nsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-nsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-nsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-nsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `ns.roleAssignments.principalId`
@@ -1859,6 +2339,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `ns.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `ns.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1949,6 +2436,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1965,6 +2464,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-ptrroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-ptrroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-ptrroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-ptrroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-ptrroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `ptr.roleAssignments.principalId`
@@ -2015,6 +2515,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `ptr.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `ptr.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -2045,6 +2552,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2061,6 +2580,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2107,6 +2627,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2170,6 +2697,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2186,6 +2725,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-soaroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-soaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-soaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-soaroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-soaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `soa.roleAssignments.principalId`
@@ -2236,6 +2776,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `soa.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `soa.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -2267,7 +2814,7 @@ The SOA record in the record set.
 | [`email`](#parameter-soasoarecordemail) | string | The email contact for this SOA record. |
 | [`expireTime`](#parameter-soasoarecordexpiretime) | int | The expire time for this SOA record. |
 | [`host`](#parameter-soasoarecordhost) | string | The domain name of the authoritative name server for this SOA record. |
-| [`minimumTtl`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
+| [`minimumTTL`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
 | [`refreshTime`](#parameter-soasoarecordrefreshtime) | int | The refresh value for this SOA record. |
 | [`retryTime`](#parameter-soasoarecordretrytime) | int | The retry time for this SOA record. |
 | [`serialNumber`](#parameter-soasoarecordserialnumber) | int | The serial number for this SOA record. |
@@ -2293,7 +2840,7 @@ The domain name of the authoritative name server for this SOA record.
 - Required: Yes
 - Type: string
 
-### Parameter: `soa.soaRecord.minimumTtl`
+### Parameter: `soa.soaRecord.minimumTTL`
 
 The minimum value for this SOA record. By convention this is used to determine the negative caching duration.
 
@@ -2370,6 +2917,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2386,6 +2945,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-srvroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-srvroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-srvroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-srvroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-srvroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `srv.roleAssignments.principalId`
@@ -2432,6 +2992,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `srv.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2553,6 +3120,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2569,6 +3148,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-txtroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-txtroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-txtroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-txtroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-txtroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `txt.roleAssignments.principalId`
@@ -2619,6 +3199,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `txt.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `txt.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -2663,19 +3250,23 @@ The text value of this TXT record.
 - Required: Yes
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the DNS zone. |
+| `nameServers` | array | The name servers of the DNS zone. |
 | `resourceGroupName` | string | The resource group the DNS zone was deployed into. |
 | `resourceId` | string | The resource ID of the DNS zone. |
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

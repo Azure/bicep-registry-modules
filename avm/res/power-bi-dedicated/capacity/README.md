@@ -52,8 +52,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
     sku: {
       capacity: 1
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -63,7 +61,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,12 +81,28 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       "value": {
         "capacity": 1
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/power-bi-dedicated/capacity:<version>'
+
+// Required parameters
+param members = [
+  '<managedIdentityPrincipalId>'
+]
+param name = 'pbdcapmin001'
+param sku = {
+  capacity: 1
 }
 ```
 
@@ -156,7 +170,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -225,6 +239,57 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/power-bi-dedicated/capacity:<version>'
+
+// Required parameters
+param members = [
+  '<managedIdentityPrincipalId>'
+]
+param name = 'pbdcapmax001'
+param sku = {
+  capacity: 1
+  name: 'A1'
+  tier: 'PBIE_Azure'
+}
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param mode = 'Gen2'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -247,11 +312,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       capacity: 1
     }
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -266,7 +326,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -288,15 +348,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       }
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -311,6 +362,31 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/power-bi-dedicated/capacity:<version>'
+
+// Required parameters
+param members = [
+  '<managedIdentityPrincipalId>'
+]
+param name = 'pbdcapwaf001'
+param sku = {
+  capacity: 1
+}
+// Non-required parameters
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -480,6 +556,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -496,6 +580,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -546,6 +631,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -570,7 +662,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -582,7 +673,11 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

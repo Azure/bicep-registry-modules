@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "11958192120414683611"
+      "version": "0.36.1.42791",
+      "templateHash": "4198674748200869524"
     },
     "name": "Event Hub Namespace Disaster Recovery Configs",
-    "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
   },
   "parameters": {
     "namespaceName": {
@@ -24,7 +23,7 @@
         "description": "Required. The name of the disaster recovery config."
       }
     },
-    "partnerNamespaceId": {
+    "partnerNamespaceResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -35,10 +34,10 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
-        "partnerNamespace": "[parameters('partnerNamespaceId')]"
+        "partnerNamespace": "[parameters('partnerNamespaceResourceId')]"
       }
     }
   ],

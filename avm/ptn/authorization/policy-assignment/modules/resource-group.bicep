@@ -1,6 +1,5 @@
 metadata name = 'Policy Assignments (Resource Group scope)'
 metadata description = 'This module deploys a Policy Assignment at a Resource Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'resourceGroup'
 
@@ -60,23 +59,29 @@ param overrides array = []
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
 param resourceSelectors array = []
 
+@sys.description('Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.')
+param definitionVersion string?
+
 @sys.description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
 param subscriptionId string = subscription().subscriptionId
 
 @sys.description('Optional. The Target Scope for the Policy. The name of the resource group for the policy assignment. If not provided, will use the current scope for deployment.')
 param resourceGroupName string = resourceGroup().name
 
+var identityVar = identity == 'SystemAssigned'
+  ? {
+      type: identity
+    }
+  : identity == 'UserAssigned'
+      ? {
+          type: identity
+          userAssignedIdentities: {
+            '${userAssignedIdentityId}': {}
+          }
+        }
+      : null
 
-var identityVar = identity == 'SystemAssigned' ? {
-  type: identity
-} : identity == 'UserAssigned' ? {
-  type: identity
-  userAssignedIdentities: {
-    '${userAssignedIdentityId}': {}
-  }
-} : null
-
-resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-01-01' = {
   name: name
   location: location
   properties: {
@@ -90,18 +95,21 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01'
     notScopes: !empty(notScopes) ? notScopes : []
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
+    definitionVersion: definitionVersion
   }
   identity: identityVar
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
-  name: guid(subscriptionId, resourceGroupName, roleDefinitionId, location, name)
-  properties: {
-    roleDefinitionId: roleDefinitionId
-    principalId: policyAssignment.identity.principalId
-    principalType: 'ServicePrincipal'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
+    name: guid(subscriptionId, resourceGroupName, roleDefinitionId, location, name)
+    properties: {
+      roleDefinitionId: roleDefinitionId
+      principalId: policyAssignment.identity.principalId
+      principalType: 'ServicePrincipal'
+    }
   }
-}]
+]
 
 @sys.description('Policy Assignment Name.')
 output name string = policyAssignment.name

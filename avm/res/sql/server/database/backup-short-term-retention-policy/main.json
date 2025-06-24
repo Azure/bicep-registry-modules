@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "2539756678143412969"
+      "version": "0.36.1.42791",
+      "templateHash": "9948442514033354219"
     },
     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
-    "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
   },
   "parameters": {
     "serverName": {
@@ -28,7 +27,7 @@
       "type": "int",
       "defaultValue": 24,
       "metadata": {
-        "description": "Optional. Differential backup interval in hours."
+        "description": "Optional. Differential backup interval in hours. For Hyperscal tiers this value will be ignored."
       }
     },
     "retentionDays": {
@@ -42,10 +41,10 @@
   "resources": [
     {
       "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
       "properties": {
-        "diffBackupIntervalInHours": "[parameters('diffBackupIntervalInHours')]",
+        "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
         "retentionDays": "[parameters('retentionDays')]"
       }
     }

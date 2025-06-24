@@ -9,7 +9,6 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-network.applicationgateway-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
@@ -27,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -38,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    fwPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -56,12 +56,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       name: resourceName
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
       location: resourceLocation
+      firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
       gatewayIPConfigurations: [
         {
           name: 'publicIPConfig1'
@@ -138,9 +134,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      webApplicationFirewallConfiguration: {
-        enabled: false
-      }
     }
   }
 ]

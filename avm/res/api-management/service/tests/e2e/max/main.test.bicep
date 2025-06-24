@@ -33,7 +33,7 @@ param customSecret string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -54,7 +54,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -82,13 +82,13 @@ module testDeployment '../../../main.bicep' = [
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
-          location: '${locationRegion2}'
+          location: locationRegion2
           sku: {
             name: 'Premium'
             capacity: 1
           }
           disableGateway: false
-          publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion2
+          publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion2
           virtualNetworkConfiguration: {
             subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
           }
@@ -99,35 +99,39 @@ module testDeployment '../../../main.bicep' = [
       publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
-          apiVersionSet: {
-            name: 'echo-version-set'
-            properties: {
-              description: 'echo-version-set'
-              displayName: 'echo-version-set'
-              versioningScheme: 'Segment'
-            }
-          }
           displayName: 'Echo API'
+          apiVersionSetName: 'echo-version-set'
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'http://echoapi.cloudapp.net/api'
+          protocols: [
+            'http'
+            'https'
+          ]
         }
       ]
-      authorizationServers: {
-        secureList: [
-          {
-            authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-            clientId: 'apimclientid'
-            clientSecret: customSecret
-            clientRegistrationEndpoint: 'http://localhost'
-            grantTypes: [
-              'authorizationCode'
-            ]
-            name: 'AuthServer1'
-            tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
-          }
-        ]
-      }
+      apiVersionSets: [
+        {
+          name: 'echo-version-set'
+          description: 'echo-version-set'
+          displayName: 'echo-version-set'
+          versioningScheme: 'Segment'
+        }
+      ]
+      authorizationServers: [
+        {
+          authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
+          clientId: 'apimclientid'
+          clientSecret: customSecret
+          clientRegistrationEndpoint: 'http://localhost'
+          grantTypes: [
+            'authorizationCode'
+          ]
+          name: 'AuthServer1'
+          displayName: 'AuthServer1'
+          tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
+        }
+      ]
       backends: [
         {
           name: 'backend'
@@ -171,6 +175,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'aad'
           clientId: 'apimClientid'
+          clientLibrary: 'MSAL-2'
           clientSecret: 'apimSlientSecret'
           authority: split(environment().authentication.loginEndpoint, '/')[2]
           signinTenant: 'mytenant.onmicrosoft.com'
@@ -240,16 +245,19 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           name: 'Starter'
+          displayName: 'Starter'
           subscriptionRequired: false
         }
       ]
       roleAssignments: [
         {
+          name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -267,6 +275,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'testArmSubscriptionAllApis'
           scope: '/apis'
+          displayName: 'testArmSubscriptionAllApis'
         }
       ]
       managedIdentities: {
@@ -281,9 +290,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

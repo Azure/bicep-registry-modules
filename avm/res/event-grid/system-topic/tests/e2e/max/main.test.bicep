@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -44,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '120'
+            eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
           destination: {
@@ -115,11 +115,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          roleDefinitionIdOrName: 'Owner'
+          name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+          roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -131,6 +133,18 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+      externalResourceRoleAssignments: [
+        {
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' // Storage Queue Data Contributor
+          description: 'Allow Event Grid System Topic to write to storage queue'
+        }
+        {
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          roleDefinitionId: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a' // Storage Queue Data Message Sender
+          description: 'Allow Event Grid System Topic to send messages to storage queue'
         }
       ]
       tags: {

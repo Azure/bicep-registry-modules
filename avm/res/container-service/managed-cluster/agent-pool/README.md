@@ -7,14 +7,12 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2023-07-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-07-02-preview/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-01/managedClusters/agentPools) |
 
 ## Parameters
 
@@ -40,7 +38,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`enableEncryptionAtHost`](#parameter-enableencryptionathost) | bool | This is only supported on certain VM sizes and in certain Azure regions. For more information, see: /azure/aks/enable-host-encryption. For security reasons, this setting should be enabled. |
 | [`enableFIPS`](#parameter-enablefips) | bool | See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview) for more details. |
 | [`enableNodePublicIP`](#parameter-enablenodepublicip) | bool | Some scenarios may require nodes in a node pool to receive their own dedicated public IP addresses. A common scenario is for gaming workloads, where a console needs to make a direct connection to a cloud virtual machine to minimize hops. For more information see assigning a public IP per node (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools). |
+| [`enableSecureBoot`](#parameter-enablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-enableultrassd) | bool | Whether to enable UltraSSD. |
+| [`enableVTPM`](#parameter-enablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
 | [`kubeletDiskType`](#parameter-kubeletdisktype) | string | Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage. |
 | [`maxCount`](#parameter-maxcount) | int | The maximum number of nodes for auto-scaling. |
@@ -49,14 +49,14 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`minCount`](#parameter-mincount) | int | The minimum number of nodes for auto-scaling. |
 | [`mode`](#parameter-mode) | string | A cluster must have at least one "System" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools. |
 | [`nodeLabels`](#parameter-nodelabels) | object | The node labels to be persisted across all nodes in agent pool. |
-| [`nodePublicIpPrefixId`](#parameter-nodepublicipprefixid) | string | ResourceId of the node PublicIPPrefix. |
+| [`nodePublicIpPrefixResourceId`](#parameter-nodepublicipprefixresourceid) | string | ResourceId of the node PublicIPPrefix. |
 | [`nodeTaints`](#parameter-nodetaints) | array | The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule. |
 | [`orchestratorVersion`](#parameter-orchestratorversion) | string | As a best practice, you should upgrade all node pools in an AKS cluster to the same Kubernetes version. The node pool version must have the same major version as the control plane. The node pool minor version must be within two minor versions of the control plane version. The node pool version cannot be greater than the control plane version. For more information see upgrading a node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#upgrade-a-node-pool). |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | OS Disk Size in GB to be used to specify the disk size for every machine in the master/agent pool. If you specify 0, it will apply the default osDisk size according to the vmSize specified. |
 | [`osDiskType`](#parameter-osdisktype) | string | The default is "Ephemeral" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to "Managed". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os). |
-| [`osSku`](#parameter-ossku) | string | Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows. |
+| [`osSKU`](#parameter-ossku) | string | Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows. |
 | [`osType`](#parameter-ostype) | string | The operating system type. The default is Linux. |
-| [`podSubnetId`](#parameter-podsubnetid) | string | Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
+| [`podSubnetResourceId`](#parameter-podsubnetresourceid) | string | Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | The ID for the Proximity Placement Group. |
 | [`scaleDownMode`](#parameter-scaledownmode) | string | Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing). |
 | [`scaleSetEvictionPolicy`](#parameter-scalesetevictionpolicy) | string | The eviction policy specifies what to do with the VM when it is evicted. The default is Delete. For more information about eviction see spot VMs. |
@@ -66,7 +66,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`type`](#parameter-type) | string | The type of Agent Pool. |
 | [`vmSize`](#parameter-vmsize) | string | VM size. VM size availability varies by region. If a node contains insufficient compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted VM sizes, see: /azure/aks/quotas-skus-regions. |
-| [`vnetSubnetId`](#parameter-vnetsubnetid) | string | Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
+| [`vnetSubnetResourceId`](#parameter-vnetsubnetresourceid) | string | Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
 | [`workloadRuntime`](#parameter-workloadruntime) | string | Determines the type of workload a node can run. |
 
 ### Parameter: `name`
@@ -89,6 +89,14 @@ The list of Availability zones to use for nodes. This can only be specified if t
 
 - Required: No
 - Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `count`
 
@@ -97,6 +105,8 @@ Desired Number of agents (VMs) specified to host docker containers. Allowed valu
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 0
+- MaxValue: 1000
 
 ### Parameter: `enableAutoScaling`
 
@@ -130,9 +140,25 @@ Some scenarios may require nodes in a node pool to receive their own dedicated p
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableUltraSSD`
 
 Whether to enable UltraSSD.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -204,7 +230,7 @@ The node labels to be persisted across all nodes in agent pool.
 - Required: No
 - Type: object
 
-### Parameter: `nodePublicIpPrefixId`
+### Parameter: `nodePublicIpPrefixResourceId`
 
 ResourceId of the node PublicIPPrefix.
 
@@ -246,7 +272,7 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
   ]
   ```
 
-### Parameter: `osSku`
+### Parameter: `osSKU`
 
 Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows.
 
@@ -278,9 +304,9 @@ The operating system type. The default is Linux.
   ]
   ```
 
-### Parameter: `podSubnetId`
+### Parameter: `podSubnetResourceId`
 
-Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
+Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
 
 - Required: No
 - Type: string
@@ -372,7 +398,7 @@ VM size. VM size availability varies by region. If a node contains insufficient 
 - Type: string
 - Default: `'Standard_D2s_v3'`
 
-### Parameter: `vnetSubnetId`
+### Parameter: `vnetSubnetResourceId`
 
 Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
 
@@ -386,7 +412,6 @@ Determines the type of workload a node can run.
 - Required: No
 - Type: string
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -394,11 +419,3 @@ Determines the type of workload a node can run.
 | `name` | string | The name of the agent pool. |
 | `resourceGroupName` | string | The resource group the agent pool was deployed into. |
 | `resourceId` | string | The resource ID of the agent pool. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

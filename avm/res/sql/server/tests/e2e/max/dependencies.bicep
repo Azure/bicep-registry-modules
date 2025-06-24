@@ -1,5 +1,8 @@
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
+@description('Required. The name of the managed identity to create for the server.')
+param serverIdentityName string
+
+@description('Required. The name of the managed identity to create for the database.')
+param databaseIdentityName string
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -12,12 +15,17 @@ param keyVaultName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
+resource serverIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: serverIdentityName
   location: location
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource databaseIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: databaseIdentityName
+  location: location
+}
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -35,11 +43,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink${environment().suffixes.sqlServerHostname}'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {
@@ -51,7 +59,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -60,7 +68,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
-    enablePurgeProtection: null
+    enablePurgeProtection: true // Required for encryption to work
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
     enabledForDeployment: true
@@ -68,32 +76,57 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
-    name: 'keyEncryptionKey'
+  resource serverKey 'keys@2024-11-01' = {
+    name: 'serverKeyEncryptionKey'
+    properties: {
+      kty: 'RSA'
+    }
+  }
+
+  resource databaseKey 'keys@2024-11-01' = {
+    name: 'databaseKeyEncryptionKey'
     properties: {
       kty: 'RSA'
     }
   }
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
-  scope: keyVault::key
+resource serverKeyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::serverKey.id}-${location}-${serverIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
+  scope: keyVault::serverKey
   properties: {
-    principalId: managedIdentity.properties.principalId
+    principalId: serverIdentity.properties.principalId
+    // Key Vault Crypto Service Encryption User
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-    ) // Key Vault Crypto Service Encryption User
+    )
     principalType: 'ServicePrincipal'
   }
 }
 
-@description('The principal ID of the created managed identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+resource databaseKeyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::databaseKey.id}-${location}-${databaseIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
+  scope: keyVault::databaseKey
+  properties: {
+    principalId: databaseIdentity.properties.principalId
+    // Key Vault Crypto Service Encryption User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    )
+    principalType: 'ServicePrincipal'
+  }
+}
 
-@description('The resource ID of the created managed identity.')
-output managedIdentityResourceId string = managedIdentity.id
+@description('The principal ID of the created server managed identity.')
+output serverIdentityPrincipalId string = serverIdentity.properties.principalId
+
+@description('The resource ID of the created server managed identity.')
+output serverIdentityResourceId string = serverIdentity.id
+
+@description('The resource ID of the created database managed identity.')
+output databaseIdentityResourceId string = databaseIdentity.id
 
 @description('The resource ID of the created virtual network subnet for a Private Endpoint.')
 output privateEndpointSubnetResourceId string = virtualNetwork.properties.subnets[0].id
@@ -104,11 +137,20 @@ output serviceEndpointSubnetResourceId string = virtualNetwork.properties.subnet
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
 
-@description('The URL of the created Key Vault Encryption Key.')
-output keyVaultEncryptionKeyUrl string = keyVault::key.properties.keyUriWithVersion
+@description('The URL of the created server Encryption Key.')
+output serverKeyVaultEncryptionKeyUrl string = keyVault::serverKey.properties.keyUriWithVersion
 
-@description('The name of the created Key Vault Encryption Key.')
-output keyVaultKeyName string = keyVault::key.name
+@description('The name of the created server Encryption Key.')
+output serverKeyVaultKeyName string = keyVault::serverKey.name
+
+@description('The URL of the created database Encryption Key.')
+output databaseKeyVaultEncryptionKeyUrl string = keyVault::databaseKey.properties.keyUriWithVersion
+
+@description('The name of the created database Encryption Key.')
+output databaseKeyVaultKeyName string = keyVault::databaseKey.name
 
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVault.name
+
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "13472426796772435774"
+    },
+    "name": "Dev Center Project Pool Schedule",
+    "description": "This module deploys a Dev Center Project Pool Schedule."
+  },
+  "parameters": {
+    "poolName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center project pool. Required if the template is used in a standalone deployment."
+      }
+    },
+    "projectName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center project. Required if the template is used in a standalone deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource tags to apply to the pool."
+      }
+    },
+    "state": {
+      "type": "string",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Required. Indicates whether or not this scheduled task is enabled. Allowed values: Disabled, Enabled."
+      }
+    },
+    "time": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The target time to trigger the action. The format is HH:MM. For example, \"14:30\" for 2:30 PM."
+      }
+    },
+    "timeZone": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The IANA timezone id at which the schedule should execute. For example, \"Australia/Sydney\", \"Canada/Central\"."
+      }
+    }
+  },
+  "resources": {
+    "project::pool": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/projects/pools",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('projectName'), parameters('poolName'))]"
+    },
+    "project": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/projects",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('projectName')]"
+    },
+    "schedule": {
+      "type": "Microsoft.DevCenter/projects/pools/schedules",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}/{2}', parameters('projectName'), parameters('poolName'), 'default')]",
+      "properties": {
+        "frequency": "Daily",
+        "location": "[parameters('location')]",
+        "state": "[parameters('state')]",
+        "tags": "[parameters('tags')]",
+        "time": "[parameters('time')]",
+        "timeZone": "[parameters('timeZone')]",
+        "type": "StopDevBox"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed schedule."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed schedule."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/projects/pools/schedules', parameters('projectName'), parameters('poolName'), 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the schedule was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

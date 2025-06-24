@@ -1,15 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "10544886139268607584"
+      "version": "0.36.1.42791",
+      "templateHash": "10140872033464442933"
     },
     "name": "SQL Server Database Long Term Backup Retention Policies",
-    "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
   },
   "parameters": {
     "serverName": {
@@ -24,16 +24,16 @@
         "description": "Required. The name of the parent database."
       }
     },
-    "weeklyRetention": {
+    "monthlyRetention": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Monthly retention in ISO 8601 duration format."
       }
     },
-    "monthlyRetention": {
+    "weeklyRetention": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Weekly retention in ISO 8601 duration format."
       }
@@ -47,16 +47,28 @@
     },
     "yearlyRetention": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Yearly retention in ISO 8601 duration format."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "server::database": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
+    },
+    "server": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2023-08-01",
+      "name": "[parameters('serverName')]"
+    },
+    "backupLongTermRetentionPolicy": {
       "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
       "properties": {
         "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -65,7 +77,7 @@
         "yearlyRetention": "[parameters('yearlyRetention')]"
       }
     }
-  ],
+  },
   "outputs": {
     "resourceGroupName": {
       "type": "string",

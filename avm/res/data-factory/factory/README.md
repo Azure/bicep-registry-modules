@@ -20,11 +20,12 @@ This module deploys a Data Factory.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
 | `Microsoft.DataFactory/factories/integrationRuntimes` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/integrationRuntimes) |
+| `Microsoft.DataFactory/factories/linkedservices` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/linkedservices) |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -64,7 +65,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -81,6 +82,22 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -130,8 +147,12 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     }
     integrationRuntimes: [
       {
+        name: 'TestRuntime'
+        type: 'SelfHosted'
+      }
+      {
         managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
+        name: 'IRvnetManaged'
         type: 'Managed'
         typeProperties: {
           computeProperties: {
@@ -139,9 +160,29 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           }
         }
       }
+    ]
+    linkedServices: [
       {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
+        name: 'SQLdbLinkedservice'
+        type: 'AzureSQLDatabase'
+        typeProperties: {
+          connectionString: '<connectionString>'
+        }
+      }
+      {
+        description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
+        integrationRuntimeName: 'IRvnetManaged'
+        name: 'LakeStoreLinkedservice'
+        parameters: {
+          storageAccountName: {
+            defaultValue: 'madeupstorageaccname'
+            type: 'String'
+          }
+        }
+        type: 'AzureBlobFS'
+        typeProperties: {
+          url: '<url>'
+        }
       }
     ]
     location: '<location>'
@@ -168,9 +209,14 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     managedVirtualNetworkName: 'default'
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'dataFactory'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           application: 'AVM'
@@ -178,19 +224,26 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'portal'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
       {
+        name: '12093237-f40a-4f36-868f-accbeebf540c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -215,7 +268,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -264,18 +317,44 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "integrationRuntimes": {
       "value": [
         {
+          "name": "TestRuntime",
+          "type": "SelfHosted"
+        },
+        {
           "managedVirtualNetworkName": "default",
-          "name": "AutoResolveIntegrationRuntime",
+          "name": "IRvnetManaged",
           "type": "Managed",
           "typeProperties": {
             "computeProperties": {
               "location": "AutoResolve"
             }
           }
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "SQLdbLinkedservice",
+          "type": "AzureSQLDatabase",
+          "typeProperties": {
+            "connectionString": "<connectionString>"
+          }
         },
         {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
+          "description": "This is a description for the linked service using the IRvnetManaged integration runtime.",
+          "integrationRuntimeName": "IRvnetManaged",
+          "name": "LakeStoreLinkedservice",
+          "parameters": {
+            "storageAccountName": {
+              "defaultValue": "madeupstorageaccname",
+              "type": "String"
+            }
+          },
+          "type": "AzureBlobFS",
+          "typeProperties": {
+            "url": "<url>"
+          }
         }
       ]
     },
@@ -314,9 +393,14 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "dataFactory",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "application": "AVM",
@@ -324,9 +408,14 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "portal",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -334,11 +423,13 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "12093237-f40a-4f36-868f-accbeebf540c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -364,6 +455,161 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffmax001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gitConfigureLater = true
+param globalParameters = {
+  testParameter1: {
+    type: 'String'
+    value: 'testValue1'
+  }
+}
+param integrationRuntimes = [
+  {
+    name: 'TestRuntime'
+    type: 'SelfHosted'
+  }
+  {
+    managedVirtualNetworkName: 'default'
+    name: 'IRvnetManaged'
+    type: 'Managed'
+    typeProperties: {
+      computeProperties: {
+        location: 'AutoResolve'
+      }
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'SQLdbLinkedservice'
+    type: 'AzureSQLDatabase'
+    typeProperties: {
+      connectionString: '<connectionString>'
+    }
+  }
+  {
+    description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
+    integrationRuntimeName: 'IRvnetManaged'
+    name: 'LakeStoreLinkedservice'
+    parameters: {
+      storageAccountName: {
+        defaultValue: 'madeupstorageaccname'
+        type: 'String'
+      }
+    }
+    type: 'AzureBlobFS'
+    typeProperties: {
+      url: '<url>'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managedPrivateEndpoints = [
+  {
+    fqdns: [
+      '<storageAccountBlobEndpoint>'
+    ]
+    groupId: 'blob'
+    name: '<name>'
+    privateLinkResourceId: '<privateLinkResourceId>'
+  }
+]
+param managedVirtualNetworkName = 'default'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'dataFactory'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      application: 'AVM'
+      'hidden-title': 'This is visible in the resource name'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'portal'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '12093237-f40a-4f36-868f-accbeebf540c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -380,10 +626,26 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     // Required parameters
     name: 'dffwaf001'
     // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'waf-aligned-diagnostics'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -391,15 +653,44 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     gitConfigureLater: true
     integrationRuntimes: [
       {
-        name: 'TestRuntime'
+        integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
+        name: 'WafAlignedRuntime'
         type: 'SelfHosted'
       }
     ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'dataFactory'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
     tags: {
+      'Backup-Required': 'No'
+      'Compliance-Required': 'Yes'
+      'Cost-Center': 'IT-DataPlatform'
+      'Data-Classification': 'Internal'
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+      'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
     }
   }
 }
@@ -410,7 +701,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -422,11 +713,29 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       "value": "dffwaf001"
     },
     // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "waf-aligned-diagnostics",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -438,7 +747,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "integrationRuntimes": {
       "value": [
         {
-          "name": "TestRuntime",
+          "integrationRuntimeCustomDescription": "WAF-aligned self-hosted integration runtime with enhanced security",
+          "name": "WafAlignedRuntime",
           "type": "SelfHosted"
         }
       ]
@@ -446,11 +756,45 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "dataFactory",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "tags": {
       "value": {
+        "Backup-Required": "No",
+        "Compliance-Required": "Yes",
+        "Cost-Center": "IT-DataPlatform",
+        "Data-Classification": "Internal",
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "Role": "DeploymentValidation",
+        "WAF-Pillar": "Security-Reliability-Cost-OperationalExcellence"
       }
     }
   }
@@ -460,6 +804,86 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffwaf001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'waf-aligned-diagnostics'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gitConfigureLater = true
+param integrationRuntimes = [
+  {
+    integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
+    name: 'WafAlignedRuntime'
+    type: 'SelfHosted'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'dataFactory'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param tags = {
+  'Backup-Required': 'No'
+  'Compliance-Required': 'Yes'
+  'Cost-Center': 'IT-DataPlatform'
+  'Data-Classification': 'Internal'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+  'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -489,12 +913,13 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 | [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
+| [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managedPrivateEndpoints`](#parameter-managedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
 | [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -524,7 +949,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -541,9 +967,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
@@ -572,7 +1005,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -682,7 +1115,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -813,6 +1246,129 @@ An array of objects for the configuration of an Integration Runtime.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-integrationruntimesname) | string | Specify the name of integration runtime. |
+| [`type`](#parameter-integrationruntimestype) | string | Specify the type of the integration runtime. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`integrationRuntimeCustomDescription`](#parameter-integrationruntimesintegrationruntimecustomdescription) | string | Specify custom description for the integration runtime. |
+| [`managedVirtualNetworkName`](#parameter-integrationruntimesmanagedvirtualnetworkname) | string | Specify managed vritual network name for the integration runtime to link to. |
+| [`typeProperties`](#parameter-integrationruntimestypeproperties) | object | Integration Runtime type properties. Required if type is "Managed". |
+
+### Parameter: `integrationRuntimes.name`
+
+Specify the name of integration runtime.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `integrationRuntimes.type`
+
+Specify the type of the integration runtime.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Managed'
+    'SelfHosted'
+  ]
+  ```
+
+### Parameter: `integrationRuntimes.integrationRuntimeCustomDescription`
+
+Specify custom description for the integration runtime.
+
+- Required: No
+- Type: string
+
+### Parameter: `integrationRuntimes.managedVirtualNetworkName`
+
+Specify managed vritual network name for the integration runtime to link to.
+
+- Required: No
+- Type: string
+
+### Parameter: `integrationRuntimes.typeProperties`
+
+Integration Runtime type properties. Required if type is "Managed".
+
+- Required: No
+- Type: object
+
+### Parameter: `linkedServices`
+
+An array of objects for the configuration of Linked Services.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-linkedservicesname) | string | The name of the Linked Service. |
+| [`type`](#parameter-linkedservicestype) | string | The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-linkedservicesdescription) | string | The description of the Integration Runtime. |
+| [`integrationRuntimeName`](#parameter-linkedservicesintegrationruntimename) | string | The name of the Integration Runtime to use. |
+| [`parameters`](#parameter-linkedservicesparameters) | object | Use this to add parameters for a linked service connection string. |
+| [`typeProperties`](#parameter-linkedservicestypeproperties) | object | Used to add connection properties for your linked services. |
+
+### Parameter: `linkedServices.name`
+
+The name of the Linked Service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedServices.type`
+
+The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedServices.description`
+
+The description of the Integration Runtime.
+
+- Required: No
+- Type: string
+
+### Parameter: `linkedServices.integrationRuntimeName`
+
+The name of the Integration Runtime to use.
+
+- Required: No
+- Type: string
+
+### Parameter: `linkedServices.parameters`
+
+Use this to add parameters for a linked service connection string.
+
+- Required: No
+- Type: object
+
+### Parameter: `linkedServices.typeProperties`
+
+Used to add connection properties for your linked services.
+
+- Required: No
+- Type: object
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -823,7 +1379,7 @@ Location for all Resources.
 
 ### Parameter: `lock`
 
-The lock settings of the service.
+The lock settings for all Resources in the solution.
 
 - Required: No
 - Type: object
@@ -869,7 +1425,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -880,7 +1436,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -893,6 +1449,48 @@ An array of managed private endpoints objects created in the Data Factory manage
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-managedprivateendpointsgroupid) | string | Specify the sub-resource of the managed private endpoint. |
+| [`name`](#parameter-managedprivateendpointsname) | string | Specify the name of managed private endpoint. |
+| [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | Specify the resource ID to create the managed private endpoint for. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required. |
+
+### Parameter: `managedPrivateEndpoints.groupId`
+
+Specify the sub-resource of the managed private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.name`
+
+Specify the name of managed private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.privateLinkResourceId`
+
+Specify the resource ID to create the managed private endpoint for.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.fqdns`
+
+Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.
+
+- Required: No
+- Type: array
+
 ### Parameter: `managedVirtualNetworkName`
 
 The name of the Managed Virtual Network.
@@ -903,7 +1501,7 @@ The name of the Managed Virtual Network.
 
 ### Parameter: `privateEndpoints`
 
-Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -912,6 +1510,7 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -928,13 +1527,18 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `privateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -961,15 +1565,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -977,6 +1579,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1113,19 +1722,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1134,9 +1788,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1147,6 +1801,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1163,6 +1828,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1213,6 +1879,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1229,13 +1902,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `privateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1266,6 +1932,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Data Factory Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1282,6 +1955,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1332,6 +2006,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1356,15 +2037,15 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The Name of the Azure Data Factory instance. |
+| `privateEndpoints` | array | The private endpoints of the Data Factory. |
 | `resourceGroupName` | string | The name of the Resource Group with the Data factory. |
-| `resourceId` | string | The Resource ID of the Data factory. |
+| `resourceId` | string | The Resource ID of the Data Factory. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -1373,7 +2054,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

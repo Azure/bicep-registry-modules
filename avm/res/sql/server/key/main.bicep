@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Keys'
 metadata description = 'This module deploys an Azure SQL Server Key.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
 param name string?
@@ -8,14 +7,14 @@ param name string?
 @description('Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment.')
 param serverName string
 
-@description('Optional. The encryption protector type like "ServiceManaged", "AzureKeyVault".')
+@description('Optional. The server key type.')
 @allowed([
   'AzureKeyVault'
   'ServiceManaged'
 ])
 param serverKeyType string = 'ServiceManaged'
 
-@description('Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required.')
+@description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
 param uri string = ''
 
 var splittedKeyUri = split(uri, '/')
@@ -26,11 +25,11 @@ var serverKeyName = empty(uri)
   ? 'ServiceManaged'
   : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${splittedKeyUri[5]}'
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource key 'Microsoft.Sql/servers/keys@2023-08-01-preview' = {
+resource key 'Microsoft.Sql/servers/keys@2023-08-01' = {
   name: name ?? serverKeyName
   parent: server
   properties: {

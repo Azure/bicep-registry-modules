@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "527253335331111465"
+      "version": "0.36.1.42791",
+      "templateHash": "4329943834463874399"
     },
     "name": "Azure SQL Server Virtual Network Rules",
-    "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Virtual Network Rule."
   },
   "parameters": {
     "name": {
@@ -25,7 +24,7 @@
         "description": "Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled."
       }
     },
-    "virtualNetworkSubnetId": {
+    "virtualNetworkSubnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the virtual network subnet."
@@ -41,11 +40,11 @@
   "resources": [
     {
       "type": "Microsoft.Sql/servers/virtualNetworkRules",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "properties": {
         "ignoreMissingVnetServiceEndpoint": "[parameters('ignoreMissingVnetServiceEndpoint')]",
-        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]"
+        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetResourceId')]"
       }
     }
   ],

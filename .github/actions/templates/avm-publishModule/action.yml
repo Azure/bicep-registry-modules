@@ -55,7 +55,7 @@ runs:
           Write-Output '::group::Publish module to public bicep registry'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
 
           $functionInput = @{
             TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
@@ -67,17 +67,25 @@ runs:
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
           if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-            $publishOutputs.Keys | Foreach-Object {
-              Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
-              Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+            $publishCompressedOutput = $publishOutputs.Keys | Foreach-Object {
+              @{
+                version             = $publishOutputs.$_.version
+                publishedModuleName = $publishOutputs.$_.publishedModuleName
+                gitTagName          = $publishOutputs.$_.gitTagName
+              }
+            } | ConvertTo-Json -Compress
+            if($publishCompressedOutput -notmatch "\[.*\]") {
+              $publishCompressedOutput = "[$publishCompressedOutput]"
             }
+            Write-Verbose "Publishing output: $publishCompressedOutput" -Verbose
+            Write-Output ('{0}={1}' -f 'publishOutput', $publishCompressedOutput) >> $env:GITHUB_OUTPUT
           }
 
           Write-Output '::endgroup::'
 
     - name: "Validate publish"
       uses: azure/powershell@v2
-      if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
+      if: ${{ steps.publish_step.outputs.publishOutput != '' }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -85,17 +93,21 @@ runs:
           Write-Output '::group::Validate publish'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
-          $functionInput = @{
-            Version             = "${{ steps.publish_step.outputs.version }}"
-            PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
-            GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
+          $convertedPublishOutput = '${{ steps.publish_step.outputs.publishOutput }}' | ConvertFrom-Json
+
+          foreach ($publishedModule in $convertedPublishOutput){
+
+            $functionInput = @{
+              Version             = $publishedModule.version
+              PublishedModuleName = $publishedModule.publishedModuleName
+              GitTagName          = $publishedModule.gitTagName
+            }
+
+            Write-Verbose "Invoke function with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            Confirm-ModuleIsPublished @functionInput
           }
-
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-          Confirm-ModuleIsPublished @functionInput
-
           Write-Output '::endgroup::'

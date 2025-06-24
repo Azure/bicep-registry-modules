@@ -8,14 +8,13 @@ This module deploys an Azure SQL Server Instance Pool.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/instancePools` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/instancePools) |
+| `Microsoft.Sql/instancePools` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/instancePools) |
 
 ## Usage examples
 
@@ -55,7 +54,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +74,23 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -98,7 +114,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     location: '<location>'
-    skuName: 'GP_Gen8IM'
+    skuName: 'GP_Gen5'
   }
 }
 ```
@@ -108,7 +124,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -127,7 +143,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<location>"
     },
     "skuName": {
-      "value": "GP_Gen8IM"
+      "value": "GP_Gen5"
     }
   }
 }
@@ -136,6 +152,23 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param skuName = 'GP_Gen5'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -150,9 +183,11 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`size`](#parameter-size) | string | Size of the particular SKU. |
 | [`skuFamily`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`skuName`](#parameter-skuname) | string | The SKU name for the instance pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -172,6 +207,13 @@ The subnet resource ID for the instance pool.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `capacity`
+
+Capacity of the particular SKU.
+
+- Required: No
+- Type: int
 
 ### Parameter: `enableTelemetry`
 
@@ -203,6 +245,13 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `size`
+
+Size of the particular SKU.
+
+- Required: No
+- Type: string
 
 ### Parameter: `skuFamily`
 
@@ -267,7 +316,6 @@ The number of vCores for the instance pool.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -276,10 +324,6 @@ The number of vCores for the instance pool.
 | `name` | string | The name of the SQL instance pool. |
 | `resourceGroupName` | string | The resource group name of the SQL instance pool. |
 | `resourceId` | string | The ID of the SQL instance pool. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

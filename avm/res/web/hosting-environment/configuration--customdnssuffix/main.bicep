@@ -1,6 +1,5 @@
 metadata name = 'Hosting Environment Custom DNS Suffix Configuration'
 metadata description = 'This module deploys a Hosting Environment Custom DNS Suffix Configuration.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Hosting Environment. Required if the template is used in a standalone deployment.')
 param hostingEnvironmentName string
@@ -18,7 +17,7 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' ex
   name: hostingEnvironmentName
 }
 
-resource configuration 'Microsoft.Web/hostingEnvironments/configurations@2022-03-01' = {
+resource configuration 'Microsoft.Web/hostingEnvironments/configurations@2023-12-01' = {
   name: 'customdnssuffix'
   parent: appServiceEnvironment
   properties: {

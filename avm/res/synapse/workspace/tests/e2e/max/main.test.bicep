@@ -44,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -85,11 +85,13 @@ module testDeployment '../../../main.bicep' = [
 
       roleAssignments: [
         {
+          name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -105,9 +107,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'SQL'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           tags: {
@@ -117,9 +123,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'SQL'
           subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
           tags: {
@@ -129,9 +139,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'SqlOnDemand'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           tags: {
@@ -141,9 +155,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'Dev'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         }
@@ -153,6 +171,92 @@ module testDeployment '../../../main.bicep' = [
         {
           type: 'SelfHosted'
           name: 'shir01'
+        }
+      ]
+      bigDataPools: [
+        {
+          name: 'dep${namePrefix}bdp01'
+          nodeSizeFamily: 'MemoryOptimized'
+          nodeSize: 'Large'
+          autoScale: {
+            minNodeCount: 3
+            maxNodeCount: 10
+          }
+          dynamicExecutorAllocation: {
+            minExecutors: 1
+            maxExecutors: 9
+          }
+          autoPauseDelayInMinutes: 5
+          sessionLevelPackagesEnabled: true
+          cacheSize: 50
+          autotuneEnabled: true
+          sparkEventsFolder: '/events'
+          defaultSparkLogFolder: '/logs'
+          sparkConfigProperties: {
+            configurationType: 'File'
+            filename: 'spark-defaults.conf'
+            content: loadTextContent('./src/spark-defaults.conf')
+          }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
+        }
+      ]
+      sqlPools: [
+        {
+          name: 'dep${namePrefix}sqlp01'
+          collation: 'SQL_Latin1_General_CP1_CS_AS'
+          maxSizeBytes: 1099511627776 // 1 TB
+          sku: 'DW100c'
+          storageAccountType: 'GRS'
+          transparentDataEncryption: 'Enabled'
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
         }
       ]
       diagnosticSettings: [
@@ -173,9 +277,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

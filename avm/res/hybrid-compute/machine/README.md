@@ -18,7 +18,7 @@ This module deploys an Arc Machine for use with Arc Resource Bridge for Azure St
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
-| `Microsoft.HybridCompute/machines` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/machines) |
+| `Microsoft.HybridCompute/machines` | [2024-07-10](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines) |
 
 ## Usage examples
 
@@ -60,7 +60,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -80,6 +80,23 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'HCI'
+param name = 'arcmachcimin'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -144,7 +161,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -213,6 +230,55 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'HCI'
+param name = 'arcmachcimx'
+// Non-required parameters
+param guestConfiguration = {
+  assignmentType: 'ApplyAndMonitor'
+  configurationParameter: [
+    {
+      name: 'Minimum Password Length;ExpectedValue'
+      value: '16'
+    }
+    {
+      name: 'Minimum Password Length;RemediateValue'
+      value: '16'
+    }
+    {
+      name: 'Maximum Password Age;ExpectedValue'
+      value: '75'
+    }
+    {
+      name: 'Maximum Password Age;RemediateValue'
+      value: '75'
+    }
+  ]
+  name: 'AzureWindowsBaseline'
+  version: '1.*'
+}
+param location = '<location>'
+param osType = 'Windows'
+param patchAssessmentMode = 'AutomaticByPlatform'
+param patchMode = 'AutomaticByPlatform'
+param privateLinkScopeResourceId = '<privateLinkScopeResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Creates an VMWare machine using only the defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -240,7 +306,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -260,6 +326,23 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'VMware'
+param name = 'arcmacvmwmin'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -297,7 +380,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -329,6 +412,27 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-compute/machine:<version>'
+
+// Required parameters
+param kind = 'HCI'
+param name = 'arcmacwaf'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -511,6 +615,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Arc machine Administrator Login'`
+  - `'Arc machine Contributor'`
+  - `'Arc machine User Login'`
+  - `'Windows Admin Center Administrator Login'`
 
 **Required parameters**
 
@@ -527,6 +641,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -577,6 +692,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -609,7 +731,6 @@ The GUID of the on-premises virtual machine from your hypervisor.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -622,7 +743,11 @@ The GUID of the on-premises virtual machine from your hypervisor.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

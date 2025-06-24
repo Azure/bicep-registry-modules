@@ -79,7 +79,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
   }
   dependsOn: [
     roleAssignment
@@ -93,4 +93,4 @@ output pairedRegionName string = getPairedRegionScript.properties.outputs.paired
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
-output privateDNSResourceId string = privateDNSZone.id
+output privateDNSZoneResourceId string = privateDNSZone.id

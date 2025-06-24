@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "12309357869547394167"
+      "version": "0.35.1.17967",
+      "templateHash": "1585180545107563289"
     },
     "name": "DBforPostgreSQL Flexible Server Firewall Rules",
-    "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
   },
   "parameters": {
     "name": {
@@ -40,7 +39,7 @@
   "resources": [
     {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "endIpAddress": "[parameters('endIpAddress')]",

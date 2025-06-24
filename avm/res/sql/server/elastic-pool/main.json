@@ -5,12 +5,203 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9517065595416154313"
+      "version": "0.36.1.42791",
+      "templateHash": "13597336529535443631"
     },
     "name": "SQL Server Elastic Pool",
-    "description": "This module deploys an Azure SQL Server Elastic Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Elastic Pool."
+  },
+  "definitions": {
+    "perDatabaseSettingsType": {
+      "type": "object",
+      "properties": {
+        "autoPauseDelay": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Auto Pause Delay for per database within pool."
+          }
+        },
+        "maxCapacity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The maximum capacity any one database can consume. Examples: '0.5', '2'."
+          }
+        },
+        "minCapacity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The per database settings for the elastic pool."
+      }
+    },
+    "skuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The capacity of the particular SKU."
+          }
+        },
+        "family": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "BC_DC",
+            "BC_Gen5",
+            "BasicPool",
+            "GP_DC",
+            "GP_FSv2",
+            "GP_Gen5",
+            "HS_Gen5",
+            "HS_MOPRMS",
+            "HS_PRMS",
+            "PremiumPool",
+            "ServerlessPool",
+            "StandardPool"
+          ],
+          "metadata": {
+            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
+          }
+        },
+        "size": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Size of the particular SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The elastic pool SKU."
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -39,25 +230,41 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "skuCapacity": {
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the elastic pool."
+      }
+    },
+    "sku": {
+      "$ref": "#/definitions/skuType",
+      "defaultValue": {
+        "capacity": 2,
+        "name": "GP_Gen5",
+        "tier": "GeneralPurpose"
+      },
+      "metadata": {
+        "description": "Optional. The elastic pool SKU."
+      }
+    },
+    "autoPauseDelay": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": -1,
       "metadata": {
-        "description": "Optional. Capacity of the particular SKU."
+        "description": "Optional. Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled."
       }
     },
-    "skuName": {
-      "type": "string",
-      "defaultValue": "GP_Gen5",
+    "availabilityZone": {
+      "type": "int",
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. The name of the SKU, typically, a letter + Number code, e.g. P3."
-      }
-    },
-    "skuTier": {
-      "type": "string",
-      "defaultValue": "GeneralPurpose",
-      "metadata": {
-        "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "highAvailabilityReplicaCount": {
@@ -80,7 +287,7 @@
     },
     "maintenanceConfigurationId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Maintenance configuration resource ID assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur."
       }
@@ -99,60 +306,132 @@
         "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
       }
     },
-    "databaseMaxCapacity": {
-      "type": "int",
-      "defaultValue": 2,
+    "perDatabaseSettings": {
+      "$ref": "#/definitions/perDatabaseSettingsType",
+      "defaultValue": {
+        "autoPauseDelay": -1,
+        "maxCapacity": "2",
+        "minCapacity": "0"
+      },
       "metadata": {
-        "description": "Optional. The maximum capacity any one database can consume."
+        "description": "Optional. The per database settings for the elastic pool."
       }
     },
-    "databaseMinCapacity": {
-      "type": "int",
-      "defaultValue": 0,
+    "preferredEnclaveType": {
+      "type": "string",
+      "allowedValues": [
+        "Default",
+        "VBS"
+      ],
+      "defaultValue": "Default",
       "metadata": {
-        "description": "Optional. The minimum capacity all databases are guaranteed."
+        "description": "Optional. Type of enclave requested on the elastic pool."
       }
     },
     "zoneRedundant": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
       }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+      "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
+      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+      "SQL DB Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')]",
+      "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
+      "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
+      "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
     }
   },
   "resources": {
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
     },
     "elasticPool": {
       "type": "Microsoft.Sql/servers/elasticPools",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "sku": {
-        "capacity": "[parameters('skuCapacity')]",
-        "name": "[parameters('skuName')]",
-        "tier": "[parameters('skuTier')]"
-      },
+      "sku": "[parameters('sku')]",
       "properties": {
+        "autoPauseDelay": "[parameters('autoPauseDelay')]",
+        "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), 'NoPreference')]",
         "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
         "licenseType": "[parameters('licenseType')]",
         "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
         "maxSizeBytes": "[parameters('maxSizeBytes')]",
         "minCapacity": "[parameters('minCapacity')]",
-        "perDatabaseSettings": {
-          "minCapacity": "[parameters('databaseMinCapacity')]",
-          "maxCapacity": "[parameters('databaseMaxCapacity')]"
-        },
+        "perDatabaseSettings": "[if(not(empty(parameters('perDatabaseSettings'))), createObject('autoPauseDelay', tryGet(parameters('perDatabaseSettings'), 'autoPauseDelay'), 'maxCapacity', json(tryGet(parameters('perDatabaseSettings'), 'maxCapacity')), 'minCapacity', json(tryGet(parameters('perDatabaseSettings'), 'minCapacity'))), null())]",
+        "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"
+      }
+    },
+    "elasticPool_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Sql/servers/{0}/elasticPools/{1}', parameters('serverName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "server"
+        "elasticPool"
+      ]
+    },
+    "elasticPool_roleAssignments": {
+      "copy": {
+        "name": "elasticPool_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Sql/servers/{0}/elasticPools/{1}', parameters('serverName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Sql/servers', parameters('serverName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "elasticPool"
       ]
     }
   },
@@ -183,7 +462,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('elasticPool', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('elasticPool', '2023-08-01', 'full').location]"
     }
   }
 }

@@ -1,15 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "12256776332622303948"
+      "version": "0.35.1.17967",
+      "templateHash": "335166068139660536"
     },
     "name": "DBforPostgreSQL Flexible Server Databases",
-    "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
   },
   "parameters": {
     "name": {
@@ -26,30 +26,36 @@
     },
     "collation": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The collation of the database."
       }
     },
     "charset": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The charset of the database."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2024-08-01",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "database": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
-        "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
-        "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+        "collation": "[parameters('collation')]",
+        "charset": "[parameters('charset')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
@@ -68,7 +74,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the deployed database."
+        "description": "The resource group name of the deployed database."
       },
       "value": "[resourceGroup().name]"
     }

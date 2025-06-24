@@ -5,68 +5,59 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16859145857534727275"
+      "version": "0.33.93.31351",
+      "templateHash": "4069661147816092581"
     },
     "name": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
-    "description": "This module deploys a Subscription wide export of the Activity Log.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Subscription wide export of the Activity Log."
   },
   "definitions": {
     "logCategoriesAndGroupsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "category": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-            }
-          },
-          "categoryGroup": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs."
-            }
-          },
-          "enabled": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-            }
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+          }
+        },
+        "categoryGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
     },
     "metricCategoriesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "category": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-            }
-          },
-          "enabled": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-            }
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
@@ -111,13 +102,20 @@
       }
     },
     "logCategoriesAndGroups": {
-      "$ref": "#/definitions/logCategoriesAndGroupsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/logCategoriesAndGroupsType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
     },
     "metricCategories": {
-      "$ref": "#/definitions/metricCategoriesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/metricCategoriesType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."

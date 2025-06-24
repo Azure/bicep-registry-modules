@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespaces'
 metadata description = 'This module deploys an Event Hub Namespace.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the event hub namespace.')
 @maxLength(50)
@@ -17,13 +16,13 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
-@description('Optional. The Event Hub\'s throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
+@description('Optional. The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
 @minValue(1)
 @maxValue(20)
 param skuCapacity int = 1
 
 @description('Optional. Switch to make the Event Hub Namespace zone redundant.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
 @description('Optional. Switch to enable the Auto Inflate feature of Event Hub. Auto Inflate is not supported in Premium SKU EventHub.')
 param isAutoInflateEnabled bool = false
@@ -68,32 +67,38 @@ param minimumTlsVersion string = '1.2'
 ])
 param publicNetworkAccess string = ''
 
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configure networking options. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
 param networkRuleSets object = {}
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = false
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -102,7 +107,12 @@ param enableTelemetry bool = true
 param eventhubs array = []
 
 @description('Optional. The disaster recovery config for this namespace.')
-param disasterRecoveryConfig object = {}
+param disasterRecoveryConfig disasterRecoveryConfigType?
+
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
+var enableReferencedModulesTelemetry = false
 
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
@@ -137,7 +147,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -147,23 +157,34 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -186,7 +207,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: name
   location: location
   tags: tags
@@ -211,8 +232,10 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = 
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
-                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                ? customerManagedKey!.?keyVersion
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? null
+                    : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
             }
           ]
           requireInfrastructureEncryption: requireInfrastructureEncryption
@@ -222,9 +245,9 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = 
     kafkaEnabled: kafkaEnabled
     maximumThroughputUnits: maximumThroughputUnitsVar
     minimumTlsVersion: minimumTlsVersion
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess')
-      ? networkRuleSets.publicNetworkAccess
-      : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : publicNetworkAccess)
+    publicNetworkAccess: networkRuleSets.?publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkRuleSets)
+      ? 'Disabled'
+      : publicNetworkAccess)
     zoneRedundant: zoneRedundant
   }
 }
@@ -235,7 +258,7 @@ module eventHubNamespace_authorizationRules 'authorization-rule/main.bicep' = [
     params: {
       namespaceName: eventHubNamespace.name
       name: authorizationRule.name
-      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+      rights: authorizationRule.?rights ?? []
     }
   }
 ]
@@ -244,10 +267,8 @@ module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.b
   name: '${uniqueString(deployment().name, location)}-EvhbNamespace-DisRecConfig'
   params: {
     namespaceName: eventHubNamespace.name
-    name: disasterRecoveryConfig.name
-    partnerNamespaceId: contains(disasterRecoveryConfig, 'partnerNamespaceId')
-      ? disasterRecoveryConfig.partnerNamespaceId
-      : ''
+    name: disasterRecoveryConfig!.name
+    partnerNamespaceResourceId: disasterRecoveryConfig.?partnerNamespaceResourceId
   }
 }
 
@@ -257,69 +278,26 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
     params: {
       namespaceName: eventHubNamespace.name
       name: eventHub.name
-      authorizationRules: contains(eventHub, 'authorizationRules')
-        ? eventHub.authorizationRules
-        : [
-            {
-              name: 'RootManageSharedAccessKey'
-              rights: [
-                'Listen'
-                'Manage'
-                'Send'
-              ]
-            }
-          ]
-      captureDescriptionDestinationArchiveNameFormat: contains(
-          eventHub,
-          'captureDescriptionDestinationArchiveNameFormat'
-        )
-        ? eventHub.captureDescriptionDestinationArchiveNameFormat
-        : '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-      captureDescriptionDestinationBlobContainer: contains(eventHub, 'captureDescriptionDestinationBlobContainer')
-        ? eventHub.captureDescriptionDestinationBlobContainer
-        : ''
-      captureDescriptionDestinationName: contains(eventHub, 'captureDescriptionDestinationName')
-        ? eventHub.captureDescriptionDestinationName
-        : 'EventHubArchive.AzureBlockBlob'
-      captureDescriptionDestinationStorageAccountResourceId: contains(
-          eventHub,
-          'captureDescriptionDestinationStorageAccountResourceId'
-        )
-        ? eventHub.captureDescriptionDestinationStorageAccountResourceId
-        : ''
-      captureDescriptionEnabled: contains(eventHub, 'captureDescriptionEnabled')
-        ? eventHub.captureDescriptionEnabled
-        : false
-      captureDescriptionEncoding: contains(eventHub, 'captureDescriptionEncoding')
-        ? eventHub.captureDescriptionEncoding
-        : 'Avro'
-      captureDescriptionIntervalInSeconds: contains(eventHub, 'captureDescriptionIntervalInSeconds')
-        ? eventHub.captureDescriptionIntervalInSeconds
-        : 300
-      captureDescriptionSizeLimitInBytes: contains(eventHub, 'captureDescriptionSizeLimitInBytes')
-        ? eventHub.captureDescriptionSizeLimitInBytes
-        : 314572800
-      captureDescriptionSkipEmptyArchives: contains(eventHub, 'captureDescriptionSkipEmptyArchives')
-        ? eventHub.captureDescriptionSkipEmptyArchives
-        : false
-      consumergroups: contains(eventHub, 'consumergroups') ? eventHub.consumergroups : []
+      authorizationRules: eventHub.?authorizationRules
+      captureDescriptionDestinationArchiveNameFormat: eventHub.?captureDescriptionDestinationArchiveNameFormat
+      captureDescriptionDestinationBlobContainer: eventHub.?captureDescriptionDestinationBlobContainer
+      captureDescriptionDestinationName: eventHub.?captureDescriptionDestinationName
+      captureDescriptionDestinationStorageAccountResourceId: eventHub.?captureDescriptionDestinationStorageAccountResourceId
+      captureDescriptionEnabled: eventHub.?captureDescriptionEnabled
+      captureDescriptionEncoding: eventHub.?captureDescriptionEncoding
+      captureDescriptionIntervalInSeconds: eventHub.?captureDescriptionIntervalInSeconds
+      captureDescriptionSizeLimitInBytes: eventHub.?captureDescriptionSizeLimitInBytes
+      captureDescriptionSkipEmptyArchives: eventHub.?captureDescriptionSkipEmptyArchives
+      consumergroups: eventHub.?consumergroups ?? []
       lock: eventHub.?lock ?? lock
-      messageRetentionInDays: contains(eventHub, 'messageRetentionInDays') ? eventHub.messageRetentionInDays : 1
-      partitionCount: contains(eventHub, 'partitionCount') ? eventHub.partitionCount : 2
-      roleAssignments: contains(eventHub, 'roleAssignments') ? eventHub.roleAssignments : []
-      status: contains(eventHub, 'status') ? eventHub.status : 'Active'
-      retentionDescriptionCleanupPolicy: contains(eventHub, 'retentionDescriptionCleanupPolicy')
-        ? eventHub.retentionDescriptionCleanupPolicy
-        : 'Delete'
-      retentionDescriptionRetentionTimeInHours: contains(eventHub, 'retentionDescriptionRetentionTimeInHours')
-        ? eventHub.retentionDescriptionRetentionTimeInHours
-        : 1
-      retentionDescriptionTombstoneRetentionTimeInHours: contains(
-          eventHub,
-          'retentionDescriptionTombstoneRetentionTimeInHours'
-        )
-        ? eventHub.retentionDescriptionTombstoneRetentionTimeInHours
-        : 1
+      messageRetentionInDays: eventHub.?messageRetentionInDays
+      partitionCount: eventHub.?partitionCount
+      roleAssignments: eventHub.?roleAssignments
+      status: eventHub.?status
+      retentionDescriptionEnabled: eventHub.?retentionDescriptionEnabled
+      retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
+      retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
+      retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
     }
   }
 ]
@@ -328,20 +306,23 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
   name: '${uniqueString(deployment().name, location)}-EvhbNamespace-NetworkRuleSet'
   params: {
     namespaceName: eventHubNamespace.name
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess')
-      ? networkRuleSets.publicNetworkAccess
-      : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
-    defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
+    publicNetworkAccess: networkRuleSets.?publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkRuleSets)
+      ? 'Disabled'
+      : 'Enabled')
+    defaultAction: networkRuleSets.?defaultAction
     trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled
-    ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
-    virtualNetworkRules: contains(networkRuleSets, 'virtualNetworkRules') ? networkRuleSets.virtualNetworkRules : []
+    ipRules: networkRuleSets.?ipRules
+    virtualNetworkRules: networkRuleSets.?virtualNetworkRules
   }
 }
 
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -372,15 +353,14 @@ module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-end
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -392,14 +372,14 @@ module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-end
 ]
 
 resource eventHubNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(eventHubNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      eventHubNamespace.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -451,6 +431,52 @@ resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootPrimaryConnectionStringName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootSecondaryConnectionStringName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootPrimaryKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootPrimaryKeyName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootSecondaryKeyName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the eventspace.')
 output name string = eventHubNamespace.name
 
@@ -461,191 +487,112 @@ output resourceId string = eventHubNamespace.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = eventHubNamespace.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = eventHubNamespace.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = eventHubNamespace.location
 
 @description('The Resources IDs of the EventHubs within this eventspace.')
-output eventHubResourceIds array = [
+output eventHubResourceIds string[] = [
   for index in range(0, length(eventhubs ?? [])): eventHubNamespace_eventhubs[index].outputs.resourceId
 ]
+
+@description('The private endpoints of the eventspace.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: eventHubNamespace_privateEndpoints[index].outputs.name
+    resourceId: eventHubNamespace_privateEndpoints[index].outputs.resourceId
+    groupId: eventHubNamespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: eventHubNamespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
+
+@secure()
+@description('The namespace\'s primary connection string.')
+output primaryConnectionString string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryConnectionString
+
+@secure()
+@description('The namespace\'s secondary connection string.')
+output secondaryConnectionString string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryConnectionString
+
+@secure()
+@description('The namespace\'s primary key.')
+output primaryKey string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryKey
+
+@secure()
+@description('The namespace\'s secondary key.')
+output secondaryKey string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryKey
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
 
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type privateEndpointType = {
-  @description('Optional. The name of the private endpoint.')
-  name: string?
-
-  @description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
-
-  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
-
-  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
-
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
-
-  @description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @description('Optional. Custom DNS configurations.')
+  @description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private IP addresses of the private endpoint.')
+    @description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
-  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @description('Required. The name of the resource that is unique within a resource group.')
-    name: string
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
-    @description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
+@export()
+type disasterRecoveryConfigType = {
+  @description('Required. The name of the disaster recovery config.')
+  name: string
 
-      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
+  @description('Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.')
+  partnerNamespaceResourceId: string?
+}
 
-      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+@export()
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
 
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
+  @description('Optional. The rootPrimaryConnectionStringName secret name to create.')
+  rootPrimaryConnectionStringName: string?
 
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
+  @description('Optional. The rootSecondaryConnectionStringName secret name to create.')
+  rootSecondaryConnectionStringName: string?
 
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-}?
+  @description('Optional. The rootPrimaryKeyName secret name to create.')
+  rootPrimaryKeyName: string?
+
+  @description('Optional. The rootSecondaryKeyName secret name to create.')
+  rootSecondaryKeyName: string?
+}

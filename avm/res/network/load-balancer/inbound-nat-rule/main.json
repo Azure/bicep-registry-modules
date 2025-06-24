@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "11398827458130316747"
+      "version": "0.34.44.8038",
+      "templateHash": "18405211154213559578"
     },
     "name": "Load Balancer Inbound NAT Rules",
-    "description": "This module deploys a Load Balancer Inbound NAT Rules.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Load Balancer Inbound NAT Rules."
   },
   "parameters": {
     "loadBalancerName": {
@@ -131,10 +130,7 @@
         "frontendPortRangeEnd": "[parameters('frontendPortRangeEnd')]",
         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
         "protocol": "[parameters('protocol')]"
-      },
-      "dependsOn": [
-        "loadBalancer"
-      ]
+      }
     }
   },
   "outputs": {

@@ -51,7 +51,10 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-    product: 'nonmsTestSolutionProduct'
-    publisher: 'nonmsTestSolutionPublisher'
+    plan: {
+      name: 'nonmsTestSolutionPlan'
+      product: 'nonmsTestSolutionProduct'
+      publisher: 'nonmsTestSolutionPublisher'
+    }
   }
 }

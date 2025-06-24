@@ -15,6 +15,7 @@ This module deploys an Activity Log Alert.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/activityLogAlerts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-10-01/activityLogAlerts) |
 
@@ -86,7 +87,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -135,6 +136,52 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/activity-log-alert:<version>'
+
+// Required parameters
+param conditions = [
+  {
+    equals: 'ServiceHealth'
+    field: 'category'
+  }
+  {
+    anyOf: [
+      {
+        equals: 'Incident'
+        field: 'properties.incidentType'
+      }
+      {
+        equals: 'Maintenance'
+        field: 'properties.incidentType'
+      }
+    ]
+  }
+  {
+    containsAny: [
+      'Storage'
+    ]
+    field: 'properties.impactedServices[*].ServiceName'
+  }
+  {
+    containsAny: [
+      'West Europe'
+    ]
+    field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+  }
+]
+param name = 'ialamin001'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -194,13 +241,19 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
       }
     ]
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     roleAssignments: [
       {
+        name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -228,7 +281,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -284,14 +337,22 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "roleAssignments": {
       "value": [
         {
+          "name": "be96d7a9-6596-40c7-9acd-db6acd5cd41b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -316,6 +377,90 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/activity-log-alert:<version>'
+
+// Required parameters
+param conditions = [
+  {
+    equals: 'ServiceHealth'
+    field: 'category'
+  }
+  {
+    anyOf: [
+      {
+        equals: 'Incident'
+        field: 'properties.incidentType'
+      }
+      {
+        equals: 'Maintenance'
+        field: 'properties.incidentType'
+      }
+    ]
+  }
+  {
+    containsAny: [
+      'Action Groups'
+      'Activity Logs & Alerts'
+    ]
+    field: 'properties.impactedServices[*].ServiceName'
+  }
+  {
+    containsAny: [
+      'Global'
+      'West Europe'
+    ]
+    field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+  }
+]
+param name = 'ialamax001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupId: '<actionGroupId>'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scopes = [
+  '<id>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -393,7 +538,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -468,6 +613,66 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/activity-log-alert:<version>'
+
+// Required parameters
+param conditions = [
+  {
+    equals: 'ServiceHealth'
+    field: 'category'
+  }
+  {
+    anyOf: [
+      {
+        equals: 'Incident'
+        field: 'properties.incidentType'
+      }
+      {
+        equals: 'Maintenance'
+        field: 'properties.incidentType'
+      }
+    ]
+  }
+  {
+    containsAny: [
+      'Action Groups'
+      'Activity Logs & Alerts'
+    ]
+    field: 'properties.impactedServices[*].ServiceName'
+  }
+  {
+    containsAny: [
+      'Global'
+      'West Europe'
+    ]
+    field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+  }
+]
+param name = 'ialawaf001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupId: '<actionGroupId>'
+  }
+]
+param location = 'global'
+param scopes = [
+  '<id>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -487,6 +692,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this alert is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopes`](#parameter-scopes) | array | The list of resource IDs that this Activity Log Alert is scoped to. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -545,12 +751,54 @@ Location for all resources.
 - Type: string
 - Default: `'global'`
 
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -567,6 +815,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -617,6 +866,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -654,7 +910,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -666,7 +921,11 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

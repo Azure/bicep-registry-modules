@@ -9,14 +9,13 @@ This module deploys an Azure Compute Gallery Application.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
+| `Microsoft.Compute/galleries/applications` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications) |
 
 ## Parameters
 
@@ -82,6 +81,106 @@ A list of custom actions that can be performed with all of the Gallery Applicati
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-customactionsname) | string | The name of the custom action. Must be unique within the Gallery Application Version. |
+| [`script`](#parameter-customactionsscript) | string | The script to run when executing this custom action. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-customactionsdescription) | string | Description to help the users understand what this custom action does. |
+| [`parameters`](#parameter-customactionsparameters) | array | The parameters that this custom action uses. |
+
+### Parameter: `customActions.name`
+
+The name of the custom action. Must be unique within the Gallery Application Version.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customActions.script`
+
+The script to run when executing this custom action.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customActions.description`
+
+Description to help the users understand what this custom action does.
+
+- Required: No
+- Type: string
+
+### Parameter: `customActions.parameters`
+
+The parameters that this custom action uses.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-customactionsparametersname) | string | The name of the parameter. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultValue`](#parameter-customactionsparametersdefaultvalue) | string | The default value of the parameter. Only applies to string types. |
+| [`description`](#parameter-customactionsparametersdescription) | string | A description to help users understand what this parameter means. |
+| [`required`](#parameter-customactionsparametersrequired) | bool | Indicates whether this parameter must be passed when running the custom action. |
+| [`type`](#parameter-customactionsparameterstype) | string | Specifies the type of the custom action parameter. |
+
+### Parameter: `customActions.parameters.name`
+
+The name of the parameter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customActions.parameters.defaultValue`
+
+The default value of the parameter. Only applies to string types.
+
+- Required: No
+- Type: string
+
+### Parameter: `customActions.parameters.description`
+
+A description to help users understand what this parameter means.
+
+- Required: No
+- Type: string
+
+### Parameter: `customActions.parameters.required`
+
+Indicates whether this parameter must be passed when running the custom action.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customActions.parameters.type`
+
+Specifies the type of the custom action parameter.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ConfigurationDataBlob'
+    'LogOutputBlob'
+    'String'
+  ]
+  ```
+
 ### Parameter: `description`
 
 The description of this gallery Application Definition resource. This property is updatable.
@@ -131,6 +230,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Compute Gallery Sharing Admin'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -147,6 +253,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -197,6 +304,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -221,7 +335,6 @@ Tags for all resources.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -233,7 +346,11 @@ Tags for all resources.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
@@ -335,7 +452,3 @@ customActions: [
 
 </details>
 <p>
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

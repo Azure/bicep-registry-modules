@@ -53,7 +53,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
       '10.0.0.0/16'
     ]
     ipAddress: '1.2.3.4'
-    location: '<location>'
   }
 }
 ```
@@ -63,7 +62,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -85,12 +84,29 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     },
     "ipAddress": {
       "value": "1.2.3.4"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-site:<version>'
+
+// Required parameters
+param name = 'nvsmin'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param addressPrefixes = [
+  '10.0.0.0/16'
+]
+param ipAddress = '1.2.3.4'
 ```
 
 </details>
@@ -130,11 +146,13 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     }
     roleAssignments: [
       {
+        name: '1dcfa9c2-5e95-42d2-bf04-bdecad93abcf'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -189,7 +207,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -230,11 +248,13 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "1dcfa9c2-5e95-42d2-bf04-bdecad93abcf",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -292,6 +312,91 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-site:<version>'
+
+// Required parameters
+param name = 'nvsmax'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param deviceProperties = {
+  linkSpeedInMbps: 0
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+o365Policy: {
+  breakOutCategories: {
+    allow: true
+    default: true
+    optimize: true
+  }
+}
+param roleAssignments = [
+  {
+    name: '1dcfa9c2-5e95-42d2-bf04-bdecad93abcf'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  tagA: 'valueA'
+  tagB: 'valueB'
+}
+param vpnSiteLinks = [
+  {
+    name: 'vSite-nvsmax'
+    properties: {
+      bgpProperties: {
+        asn: 65010
+        bgpPeeringAddress: '1.1.1.1'
+      }
+      ipAddress: '1.2.3.4'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+  {
+    name: 'Link1'
+    properties: {
+      bgpProperties: {
+        asn: 65020
+        bgpPeeringAddress: '192.168.1.0'
+      }
+      ipAddress: '2.2.2.2'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -313,10 +418,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
       linkSpeedInMbps: 0
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     o365Policy: {
       breakOutCategories: {
         allow: true
@@ -368,7 +469,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -390,12 +491,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "o365Policy": {
       "value": {
@@ -452,6 +547,67 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-site:<version>'
+
+// Required parameters
+param name = 'nvswaf'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param deviceProperties = {
+  linkSpeedInMbps: 0
+}
+param location = '<location>'
+o365Policy: {
+  breakOutCategories: {
+    allow: true
+    default: true
+    optimize: true
+  }
+}
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  tagA: 'valueA'
+  tagB: 'valueB'
+}
+param vpnSiteLinks = [
+  {
+    name: 'vSite-nvswaf'
+    properties: {
+      bgpProperties: {
+        asn: 65010
+        bgpPeeringAddress: '1.1.1.1'
+      }
+      ipAddress: '1.2.3.4'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+  {
+    name: 'Link1'
+    properties: {
+      bgpProperties: {
+        asn: 65020
+        bgpPeeringAddress: '192.168.1.0'
+      }
+      ipAddress: '2.2.2.2'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -604,6 +760,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -620,6 +783,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -670,6 +834,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -702,7 +873,6 @@ List of all VPN site links.
 - Type: array
 - Default: `[]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -714,7 +884,11 @@ List of all VPN site links.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

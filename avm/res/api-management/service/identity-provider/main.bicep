@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Identity Providers'
 metadata description = 'This module deploys an API Management Service Identity Provider.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -13,6 +12,13 @@ param authority string = ''
 
 @description('Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used.')
 param clientId string = ''
+
+@description('Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider.')
+@allowed([
+  'ADAL'
+  'MSAL-2'
+])
+param clientLibrary string?
 
 @description('Conditional. Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used.')
 @secure()
@@ -67,6 +73,7 @@ resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@202
     profileEditingPolicyName: isAadB2C ? profileEditingPolicyName : null
     passwordResetPolicyName: isAadB2C ? passwordResetPolicyName : null
     clientId: clientId
+    clientLibrary: clientLibrary
     clientSecret: clientSecret
   }
 }

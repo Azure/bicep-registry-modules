@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -60,7 +60,6 @@ module testDeployment '../../../main.bicep' = [
       }
       vpnConnections: [
         {
-          connectionBandwidth: 100
           enableBgp: false
           name: 'Connection-${last(split(nestedDependencies.outputs.vpnSiteResourceId, '/'))}'
           remoteVpnSiteResourceId: nestedDependencies.outputs.vpnSiteResourceId
@@ -72,10 +71,6 @@ module testDeployment '../../../main.bicep' = [
           routingWeight: 0
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       natRules: [
         {
           externalMappings: [
@@ -99,8 +94,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'With EC key type'
+metadata description = 'This instance deploys the module with the parameters needed for an EC key.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -42,7 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: resourceLocation
       // Only for testing purposes
       enablePurgeProtection: false
       enableRbacAuthorization: true
@@ -64,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
                   timeBeforeExpiry: 'P2M'
                 }
                 action: {
-                  type: 'Rotate'
+                  type: 'rotate'
                 }
               }
               {
@@ -72,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
                   timeBeforeExpiry: 'P30D'
                 }
                 action: {
-                  type: 'Notify'
+                  type: 'notify'
                 }
               }
             ]

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "11570396191515565787"
+    },
+    "name": "DBforMySQL Flexible Server Advanced Threat Protection",
+    "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
+  },
+  "parameters": {
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "advancedThreatProtection": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. The state of the advanced threat protection."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
+      "apiVersion": "2024-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
+      "properties": {
+        "state": "[parameters('advancedThreatProtection')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed threat protection."
+      },
+      "value": "Default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed threat protection."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed threat protection."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

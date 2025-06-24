@@ -1,6 +1,5 @@
 metadata name = 'App Service Environments'
 metadata description = 'This module deploys an App Service Environment.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource to create.')
 param name string
@@ -14,15 +13,13 @@ param enableTelemetry bool = true
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
-
-//
-// Add your parameters here
-//
+param roleAssignments roleAssignmentType[]?
 
 @allowed([
   'ASEv3'
@@ -65,17 +62,8 @@ param frontEndScaleFactor int = 15
 ])
 param internalLoadBalancingMode string = 'None'
 
-@description('Optional. Property to enable and disable new private endpoint connection creation on ASE.')
-param allowNewPrivateEndpointConnections bool = false
-
-@description('Optional. Property to enable and disable FTP on ASEV3.')
-param ftpEnabled bool = false
-
-@description('Optional. Customer provided Inbound IP Address. Only able to be set on Ase create.')
-param inboundIpAddressOverride string = ''
-
-@description('Optional. Property to enable and disable Remote Debug on ASEv3.')
-param remoteDebugEnabled bool = false
+@description('Optional. Properties to configure additional networking features.')
+param networkConfiguration object?
 
 @description('Optional. Specify preference for when and how the planned maintenance is applied.')
 @allowed([
@@ -90,13 +78,15 @@ param upgradePreference string = 'None'
 param subnetResourceId string
 
 @description('Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -117,7 +107,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -126,6 +116,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 // ============== //
 // Resources      //
@@ -150,7 +151,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = {
+resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2023-12-01' = {
   name: name
   kind: kind
   location: location
@@ -163,22 +164,12 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = 
     frontEndScaleFactor: frontEndScaleFactor
     internalLoadBalancingMode: internalLoadBalancingMode
     upgradePreference: upgradePreference
+    networkingConfiguration: networkConfiguration
     virtualNetwork: {
       id: subnetResourceId
       subnet: last(split(subnetResourceId, '/'))
     }
     zoneRedundant: zoneRedundant
-  }
-}
-
-module appServiceEnvironment_configurations_networking 'configuration--networking/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-AppServiceEnv-Configurations-Networking'
-  params: {
-    hostingEnvironmentName: appServiceEnvironment.name
-    allowNewPrivateEndpointConnections: allowNewPrivateEndpointConnections
-    ftpEnabled: ftpEnabled
-    inboundIpAddressOverride: inboundIpAddressOverride
-    remoteDebugEnabled: remoteDebugEnabled
   }
 }
 
@@ -226,14 +217,14 @@ resource appServiceEnvironment_diagnosticSettings 'Microsoft.Insights/diagnostic
 ]
 
 resource appServiceEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(appServiceEnvironment.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      appServiceEnvironment.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -244,7 +235,6 @@ resource appServiceEnvironment_roleAssignments 'Microsoft.Authorization/roleAssi
     scope: appServiceEnvironment
   }
 ]
-
 // ============ //
 // Outputs      //
 // ============ //
@@ -262,79 +252,4 @@ output name string = appServiceEnvironment.name
 output location string = appServiceEnvironment.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = appServiceEnvironment.?identity.?principalId ?? ''
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
-    categoryGroup: string?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+output systemAssignedMIPrincipalId string? = appServiceEnvironment.?identity.?principalId

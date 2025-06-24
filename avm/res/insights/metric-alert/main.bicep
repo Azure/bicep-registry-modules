@@ -1,6 +1,5 @@
 metadata name = 'Metric Alerts'
 metadata description = 'This module deploys a Metric Alert.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the alert.')
 param name string
@@ -53,10 +52,10 @@ param scopes array = [
 ]
 
 @description('Conditional. The resource type of the target resource(s) on which the alert is created/updated. Required if alertCriteriaType is MultipleResourceMultipleMetricCriteria.')
-param targetResourceType string = ''
+param targetResourceType string?
 
 @description('Conditional. The region of the target resource(s) on which the alert is created/updated. Required if alertCriteriaType is MultipleResourceMultipleMetricCriteria.')
-param targetResourceRegion string = ''
+param targetResourceRegion string?
 
 @description('Optional. The flag that indicates whether the alert should be auto resolved or not.')
 param autoMitigate bool = true
@@ -64,19 +63,16 @@ param autoMitigate bool = true
 @description('Optional. The list of actions to take when alert triggers.')
 param actions array = []
 
-@description('Optional. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
-@allowed([
-  'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-  'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-  'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
-])
-param alertCriteriaType string = 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+@description('Required. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
+param criteria alertType
 
-@description('Required. Criterias to trigger the alert. Array of \'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria\' or \'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria\' objects. When using MultipleResourceMultipleMetricCriteria criteria type, some parameters becomes mandatory. It is not possible to convert from SingleResourceMultipleMetricCriteria to MultipleResourceMultipleMetricCriteria. The alert must be deleted and recreated.')
-param criterias array
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -86,8 +82,8 @@ param enableTelemetry bool = true
 
 var actionGroups = [
   for action in actions: {
-    actionGroupId: contains(action, 'actionGroupId') ? action.actionGroupId : action
-    webHookProperties: contains(action, 'webHookProperties') ? action.webHookProperties : null
+    actionGroupId: action.?actionGroupId ?? action
+    webHookProperties: action.?webHookProperties
   }
 ]
 
@@ -95,7 +91,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -104,6 +100,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -138,23 +145,33 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     targetResourceType: targetResourceType
     targetResourceRegion: targetResourceRegion
     criteria: {
-      'odata.type': any(alertCriteriaType)
-      allOf: criterias
+      'odata.type': criteria['odata.type']
+      ...(contains(criteria, 'allof') ? { allof: criteria.allof } : {})
+      ...(contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {})
+      ...(contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {})
+      ...(contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
     }
     autoMitigate: autoMitigate
     actions: actionGroups
   }
 }
 
+resource metricAlert_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: metricAlert
+}
+
 resource metricAlert_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(metricAlert.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(metricAlert.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -177,29 +194,44 @@ output resourceId string = metricAlert.id
 
 @description('The location the resource was deployed into.')
 output location string = metricAlert.location
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+@export()
+@discriminator('odata.type')
+type alertType = alertWebtestType | alertResourceType | alertMultiResourceType
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+@description('The alert type for a single resource scenario.')
+type alertResourceType = {
+  @description('Required. The type of the alert criteria.')
+  'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Required. The list of metric criteria for this \'all of\' operation.')
+  allof: object[]
+}
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+@description('The alert type for multiple resources scenario.')
+type alertMultiResourceType = {
+  @description('Required. The type of the alert criteria.')
+  'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Required. The list of multiple metric criteria for this \'all of\' operation.')
+  allof: object[]
+}
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+@description('The alert type for a web test scenario.')
+type alertWebtestType = {
+  @description('Required. The type of the alert criteria.')
+  'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Required. The Application Insights resource ID.')
+  componentResourceId: string
+
+  @description('Required. The number of failed locations.')
+  failedLocationCount: int
+
+  @description('Required. The Application Insights web test resource ID.')
+  webTestResourceId: string
+}

@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instance Keys'
 metadata description = 'This module deploys a SQL Managed Instance Key.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
 param name string
@@ -16,9 +15,9 @@ param managedInstanceName string
 param serverKeyType string = 'ServiceManaged'
 
 @description('Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required.')
-param uri string = ''
+param uri string?
 
-var splittedKeyUri = split(uri, '/')
+var splittedKeyUri = split(uri ?? '', '/')
 
 // if serverManaged, use serverManaged, if uri provided use concated uri value
 // MUST match the pattern '<keyVaultName>_<keyName>_<keyVersion>'
@@ -26,11 +25,11 @@ var serverKeyName = empty(uri)
   ? 'ServiceManaged'
   : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${splittedKeyUri[5]}'
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource key 'Microsoft.Sql/managedInstances/keys@2023-08-01-preview' = {
+resource key 'Microsoft.Sql/managedInstances/keys@2024-05-01-preview' = {
   name: !empty(name) ? name : serverKeyName
   parent: managedInstance
   properties: {

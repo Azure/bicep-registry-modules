@@ -1,7 +1,4 @@
 {
-    "$schema": "https://aka.ms/bicep-registry-module-version-file-schema#",
-    "version": "1.0",
-    "pathFilters": [
-        "./main.json"
-    ]
+  "$schema": "https://aka.ms/bicep-registry-module-version-file-schema#",
+  "version": "1.4"
 }

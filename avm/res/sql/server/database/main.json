@@ -5,133 +5,332 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9732417431098147370"
+      "version": "0.36.1.42791",
+      "templateHash": "13916745959726876819"
     },
     "name": "SQL Server Database",
-    "description": "This module deploys an Azure SQL Server Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Database."
   },
   "definitions": {
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
+    "databaseSkuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The capacity of the particular SKU."
+          }
+        },
+        "family": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
+          }
+        },
+        "size": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Size of the particular SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The database SKU."
+      }
+    },
+    "shortTermBackupRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "diffBackupIntervalInHours": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Differential backup interval in hours. For Hyperscale tiers this value will be ignored."
+          }
+        },
+        "retentionDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Point-in-time retention in days."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The short-term backup retention policy for the database."
+      }
+    },
+    "longTermBackupRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "monthlyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Monthly retention in ISO 8601 duration format."
+          }
+        },
+        "weeklyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Weekly retention in ISO 8601 duration format."
+          }
+        },
+        "weekOfYear": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Week of year backup to keep for yearly retention."
+          }
+        },
+        "yearlyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Yearly retention in ISO 8601 duration format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The long-term backup retention policy for the database."
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityOnlyUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -147,6 +346,42 @@
         "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
       }
     },
+    "sku": {
+      "$ref": "#/definitions/databaseSkuType",
+      "defaultValue": {
+        "name": "GP_Gen5_2",
+        "tier": "GeneralPurpose"
+      },
+      "metadata": {
+        "description": "Optional. The database SKU."
+      }
+    },
+    "autoPauseDelay": {
+      "type": "int",
+      "defaultValue": -1,
+      "metadata": {
+        "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
+      }
+    },
+    "availabilityZone": {
+      "type": "int",
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
+      }
+    },
+    "catalogCollation": {
+      "type": "string",
+      "defaultValue": "DATABASE_DEFAULT",
+      "metadata": {
+        "description": "Optional. Collation of the metadata catalog."
+      }
+    },
     "collation": {
       "type": "string",
       "defaultValue": "SQL_Latin1_General_CP1_CI_AS",
@@ -154,90 +389,50 @@
         "description": "Optional. The collation of the database."
       }
     },
-    "skuTier": {
+    "createMode": {
       "type": "string",
-      "defaultValue": "GeneralPurpose",
+      "allowedValues": [
+        "Copy",
+        "Default",
+        "OnlineSecondary",
+        "PointInTimeRestore",
+        "Recovery",
+        "Restore",
+        "RestoreExternalBackup",
+        "RestoreExternalBackupSecondary",
+        "RestoreLongTermRetentionBackup",
+        "Secondary"
+      ],
+      "defaultValue": "Default",
       "metadata": {
-        "description": "Optional. The skuTier or edition of the particular SKU."
+        "description": "Optional. Specifies the mode of database creation."
       }
     },
-    "skuName": {
+    "elasticPoolResourceId": {
       "type": "string",
-      "defaultValue": "GP_Gen5_2",
-      "metadata": {
-        "description": "Optional. The name of the SKU."
-      }
-    },
-    "skuCapacity": {
-      "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Capacity of the particular SKU."
+        "description": "Optional. The resource ID of the elastic pool containing this database."
       }
     },
-    "preferredEnclaveType": {
+    "federatedClientId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
+      "minLength": 36,
+      "maxLength": 36,
+      "metadata": {
+        "description": "Optional. The Client id used for cross tenant per database CMK scenario."
+      }
+    },
+    "freeLimitExhaustionBehavior": {
+      "type": "string",
       "allowedValues": [
-        "",
-        "Default",
-        "VBS"
+        "AutoPause",
+        "BillOverUsage"
       ],
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Type of enclave requested on the database i.e. Default or VBS enclaves."
-      }
-    },
-    "skuFamily": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
-      }
-    },
-    "skuSize": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Size of the particular SKU."
-      }
-    },
-    "maxSizeBytes": {
-      "type": "int",
-      "defaultValue": 34359738368,
-      "metadata": {
-        "description": "Optional. The max size of the database expressed in bytes."
-      }
-    },
-    "sampleName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The name of the sample schema to apply when creating this database."
-      }
-    },
-    "zoneRedundant": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Whether or not this database is zone redundant."
-      }
-    },
-    "licenseType": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The license type to apply for this database."
-      }
-    },
-    "readScale": {
-      "type": "string",
-      "defaultValue": "Disabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
-      "metadata": {
-        "description": "Optional. The state of read-only routing."
+        "description": "Optional. Specifies the behavior when monthly free limits are exhausted for the free database."
       }
     },
     "highAvailabilityReplicaCount": {
@@ -247,18 +442,181 @@
         "description": "Optional. The number of readonly secondary replicas associated with the database."
       }
     },
+    "isLedgerOn": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether or not this database is a ledger database, which means all tables in the database are ledger tables. Note: the value of this property cannot be changed after the database has been created."
+      }
+    },
+    "licenseType": {
+      "type": "string",
+      "allowedValues": [
+        "BasePrice",
+        "LicenseIncluded"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The license type to apply for this database."
+      }
+    },
+    "longTermRetentionBackupResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource identifier of the long term retention backup associated with create operation of this database."
+      }
+    },
+    "maintenanceConfigurationId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur."
+      }
+    },
+    "manualCutover": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier."
+      }
+    },
+    "maxSizeBytes": {
+      "type": "int",
+      "defaultValue": 34359738368,
+      "metadata": {
+        "description": "Optional. The max size of the database expressed in bytes."
+      }
+    },
     "minCapacity": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "0",
       "metadata": {
         "description": "Optional. Minimal capacity that database will always have allocated."
       }
     },
-    "autoPauseDelay": {
-      "type": "int",
-      "defaultValue": 0,
+    "performCutover": {
+      "type": "bool",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
+        "description": "Optional. To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress."
+      }
+    },
+    "preferredEnclaveType": {
+      "type": "string",
+      "allowedValues": [
+        "Default",
+        "VBS"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Type of enclave requested on the database i.e. Default or VBS enclaves."
+      }
+    },
+    "readScale": {
+      "type": "string",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "defaultValue": "Disabled",
+      "metadata": {
+        "description": "Optional. The state of read-only routing."
+      }
+    },
+    "recoverableDatabaseResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource identifier of the recoverable database associated with create operation of this database."
+      }
+    },
+    "recoveryServicesRecoveryPointResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource identifier of the recovery point associated with create operation of this database."
+      }
+    },
+    "requestedBackupStorageRedundancy": {
+      "type": "string",
+      "allowedValues": [
+        "Geo",
+        "GeoZone",
+        "Local",
+        "Zone"
+      ],
+      "defaultValue": "Local",
+      "metadata": {
+        "description": "Optional. The storage account type to be used to store backups for this database."
+      }
+    },
+    "restorableDroppedDatabaseResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource identifier of the restorable dropped database associated with create operation of this database."
+      }
+    },
+    "restorePointInTime": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Point in time (ISO8601 format) of the source database to restore when createMode set to Restore or PointInTimeRestore."
+      }
+    },
+    "sampleName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the sample schema to apply when creating this database."
+      }
+    },
+    "secondaryType": {
+      "type": "string",
+      "allowedValues": [
+        "Geo",
+        "Named",
+        "Standby"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The secondary type of the database if it is a secondary."
+      }
+    },
+    "sourceDatabaseDeletionDate": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The time that the database was deleted when restoring a deleted database."
+      }
+    },
+    "sourceDatabaseResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource identifier of the source database associated with create operation of this database."
+      }
+    },
+    "sourceResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource identifier of the source associated with the create operation of this database."
+      }
+    },
+    "useFreeLimit": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Whether or not the database uses free monthly limits. Allowed on one database in a subscription."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Whether or not this database is zone redundant."
       }
     },
     "tags": {
@@ -268,13 +626,6 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "elasticPoolId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The resource ID of the elastic pool containing this database."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -282,139 +633,126 @@
         "description": "Optional. Location for all resources."
       }
     },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the databse."
+      }
+    },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
-    "createMode": {
-      "type": "string",
-      "defaultValue": "Default",
-      "allowedValues": [
-        "Default",
-        "Copy",
-        "OnlineSecondary",
-        "PointInTimeRestore",
-        "Recovery",
-        "Restore",
-        "RestoreLongTermRetentionBackup",
-        "Secondary"
-      ],
-      "metadata": {
-        "description": "Optional. Specifies the mode of database creation."
-      }
-    },
-    "sourceDatabaseResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of database if createMode set to Copy, Secondary, PointInTimeRestore, Recovery or Restore."
-      }
-    },
-    "sourceDatabaseDeletionDate": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The time that the database was deleted when restoring a deleted database."
-      }
-    },
-    "recoveryServicesRecoveryPointResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of backup if createMode set to RestoreLongTermRetentionBackup."
-      }
-    },
-    "restorePointInTime": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Point in time (ISO8601 format) of the source database to restore when createMode set to Restore or PointInTimeRestore."
-      }
-    },
-    "requestedBackupStorageRedundancy": {
-      "type": "string",
-      "defaultValue": "",
-      "allowedValues": [
-        "Geo",
-        "Local",
-        "Zone",
-        ""
-      ],
-      "metadata": {
-        "description": "Optional. The storage account type to be used to store backups for this database."
-      }
-    },
-    "isLedgerOn": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Whether or not this database is a ledger database, which means all tables in the database are ledger tables. Note: the value of this property cannot be changed after the database has been created."
-      }
-    },
-    "maintenanceConfigurationId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur."
-      }
-    },
     "backupShortTermRetentionPolicy": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/shortTermBackupRetentionPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The short term backup retention policy to create for the database."
       }
     },
     "backupLongTermRetentionPolicy": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/longTermBackupRetentionPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The long term backup retention policy to create for the database."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition for database TDE."
       }
     }
   },
   "variables": {
-    "skuVar": "[union(createObject('name', parameters('skuName'), 'tier', parameters('skuTier')), if(not(equals(parameters('skuCapacity'), null())), createObject('capacity', parameters('skuCapacity')), if(not(empty(parameters('skuFamily'))), createObject('family', parameters('skuFamily')), if(not(empty(parameters('skuSize'))), createObject('size', parameters('skuSize')), createObject()))))]"
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "database": {
       "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
+      "sku": "[parameters('sku')]",
+      "identity": "[variables('identity')]",
       "properties": {
-        "preferredEnclaveType": "[if(not(empty(parameters('preferredEnclaveType'))), parameters('preferredEnclaveType'), null())]",
-        "collation": "[parameters('collation')]",
-        "maxSizeBytes": "[parameters('maxSizeBytes')]",
-        "sampleName": "[parameters('sampleName')]",
-        "zoneRedundant": "[parameters('zoneRedundant')]",
-        "licenseType": "[parameters('licenseType')]",
-        "readScale": "[parameters('readScale')]",
-        "minCapacity": "[if(not(empty(parameters('minCapacity'))), json(parameters('minCapacity')), 0)]",
         "autoPauseDelay": "[parameters('autoPauseDelay')]",
-        "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
-        "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
-        "isLedgerOn": "[parameters('isLedgerOn')]",
-        "maintenanceConfigurationId": "[if(not(empty(parameters('maintenanceConfigurationId'))), parameters('maintenanceConfigurationId'), null())]",
-        "elasticPoolId": "[parameters('elasticPoolId')]",
+        "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), 'NoPreference')]",
+        "catalogCollation": "[parameters('catalogCollation')]",
+        "collation": "[parameters('collation')]",
         "createMode": "[parameters('createMode')]",
-        "sourceDatabaseId": "[if(not(empty(parameters('sourceDatabaseResourceId'))), parameters('sourceDatabaseResourceId'), null())]",
-        "sourceDatabaseDeletionDate": "[if(not(empty(parameters('sourceDatabaseDeletionDate'))), parameters('sourceDatabaseDeletionDate'), null())]",
-        "recoveryServicesRecoveryPointId": "[if(not(empty(parameters('recoveryServicesRecoveryPointResourceId'))), parameters('recoveryServicesRecoveryPointResourceId'), null())]",
-        "restorePointInTime": "[if(not(empty(parameters('restorePointInTime'))), parameters('restorePointInTime'), null())]"
+        "elasticPoolId": "[parameters('elasticPoolResourceId')]",
+        "encryptionProtector": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), null())]",
+        "encryptionProtectorAutoRotation": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]",
+        "federatedClientId": "[parameters('federatedClientId')]",
+        "freeLimitExhaustionBehavior": "[parameters('freeLimitExhaustionBehavior')]",
+        "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
+        "isLedgerOn": "[parameters('isLedgerOn')]",
+        "licenseType": "[parameters('licenseType')]",
+        "longTermRetentionBackupResourceId": "[parameters('longTermRetentionBackupResourceId')]",
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
+        "manualCutover": "[parameters('manualCutover')]",
+        "maxSizeBytes": "[parameters('maxSizeBytes')]",
+        "minCapacity": "[if(not(empty(parameters('minCapacity'))), json(parameters('minCapacity')), 0)]",
+        "performCutover": "[parameters('performCutover')]",
+        "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
+        "readScale": "[parameters('readScale')]",
+        "recoverableDatabaseId": "[parameters('recoverableDatabaseResourceId')]",
+        "recoveryServicesRecoveryPointId": "[parameters('recoveryServicesRecoveryPointResourceId')]",
+        "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
+        "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseResourceId')]",
+        "restorePointInTime": "[parameters('restorePointInTime')]",
+        "sampleName": "[parameters('sampleName')]",
+        "secondaryType": "[parameters('secondaryType')]",
+        "sourceDatabaseDeletionDate": "[parameters('sourceDatabaseDeletionDate')]",
+        "sourceDatabaseId": "[parameters('sourceDatabaseResourceId')]",
+        "sourceResourceId": "[parameters('sourceResourceId')]",
+        "useFreeLimit": "[parameters('useFreeLimit')]",
+        "zoneRedundant": "[parameters('zoneRedundant')]"
       },
-      "sku": "[variables('skuVar')]",
       "dependsOn": [
-        "server"
+        "cMKKeyVault::cMKKey"
       ]
     },
     "database_diagnosticSettings": {
@@ -425,7 +763,7 @@
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
       "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('serverName'), parameters('name'))]",
-      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', replace(parameters('name'), ' ', '_')))]",
       "properties": {
         "copy": [
           {
@@ -458,10 +796,25 @@
         "database"
       ]
     },
+    "database_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('serverName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "database"
+      ]
+    },
     "database_backupShortTermRetentionPolicy": {
+      "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-shBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+      "name": "[format('{0}-shBakRetPol', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -474,8 +827,12 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
-          "diffBackupIntervalInHours": "[if(contains(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours'), createObject('value', parameters('backupShortTermRetentionPolicy').diffBackupIntervalInHours), createObject('value', 24))]",
-          "retentionDays": "[if(contains(parameters('backupShortTermRetentionPolicy'), 'retentionDays'), createObject('value', parameters('backupShortTermRetentionPolicy').retentionDays), createObject('value', 7))]"
+          "diffBackupIntervalInHours": {
+            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours')]"
+          },
+          "retentionDays": {
+            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -483,12 +840,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2539756678143412969"
+              "version": "0.36.1.42791",
+              "templateHash": "9948442514033354219"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {
@@ -507,7 +863,7 @@
               "type": "int",
               "defaultValue": 24,
               "metadata": {
-                "description": "Optional. Differential backup interval in hours."
+                "description": "Optional. Differential backup interval in hours. For Hyperscal tiers this value will be ignored."
               }
             },
             "retentionDays": {
@@ -521,10 +877,10 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
-                "diffBackupIntervalInHours": "[parameters('diffBackupIntervalInHours')]",
+                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
                 "retentionDays": "[parameters('retentionDays')]"
               }
             }
@@ -559,9 +915,10 @@
       ]
     },
     "database_backupLongTermRetentionPolicy": {
+      "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-lgBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+      "name": "[format('{0}-lgBakRetPol', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -574,23 +931,31 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
-          "weeklyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').weeklyRetention), createObject('value', ''))]",
-          "monthlyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').monthlyRetention), createObject('value', ''))]",
-          "yearlyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').yearlyRetention), createObject('value', ''))]",
-          "weekOfYear": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'weekOfYear'), createObject('value', parameters('backupLongTermRetentionPolicy').weekOfYear), createObject('value', 1))]"
+          "weeklyRetention": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
+          },
+          "monthlyRetention": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention')]"
+          },
+          "yearlyRetention": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention')]"
+          },
+          "weekOfYear": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "10544886139268607584"
+              "version": "0.36.1.42791",
+              "templateHash": "10140872033464442933"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {
@@ -605,16 +970,16 @@
                 "description": "Required. The name of the parent database."
               }
             },
-            "weeklyRetention": {
+            "monthlyRetention": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Monthly retention in ISO 8601 duration format."
               }
             },
-            "monthlyRetention": {
+            "weeklyRetention": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Weekly retention in ISO 8601 duration format."
               }
@@ -628,16 +993,28 @@
             },
             "yearlyRetention": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Yearly retention in ISO 8601 duration format."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "server::database": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers/databases",
+              "apiVersion": "2023-08-01",
+              "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
+            },
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('serverName')]"
+            },
+            "backupLongTermRetentionPolicy": {
               "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
                 "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -646,7 +1023,7 @@
                 "yearlyRetention": "[parameters('yearlyRetention')]"
               }
             }
-          ],
+          },
           "outputs": {
             "resourceGroupName": {
               "type": "string",
@@ -704,7 +1081,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('database', '2023-08-01', 'full').location]"
     }
   }
 }

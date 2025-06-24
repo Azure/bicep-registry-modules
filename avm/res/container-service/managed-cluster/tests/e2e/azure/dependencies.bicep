@@ -36,15 +36,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: map(
-      range(0, 3),
-      i => {
-        name: 'subnet-${i}'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, i)
-        }
+    subnets: map(range(0, 3), i => {
+      name: 'subnet-${i}'
+      properties: {
+        addressPrefix: cidrSubnet(addressPrefix, 24, i)
       }
-    )
+    })
   }
 }
 
@@ -78,13 +75,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
 
   resource key 'keys@2022-07-01' = {
     name: 'encryptionKey'
-    properties: {
-      kty: 'RSA'
-    }
-  }
-
-  resource kmskey 'keys@2022-07-01' = {
-    name: 'kmsEncryptionKey'
     properties: {
       kty: 'RSA'
     }
@@ -173,12 +163,6 @@ output managedIdentityKubeletIdentityResourceId string = managedIdentityKubeletI
 
 @description('The resource ID of the created Disk Encryption Set.')
 output diskEncryptionSetResourceId string = diskEncryptionSet.id
-
-@description('The resource ID of the created Key Vault.')
-output keyVaultResourceId string = keyVault.id
-
-@description('The name of the Key Vault Encryption Key.')
-output keyVaultEncryptionKeyName string = keyVault::key.name
 
 @description('The resource ID of the created Proximity Placement Group.')
 output proximityPlacementGroupResourceId string = proximityPlacementGroup.id

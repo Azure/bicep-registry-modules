@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module in alignment with the b
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apiswaf'
 
@@ -24,6 +21,13 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param customSecret string = newGuid()
 
+// Enforcing locations to not have conflicting availability zones
+@description('Optional. The primary location to deploy resources to.')
+var enforcedLocation = 'ukSouth'
+
+@description('Optional. The secondary location to deploy resources to.')
+var secondaryEnforcedLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -32,29 +36,29 @@ param customSecret string = newGuid()
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -66,19 +70,23 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
-          location: 'westus'
+          location: secondaryEnforcedLocation
           sku: {
             name: 'Premium'
-            capacity: 1
+            capacity: 3
           }
+          availabilityZones: [
+            1
+            2
+            3
+          ]
           disableGateway: false
         }
       ]
@@ -102,42 +110,45 @@ module testDeployment '../../../main.bicep' = [
       minApiVersion: '2022-08-01'
       apis: [
         {
-          apiVersionSet: {
-            name: 'echo-version-set'
-            properties: {
-              description: 'An echo API version set'
-              displayName: 'Echo version set'
-              versioningScheme: 'Segment'
-            }
-          }
           displayName: 'Echo API'
           description: 'An echo API service'
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'https://echoapi.cloudapp.net/api'
+          protocols: [
+            'https'
+          ]
+          apiVersionSetName: 'echo-version-set'
         }
       ]
-      authorizationServers: {
-        secureList: [
-          {
-            authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-            clientId: 'apimClientid'
-            clientSecret: customSecret
-            clientRegistrationEndpoint: 'https://localhost'
-            grantTypes: [
-              'authorizationCode'
-            ]
-            name: 'AuthServer1'
-            tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
-          }
-        ]
-      }
+      apiVersionSets: [
+        {
+          name: 'echo-version-set'
+          description: 'An echo API version set'
+          displayName: 'Echo version set'
+          versioningScheme: 'Segment'
+        }
+      ]
+      authorizationServers: [
+        {
+          authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
+          clientId: 'apimClientid'
+          clientSecret: customSecret
+          clientRegistrationEndpoint: 'https://localhost'
+          grantTypes: [
+            'authorizationCode'
+          ]
+          name: 'AuthServer1'
+          displayName: 'AuthServer1'
+          tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
+        }
+      ]
       backends: [
         {
           name: 'backend'
           tls: {
-            validateCertificateChain: false
-            validateCertificateName: false
+            validateCertificateChain: true
+            validateCertificateName: true
           }
           url: 'https://echoapi.cloudapp.net/api'
         }
@@ -161,6 +172,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'aad'
           clientId: 'apimClientid'
+          clientLibrary: 'MSAL-2'
           clientSecret: customSecret
           authority: split(environment().authentication.loginEndpoint, '/')[2]
           signinTenant: 'mytenant.onmicrosoft.com'
@@ -242,6 +254,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'testArmSubscriptionAllApis'
           scope: '/apis'
+          displayName: 'testArmSubscriptionAllApis'
         }
       ]
       tags: {
@@ -250,8 +263,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      diagnosticDependencies
-    ]
   }
 ]

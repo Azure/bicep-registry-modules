@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13864187993066263466"
+      "version": "0.35.1.17967",
+      "templateHash": "3062149733782372246"
     },
     "name": "Log Analytics Workspace Datasources",
-    "description": "This module deploys a Log Analytics Workspace Data Source.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Data Source."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {
@@ -22,7 +21,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the solution."
+        "description": "Required. Name of the data source."
       }
     },
     "kind": {
@@ -39,7 +38,7 @@
         "LinuxPerformanceCollection"
       ],
       "metadata": {
-        "description": "Required. The kind of the DataSource."
+        "description": "Optional. The kind of the data source."
       }
     },
     "tags": {
@@ -51,14 +50,14 @@
     },
     "linkedResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the resource to be linked."
       }
     },
     "eventLogName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
       }
@@ -72,7 +71,7 @@
     },
     "objectName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
       }
@@ -100,21 +99,21 @@
     },
     "counterName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
       }
     },
     "state": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
       }
     },
     "syslogName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. System log to configure when kind is LinuxSyslog."
       }
@@ -131,12 +130,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "dataSource": {
       "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
@@ -152,10 +151,7 @@
         "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
         "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
         "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-      },
-      "dependsOn": [
-        "workspace"
-      ]
+      }
     }
   },
   "outputs": {

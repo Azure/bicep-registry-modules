@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9304498064315745543"
+      "version": "0.35.1.17967",
+      "templateHash": "14360840402916250050"
     },
     "name": "Eventgrid Namespace Clients",
-    "description": "This module deploys an Eventgrid Namespace Client.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Client."
   },
   "parameters": {
     "namespaceName": {
@@ -101,10 +100,7 @@
           "allowedThumbprints": "[if(equals(parameters('clientCertificateAuthenticationValidationSchema'), 'ThumbprintMatch'), parameters('clientCertificateAuthenticationAllowedThumbprints'), null())]"
         },
         "state": "[parameters('state')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     }
   },
   "outputs": {

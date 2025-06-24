@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11159744121670173662"
+      "version": "0.34.44.8038",
+      "templateHash": "5878735365178041988"
     },
     "name": "Dns Forwarding Rulesets Forwarding Rules",
-    "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
-    "owner": "Azure/module-maintainers"
+    "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset."
   },
   "parameters": {
     "name": {
@@ -69,10 +68,7 @@
         "forwardingRuleState": "[parameters('forwardingRuleState')]",
         "metadata": "[parameters('metadata')]",
         "targetDnsServers": "[parameters('targetDnsServers')]"
-      },
-      "dependsOn": [
-        "dnsForwardingRuleset"
-      ]
+      }
     }
   },
   "outputs": {

@@ -1,15 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7178717349327479453"
+      "version": "0.34.44.8038",
+      "templateHash": "11078107057030391561"
     },
     "name": "Virtual Hub Route Tables",
-    "description": "This module deploys a Virtual Hub Route Table.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Hub Route Table."
   },
   "parameters": {
     "name": {
@@ -26,30 +26,36 @@
     },
     "labels": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of labels associated with this route table."
       }
     },
     "routes": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all routes."
       }
     }
   },
-  "resources": [
-    {
-      "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+  "resources": {
+    "virtualHub": {
+      "existing": true,
+      "type": "Microsoft.Network/virtualHubs",
       "apiVersion": "2022-11-01",
+      "name": "[parameters('virtualHubName')]"
+    },
+    "hubRouteTable": {
+      "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
-        "labels": "[if(not(empty(parameters('labels'))), parameters('labels'), null())]",
-        "routes": "[if(not(empty(parameters('routes'))), parameters('routes'), null())]"
+        "labels": "[parameters('labels')]",
+        "routes": "[parameters('routes')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

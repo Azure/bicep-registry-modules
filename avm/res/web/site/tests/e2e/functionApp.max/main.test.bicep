@@ -48,7 +48,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -74,75 +74,87 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      appInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
-      appSettingsKeyValuePairs: {
-        AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
-        EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
-        FUNCTIONS_EXTENSION_VERSION: '~4'
-        FUNCTIONS_WORKER_RUNTIME: 'dotnet'
-      }
-      authSettingV2Configuration: {
-        globalValidation: {
-          requireAuthentication: true
-          unauthenticatedClientAction: 'Return401'
-        }
-        httpSettings: {
-          forwardProxy: {
-            convention: 'NoProxy'
-          }
-          requireHttps: true
-          routes: {
-            apiPrefix: '/.auth'
+      configs: [
+        {
+          // Persisted on service in 'Settings/Environment variables'
+          name: 'appsettings'
+          applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+          properties: {
+            AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+            EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
+            FUNCTIONS_EXTENSION_VERSION: '~4'
+            FUNCTIONS_WORKER_RUNTIME: 'dotnet'
           }
         }
-        identityProviders: {
-          azureActiveDirectory: {
-            enabled: true
-            login: {
-              disableWWWAuthenticate: false
+        {
+          // Persisted on service in 'Settings/Authentication'
+          name: 'authsettingsV2'
+          properties: {
+            globalValidation: {
+              requireAuthentication: true
+              unauthenticatedClientAction: 'Return401'
             }
-            registration: {
-              clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
-              clientSecretSettingName: 'EASYAUTH_SECRET'
-              openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
-            }
-            validation: {
-              allowedAudiences: [
-                'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
-              ]
-              defaultAuthorizationPolicy: {
-                allowedPrincipals: {}
+            httpSettings: {
+              forwardProxy: {
+                convention: 'NoProxy'
               }
-              jwtClaimChecks: {}
+              requireHttps: true
+              routes: {
+                apiPrefix: '/.auth'
+              }
+            }
+            identityProviders: {
+              azureActiveDirectory: {
+                enabled: true
+                login: {
+                  disableWWWAuthenticate: false
+                }
+                registration: {
+                  clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
+                  clientSecretSettingName: 'EASYAUTH_SECRET'
+                  openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
+                }
+                validation: {
+                  allowedAudiences: [
+                    'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
+                  ]
+                  defaultAuthorizationPolicy: {
+                    allowedPrincipals: {}
+                  }
+                  jwtClaimChecks: {}
+                }
+              }
+            }
+            login: {
+              allowedExternalRedirectUrls: [
+                'string'
+              ]
+              cookieExpiration: {
+                convention: 'FixedTime'
+                timeToExpiration: '08:00:00'
+              }
+              nonce: {
+                nonceExpirationInterval: '00:05:00'
+                validateNonce: true
+              }
+              preserveUrlFragmentsForLogins: false
+              routes: {}
+              tokenStore: {
+                azureBlobStorage: {}
+                enabled: true
+                fileSystem: {}
+                tokenRefreshExtensionHours: 72
+              }
+            }
+            platform: {
+              enabled: true
+              runtimeVersion: '~1'
             }
           }
         }
-        login: {
-          allowedExternalRedirectUrls: [
-            'string'
-          ]
-          cookieExpiration: {
-            convention: 'FixedTime'
-            timeToExpiration: '08:00:00'
-          }
-          nonce: {
-            nonceExpirationInterval: '00:05:00'
-            validateNonce: true
-          }
-          preserveUrlFragmentsForLogins: false
-          routes: {}
-          tokenStore: {
-            azureBlobStorage: {}
-            enabled: true
-            fileSystem: {}
-            tokenRefreshExtensionHours: 72
-          }
-        }
-        platform: {
-          enabled: true
-          runtimeVersion: '~1'
-        }
-      }
+      ]
       basicPublishingCredentialsPolicies: [
         {
           name: 'ftp'
@@ -174,9 +186,13 @@ module testDeployment '../../../main.bicep' = [
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -185,18 +201,24 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
       ]
       roleAssignments: [
         {
+          name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -215,8 +237,6 @@ module testDeployment '../../../main.bicep' = [
         alwaysOn: true
         use32BitWorkerProcess: false
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -225,14 +245,10 @@ module testDeployment '../../../main.bicep' = [
       }
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

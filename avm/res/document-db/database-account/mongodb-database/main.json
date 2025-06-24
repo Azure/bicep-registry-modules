@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "1527748615955553712"
+      "version": "0.35.1.17967",
+      "templateHash": "16911349070369924403"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
-    "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a MongoDB Database within a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {
@@ -29,12 +28,12 @@
       "type": "int",
       "defaultValue": 400,
       "metadata": {
-        "description": "Optional. Request Units per second."
+        "description": "Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
       }
     },
     "collections": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Collections in the mongodb database."
       }
@@ -51,12 +50,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "mongodbDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -72,11 +71,11 @@
     "mongodbDatabase_collections": {
       "copy": {
         "name": "mongodbDatabase_collections",
-        "count": "[length(parameters('collections'))]"
+        "count": "[length(coalesce(parameters('collections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), parameters('collections')[copyIndex()].name)]",
+      "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('collections'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -90,16 +89,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('collections')[copyIndex()].name]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].name]"
           },
           "indexes": {
-            "value": "[parameters('collections')[copyIndex()].indexes]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].indexes]"
           },
           "shardKey": {
-            "value": "[parameters('collections')[copyIndex()].shardKey]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].shardKey]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('collections')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -108,12 +107,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "6235322895830297683"
+              "version": "0.35.1.17967",
+              "templateHash": "7802955893269337475"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
-            "description": "This module deploys a MongoDB Database Collection.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a MongoDB Database Collection."
           },
           "parameters": {
             "databaseAccountName": {
@@ -138,7 +136,7 @@
               "type": "int",
               "defaultValue": 400,
               "metadata": {
-                "description": "Optional. Request Units per second."
+                "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
               }
             },
             "indexes": {
@@ -157,10 +155,10 @@
           "resources": [
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
               "properties": {
-                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2023-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
                 "resource": {
                   "id": "[parameters('name')]",
                   "indexes": "[parameters('indexes')]",

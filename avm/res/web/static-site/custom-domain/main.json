@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3789549854358718812"
+      "version": "0.34.44.8038",
+      "templateHash": "13361505089055584794"
     },
     "name": "Static Web App Site Custom Domains",
-    "description": "This module deploys a Static Web App Site Custom Domain.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Static Web App Site Custom Domain."
   },
   "parameters": {
     "name": {

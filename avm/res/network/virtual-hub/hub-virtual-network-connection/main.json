@@ -1,15 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3505452198428635330"
+      "version": "0.34.44.8038",
+      "templateHash": "5214703706417305741"
     },
     "name": "Virtual Hub Virtual Network Connections",
-    "description": "This module deploys a Virtual Hub Virtual Network Connection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Hub Virtual Network Connection."
   },
   "parameters": {
     "name": {
@@ -31,7 +31,7 @@
         "description": "Optional. Enable internet security."
       }
     },
-    "remoteVirtualNetworkId": {
+    "remoteVirtualNetworkResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the virtual network to link to."
@@ -39,26 +39,32 @@
     },
     "routingConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "virtualHub": {
+      "existing": true,
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('virtualHubName')]"
+    },
+    "hubVirtualNetworkConnection": {
       "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
         "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
         "remoteVirtualNetwork": {
-          "id": "[parameters('remoteVirtualNetworkId')]"
+          "id": "[parameters('remoteVirtualNetworkResourceId')]"
         },
-        "routingConfiguration": "[if(not(empty(parameters('routingConfiguration'))), parameters('routingConfiguration'), null())]"
+        "routingConfiguration": "[parameters('routingConfiguration')]"
       }
     }
-  ],
+  },
   "outputs": {
     "resourceGroupName": {
       "type": "string",

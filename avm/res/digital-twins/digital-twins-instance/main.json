@@ -5,15 +5,370 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16174863317053860668"
+      "version": "0.36.1.42791",
+      "templateHash": "17768721428681200332"
     },
     "name": "Digital Twins Instances",
-    "description": "This module deploys an Azure Digital Twins Instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Digital Twins Instance."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "privateEndpointOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The group Id for the private endpoint Group."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fqdn": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "FQDN that resolves to private endpoint IP address."
+                }
+              },
+              "ipAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "A list of private IP addresses of the private endpoint."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "endpointType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Digital Twin Endpoint."
+          }
+        },
+        "properties": {
+          "$ref": "#/definitions/propertiesType",
+          "metadata": {
+            "description": "Required. The properties of the endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Digital Twin Endpoint."
+      }
+    },
+    "_1.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of private IP addresses of the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the private DNS Zone Group config."
+                }
+              },
+              "privateDnsZoneResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of the private DNS zone."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_2.eventGridPropertiesType": {
+      "type": "object",
+      "properties": {
+        "endpointType": {
+          "type": "string",
+          "allowedValues": [
+            "EventGrid"
+          ],
+          "metadata": {
+            "description": "Required. The type of endpoint to create."
+          }
+        },
+        "deadLetterSecret": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+          }
+        },
+        "deadLetterUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dead letter storage URL for identity-based authentication."
+          }
+        },
+        "eventGridTopicResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Event Grid Topic to get access keys from."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for an event grid endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.eventHubAuthorizationPropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "IdentityBased": {
+            "$ref": "#/definitions/_2.eventHubIdentityBasedAuthenticationPropertiesType"
+          },
+          "KeyBased": {
+            "$ref": "#/definitions/_2.eventHubKeyBasedAuthenticationPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.eventHubIdentityBasedAuthenticationPropertiesType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "IdentityBased"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+          }
+        },
+        "managedIdentities": {
+          "$ref": "#/definitions/_2.managedIdentitiesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
+          }
+        },
+        "eventHubResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Event Hub Namespace Event Hub."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.eventHubKeyBasedAuthenticationPropertiesType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "KeyBased"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+          }
+        },
+        "eventHubResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Event Hub Namespace Event Hub."
+          }
+        },
+        "eventHubAuthorizationRuleName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Event Hub Namespace Event Hub Authorization Rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.eventHubPropertiesType": {
+      "type": "object",
+      "properties": {
+        "endpointType": {
+          "type": "string",
+          "allowedValues": [
+            "EventHub"
+          ],
+          "metadata": {
+            "description": "Required. The type of endpoint to create."
+          }
+        },
+        "deadLetterSecret": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+          }
+        },
+        "deadLetterUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dead letter storage URL for identity-based authentication."
+          }
+        },
+        "authentication": {
+          "$ref": "#/definitions/_2.eventHubAuthorizationPropertiesType",
+          "metadata": {
+            "description": "Required. Specifies the authentication type being used for connecting to the endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for an event hub endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.managedIdentitiesType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -23,18 +378,264 @@
             "description": "Optional. Enables system assigned managed identity on the resource."
           }
         },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+        "userAssignedResourceId": {
+          "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "The type for the managed identity.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.serviceBusNamespaceAuthorizationPropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "IdentityBased": {
+            "$ref": "#/definitions/_2.serviceBusNamespaceIdentityBasedAuthenticationPropertiesType"
+          },
+          "KeyBased": {
+            "$ref": "#/definitions/_2.serviceBusNamespaceKeyBasedAuthenticationPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.serviceBusNamespaceIdentityBasedAuthenticationPropertiesType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "IdentityBased"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+          }
+        },
+        "managedIdentities": {
+          "$ref": "#/definitions/_2.managedIdentitiesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
+          }
+        },
+        "serviceBusNamespaceTopicResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ServiceBus Namespace Topic resource ID."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.serviceBusNamespaceKeyBasedAuthenticationPropertiesType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "KeyBased"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+          }
+        },
+        "serviceBusNamespaceTopicResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ServiceBus Namespace Topic resource ID."
+          }
+        },
+        "serviceBusNamespaceTopicAuthorizationRuleName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ServiceBus Namespace Topic Authorization Rule name."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "_2.serviceBusPropertiesType": {
+      "type": "object",
+      "properties": {
+        "endpointType": {
+          "type": "string",
+          "allowedValues": [
+            "ServiceBus"
+          ],
+          "metadata": {
+            "description": "Required. The type of endpoint to create."
+          }
+        },
+        "authentication": {
+          "$ref": "#/definitions/_2.serviceBusNamespaceAuthorizationPropertiesType",
+          "metadata": {
+            "description": "Required. Specifies the authentication type being used for connecting to the endpoint."
+          }
+        },
+        "deadLetterSecret": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+          }
+        },
+        "deadLetterUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dead letter storage URL for identity-based authentication."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a service bus endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -59,390 +660,280 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "privateEndpointSingleServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private Endpoint."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the Private Endpoint to."
+          }
+        },
+        "privateLinkServiceConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private link connection to create."
+          }
+        },
+        "service": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The subresource to deploy the Private Endpoint for. For example \"vault\" for a Key Vault Private Endpoint."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
+          }
+        },
+        "privateDnsZoneGroup": {
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
+          }
+        },
+        "isManualConnection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If Manual Private Link Connection is required."
+          }
+        },
+        "manualConnectionRequestMessage": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 140,
+          "metadata": {
+            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS configurations."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints."
+          }
+        },
+        "applicationSecurityGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application security groups in which the Private Endpoint IP configuration is included."
+          }
+        },
+        "customNetworkInterfaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom name of the network interface attached to the Private Endpoint."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "propertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "endpointType",
+        "mapping": {
+          "EventGrid": {
+            "$ref": "#/definitions/_2.eventGridPropertiesType"
+          },
+          "EventHub": {
+            "$ref": "#/definitions/_2.eventHubPropertiesType"
+          },
+          "ServiceBus": {
+            "$ref": "#/definitions/_2.serviceBusPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the Digital Twin Endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "endpoint/main.bicep"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "privateEndpointType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private endpoint."
-            }
-          },
-          "location": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The location to deploy the private endpoint to."
-            }
-          },
-          "privateLinkServiceConnectionName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private link connection to create."
-            }
-          },
-          "service": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
-            }
-          },
-          "subnetResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
-            }
-          },
-          "privateDnsZoneGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
-            }
-          },
-          "privateDnsZoneResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
-            }
-          },
-          "isManualConnection": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If Manual Private Link Connection is required."
-            }
-          },
-          "manualConnectionRequestMessage": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 140,
-            "metadata": {
-              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
-            }
-          },
-          "customDnsConfigs": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Custom DNS configurations."
-            }
-          },
-          "ipConfigurations": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-            }
-          },
-          "applicationSecurityGroupResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
-            }
-          },
-          "customNetworkInterfaceName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The custom name of the network interface attached to the private endpoint."
-            }
-          },
-          "lock": {
-            "$ref": "#/definitions/lockType",
-            "metadata": {
-              "description": "Optional. Specify the type of lock."
-            }
-          },
-          "roleAssignments": {
-            "$ref": "#/definitions/roleAssignmentType",
-            "metadata": {
-              "description": "Optional. Array of role assignments to create."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
-          "resourceGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify if you want to deploy the Privte Endpoint into a different resource group than the main resource."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
-      },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -463,46 +954,44 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
     },
-    "eventHubEndpoints": {
+    "endpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/endpointType"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Event Hub Endpoint."
-      }
-    },
-    "eventGridEndpoints": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Event Grid Endpoint."
-      }
-    },
-    "serviceBusEndpoints": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Service Bus Endpoint."
+        "description": "Optional. The endpoints of the service."
       }
     },
     "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointSingleServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
@@ -520,7 +1009,11 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
@@ -533,13 +1026,25 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
       }
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -548,7 +1053,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -556,7 +1061,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.digitaltwins-digitaltwinsinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -642,33 +1147,33 @@
     "digitalTwinsInstance_roleAssignments": {
       "copy": {
         "name": "digitalTwinsInstance_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.DigitalTwins/digitalTwinsInstances/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "digitalTwinsInstance"
       ]
     },
-    "digitalTwinsInstance_eventHubEndpoints": {
+    "digitalTwinsInstance_endpoints": {
       "copy": {
-        "name": "digitalTwinsInstance_eventHubEndpoints",
-        "count": "[length(coalesce(parameters('eventHubEndpoints'), createArray()))]"
+        "name": "digitalTwinsInstance_endpoints",
+        "count": "[length(coalesce(parameters('endpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-DigitalTwins-Endpoints-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -678,15 +1183,12 @@
           "digitalTwinInstanceName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].name), createObject('value', 'EventHubEndpoint'))]",
-          "authenticationType": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'authenticationType'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].authenticationType), createObject('value', 'KeyBased'))]",
-          "connectionStringPrimaryKey": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'connectionStringPrimaryKey'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].connectionStringPrimaryKey), createObject('value', ''))]",
-          "connectionStringSecondaryKey": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'connectionStringSecondaryKey'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].connectionStringSecondaryKey), createObject('value', ''))]",
-          "deadLetterSecret": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'deadLetterSecret'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].deadLetterSecret), createObject('value', ''))]",
-          "deadLetterUri": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'deadLetterUri'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].deadLetterUri), createObject('value', ''))]",
-          "endpointUri": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'endpointUri'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].endpointUri), createObject('value', ''))]",
-          "entityPath": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'entityPath'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].entityPath), createObject('value', ''))]",
-          "managedIdentities": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'managedIdentities'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].managedIdentities), createObject('value', createObject()))]"
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('endpoints'), createArray())[copyIndex()], 'name'), format('{0}Endpoint', coalesce(parameters('endpoints'), createArray())[copyIndex()].properties.endpointType))]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('endpoints'), createArray())[copyIndex()].properties]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -695,12 +1197,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1964184668152537300"
+              "version": "0.36.1.42791",
+              "templateHash": "5468659950690400320"
             },
-            "name": "Digital Twins Instance EventHub Endpoint",
-            "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "name": "Digital Twins Instance Endpoint",
+            "description": "This module deploys a Digital Twins Instance Endpoint."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -721,15 +1222,291 @@
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "description": "The type for the managed identity."
+              }
+            },
+            "propertiesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "endpointType",
+                "mapping": {
+                  "EventGrid": {
+                    "$ref": "#/definitions/eventGridPropertiesType"
+                  },
+                  "EventHub": {
+                    "$ref": "#/definitions/eventHubPropertiesType"
+                  },
+                  "ServiceBus": {
+                    "$ref": "#/definitions/serviceBusPropertiesType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the Digital Twin Endpoint."
+              }
+            },
+            "eventGridPropertiesType": {
+              "type": "object",
+              "properties": {
+                "endpointType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "EventGrid"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of endpoint to create."
+                  }
+                },
+                "deadLetterSecret": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+                  }
+                },
+                "deadLetterUri": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dead letter storage URL for identity-based authentication."
+                  }
+                },
+                "eventGridTopicResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the Event Grid Topic to get access keys from."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for an event grid endpoint."
+              }
+            },
+            "eventHubPropertiesType": {
+              "type": "object",
+              "properties": {
+                "endpointType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "EventHub"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of endpoint to create."
+                  }
+                },
+                "deadLetterSecret": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+                  }
+                },
+                "deadLetterUri": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dead letter storage URL for identity-based authentication."
+                  }
+                },
+                "authentication": {
+                  "$ref": "#/definitions/eventHubAuthorizationPropertiesType",
+                  "metadata": {
+                    "description": "Required. Specifies the authentication type being used for connecting to the endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for an event hub endpoint."
+              }
+            },
+            "eventHubAuthorizationPropertiesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "IdentityBased": {
+                    "$ref": "#/definitions/eventHubIdentityBasedAuthenticationPropertiesType"
+                  },
+                  "KeyBased": {
+                    "$ref": "#/definitions/eventHubKeyBasedAuthenticationPropertiesType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "eventHubIdentityBasedAuthenticationPropertiesType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "IdentityBased"
+                  ],
+                  "metadata": {
+                    "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+                  }
+                },
+                "managedIdentities": {
+                  "$ref": "#/definitions/managedIdentitiesType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
+                  }
+                },
+                "eventHubResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the Event Hub Namespace Event Hub."
+                  }
+                }
+              }
+            },
+            "eventHubKeyBasedAuthenticationPropertiesType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "KeyBased"
+                  ],
+                  "metadata": {
+                    "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+                  }
+                },
+                "eventHubResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the Event Hub Namespace Event Hub."
+                  }
+                },
+                "eventHubAuthorizationRuleName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Event Hub Namespace Event Hub Authorization Rule."
+                  }
+                }
+              }
+            },
+            "serviceBusPropertiesType": {
+              "type": "object",
+              "properties": {
+                "endpointType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ServiceBus"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of endpoint to create."
+                  }
+                },
+                "authentication": {
+                  "$ref": "#/definitions/serviceBusNamespaceAuthorizationPropertiesType",
+                  "metadata": {
+                    "description": "Required. Specifies the authentication type being used for connecting to the endpoint."
+                  }
+                },
+                "deadLetterSecret": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+                  }
+                },
+                "deadLetterUri": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dead letter storage URL for identity-based authentication."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a service bus endpoint."
+              }
+            },
+            "serviceBusNamespaceAuthorizationPropertiesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "IdentityBased": {
+                    "$ref": "#/definitions/serviceBusNamespaceIdentityBasedAuthenticationPropertiesType"
+                  },
+                  "KeyBased": {
+                    "$ref": "#/definitions/serviceBusNamespaceKeyBasedAuthenticationPropertiesType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "serviceBusNamespaceIdentityBasedAuthenticationPropertiesType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "IdentityBased"
+                  ],
+                  "metadata": {
+                    "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+                  }
+                },
+                "managedIdentities": {
+                  "$ref": "#/definitions/managedIdentitiesType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
+                  }
+                },
+                "serviceBusNamespaceTopicResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The ServiceBus Namespace Topic resource ID."
+                  }
+                }
+              }
+            },
+            "serviceBusNamespaceKeyBasedAuthenticationPropertiesType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "KeyBased"
+                  ],
+                  "metadata": {
+                    "description": "Required. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified."
+                  }
+                },
+                "serviceBusNamespaceTopicResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The ServiceBus Namespace Topic resource ID."
+                  }
+                },
+                "serviceBusNamespaceTopicAuthorizationRuleName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The ServiceBus Namespace Topic Authorization Rule name."
+                  }
+                }
+              }
             }
           },
           "parameters": {
             "name": {
               "type": "string",
-              "defaultValue": "EventHubEndpoint",
               "metadata": {
-                "description": "Optional. The name of the Digital Twin Endpoint."
+                "description": "Required. The name of the Digital Twin Endpoint."
               }
             },
             "digitalTwinInstanceName": {
@@ -738,70 +1515,80 @@
                 "description": "Conditional. The name of the parent Digital Twin Instance resource. Required if the template is used in a standalone deployment."
               }
             },
-            "authenticationType": {
-              "type": "string",
-              "defaultValue": "IdentityBased",
-              "allowedValues": [
-                "IdentityBased",
-                "KeyBased"
-              ],
+            "properties": {
+              "$ref": "#/definitions/propertiesType",
               "metadata": {
-                "description": "Optional. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is selected, the endpointUri and entityPath properties must be specified."
-              }
-            },
-            "deadLetterSecret": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
-              }
-            },
-            "deadLetterUri": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Dead letter storage URL for identity-based authentication."
-              }
-            },
-            "connectionStringPrimaryKey": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Conditional. PrimaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Required if the `authenticationType` is \"KeyBased\"."
-              }
-            },
-            "connectionStringSecondaryKey": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. SecondaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Only used if the `authenticationType` is \"KeyBased\"."
-              }
-            },
-            "entityPath": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The EventHub name in the EventHub namespace for identity-based authentication."
-              }
-            },
-            "endpointUri": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The URL of the EventHub namespace for identity-based authentication. It must include the protocol 'sb://' (i.e. sb://xyz.servicebus.windows.net)."
-              }
-            },
-            "managedIdentities": {
-              "$ref": "#/definitions/managedIdentitiesType",
-              "metadata": {
-                "description": "Optional. The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both."
+                "description": "Required. The properties of the endpoint."
               }
             }
           },
           "variables": {
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), null())]"
+            "identity": "[if(not(empty(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'))), createObject('type', if(coalesce(tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'userAssignedResourceId')), null())]"
           },
           "resources": {
+            "eventHubNamespace::eventHub::authorizationRule": {
+              "condition": "[and(and(equals(parameters('properties').endpointType, 'EventHub'), equals(parameters('properties').endpointType, 'EventHub')), not(empty(tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName'))))]",
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+              "apiVersion": "2024-01-01",
+              "subscriptionId": "[split(parameters('properties').authentication.eventHubResourceId, '/')[2]]",
+              "resourceGroup": "[split(parameters('properties').authentication.eventHubResourceId, '/')[4]]",
+              "name": "[format('{0}/{1}/{2}', split(parameters('properties').authentication.eventHubResourceId, '/')[8], last(split(parameters('properties').authentication.eventHubResourceId, '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName'))]"
+            },
+            "eventHubNamespace::eventHub": {
+              "condition": "[and(equals(parameters('properties').endpointType, 'EventHub'), equals(parameters('properties').endpointType, 'EventHub'))]",
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces/eventhubs",
+              "apiVersion": "2024-01-01",
+              "subscriptionId": "[split(parameters('properties').authentication.eventHubResourceId, '/')[2]]",
+              "resourceGroup": "[split(parameters('properties').authentication.eventHubResourceId, '/')[4]]",
+              "name": "[format('{0}/{1}', split(parameters('properties').authentication.eventHubResourceId, '/')[8], last(split(parameters('properties').authentication.eventHubResourceId, '/')))]"
+            },
+            "serviceBusNamespace::topic::authorizationRule": {
+              "condition": "[and(and(equals(parameters('properties').endpointType, 'ServiceBus'), equals(parameters('properties').endpointType, 'ServiceBus')), not(empty(tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName'))))]",
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+              "apiVersion": "2024-01-01",
+              "subscriptionId": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[2]]",
+              "resourceGroup": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[4]]",
+              "name": "[format('{0}/{1}/{2}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')), tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName'))]"
+            },
+            "serviceBusNamespace::topic": {
+              "condition": "[and(equals(parameters('properties').endpointType, 'ServiceBus'), equals(parameters('properties').endpointType, 'ServiceBus'))]",
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces/topics",
+              "apiVersion": "2024-01-01",
+              "subscriptionId": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[2]]",
+              "resourceGroup": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[4]]",
+              "name": "[format('{0}/{1}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')))]"
+            },
+            "eventGridTopic": {
+              "condition": "[equals(parameters('properties').endpointType, 'EventGrid')]",
+              "existing": true,
+              "type": "Microsoft.EventGrid/topics",
+              "apiVersion": "2025-02-15",
+              "subscriptionId": "[split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[2]]",
+              "resourceGroup": "[split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[4]]",
+              "name": "[last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))]"
+            },
+            "eventHubNamespace": {
+              "condition": "[equals(parameters('properties').endpointType, 'EventHub')]",
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2024-01-01",
+              "subscriptionId": "[split(parameters('properties').authentication.eventHubResourceId, '/')[2]]",
+              "resourceGroup": "[split(parameters('properties').authentication.eventHubResourceId, '/')[4]]",
+              "name": "[split(parameters('properties').authentication.eventHubResourceId, '/')[8]]"
+            },
+            "serviceBusNamespace": {
+              "condition": "[equals(parameters('properties').endpointType, 'ServiceBus')]",
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces",
+              "apiVersion": "2024-01-01",
+              "subscriptionId": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[2]]",
+              "resourceGroup": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[4]]",
+              "name": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8]]"
+            },
             "digitalTwinsInstance": {
               "existing": true,
               "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
@@ -812,19 +1599,9 @@
               "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
               "apiVersion": "2023-01-31",
               "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
-              "properties": {
-                "endpointType": "EventHub",
-                "authenticationType": "[parameters('authenticationType')]",
-                "connectionStringPrimaryKey": "[parameters('connectionStringPrimaryKey')]",
-                "connectionStringSecondaryKey": "[parameters('connectionStringSecondaryKey')]",
-                "deadLetterSecret": "[parameters('deadLetterSecret')]",
-                "deadLetterUri": "[parameters('deadLetterUri')]",
-                "endpointUri": "[parameters('endpointUri')]",
-                "entityPath": "[parameters('entityPath')]",
-                "identity": "[variables('identity')]"
-              },
+              "properties": "[shallowMerge(createArray(createObject('endpointType', parameters('properties').endpointType, 'identity', variables('identity'), 'deadLetterSecret', tryGet(parameters('properties'), 'deadLetterSecret'), 'deadLetterUri', tryGet(parameters('properties'), 'deadLetterUri')), if(equals(parameters('properties').endpointType, 'EventGrid'), createObject('authenticationType', 'KeyBased', 'TopicEndpoint', reference('eventGridTopic').endpoint, 'accessKey1', listkeys('eventGridTopic', '2025-02-15').key1, 'accessKey2', listkeys('eventGridTopic', '2025-02-15').key2), createObject()), if(equals(parameters('properties').endpointType, 'EventHub'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.eventHubResourceId, '/')[8]), 'entityPath', last(split(parameters('properties').authentication.eventHubResourceId, '/'))), createObject('connectionStringPrimaryKey', listKeys('eventHubNamespace::eventHub::authorizationRule', '2024-01-01').primaryConnectionString, 'connectionStringSecondaryKey', listKeys('eventHubNamespace::eventHub::authorizationRule', '2024-01-01').secondaryConnectionString)))), createObject()), if(equals(parameters('properties').endpointType, 'ServiceBus'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8]), 'entityPath', last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'))), createObject('primaryConnectionString', listKeys('serviceBusNamespace::topic::authorizationRule', '2024-01-01').primaryConnectionString, 'secondaryConnectionString', listKeys('serviceBusNamespace::topic::authorizationRule', '2024-01-01').secondaryConnectionString)))), createObject())))]",
               "dependsOn": [
-                "digitalTwinsInstance"
+                "eventGridTopic"
               ]
             }
           },
@@ -852,335 +1629,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "digitalTwinsInstance"
-      ]
-    },
-    "digitalTwinsInstance_eventGridEndpoints": {
-      "copy": {
-        "name": "digitalTwinsInstance_eventGridEndpoints",
-        "count": "[length(coalesce(parameters('eventGridEndpoints'), createArray()))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-EventGrid-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "digitalTwinInstanceName": {
-            "value": "[parameters('name')]"
-          },
-          "name": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].name), createObject('value', 'EventGridEndpoint'))]",
-          "topicEndpoint": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'topicEndpoint'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].topicEndpoint), createObject('value', ''))]",
-          "deadLetterSecret": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'deadLetterSecret'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].deadLetterSecret), createObject('value', ''))]",
-          "deadLetterUri": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'deadLetterUri'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].deadLetterUri), createObject('value', ''))]",
-          "eventGridDomainResourceId": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'eventGridDomainId'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].eventGridDomainId), createObject('value', ''))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11981298053277690078"
-            },
-            "name": "Digital Twins Instance Event Grid Endpoints",
-            "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "defaultValue": "EventGridEndpoint",
-              "metadata": {
-                "description": "Optional. The name of the Digital Twin Endpoint."
-              }
-            },
-            "digitalTwinInstanceName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Digital Twin Instance resource. Required if the template is used in a standalone deployment."
-              }
-            },
-            "topicEndpoint": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. EventGrid Topic Endpoint."
-              }
-            },
-            "eventGridDomainResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The resource ID of the Event Grid to get access keys from."
-              }
-            },
-            "deadLetterSecret": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
-              }
-            },
-            "deadLetterUri": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Dead letter storage URL for identity-based authentication."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
-              "apiVersion": "2023-01-31",
-              "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
-              "properties": {
-                "endpointType": "EventGrid",
-                "authenticationType": "KeyBased",
-                "TopicEndpoint": "[parameters('topicEndpoint')]",
-                "accessKey1": "[listkeys(parameters('eventGridDomainResourceId'), '2022-06-15').key1]",
-                "accessKey2": "[listkeys(parameters('eventGridDomainResourceId'), '2022-06-15').key2]",
-                "deadLetterSecret": "[parameters('deadLetterSecret')]",
-                "deadLetterUri": "[parameters('deadLetterUri')]"
-              }
-            }
-          ],
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the Endpoint."
-              },
-              "value": "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances/endpoints', parameters('digitalTwinInstanceName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the resource group the resource was created in."
-              },
-              "value": "[resourceGroup().name]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Endpoint."
-              },
-              "value": "[parameters('name')]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "digitalTwinsInstance"
-      ]
-    },
-    "digitalTwinsInstance_serviceBusEndpoints": {
-      "copy": {
-        "name": "digitalTwinsInstance_serviceBusEndpoints",
-        "count": "[length(coalesce(parameters('serviceBusEndpoints'), createArray()))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-ServiceBus-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "digitalTwinInstanceName": {
-            "value": "[parameters('name')]"
-          },
-          "name": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].name), createObject('value', 'ServiceBusEndpoint'))]",
-          "authenticationType": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'authenticationType'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].authenticationType), createObject('value', ''))]",
-          "deadLetterSecret": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'deadLetterSecret'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].deadLetterSecret), createObject('value', ''))]",
-          "deadLetterUri": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'deadLetterUri'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].deadLetterUri), createObject('value', ''))]",
-          "endpointUri": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'endpointUri'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].endpointUri), createObject('value', ''))]",
-          "entityPath": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'entityPath'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].entityPath), createObject('value', ''))]",
-          "primaryConnectionString": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'primaryConnectionString'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].primaryConnectionString), createObject('value', ''))]",
-          "secondaryConnectionString": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'secondaryConnectionString'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].secondaryConnectionString), createObject('value', ''))]",
-          "managedIdentities": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'managedIdentities'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].managedIdentities), createObject('value', createObject()))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "16761257324786961037"
-            },
-            "name": "Digital Twins Instance ServiceBus Endpoint",
-            "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
-            "owner": "Azure/module-maintainers"
-          },
-          "definitions": {
-            "managedIdentitiesType": {
-              "type": "object",
-              "properties": {
-                "systemAssigned": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enables system assigned managed identity on the resource."
-                  }
-                },
-                "userAssignedResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource ID(s) to assign to the resource."
-                  }
-                }
-              },
-              "nullable": true
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "defaultValue": "ServiceBusEndpoint",
-              "metadata": {
-                "description": "Optional. The name of the Digital Twin Endpoint."
-              }
-            },
-            "digitalTwinInstanceName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Digital Twin Instance resource. Required if the template is used in a standalone deployment."
-              }
-            },
-            "authenticationType": {
-              "type": "string",
-              "defaultValue": "IdentityBased",
-              "allowedValues": [
-                "IdentityBased",
-                "KeyBased"
-              ],
-              "metadata": {
-                "description": "Optional. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is selected, the endpointUri and entityPath properties must be specified."
-              }
-            },
-            "deadLetterSecret": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
-              }
-            },
-            "deadLetterUri": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Dead letter storage URL for identity-based authentication."
-              }
-            },
-            "endpointUri": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The URL of the ServiceBus namespace for identity-based authentication. It must include the protocol 'sb://' (e.g. sb://xyz.servicebus.windows.net)."
-              }
-            },
-            "entityPath": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The ServiceBus Topic name for identity-based authentication."
-              }
-            },
-            "primaryConnectionString": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Conditional. PrimaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Required if the `authenticationType` is \"KeyBased\"."
-              }
-            },
-            "secondaryConnectionString": {
-              "type": "securestring",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. SecondaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Only used if the `authenticationType` is \"KeyBased\"."
-              }
-            },
-            "managedIdentities": {
-              "$ref": "#/definitions/managedIdentitiesType",
-              "metadata": {
-                "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
-              }
-            }
-          },
-          "variables": {
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), null())]"
-          },
-          "resources": {
-            "digitalTwinsInstance": {
-              "existing": true,
-              "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
-              "apiVersion": "2023-01-31",
-              "name": "[parameters('digitalTwinInstanceName')]"
-            },
-            "endpoint": {
-              "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
-              "apiVersion": "2023-01-31",
-              "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
-              "properties": {
-                "endpointType": "ServiceBus",
-                "authenticationType": "[parameters('authenticationType')]",
-                "deadLetterSecret": "[parameters('deadLetterSecret')]",
-                "deadLetterUri": "[parameters('deadLetterUri')]",
-                "endpointUri": "[parameters('endpointUri')]",
-                "entityPath": "[parameters('entityPath')]",
-                "primaryConnectionString": "[parameters('primaryConnectionString')]",
-                "secondaryConnectionString": "[parameters('secondaryConnectionString')]",
-                "identity": "[variables('identity')]"
-              },
-              "dependsOn": [
-                "digitalTwinsInstance"
-              ]
-            }
-          },
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the Endpoint."
-              },
-              "value": "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances/endpoints', parameters('digitalTwinInstanceName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the resource group the resource was created in."
-              },
-              "value": "[resourceGroup().name]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Endpoint."
-              },
-              "value": "[parameters('name')]"
-            },
-            "systemAssignedMIPrincipalId": {
-              "type": "string",
-              "metadata": {
-                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
-              },
-              "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -1196,8 +1649,9 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-digitalTwinsInstance-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "name": "[format('{0}-digitalTwins-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1213,7 +1667,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -1221,11 +1675,8 @@
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
-          },
-          "privateDnsZoneResourceIds": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          "privateDnsZoneGroup": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroup')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1253,79 +1704,144 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "4120048060064073955"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
-            "description": "This module deploys a Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint."
           },
           "definitions": {
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
+            "privateDnsZoneGroupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the Private DNS Zone Group."
+                  }
+                },
+                "privateDnsZoneGroupConfigs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/privateDnsZoneGroupConfigType"
                   },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+                  "metadata": {
+                    "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "ipConfigurationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "privateLinkServiceConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the private link service connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+                      }
+                    },
+                    "privateLinkServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of private link service."
+                      }
+                    },
+                    "requestMessage": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private link service connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "customDnsConfigType": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
             },
             "lockType": {
               "type": "object",
@@ -1350,155 +1866,110 @@
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             },
-            "ipConfigurationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the resource that is unique within a resource group."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "memberName": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "privateIPAddress": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private endpoint IP configurations."
-                    }
+            "privateDnsZoneGroupConfigType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the private DNS zone group config."
+                  }
+                },
+                "privateDnsZoneResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource id of the private DNS zone."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "private-dns-zone-group/main.bicep"
+                }
+              }
             },
-            "manualPrivateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
                   }
                 }
               },
-              "nullable": true
-            },
-            "privateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
-              },
-              "nullable": true
-            },
-            "customDnsConfigType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fqdn": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint IP address."
-                    }
-                  },
-                  "ipAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. A list of private IP addresses of the private endpoint."
-                    }
-                  }
-                }
-              },
-              "nullable": true
+              }
             }
           },
           "parameters": {
@@ -1516,6 +1987,9 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
@@ -1529,23 +2003,20 @@
               }
             },
             "ipConfigurations": {
-              "$ref": "#/definitions/ipConfigurationsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipConfigurationType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
             },
-            "privateDnsZoneGroupName": {
-              "type": "string",
+            "privateDnsZoneGroup": {
+              "$ref": "#/definitions/privateDnsZoneGroupType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
-              }
-            },
-            "privateDnsZoneResourceIds": {
-              "type": "array",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                "description": "Optional. The private DNS zone group to configure for the private endpoint."
               }
             },
             "location": {
@@ -1557,12 +2028,17 @@
             },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -1575,21 +2051,33 @@
               }
             },
             "customDnsConfigs": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               }
             },
             "privateLinkServiceConnections": {
-              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               }
             },
             "enableTelemetry": {
@@ -1601,6 +2089,13 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -1611,15 +2106,15 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1637,7 +2132,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1678,27 +2173,27 @@
             "privateEndpoint_roleAssignments": {
               "copy": {
                 "name": "privateEndpoint_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "privateEndpoint"
               ]
             },
             "privateEndpoint_privateDnsZoneGroup": {
-              "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
+              "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
@@ -1709,27 +2204,50 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
-                  },
-                  "privateDNSResourceIds": {
-                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
+                    "value": "[tryGet(parameters('privateDnsZoneGroup'), 'name')]"
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
+                  },
+                  "privateDnsZoneConfigs": {
+                    "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "11244630631275470040"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
-                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
+                  },
+                  "definitions": {
+                    "privateDnsZoneGroupConfigType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the private DNS zone group config."
+                          }
+                        },
+                        "privateDnsZoneResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The resource id of the private DNS zone."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    }
                   },
                   "parameters": {
                     "privateEndpointName": {
@@ -1738,12 +2256,15 @@
                         "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
                       }
                     },
-                    "privateDNSResourceIds": {
+                    "privateDnsZoneConfigs": {
                       "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+                      },
                       "minLength": 1,
                       "maxLength": 5,
                       "metadata": {
-                        "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
+                        "description": "Required. Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones."
                       }
                     },
                     "name": {
@@ -1757,27 +2278,33 @@
                   "variables": {
                     "copy": [
                       {
-                        "name": "privateDnsZoneConfigs",
-                        "count": "[length(parameters('privateDNSResourceIds'))]",
+                        "name": "privateDnsZoneConfigsVar",
+                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
                         "input": {
-                          "name": "[last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
+                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
                           "properties": {
-                            "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
+                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
                           }
                         }
                       }
                     ]
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "privateEndpoint": {
+                      "existing": true,
+                      "type": "Microsoft.Network/privateEndpoints",
+                      "apiVersion": "2024-05-01",
+                      "name": "[parameters('privateEndpointName')]"
+                    },
+                    "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
+                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
                       }
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -1835,14 +2362,35 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+            },
+            "customDnsConfigs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "metadata": {
+                "description": "The custom DNS configurations of the private endpoint."
+              },
+              "value": "[reference('privateEndpoint').customDnsConfigs]"
+            },
+            "networkInterfaceResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The resource IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[map(reference('privateEndpoint').networkInterfaces, lambda('nic', lambdaVariables('nic').id))]"
             },
             "groupId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The group Id for the private endpoint Group."
               },
-              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
+              "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
             }
           }
         }
@@ -1890,10 +2438,30 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('digitalTwinsInstance', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('digitalTwinsInstance', '2023-01-31', 'full'), 'identity'), 'principalId')]"
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
+      "metadata": {
+        "description": "The private endpoints of the key vault."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "input": {
+          "name": "[reference(format('digitalTwinsInstance_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('digitalTwinsInstance_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[tryGet(tryGet(reference(format('digitalTwinsInstance_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('digitalTwinsInstance_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('digitalTwinsInstance_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
     }
   }
 }

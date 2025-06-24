@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "6889435067791947905"
+      "version": "0.35.1.17967",
+      "templateHash": "4743052544503629108"
     },
     "name": "DocumentDB Database Account Gremlin Databases",
-    "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Gremlin Database within a CosmosDB Account."
   },
   "parameters": {
     "name": {
@@ -43,14 +42,14 @@
       "type": "int",
       "defaultValue": 4000,
       "metadata": {
-        "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored."
+        "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
       }
     },
     "throughput": {
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
+        "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
       }
     }
   },
@@ -58,12 +57,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "gremlinDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -99,7 +98,9 @@
           "databaseAccountName": {
             "value": "[parameters('databaseAccountName')]"
           },
-          "indexingPolicy": "[if(contains(parameters('graphs')[copyIndex()], 'indexingPolicy'), createObject('value', parameters('graphs')[copyIndex()].indexingPolicy), createObject('value', true()))]",
+          "indexingPolicy": {
+            "value": "[tryGet(parameters('graphs')[copyIndex()], 'indexingPolicy')]"
+          },
           "partitionKeyPaths": "[if(not(empty(parameters('graphs')[copyIndex()].partitionKeyPaths)), createObject('value', parameters('graphs')[copyIndex()].partitionKeyPaths), createObject('value', createArray()))]"
         },
         "template": {
@@ -109,12 +110,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "3987394297554402770"
+              "version": "0.35.1.17967",
+              "templateHash": "9587717186996793648"
             },
             "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
-            "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
           },
           "parameters": {
             "name": {
@@ -161,21 +161,18 @@
             "databaseAccount::gremlinDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]",
-              "dependsOn": [
-                "databaseAccount"
-              ]
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinGraph": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -186,10 +183,7 @@
                     "paths": "[if(not(empty(parameters('partitionKeyPaths'))), parameters('partitionKeyPaths'), null())]"
                   }
                 }
-              },
-              "dependsOn": [
-                "databaseAccount::gremlinDatabase"
-              ]
+              }
             }
           },
           "outputs": {

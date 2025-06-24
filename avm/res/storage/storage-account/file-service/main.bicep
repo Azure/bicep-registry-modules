@@ -1,6 +1,5 @@
 metadata name = 'Storage Account File Share Services'
 metadata description = 'This module deploys a Storage Account File Share Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
@@ -10,30 +9,39 @@ param storageAccountName string
 param name string = 'default'
 
 @description('Optional. Protocol settings for file service.')
-param protocolSettings object = {}
+param protocolSettings resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.protocolSettings = {}
 
 @description('Optional. The service properties for soft delete.')
-param shareDeleteRetentionPolicy object = {
+param shareDeleteRetentionPolicy resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.shareDeleteRetentionPolicy = {
   enabled: true
   days: 7
 }
 
+@description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+param corsRules corsRuleType[]?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. File shares to create.')
 param shares array?
 
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
   name: name
   parent: storageAccount
   properties: {
+    cors: corsRules != null
+      ? {
+          corsRules: corsRules
+        }
+      : null
     protocolSettings: protocolSettings
     shareDeleteRetentionPolicy: shareDeleteRetentionPolicy
   }
@@ -92,50 +100,26 @@ output resourceId string = fileServices.id
 
 @description('The resource group of the deployed file share service.')
 output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
+@export()
+@description('The type for a cors rule.')
+type corsRuleType = {
+  @description('Required. A list of headers allowed to be part of the cross-origin request.')
+  allowedHeaders: string[]
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
+  @description('Required. A list of HTTP methods that are allowed to be executed by the origin.')
+  allowedMethods: ('CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'MERGE' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE')[]
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
+  @description('Required. A list of origin domains that will be allowed via CORS, or "*" to allow all domains.')
+  allowedOrigins: string[]
 
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
+  @description('Required. A list of response headers to expose to CORS clients.')
+  exposedHeaders: string[]
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+  @description('Required. The number of seconds that the client/browser should cache a preflight response.')
+  maxAgeInSeconds: int
+}

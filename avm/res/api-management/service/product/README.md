@@ -7,8 +7,6 @@ This module deploys an API Management Service Product.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -24,6 +22,7 @@ This module deploys an API Management Service Product.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`displayName`](#parameter-displayname) | string | API Management Service Products name. Must be 1 to 300 characters long. |
 | [`name`](#parameter-name) | string | Product Name. |
 
 **Conditional parameters**
@@ -44,6 +43,13 @@ This module deploys an API Management Service Product.
 | [`subscriptionRequired`](#parameter-subscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
 | [`subscriptionsLimit`](#parameter-subscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`terms`](#parameter-terms) | string | Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process. |
+
+### Parameter: `displayName`
+
+API Management Service Products name. Must be 1 to 300 characters long.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `name`
 
@@ -123,7 +129,6 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -133,11 +138,3 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 | `name` | string | The name of the API management service product. |
 | `resourceGroupName` | string | The resource group the API management service product was deployed into. |
 | `resourceId` | string | The resource ID of the API management service product. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

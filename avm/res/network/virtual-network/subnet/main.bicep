@@ -1,61 +1,70 @@
 metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
-metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. The Name of the subnet resource.')
+@description('Required. The Name of the subnet resource.')
 param name string
 
 @description('Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
 param virtualNetworkName string
 
-@description('Required. The address prefix for the subnet.')
-param addressPrefix string
+@description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
+param addressPrefix string?
+
+@description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.')
+param ipamPoolPrefixAllocations object[]?
 
 @description('Optional. The resource ID of the network security group to assign to the subnet.')
-param networkSecurityGroupResourceId string = ''
+param networkSecurityGroupResourceId string?
 
 @description('Optional. The resource ID of the route table to assign to the subnet.')
-param routeTableResourceId string = ''
+param routeTableResourceId string?
 
 @description('Optional. The service endpoints to enable on the subnet.')
-param serviceEndpoints array = []
+param serviceEndpoints string[] = []
 
-@description('Optional. The delegations to enable on the subnet.')
-param delegations array = []
+@description('Optional. The delegation to enable on the subnet.')
+param delegation string?
 
 @description('Optional. The resource ID of the NAT Gateway to use for the subnet.')
-param natGatewayResourceId string = ''
+param natGatewayResourceId string?
 
-@description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
+@description('Optional. Enable or disable apply network policies on private endpoint in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'
-  ''
+  'NetworkSecurityGroupEnabled'
+  'RouteTableEnabled'
 ])
-param privateEndpointNetworkPolicies string = ''
+param privateEndpointNetworkPolicies string?
 
-@description('Optional. enable or disable apply network policies on private link service in the subnet.')
+@description('Optional. Enable or disable apply network policies on private link service in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'
-  ''
 ])
-param privateLinkServiceNetworkPolicies string = ''
+param privateLinkServiceNetworkPolicies string?
 
-@description('Optional. List of address prefixes for the subnet.')
-param addressPrefixes array = []
+@description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
+param addressPrefixes string[]?
+
+@description('Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.')
+param defaultOutboundAccess bool?
+
+@description('Optional. Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty.')
+param sharingScope ('DelegatedServices' | 'Tenant')?
 
 @description('Optional. Application gateway IP configurations of virtual network resource.')
 param applicationGatewayIPConfigurations array = []
 
-@description('Optional. Array of IpAllocation which reference this subnet.')
-param ipAllocations array = []
-
 @description('Optional. An array of service endpoint policies.')
 param serviceEndpointPolicies array = []
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -65,7 +74,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -75,15 +84,47 @@ var builtInRoleNames = {
   )
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-virtualnetworksubnet.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' existing = {
   name: virtualNetworkName
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
   name: name
   parent: virtualNetwork
   properties: {
     addressPrefix: addressPrefix
+    addressPrefixes: addressPrefixes
+    ipamPoolPrefixAllocations: ipamPoolPrefixAllocations
     networkSecurityGroup: !empty(networkSecurityGroupResourceId)
       ? {
           id: networkSecurityGroupResourceId
@@ -99,26 +140,35 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
           id: natGatewayResourceId
         }
       : null
-    serviceEndpoints: serviceEndpoints
-    delegations: delegations
-    privateEndpointNetworkPolicies: !empty(privateEndpointNetworkPolicies) ? any(privateEndpointNetworkPolicies) : null
-    privateLinkServiceNetworkPolicies: !empty(privateLinkServiceNetworkPolicies)
-      ? any(privateLinkServiceNetworkPolicies)
-      : null
-    addressPrefixes: addressPrefixes
+    serviceEndpoints: [
+      for endpoint in serviceEndpoints: {
+        service: endpoint
+      }
+    ]
+    delegations: !empty(delegation)
+      ? [
+          {
+            name: delegation
+            properties: {
+              serviceName: delegation
+            }
+          }
+        ]
+      : []
+    privateEndpointNetworkPolicies: privateEndpointNetworkPolicies
+    privateLinkServiceNetworkPolicies: privateLinkServiceNetworkPolicies
     applicationGatewayIPConfigurations: applicationGatewayIPConfigurations
-    ipAllocations: ipAllocations
     serviceEndpointPolicies: serviceEndpointPolicies
+    defaultOutboundAccess: defaultOutboundAccess
+    sharingScope: sharingScope
   }
 }
 
 resource subnet_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(subnet.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(subnet.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : roleAssignment.roleDefinitionIdOrName
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -140,34 +190,10 @@ output name string = subnet.name
 output resourceId string = subnet.id
 
 @description('The address prefix for the subnet.')
-output subnetAddressPrefix string = subnet.properties.addressPrefix
+output addressPrefix string = subnet.properties.?addressPrefix ?? ''
 
 @description('List of address prefixes for the subnet.')
-output subnetAddressPrefixes array = !empty(addressPrefixes) ? subnet.properties.addressPrefixes : []
+output addressPrefixes array = subnet.properties.?addressPrefixes ?? []
 
-// =============== //
-//   Definitions   //
-// =============== //
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+@description('The IPAM pool prefix allocations for the subnet.')
+output ipamPoolPrefixAllocations array = subnet.properties.?ipamPoolPrefixAllocations ?? []

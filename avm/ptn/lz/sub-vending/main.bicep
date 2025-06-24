@@ -1,6 +1,5 @@
 metadata name = 'Sub-vending'
 metadata description = 'This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).'
-metadata owner = 'Azure/module-maintainers'
 metadata details = '''These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)
 
 This is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.
@@ -8,6 +7,16 @@ This is the orchestration module that is used and called by a consumer of the mo
 > For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)'''
 
 targetScope = 'managementGroup'
+
+//Imports
+import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
+import { subnetType } from 'modules/subResourceWrapper.bicep'
+import { natGatewayType } from 'modules/subResourceWrapper.bicep'
+import { bastionType } from 'modules/subResourceWrapper.bicep'
+import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
+import { userAssignedIdentityType } from 'modules/subResourceWrapper.bicep'
+import { virtualNetworkType } from 'modules/subResourceWrapper.bicep'
+import { routeTableType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -37,7 +46,7 @@ param subscriptionAliasName string = ''
 
 @description('''Optional. The Billing Scope for the new Subscription alias, that will be created by this module.
 
-A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
+A valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -105,6 +114,10 @@ param virtualNetworkEnabled bool = false
 ''')
 param virtualNetworkResourceGroupName string = ''
 
+@maxLength(90)
+@description('Optional. The name of the resource group to create the user-assigned managed identities in.')
+param userAssignedIdentityResourceGroupName string = 'rsg-${deployment().location}-identities'
+
 @description('''Optional. An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.
 
 > **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.
@@ -119,10 +132,11 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 ''')
 param virtualNetworkLocation string = deployment().location
 
+@minLength(2)
 @maxLength(64)
 @description('''Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.
 ''')
-param virtualNetworkName string = ''
+param virtualNetworkName string?
 
 @description('''Optional. An object of tag key/value pairs to be set on the Virtual Network that is created.
 
@@ -131,7 +145,10 @@ param virtualNetworkName string = ''
 param virtualNetworkTags object = {}
 
 @description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
-param virtualNetworkAddressSpace array = []
+param virtualNetworkAddressSpace string[] = []
+
+@description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
+param virtualNetworkSubnets subnetType[]?
 
 @description('''Optional. The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.
 ''')
@@ -145,6 +162,18 @@ param virtualNetworkDdosPlanResourceId string = ''
 ''')
 param virtualNetworkPeeringEnabled bool = false
 
+@description('''Optional. Whether to deploy a NAT gateway to the created virtual network.''')
+param virtualNetworkDeployNatGateway bool = false
+
+@description('Optional. The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.')
+param virtualNetworkNatGatewayConfiguration natGatewayType?
+
+@description('Optional. The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
+param virtualNetworkBastionConfiguration bastionType?
+
+@description('Optional. Whether to deploy a Bastion host to the created virtual network.')
+param virtualNetworkDeployBastion bool = false
+
 @description('''Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.
 ''')
 param hubNetworkResourceId string = ''
@@ -154,6 +183,9 @@ param hubNetworkResourceId string = ''
 > **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.
 ''')
 param virtualNetworkUseRemoteGateways bool = true
+
+@description('Optional. A list of additional virtual networks to create.')
+param additionalVirtualNetworks virtualNetworkType[] = []
 
 @description('''Optional. Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.
 ''')
@@ -189,16 +221,65 @@ param roleAssignmentEnabled bool = false
 Each object must contain the following `keys`:
 - `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.
 - `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:
-  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.
+  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator, and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.
   - You can provide the Resource ID of a Built-in or custom RBAC Role Definition
     - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 - `relativeScope` = 2 options can be provided for input value:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
-param roleAssignments array = []
+@metadata({
+  example: '''
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
+param roleAssignments roleAssignmentType[] = []
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
+@description('''Optional. Supply an array of objects containing the details of the PIM role assignments to create.
+
+Each object must contain the following `keys`:
+- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.
+- `definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:
+  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition
+    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- `relativeScope` = 2 options can be provided for input value:
+    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
+    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
+''')
+@metadata({
+  example: '''
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
+param pimRoleAssignments pimRoleAssignmentTypeType[] = []
+
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')
@@ -212,16 +293,16 @@ param deploymentScriptManagedIdentityName string = 'id-${deployment().location}'
 
 @maxLength(64)
 @description('Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.')
-param deploymentScriptVirtualNetworkName string = 'vnet-${deployment().location}'
+param deploymentScriptVirtualNetworkName string = 'vnet-ds-${deployment().location}'
 
 @description('Optional. The name of the network security group for the deployment script private subnet.')
-param deploymentScriptNetworkSecurityGroupName string = 'nsg-${deployment().location}'
+param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${deployment().location}'
 
 @description('Optional. The address prefix of the private virtual network for the deployment script.')
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 
 @description('Optional. The name of the storage account for the deployment script.')
-param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name,existingSubscriptionId,subscriptionAliasName,subscriptionDisplayName, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
 param deploymentScriptLocation string = deployment().location
@@ -293,9 +374,27 @@ param resourceProviders object = {
   'Microsoft.Sql': []
   'Microsoft.Storage': []
   'Microsoft.StreamAnalytics': []
-  'Microsoft.TimeSeriesInsights': []
   'Microsoft.Web': []
 }
+
+@sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
+param managementGroupAssociationDelayCount int = 15
+
+@sys.description('Optional. The list of user-assigned managed identities.')
+param userAssignedManagedIdentities userAssignedIdentityType[] = []
+
+@description('''Optional. Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.
+''')
+param userAssignedIdentitiesResourceGroupLockEnabled bool = true
+
+@description('Optional. Flag to do mesh peering of all virtual networks deployed into the new subscription.')
+param peerAllVirtualNetworks bool = false
+
+@description('Optional. The list of route tables to create.')
+param routeTables routeTableType[] = []
+
+@description('Optional. The name of the resource group to create the route tables in.')
+param routeTablesResourceGroupName string = ''
 
 // VARIABLES
 
@@ -316,7 +415,8 @@ var deploymentNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
   location: virtualNetworkLocation
   properties: {
@@ -354,6 +454,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
       ? createSubscription.outputs.subscriptionId
       : existingSubscriptionId
+    managementGroupAssociationDelayCount: managementGroupAssociationDelayCount
     subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
     subscriptionManagementGroupId: subscriptionManagementGroupId
     subscriptionTags: subscriptionTags
@@ -365,11 +466,13 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkSubnets: virtualNetworkSubnets
     virtualNetworkDnsServers: virtualNetworkDnsServers
     virtualNetworkDdosPlanResourceId: virtualNetworkDdosPlanResourceId
     virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
     hubNetworkResourceId: hubNetworkResourceId
     virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
+    additionalVirtualNetworks: additionalVirtualNetworks
     virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
     virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
     virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
@@ -377,6 +480,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
+    pimRoleAssignments: pimRoleAssignments
     deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
     deploymentScriptName: deploymentScriptName
     deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
@@ -386,6 +490,16 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
+    virtualNetworkDeployNatGateway: virtualNetworkDeployNatGateway
+    virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
+    virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
+    virtualNetworkDeployBastion: virtualNetworkDeployBastion
+    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupName
+    userAssignedManagedIdentities: userAssignedManagedIdentities
+    userAssignedIdentitiesResourceGroupLockEnabled: userAssignedIdentitiesResourceGroupLockEnabled
+    peerAllVirtualNetworks: peerAllVirtualNetworks
+    routeTables: routeTables
+    routeTablesResourceGroupName: routeTablesResourceGroupName
     enableTelemetry: enableTelemetry
   }
 }

@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Security Admin Configuration Rule Collections'
 metadata description = '''This module deploys an Network Manager Security Admin Configuration Rule Collection.
 A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string
@@ -15,34 +14,34 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the admin rule collection.')
-param description string?
+param description string = ''
 
 @sys.description('Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group.')
-param appliesToGroups appliesToGroupsType
+param appliesToGroups appliesToGroupType[]
 
 @sys.description('Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.')
-param rules rulesType
+param rules ruleType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2023-04-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations' existing = {
     name: securityAdminConfigurationName
   }
 }
 
-resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections@2023-04-01' = {
+resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections@2024-05-01' = {
   name: name
   parent: networkManager::securityAdminConfiguration
   properties: {
-    description: description ?? ''
+    description: description
     appliesToGroups: map(appliesToGroups, (group) => {
       networkGroupId: any(group.networkGroupResourceId)
     })
   }
 }
 
-module securityAdminConfigurations_rules 'rule/main.bicep' = [
+module ruleCollection_rules 'rule/main.bicep' = [
   for (rule, index) in rules ?? []: {
     name: '${uniqueString(deployment().name)}-RuleCollections-Rules-${index}'
     params: {
@@ -51,7 +50,7 @@ module securityAdminConfigurations_rules 'rule/main.bicep' = [
       ruleCollectionName: ruleCollection.name
       name: rule.name
       access: rule.access
-      description: rule.?description ?? ''
+      description: rule.?description
       destinationPortRanges: rule.?destinationPortRanges ?? []
       destinations: rule.?destinations ?? []
       direction: rule.direction
@@ -76,12 +75,17 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-type appliesToGroupsType = {
+@export()
+@sys.description('The type for a applies to group.')
+type appliesToGroupType = {
   @sys.description('Required. The resource ID of the network group.')
   networkGroupResourceId: string
-}[]
+}
 
-type rulesType = {
+import { destinationType, sourceType } from './rule/main.bicep'
+@export()
+@sys.description('The type of a rule.')
+type ruleType = {
   @sys.description('Required. The name of the rule.')
   name: string
 
@@ -95,13 +99,7 @@ type rulesType = {
   destinationPortRanges: string[]?
 
   @sys.description('Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-  destinations: {
-    @sys.description('Required. Address prefix type.')
-    addressPrefixType: 'IPPrefix' | 'ServiceTag'
-
-    @sys.description('Required. Address prefix.')
-    addressPrefix: string
-  }[]?
+  destinations: destinationType[]?
 
   @sys.description('Required. Indicates if the traffic matched against the rule in inbound or outbound.')
   direction: 'Inbound' | 'Outbound'
@@ -118,11 +116,5 @@ type rulesType = {
   sourcePortRanges: string[]?
 
   @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-  sources: {
-    @sys.description('Required. Address prefix type.')
-    addressPrefixType: 'IPPrefix' | 'ServiceTag'
-
-    @sys.description('Required. Address prefix.')
-    addressPrefix: string
-  }[]?
-}[]?
+  sources: sourceType[]?
+}

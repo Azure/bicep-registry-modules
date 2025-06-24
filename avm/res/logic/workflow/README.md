@@ -59,7 +59,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +76,22 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/logic/workflow:<version>'
+
+// Required parameters
+param name = 'lwmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -123,11 +139,13 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     }
     roleAssignments: [
       {
+        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -183,7 +201,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -230,11 +248,13 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -288,6 +308,100 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
         }
       }
     }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/logic/workflow:<version>'
+
+// Required parameters
+param name = 'lwmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param workflowActions = {
+  HTTP: {
+    inputs: {
+      body: {
+        BeginPeakTime: '<BeginPeakTime>'
+        EndPeakTime: '<EndPeakTime>'
+        HostPoolName: '<HostPoolName>'
+        LAWorkspaceName: '<LAWorkspaceName>'
+        LimitSecondsToForceLogOffUser: '<LimitSecondsToForceLogOffUser>'
+        LogOffMessageBody: '<LogOffMessageBody>'
+        LogOffMessageTitle: '<LogOffMessageTitle>'
+        MinimumNumberOfRDSH: 1
+        ResourceGroupName: '<ResourceGroupName>'
+        SessionThresholdPerCPU: 1
+        UtcOffset: '<UtcOffset>'
+      }
+      method: 'POST'
+      uri: 'https://testStringForValidation.com'
+    }
+    type: 'Http'
+  }
+}
+param workflowTriggers = {
+  Recurrence: {
+    recurrence: {
+      frequency: 'Minute'
+      interval: 15
+    }
+    type: 'Recurrence'
   }
 }
 ```
@@ -380,7 +494,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -473,6 +587,80 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/logic/workflow:<version>'
+
+// Required parameters
+param name = 'lwwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param workflowActions = {
+  HTTP: {
+    inputs: {
+      body: {
+        BeginPeakTime: '<BeginPeakTime>'
+        EndPeakTime: '<EndPeakTime>'
+        HostPoolName: '<HostPoolName>'
+        LAWorkspaceName: '<LAWorkspaceName>'
+        LimitSecondsToForceLogOffUser: '<LimitSecondsToForceLogOffUser>'
+        LogOffMessageBody: '<LogOffMessageBody>'
+        LogOffMessageTitle: '<LogOffMessageTitle>'
+        MinimumNumberOfRDSH: 1
+        ResourceGroupName: '<ResourceGroupName>'
+        SessionThresholdPerCPU: 1
+        UtcOffset: '<UtcOffset>'
+      }
+      method: 'POST'
+      uri: 'https://testStringForValidation.com'
+    }
+    type: 'Http'
+  }
+}
+param workflowTriggers = {
+  Recurrence: {
+    recurrence: {
+      frequency: 'Minute'
+      interval: 15
+    }
+    type: 'Recurrence'
+  }
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -561,7 +749,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -671,7 +859,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -781,7 +969,7 @@ The managed identity definition for this resource. Only one type of identity is 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -792,7 +980,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -803,6 +991,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Logic App Contributor'`
+  - `'Logic App Operator'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -819,6 +1015,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -865,6 +1062,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -925,6 +1129,7 @@ The definitions for one or more actions to execute at workflow runtime.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `workflowEndpointsConfiguration`
 
@@ -946,6 +1151,7 @@ The definitions for the outputs to return from a workflow run.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `workflowParameters`
 
@@ -967,7 +1173,7 @@ The definitions for one or more triggers that instantiate your workflow. You can
 
 - Required: No
 - Type: object
-
+- Default: `{}`
 
 ## Outputs
 
@@ -981,7 +1187,11 @@ The definitions for one or more triggers that instantiate your workflow. You can
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

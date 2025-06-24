@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8957170895657751475"
+      "version": "0.35.1.17967",
+      "templateHash": "5725786157373922536"
     },
     "name": "Eventgrid Namespace Client Groups",
-    "description": "This module deploys an Eventgrid Namespace Client Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Client Group."
   },
   "parameters": {
     "namespaceName": {
@@ -53,10 +52,7 @@
       "properties": {
         "description": "[parameters('description')]",
         "query": "[parameters('query')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     }
   },
   "outputs": {

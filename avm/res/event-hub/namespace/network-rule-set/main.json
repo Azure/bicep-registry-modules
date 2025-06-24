@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "4849410286147918309"
+      "version": "0.36.1.42791",
+      "templateHash": "10311264071215691288"
     },
     "name": "Event Hub Namespace Network Rule Sets",
-    "description": "This module deploys an Event Hub Namespace Network Rule Set.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Network Rule Set."
   },
   "parameters": {
     "namespaceName": {
@@ -75,7 +74,7 @@
         "name": "networkRules",
         "count": "[length(parameters('virtualNetworkRules'))]",
         "input": {
-          "ignoreMissingVnetServiceEndpoint": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'ignoreMissingVnetServiceEndpoint'), parameters('virtualNetworkRules')[copyIndex('networkRules')].ignoreMissingVnetServiceEndpoint, null())]",
+          "ignoreMissingVnetServiceEndpoint": "[tryGet(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'ignoreMissingVnetServiceEndpoint')]",
           "subnet": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'subnetResourceId'), createObject('id', parameters('virtualNetworkRules')[copyIndex('networkRules')].subnetResourceId), null())]"
         }
       }
@@ -84,7 +83,7 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/networkRuleSets",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('networkRuleSetName'))]",
       "properties": {
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",

@@ -15,7 +15,6 @@ The templates are run towards the tenant where the Azure resources you want to d
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -62,7 +61,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -76,7 +75,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -97,7 +96,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdmin Subscription assignment"
@@ -111,6 +110,34 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-services/registration-definition:<version>'
+
+// Required parameters
+param authorizations = [
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
+  }
+]
+param managedByTenantId = '<managedByTenantId>'
+param name = 'Component Validation - msrdmin Subscription assignment'
+param registrationDescription = 'Managed by Lighthouse'
+// Non-required parameters
+param metadataLocation = '<metadataLocation>'
 ```
 
 </details>
@@ -149,7 +176,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -164,7 +191,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -194,7 +221,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdmax Subscription assignment"
@@ -211,6 +238,44 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-services/registration-definition:<version>'
+
+// Required parameters
+param authorizations = [
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    principalIdDisplayName: 'Lighthouse Contributor'
+    roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
+    roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
+  }
+  {
+    delegatedRoleDefinitionIds: [
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    ]
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  }
+]
+param managedByTenantId = '<managedByTenantId>'
+param name = 'Component Validation - msrdmax Subscription assignment'
+param registrationDescription = 'Managed by Lighthouse'
+// Non-required parameters
+param metadataLocation = '<metadataLocation>'
+param registrationId = '<registrationId>'
 ```
 
 </details>
@@ -240,7 +305,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdrg Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -256,7 +321,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -277,7 +342,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdrg Subscription assignment"
@@ -297,6 +362,36 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-services/registration-definition:<version>'
+
+// Required parameters
+param authorizations = [
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
+  }
+]
+param managedByTenantId = '<managedByTenantId>'
+param name = 'Component Validation - msrdrg Subscription assignment'
+param registrationDescription = 'Managed by Lighthouse'
+// Non-required parameters
+param metadataLocation = '<metadataLocation>'
+param registrationId = '<registrationId>'
+param resourceGroupName = '<resourceGroupName>'
 ```
 
 </details>
@@ -326,7 +421,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -341,7 +436,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -362,7 +457,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdwaf Subscription assignment"
@@ -384,6 +479,34 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-services/registration-definition:<version>'
+
+// Required parameters
+param authorizations = [
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+    roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
+  }
+]
+param managedByTenantId = '<managedByTenantId>'
+param name = 'Component Validation - msrdwaf Subscription assignment'
+param registrationDescription = 'Managed by Lighthouse'
+// Non-required parameters
+param metadataLocation = '<metadataLocation>'
+param resourceGroupName = '<resourceGroupName>'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -512,7 +635,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -521,10 +643,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 | `name` | string | The name of the registration definition. |
 | `resourceId` | string | The resource ID of the registration definition. |
 | `subscriptionName` | string | The subscription the registration definition was deployed into. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

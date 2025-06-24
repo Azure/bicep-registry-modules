@@ -11,14 +11,18 @@ metadata description = 'This instance deploys the module with nfs31.'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-netapp.netappaccounts-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// enforcing location due to quote restrictions
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'australiaeast'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nanaanfs3'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The source of the encryption key.')
+param encryptionKeySource string = 'Microsoft.NetApp'
 
 // ============ //
 // Dependencies //
@@ -28,16 +32,16 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -47,10 +51,10 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    location: enforcedLocation
     capacityPools: [
       {
         name: '${namePrefix}-${serviceShort}-cp-001'
@@ -62,20 +66,31 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: true
-                nfsv41: false
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  nfsv3: true
+                  nfsv41: false
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: true
+                  kerberos5iReadOnly: false
+                  kerberos5pReadOnly: false
+                  kerberos5ReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadWrite: false
+                }
+              ]
+            }
             name: '${namePrefix}-${serviceShort}-vol-001'
+            zone: 1
+            networkFeatures: 'Standard'
+            encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv3'
             ]
@@ -91,6 +106,9 @@ module testDeployment '../../../main.bicep' = {
           }
           {
             name: '${namePrefix}-${serviceShort}-vol-002'
+            zone: 1
+            networkFeatures: 'Standard'
+            encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv3'
             ]
@@ -109,7 +127,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]
@@ -147,7 +165,4 @@ module testDeployment '../../../main.bicep' = {
       ServiceName: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }

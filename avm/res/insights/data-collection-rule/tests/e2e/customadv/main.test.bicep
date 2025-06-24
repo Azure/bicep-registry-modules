@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -52,79 +52,84 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
-      description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): "<DateTime>,<EventLevel>,<EventCode>,<Message>", for example: "2023-01-25T20:15:05Z,ERROR,404,Page not found"'
-      dataFlows: [
-        {
-          streams: [
-            'Custom-CustomTableAdvanced_CL'
-          ]
-          destinations: [
-            nestedDependencies.outputs.logAnalyticsWorkspaceName
-          ]
-          transformKql: 'source | extend LogFields = split(RawData, ",") | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
-          outputStream: 'Custom-CustomTableAdvanced_CL'
-        }
-      ]
-      dataSources: {
-        logFiles: [
+      dataCollectionRuleProperties: {
+        kind: 'Windows'
+        dataCollectionEndpointResourceId: nestedDependencies.outputs.dataCollectionEndpointResourceId
+        description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): "<DateTime>,<EventLevel>,<EventCode>,<Message>", for example: "2023-01-25T20:15:05Z,ERROR,404,Page not found"'
+        dataFlows: [
           {
-            name: 'CustomTableAdvanced_CL'
-            samplingFrequencyInSeconds: 60
             streams: [
               'Custom-CustomTableAdvanced_CL'
             ]
-            filePatterns: [
-              'C:\\TestLogsAdvanced\\TestLog*.log'
+            destinations: [
+              nestedDependencies.outputs.logAnalyticsWorkspaceName
             ]
-            format: 'text'
-            settings: {
-              text: {
-                recordStartTimestampFormat: 'ISO 8601'
+            transformKql: 'source | extend LogFields = split(RawData, ",") | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
+            outputStream: 'Custom-CustomTableAdvanced_CL'
+          }
+        ]
+        dataSources: {
+          logFiles: [
+            {
+              name: 'CustomTableAdvanced_CL'
+              samplingFrequencyInSeconds: 60
+              streams: [
+                'Custom-CustomTableAdvanced_CL'
+              ]
+              filePatterns: [
+                'C:\\TestLogsAdvanced\\TestLog*.log'
+              ]
+              format: 'text'
+              settings: {
+                text: {
+                  recordStartTimestampFormat: 'ISO 8601'
+                }
               }
-            }
-          }
-        ]
-      }
-      destinations: {
-        logAnalytics: [
-          {
-            workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-            name: nestedDependencies.outputs.logAnalyticsWorkspaceName
-          }
-        ]
-      }
-      streamDeclarations: {
-        'Custom-CustomTableAdvanced_CL': {
-          columns: [
-            {
-              name: 'TimeGenerated'
-              type: 'datetime'
-            }
-            {
-              name: 'EventTime'
-              type: 'datetime'
-            }
-            {
-              name: 'EventLevel'
-              type: 'string'
-            }
-            {
-              name: 'EventCode'
-              type: 'int'
-            }
-            {
-              name: 'Message'
-              type: 'string'
-            }
-            {
-              name: 'RawData'
-              type: 'string'
             }
           ]
         }
+        destinations: {
+          logAnalytics: [
+            {
+              workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+              name: nestedDependencies.outputs.logAnalyticsWorkspaceName
+            }
+          ]
+        }
+        streamDeclarations: {
+          'Custom-CustomTableAdvanced_CL': {
+            columns: [
+              {
+                name: 'TimeGenerated'
+                type: 'datetime'
+              }
+              {
+                name: 'EventTime'
+                type: 'datetime'
+              }
+              {
+                name: 'EventLevel'
+                type: 'string'
+              }
+              {
+                name: 'EventCode'
+                type: 'int'
+              }
+              {
+                name: 'Message'
+                type: 'string'
+              }
+              {
+                name: 'RawData'
+                type: 'string'
+              }
+            ]
+          }
+        }
       }
-      kind: 'Windows'
+      managedIdentities: {
+        systemAssigned: true
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'Data Collection Rules'

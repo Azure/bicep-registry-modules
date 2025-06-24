@@ -2,8 +2,8 @@
 $DeploymentScriptOutputs = @{}
 
 $adfParams = @{
-  ResourceGroupName = $env:DataFactoryResourceGroup
-  DataFactoryName   = $env:DataFactoryName
+    ResourceGroupName = $env:DataFactoryResourceGroup
+    DataFactoryName   = $env:DataFactoryName
 }
 
 # Delete old triggers

@@ -1,6 +1,5 @@
 metadata name = 'Virtual Hub Virtual Network Connections'
 metadata description = 'This module deploys a Virtual Hub Virtual Network Connection.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The connection name.')
 param name string
@@ -12,24 +11,24 @@ param virtualHubName string
 param enableInternetSecurity bool = true
 
 @description('Required. Resource ID of the virtual network to link to.')
-param remoteVirtualNetworkId string
+param remoteVirtualNetworkResourceId string
 
 @description('Optional. Routing Configuration indicating the associated and propagated route tables for this connection.')
-param routingConfiguration object = {}
+param routingConfiguration object?
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-01-01' existing = {
   name: virtualHubName
 }
 
-resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2022-11-01' = {
+resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2024-05-01' = {
   name: name
   parent: virtualHub
   properties: {
     enableInternetSecurity: enableInternetSecurity
     remoteVirtualNetwork: {
-      id: remoteVirtualNetworkId
+      id: remoteVirtualNetworkResourceId
     }
-    routingConfiguration: !empty(routingConfiguration) ? routingConfiguration : null
+    routingConfiguration: routingConfiguration
   }
 }
 

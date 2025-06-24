@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -123,8 +123,10 @@ module testDeployment '../../../main.bicep' = [
       enableRbacAuthorization: false
       keys: [
         {
-          attributesExp: 1725109032
-          attributesNbf: 10000
+          attributes: {
+            exp: 1725109032
+            nbf: 10000
+          }
           name: 'keyName'
           roleAssignments: [
             {
@@ -156,7 +158,7 @@ module testDeployment '../../../main.bicep' = [
                   timeBeforeExpiry: 'P2M'
                 }
                 action: {
-                  type: 'Rotate'
+                  type: 'rotate'
                 }
               }
               {
@@ -164,7 +166,7 @@ module testDeployment '../../../main.bicep' = [
                   timeBeforeExpiry: 'P30D'
                 }
                 action: {
-                  type: 'Notify'
+                  type: 'notify'
                 }
               }
             ]
@@ -192,9 +194,13 @@ module testDeployment '../../../main.bicep' = [
       }
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
@@ -236,19 +242,26 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          resourceGroupResourceId: resourceGroup.id
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       roleAssignments: [
         {
+          name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -264,8 +277,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       secrets: [
         {
-          attributesExp: 1702648632
-          attributesNbf: 10000
+          attributes: {
+            exp: 1725109032
+            nbf: 10000
+          }
           contentType: 'Something'
           name: 'secretName'
           roleAssignments: [
@@ -298,10 +313,6 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
 

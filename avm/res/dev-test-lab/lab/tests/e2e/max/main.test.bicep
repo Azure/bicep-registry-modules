@@ -66,11 +66,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'b08c589c-2c79-41bd-8195-d5e62ad12f67'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -127,15 +129,20 @@ module testDeployment '../../../main.bicep' = [
           description: 'lab virtual network description'
           allowedSubnets: [
             {
-              labSubnetName: nestedDependencies.outputs.subnetName
-              resourceId: nestedDependencies.outputs.subnetResourceId
+              labSubnetName: nestedDependencies.outputs.subnet1Name
+              resourceId: nestedDependencies.outputs.subnet1ResourceId
               allowPublicIp: 'Allow'
+            }
+            {
+              labSubnetName: nestedDependencies.outputs.subnet2Name
+              resourceId: nestedDependencies.outputs.subnet2ResourceId
+              allowPublicIp: 'Deny'
             }
           ]
           subnetOverrides: [
             {
-              labSubnetName: nestedDependencies.outputs.subnetName
-              resourceId: nestedDependencies.outputs.subnetResourceId
+              labSubnetName: nestedDependencies.outputs.subnet1Name
+              resourceId: nestedDependencies.outputs.subnet1ResourceId
               useInVmCreationPermission: 'Allow'
               usePublicIpAddressPermission: 'Allow'
               sharedPublicIpAddressConfiguration: {
@@ -151,14 +158,20 @@ module testDeployment '../../../main.bicep' = [
                 ]
               }
             }
+            {
+              labSubnetName: nestedDependencies.outputs.subnet2Name
+              resourceId: nestedDependencies.outputs.subnet2ResourceId
+              useInVmCreationPermission: 'Deny'
+              usePublicIpAddressPermission: 'Deny'
+            }
           ]
         }
       ]
       policies: [
         {
-          name: nestedDependencies.outputs.subnetName
+          name: nestedDependencies.outputs.subnet1Name
           evaluatorType: 'MaxValuePolicy'
-          factData: nestedDependencies.outputs.subnetResourceId
+          factData: nestedDependencies.outputs.subnet1ResourceId
           factName: 'UserOwnedLabVmCountInSubnet'
           threshold: '1'
         }
@@ -224,8 +237,10 @@ module testDeployment '../../../main.bicep' = [
           dailyRecurrence: {
             time: '0000'
           }
-          notificationSettingsStatus: 'Enabled'
-          notificationSettingsTimeInMinutes: 30
+          notificationSettings: {
+            status: 'Enabled'
+            timeInMinutes: 30
+          }
         }
         {
           name: 'LabVmAutoStart'
@@ -249,9 +264,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'autoShutdown'
           description: 'Integration configured for auto-shutdown'
           events: [
-            {
-              eventName: 'AutoShutdown'
-            }
+            'AutoShutdown'
           ]
           emailRecipient: 'mail@contosodtlmail.com'
           webHookUrl: 'https://webhook.contosotest.com'
@@ -260,9 +273,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'costThreshold'
           events: [
-            {
-              eventName: 'Cost'
-            }
+            'Cost'
           ]
           webHookUrl: 'https://webhook.contosotest.com'
         }
@@ -271,10 +282,9 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'Public Repo'
           displayName: 'Public Artifact Repo'
-          status: 'Disabled'
+          status: 'Enabled'
           uri: 'https://github.com/Azure/azure-devtestlab.git'
           sourceType: 'GitHub'
-          branchRef: 'master'
           folderPath: '/Artifacts'
         }
         {
@@ -285,14 +295,32 @@ module testDeployment '../../../main.bicep' = [
           sourceType: 'GitHub'
           branchRef: 'master'
           armTemplateFolderPath: '/Environments'
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            resourceType: 'DevTest Lab'
+            labName: '${namePrefix}${serviceShort}001'
+          }
+        }
+        {
+          name: 'Private Repo'
+          displayName: 'Private Artifact Repo'
+          status: 'Disabled'
+          uri: 'https://github.com/Azure/azure-devtestlab.git'
+          folderPath: '/Artifacts'
+          armTemplateFolderPath: '/ArmTemplates'
+          branchRef: 'main'
+          securityToken: guid(baseTime)
         }
       ]
       costs: {
         status: 'Enabled'
         cycleType: 'CalendarMonth'
         target: 450
+        currencyCode: 'AUD'
         thresholdValue100DisplayOnChart: 'Enabled'
         thresholdValue100SendNotificationWhenExceeded: 'Enabled'
+        thresholdValue125DisplayOnChart: 'Disabled'
+        thresholdValue75DisplayOnChart: 'Enabled'
       }
     }
   }

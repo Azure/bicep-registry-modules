@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -103,6 +103,7 @@ module testDeployment '../../../main.bicep' = [
       eventhubs: [
         {
           name: '${namePrefix}-az-evh-x-001'
+          messageRetentionInDays: 3
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -145,7 +146,6 @@ module testDeployment '../../../main.bicep' = [
               userMetadata: 'customMetadata'
             }
           ]
-          messageRetentionInDays: 1
           partitionCount: 2
           roleAssignments: [
             {
@@ -155,11 +155,13 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           status: 'Active'
+          retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Delete'
           retentionDescriptionRetentionTimeInHours: 3
         }
         {
           name: '${namePrefix}-az-evh-x-003'
+          retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Compact'
           retentionDescriptionTombstoneRetentionTimeInHours: 24
         }
@@ -187,9 +189,13 @@ module testDeployment '../../../main.bicep' = [
       }
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'namespace'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
@@ -201,11 +207,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

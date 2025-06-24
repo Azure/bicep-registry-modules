@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1736731506120599540"
+      "version": "0.34.44.8038",
+      "templateHash": "601516314831460935"
     },
     "name": "Load Balancer Backend Address Pools",
-    "description": "This module deploys a Load Balancer Backend Address Pools.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Load Balancer Backend Address Pools."
   },
   "parameters": {
     "loadBalancerName": {

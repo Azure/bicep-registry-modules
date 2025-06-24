@@ -57,7 +57,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +74,22 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/alerts-management/action-rule:<version>'
+
+// Required parameters
+param name = 'aprmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -199,11 +215,13 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
     }
     roleAssignments: [
       {
+        name: 'a66da6bc-b3ee-484e-9bdb-9294938bb327'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -214,6 +232,11 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    schedule: {
+      effectiveFrom: '2026-01-01T00:00:00'
+      effectiveUntil: '2027-12-31T23:59:59'
+      timeZone: 'Eastern Standard Time'
+    }
     scopes: [
       '<id>'
     ]
@@ -231,7 +254,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -360,11 +383,13 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
     "roleAssignments": {
       "value": [
         {
+          "name": "a66da6bc-b3ee-484e-9bdb-9294938bb327",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -375,6 +400,13 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "schedule": {
+      "value": {
+        "effectiveFrom": "2026-01-01T00:00:00",
+        "effectiveUntil": "2027-12-31T23:59:59",
+        "timeZone": "Eastern Standard Time"
+      }
     },
     "scopes": {
       "value": [
@@ -389,6 +421,155 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/alerts-management/action-rule:<version>'
+
+// Required parameters
+param name = 'aprmax001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupIds: [
+      '<actionGroupResourceId>'
+    ]
+    actionType: 'AddActionGroups'
+  }
+]
+param aprDescription = 'Test deployment of the module with the max set of parameters.'
+param conditions = [
+  {
+    field: 'AlertContext'
+    operator: 'NotEquals'
+    values: [
+      'myAlertContext'
+    ]
+  }
+  {
+    field: 'AlertRuleId'
+    operator: 'Equals'
+    values: [
+      '<activityLogAlertResourceId>'
+    ]
+  }
+  {
+    field: 'AlertRuleName'
+    operator: 'Equals'
+    values: [
+      '<activityLogAlertResourceName>'
+    ]
+  }
+  {
+    field: 'Description'
+    operator: 'Contains'
+    values: [
+      'myAlertRuleDescription'
+    ]
+  }
+  {
+    field: 'MonitorService'
+    operator: 'Equals'
+    values: [
+      'ActivityLog Administrative'
+    ]
+  }
+  {
+    field: 'MonitorCondition'
+    operator: 'Equals'
+    values: [
+      'Fired'
+    ]
+  }
+  {
+    field: 'TargetResourceType'
+    operator: 'DoesNotContain'
+    values: [
+      'myAlertResourceType'
+    ]
+  }
+  {
+    field: 'TargetResource'
+    operator: 'Equals'
+    values: [
+      'myAlertResource1'
+      'myAlertResource2'
+    ]
+  }
+  {
+    field: 'TargetResourceGroup'
+    operator: 'Equals'
+    values: [
+      '<id>'
+    ]
+  }
+  {
+    field: 'Severity'
+    operator: 'Equals'
+    values: [
+      'Sev0'
+      'Sev1'
+      'Sev2'
+      'Sev3'
+      'Sev4'
+    ]
+  }
+  {
+    field: 'SignalType'
+    operator: 'Equals'
+    values: [
+      'Health'
+      'Log'
+      'Metric'
+      'Unknown'
+    ]
+  }
+]
+param enabled = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'a66da6bc-b3ee-484e-9bdb-9294938bb327'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param schedule = {
+  effectiveFrom: '2026-01-01T00:00:00'
+  effectiveUntil: '2027-12-31T23:59:59'
+  timeZone: 'Eastern Standard Time'
+}
+param scopes = [
+  '<id>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -433,7 +614,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -473,6 +654,33 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/alerts-management/action-rule:<version>'
+
+// Required parameters
+param name = 'aprwaf001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupIds: [
+      '<actionGroupResourceId>'
+    ]
+    actionType: 'AddActionGroups'
+  }
+]
+param aprDescription = 'Test deployment of the module with the waf aligned set of parameters.'
+param location = '<location>'
+param scopes = [
+  '<id>'
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -601,6 +809,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -617,6 +831,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -667,6 +882,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -711,7 +933,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -723,7 +944,11 @@ Resource tags.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "3824205620211058652"
+      "version": "0.35.1.17967",
+      "templateHash": "5467755913632158534"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
-    "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Database Container in a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {
@@ -58,7 +57,7 @@
       "type": "int",
       "defaultValue": 400,
       "metadata": {
-        "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+        "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
       }
     },
     "autoscaleSettingsMaxThroughput": {
@@ -66,7 +65,7 @@
       "nullable": true,
       "maxValue": 1000000,
       "metadata": {
-        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
       }
     },
     "tags": {
@@ -138,21 +137,18 @@
     "databaseAccount::sqlDatabase": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-      "apiVersion": "2023-04-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]",
-      "dependsOn": [
-        "databaseAccount"
-      ]
+      "apiVersion": "2024-11-15",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
     },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "container": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -160,7 +156,7 @@
         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
       },
       "dependsOn": [
-        "databaseAccount::sqlDatabase"
+        "databaseAccount"
       ]
     }
   },

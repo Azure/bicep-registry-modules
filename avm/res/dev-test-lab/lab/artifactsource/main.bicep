@@ -2,7 +2,6 @@ metadata name = 'DevTest Lab Artifact Sources'
 metadata description = '''This module deploys a DevTest Lab Artifact Source.
 
 An artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent lab. Required if the template is used in a standalone deployment.')
 param labName string
@@ -17,26 +16,25 @@ param tags object?
 param displayName string = name
 
 @sys.description('Optional. The artifact source\'s branch reference (e.g. main or master).')
-param branchRef string = ''
+param branchRef string?
 
 @sys.description('Conditional. The folder containing artifacts. At least one folder path is required. Required if "armTemplateFolderPath" is empty.')
-param folderPath string = ''
+param folderPath string?
 
 @sys.description('Conditional. The folder containing Azure Resource Manager templates. Required if "folderPath" is empty.')
-param armTemplateFolderPath string = ''
+param armTemplateFolderPath string?
 
 @sys.description('Optional. The security token to authenticate to the artifact source.')
 @secure()
-param securityToken string = ''
+param securityToken string?
 
 @allowed([
-  ''
   'GitHub'
   'StorageAccount'
   'VsoGit'
 ])
 @sys.description('Optional. The artifact source\'s type.')
-param sourceType string = ''
+param sourceType string?
 
 @allowed([
   'Enabled'
@@ -58,11 +56,11 @@ resource artifactsource 'Microsoft.DevTestLab/labs/artifactsources@2018-09-15' =
   tags: tags
   properties: {
     displayName: displayName
-    branchRef: !empty(branchRef) ? branchRef : null
-    folderPath: !empty(folderPath) ? folderPath : null
-    armTemplateFolderPath: !empty(armTemplateFolderPath) ? armTemplateFolderPath : null
-    securityToken: !empty(securityToken) ? securityToken : null
-    sourceType: !empty(sourceType) ? sourceType : null
+    branchRef: branchRef
+    folderPath: folderPath
+    armTemplateFolderPath: armTemplateFolderPath
+    securityToken: securityToken
+    sourceType: sourceType
     status: status
     uri: uri
   }

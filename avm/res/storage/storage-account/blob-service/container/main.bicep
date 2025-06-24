@@ -1,19 +1,21 @@
 metadata name = 'Storage Account Blob Containers'
 metadata description = 'This module deploys a Storage Account Blob Container.'
-metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
-@description('Required. The name of the storage container to deploy.')
+@description('Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment.')
+param blobServiceName string = 'default'
+
+@description('Required. The name of the Storage Container to deploy.')
 param name string
 
 @description('Optional. Default the container to use specified encryption scope for all writes.')
-param defaultEncryptionScope string = ''
+param defaultEncryptionScope string?
 
 @description('Optional. Block override of encryption scope from the container default.')
-param denyEncryptionScopeOverride bool = false
+param denyEncryptionScopeOverride bool?
 
 @description('Optional. Enable NFSv3 all squash on blob container.')
 param enableNfsV3AllSquash bool = false
@@ -31,7 +33,7 @@ param immutabilityPolicyName string = 'default'
 param immutabilityPolicyProperties object?
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
-param metadata object = {}
+param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata = {}
 
 @allowed([
   'Container'
@@ -41,8 +43,12 @@ param metadata object = {}
 @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
 param publicAccess string = 'None'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -52,7 +58,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'c12c1c16-33a1-487b-954d-41c89c60f349'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -90,20 +96,50 @@ var builtInRoleNames = {
   )
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: storageAccountName
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
-  resource blobServices 'blobServices@2022-09-01' existing = {
-    name: 'default'
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-blobcontainer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+  name: storageAccountName
+
+  resource blobServices 'blobServices@2024-01-01' existing = {
+    name: blobServiceName
+  }
+}
+
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   name: name
   parent: storageAccount::blobServices
   properties: {
-    defaultEncryptionScope: !empty(defaultEncryptionScope) ? defaultEncryptionScope : null
-    denyEncryptionScopeOverride: denyEncryptionScopeOverride == true ? denyEncryptionScopeOverride : null
+    defaultEncryptionScope: defaultEncryptionScope
+    denyEncryptionScopeOverride: denyEncryptionScopeOverride
     enableNfsV3AllSquash: enableNfsV3AllSquash == true ? enableNfsV3AllSquash : null
     enableNfsV3RootSquash: enableNfsV3RootSquash == true ? enableNfsV3RootSquash : null
     immutableStorageWithVersioning: immutableStorageWithVersioningEnabled == true
@@ -128,14 +164,10 @@ module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutab
 }
 
 resource container_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(container.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(container.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -155,30 +187,3 @@ output resourceId string = container.id
 
 @description('The resource group of the deployed container.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

@@ -1,6 +1,5 @@
 metadata name = 'SQL Server Database Long Term Backup Retention Policies'
 metadata description = 'This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent SQL Server.')
 param serverName string
@@ -9,26 +8,26 @@ param serverName string
 param databaseName string
 
 @description('Optional. Monthly retention in ISO 8601 duration format.')
-param weeklyRetention string = ''
+param monthlyRetention string?
 
 @description('Optional. Weekly retention in ISO 8601 duration format.')
-param monthlyRetention string = ''
+param weeklyRetention string?
 
 @description('Optional. Week of year backup to keep for yearly retention.')
 param weekOfYear int = 1
 
 @description('Optional. Yearly retention in ISO 8601 duration format.')
-param yearlyRetention string = ''
+param yearlyRetention string?
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 
-  resource database 'databases@2023-08-01-preview' existing = {
+  resource database 'databases@2023-08-01' existing = {
     name: databaseName
   }
 }
 
-resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2023-08-01-preview' = {
+resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2023-08-01' = {
   name: 'default'
   parent: server::database
   properties: {

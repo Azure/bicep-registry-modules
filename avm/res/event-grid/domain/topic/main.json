@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3734443194724604904"
+      "version": "0.35.1.17967",
+      "templateHash": "16094528623718152651"
     },
     "name": "Event Grid Domain Topics",
-    "description": "This module deploys an Event Grid Domain Topic.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Grid Domain Topic."
   },
   "parameters": {
     "name": {

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9318385911283347271"
+      "version": "0.34.44.8038",
+      "templateHash": "17921821442902726660"
     },
     "name": "Search Services Private Link Resources",
-    "description": "This module deploys a Search Service Private Link Resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Search Service Private Link Resource."
   },
   "parameters": {
     "searchServiceName": {
@@ -60,17 +59,14 @@
     },
     "sharedPrivateLinkResource": {
       "type": "Microsoft.Search/searchServices/sharedPrivateLinkResources",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2025-02-01-preview",
       "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
       "properties": {
         "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
         "groupId": "[parameters('groupId')]",
         "requestMessage": "[parameters('requestMessage')]",
         "resourceRegion": "[parameters('resourceRegion')]"
-      },
-      "dependsOn": [
-        "searchService"
-      ]
+      }
     }
   },
   "outputs": {
