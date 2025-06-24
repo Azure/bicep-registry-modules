@@ -101,11 +101,11 @@ resource project_connection_azure_storage_sysdata 'Microsoft.CognitiveServices/a
 }
 
 resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(nameFormatted)) {
-  name: aiSearchService.name
+  name: nameFormatted // Use the parameter directly instead of aiSearchService.name
   parent: project
   properties: {
     category: 'CognitiveSearch'
-    target: 'https://${aiSearchService.name}.search.windows.net/'
+    target: 'https://${nameFormatted}.search.windows.net/' // Use the parameter directly
     authType: 'AAD'
     isSharedToAll: true
     metadata: {
@@ -145,14 +145,14 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   properties: {
     capabilityHostKind: 'Agents'
     vectorStoreConnections: [
-      project_connection_azureai_search.name
+      nameFormatted
     ]
     storageConnections: [
-      project_connection_azure_storage.name
-      project_connection_azure_storage_sysdata.name
+      storageName
+      '${storageName}-sysdata'
     ]
     threadStorageConnections: [
-      project_connection_cosmosdb.name
+      cosmosDBName
     ]
   }
   dependsOn: [

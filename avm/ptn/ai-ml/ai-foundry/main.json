@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10576705429760082435"
+      "templateHash": "6673909519237571287"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51604,7 +51604,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16708945220964184351"
+              "templateHash": "15919088201808661979"
             }
           },
           "parameters": {
@@ -51811,11 +51811,7 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
               ]
             }
           ],
@@ -51939,7 +51935,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "291331571100971789"
+              "templateHash": "3362950809118755902"
             }
           },
           "parameters": {
@@ -52184,7 +52180,8 @@
                   "computerName": "[take(parameters('vmName'), 15)]",
                   "adminUsername": "[parameters('vmAdminUsername')]",
                   "adminPassword": "[variables('adminPassword')]",
-                  "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
+                  "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]",
+                  "windowsConfiguration": "[if(equals(parameters('authenticationType'), 'password'), createObject('patchSettings', createObject('patchMode', 'AutomaticByPlatform', 'automaticByPlatformSettings', createObject('rebootSetting', 'IfRequired', 'bypassPlatformSafetyChecksOnUserSchedule', true())), 'enableAutomaticUpdates', true()), null())]"
                 },
                 "storageProfile": {
                   "copy": [

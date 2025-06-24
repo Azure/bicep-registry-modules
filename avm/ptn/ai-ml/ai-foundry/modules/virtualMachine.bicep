@@ -167,6 +167,18 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       adminUsername: vmAdminUsername
       adminPassword: adminPassword
       linuxConfiguration: (authenticationType == 'password') ? null : linuxConfiguration
+      windowsConfiguration: (authenticationType == 'password')
+        ? {
+            patchSettings: {
+              patchMode: 'AutomaticByPlatform'
+              automaticByPlatformSettings: {
+                rebootSetting: 'IfRequired'
+                bypassPlatformSafetyChecksOnUserSchedule: true
+              }
+            }
+            enableAutomaticUpdates: true
+          }
+        : null
     }
     storageProfile: {
       imageReference: {
