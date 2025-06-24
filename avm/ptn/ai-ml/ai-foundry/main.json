@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18154934707419825929"
+      "templateHash": "7825371342132986755"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14373,7 +14373,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5347104182700128078"
+              "templateHash": "10247269893010071914"
             }
           },
           "definitions": {
@@ -20925,7 +20925,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6504158764956712223"
+                      "templateHash": "8382739758719442432"
                     }
                   },
                   "definitions": {
@@ -21272,6 +21272,9 @@
                             "value": "[parameters('kind')]"
                           },
                           "allowProjectManagement": {
+                            "value": true
+                          },
+                          "restore": {
                             "value": true
                           },
                           "managedIdentities": {
@@ -23651,7 +23654,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6504158764956712223"
+                      "templateHash": "8382739758719442432"
                     }
                   },
                   "definitions": {
@@ -23998,6 +24001,9 @@
                             "value": "[parameters('kind')]"
                           },
                           "allowProjectManagement": {
+                            "value": true
+                          },
+                          "restore": {
                             "value": true
                           },
                           "managedIdentities": {
