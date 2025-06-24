@@ -104,19 +104,10 @@ runs:
 
           Write-Output '::endgroup::'
 
-    - name: "Print input"
-      uses: azure/powershell@v2
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          Write-Verbose ("softFailure [{0}]" -f "${{ inputs.softFailure }}") -Verbose
-          Write-Verbose ("softFailure condition [{0}]" -f "${{ inputs.softFailure == 'true' }}") -Verbose
-
     # [PSRule validation] task(s)
     #-----------------------------
     - name: Run PSRule analysis
       uses: microsoft/ps-rule@v2.9.0
-      # continue-on-error: ${{ inputs.softFailure == 'true' }}
       env:
         CONTINUE_ON_ERROR: ${{ inputs.softFailure }}
       continue-on-error: ${{ fromJSON(env.CONTINUE_ON_ERROR) }}

@@ -105,7 +105,6 @@ jobs:
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
-# softFailure: $true
 
   #############################
   #   Deployment validation   #
