@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6739629743613565298"
+      "templateHash": "10252698453083003685"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -131,7 +131,7 @@
     }
   },
   "variables": {
-    "solutionPrefix": "[format('cps-{0}', padLeft(take(toLower(uniqueString(subscription().id, parameters('environmentName'), resourceGroup().location)), 12), 12, '0'))]",
+    "solutionPrefix": "[format('cpsbk-{0}', padLeft(take(toLower(uniqueString(subscription().id, parameters('environmentName'), resourceGroup().location)), 12), 12, '0'))]",
     "privateDnsZones": [
       "privatelink.cognitiveservices.azure.com",
       "privatelink.openai.azure.com",
