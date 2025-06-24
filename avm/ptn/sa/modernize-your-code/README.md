@@ -100,74 +100,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/modernize-your-code:<version>`.
 
-- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Default configuration with WAF aligned parameter values](#example-2-default-configuration-with-waf-aligned-parameter-values)
+- [Default configuration with WAF aligned parameter values](#example-1-default-configuration-with-waf-aligned-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Sandbox configuration with default parameter values_
-
-This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
-  name: 'modernizeYourCodeDeployment'
-  params: {
-    // Required parameters
-    solutionName: 'samycmin001'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "solutionName": {
-      "value": "samycmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
-
-// Required parameters
-param solutionName = 'samycmin001'
-// Non-required parameters
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Default configuration with WAF aligned parameter values_
+### Example 1: _Default configuration with WAF aligned parameter values_
 
 This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the WAF aligned configuration.
 
@@ -266,13 +202,77 @@ param vmAdminUsername = 'adminuser'
 </details>
 <p>
 
+### Example 2: _Sandbox configuration with default parameter values_
+
+This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
+  name: 'modernizeYourCodeDeployment'
+  params: {
+    // Required parameters
+    solutionName: 'samycmin001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "solutionName": {
+      "value": "samycmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
+
+// Required parameters
+param solutionName = 'samycmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`solutionName`](#parameter-solutionname) | string | (TODO - random increment to trigger changes 001 - remove this at some point) A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.. |
+| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.. |
 
 **Optional parameters**
 
@@ -294,7 +294,7 @@ param vmAdminUsername = 'adminuser'
 
 ### Parameter: `solutionName`
 
-(TODO - random increment to trigger changes 001 - remove this at some point) A unique application/solution name for all resources in this deployment. This should be 3-16 characters long..
+A unique application/solution name for all resources in this deployment. This should be 3-16 characters long..
 
 - Required: Yes
 - Type: string

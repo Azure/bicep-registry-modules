@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16612259637738965828"
+      "templateHash": "12795672691069877898"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -250,7 +250,7 @@
       "minLength": 6,
       "maxLength": 25,
       "metadata": {
-        "description": "Required. (TODO - random increment to trigger changes 001 - remove this at some point) Name used for naming all network resources."
+        "description": "Required. Name used for naming all network resources."
       }
     },
     "location": {

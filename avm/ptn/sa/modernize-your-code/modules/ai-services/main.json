@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5479463771655075590"
+      "templateHash": "15647739526351181854"
     },
     "name": "AI Services and Project Module",
     "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -306,7 +306,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. (TODO - random increment to trigger changes 001 - remove this at some point) Name of the Cognitive Services resource. Must be unique in the resource group."
+        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
       }
     },
     "location": {
