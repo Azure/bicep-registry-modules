@@ -104,7 +104,7 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
-          softFailure: $true
+          # softFailure: $true
 
   #############################
   #   Deployment validation   #
