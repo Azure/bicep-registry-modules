@@ -66,7 +66,7 @@ param attachedNetworks attachedNetworkType[]?
 param devboxDefinitions devboxDefinitionType[]?
 
 @description('Optional. The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically.')
-param projects array = []
+param projects projectType[]?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -342,6 +342,18 @@ module devCenter_project 'br/public:avm/res/dev-center/project:0.1.0' = [
     params: {
       devCenterResourceId: devcenter.id
       name: project.name
+      displayName: project.?displayName
+      description: project.?description
+      location: project.?location ?? location
+      tags: project.?tags
+      lock: project.?lock
+      roleAssignments: project.?roleAssignments
+      managedIdentities: project.?managedIdentities
+      catalogSettings: project.?catalogSettings
+      maxDevBoxesPerUser: project.?maxDevBoxesPerUser
+      environmentTypes: project.?environmentTypes
+      pools: project.?pools
+      catalogs: project.?catalogs
     }
   }
 ]
@@ -389,6 +401,9 @@ output devCenterUri string = devcenter.properties.devCenterUri
 output devboxDefinitionNames array = [
   for (devboxDefinition, index) in (devboxDefinitions ?? []): devcenter_devboxDefinition[index].outputs.name
 ]
+
+@description('The names of the projects.')
+output projectNames array = [for (project, index) in (projects ?? []): devCenter_project[index].outputs.name]
 
 // ================ //
 // Definitions      //
@@ -497,5 +512,221 @@ type devboxDefinitionType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
+  tags: object?
+}
+
+@description('The type for Dev Center Projects.')
+type projectType = {
+  @description('Required. The name of the project.')
+  @minLength(3)
+  @maxLength(63)
+  name: string
+
+  @description('Optional. The display name of project.')
+  displayName: string?
+
+  @description('Optional. The description of the project.')
+  description: string?
+
+  @description('Optional. Location for the project.')
+  location: string?
+
+  @description('Optional. Resource tags to apply to the project.')
+  tags: object?
+
+  @description('Optional. The lock settings of the project.')
+  lock: lockType?
+
+  @description('Optional. Array of role assignments to create for the project.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The managed identity definition for the project resource. Only one user assigned identity can be used per project.')
+  managedIdentities: managedIdentityAllType?
+
+  @description('Optional. The resource group resource ID where the project will be deployed. If not provided, the project will be deployed to the same resource group as the Dev Center.')
+  resourceGroupResourceId: string?
+
+  @description('Optional. The settings to be used when associating a project with a catalog. The Dev Center this project is associated with must allow configuring catalog item sync types before configuring project level catalog settings.')
+  catalogSettings: projectCatalogSettingsType?
+
+  @description('Optional. When specified, limits the maximum number of Dev Boxes a single user can create across all pools in the project. This will have no effect on existing Dev Boxes when reduced.')
+  @minValue(0)
+  maxDevBoxesPerUser: int?
+
+  @description('Optional. The environment types to create. Environment types must be first created in the Dev Center and then made available to a project using project level environment types. The name should be equivalent to the name of the environment type in the Dev Center.')
+  environmentTypes: projectEnvironmentTypeType[]?
+
+  @description('Optional. The type of pool to create in the project. A project pool is a container for dev boxes that share the same configuration, like a dev box definition and a network connection. Essentially, a project pool defines the specifications for the dev boxes that developers can create from a specific project in the Dev Box service.')
+  pools: projectPoolType[]?
+
+  @description('Optional. The catalogs to create in the project. Catalogs are templates from a git repository that can be used to create environments.')
+  catalogs: projectCatalogType[]?
+}
+
+@description('The type for project environment types.')
+type projectEnvironmentTypeType = {
+  @description('Required. An array specifying the role definitions (permissions) GUIDs that will be granted to the user that creates a given environment of this type. These can be both built-in or custom role definitions. At least one role must be specified.')
+  creatorRoleAssignmentRoles: string[]
+
+  @description('Optional. The display name of the environment type.')
+  displayName: string?
+
+  @description('Required. The subscription Resource ID where the environment type will be mapped to. The environment\'s resources will be deployed into this subscription. Should be in the format "/subscriptions/{subscriptionId}".')
+  deploymentTargetSubscriptionResourceId: string
+
+  @description('Optional. The managed identity definition for this resource. If using user assigned identities, they must be first associated to the project that this environment type is created in and only one user identity can be used per project. At least one identity (system assigned or user assigned) must be enabled for deployment. The default is set to system assigned identity.')
+  managedIdentities: managedIdentityAllType?
+
+  @description('Required. The name of the environment type. The environment type must be first created in the Dev Center and then made available to a project using project level environment types. The name should be equivalent to the name of the environment type in the Dev Center.')
+  name: string
+
+  @description('Optional. Defines whether this Environment Type can be used in this Project. The default is "Enabled".')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Resource tags to apply to the environment type.')
+  tags: object?
+
+  @description('Optional. A collection of additional object IDs of users, groups, service principals or managed identities be granted permissions on each environment of this type. Each identity can have multiple role definitions (permissions) GUIDs assigned to it. These can be either built-in or custom role definitions.')
+  userRoleAssignmentsRoles: projectUserRoleAssignmentsRolesType[]?
+}
+
+@description('The type for project user role assignments roles.')
+type projectUserRoleAssignmentsRolesType = {
+  @description('Required. The object ID of the user, group, service principal or managed identity.')
+  principalId: string
+
+  @description('Required. An array of role definition IDs to assign to the principal.')
+  roleDefinitionIds: string[]
+}
+
+@description('The type for project pools.')
+type projectPoolType = {
+  @description('Required. The name of the project pool. This name must be unique within a project and is visible to developers when creating dev boxes.')
+  name: string
+
+  @description('Optional. The display name of the pool.')
+  displayName: string?
+
+  @description('Optional. Indicates if the pool is created from an existing Dev Box Definition or if one is provided directly. Defaults to "Reference".')
+  devBoxDefinitionType: 'Reference' | 'Value'?
+
+  @description('Required. Name of a Dev Box definition in parent Project of this Pool. If creating a pool from a definition defined in the Dev Center, then this will be the name of the definition. If creating a pool from a custom definition (e.g. Team Customizations), first the catalog must be added to this project, and second must use the format "\\~Catalog\\~{catalogName}\\~{imagedefinition YAML name}" (e.g. "\\~Catalog\\~eshopRepo\\~frontend-dev").')
+  devBoxDefinitionName: string
+
+  @description('Conditional. A definition of the machines that are created from this Pool. Required if devBoxDefinitionType is "Value".')
+  devBoxDefinition: projectDevBoxDefinitionTypeType?
+
+  @description('Optional. Resource tags to apply to the pool.')
+  tags: object?
+
+  @description('Required. Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a "local administrator" or "standard user" on the Dev Box.')
+  localAdministrator: 'Enabled' | 'Disabled'
+
+  @description('Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource.')
+  virtualNetworkType: 'Managed' | 'Unmanaged'
+
+  @description('Conditional. The region of the managed virtual network. Required if virtualNetworkType is "Managed".')
+  managedVirtualNetworkRegion: string?
+
+  @description('Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed".')
+  networkConnectionName: string?
+
+  @description('Optional. Indicates whether Dev Boxes in this pool are created with single sign on enabled. The also requires that single sign on be enabled on the tenant. Changing this setting will not affect existing dev boxes.')
+  singleSignOnStatus: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Stop on "disconnect" configuration settings for Dev Boxes created in this pool. Dev boxes in this pool will hibernate after the grace period after the user disconnects.')
+  stopOnDisconnect: projectStopOnDisconnectType?
+
+  @description('Optional. Stop on "no connect" configuration settings for Dev Boxes created in this pool. Dev boxes in this pool will hibernate after the grace period if the user never connects.')
+  stopOnNoConnect: projectStopOnNoConnectType?
+
+  @description('Optional. The schedule for the pool. Dev boxes in this pool will auto-stop every day as per the schedule configuration.')
+  schedule: projectPoolScheduleType?
+
+  @description('Optional. Location for the pool.')
+  location: string?
+}
+
+@description('The type for project dev box definition type.')
+type projectDevBoxDefinitionTypeType = {
+  @description('Required. The name of the Dev Box definition.')
+  name: string
+
+  @description('Required. Display name of the Dev Box definition.')
+  displayName: string
+
+  @description('Required. The Image reference Id. This can be an image reference id from the Azure compute gallery or from the marketplace.')
+  imageReferenceId: string
+
+  @description('Required. The SKU information for the Dev Box definition.')
+  sku: projectSkuType
+
+  @description('Optional. Indicates whether owners of Dev Boxes created with this definition are granted local administrative privileges on the Dev Box.')
+  osStorageType: 'ssd_1024gb' | 'ssd_256gb' | 'ssd_512gb'?
+
+  @description('Optional. Indicates whether hibernation is enabled or disabled.')
+  hibernateSupport: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Resource tags to apply to the dev box definition.')
+  tags: object?
+}
+
+@description('The type for project SKU.')
+type projectSkuType = {
+  @description('Required. The name of the SKU. E.g. "general_i_8c32gb256ssd_v2".')
+  name: string
+}
+
+@description('The type for project stop on disconnect.')
+type projectStopOnDisconnectType = {
+  @description('Required. Whether the feature to stop the dev box on disconnect once the grace period has lapsed is enabled.')
+  status: 'Enabled' | 'Disabled'
+
+  @description('Optional. The specified time in minutes to wait before stopping a dev box once disconnect is detected. This is only applied when the status is set to Enabled.')
+  gracePeriodMinutes: int?
+}
+
+@description('The type for project stop on no connect.')
+type projectStopOnNoConnectType = {
+  @description('Required. Whether the feature to stop the dev box when not in use is enabled.')
+  status: 'Enabled' | 'Disabled'
+
+  @description('Optional. The specified time in minutes to wait before stopping a dev box once no connection is detected. This is only applied when the status is set to Enabled.')
+  gracePeriodMinutes: int?
+}
+
+@description('The type for project pool schedule.')
+type projectPoolScheduleType = {
+  @description('Required. The time of day that the dev boxes in the pool will be stopped. This is expressed in 24-hour time format (HH:mm).')
+  time: string
+
+  @description('Required. The time zone for the schedule.')
+  timeZone: string
+
+  @description('Optional. Indicates whether the schedule is enabled or disabled. Defaults to "Enabled".')
+  state: 'Enabled' | 'Disabled'?
+
+  @description('Optional. The frequency of the schedule. Defaults to "Daily".')
+  frequency: 'Daily'?
+}
+
+@description('The type for project catalogs.')
+type projectCatalogType = {
+  @description('Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods.')
+  name: string
+
+  @description('Optional. GitHub repository configuration for the catalog.')
+  gitHub: sourceType?
+
+  @description('Optional. Azure DevOps Git repository configuration for the catalog.')
+  adoGit: sourceType?
+
+  @description('Optional. Indicates the type of sync that is configured for the catalog. Defaults to "Scheduled".')
+  syncType: ('Manual' | 'Scheduled')?
+
+  @description('Optional. Resource tags to apply to the catalog.')
   tags: object?
 }
