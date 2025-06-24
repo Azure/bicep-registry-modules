@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12385835215331171039"
+      "templateHash": "7001110025538858606"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -738,7 +738,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15810553743236728947"
+              "templateHash": "12183872656282122488"
             }
           },
           "parameters": {
@@ -820,14 +820,14 @@
                 "managedIdentity"
               ]
             },
-            "KVARole": {
+            "KVSORole": {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
               "name": "[guid(format('msi-{0}-KVA-RoleAssignment', format('temp-{0}', parameters('name'))))]",
               "properties": {
                 "principalId": "[reference('managedIdentity').principalId]",
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
                 "principalType": "ServicePrincipal"
               },
               "dependsOn": [
@@ -857,7 +857,7 @@
               },
               "dependsOn": [
                 "CRole",
-                "KVARole",
+                "KVSORole",
                 "managedIdentity"
               ]
             }
