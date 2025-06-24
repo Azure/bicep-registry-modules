@@ -20,9 +20,14 @@ This module deploys an Event Grid Topic Event Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-destination) | object | The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
 | [`name`](#parameter-name) | string | The name of the Event Subscription. |
 | [`topicName`](#parameter-topicname) | string | Name of the Event Grid Topic. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-destination) | object | The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
 
 **Optional parameters**
 
@@ -37,13 +42,6 @@ This module deploys an Event Grid Topic Event Subscription.
 | [`labels`](#parameter-labels) | array | The list of user defined labels. |
 | [`retryPolicy`](#parameter-retrypolicy) | object | The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events. |
 
-### Parameter: `destination`
-
-The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
-
-- Required: Yes
-- Type: object
-
 ### Parameter: `name`
 
 The name of the Event Subscription.
@@ -57,6 +55,13 @@ Name of the Event Grid Topic.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `destination`
+
+The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
+
+- Required: No
+- Type: object
 
 ### Parameter: `deadLetterDestination`
 
