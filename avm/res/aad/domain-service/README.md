@@ -81,11 +81,14 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     pfxCertificatePassword: '<pfxCertificatePassword>'
     replicaSets: [
       {
-        location: 'NorthEurope'
+        location: '<location>'
+        subnetId: '<subnetId>'
+      }
+      {
+        location: '<location>'
         subnetId: '<subnetId>'
       }
     ]
-    sku: 'Standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -165,13 +168,14 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     "replicaSets": {
       "value": [
         {
-          "location": "NorthEurope",
+          "location": "<location>",
+          "subnetId": "<subnetId>"
+        },
+        {
+          "location": "<location>",
           "subnetId": "<subnetId>"
         }
       ]
-    },
-    "sku": {
-      "value": "Standard"
     },
     "tags": {
       "value": {
@@ -231,11 +235,14 @@ param pfxCertificate = '<pfxCertificate>'
 param pfxCertificatePassword = '<pfxCertificatePassword>'
 param replicaSets = [
   {
-    location: 'NorthEurope'
+    location: '<location>'
+    subnetId: '<subnetId>'
+  }
+  {
+    location: '<location>'
     subnetId: '<subnetId>'
   }
 ]
-param sku = 'Standard'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -282,9 +289,10 @@ param tags = {
 | [`ntlmV1`](#parameter-ntlmv1) | string | The value is to enable clients making request using NTLM v1. |
 | [`replicaSets`](#parameter-replicasets) | array | Additional replica set for the managed domain. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure ADDS Services. |
+| [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure ADDS Services. For replica set support, this defaults to Enterprise. |
 | [`syncNtlmPasswords`](#parameter-syncntlmpasswords) | string | The value is to enable synchronized users to use NTLM authentication. |
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
+| [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
 
@@ -804,11 +812,11 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `sku`
 
-The name of the SKU specific to Azure ADDS Services.
+The name of the SKU specific to Azure ADDS Services. For replica set support, this defaults to Enterprise.
 
 - Required: No
 - Type: string
-- Default: `'Standard'`
+- Default: `'Enterprise'`
 - Allowed:
   ```Bicep
   [
@@ -845,6 +853,21 @@ The value is to enable on-premises users to authenticate against managed domain.
   [
     'Disabled'
     'Enabled'
+  ]
+  ```
+
+### Parameter: `syncScope`
+
+All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.
+
+- Required: No
+- Type: string
+- Default: `'All'`
+- Allowed:
+  ```Bicep
+  [
+    'All'
+    'CloudOnly'
   ]
   ```
 

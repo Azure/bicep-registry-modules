@@ -32,7 +32,7 @@ var replicaAadsSubnetAddressPrefix = cidrSubnet(replicaAddressPrefix, 24, 1)
 // Networking resources
 // =================
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -70,7 +70,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     ]
   }
 }
-resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: replicaVirtualNetworkName
   location: replicaLocation
   properties: {
@@ -109,7 +109,7 @@ resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = 
   }
 }
 
-resource virtualNetworkPeeringToReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
+resource virtualNetworkPeeringToReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-07-01' = {
   name: 'aadds-vnetpeering-${replicaVirtualNetworkName}'
   parent: virtualNetwork
   properties: {
@@ -122,7 +122,7 @@ resource virtualNetworkPeeringToReplica 'Microsoft.Network/virtualNetworks/virtu
     }
   }
 }
-resource virtualNetworkPeeringFromReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
+resource virtualNetworkPeeringFromReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-07-01' = {
   name: 'aadds-vnetpeering-${virtualNetworkName}'
   parent: replicaVirtualNetwork
   properties: {
@@ -136,7 +136,7 @@ resource virtualNetworkPeeringFromReplica 'Microsoft.Network/virtualNetworks/vir
   }
 }
 
-resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
+resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   name: '${virtualNetworkName}-aadds-subnet-nsg'
   location: location
   properties: {
@@ -196,7 +196,7 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
     ]
   }
 }
-resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
+resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   name: '${replicaVirtualNetworkName}-aadds-subnet-nsg'
   location: replicaLocation
   properties: {
@@ -261,7 +261,7 @@ resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-0
 // General resources
 // =================
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -279,7 +279,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -297,7 +297,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: certDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'

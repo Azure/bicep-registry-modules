@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6509557093509886693"
+      "version": "0.36.1.42791",
+      "templateHash": "6502622374730675929"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance."
@@ -296,14 +296,14 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Enterprise",
       "allowedValues": [
         "Standard",
         "Enterprise",
         "Premium"
       ],
       "metadata": {
-        "description": "Optional. The name of the SKU specific to Azure ADDS Services."
+        "description": "Optional. The name of the SKU specific to Azure ADDS Services. For replica set support, this defaults to Enterprise."
       }
     },
     "replicaSets": {
@@ -470,6 +470,17 @@
         "description": "Optional. A flag to determine whether or not Secure LDAP is enabled or disabled."
       }
     },
+    "syncScope": {
+      "type": "string",
+      "defaultValue": "All",
+      "allowedValues": [
+        "All",
+        "CloudOnly"
+      ],
+      "metadata": {
+        "description": "Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All."
+      }
+    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -482,11 +493,14 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AAD/domainServices@2022-12-01#properties/tags"
+        },
         "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -573,7 +587,8 @@
           "kerberosRc4Encryption": "[parameters('kerberosRc4Encryption')]",
           "kerberosArmoring": "[parameters('kerberosArmoring')]"
         },
-        "sku": "[parameters('sku')]"
+        "sku": "[parameters('sku')]",
+        "syncScope": "[parameters('syncScope')]"
       }
     },
     "domainservice_diagnosticSettings": {
