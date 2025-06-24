@@ -84,6 +84,17 @@ resource storageQueueDataContributorRoleAssignment 'Microsoft.Authorization/role
   }
 }
 
+// Additional role assignment for Event Grid managed identity delivery
+resource storageQueueDataMessageSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, managedIdentity.id, 'Storage Queue Data Message Sender')
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a') // Storage Queue Data Message Sender
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 @description('The name of the created Storage Account Queue.')
 output queueName string = storageAccount::queueService::queue.name
 
