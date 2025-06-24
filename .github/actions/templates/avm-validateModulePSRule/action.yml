@@ -34,7 +34,6 @@ inputs:
   softFailure:
     description: "Enable or disable soft failure on the PSRule check"
     required: true
-    default: $true
 
 runs:
   using: "composite"
@@ -109,7 +108,7 @@ runs:
     #-----------------------------
     - name: Run PSRule analysis
       uses: microsoft/ps-rule@v2.9.0
-      continue-on-error: ${{ inputs.softFailure }}
+      continue-on-error: ${{ fromJSON(${{ inputs.softFailure }}) }}
       with:
         modules: "PSRule.Rules.Azure"
         prerelease: true
