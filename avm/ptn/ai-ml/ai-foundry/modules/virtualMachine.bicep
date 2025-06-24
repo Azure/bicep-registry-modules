@@ -78,6 +78,15 @@ param location string = resourceGroup().location
 @description('Specifies the resource tags.')
 param tags object
 
+@description('Optional. Resource ID of a Log Analytics workspace for monitoring. If provided, data collection rules will be created.')
+param logAnalyticsWorkspaceId string = ''
+
+@description('Optional. Enable data collection and monitoring. Requires logAnalyticsWorkspaceId to be provided.')
+param enableMonitoring bool = false
+
+// Monitoring should only be enabled if we have a valid Log Analytics workspace ID
+var shouldEnableMonitoring = enableMonitoring && !empty(logAnalyticsWorkspaceId)
+
 var randomString = uniqueString(resourceGroup().id, vmName, vmAdminPasswordOrKey)
 
 var adminPassword = (length(vmAdminPasswordOrKey) < 8)
@@ -235,7 +244,7 @@ resource vmMaintenanceAssignment 'Microsoft.Maintenance/configurationAssignments
   }
 }
 
-resource dependencyExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
+resource dependencyExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = if (shouldEnableMonitoring) {
   name: 'DependencyAgentWindows'
   parent: virtualMachine
   location: location
@@ -248,7 +257,7 @@ resource dependencyExtension 'Microsoft.Compute/virtualMachines/extensions@2023-
   }
 }
 
-resource amaExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
+resource amaExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = if (shouldEnableMonitoring) {
   name: 'AzureMonitorWindowsAgent'
   parent: virtualMachine
   location: location
@@ -275,12 +284,14 @@ resource entraExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01
     autoUpgradeMinorVersion: false
     enableAutomaticUpgrade: false
   }
-  dependsOn: [
-    amaExtension
-  ]
+  dependsOn: shouldEnableMonitoring
+    ? [
+        amaExtension
+      ]
+    : []
 }
 
-resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (shouldEnableMonitoring) {
   name: 'DCR-Win-Event-Logs-to-LAW'
   location: location
   kind: 'Windows'
@@ -288,7 +299,7 @@ resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     dataFlows: [
       {
         destinations: [
-          'logAnalytics'
+          'logAnalyticsWorkspace'
         ]
         streams: [
           'Microsoft-Event'
@@ -313,16 +324,21 @@ resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     description: 'Collect Windows Event Logs and send to Azure Monitor Logs'
     destinations: {
       logAnalytics: [
-        {}
+        {
+          name: 'logAnalyticsWorkspace'
+          workspaceResourceId: logAnalyticsWorkspaceId
+        }
       ]
     }
   }
-  dependsOn: [
-    entraExtension
-  ]
+  dependsOn: enableMicrosoftEntraIdAuth
+    ? [
+        entraExtension
+      ]
+    : []
 }
 
-resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (shouldEnableMonitoring) {
   name: 'DCR-Win-Perf-to-LAW'
   location: location
   kind: 'Windows'
@@ -330,7 +346,7 @@ resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     dataFlows: [
       {
         destinations: [
-          'logAnalytics'
+          'logAnalyticsWorkspace'
         ]
         streams: [
           'Microsoft-Perf'
@@ -399,16 +415,21 @@ resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     description: 'Collect Performance Counters and send to Azure Monitor Logs.'
     destinations: {
       logAnalytics: [
-        {}
+        {
+          name: 'logAnalyticsWorkspace'
+          workspaceResourceId: logAnalyticsWorkspaceId
+        }
       ]
     }
   }
-  dependsOn: [
-    entraExtension
-  ]
+  dependsOn: enableMicrosoftEntraIdAuth
+    ? [
+        entraExtension
+      ]
+    : []
 }
 
-resource dcrEventLogsAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = {
+resource dcrEventLogsAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = if (shouldEnableMonitoring) {
   name: 'DCRA-VMSS-WEL-LAW'
   scope: virtualMachine
   properties: {
@@ -417,7 +438,7 @@ resource dcrEventLogsAssociation 'Microsoft.Insights/dataCollectionRuleAssociati
   }
 }
 
-resource dcrPerfLawAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = {
+resource dcrPerfLawAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = if (shouldEnableMonitoring) {
   name: 'DCRA-VM-PC-LAW'
   scope: virtualMachine
   properties: {

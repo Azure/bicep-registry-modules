@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9781525384351111464"
+      "templateHash": "2188685985963926330"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -379,6 +379,20 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed."
+      }
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM."
+      }
+    },
+    "enableVmMonitoring": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceId is provided."
       }
     },
     "aiFoundryType": {
@@ -51604,7 +51618,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10240992884802986658"
+              "templateHash": "1766240383355420954"
             }
           },
           "parameters": {
@@ -51781,47 +51795,12 @@
               "dependsOn": [
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
               ]
-            },
-            {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
-              "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
-              "properties": {
-                "capabilityHostKind": "Agents"
-              }
-            },
-            {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
-              "properties": {
-                "capabilityHostKind": "Agents",
-                "vectorStoreConnections": [
-                  "[parameters('nameFormatted')]"
-                ],
-                "storageConnections": [
-                  "[parameters('storageName')]"
-                ],
-                "threadStorageConnections": [
-                  "[parameters('cosmosDBName')]"
-                ]
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
-              ]
             }
           ],
           "outputs": {
             "projectCapHost": {
               "type": "string",
-              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
+              "value": ""
             },
             "projectId": {
               "type": "string",
@@ -51929,6 +51908,12 @@
           },
           "tags": {
             "value": "[variables('allTags')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[parameters('logAnalyticsWorkspaceId')]"
+          },
+          "enableMonitoring": {
+            "value": "[parameters('enableVmMonitoring')]"
           }
         },
         "template": {
@@ -51938,7 +51923,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3362950809118755902"
+              "templateHash": "7856430650986555314"
             }
           },
           "parameters": {
@@ -52100,9 +52085,24 @@
               "metadata": {
                 "description": "Specifies the resource tags."
               }
+            },
+            "logAnalyticsWorkspaceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of a Log Analytics workspace for monitoring. If provided, data collection rules will be created."
+              }
+            },
+            "enableMonitoring": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable data collection and monitoring. Requires logAnalyticsWorkspaceId to be provided."
+              }
             }
           },
           "variables": {
+            "shouldEnableMonitoring": "[and(parameters('enableMonitoring'), not(empty(parameters('logAnalyticsWorkspaceId'))))]",
             "randomString": "[uniqueString(resourceGroup().id, parameters('vmName'), parameters('vmAdminPasswordOrKey'))]",
             "adminPassword": "[if(less(length(parameters('vmAdminPasswordOrKey')), 8), format('{0}{1}', parameters('vmAdminPasswordOrKey'), take(variables('randomString'), 12)), parameters('vmAdminPasswordOrKey'))]",
             "linuxConfiguration": {
@@ -52252,6 +52252,7 @@
               ]
             },
             {
+              "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentWindows')]",
@@ -52268,6 +52269,7 @@
               ]
             },
             {
+              "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
@@ -52303,6 +52305,7 @@
               ]
             },
             {
+              "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Insights/dataCollectionRules",
               "apiVersion": "2023-03-11",
               "name": "DCR-Win-Event-Logs-to-LAW",
@@ -52312,7 +52315,7 @@
                 "dataFlows": [
                   {
                     "destinations": [
-                      "logAnalytics"
+                      "logAnalyticsWorkspace"
                     ],
                     "streams": [
                       "Microsoft-Event"
@@ -52337,7 +52340,10 @@
                 "description": "Collect Windows Event Logs and send to Azure Monitor Logs",
                 "destinations": {
                   "logAnalytics": [
-                    {}
+                    {
+                      "name": "logAnalyticsWorkspace",
+                      "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
+                    }
                   ]
                 }
               },
@@ -52346,6 +52352,7 @@
               ]
             },
             {
+              "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Insights/dataCollectionRules",
               "apiVersion": "2023-03-11",
               "name": "DCR-Win-Perf-to-LAW",
@@ -52355,7 +52362,7 @@
                 "dataFlows": [
                   {
                     "destinations": [
-                      "logAnalytics"
+                      "logAnalyticsWorkspace"
                     ],
                     "streams": [
                       "Microsoft-Perf"
@@ -52424,7 +52431,10 @@
                 "description": "Collect Performance Counters and send to Azure Monitor Logs.",
                 "destinations": {
                   "logAnalytics": [
-                    {}
+                    {
+                      "name": "logAnalyticsWorkspace",
+                      "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
+                    }
                   ]
                 }
               },
@@ -52433,6 +52443,7 @@
               ]
             },
             {
+              "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
               "apiVersion": "2023-03-11",
               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
@@ -52447,6 +52458,7 @@
               ]
             },
             {
+              "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
               "apiVersion": "2023-03-11",
               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",

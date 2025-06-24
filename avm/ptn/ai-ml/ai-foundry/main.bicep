@@ -47,6 +47,12 @@ param userObjectId string = deployer().objectId
 @description('Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')
 param allowedIpAddress string = ''
 
+@description('Optional. Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM.')
+param logAnalyticsWorkspaceId string = ''
+
+@description('Optional. Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceId is provided.')
+param enableVmMonitoring bool = false
+
 @description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled. This is automatically set based on aiFoundryType.')
 var networkIsolation = toLower(aiFoundryType) == 'StandardPrivate'
 
@@ -317,6 +323,8 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     userObjectId: userObjectId
     location: location
     tags: allTags
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+    enableMonitoring: enableVmMonitoring
   }
 }
 

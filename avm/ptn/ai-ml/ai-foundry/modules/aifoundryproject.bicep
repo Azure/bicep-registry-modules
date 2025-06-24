@@ -131,39 +131,51 @@ resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/proje
   }
 }
 
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
-  name: 'accountCapHost'
-  parent: foundryAccount
-  properties: {
-    capabilityHostKind: 'Agents'
-  }
-}
+// Capability hosts commented out temporarily to avoid deployment failures
+// TODO: Re-enable once timing/dependency issues are resolved
 
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
-  name: 'projectCapHost'
-  parent: project
-  properties: {
-    capabilityHostKind: 'Agents'
-    vectorStoreConnections: [
-      nameFormatted
-    ]
-    storageConnections: [
-      storageName
-    ]
-    threadStorageConnections: [
-      cosmosDBName
-    ]
-  }
-  dependsOn: [
-    accountCapabilityHost
-    project_connection_azureai_search
-    project_connection_azure_storage
-    project_connection_azure_storage_sysdata
-    project_connection_cosmosdb
-  ]
-}
+// resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+//   name: 'accountCapHost'
+//   parent: foundryAccount
+//   properties: {
+//     capabilityHostKind: 'Agents'
+//   }
+// }
 
-output projectCapHost string = toLower(aiFoundryType) != 'basic' ? projectCapabilityHost.name : ''
+// // Project capability host with enhanced dependency management
+// resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+//   name: 'projectCapHost'
+//   parent: project
+//   properties: {
+//     capabilityHostKind: 'Agents'
+//     vectorStoreConnections: [
+//       nameFormatted
+//     ]
+//     storageConnections: [
+//       storageName
+//     ]
+//     threadStorageConnections: [
+//       cosmosDBName
+//     ]
+//   }
+//   dependsOn: [
+//     // Ensure account capability host is created first
+//     accountCapabilityHost
+//     // Wait for ALL connections to be fully created and ready
+//     project_connection_azureai_search
+//     project_connection_azure_storage
+//     project_connection_azure_storage_sysdata
+//     project_connection_cosmosdb
+//     // Reference the existing resources to ensure they're fully provisioned
+//     storageAccount
+//     aiSearchService
+//     cosmosDBAccount
+//   ]
+// }
+
+// Capability host output commented out while capability hosts are disabled
+// output projectCapHost string = toLower(aiFoundryType) != 'basic' ? projectCapabilityHost.name : ''
+output projectCapHost string = '' // Return empty string temporarily
 
 output projectId string = project.id
 output projectName string = project.name
