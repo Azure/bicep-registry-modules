@@ -45,11 +45,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing 
   name: storageName
 }
 
-resource aiSearchService 'Microsoft.Search/searchServices@2025-05-01' existing = if (toLower(aiFoundryType) != 'basic') {
+resource aiSearchService 'Microsoft.Search/searchServices@2023-11-01' existing = if (toLower(aiFoundryType) != 'basic') {
   name: nameFormatted
 }
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' existing = if (toLower(aiFoundryType) != 'basic') {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = if (toLower(aiFoundryType) != 'basic') {
   name: cosmosDBName
 }
 

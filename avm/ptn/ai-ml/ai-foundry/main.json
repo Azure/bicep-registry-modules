@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18154934707419825929"
+      "templateHash": "10576705429760082435"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51604,7 +51604,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5920796108370055762"
+              "templateHash": "16708945220964184351"
             }
           },
           "parameters": {
@@ -51756,7 +51756,7 @@
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('nameFormatted'))]",
-                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('nameFormatted')), '2025-05-01', 'full').location]"
+                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('nameFormatted')), '2023-11-01', 'full').location]"
                 }
               },
               "dependsOn": [
@@ -51770,12 +51770,12 @@
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
               "properties": {
                 "category": "CosmosDB",
-                "target": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2025-05-01-preview').documentEndpoint]",
+                "target": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2024-11-15').documentEndpoint]",
                 "authType": "AAD",
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName'))]",
-                  "location": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2025-05-01-preview', 'full').location]"
+                  "location": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2024-11-15', 'full').location]"
                 }
               },
               "dependsOn": [
@@ -51939,7 +51939,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1773852628490091571"
+              "templateHash": "291331571100971789"
             }
           },
           "parameters": {
@@ -52242,9 +52242,9 @@
               "apiVersion": "2023-04-01",
               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
               "name": "[format('{0}-maintenance-assignment', parameters('vmName'))]",
+              "location": "[parameters('location')]",
               "properties": {
-                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]",
-                "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]",

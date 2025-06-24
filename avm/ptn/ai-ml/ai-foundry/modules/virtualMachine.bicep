@@ -216,11 +216,11 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
 // Maintenance Configuration Assignment (assigns the maintenance config to the VM)
 resource vmMaintenanceAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
   name: '${virtualMachine.name}-maintenance-assignment'
+  location: location
+  scope: virtualMachine
   properties: {
     maintenanceConfigurationId: maintenanceConfiguration.id
-    resourceId: virtualMachine.id
   }
-  scope: virtualMachine
 }
 
 resource dependencyExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
