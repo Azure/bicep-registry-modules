@@ -60,8 +60,7 @@ jobs:
         testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
         baseline: [ Azure.Pillar.Reliability, CB.AVM.WAF.Security ]
         exclude:
-          - testCases: defaults
-            baseline: Azure.Pillar.Reliability
+          - baseline: Azure.Pillar.Reliability
     steps:
       - name: Checkout
         uses: actions/checkout@v4
