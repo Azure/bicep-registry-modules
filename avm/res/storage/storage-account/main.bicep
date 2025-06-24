@@ -28,15 +28,21 @@ param kind string = 'StorageV2'
 
 @allowed([
   'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
   'Standard_ZRS'
+  'Standard_GRS'
+  'Standard_GZRS'
+  'Standard_RAGRS'
+  'Standard_RAGZRS'
+  'StandardV2_LRS'
+  'StandardV2_ZRS'
+  'StandardV2_GRS'
+  'StandardV2_GZRS'
   'Premium_LRS'
   'Premium_ZRS'
-  'Standard_GZRS'
-  'Standard_RAGZRS'
+  'PremiumV2_LRS'
+  'PremiumV2_ZRS'
 ])
-@description('Optional. Storage Account Sku Name.')
+@description('Optional. Storage Account Sku Name. note: certain V2 SKUs require the use of: kind = FileStorage')
 param skuName string = 'Standard_GRS'
 
 @allowed([
