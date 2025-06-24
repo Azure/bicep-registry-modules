@@ -380,9 +380,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       {
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: 'eastus'
-        hubName: 'dep-hub-eastus-nvwansechub'
+        hubName: 'dep-hub-eastus-nvwanmultisechub'
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-eastus-nvwansechub'
+          azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           deploySecureHub: true
@@ -396,162 +396,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       {
         hubAddressPrefix: '10.0.1.0/24'
         hubLocation: 'westus2'
-        hubName: 'dep-hub-westus2-nvwansechub'
+        hubName: 'dep-hub-westus2-nvwanmultisechub'
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-westus2-nvwansechub'
-          azureFirewallPublicIPCount: 1
-          azureFirewallSku: 'Standard'
-          deploySecureHub: true
-          firewallPolicyResourceId: '<firewallPolicyResourceId>'
-          routingIntent: {
-            internetToFirewall: true
-            privateToFirewall: true
-          }
-        }
-      }
-    ]
-    virtualWanParameters: {
-      location: '<location>'
-      virtualWanName: 'dep-vw-nvwansechub'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "virtualHubParameters": {
-      "value": [
-        {
-          "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwansechub",
-          "secureHubParameters": {
-            "azureFirewallName": "dep-fw-eastus-nvwansechub",
-            "azureFirewallPublicIPCount": 1,
-            "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
-            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
-            "routingIntent": {
-              "internetToFirewall": true,
-              "privateToFirewall": true
-            }
-          }
-        },
-        {
-          "hubAddressPrefix": "10.0.1.0/24",
-          "hubLocation": "westus2",
-          "hubName": "dep-hub-westus2-nvwansechub",
-          "secureHubParameters": {
-            "azureFirewallName": "dep-fw-westus2-nvwansechub",
-            "azureFirewallPublicIPCount": 1,
-            "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
-            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
-            "routingIntent": {
-              "internetToFirewall": true,
-              "privateToFirewall": true
-            }
-          }
-        }
-      ]
-    },
-    "virtualWanParameters": {
-      "value": {
-        "location": "<location>",
-        "virtualWanName": "dep-vw-nvwansechub"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/network/virtual-wan:<version>'
-
-// Required parameters
-param virtualHubParameters = [
-  {
-    hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
-    hubName: 'dep-hub-eastus-nvwansechub'
-    secureHubParameters: {
-      azureFirewallName: 'dep-fw-eastus-nvwansechub'
-      azureFirewallPublicIPCount: 1
-      azureFirewallSku: 'Standard'
-      deploySecureHub: true
-      firewallPolicyResourceId: '<firewallPolicyResourceId>'
-      routingIntent: {
-        internetToFirewall: true
-        privateToFirewall: true
-      }
-    }
-  }
-  {
-    hubAddressPrefix: '10.0.1.0/24'
-    hubLocation: 'westus2'
-    hubName: 'dep-hub-westus2-nvwansechub'
-    secureHubParameters: {
-      azureFirewallName: 'dep-fw-westus2-nvwansechub'
-      azureFirewallPublicIPCount: 1
-      azureFirewallSku: 'Standard'
-      deploySecureHub: true
-      firewallPolicyResourceId: '<firewallPolicyResourceId>'
-      routingIntent: {
-        internetToFirewall: true
-        privateToFirewall: true
-      }
-    }
-  }
-]
-param virtualWanParameters = {
-  location: '<location>'
-  virtualWanName: 'dep-vw-nvwansechub'
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Single secure hub deployment_
-
-This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
-  params: {
-    // Required parameters
-    virtualHubParameters: [
-      {
-        hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
-        hubName: 'dep-hub-eastus-nvwanmultisechub'
-        secureHubParameters: {
-          azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
+          azureFirewallName: 'dep-fw-westus2-nvwanmultisechub'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           deploySecureHub: true
@@ -592,6 +439,22 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubName": "dep-hub-eastus-nvwanmultisechub",
           "secureHubParameters": {
             "azureFirewallName": "dep-fw-eastus-nvwanmultisechub",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        },
+        {
+          "hubAddressPrefix": "10.0.1.0/24",
+          "hubLocation": "westus2",
+          "hubName": "dep-hub-westus2-nvwanmultisechub",
+          "secureHubParameters": {
+            "azureFirewallName": "dep-fw-westus2-nvwanmultisechub",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "deploySecureHub": true,
@@ -642,10 +505,147 @@ param virtualHubParameters = [
       }
     }
   }
+  {
+    hubAddressPrefix: '10.0.1.0/24'
+    hubLocation: 'westus2'
+    hubName: 'dep-hub-westus2-nvwanmultisechub'
+    secureHubParameters: {
+      azureFirewallName: 'dep-fw-westus2-nvwanmultisechub'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
 ]
 param virtualWanParameters = {
   location: '<location>'
   virtualWanName: 'dep-vw-nvwanmultisechub'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Single secure hub deployment_
+
+This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwansechub'
+        secureHubParameters: {
+          azureFirewallName: 'dep-fw-eastus-nvwansechub'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwansechub'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwansechub",
+          "secureHubParameters": {
+            "azureFirewallName": "dep-fw-eastus-nvwansechub",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwansechub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwansechub'
+    secureHubParameters: {
+      azureFirewallName: 'dep-fw-eastus-nvwansechub'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwansechub'
 }
 ```
 
