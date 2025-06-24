@@ -42,7 +42,7 @@ param kind string = 'StorageV2'
   'PremiumV2_LRS'
   'PremiumV2_ZRS'
 ])
-@description('Optional. Storage Account Sku Name. note: certain V2 SKUs require the use of: kind = FileStorage')
+@description('Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.')
 param skuName string = 'Standard_GRS'
 
 @allowed([

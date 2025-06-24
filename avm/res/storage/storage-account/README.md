@@ -3403,7 +3403,7 @@ param tags = {
 | [`sasExpirationAction`](#parameter-sasexpirationaction) | string | The SAS expiration action. Allowed values are Block and Log. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. note: certain V2 SKUs require the use of: kind = FileStorage |
+| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage. |
 | [`supportsHttpsTrafficOnly`](#parameter-supportshttpstrafficonly) | bool | Allows HTTPS traffic only to storage service if sets to true. |
 | [`tableServices`](#parameter-tableservices) | object | Table service and tables to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -4796,7 +4796,7 @@ The connectionString2 secret name to create.
 
 ### Parameter: `skuName`
 
-Storage Account Sku Name. note: certain V2 SKUs require the use of: kind = FileStorage
+Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.
 
 - Required: No
 - Type: string

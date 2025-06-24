@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "699660594110188369"
+      "templateHash": "7785844403485559235"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -969,7 +969,7 @@
         "PremiumV2_ZRS"
       ],
       "metadata": {
-        "description": "Optional. Storage Account Sku Name. note: certain V2 SKUs require the use of: kind = FileStorage"
+        "description": "Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage."
       }
     },
     "accessTier": {
