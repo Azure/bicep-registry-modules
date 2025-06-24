@@ -1,7 +1,7 @@
 metadata name = 'AI Services and Project Module'
 metadata description = 'This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments.'
 
-@description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
+@description('Required. (TODO - random increment to trigger changes 001 - remove this at some point) Name of the Cognitive Services resource. Must be unique in the resource group.')
 param name string
 
 @description('Optional. The location of the Cognitive Services resource.')

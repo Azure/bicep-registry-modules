@@ -3,7 +3,7 @@ metadata description = 'This module creates a secure Virtual Network with option
 
 @minLength(6)
 @maxLength(25)
-@description('Required. Name used for naming all network resources.')
+@description('Required. (TODO - random increment to trigger changes 001 - remove this at some point) Name used for naming all network resources.')
 param resourcesName string
 
 @minLength(3)

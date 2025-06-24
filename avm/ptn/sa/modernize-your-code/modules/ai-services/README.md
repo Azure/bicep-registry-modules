@@ -32,7 +32,7 @@ This module creates an AI Services resource and an AI Foundry project within it.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Cognitive Services resource. Must be unique in the resource group. |
+| [`name`](#parameter-name) | string | (TODO - random increment to trigger changes 001 - remove this at some point) Name of the Cognitive Services resource. Must be unique in the resource group. |
 | [`projectName`](#parameter-projectname) | string | The name of the AI Foundry project to create. |
 
 **Optional parameters**
@@ -52,7 +52,7 @@ This module creates an AI Services resource and an AI Foundry project within it.
 
 ### Parameter: `name`
 
-Name of the Cognitive Services resource. Must be unique in the resource group.
+(TODO - random increment to trigger changes 001 - remove this at some point) Name of the Cognitive Services resource. Must be unique in the resource group.
 
 - Required: Yes
 - Type: string
