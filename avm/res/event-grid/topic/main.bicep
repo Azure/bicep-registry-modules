@@ -19,7 +19,15 @@ param publicNetworkAccess string = ''
 param inboundIpRules array = []
 
 @description('Optional. Event subscriptions to deploy.')
-param eventSubscriptions array = []
+param eventSubscriptions eventSubscriptionType[]?
+
+@description('Optional. This determines the format that Event Grid should expect for incoming events published to the topic.')
+@allowed([
+  'CloudEventSchemaV1_0'
+  'CustomEventSchema'
+  'EventGridSchema'
+])
+param inputSchema string = 'EventGridSchema'
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -43,6 +51,14 @@ param managedIdentities managedIdentityAllType?
 
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
+
+@description('Optional. Minimum TLS version of the publisher allowed to publish to this topic. For security reasons, it is recommended to use TLS 1.2.')
+@allowed([
+  '1.0'
+  '1.1'
+  '1.2'
+])
+param minimumTlsVersionAllowed string = '1.2'
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -130,7 +146,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource topic 'Microsoft.EventGrid/topics@2021-06-01-preview' = {
+resource topic 'Microsoft.EventGrid/topics@2025-04-01-preview' = {
   name: name
   location: location
   identity: identity
@@ -141,33 +157,27 @@ resource topic 'Microsoft.EventGrid/topics@2021-06-01-preview' = {
       : (!empty(privateEndpoints) && empty(inboundIpRules) ? 'Disabled' : null)
     inboundIpRules: (empty(inboundIpRules) ? null : inboundIpRules)
     disableLocalAuth: disableLocalAuth
+    minimumTlsVersionAllowed: minimumTlsVersionAllowed
+    inputSchema: inputSchema
   }
 }
 
 // Event subscriptions
 module topics_eventSubscriptions 'event-subscription/main.bicep' = [
-  for (eventSubscription, index) in eventSubscriptions: {
+  for (eventSubscription, index) in (eventSubscriptions ?? []): {
     name: '${uniqueString(deployment().name, location)}-EventGrid-Topics-EventSubs-${index}'
     params: {
-      destination: eventSubscription.destination
+      destination: empty(eventSubscription.?deliveryWithResourceIdentity) ? eventSubscription.?destination : null
       topicName: topic.name
       name: eventSubscription.name
-      deadLetterDestination: contains(eventSubscriptions, 'deadLetterDestination')
-        ? eventSubscription.deadLetterDestination
-        : {}
-      deadLetterWithResourceIdentity: contains(eventSubscriptions, 'deadLetterWithResourceIdentity')
-        ? eventSubscription.deadLetterWithResourceIdentity
-        : {}
-      deliveryWithResourceIdentity: contains(eventSubscriptions, 'deliveryWithResourceIdentity')
-        ? eventSubscription.deliveryWithResourceIdentity
-        : {}
-      eventDeliverySchema: contains(eventSubscriptions, 'eventDeliverySchema')
-        ? eventSubscription.eventDeliverySchema
-        : 'EventGridSchema'
-      expirationTimeUtc: contains(eventSubscriptions, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
-      filter: contains(eventSubscriptions, 'filter') ? eventSubscription.filter : {}
-      labels: contains(eventSubscriptions, 'labels') ? eventSubscription.labels : []
-      retryPolicy: contains(eventSubscriptions, 'retryPolicy') ? eventSubscription.retryPolicy : {}
+      deadLetterDestination: eventSubscription.?deadLetterDestination
+      deadLetterWithResourceIdentity: eventSubscription.?deadLetterWithResourceIdentity
+      deliveryWithResourceIdentity: eventSubscription.?deliveryWithResourceIdentity
+      eventDeliverySchema: eventSubscription.?eventDeliverySchema ?? 'EventGridSchema'
+      expirationTimeUtc: eventSubscription.?expirationTimeUtc
+      filter: eventSubscription.?filter
+      labels: eventSubscription.?labels
+      retryPolicy: eventSubscription.?retryPolicy
     }
   }
 ]
@@ -212,7 +222,7 @@ resource topic_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
   }
 ]
 
-module topic_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module topic_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-topic-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -335,4 +345,37 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
+}
+
+@description('Event subscription configuration.')
+type eventSubscriptionType = {
+  @description('Required. The name of the event subscription.')
+  name: string
+  
+  @description('Optional. Dead Letter Destination.')
+  deadLetterDestination: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deadLetterDestination?
+  
+  @description('Optional. Dead Letter with Resource Identity Configuration.')
+  deadLetterWithResourceIdentity: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deadLetterWithResourceIdentity?
+  
+  @description('Optional. Delivery with Resource Identity Configuration.')
+  deliveryWithResourceIdentity: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deliveryWithResourceIdentity?
+  
+  @description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.')
+  destination: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.destination?
+  
+  @description('Optional. The event delivery schema for the event subscription.')
+  eventDeliverySchema: ('CloudEventSchemaV1_0' | 'CustomInputSchema' | 'EventGridSchema' | 'EventGridEvent')?
+  
+  @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
+  expirationTimeUtc: string?
+  
+  @description('Optional. The filter for the event subscription.')
+  filter: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.filter?
+  
+  @description('Optional. The list of user defined labels.')
+  labels: string[]?
+  
+  @description('Optional. The retry policy for events.')
+  retryPolicy: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.retryPolicy?
 }

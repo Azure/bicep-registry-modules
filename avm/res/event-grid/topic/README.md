@@ -17,11 +17,11 @@ This module deploys an Event Grid Topic.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/topics` | [2021-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2021-06-01-preview/topics) |
-| `Microsoft.EventGrid/topics/eventSubscriptions` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/topics/eventSubscriptions) |
+| `Microsoft.EventGrid/topics` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics) |
+| `Microsoft.EventGrid/topics/eventSubscriptions` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics/eventSubscriptions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -158,11 +158,13 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         ipMask: '40.74.28.0/23'
       }
     ]
+    inputSchema: 'CloudEventSchemaV1_0'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -296,6 +298,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
       ]
     },
+    "inputSchema": {
+      "value": "CloudEventSchemaV1_0"
+    },
     "location": {
       "value": "<location>"
     },
@@ -304,6 +309,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "minimumTlsVersionAllowed": {
+      "value": "1.2"
     },
     "privateEndpoints": {
       "value": [
@@ -434,11 +442,13 @@ param inboundIpRules = [
     ipMask: '40.74.28.0/23'
   }
 ]
+param inputSchema = 'CloudEventSchemaV1_0'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -795,9 +805,11 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
+| [`inputSchema`](#parameter-inputschema) | string | This determines the format that Event Grid should expect for incoming events published to the topic. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`minimumTlsVersionAllowed`](#parameter-minimumtlsversionallowed) | string | Minimum TLS version of the publisher allowed to publish to this topic. For security reasons, it is recommended to use TLS 1.2. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -978,7 +990,110 @@ Event subscriptions to deploy.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-eventsubscriptionsname) | string | The name of the event subscription. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-eventsubscriptionsdestination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterDestination`](#parameter-eventsubscriptionsdeadletterdestination) | object | Dead Letter Destination. |
+| [`deadLetterWithResourceIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentity) | object | Dead Letter with Resource Identity Configuration. |
+| [`deliveryWithResourceIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentity) | object | Delivery with Resource Identity Configuration. |
+| [`eventDeliverySchema`](#parameter-eventsubscriptionseventdeliveryschema) | string | The event delivery schema for the event subscription. |
+| [`expirationTimeUtc`](#parameter-eventsubscriptionsexpirationtimeutc) | string | The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ). |
+| [`filter`](#parameter-eventsubscriptionsfilter) | object | The filter for the event subscription. |
+| [`labels`](#parameter-eventsubscriptionslabels) | array | The list of user defined labels. |
+| [`retryPolicy`](#parameter-eventsubscriptionsretrypolicy) | object | The retry policy for events. |
+
+### Parameter: `eventSubscriptions.name`
+
+The name of the event subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventSubscriptions.destination`
+
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterDestination`
+
+Dead Letter Destination.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity`
+
+Dead Letter with Resource Identity Configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity`
+
+Delivery with Resource Identity Configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.eventDeliverySchema`
+
+The event delivery schema for the event subscription.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CloudEventSchemaV1_0'
+    'CustomInputSchema'
+    'EventGridEvent'
+    'EventGridSchema'
+  ]
+  ```
+
+### Parameter: `eventSubscriptions.expirationTimeUtc`
+
+The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.filter`
+
+The filter for the event subscription.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.labels`
+
+The list of user defined labels.
+
+- Required: No
+- Type: array
+
+### Parameter: `eventSubscriptions.retryPolicy`
+
+The retry policy for events.
+
+- Required: No
+- Type: object
 
 ### Parameter: `inboundIpRules`
 
@@ -987,6 +1102,22 @@ This can be used to restrict traffic from specific IPs instead of all IPs. Note:
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `inputSchema`
+
+This determines the format that Event Grid should expect for incoming events published to the topic.
+
+- Required: No
+- Type: string
+- Default: `'EventGridSchema'`
+- Allowed:
+  ```Bicep
+  [
+    'CloudEventSchemaV1_0'
+    'CustomEventSchema'
+    'EventGridSchema'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -1059,6 +1190,22 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `minimumTlsVersionAllowed`
+
+Minimum TLS version of the publisher allowed to publish to this topic. For security reasons, it is recommended to use TLS 1.2.
+
+- Required: No
+- Type: string
+- Default: `'1.2'`
+- Allowed:
+  ```Bicep
+  [
+    '1.0'
+    '1.1'
+    '1.2'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -1618,7 +1765,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
