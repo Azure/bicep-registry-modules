@@ -27,7 +27,7 @@ This module deploys an Event Grid Topic Event Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-destination) | object | The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
+| [`destination`](#parameter-destination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
 
 **Optional parameters**
 
@@ -58,7 +58,7 @@ Name of the Event Grid Topic.
 
 ### Parameter: `destination`
 
-The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
 
 - Required: No
 - Type: object

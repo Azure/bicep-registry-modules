@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15772790564268069125"
+      "templateHash": "1716887889544714090"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic."
@@ -1009,7 +1009,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12019432327362257510"
+              "templateHash": "16501473536598784439"
             },
             "name": "EventGrid Topic Event Subscriptions",
             "description": "This module deploys an Event Grid Topic Event Subscription."
@@ -1063,7 +1063,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/destination"
                 },
-                "description": "Conditional. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
+                "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
               },
               "nullable": true
             },
