@@ -85,7 +85,11 @@ jobs:
       fail-fast: false
       matrix:
         testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
-        baseline: [ Azure.Default, Azure.Pillar.Security ]
+        baseline:
+          - friendlyName: All pillars
+            baselineName: Azure.Default
+          - friendlyName: Security
+            baselineName: Azure.Pillar.Security
     steps:
       - name: Checkout
         uses: actions/checkout@v4
