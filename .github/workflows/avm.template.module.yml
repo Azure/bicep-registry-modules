@@ -73,7 +73,7 @@ jobs:
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline }}
 
-  job_psrule_nice: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Optional [${{ matrix.baseline }}] on [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
@@ -200,7 +200,7 @@ jobs:
       needs.job_psrule_test_waf_security_cb.result != 'failure'
     needs:
       - job_module_static_validation
-      - job_psrule_test
+      - job_psrule_must
       # - job_psrule_test_waf_reliability
       # - job_psrule_test_waf_security_cb
     strategy:
