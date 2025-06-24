@@ -623,7 +623,7 @@ module avmKeyVault './modules/key-vault.bicep' = {
 module avmContainerRegistry 'modules/container-registry.bicep' = {
   //name: format(deployment_param.resource_name_format_string, abbrs.containers.containerRegistry)
   params: {
-    acrName: 'cr-${replace(solutionPrefix, '-', '')}'
+    acrName: 'cr${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
     acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
@@ -1111,7 +1111,12 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     name: 'aicu-${solutionPrefix}'
     location: contentUnderstandingLocation
     sku: 'S0'
-    managedIdentities: { systemAssigned: false }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        avmManagedIdentity.outputs.resourceId // Use the managed identity created above
+      ]
+    }
     kind: 'AIServices'
     tags: {
       app: solutionPrefix

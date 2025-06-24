@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11979225801395199288"
+      "templateHash": "6739629743613565298"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -15729,7 +15729,7 @@
         "mode": "Incremental",
         "parameters": {
           "acrName": {
-            "value": "[format('cr-{0}', replace(variables('solutionPrefix'), '-', ''))]"
+            "value": "[format('cr{0}', replace(variables('solutionPrefix'), '-', ''))]"
           },
           "location": {
             "value": "[parameters('resourceGroupLocation')]"
@@ -26995,10 +26995,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -27024,7 +27024,10 @@
           },
           "managedIdentities": {
             "value": {
-              "systemAssigned": false
+              "systemAssigned": false,
+              "userAssignedResourceIds": [
+                "[reference('avmManagedIdentity').outputs.resourceId.value]"
+              ]
             }
           },
           "kind": {
@@ -29316,6 +29319,7 @@
         }
       },
       "dependsOn": [
+        "avmManagedIdentity",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork"
@@ -39309,8 +39313,8 @@
         "avmContainerRegistry",
         "avmKeyVault",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
         "avmVirtualNetwork"
       ]
     },
