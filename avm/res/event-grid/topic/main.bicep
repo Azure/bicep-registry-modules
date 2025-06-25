@@ -347,6 +347,7 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
+@export()
 @description('Event subscription configuration.')
 type eventSubscriptionType = {
   @description('Required. The name of the event subscription.')
