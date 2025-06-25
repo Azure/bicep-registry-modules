@@ -24,7 +24,7 @@ on:
         required: false
   push:
     branches:
-      - avm/ptn/sa/modernize-your-code
+      - main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
