@@ -6,53 +6,50 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1653320482716613518"
+      "templateHash": "2704815512301553110"
     },
     "name": "Dev Center Project Policy",
     "description": "This module deploys a Dev Center Project Policy."
   },
   "definitions": {
     "resourcePolicyType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "action": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Policy action to be taken on the resources. Defaults to \"Allow\" if not specified. Cannot be used when the \"resources\" property is provided."
-            }
-          },
-          "filter": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. When specified, this expression is used to filter the resources."
-            }
-          },
-          "resources": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Explicit resources that are \"allowed\" as part of a project policy. Must be in the format of a resource ID. Cannot be used when the \"resourceType\" property is provided."
-            }
-          },
-          "resourceType": {
-            "type": "string",
-            "allowedValues": [
-              "AttachedNetworks",
-              "Images",
-              "Skus"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The resource type being restricted or allowed by a project policy. Used with a given \"action\" to restrict or allow access to a resource type. If not specified for a given policy, the action will be set to \"Allow\" for the unspecified resource types. For example, if the action is \"Deny\" for \"Images\" and \"Skus\", the project policy will deny access to images and skus, but allow access for remaining resource types like \"AttachedNetworks\"."
-            }
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Policy action to be taken on the resources. Defaults to \"Allow\" if not specified. Cannot be used when the \"resources\" property is provided."
+          }
+        },
+        "filter": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When specified, this expression is used to filter the resources."
+          }
+        },
+        "resources": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Explicit resources that are \"allowed\" as part of a project policy. Must be in the format of a resource ID. Cannot be used when the \"resourceType\" property is provided."
+          }
+        },
+        "resourceType": {
+          "type": "string",
+          "allowedValues": [
+            "AttachedNetworks",
+            "Images",
+            "Skus"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource type being restricted or allowed by a project policy. Used with a given \"action\" to restrict or allow access to a resource type. If not specified for a given policy, the action will be set to \"Allow\" for the unspecified resource types. For example, if the action is \"Deny\" for \"Images\" and \"Skus\", the project policy will deny access to images and skus, but allow access for remaining resource types like \"AttachedNetworks\"."
           }
         }
       },
@@ -78,7 +75,10 @@
       }
     },
     "resourcePolicies": {
-      "$ref": "#/definitions/resourcePolicyType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/resourcePolicyType"
+      },
       "metadata": {
         "description": "Required. Resource policies that are a part of this project policy."
       }

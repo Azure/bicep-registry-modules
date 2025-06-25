@@ -14,7 +14,7 @@ param devcenterName string
 param name string
 
 @description('Required. Resource policies that are a part of this project policy.')
-param resourcePolicies resourcePolicyType
+param resourcePolicies resourcePolicyType[]
 
 @description('Optional. Project names or resource IDs that will be in scope of this project policy. Project names can be used if the project is in the same resource group as the Dev Center. If the project is in a different resource group or subscription, the full resource ID must be provided. If not provided, the policy status will be set to "Unassigned".')
 param projectsResourceIdOrName string[]?
@@ -77,4 +77,4 @@ type resourcePolicyType = {
 
   @description('Optional. The resource type being restricted or allowed by a project policy. Used with a given "action" to restrict or allow access to a resource type. If not specified for a given policy, the action will be set to "Allow" for the unspecified resource types. For example, if the action is "Deny" for "Images" and "Skus", the project policy will deny access to images and skus, but allow access for remaining resource types like "AttachedNetworks".')
   resourceType: 'AttachedNetworks' | 'Images' | 'Skus'?
-}[]
+}

@@ -469,7 +469,7 @@ type projectPolicyType = {
   name: string
 
   @description('Required. Resource policies that are a part of this project policy.')
-  resourcePolicies: resourcePolicyType
+  resourcePolicies: resourcePolicyType[]
 
   @description('Optional. Project names or resource IDs that will be in scope of this project policy. Project names can be used if the project is in the same resource group as the Dev Center. If the project is in a different resource group or subscription, the full resource ID must be provided. If not provided, the policy status will be set to "Unassigned".')
   projectsResourceIdOrName: string[]?
