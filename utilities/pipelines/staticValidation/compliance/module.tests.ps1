@@ -1534,7 +1534,7 @@ Describe 'Module tests' -Tag 'Module' {
             $changelogContent[1] | Should -BeNullOrEmpty -Because "the changelog's second line should be empty"
 
             # The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
-            $linkToLatestVersionChangelog = 'The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/{0}/{1}/Changelog.md).' -f $moduleType, $moduleFolderName
+            $linkToLatestVersionChangelog = 'The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/{0}/{1}/Changelog.md).' -f $moduleType, $moduleFolderName
             $changelogContent[2] | Should -Be $linkToLatestVersionChangelog -Because ('the changelog must contain a link to the latest version {0}' -f $linkToLatestVersionChangelog)
             $changelogContent[3] | Should -BeNullOrEmpty -Because "the changelog's forth line should be empty"
         }
