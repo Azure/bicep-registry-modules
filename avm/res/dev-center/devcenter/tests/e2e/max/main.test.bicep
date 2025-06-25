@@ -318,6 +318,10 @@ module testDeployment '../../../main.bicep' = [
               localAdministrator: 'Disabled'
               virtualNetworkType: 'Managed'
               singleSignOnStatus: 'Enabled'
+              stopOnDisconnect: {
+                gracePeriodMinutes: 60
+                status: 'Enabled'
+              }
               managedVirtualNetworkRegion: 'westeurope'
             }
           ]
