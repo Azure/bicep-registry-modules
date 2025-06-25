@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16162923545569232088"
+      "version": "0.35.1.17967",
+      "templateHash": "13032930289827924981"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -48,6 +48,17 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Where to store certificates on the machine."
+              }
+            },
+            "certificateStoreName": {
+              "type": "string",
+              "allowedValues": [
+                "My",
+                "Root"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the certificate store to use on the machine, currently \"My\" and \"Root\" are supported."
               }
             }
           },
@@ -109,6 +120,18 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The percentage of the buffer to be allocated to this image."
+          }
+        },
+        "ephemeralType": {
+          "type": "string",
+          "allowedValues": [
+            "Automatic",
+            "CacheDisk",
+            "ResourceDisk"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ephemeral type of the image."
           }
         },
         "wellKnownImageName": {
@@ -210,6 +233,13 @@
                 "maxValue": 10000,
                 "metadata": {
                   "description": "Optional. How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool."
+                }
+              },
+              "openAccess": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Determines if the pool should have open access to all projects in this organization."
                 }
               }
             }
@@ -980,7 +1010,7 @@
     },
     "managedDevOpsPool": {
       "type": "Microsoft.DevOpsInfrastructure/pools",
-      "apiVersion": "2024-10-19",
+      "apiVersion": "2025-01-21",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1107,7 +1137,7 @@
       "metadata": {
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
-      "value": "[reference('managedDevOpsPool', '2024-10-19', 'full').location]"
+      "value": "[reference('managedDevOpsPool', '2025-01-21', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1115,7 +1145,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-10-19', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2025-01-21', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
