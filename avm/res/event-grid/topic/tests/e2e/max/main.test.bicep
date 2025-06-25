@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -69,6 +69,15 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      publicNetworkAccess: 'Disabled' // Use private endpoints only for security
+      minimumTlsVersionAllowed: '1.2'
+      inputSchema: 'CloudEventSchemaV1_0'
+      dataResidencyBoundary: 'WithinRegion' // Ensure data stays within region
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -93,15 +102,21 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '120'
+            eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
-          destination: {
-            endpointType: 'StorageQueue'
-            properties: {
-              resourceId: nestedDependencies.outputs.storageAccountResourceId
-              queueMessageTimeToLiveInSeconds: 86400
-              queueName: nestedDependencies.outputs.queueName
+          deliveryWithResourceIdentity: {
+            identity: {
+              type: 'UserAssigned'
+              userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
+            }
+            destination: {
+              endpointType: 'StorageQueue'
+              properties: {
+                resourceId: nestedDependencies.outputs.storageAccountResourceId
+                queueMessageTimeToLiveInSeconds: 86400
+                queueName: nestedDependencies.outputs.queueName
+              }
             }
           }
         }
@@ -125,6 +140,7 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
+          service: 'topic'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           roleAssignments: [
             {
@@ -155,6 +171,7 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
+          service: 'topic'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
@@ -186,9 +203,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
