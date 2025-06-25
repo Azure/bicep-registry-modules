@@ -68,6 +68,8 @@ param devboxDefinitions devboxDefinitionType[]?
 @description('Optional. The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically.')
 param projects projectType[]?
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -371,6 +373,7 @@ module devCenter_project 'br/public:avm/res/dev-center/project:0.1.0' = [
       environmentTypes: project.?environmentTypes
       pools: project.?pools
       catalogs: project.?catalogs
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       devcenter_devboxDefinition
