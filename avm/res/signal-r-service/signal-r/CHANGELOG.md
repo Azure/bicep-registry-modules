@@ -11,4 +11,12 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ## Breaking Changes
 
+## 0.8.0
+
+### Changes
+
+- Initial version
+
+### Breaking Changes
+
 - None
