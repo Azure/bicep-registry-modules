@@ -679,7 +679,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     tags: tags
 
     //<======================= WAF related parameters
-    allowBlobPublicAccess: (false) // Disable public access when WAF is enabled
+    allowBlobPublicAccess: (enablePrivateNetworking) ? true : false // Disable public access when WAF is enabled
     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
     privateEndpoints: (enablePrivateNetworking)
       ? [
@@ -1838,16 +1838,15 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_BLOB_URL'
-        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+        value: avmStorageAccount.outputs.serviceEndpoints.blob
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
-        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+        value: avmStorageAccount.outputs.serviceEndpoints.queue
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
         value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
-        //TODO: replace with actual AI project connection string
       }
       {
         name: 'APP_COSMOS_CONNSTR'
