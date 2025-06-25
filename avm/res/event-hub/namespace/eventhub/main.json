@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3890887436119201915"
+      "version": "0.36.1.42791",
+      "templateHash": "5223490441794132706"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -151,7 +151,7 @@
       "type": "int",
       "defaultValue": 1,
       "minValue": 1,
-      "maxValue": 7,
+      "maxValue": 90,
       "metadata": {
         "description": "Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to \"Compact\"."
       }
@@ -282,6 +282,13 @@
         "description": "Optional. A value that indicates whether to Skip Empty Archives."
       }
     },
+    "retentionDescriptionEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored."
+      }
+    },
     "retentionDescriptionCleanupPolicy": {
       "type": "string",
       "defaultValue": "Delete",
@@ -297,16 +304,16 @@
       "type": "int",
       "defaultValue": 1,
       "minValue": 1,
-      "maxValue": 168,
+      "maxValue": 2160,
       "metadata": {
-        "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
+        "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
       }
     },
     "retentionDescriptionTombstoneRetentionTimeInHours": {
       "type": "int",
       "defaultValue": 1,
       "minValue": 1,
-      "maxValue": 168,
+      "maxValue": 2160,
       "metadata": {
         "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
       }
@@ -321,14 +328,10 @@
       }
     ],
     "eventHubProperties": {
-      "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+      "messageRetentionInDays": "[if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays'))]",
       "partitionCount": "[parameters('partitionCount')]",
       "status": "[parameters('status')]",
-      "retentionDescription": {
-        "cleanupPolicy": "[parameters('retentionDescriptionCleanupPolicy')]",
-        "retentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null())]",
-        "tombstoneRetentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())]"
-      }
+      "retentionDescription": "[if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())]"
     },
     "eventHubPropertiesCapture": {
       "captureDescription": {
@@ -367,7 +370,7 @@
     },
     "eventHub": {
       "type": "Microsoft.EventHub/namespaces/eventhubs",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]"
     },
@@ -440,8 +443,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6600585942129882296"
+              "version": "0.36.1.42791",
+              "templateHash": "13587345575892314444"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -545,8 +548,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5591325767835614815"
+              "version": "0.36.1.42791",
+              "templateHash": "16120347380330996321"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
