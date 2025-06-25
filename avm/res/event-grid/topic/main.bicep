@@ -61,7 +61,7 @@ param disableLocalAuth bool = true
 param minimumTlsVersionAllowed string = '1.2'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.EventGrid/topics@2025-04-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
