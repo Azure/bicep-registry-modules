@@ -54,7 +54,6 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     }
     name: 'ashmgiminmarketplaceimage'
     osType: 'Windows'
-    // Non-required parameters
     version: {
       name: '20348.2461.240510'
     }
@@ -94,7 +93,6 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     "osType": {
       "value": "Windows"
     },
-    // Non-required parameters
     "version": {
       "value": {
         "name": "20348.2461.240510"
@@ -126,7 +124,6 @@ param identifier = {
 }
 param name = 'ashmgiminmarketplaceimage'
 param osType = 'Windows'
-// Non-required parameters
 param version = {
   name: '20348.2461.240510'
 }
@@ -160,6 +157,9 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     }
     name: 'ashmgiwafmarketplaceimage'
     osType: 'Windows'
+    version: {
+      name: '20348.2461.240510'
+    }
     // Non-required parameters
     cloudInitDataSource: 'Azure'
     containerId: '<containerId>'
@@ -168,9 +168,6 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
       Environment: 'Test'
       'hidden-title': 'This is visible in the resource name'
       Purpose: 'MarketplaceGalleryImage'
-    }
-    version: {
-      name: '20348.2461.240510'
     }
   }
 }
@@ -208,6 +205,11 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     "osType": {
       "value": "Windows"
     },
+    "version": {
+      "value": {
+        "name": "20348.2461.240510"
+      }
+    },
     // Non-required parameters
     "cloudInitDataSource": {
       "value": "Azure"
@@ -223,11 +225,6 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
         "Environment": "Test",
         "hidden-title": "This is visible in the resource name",
         "Purpose": "MarketplaceGalleryImage"
-      }
-    },
-    "version": {
-      "value": {
-        "name": "20348.2461.240510"
       }
     }
   }
@@ -256,6 +253,9 @@ param identifier = {
 }
 param name = 'ashmgiwafmarketplaceimage'
 param osType = 'Windows'
+param version = {
+  name: '20348.2461.240510'
+}
 // Non-required parameters
 param cloudInitDataSource = 'Azure'
 param containerId = '<containerId>'
@@ -264,9 +264,6 @@ param tags = {
   Environment: 'Test'
   'hidden-title': 'This is visible in the resource name'
   Purpose: 'MarketplaceGalleryImage'
-}
-param version = {
-  name: '20348.2461.240510'
 }
 ```
 
@@ -283,6 +280,7 @@ param version = {
 | [`identifier`](#parameter-identifier) | object | The gallery image identifier configuration containing publisher, offer, and SKU. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`osType`](#parameter-ostype) | string | Operating system type that the gallery image uses. |
+| [`version`](#parameter-version) | object | Gallery image version configuration. |
 
 **Optional parameters**
 
@@ -295,7 +293,6 @@ param version = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the marketplace gallery image. |
-| [`version`](#parameter-version) | object | Gallery image version configuration. |
 
 ### Parameter: `extendedLocation`
 
@@ -387,6 +384,78 @@ Operating system type that the gallery image uses.
     'Windows'
   ]
   ```
+
+### Parameter: `version`
+
+Gallery image version configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-versionname) | string | This is the version of the gallery image. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`properties`](#parameter-versionproperties) | object | Properties of the gallery image version. |
+
+### Parameter: `version.name`
+
+This is the version of the gallery image.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `version.properties`
+
+Properties of the gallery image version.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageProfile`](#parameter-versionpropertiesstorageprofile) | object | This is the storage profile of a Gallery Image Version. |
+
+### Parameter: `version.properties.storageProfile`
+
+This is the storage profile of a Gallery Image Version.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`osDiskImage`](#parameter-versionpropertiesstorageprofileosdiskimage) | object | This is the OS disk image configuration. |
+
+### Parameter: `version.properties.storageProfile.osDiskImage`
+
+This is the OS disk image configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sizeInMB`](#parameter-versionpropertiesstorageprofileosdiskimagesizeinmb) | int | This property indicates the size of the VHD to be created in MB. |
+
+### Parameter: `version.properties.storageProfile.osDiskImage.sizeInMB`
+
+This property indicates the size of the VHD to be created in MB.
+
+- Required: No
+- Type: int
 
 ### Parameter: `cloudInitDataSource`
 
@@ -549,78 +618,6 @@ Tags for the marketplace gallery image.
 
 - Required: No
 - Type: object
-
-### Parameter: `version`
-
-Gallery image version configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-versionname) | string | This is the version of the gallery image. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`properties`](#parameter-versionproperties) | object | Properties of the gallery image version. |
-
-### Parameter: `version.name`
-
-This is the version of the gallery image.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `version.properties`
-
-Properties of the gallery image version.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageProfile`](#parameter-versionpropertiesstorageprofile) | object | This is the storage profile of a Gallery Image Version. |
-
-### Parameter: `version.properties.storageProfile`
-
-This is the storage profile of a Gallery Image Version.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`osDiskImage`](#parameter-versionpropertiesstorageprofileosdiskimage) | object | This is the OS disk image configuration. |
-
-### Parameter: `version.properties.storageProfile.osDiskImage`
-
-This is the OS disk image configuration.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`sizeInMB`](#parameter-versionpropertiesstorageprofileosdiskimagesizeinmb) | int | This property indicates the size of the VHD to be created in MB. |
-
-### Parameter: `version.properties.storageProfile.osDiskImage.sizeInMB`
-
-This property indicates the size of the VHD to be created in MB.
-
-- Required: No
-- Type: int
 
 ## Outputs
 

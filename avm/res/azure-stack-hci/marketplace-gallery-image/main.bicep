@@ -44,8 +44,8 @@ param cloudInitDataSource string?
 @description('Optional. Storage ContainerID of the storage container to be used for marketplace gallery image.')
 param containerId string?
 
-@description('Optional. Gallery image version configuration.')
-param version galleryImageVersionType?
+@description('Required. Gallery image version configuration.')
+param version galleryImageVersionType
 
 @description('Optional. Tags for the marketplace gallery image.')
 param tags object?
@@ -124,16 +124,7 @@ resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImag
       sku: identifier.sku
     }
     osType: osType
-    version: version != null
-      ? {
-          name: version!.name
-          properties: {
-            storageProfile: {
-              osDiskImage: version!.properties.storageProfile.?osDiskImage ?? {}
-            }
-          }
-        }
-      : null
+    version: version
   }
 }
 

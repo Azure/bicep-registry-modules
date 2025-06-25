@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9985790687518668039"
+      "templateHash": "10940260551336833571"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -282,9 +282,8 @@
     },
     "version": {
       "$ref": "#/definitions/galleryImageVersionType",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Gallery image version configuration."
+        "description": "Required. Gallery image version configuration."
       }
     },
     "tags": {
@@ -362,7 +361,7 @@
           "sku": "[parameters('identifier').sku]"
         },
         "osType": "[parameters('osType')]",
-        "version": "[if(not(equals(parameters('version'), null())), createObject('name', parameters('version').name, 'properties', createObject('storageProfile', createObject('osDiskImage', coalesce(tryGet(parameters('version').properties.storageProfile, 'osDiskImage'), createObject())))), null())]"
+        "version": "[parameters('version')]"
       }
     },
     "marketplaceGalleryImage_roleAssignments": {
