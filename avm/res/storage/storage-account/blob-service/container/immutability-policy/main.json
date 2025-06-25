@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "17697427281813403944"
+      "version": "0.36.1.42791",
+      "templateHash": "8550034166416361637"
     },
     "name": "Storage Account Blob Container Immutability Policies",
     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -49,7 +49,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]",
       "properties": {
         "immutabilityPeriodSinceCreationInDays": "[parameters('immutabilityPeriodSinceCreationInDays')]",

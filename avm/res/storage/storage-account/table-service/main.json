@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16855948007303284260"
+      "version": "0.36.1.42791",
+      "templateHash": "14024954014872913175"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service."
@@ -190,7 +190,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -238,12 +238,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "tableServices": {
       "type": "Microsoft.Storage/storageAccounts/tableServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
       "properties": {
         "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
@@ -321,8 +321,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14789856604962915370"
+              "version": "0.36.1.42791",
+              "templateHash": "9958350701479452427"
             },
             "name": "Storage Account Table",
             "description": "This module deploys a Storage Account Table."
@@ -399,7 +399,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             }
@@ -455,18 +455,18 @@
             "storageAccount::tableServices": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/tableServices",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
             },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('storageAccountName')]"
             },
             "table": {
               "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]"
             },
             "table_roleAssignments": {

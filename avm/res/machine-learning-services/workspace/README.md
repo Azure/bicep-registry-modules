@@ -22,6 +22,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.MachineLearningServices/workspaces` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
 | `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
+| `Microsoft.MachineLearningServices/workspaces/datastores` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/datastores) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -628,6 +629,24 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         target: 'https://example.com'
       }
     ]
+    datastores: [
+      {
+        name: 'datastore'
+        properties: {
+          accountName: 'myaccount'
+          containerName: 'my-container'
+          credentials: {
+            credentialsType: 'None'
+          }
+          datastoreType: 'AzureBlob'
+          endpoint: '<endpoint>'
+          protocol: 'https'
+          resourceGroup: '<resourceGroup>'
+          serviceDataAccessAuthIdentity: 'None'
+          subscriptionId: '<subscriptionId>'
+        }
+      }
+    ]
     description: 'The cake is a lie.'
     diagnosticSettings: [
       {
@@ -803,6 +822,26 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           },
           "name": "connection",
           "target": "https://example.com"
+        }
+      ]
+    },
+    "datastores": {
+      "value": [
+        {
+          "name": "datastore",
+          "properties": {
+            "accountName": "myaccount",
+            "containerName": "my-container",
+            "credentials": {
+              "credentialsType": "None"
+            },
+            "datastoreType": "AzureBlob",
+            "endpoint": "<endpoint>",
+            "protocol": "https",
+            "resourceGroup": "<resourceGroup>",
+            "serviceDataAccessAuthIdentity": "None",
+            "subscriptionId": "<subscriptionId>"
+          }
         }
       ]
     },
@@ -1004,6 +1043,24 @@ param connections = [
     target: 'https://example.com'
   }
 ]
+param datastores = [
+  {
+    name: 'datastore'
+    properties: {
+      accountName: 'myaccount'
+      containerName: 'my-container'
+      credentials: {
+        credentialsType: 'None'
+      }
+      datastoreType: 'AzureBlob'
+      endpoint: '<endpoint>'
+      protocol: 'https'
+      resourceGroup: '<resourceGroup>'
+      serviceDataAccessAuthIdentity: 'None'
+      subscriptionId: '<subscriptionId>'
+    }
+  }
+]
 param description = 'The cake is a lie.'
 param diagnosticSettings = [
   {
@@ -1182,7 +1239,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
-    provisionNetworkNow: true
     systemDatastoresAuthMode: 'Identity'
     tags: {
       Environment: 'Non-Prod'
@@ -1285,9 +1341,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
-    "provisionNetworkNow": {
-      "value": true
-    },
     "systemDatastoresAuthMode": {
       "value": "Identity"
     },
@@ -1374,7 +1427,6 @@ param privateEndpoints = [
     }
   }
 ]
-param provisionNetworkNow = true
 param systemDatastoresAuthMode = 'Identity'
 param tags = {
   Environment: 'Non-Prod'
@@ -1414,6 +1466,7 @@ param tags = {
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`connections`](#parameter-connections) | array | Connections to create in the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`datastores`](#parameter-datastores) | array | Datastores to create in the workspace. |
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
@@ -2464,6 +2517,35 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+
+### Parameter: `datastores`
+
+Datastores to create in the workspace.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-datastoresname) | string | Name of the datastore to create. |
+| [`properties`](#parameter-datastoresproperties) | object | The properties of the datastore. |
+
+### Parameter: `datastores.name`
+
+Name of the datastore to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `datastores.properties`
+
+The properties of the datastore.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `description`
 

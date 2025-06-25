@@ -8,11 +8,11 @@ param storageAccountName string
 @description('Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment.')
 param blobServiceName string = 'default'
 
-@description('Required. The name of the storage container to deploy.')
+@description('Required. The name of the Storage Container to deploy.')
 param name string
 
 @description('Optional. Default the container to use specified encryption scope for all writes.')
-param defaultEncryptionScope string = ''
+param defaultEncryptionScope string?
 
 @description('Optional. Block override of encryption scope from the container default.')
 param denyEncryptionScopeOverride bool?
@@ -33,7 +33,7 @@ param immutabilityPolicyName string = 'default'
 param immutabilityPolicyProperties object?
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
-param metadata object = {}
+param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata = {}
 
 @allowed([
   'Container'
@@ -43,7 +43,10 @@ param metadata object = {}
 @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
 param publicAccess string = 'None'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -104,19 +107,38 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-blobcontainer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2022-09-01' existing = {
+  resource blobServices 'blobServices@2024-01-01' existing = {
     name: blobServiceName
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   name: name
   parent: storageAccount::blobServices
   properties: {
-    defaultEncryptionScope: !empty(defaultEncryptionScope) ? defaultEncryptionScope : null
+    defaultEncryptionScope: defaultEncryptionScope
     denyEncryptionScopeOverride: denyEncryptionScopeOverride
     enableNfsV3AllSquash: enableNfsV3AllSquash == true ? enableNfsV3AllSquash : null
     enableNfsV3RootSquash: enableNfsV3RootSquash == true ? enableNfsV3RootSquash : null

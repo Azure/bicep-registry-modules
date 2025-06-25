@@ -18,21 +18,21 @@ This module deploys a Storage Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
-| `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts/blobServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -71,7 +71,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssablob001'
     // Non-required parameters
     kind: 'BlobStorage'
-    location: '<location>'
     skuName: 'Standard_LRS'
   }
 }
@@ -97,9 +96,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "kind": {
       "value": "BlobStorage"
     },
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Standard_LRS"
     }
@@ -121,7 +117,6 @@ using 'br/public:avm/res/storage/storage-account:<version>'
 param name = 'ssablob001'
 // Non-required parameters
 param kind = 'BlobStorage'
-param location = '<location>'
 param skuName = 'Standard_LRS'
 ```
 
@@ -145,7 +140,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssablock001'
     // Non-required parameters
     kind: 'BlockBlobStorage'
-    location: '<location>'
     skuName: 'Premium_LRS'
   }
 }
@@ -171,9 +165,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "kind": {
       "value": "BlockBlobStorage"
     },
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Premium_LRS"
     }
@@ -195,7 +186,6 @@ using 'br/public:avm/res/storage/storage-account:<version>'
 param name = 'ssablock001'
 // Non-required parameters
 param kind = 'BlockBlobStorage'
-param location = '<location>'
 param skuName = 'Premium_LRS'
 ```
 
@@ -222,7 +212,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     blobServices: {
       changeFeedEnabled: true
     }
-    location: '<location>'
   }
 }
 ```
@@ -251,9 +240,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": {
         "changeFeedEnabled": true
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -276,7 +262,6 @@ param allowBlobPublicAccess = false
 param blobServices = {
   changeFeedEnabled: true
 }
-param location = '<location>'
 ```
 
 </details>
@@ -299,7 +284,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
-    location: '<location>'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
@@ -328,9 +312,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "allowBlobPublicAccess": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "networkAcls": {
       "value": {
         "bypass": "AzureServices",
@@ -355,7 +336,6 @@ using 'br/public:avm/res/storage/storage-account:<version>'
 param name = 'ssamin001'
 // Non-required parameters
 param allowBlobPublicAccess = false
-param location = '<location>'
 param networkAcls = {
   bypass: 'AzureServices'
   defaultAction: 'Deny'
@@ -381,7 +361,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Required parameters
     name: 'kvref'
     // Non-required parameters
-    location: '<location>'
     secretsExportConfiguration: {
       accessKey1Name: 'custom-key1-name'
       accessKey2Name: 'custom-key2-name'
@@ -410,9 +389,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "kvref"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "accessKey1Name": "custom-key1-name",
@@ -439,7 +415,6 @@ using 'br/public:avm/res/storage/storage-account:<version>'
 // Required parameters
 param name = 'kvref'
 // Non-required parameters
-param location = '<location>'
 param secretsExportConfiguration = {
   accessKey1Name: 'custom-key1-name'
   accessKey2Name: 'custom-key2-name'
@@ -654,6 +629,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock note.'
     }
     managedIdentities: {
       systemAssigned: true
@@ -1205,7 +1181,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock note."
       }
     },
     "managedIdentities": {
@@ -1756,6 +1733,7 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock note.'
 }
 param managedIdentities = {
   systemAssigned: true
@@ -2110,7 +2088,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       ]
     }
     kind: 'FileStorage'
-    location: '<location>'
     skuName: 'Premium_LRS'
   }
 }
@@ -2146,9 +2123,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "kind": {
       "value": "FileStorage"
     },
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Premium_LRS"
     }
@@ -2178,7 +2152,6 @@ param fileServices = {
   ]
 }
 param kind = 'FileStorage'
-param location = '<location>'
 param skuName = 'Premium_LRS'
 ```
 
@@ -2213,7 +2186,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -2267,9 +2239,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -2319,7 +2288,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -2370,7 +2338,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -2431,9 +2398,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -2492,7 +2456,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -2537,7 +2500,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssav1001'
     // Non-required parameters
     kind: 'Storage'
-    location: '<location>'
   }
 }
 ```
@@ -2561,9 +2523,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     "kind": {
       "value": "Storage"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -2583,7 +2542,6 @@ using 'br/public:avm/res/storage/storage-account:<version>'
 param name = 'ssav1001'
 // Non-required parameters
 param kind = 'Storage'
-param location = '<location>'
 ```
 
 </details>
@@ -2705,7 +2663,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -2980,9 +2937,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -3255,7 +3209,6 @@ param localUsers = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -3434,7 +3387,7 @@ param tags = {
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
-| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
+| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
 | [`localUsers`](#parameter-localusers) | array | Local users to deploy for SFTP authentication. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -3509,11 +3462,9 @@ Restrict copy to and from Storage Accounts within an AAD tenant or with Private 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'AAD'
     'PrivateLink'
   ]
@@ -3533,7 +3484,6 @@ Provides the identity based authentication settings for Azure Files.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `blobServices`
 
@@ -3776,11 +3726,9 @@ Allows you to specify the type of endpoint. Set this to AzureDNSZone to create a
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'AzureDnsZone'
     'Standard'
   ]
@@ -3860,7 +3808,7 @@ Type of Storage Account to create.
 
 ### Parameter: `largeFileSharesState`
 
-Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
+Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
 
 - Required: No
 - Type: string
@@ -4022,6 +3970,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -4041,6 +3990,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4373,6 +4329,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -4392,6 +4349,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4604,11 +4568,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -4883,10 +4845,14 @@ Tags of the resource.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed storage account. |
+| `primaryAccessKey` | securestring | The primary access key of the storage account. |
 | `primaryBlobEndpoint` | string | The primary blob endpoint reference if blob services are deployed. |
+| `primaryConnectionString` | securestring | The primary connection string of the storage account. |
 | `privateEndpoints` | array | The private endpoints of the Storage Account. |
 | `resourceGroupName` | string | The resource group of the deployed storage account. |
 | `resourceId` | string | The resource ID of the deployed storage account. |
+| `secondaryAccessKey` | securestring | The secondary access key of the storage account. |
+| `secondaryConnectionString` | securestring | The secondary connection string of the storage account. |
 | `serviceEndpoints` | object | All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
@@ -4896,8 +4862,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

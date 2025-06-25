@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       firewallPolicyId: nestedDependencies.outputs.firewallPolicyResourceId
-      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
       hubIPAddresses: {
         publicIPs: {
           count: 1

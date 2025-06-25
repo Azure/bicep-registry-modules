@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "17454582317268032940"
+      "version": "0.36.1.42791",
+      "templateHash": "1154226771534321833"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service."
@@ -190,7 +190,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -212,19 +212,25 @@
     },
     "protocolSettings": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts/fileServices@2024-01-01#properties/properties/properties/protocolSettings"
+        },
         "description": "Optional. Protocol settings for file service."
-      }
+      },
+      "defaultValue": {}
     },
     "shareDeleteRetentionPolicy": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts/fileServices@2024-01-01#properties/properties/properties/shareDeleteRetentionPolicy"
+        },
+        "description": "Optional. The service properties for soft delete."
+      },
       "defaultValue": {
         "enabled": true,
         "days": 7
-      },
-      "metadata": {
-        "description": "Optional. The service properties for soft delete."
       }
     },
     "corsRules": {
@@ -259,12 +265,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "fileServices": {
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
       "properties": {
         "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
@@ -337,7 +343,7 @@
             "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
           },
           "accessTier": {
-            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2023-04-01', 'full').kind, 'FileStorage'), 'Premium', 'TransactionOptimized'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2024-01-01', 'full').kind, 'FileStorage'), 'Premium', 'TransactionOptimized'))]"
           },
           "enabledProtocols": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
@@ -359,8 +365,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "9627524768776207497"
+              "version": "0.36.1.42791",
+              "templateHash": "10293576827034199934"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share."
@@ -437,7 +443,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             }
@@ -544,18 +550,18 @@
             "storageAccount::fileService": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/fileServices",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
             },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('storageAccountName')]"
             },
             "fileShare": {
               "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('fileServicesName'), parameters('name'))]",
               "properties": {
                 "accessTier": "[parameters('accessTier')]",

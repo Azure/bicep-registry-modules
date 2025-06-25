@@ -1,0 +1,153 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "11175158984109206374"
+    },
+    "name": "Site App Settings",
+    "description": "This module deploys a Site App Setting."
+  },
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "slotName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent web site slot. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "allowedValues": [
+        "appsettings",
+        "authsettings",
+        "authsettingsV2",
+        "azurestorageaccounts",
+        "backup",
+        "connectionstrings",
+        "logs",
+        "metadata",
+        "pushsettings",
+        "web"
+      ],
+      "metadata": {
+        "description": "Required. The name of the config."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name."
+      }
+    },
+    "currentAppSettings": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string",
+        "metadata": {
+          "description": "Required. The key-values pairs of the current app settings."
+        }
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The current app settings."
+      }
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
+      }
+    },
+    "applicationInsightResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the application insight to leverage for this resource."
+      }
+    }
+  },
+  "resources": {
+    "app::slot": {
+      "existing": true,
+      "type": "Microsoft.Web/sites/slots",
+      "apiVersion": "2023-12-01",
+      "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+    },
+    "applicationInsights": {
+      "condition": "[not(empty(parameters('applicationInsightResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "subscriptionId": "[split(parameters('applicationInsightResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('applicationInsightResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('applicationInsightResourceId'), '/'))]"
+    },
+    "storageAccount": {
+      "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+    },
+    "app": {
+      "existing": true,
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2023-12-01",
+      "name": "[parameters('appName')]"
+    },
+    "config": {
+      "type": "Microsoft.Web/sites/slots/config",
+      "apiVersion": "2024-04-01",
+      "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
+      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+      "dependsOn": [
+        "applicationInsights",
+        "storageAccount"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the site config."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the site config."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/slots/config', parameters('appName'), parameters('slotName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the site config was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

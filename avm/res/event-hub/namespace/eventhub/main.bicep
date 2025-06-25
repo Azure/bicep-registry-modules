@@ -21,7 +21,7 @@ param authorizationRules array = [
 
 @description('Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact".')
 @minValue(1)
-@maxValue(7)
+@maxValue(90)
 param messageRetentionInDays int = 1
 
 @description('Optional. Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.')
@@ -93,6 +93,9 @@ param captureDescriptionSizeLimitInBytes int = 314572800
 @description('Optional. A value that indicates whether to Skip Empty Archives.')
 param captureDescriptionSkipEmptyArchives bool = false
 
+@description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
+param retentionDescriptionEnabled bool = false
+
 @allowed([
   'Compact'
   'Delete'
@@ -101,28 +104,30 @@ param captureDescriptionSkipEmptyArchives bool = false
 param retentionDescriptionCleanupPolicy string = 'Delete'
 
 @minValue(1)
-@maxValue(168)
-@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
+@maxValue(2160)
+@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
 param retentionDescriptionRetentionTimeInHours int = 1
 
 @minValue(1)
-@maxValue(168)
+@maxValue(2160)
 @description('Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.')
 param retentionDescriptionTombstoneRetentionTimeInHours int = 1
 
 var eventHubProperties = {
-  messageRetentionInDays: messageRetentionInDays
+  messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
   partitionCount: partitionCount
   status: status
-  retentionDescription: {
-    cleanupPolicy: retentionDescriptionCleanupPolicy
-    retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
-      ? retentionDescriptionRetentionTimeInHours
-      : null
-    tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
-      ? retentionDescriptionTombstoneRetentionTimeInHours
-      : null
-  }
+  retentionDescription: retentionDescriptionEnabled
+    ? {
+        cleanupPolicy: retentionDescriptionCleanupPolicy
+        retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
+          ? retentionDescriptionRetentionTimeInHours
+          : null
+        tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
+          ? retentionDescriptionTombstoneRetentionTimeInHours
+          : null
+      }
+    : null
 }
 
 var eventHubPropertiesCapture = {
@@ -184,7 +189,7 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-10-01-preview' = {
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
   name: name
   parent: namespace
   properties: captureDescriptionEnabled ? union(eventHubProperties, eventHubPropertiesCapture) : eventHubProperties

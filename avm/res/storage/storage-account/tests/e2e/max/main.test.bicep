@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -74,6 +74,7 @@ module testDeployment '../../../main.bicep' = [
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
+        notes: 'This is a custom lock note.'
       }
       enableHierarchicalNamespace: true
       enableSftp: true
@@ -166,7 +167,7 @@ module testDeployment '../../../main.bicep' = [
         resourceAccessRules: [
           {
             tenantId: subscription().tenantId
-            resourceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*'
+            resourceId: '${subscription().id}/resourcegroups/*/providers/Microsoft.CognitiveServices/accounts/*'
           }
         ]
         bypass: 'AzureServices'
