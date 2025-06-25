@@ -46,6 +46,10 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     dnsZoneName: 'dep-${namePrefix}-dns-${serviceShort}.com'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    publicIPNames: [
+      'dep-${namePrefix}-pip-${serviceShort}-01'
+      'dep-${namePrefix}-pip-${serviceShort}-02'
+    ]
     location: resourceLocation
   }
 }
@@ -186,6 +190,10 @@ module testDeployment '../../../main.bicep' = [
       networkPlugin: 'azure'
       networkDataplane: 'azure'
       networkPluginMode: 'overlay'
+      allocatedOutboundPorts: 1024
+      idleTimeoutInMinutes: 15
+      outboundPublicIPResourceIds: nestedDependencies.outputs.publicIPResourceIds
+
       diagnosticSettings: [
         {
           name: 'customSetting'
