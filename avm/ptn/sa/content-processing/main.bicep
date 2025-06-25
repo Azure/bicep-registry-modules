@@ -50,7 +50,7 @@ param useLocalBuild bool = false
 param enableScaling bool = false
 
 // ========== Solution Prefix Variable ========== //
-var solutionPrefix = 'cps6-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
+var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
 // @description('Resource naming abbreviations.')
 // var namingAbbrs = loadJsonContent('abbreviations.json')
@@ -1028,15 +1028,10 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
         principalType: 'ServicePrincipal'
       }
-      // {
-      //   principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
-      //   roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
-      //   principalType: 'ServicePrincipal'
-      // }
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
     }
     disableLocalAuth: true
     enableTelemetry: enableTelemetry
@@ -1129,6 +1124,14 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     customSubDomainName: 'aicu-${solutionPrefix}'
     disableLocalAuth: true
     enableTelemetry: enableTelemetry
+
+    roleAssignments: [
+      {
+        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908'
+        principalType: 'ServicePrincipal'
+      }
+    ]
 
     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled' // Always enabled for AI Services
     // WAF related parameters
