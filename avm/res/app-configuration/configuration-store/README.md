@@ -55,7 +55,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accmin001'
     // Non-required parameters
     enablePurgeProtection: false
-    location: '<location>'
   }
 }
 ```
@@ -79,9 +78,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     "enablePurgeProtection": {
       "value": false
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -101,7 +97,6 @@ using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 param name = 'accmin001'
 // Non-required parameters
 param enablePurgeProtection = false
-param location = '<location>'
 ```
 
 </details>
@@ -145,7 +140,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         value: 'valueName'
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -205,9 +199,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -257,7 +248,6 @@ param keyValues = [
     value: 'valueName'
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -806,7 +796,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         value: 'valueName'
       }
     ]
-    location: '<location>'
     replicaLocations: [
       'centralus'
       'westus'
@@ -866,9 +855,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "replicaLocations": {
       "value": [
         "centralus",
@@ -920,7 +906,6 @@ param keyValues = [
     value: 'valueName'
   }
 ]
-param location = '<location>'
 param replicaLocations = [
   'centralus'
   'westus'
