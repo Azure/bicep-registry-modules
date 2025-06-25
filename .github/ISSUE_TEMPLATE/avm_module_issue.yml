@@ -122,6 +122,7 @@ body:
         - "avm/res/desktop-virtualization/host-pool"
         - "avm/res/desktop-virtualization/scaling-plan"
         - "avm/res/desktop-virtualization/workspace"
+        - "avm/res/dev-center/devcenter"
         - "avm/res/dev-center/network-connection"
         - "avm/res/dev-center/project"
         - "avm/res/dev-ops-infrastructure/pool"

@@ -87,6 +87,7 @@
 /avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-center/network-connection/ @Azure/avm-res-devcenter-networkconnection-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-center/project/ @Azure/avm-res-devcenter-project-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-ops-infrastructure/pool/ @Azure/avm-res-devopsinfrastructure-pool-module-owners-bicep @Azure/avm-module-reviewers-bicep
