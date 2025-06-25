@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17315149331889549892"
+      "templateHash": "7001110025538858606"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -738,7 +738,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8017338432730421584"
+              "templateHash": "12183872656282122488"
             }
           },
           "parameters": {
@@ -784,7 +784,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "#!/bin/bash\nset -e\n\nREFLECT_BICEP_B64=\"$1\"\nREAD_BICEP_B64=\"$2\"\nREAD_JSON_B64=\"$3\"\nWRITE_BICEP_B64=\"$4\"\nWRITE_JSON_B64=\"$5\"\nSUBSCRIPTION_ID=\"$6\"\nRESOURCE_GROUP_NAME=\"$7\"\nCLUSTER_NAME=\"$8\"\n\n# Decode base64-encoded content to temp files\nTEMP_DIR=$(mktemp -d)\ncd \"$TEMP_DIR\"\necho \"$REFLECT_BICEP_B64\" | base64 -d > \"reflect.bicep\"\necho \"$READ_BICEP_B64\" | base64 -d > \"read.bicep\"\necho \"$READ_JSON_B64\" | base64 -d > \"read.json\"\necho \"$WRITE_BICEP_B64\" | base64 -d > \"write.bicep\"\necho \"$WRITE_JSON_B64\" | base64 -d > \"write.json\"\n\n# Login with managed identity and set subscription\naz login --identity --allow-no-subscriptions > /dev/null\naz account set --subscription \"$SUBSCRIPTION_ID\"\n\n# Ensure Bicep CLI is available\naz bicep upgrade\n\nDEPLOYMENT_NAME_1=\"$CLUSTER_NAME-sshkey-read\"\n\n# Read\naz deployment group create \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --template-file \"read.bicep\" \\\n  --parameters \"read.json\" || true\n\nPUBLIC_KEY=$(az deployment group show \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --query properties.outputs.publicKeySecretValue.value \\\n  --only-show-errors --output tsv || true)\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  # ssh-keygen does not exists, openssl is not compatible\n  az sshkey create --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" 2>ssh.log\n  az sshkey delete --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" --yes\n  PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n  PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n\n  PRIVATE_KEY_B64=$(cat $PRIVATE_KEY_FILE | base64 -w 0)\n  PUBLIC_KEY_B64=$(cat $PUBLIC_KEY_FILE | base64 -w 0)\n  sed --in-place \"s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/\" 'write.json'\n  sed --in-place \"s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/\" 'write.json'\n\n  DEPLOYMENT_NAME_2=\"$CLUSTER_NAME-sshkey-write\"\n\n  # write\n  az deployment group create \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --template-file \"write.bicep\" \\\n    --parameters \"write.json\" || true\n\n  PUBLIC_KEY=$(az deployment group show \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --query properties.outputs.publicKeySecretValue.value \\\n    --only-show-errors --output tsv || true)\nfi\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  exit 2\nfi\n\necho \"{\\\"output\\\": \\\"$PUBLIC_KEY\\\"}\"> $AZ_SCRIPTS_OUTPUT_PATH\n",
+            "$fxv#0": "#!/bin/bash\nset -e\n\nREFLECT_BICEP_B64=\"$1\"\nREAD_BICEP_B64=\"$2\"\nREAD_JSON_B64=\"$3\"\nWRITE_BICEP_B64=\"$4\"\nWRITE_JSON_B64=\"$5\"\nSUBSCRIPTION_ID=\"$6\"\nRESOURCE_GROUP_NAME=\"$7\"\nCLUSTER_NAME=\"$8\"\n\n# Decode base64-encoded content to temp files\nTEMP_DIR=$(mktemp -d)\ncd \"$TEMP_DIR\"\necho \"$REFLECT_BICEP_B64\" | base64 -d > \"reflect.bicep\"\necho \"$READ_BICEP_B64\" | base64 -d > \"read.bicep\"\necho \"$READ_JSON_B64\" | base64 -d > \"read.json\"\necho \"$WRITE_BICEP_B64\" | base64 -d > \"write.bicep\"\necho \"$WRITE_JSON_B64\" | base64 -d > \"write.json\"\n\n# Login with managed identity and set subscription\naz login --identity --allow-no-subscriptions > /dev/null\naz account set --subscription \"$SUBSCRIPTION_ID\"\n\n# Ensure Bicep CLI is available\naz bicep upgrade\n\nDEPLOYMENT_NAME_1=\"$CLUSTER_NAME-sshkey-read\"\n\n# Read\naz deployment group create \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --template-file \"read.bicep\" \\\n  --parameters \"read.json\" || true\n\nPUBLIC_KEY=$(az deployment group show \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --query properties.outputs.publicKeySecretValue.value \\\n  --only-show-errors --output tsv || true)\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  # ssh-keygen does not exists, openssl is not compatible\n  az sshkey create --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" 2>ssh.log\n  az sshkey delete --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" --yes\n  PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n  PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n\n  PRIVATE_KEY_B64=$(cat $PRIVATE_KEY_FILE | base64 -w 0)\n  PUBLIC_KEY_B64=$(cat $PUBLIC_KEY_FILE | base64 -w 0)\n  sed --in-place \"s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/\" 'write.json'\n  sed --in-place \"s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/\" 'write.json'\n\n  DEPLOYMENT_NAME_2=\"$CLUSTER_NAME-sshkey-write\"\n\n  # write\n  az deployment group create \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --template-file \"write.bicep\" \\\n    --parameters \"write.json\" || true\n\n  PUBLIC_KEY=$(az deployment group show \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --query properties.outputs.publicKeySecretValue.value \\\n    --only-show-errors --output tsv || true)\n\n  shred -u $PRIVATE_KEY_FILE\n  shred -u $PUBLIC_KEY_FILE\n  shred -u 'write.json'\nfi\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  exit 2\nfi\n\necho \"{\\\"output\\\": \\\"$PUBLIC_KEY\\\"}\"> $AZ_SCRIPTS_OUTPUT_PATH\n",
             "$fxv#1": "@secure()\nparam input string\n\n#disable-next-line outputs-should-not-contain-secrets\noutput output string = input\n",
             "$fxv#2": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: keyVault.getSecret(publicKeySecretName)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
             "$fxv#3": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The value of the public key in Base 64.')\n@secure()\nparam publicKeySecretValueBase64 string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\n@description('Required. The value of the private key in Base 64.')\n@secure()\nparam privateKeySecretValueBase64 string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nresource publicKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: publicKeySecretName\n  properties: {\n    value: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\nresource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: privateKeySecretName\n  properties: {\n    value: base64ToString(privateKeySecretValueBase64)\n  }\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
@@ -820,14 +820,14 @@
                 "managedIdentity"
               ]
             },
-            "KVARole": {
+            "KVSORole": {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
               "name": "[guid(format('msi-{0}-KVA-RoleAssignment', format('temp-{0}', parameters('name'))))]",
               "properties": {
                 "principalId": "[reference('managedIdentity').principalId]",
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
                 "principalType": "ServicePrincipal"
               },
               "dependsOn": [
@@ -857,7 +857,7 @@
               },
               "dependsOn": [
                 "CRole",
-                "KVARole",
+                "KVSORole",
                 "managedIdentity"
               ]
             }
