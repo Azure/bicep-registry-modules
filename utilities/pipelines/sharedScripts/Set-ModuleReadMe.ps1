@@ -1619,6 +1619,18 @@ function Set-UsageExamplesSection {
             )
         }
 
+        # If the deployment of the test is skipped, add a note
+        $e2eIgnoreFilePath = Join-Path (Split-Path -Path $testFilePath -Parent) '.e2eignore'
+        if (Test-Path $e2eIgnoreFilePath) {
+            $e2eIgnoreContent = (Get-Content $e2eIgnoreFilePath) -join "`n"
+            $testFilesContent += @(
+                '> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:',
+                '```text',
+                $e2eIgnoreContent.Trim(),
+                '```'
+            )
+        }
+
         # ------------------------- #
         #   Prepare Bicep to JSON   #
         # ------------------------- #
@@ -2124,6 +2136,13 @@ function Set-ModuleReadMe {
     $customModuleSeparator = '--'
     if ($fullModuleIdentifier.Contains($customModuleSeparator)) {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
+    }
+
+    # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
+    # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
+    $scopedModuleSeparator = '\/(rg|sub|mg)\-scope$'
+    if ($fullModuleIdentifier -match $scopedModuleSeparator) {
+        $fullModuleIdentifier = ($fullModuleIdentifier -split $scopedModuleSeparator)[0]
     }
 
     # ===================== #

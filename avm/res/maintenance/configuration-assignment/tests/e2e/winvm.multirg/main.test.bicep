@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module leveraging virtual mach
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-maintenance.configurationassignments-${serviceShort}-rg'
 
 @description('Optional. The location for all resources.')
 param resourceLocation string = deployment().location
