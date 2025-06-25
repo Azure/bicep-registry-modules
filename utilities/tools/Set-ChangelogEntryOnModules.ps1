@@ -3,7 +3,7 @@
 Update the CHANGELOG.md with a new version entry for a single specified module.
 
 .DESCRIPTION
-Update the CHANGELOG.md with a new version entry. Pass in the changes and breaking changes, that will be added.
+Update the specified module CHANGELOG.md with a new version entry. Pass in the changes and breaking changes, that will be added.
 
 .PARAMETER Changes
 Mandatory. The changes that will be added to the changelog. Use `\n` to separate multiple changes and start each change with a `-` to create a bullet point.
