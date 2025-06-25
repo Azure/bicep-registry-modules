@@ -31,6 +31,9 @@ module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/ma
       groupId: managedPrivateEndpoint.groupId
       privateLinkResourceId: managedPrivateEndpoint.privateLinkResourceId
     }
+    dependsOn: [
+      managedVirtualNetwork
+    ]
   }
 ]
 
