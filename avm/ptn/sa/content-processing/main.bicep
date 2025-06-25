@@ -50,7 +50,7 @@ param useLocalBuild bool = false
 param enableScaling bool = false
 
 // ========== Solution Prefix Variable ========== //
-var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
+var solutionPrefix = 'cps6-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
 // @description('Resource naming abbreviations.')
 // var namingAbbrs = loadJsonContent('abbreviations.json')
@@ -730,6 +730,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     //     })
     //   : []
   }
+  dependsOn: [
+    avmContainerApp
+    avmContainerApp_API
+  ]
 }
 
 // module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
@@ -1851,26 +1855,27 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
     ]
 
-    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled' // Always enabled for App Configuration
+    publicNetworkAccess: 'Enabled'
     // WAF related parameters
-    //   publicNetworkAccess: (deployment_param.enable_waf) ? 'Disabled' : 'Enabled'
-    //   privateEndpoints: (deployment_param.enable_waf)
-    //     ? [
-    //         {
-    //           name: 'appconfig-private-endpoint'
-    //           privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
-    //           privateDnsZoneGroup: {
-    //             privateDnsZoneGroupConfigs: [
-    //               {
-    //                 name: 'appconfig-dns-zone-group'
-    //                 privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
-    //               }
-    //             ]
-    //           }
-    //           subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+
+    // privateEndpoints: (enablePrivateNetworking)
+    //   ? [
+    //       {
+    //         name: 'appconfig-private-endpoint'
+    //         privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
+    //         privateDnsZoneGroup: {
+    //           privateDnsZoneGroupConfigs: [
+    //             {
+    //               name: 'appconfig-dns-zone-group'
+    //               privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.appConfig].outputs.resourceId
+    //               //privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
+    //             }
+    //           ]
     //         }
-    //       ]
-    //     : []
+    //         subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+    //       }
+    //     ]
+    //   : []
   }
 
   dependsOn: [
@@ -2010,6 +2015,9 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
         : []
     }
   }
+  dependsOn: [
+    avmAppConfig
+  ]
 }
 
 module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' = {
@@ -2136,6 +2144,9 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' =
       ]
     }
   }
+  dependsOn: [
+    avmAppConfig
+  ]
 }
 
 // ============ //
