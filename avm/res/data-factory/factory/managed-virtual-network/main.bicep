@@ -25,15 +25,12 @@ module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/ma
     name: '${deployment().name}-managedPrivateEndpoint-${index}'
     params: {
       dataFactoryName: dataFactoryName
-      managedVirtualNetworkName: name
+      managedVirtualNetworkName: managedVirtualNetwork.name
       name: managedPrivateEndpoint.name
       fqdns: managedPrivateEndpoint.fqdns
       groupId: managedPrivateEndpoint.groupId
       privateLinkResourceId: managedPrivateEndpoint.privateLinkResourceId
     }
-    dependsOn: [
-      managedVirtualNetwork
-    ]
   }
 ]
 
