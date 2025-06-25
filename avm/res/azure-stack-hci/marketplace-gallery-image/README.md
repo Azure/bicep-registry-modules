@@ -16,7 +16,7 @@ This module deploys an Azure Stack HCI Marketplace Gallery Image.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/marketplaceGalleryImages` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-04-01-preview/marketplaceGalleryImages) |
+| `Microsoft.AzureStackHCI/marketplaceGalleryImages` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/marketplaceGalleryImages) |
 
 ## Usage examples
 
@@ -33,6 +33,7 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+
 <details>
 
 <summary>via Bicep module</summary>
@@ -43,15 +44,11 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
-    identifier: {
-      offer: 'WindowsServer'
-      publisher: 'Microsoft'
-      sku: '2022-Datacenter'
-    }
-    name: 'ashmgiminmarketplacegalleryimage'
-    osType: 'Windows'
-    // Non-required parameters
-    hyperVGeneration: 'V2'
+    name: 'ashmgiminmarketplaceimage'
+    offer: 'UbuntuServer'
+    osType: 'Linux'
+    publisher: 'Canonical'
+    sku: '20.04-LTS'
   }
 }
 ```
@@ -72,22 +69,20 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "identifier": {
-      "value": {
-        "offer": "WindowsServer",
-        "publisher": "Microsoft",
-        "sku": "2022-Datacenter"
-      }
-    },
     "name": {
-      "value": "ashmgiminmarketplacegalleryimage"
+      "value": "ashmgiminmarketplaceimage"
+    },
+    "offer": {
+      "value": "UbuntuServer"
     },
     "osType": {
-      "value": "Windows"
+      "value": "Linux"
     },
-    // Non-required parameters
-    "hyperVGeneration": {
-      "value": "V2"
+    "publisher": {
+      "value": "Canonical"
+    },
+    "sku": {
+      "value": "20.04-LTS"
     }
   }
 }
@@ -105,15 +100,11 @@ using 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>'
 
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
-param identifier = {
-  offer: 'WindowsServer'
-  publisher: 'Microsoft'
-  sku: '2022-Datacenter'
-}
-param name = 'ashmgiminmarketplacegalleryimage'
-param osType = 'Windows'
-// Non-required parameters
-param hyperVGeneration = 'V2'
+param name = 'ashmgiminmarketplaceimage'
+param offer = 'UbuntuServer'
+param osType = 'Linux'
+param publisher = 'Canonical'
+param sku = '20.04-LTS'
 ```
 
 </details>
@@ -122,6 +113,7 @@ param hyperVGeneration = 'V2'
 ### Example 2: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -133,14 +125,14 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
-    identifier: {
-      offer: 'WindowsServer'
-      publisher: 'Microsoft'
-      sku: '2022-Datacenter'
-    }
-    name: 'ashmgiwafmarketplacegalleryimage'
+    name: 'ashmgiwafmarketplaceimage'
+    offer: 'WindowsServer'
     osType: 'Windows'
+    publisher: 'MicrosoftWindowsServer'
+    sku: '2022-datacenter-azure-edition'
     // Non-required parameters
+    cloudInitDataSource: 'Azure'
+    containerId: 'sample-container-id'
     hyperVGeneration: 'V2'
     roleAssignments: [
       {
@@ -150,15 +142,16 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
       }
     ]
     tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+      Environment: 'Test'
+      Purpose: 'MarketplaceGalleryImage'
     }
     version: {
       name: '1.0.0'
       properties: {
         storageProfile: {
-          osDiskImage: {}
+          osDiskImage: {
+            sizeInMB: 32768
+          }
         }
       }
     }
@@ -182,20 +175,28 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "identifier": {
-      "value": {
-        "offer": "WindowsServer",
-        "publisher": "Microsoft",
-        "sku": "2022-Datacenter"
-      }
-    },
     "name": {
-      "value": "ashmgiwafmarketplacegalleryimage"
+      "value": "ashmgiwafmarketplaceimage"
+    },
+    "offer": {
+      "value": "WindowsServer"
     },
     "osType": {
       "value": "Windows"
     },
+    "publisher": {
+      "value": "MicrosoftWindowsServer"
+    },
+    "sku": {
+      "value": "2022-datacenter-azure-edition"
+    },
     // Non-required parameters
+    "cloudInitDataSource": {
+      "value": "Azure"
+    },
+    "containerId": {
+      "value": "sample-container-id"
+    },
     "hyperVGeneration": {
       "value": "V2"
     },
@@ -210,9 +211,8 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     },
     "tags": {
       "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "Environment": "Test",
+        "Purpose": "MarketplaceGalleryImage"
       }
     },
     "version": {
@@ -220,7 +220,9 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
         "name": "1.0.0",
         "properties": {
           "storageProfile": {
-            "osDiskImage": {}
+            "osDiskImage": {
+              "sizeInMB": 32768
+            }
           }
         }
       }
@@ -241,14 +243,14 @@ using 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>'
 
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
-param identifier = {
-  offer: 'WindowsServer'
-  publisher: 'Microsoft'
-  sku: '2022-Datacenter'
-}
-param name = 'ashmgiwafmarketplacegalleryimage'
+param name = 'ashmgiwafmarketplaceimage'
+param offer = 'WindowsServer'
 param osType = 'Windows'
+param publisher = 'MicrosoftWindowsServer'
+param sku = '2022-datacenter-azure-edition'
 // Non-required parameters
+param cloudInitDataSource = 'Azure'
+param containerId = 'sample-container-id'
 param hyperVGeneration = 'V2'
 param roleAssignments = [
   {
@@ -258,15 +260,16 @@ param roleAssignments = [
   }
 ]
 param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
+  Environment: 'Test'
+  Purpose: 'MarketplaceGalleryImage'
 }
 param version = {
   name: '1.0.0'
   properties: {
     storageProfile: {
-      osDiskImage: {}
+      osDiskImage: {
+        sizeInMB: 32768
+      }
     }
   }
 }
@@ -282,22 +285,24 @@ param version = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The custom location ID. |
-| [`identifier`](#parameter-identifier) | object | Image identifier information. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
-| [`osType`](#parameter-ostype) | string | Operating system type. |
+| [`offer`](#parameter-offer) | string | The name of the gallery image definition offer. |
+| [`osType`](#parameter-ostype) | string | Operating system type that the gallery image uses. |
+| [`publisher`](#parameter-publisher) | string | The name of the gallery image definition publisher. |
+| [`sku`](#parameter-sku) | string | The name of the gallery image definition SKU. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cloudInitDataSource`](#parameter-cloudinitdatasource) | string | Cloud init data source. |
-| [`containerId`](#parameter-containerid) | string | Container ID for the image. |
+| [`cloudInitDataSource`](#parameter-cloudinitdatasource) | string | Datasource for the gallery image when provisioning with cloud-init. |
+| [`containerId`](#parameter-containerid) | string | Storage ContainerID of the storage container to be used for marketplace gallery image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hyperVGeneration`](#parameter-hypervgeneration) | string | Hyper-V generation for the image. |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the marketplace gallery image. |
-| [`version`](#parameter-version) | object | Version information for the image. |
+| [`version`](#parameter-version) | object | Gallery image version information. |
 
 ### Parameter: `customLocationResourceId`
 
@@ -306,13 +311,6 @@ The custom location ID.
 - Required: Yes
 - Type: string
 
-### Parameter: `identifier`
-
-Image identifier information.
-
-- Required: Yes
-- Type: object
-
 ### Parameter: `name`
 
 Name of the resource to create.
@@ -320,9 +318,16 @@ Name of the resource to create.
 - Required: Yes
 - Type: string
 
+### Parameter: `offer`
+
+The name of the gallery image definition offer.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `osType`
 
-Operating system type.
+Operating system type that the gallery image uses.
 
 - Required: Yes
 - Type: string
@@ -334,16 +339,37 @@ Operating system type.
   ]
   ```
 
+### Parameter: `publisher`
+
+The name of the gallery image definition publisher.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sku`
+
+The name of the gallery image definition SKU.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `cloudInitDataSource`
 
-Cloud init data source.
+Datasource for the gallery image when provisioning with cloud-init.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Azure'
+    'NoCloud'
+  ]
+  ```
 
 ### Parameter: `containerId`
 
-Container ID for the image.
+Storage ContainerID of the storage container to be used for marketplace gallery image.
 
 - Required: No
 - Type: string
@@ -358,7 +384,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `hyperVGeneration`
 
-Hyper-V generation for the image.
+The hypervisor generation of the Virtual Machine.
 
 - Required: No
 - Type: string
@@ -385,6 +411,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'User Access Administrator'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -485,10 +517,21 @@ Tags for the marketplace gallery image.
 
 ### Parameter: `version`
 
-Version information for the image.
+Gallery image version information.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      name: '1.0.0'
+      properties: {
+        storageProfile: {
+          osDiskImage: {}
+        }
+      }
+  }
+  ```
 
 ## Outputs
 
@@ -501,10 +544,12 @@ Version information for the image.
 
 ## Cross-referenced modules
 
-This module references the following modules:
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
-_None_
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There may also be some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

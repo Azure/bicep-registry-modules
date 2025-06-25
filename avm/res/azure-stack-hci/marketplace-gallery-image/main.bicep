@@ -17,31 +17,48 @@ param enableTelemetry bool = true
 @description('Required. The custom location ID.')
 param customLocationResourceId string
 
-@description('Optional. Cloud init data source.')
-param cloudInitDataSource string?
-
-@description('Optional. Container ID for the image.')
-param containerId string?
-
-@description('Optional. Hyper-V generation for the image.')
-@allowed([
-  'V1'
-  'V2'
-])
-param hyperVGeneration string = 'V2'
-
-@description('Required. Image identifier information.')
-param identifier identifierType
-
-@description('Required. Operating system type.')
+@description('Required. Operating system type that the gallery image uses.')
 @allowed([
   'Windows'
   'Linux'
 ])
 param osType string
 
-@description('Optional. Version information for the image.')
-param version versionType?
+@description('Required. The name of the gallery image definition publisher.')
+param publisher string
+
+@description('Required. The name of the gallery image definition offer.')
+param offer string
+
+@description('Required. The name of the gallery image definition SKU.')
+param sku string
+
+@description('Optional. The hypervisor generation of the Virtual Machine.')
+@allowed([
+  'V1'
+  'V2'
+])
+param hyperVGeneration string = 'V2'
+
+@description('Optional. Datasource for the gallery image when provisioning with cloud-init.')
+@allowed([
+  'NoCloud'
+  'Azure'
+])
+param cloudInitDataSource string?
+
+@description('Optional. Storage ContainerID of the storage container to be used for marketplace gallery image.')
+param containerId string?
+
+@description('Optional. Gallery image version information.')
+param version object = {
+  name: '1.0.0'
+  properties: {
+    storageProfile: {
+      osDiskImage: {}
+    }
+  }
+}
 
 @description('Optional. Tags for the marketplace gallery image.')
 param tags object?
@@ -102,7 +119,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview' = {
+resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01' = {
   name: name
   location: location
   tags: tags
@@ -111,23 +128,16 @@ resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImag
     type: 'CustomLocation'
   }
   properties: {
+    osType: osType
+    identifier: {
+      publisher: publisher
+      offer: offer
+      sku: sku
+    }
+    hyperVGeneration: hyperVGeneration
     cloudInitDataSource: cloudInitDataSource
     containerId: containerId
-    hyperVGeneration: hyperVGeneration
-    identifier: {
-      offer: identifier.offer
-      publisher: identifier.publisher
-      sku: identifier.sku
-    }
-    osType: osType
-    version: version != null ? {
-      name: version!.name
-      properties: {
-        storageProfile: {
-          osDiskImage: version!.properties.storageProfile.osDiskImage
-        }
-      }
-    } : null
+    version: version
   }
 }
 
@@ -164,30 +174,16 @@ output location string = marketplaceGalleryImage.location
 // =============== //
 
 @export()
-@description('The type for image identifier.')
-type identifierType = {
-  @description('Required. The offer for the marketplace gallery image.')
-  offer: string
-
-  @description('Required. The publisher for the marketplace gallery image.')
-  publisher: string
-
-  @description('Required. The SKU for the marketplace gallery image.')
-  sku: string
-}
-
-@export()
-@description('The type for version information.')
-type versionType = {
-  @description('Required. The version name.')
+@description('The type for gallery image version properties.')
+type galleryImageVersionType = {
+  @description('Required. This is the version of the gallery image.')
   name: string
-
-  @description('Required. The version properties.')
+  @description('Required. Properties of the gallery image version.')
   properties: {
-    @description('Required. The storage profile for the version.')
+    @description('Required. This is the storage profile of a Gallery Image Version.')
     storageProfile: {
-      @description('Required. The OS disk image configuration.')
-      osDiskImage: object
+      @description('Optional. This is the OS disk image.')
+      osDiskImage: object?
     }
   }
 }
