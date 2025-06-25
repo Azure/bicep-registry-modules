@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-Update the CHANGELOG.md with a new version entry for one modules.
+Update the CHANGELOG.md with a new version entry for a single specified module.
 
 .DESCRIPTION
 Update the CHANGELOG.md with a new version entry. Pass in the changes and breaking changes, that will be added.
