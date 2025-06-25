@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7656540531068638676"
+      "templateHash": "14171200010595595372"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic."
@@ -786,6 +786,69 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "dataResidencyBoundary": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "WithinGeopair",
+        "WithinRegion"
+      ],
+      "metadata": {
+        "description": "Optional. Data residency boundary for the topic. Controls where event data can be stored and processed."
+      }
+    },
+    "eventTypeInfo": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/properties/properties/eventTypeInfo"
+        },
+        "description": "Optional. Event type information for the topic. Used to define custom event types."
+      },
+      "nullable": true
+    },
+    "inputSchemaMapping": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/properties/properties/inputSchemaMapping"
+        },
+        "description": "Optional. Input schema mapping for custom event schema. This is the full mapping object including fields and default values."
+      },
+      "nullable": true
+    },
+    "extendedLocation": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/extendedLocation"
+        },
+        "description": "Optional. Extended location for the topic (e.g., Edge Zones)."
+      },
+      "nullable": true
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU of the topic."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "Azure",
+      "allowedValues": [
+        "Azure",
+        "AzureArc"
+      ],
+      "metadata": {
+        "description": "Optional. The kind of topic resource."
+      }
+    },
     "disableLocalAuth": {
       "type": "bool",
       "defaultValue": true,
@@ -874,12 +937,20 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "kind": "[parameters('kind')]",
+      "extendedLocation": "[parameters('extendedLocation')]",
       "properties": {
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('inboundIpRules'))), 'Disabled', null()))]",
         "inboundIpRules": "[if(empty(parameters('inboundIpRules')), null(), parameters('inboundIpRules'))]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "minimumTlsVersionAllowed": "[parameters('minimumTlsVersionAllowed')]",
-        "inputSchema": "[parameters('inputSchema')]"
+        "inputSchema": "[parameters('inputSchema')]",
+        "dataResidencyBoundary": "[parameters('dataResidencyBoundary')]",
+        "eventTypeInfo": "[parameters('eventTypeInfo')]",
+        "inputSchemaMapping": "[parameters('inputSchemaMapping')]"
       }
     },
     "topic_lock": {

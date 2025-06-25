@@ -49,6 +49,36 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+@description('Optional. Data residency boundary for the topic. Controls where event data can be stored and processed.')
+@allowed([
+  'WithinGeopair'
+  'WithinRegion'
+])
+param dataResidencyBoundary string?
+
+@description('Optional. Event type information for the topic. Used to define custom event types.')
+param eventTypeInfo resourceInput<'Microsoft.EventGrid/topics@2025-04-01-preview'>.properties.eventTypeInfo?
+
+@description('Optional. Input schema mapping for custom event schema. This is the full mapping object including fields and default values.')
+param inputSchemaMapping resourceInput<'Microsoft.EventGrid/topics@2025-04-01-preview'>.properties.inputSchemaMapping?
+
+@description('Optional. Extended location for the topic (e.g., Edge Zones).')
+param extendedLocation resourceInput<'Microsoft.EventGrid/topics@2025-04-01-preview'>.extendedLocation?
+
+@description('Optional. The SKU of the topic.')
+@allowed([
+  'Basic'
+  'Premium'
+])
+param sku string = 'Basic'
+
+@description('Optional. The kind of topic resource.')
+@allowed([
+  'Azure'
+  'AzureArc'
+])
+param kind string = 'Azure'
+
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
 
@@ -151,6 +181,11 @@ resource topic 'Microsoft.EventGrid/topics@2025-04-01-preview' = {
   location: location
   identity: identity
   tags: tags
+  sku: {
+    name: sku
+  }
+  kind: kind
+  extendedLocation: extendedLocation
   properties: {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
@@ -159,6 +194,9 @@ resource topic 'Microsoft.EventGrid/topics@2025-04-01-preview' = {
     disableLocalAuth: disableLocalAuth
     minimumTlsVersionAllowed: minimumTlsVersionAllowed
     inputSchema: inputSchema
+    dataResidencyBoundary: dataResidencyBoundary
+    eventTypeInfo: eventTypeInfo
+    inputSchemaMapping: inputSchemaMapping
   }
 }
 

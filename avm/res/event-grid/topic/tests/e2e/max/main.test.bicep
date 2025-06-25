@@ -77,6 +77,8 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Disabled' // Use private endpoints only for security
       minimumTlsVersionAllowed: '1.2'
       inputSchema: 'CloudEventSchemaV1_0'
+      sku: 'Premium' // Use Premium SKU for max test case
+      dataResidencyBoundary: 'WithinRegion' // Ensure data stays within region
       diagnosticSettings: [
         {
           name: 'customSetting'

@@ -234,6 +234,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     // Required parameters
     name: 'egtmax001'
     // Non-required parameters
+    dataResidencyBoundary: 'WithinRegion'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -356,6 +357,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    sku: 'Premium'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -382,6 +384,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": "egtmax001"
     },
     // Non-required parameters
+    "dataResidencyBoundary": {
+      "value": "WithinRegion"
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -526,6 +531,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
       ]
     },
+    "sku": {
+      "value": "Premium"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -550,6 +558,7 @@ using 'br/public:avm/res/event-grid/topic:<version>'
 // Required parameters
 param name = 'egtmax001'
 // Non-required parameters
+param dataResidencyBoundary = 'WithinRegion'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -672,6 +681,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param sku = 'Premium'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1005,12 +1015,17 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataResidencyBoundary`](#parameter-dataresidencyboundary) | string | Data residency boundary for the topic. Controls where event data can be stored and processed. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
+| [`eventTypeInfo`](#parameter-eventtypeinfo) | object | Event type information for the topic. Used to define custom event types. |
+| [`extendedLocation`](#parameter-extendedlocation) | object | Extended location for the topic (e.g., Edge Zones). |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
 | [`inputSchema`](#parameter-inputschema) | string | This determines the format that Event Grid should expect for incoming events published to the topic. |
+| [`inputSchemaMapping`](#parameter-inputschemamapping) | object | Input schema mapping for custom event schema. This is the full mapping object including fields and default values. |
+| [`kind`](#parameter-kind) | string | The kind of topic resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -1018,6 +1033,7 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`sku`](#parameter-sku) | string | The SKU of the topic. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -1026,6 +1042,20 @@ The name of the Event Grid Topic.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `dataResidencyBoundary`
+
+Data residency boundary for the topic. Controls where event data can be stored and processed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'WithinGeopair'
+    'WithinRegion'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -1300,6 +1330,20 @@ The retry policy for events.
 - Required: No
 - Type: object
 
+### Parameter: `eventTypeInfo`
+
+Event type information for the topic. Used to define custom event types.
+
+- Required: No
+- Type: object
+
+### Parameter: `extendedLocation`
+
+Extended location for the topic (e.g., Edge Zones).
+
+- Required: No
+- Type: object
+
 ### Parameter: `inboundIpRules`
 
 This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.
@@ -1321,6 +1365,28 @@ This determines the format that Event Grid should expect for incoming events pub
     'CloudEventSchemaV1_0'
     'CustomEventSchema'
     'EventGridSchema'
+  ]
+  ```
+
+### Parameter: `inputSchemaMapping`
+
+Input schema mapping for custom event schema. This is the full mapping object including fields and default values.
+
+- Required: No
+- Type: object
+
+### Parameter: `kind`
+
+The kind of topic resource.
+
+- Required: No
+- Type: string
+- Default: `'Azure'`
+- Allowed:
+  ```Bicep
+  [
+    'Azure'
+    'AzureArc'
   ]
   ```
 
@@ -1943,6 +2009,21 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `sku`
+
+The SKU of the topic.
+
+- Required: No
+- Type: string
+- Default: `'Basic'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
   ]
   ```
 
