@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11206348901144999557"
+      "templateHash": "9985790687518668039"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -326,7 +326,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.azurestackhci-marketplacegalleryimage.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.res.azurestackhci-markplgalleryimg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {

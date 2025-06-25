@@ -52,7 +52,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
       publisher: 'MicrosoftWindowsServer'
       sku: '2022-datacenter-azure-edition'
     }
-    name: 'ashmgiminmarketplaceimagemarketplaceimage'
+    name: 'ashmgiminmarketplaceimage'
     osType: 'Windows'
     // Non-required parameters
     version: {
@@ -89,7 +89,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
       }
     },
     "name": {
-      "value": "ashmgiminmarketplaceimagemarketplaceimage"
+      "value": "ashmgiminmarketplaceimage"
     },
     "osType": {
       "value": "Windows"
@@ -124,7 +124,7 @@ param identifier = {
   publisher: 'MicrosoftWindowsServer'
   sku: '2022-datacenter-azure-edition'
 }
-param name = 'ashmgiminmarketplaceimagemarketplaceimage'
+param name = 'ashmgiminmarketplaceimage'
 param osType = 'Windows'
 // Non-required parameters
 param version = {
@@ -158,7 +158,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
       publisher: 'MicrosoftWindowsServer'
       sku: '2022-datacenter-azure-edition'
     }
-    name: 'ashmgiwafmarketplaceimagemarketplaceimage'
+    name: 'ashmgiwafmarketplaceimage'
     osType: 'Windows'
     // Non-required parameters
     cloudInitDataSource: 'Azure'
@@ -203,7 +203,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
       }
     },
     "name": {
-      "value": "ashmgiwafmarketplaceimagemarketplaceimage"
+      "value": "ashmgiwafmarketplaceimage"
     },
     "osType": {
       "value": "Windows"
@@ -254,7 +254,7 @@ param identifier = {
   publisher: 'MicrosoftWindowsServer'
   sku: '2022-datacenter-azure-edition'
 }
-param name = 'ashmgiwafmarketplaceimagemarketplaceimage'
+param name = 'ashmgiwafmarketplaceimage'
 param osType = 'Windows'
 // Non-required parameters
 param cloudInitDataSource = 'Azure'
