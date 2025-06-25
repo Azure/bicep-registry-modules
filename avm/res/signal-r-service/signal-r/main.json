@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5426066936368639243"
+      "version": "0.36.1.42791",
+      "templateHash": "136502424766467985"
     },
     "name": "SignalR Service SignalR",
     "description": "This module deploys a SignalR Service SignalR."
@@ -596,11 +596,13 @@
       },
       "defaultValue": [
         "ConnectivityLogs",
-        "MessagingLogs"
+        "MessagingLogs",
+        "HttpRequestLogs"
       ],
       "allowedValues": [
         "ConnectivityLogs",
-        "MessagingLogs"
+        "MessagingLogs",
+        "HttpRequestLogs"
       ],
       "metadata": {
         "description": "Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled."
@@ -613,11 +615,13 @@
       },
       "defaultValue": [
         "ConnectivityLogs",
-        "MessagingLogs"
+        "MessagingLogs",
+        "HttpRequestLogs"
       ],
       "allowedValues": [
         "ConnectivityLogs",
-        "MessagingLogs"
+        "MessagingLogs",
+        "HttpRequestLogs"
       ],
       "metadata": {
         "description": "Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled."
@@ -745,7 +749,7 @@
     },
     "signalR": {
       "type": "Microsoft.SignalRService/signalR",
-      "apiVersion": "2022-02-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
@@ -1596,7 +1600,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('signalR', '2022-02-01', 'full').location]"
+      "value": "[reference('signalR', '2024-03-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1604,7 +1608,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('signalR', '2022-02-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('signalR', '2024-03-01', 'full'), 'identity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",
