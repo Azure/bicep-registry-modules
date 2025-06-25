@@ -65,13 +65,6 @@ param inputSchemaMapping resourceInput<'Microsoft.EventGrid/topics@2025-04-01-pr
 @description('Optional. Extended location for the topic (e.g., Edge Zones).')
 param extendedLocation resourceInput<'Microsoft.EventGrid/topics@2025-04-01-preview'>.extendedLocation?
 
-@description('Optional. The SKU of the topic.')
-@allowed([
-  'Basic'
-  'Premium'
-])
-param sku string = 'Basic'
-
 @description('Optional. The kind of topic resource.')
 @allowed([
   'Azure'
@@ -181,9 +174,6 @@ resource topic 'Microsoft.EventGrid/topics@2025-04-01-preview' = {
   location: location
   identity: identity
   tags: tags
-  sku: {
-    name: sku
-  }
   kind: kind
   extendedLocation: extendedLocation
   properties: {

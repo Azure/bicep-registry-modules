@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14171200010595595372"
+      "templateHash": "11032169992217253394"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic."
@@ -827,17 +827,6 @@
       },
       "nullable": true
     },
-    "sku": {
-      "type": "string",
-      "defaultValue": "Basic",
-      "allowedValues": [
-        "Basic",
-        "Premium"
-      ],
-      "metadata": {
-        "description": "Optional. The SKU of the topic."
-      }
-    },
     "kind": {
       "type": "string",
       "defaultValue": "Azure",
@@ -937,9 +926,6 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "sku": {
-        "name": "[parameters('sku')]"
-      },
       "kind": "[parameters('kind')]",
       "extendedLocation": "[parameters('extendedLocation')]",
       "properties": {

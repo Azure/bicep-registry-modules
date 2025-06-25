@@ -357,7 +357,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    sku: 'Premium'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -531,9 +530,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
       ]
     },
-    "sku": {
-      "value": "Premium"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -681,7 +677,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param sku = 'Premium'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1033,7 +1028,6 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sku`](#parameter-sku) | string | The SKU of the topic. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -2009,21 +2003,6 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
-  ]
-  ```
-
-### Parameter: `sku`
-
-The SKU of the topic.
-
-- Required: No
-- Type: string
-- Default: `'Basic'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
   ]
   ```
 
