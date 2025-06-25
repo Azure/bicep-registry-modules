@@ -80,7 +80,7 @@ function Set-ChangelogEntry {
 
 <#
 .SYNOPSIS
-Update the CHANGELOG.md with a new version entry for modules, that have been modified.
+Update the CHANGELOG.md with a new version entry in bulk, for all updated modules qualifying for publishing.
 
 .DESCRIPTION
 Update the CHANGELOG.md with a new version entry. The entry will only be added for changed modules that will be published. Pass in the changes and breaking changes, that will be added.
