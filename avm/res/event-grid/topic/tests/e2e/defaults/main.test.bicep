@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters while demonstrating managed identity delivery and private endpoints.'
 
 // ========== //
 // Parameters //
@@ -26,9 +26,21 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageQueueName: 'dep${namePrefix}sq${serviceShort}'
+    location: resourceLocation
+  }
 }
 
 // ============== //
@@ -42,6 +54,43 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      publicNetworkAccess: 'Disabled' // Use private endpoints only for security
+      eventSubscriptions: [
+        {
+          name: '${namePrefix}${serviceShort}001'
+          deliveryWithResourceIdentity: {
+            identity: {
+              type: 'UserAssigned'
+              userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
+            }
+            destination: {
+              endpointType: 'StorageQueue'
+              properties: {
+                resourceId: nestedDependencies.outputs.storageAccountResourceId
+                queueName: nestedDependencies.outputs.queueName
+              }
+            }
+          }
+        }
+      ]
+      privateEndpoints: [
+        {
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          service: 'topic'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
     }
   }
 ]

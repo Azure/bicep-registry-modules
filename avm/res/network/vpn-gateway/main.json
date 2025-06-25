@@ -5,13 +5,500 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13461484235913765557"
+      "version": "0.36.1.42791",
+      "templateHash": "3495431819795381783"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
   },
   "definitions": {
+    "bgpSettingsType": {
+      "type": "object",
+      "properties": {
+        "asn": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Required. The BGP speaker's ASN (Autonomous System Number)."
+          }
+        },
+        "peerWeight": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 100,
+          "metadata": {
+            "description": "Optional. The weight added to routes learned from this BGP speaker."
+          }
+        },
+        "bgpPeeringAddresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ipconfigurationId": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The IP configuration ID."
+                }
+              },
+              "customBgpIpAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The custom BGP peering addresses."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. BGP peering addresses for this VPN Gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of BGP settings for VPN Gateway."
+      }
+    },
+    "routingConfigurationType": {
+      "type": "object",
+      "properties": {
+        "associatedRouteTable": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the route table."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The associated route table for this connection."
+          }
+        },
+        "propagatedRouteTables": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The resource ID of the route table."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of route table resource IDs to propagate to."
+              }
+            },
+            "labels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of labels to propagate to."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The propagated route tables for this connection."
+          }
+        },
+        "vnetRoutes": {
+          "type": "object",
+          "properties": {
+            "staticRoutes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the static route."
+                    }
+                  },
+                  "addressPrefixes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The address prefixes for the static route."
+                    }
+                  },
+                  "nextHopIpAddress": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The next hop IP address for the static route."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of static routes."
+              }
+            },
+            "staticRoutesConfig": {
+              "type": "object",
+              "properties": {
+                "vnetLocalRouteOverrideCriteria": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Contains",
+                    "Equal"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Static routes configuration."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The virtual network routes for this connection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of routing configuration for VPN connections."
+      }
+    },
+    "vpnConnectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the VPN connection."
+          }
+        },
+        "connectionBandwidth": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Connection bandwidth in MBPS."
+          }
+        },
+        "enableBgp": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable BGP flag."
+          }
+        },
+        "enableInternetSecurity": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable internet security."
+          }
+        },
+        "remoteVpnSiteResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Remote VPN site resource ID."
+          }
+        },
+        "enableRateLimiting": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable rate limiting."
+          }
+        },
+        "routingConfiguration": {
+          "$ref": "#/definitions/routingConfigurationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Routing configuration."
+          }
+        },
+        "routingWeight": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Routing weight."
+          }
+        },
+        "sharedKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Shared key."
+          }
+        },
+        "useLocalAzureIpAddress": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Use local Azure IP address."
+          }
+        },
+        "usePolicyBasedTrafficSelectors": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Use policy-based traffic selectors."
+          }
+        },
+        "vpnConnectionProtocolType": {
+          "type": "string",
+          "allowedValues": [
+            "IKEv1",
+            "IKEv2"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. VPN connection protocol type."
+          }
+        },
+        "ipsecPolicies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ipsecPolicyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. IPSec policies."
+          }
+        },
+        "trafficSelectorPolicies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/trafficSelectorPolicyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Traffic selector policies."
+          }
+        },
+        "vpnLinkConnections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vpnSiteLinkConnectionType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. VPN link connections."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of VPN connection for VPN Gateway."
+      }
+    },
+    "natRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the NAT rule."
+          }
+        },
+        "externalMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vpnNatRuleMappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. External mappings."
+          }
+        },
+        "internalMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vpnNatRuleMappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Internal mappings."
+          }
+        },
+        "ipConfigurationId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. IP configuration ID."
+          }
+        },
+        "mode": {
+          "type": "string",
+          "allowedValues": [
+            "EgressSnat",
+            "IngressSnat"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. NAT rule mode."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Dynamic",
+            "Static"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. NAT rule type."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of NAT rule for VPN Gateway."
+      }
+    },
+    "ipsecPolicyType": {
+      "type": "object",
+      "properties": {
+        "dhGroup": {
+          "type": "string",
+          "allowedValues": [
+            "DHGroup1",
+            "DHGroup14",
+            "DHGroup2",
+            "DHGroup2048",
+            "DHGroup24",
+            "ECP256",
+            "ECP384",
+            "None"
+          ],
+          "metadata": {
+            "description": "Required. The DH Group used in IKE Phase 1 for initial SA."
+          }
+        },
+        "ikeEncryption": {
+          "type": "string",
+          "allowedValues": [
+            "AES128",
+            "AES192",
+            "AES256",
+            "DES",
+            "DES3",
+            "GCMAES128",
+            "GCMAES256"
+          ],
+          "metadata": {
+            "description": "Required. The IKE encryption algorithm (IKE phase 2)."
+          }
+        },
+        "ikeIntegrity": {
+          "type": "string",
+          "allowedValues": [
+            "GCMAES128",
+            "GCMAES256",
+            "MD5",
+            "SHA1",
+            "SHA256",
+            "SHA384"
+          ],
+          "metadata": {
+            "description": "Required. The IKE integrity algorithm (IKE phase 2)."
+          }
+        },
+        "ipsecEncryption": {
+          "type": "string",
+          "allowedValues": [
+            "AES128",
+            "AES192",
+            "AES256",
+            "DES",
+            "DES3",
+            "GCMAES128",
+            "GCMAES192",
+            "GCMAES256",
+            "None"
+          ],
+          "metadata": {
+            "description": "Required. The IPSec encryption algorithm (IKE phase 1)."
+          }
+        },
+        "ipsecIntegrity": {
+          "type": "string",
+          "allowedValues": [
+            "GCMAES128",
+            "GCMAES192",
+            "GCMAES256",
+            "MD5",
+            "SHA1",
+            "SHA256"
+          ],
+          "metadata": {
+            "description": "Required. The IPSec integrity algorithm (IKE phase 1)."
+          }
+        },
+        "pfsGroup": {
+          "type": "string",
+          "allowedValues": [
+            "ECP256",
+            "ECP384",
+            "None",
+            "PFS1",
+            "PFS14",
+            "PFS2",
+            "PFS2048",
+            "PFS24",
+            "PFSMM"
+          ],
+          "metadata": {
+            "description": "Required. The Pfs Group used in IKE Phase 2 for new child SA."
+          }
+        },
+        "saDataSizeKilobytes": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The IPSec Security Association payload size in KB for a site to site VPN tunnel."
+          }
+        },
+        "saLifeTimeSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The IPSec Security Association lifetime in seconds for a site to site VPN tunnel."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for IPSec policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "vpn-connection/main.bicep"
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -41,6 +528,250 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
+    },
+    "trafficSelectorPolicyType": {
+      "type": "object",
+      "properties": {
+        "localAddressRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A collection of local address spaces in CIDR format."
+          }
+        },
+        "remoteAddressRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A collection of remote address spaces in CIDR format."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for traffic selector policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "vpn-connection/main.bicep"
+        }
+      }
+    },
+    "vpnNatRuleMappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for VPN NAT rule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for VPN NAT rule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a VPN NAT rule mapping.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "nat-rule/main.bicep"
+        }
+      }
+    },
+    "vpnSiteLinkConnectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the VPN site link connection."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "connectionBandwidth": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Expected bandwidth in MBPS."
+              }
+            },
+            "dpdTimeoutSeconds": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Dead Peer Detection timeout in seconds for VPN link connection."
+              }
+            },
+            "enableBgp": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. EnableBgp flag."
+              }
+            },
+            "enableRateLimiting": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. EnableBgp flag for rate limiting."
+              }
+            },
+            "ipsecPolicies": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipsecPolicyType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The IPSec Policies to be considered by this connection."
+              }
+            },
+            "routingWeight": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Routing weight for VPN connection."
+              }
+            },
+            "sharedKey": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. SharedKey for the VPN connection."
+              }
+            },
+            "useLocalAzureIpAddress": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Use local azure ip to initiate connection."
+              }
+            },
+            "usePolicyBasedTrafficSelectors": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable policy-based traffic selectors."
+              }
+            },
+            "vpnConnectionProtocolType": {
+              "type": "string",
+              "allowedValues": [
+                "IKEv1",
+                "IKEv2"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Connection protocol used for this connection."
+              }
+            },
+            "vpnLinkConnectionMode": {
+              "type": "string",
+              "allowedValues": [
+                "Default",
+                "InitiatorOnly",
+                "ResponderOnly"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. VPN link connection mode."
+              }
+            },
+            "vpnSiteLink": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Resource ID of the VPN site link."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Id of the connected VPN site link."
+              }
+            },
+            "egressNatRules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource ID of the egress NAT rule."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of egress NAT rules."
+              }
+            },
+            "ingressNatRules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource ID of the ingress NAT rule."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of ingress NAT rules."
+              }
+            },
+            "vpnGatewayCustomBgpAddresses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "customBgpIpAddress": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The custom BgpPeeringAddress which belongs to IpconfigurationId."
+                    }
+                  },
+                  "ipConfigurationId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The IpconfigurationId of ipconfiguration which belongs to gateway."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. VPN gateway custom BGP addresses used by this connection."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of the VPN site link connection."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for VPN site link connection.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "vpn-connection/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -59,6 +790,9 @@
     },
     "vpnConnections": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnConnectionType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The VPN connections to create in the VPN gateway."
@@ -66,6 +800,9 @@
     },
     "natRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/natRuleType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of all the NAT Rules to associate with the gateway."
@@ -78,8 +815,8 @@
       }
     },
     "bgpSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/bgpSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. BGP settings details."
       }
@@ -107,10 +844,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -150,36 +890,11 @@
     },
     "vpnGateway": {
       "type": "Microsoft.Network/vpnGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "copy": [
-          {
-            "name": "connections",
-            "count": "[length(parameters('vpnConnections'))]",
-            "input": {
-              "name": "[parameters('vpnConnections')[copyIndex('connections')].name]",
-              "properties": {
-                "connectionBandwidth": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'connectionBandwidth')]",
-                "enableBgp": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableBgp')]",
-                "enableInternetSecurity": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableInternetSecurity')]",
-                "remoteVpnSite": "[if(contains(parameters('vpnConnections')[copyIndex('connections')], 'remoteVpnSiteResourceId'), createObject('id', parameters('vpnConnections')[copyIndex('connections')].remoteVpnSiteResourceId), null())]",
-                "enableRateLimiting": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableRateLimiting')]",
-                "routingConfiguration": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'routingConfiguration')]",
-                "routingWeight": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'routingWeight')]",
-                "sharedKey": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'sharedKey')]",
-                "useLocalAzureIpAddress": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'useLocalAzureIpAddress')]",
-                "usePolicyBasedTrafficSelectors": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'usePolicyBasedTrafficSelectors')]",
-                "vpnConnectionProtocolType": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'vpnConnectionProtocolType')]",
-                "ipsecPolicies": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'ipsecPolicies')]",
-                "trafficSelectorPolicies": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'trafficSelectorPolicies')]",
-                "vpnLinkConnections": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'vpnLinkConnections')]"
-              }
-            }
-          }
-        ],
         "bgpSettings": "[parameters('bgpSettings')]",
         "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
         "isRoutingPreferenceInternet": "[parameters('isRoutingPreferenceInternet')]",
@@ -246,11 +961,35 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11380942489395706225"
+              "version": "0.36.1.42791",
+              "templateHash": "2314597227337579115"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
+          },
+          "definitions": {
+            "vpnNatRuleMappingType": {
+              "type": "object",
+              "properties": {
+                "addressSpace": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Address space for VPN NAT rule mapping."
+                  }
+                },
+                "portRange": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Port range for VPN NAT rule mapping."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a VPN NAT rule mapping."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -267,6 +1006,9 @@
             },
             "externalMappings": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/vpnNatRuleMappingType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
@@ -274,6 +1016,9 @@
             },
             "internalMappings": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/vpnNatRuleMappingType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
@@ -313,12 +1058,12 @@
             "vpnGateway": {
               "existing": true,
               "type": "Microsoft.Network/vpnGateways",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-07-01",
               "name": "[parameters('vpnGatewayName')]"
             },
             "natRule": {
               "type": "Microsoft.Network/vpnGateways/natRules",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
@@ -423,15 +1168,474 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6343342170986309278"
+              "version": "0.36.1.42791",
+              "templateHash": "18029990054977283779"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
+          },
+          "definitions": {
+            "ipsecPolicyType": {
+              "type": "object",
+              "properties": {
+                "dhGroup": {
+                  "type": "string",
+                  "allowedValues": [
+                    "DHGroup1",
+                    "DHGroup14",
+                    "DHGroup2",
+                    "DHGroup2048",
+                    "DHGroup24",
+                    "ECP256",
+                    "ECP384",
+                    "None"
+                  ],
+                  "metadata": {
+                    "description": "Required. The DH Group used in IKE Phase 1 for initial SA."
+                  }
+                },
+                "ikeEncryption": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AES128",
+                    "AES192",
+                    "AES256",
+                    "DES",
+                    "DES3",
+                    "GCMAES128",
+                    "GCMAES256"
+                  ],
+                  "metadata": {
+                    "description": "Required. The IKE encryption algorithm (IKE phase 2)."
+                  }
+                },
+                "ikeIntegrity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "GCMAES128",
+                    "GCMAES256",
+                    "MD5",
+                    "SHA1",
+                    "SHA256",
+                    "SHA384"
+                  ],
+                  "metadata": {
+                    "description": "Required. The IKE integrity algorithm (IKE phase 2)."
+                  }
+                },
+                "ipsecEncryption": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AES128",
+                    "AES192",
+                    "AES256",
+                    "DES",
+                    "DES3",
+                    "GCMAES128",
+                    "GCMAES192",
+                    "GCMAES256",
+                    "None"
+                  ],
+                  "metadata": {
+                    "description": "Required. The IPSec encryption algorithm (IKE phase 1)."
+                  }
+                },
+                "ipsecIntegrity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "GCMAES128",
+                    "GCMAES192",
+                    "GCMAES256",
+                    "MD5",
+                    "SHA1",
+                    "SHA256"
+                  ],
+                  "metadata": {
+                    "description": "Required. The IPSec integrity algorithm (IKE phase 1)."
+                  }
+                },
+                "pfsGroup": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ECP256",
+                    "ECP384",
+                    "None",
+                    "PFS1",
+                    "PFS14",
+                    "PFS2",
+                    "PFS2048",
+                    "PFS24",
+                    "PFSMM"
+                  ],
+                  "metadata": {
+                    "description": "Required. The Pfs Group used in IKE Phase 2 for new child SA."
+                  }
+                },
+                "saDataSizeKilobytes": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The IPSec Security Association payload size in KB for a site to site VPN tunnel."
+                  }
+                },
+                "saLifeTimeSeconds": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The IPSec Security Association lifetime in seconds for a site to site VPN tunnel."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for IPSec policy."
+              }
+            },
+            "trafficSelectorPolicyType": {
+              "type": "object",
+              "properties": {
+                "localAddressRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A collection of local address spaces in CIDR format."
+                  }
+                },
+                "remoteAddressRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A collection of remote address spaces in CIDR format."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for traffic selector policy."
+              }
+            },
+            "vpnSiteLinkConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the VPN site link connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "connectionBandwidth": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Expected bandwidth in MBPS."
+                      }
+                    },
+                    "dpdTimeoutSeconds": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Dead Peer Detection timeout in seconds for VPN link connection."
+                      }
+                    },
+                    "enableBgp": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. EnableBgp flag."
+                      }
+                    },
+                    "enableRateLimiting": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. EnableBgp flag for rate limiting."
+                      }
+                    },
+                    "ipsecPolicies": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/ipsecPolicyType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The IPSec Policies to be considered by this connection."
+                      }
+                    },
+                    "routingWeight": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Routing weight for VPN connection."
+                      }
+                    },
+                    "sharedKey": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. SharedKey for the VPN connection."
+                      }
+                    },
+                    "useLocalAzureIpAddress": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Use local azure ip to initiate connection."
+                      }
+                    },
+                    "usePolicyBasedTrafficSelectors": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Enable policy-based traffic selectors."
+                      }
+                    },
+                    "vpnConnectionProtocolType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "IKEv1",
+                        "IKEv2"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Connection protocol used for this connection."
+                      }
+                    },
+                    "vpnLinkConnectionMode": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Default",
+                        "InitiatorOnly",
+                        "ResponderOnly"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. VPN link connection mode."
+                      }
+                    },
+                    "vpnSiteLink": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Resource ID of the VPN site link."
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Id of the connected VPN site link."
+                      }
+                    },
+                    "egressNatRules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Resource ID of the egress NAT rule."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of egress NAT rules."
+                      }
+                    },
+                    "ingressNatRules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Resource ID of the ingress NAT rule."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of ingress NAT rules."
+                      }
+                    },
+                    "vpnGatewayCustomBgpAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "customBgpIpAddress": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The custom BgpPeeringAddress which belongs to IpconfigurationId."
+                            }
+                          },
+                          "ipConfigurationId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The IpconfigurationId of ipconfiguration which belongs to gateway."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. VPN gateway custom BGP addresses used by this connection."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Properties of the VPN site link connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for VPN site link connection."
+              }
+            },
+            "routingConfigurationType": {
+              "type": "object",
+              "properties": {
+                "associatedRouteTable": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the route table."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The associated route table for this connection."
+                  }
+                },
+                "propagatedRouteTables": {
+                  "type": "object",
+                  "properties": {
+                    "ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The resource ID of the route table."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The list of route table resource IDs to propagate to."
+                      }
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The list of labels to propagate to."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The propagated route tables for this connection."
+                  }
+                },
+                "vnetRoutes": {
+                  "type": "object",
+                  "properties": {
+                    "staticRoutes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name of the static route."
+                            }
+                          },
+                          "addressPrefixes": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The address prefixes for the static route."
+                            }
+                          },
+                          "nextHopIpAddress": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The next hop IP address for the static route."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The list of static routes."
+                      }
+                    },
+                    "staticRoutesConfig": {
+                      "type": "object",
+                      "properties": {
+                        "vnetLocalRouteOverrideCriteria": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Contains",
+                            "Equal"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Static routes configuration."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The virtual network routes for this connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of routing configuration for VPN connections."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -448,6 +1652,9 @@
             },
             "ipsecPolicies": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipsecPolicyType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. The IPSec policies to be considered by this connection."
@@ -455,6 +1662,9 @@
             },
             "trafficSelectorPolicies": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/trafficSelectorPolicyType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. The traffic selector policies to be considered by this connection."
@@ -462,14 +1672,17 @@
             },
             "vpnLinkConnections": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/vpnSiteLinkConnectionType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. List of all VPN site link connections to the gateway."
               }
             },
             "routingConfiguration": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/routingConfigurationType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Routing configuration indicating the associated and propagated route tables for this connection."
               }
@@ -518,9 +1731,9 @@
             },
             "connectionBandwidth": {
               "type": "int",
-              "defaultValue": 10,
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Expected bandwidth in MBPS."
+                "description": "Optional. Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration."
               }
             },
             "vpnConnectionProtocolType": {
@@ -549,10 +1762,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "vpnGateway": {
+              "existing": true,
+              "type": "Microsoft.Network/vpnGateways",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('vpnGatewayName')]"
+            },
+            "vpnConnection": {
               "type": "Microsoft.Network/vpnGateways/vpnConnections",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
               "properties": {
                 "connectionBandwidth": "[parameters('connectionBandwidth')]",
@@ -571,7 +1790,7 @@
                 "vpnLinkConnections": "[parameters('vpnLinkConnections')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -598,7 +1817,8 @@
         }
       },
       "dependsOn": [
-        "vpnGateway"
+        "vpnGateway",
+        "vpnGateway_natRules"
       ]
     }
   },
@@ -629,7 +1849,27 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vpnGateway', '2023-04-01', 'full').location]"
+      "value": "[reference('vpnGateway', '2024-07-01', 'full').location]"
+    },
+    "natRuleResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the NAT rules."
+      },
+      "copy": {
+        "count": "[length(parameters('natRules'))]",
+        "input": "[reference(format('vpnGateway_natRules[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    },
+    "vpnConnectionResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the VPN connections."
+      },
+      "copy": {
+        "count": "[length(parameters('vpnConnections'))]",
+        "input": "[reference(format('vpnGateway_vpnConnections[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
     }
   }
 }

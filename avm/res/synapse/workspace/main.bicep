@@ -69,6 +69,12 @@ param publicNetworkAccess string = 'Enabled'
 @description('Optional. List of firewall rules to be created in the workspace.')
 param firewallRules firewallRuleType[]?
 
+@description('Optional. List of Big Data Pools to be created in the workspace.')
+param bigDataPools bigDataPoolType[]?
+
+@description('Optional. List of SQL Pools to be created in the workspace.')
+param sqlPools sqlPoolType[]?
+
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
 
@@ -350,8 +356,61 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
   }
 ]
 
+// Big Data Pools
+module workspace_bigDataPools 'big-data-pool/main.bicep' = [
+  for (bigDataPool, index) in (bigDataPools ?? []): {
+    name: '${uniqueString(deployment().name, location)}-workspace-bdp-${index}'
+    params: {
+      name: bigDataPool.name
+      workspaceName: workspace.name
+      location: location
+      tags: bigDataPool.?tags ?? tags
+      autoPauseDelayInMinutes: bigDataPool.?autoPauseDelayInMinutes
+      autoScale: bigDataPool.?autoScale
+      cacheSize: bigDataPool.?cacheSize
+      dynamicExecutorAllocation: bigDataPool.?dynamicExecutorAllocation
+      autotuneEnabled: bigDataPool.?autotuneEnabled
+      computeIsolationEnabled: bigDataPool.?computeIsolationEnabled
+      nodeCount: bigDataPool.?nodeCount
+      nodeSize: bigDataPool.nodeSize
+      nodeSizeFamily: bigDataPool.nodeSizeFamily
+      sessionLevelPackagesEnabled: bigDataPool.?sessionLevelPackagesEnabled
+      sparkConfigProperties: bigDataPool.?sparkConfigProperties
+      defaultSparkLogFolder: bigDataPool.?defaultSparkLogFolder
+      sparkEventsFolder: bigDataPool.?sparkEventsFolder
+      sparkVersion: bigDataPool.?sparkVersion
+      lock: bigDataPool.?lock ?? lock
+      diagnosticSettings: bigDataPool.?diagnosticSettings ?? []
+      roleAssignments: bigDataPool.?roleAssignments ?? []
+    }
+  }
+]
+
+// SQL Pools
+module workspace_sqlPools 'sql-pool/main.bicep' = [
+  for (sqlPool, index) in (sqlPools ?? []): {
+    name: '${uniqueString(deployment().name, location)}-workspace-sqlp-${index}'
+    params: {
+      name: sqlPool.name
+      workspaceName: workspace.name
+      location: location
+      collation: sqlPool.?collation
+      maxSizeBytes: sqlPool.?maxSizeBytes
+      sku: sqlPool.?sku
+      restorePointInTime: sqlPool.?restorePointInTime
+      recoverableDatabaseResourceId: sqlPool.?recoverableDatabaseResourceId
+      storageAccountType: sqlPool.?storageAccountType
+      transparentDataEncryption: sqlPool.?transparentDataEncryption
+      diagnosticSettings: sqlPool.?diagnosticSettings
+      roleAssignments: sqlPool.?roleAssignments
+      lock: sqlPool.?lock ?? lock
+      tags: sqlPool.?tags ?? tags
+    }
+  }
+]
+
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -517,4 +576,128 @@ type firewallRuleType = {
 
   @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.')
   endIpAddress: string
+}
+
+import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType } from 'big-data-pool/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@export()
+@description('The synapse workspace Big Data Pool definition.')
+type bigDataPoolType = {
+  @description('Required. The name of the Big Data Pool.')
+  name: string
+
+  @description('Optional. The node size family of the pool.')
+  nodeSizeFamily: string?
+
+  @description('Optional. The node size of the pool.')
+  nodeSize: string?
+
+  @description('Optional. The auto scale configuration.')
+  autoScale: autoScaleType?
+
+  @description('Optional. The number of nodes in the Big Data pool if Auto-scaling is disabled.')
+  nodeCount: int?
+
+  @description('Optional. The dynamic executor allocation configuration.')
+  dynamicExecutorAllocation: dynamicExecutorAllocationType?
+
+  @description('Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided.')
+  autoPauseDelayInMinutes: int?
+
+  @description('Optional. The Spark version.')
+  sparkVersion: string?
+
+  @description('Optional. The Spark configuration properties.')
+  sparkConfigProperties: sparkConfigPropertiesType?
+
+  @description('Optional. Enable or disable session level packages.')
+  sessionLevelPackagesEnabled: bool?
+
+  @description('Optional. The cache size of the pool.')
+  cacheSize: int?
+
+  @description('Optional. The default Spark log folder.')
+  defaultSparkLogFolder: string?
+
+  @description('Optional. Enable or disable autotune.')
+  autotuneEnabled: bool?
+
+  @description('Optional. Enable or disable compute isolation.')
+  computeIsolationEnabled: bool?
+
+  @description('Optional. The Spark events folder.')
+  sparkEventsFolder: string?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+}
+
+@export()
+@description('The synapse workspace SQL Pool definition.')
+type sqlPoolType = {
+  @description('Required. The name of the SQL Pool.')
+  name: string
+
+  @description('Optional. The collation of the SQL pool.')
+  collation: string?
+
+  @description('Optional. The max size of the SQL pool in bytes.')
+  maxSizeBytes: int?
+
+  @description('Optional. The performance level of the SQL pool.')
+  sku: (
+    | 'DW100c'
+    | 'DW200c'
+    | 'DW300c'
+    | 'DW400c'
+    | 'DW500c'
+    | 'DW1000c'
+    | 'DW1500c'
+    | 'DW2000c'
+    | 'DW2500c'
+    | 'DW3000c'
+    | 'DW5000c'
+    | 'DW6000c'
+    | 'DW7500c'
+    | 'DW10000c'
+    | 'DW15000c'
+    | 'DW30000c')?
+
+  @description('Optional. The restore point in time to restore from (ISO8601 format).')
+  restorePointInTime: string?
+
+  @description('Optional. The recoverable database resource ID to restore from.')
+  recoverableDatabaseResourceId: string?
+
+  @description('Optional. The storage account type to use for the SQL pool.')
+  storageAccountType: (
+    | 'GRS'
+    | 'LRS'
+    | 'ZRS')?
+
+  @description('Optional. Enable database transparent data encryption.')
+  transparentDataEncryption: (
+    | 'Enabled'
+    | 'Disabled')?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Synapse/workspaces/sqlPools@2021-06-01'>.tags?
 }

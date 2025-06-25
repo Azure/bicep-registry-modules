@@ -1,7 +1,7 @@
 metadata name = 'Redis database'
-metadata description = 'This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster.'
+metadata description = 'This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster.'
 
-@description('Conditional. The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent Redis Enterprise or Azure Managed Redis resource. Required if the template is used in a standalone deployment.')
 param redisClusterName string
 
 @allowed([
@@ -14,7 +14,7 @@ param name string = 'default'
   'Enabled'
   'Disabled'
 ])
-@description('Optional. Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.')
+@description('Optional. Allow authentication via access keys. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.')
 param accessKeysAuthentication string = 'Enabled'
 
 @allowed([
@@ -26,9 +26,10 @@ param clientProtocol string = 'Encrypted'
 
 @allowed([
   'EnterpriseCluster'
+  'NoCluster'
   'OSSCluster'
 ])
-@description('Optional. Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering).')
+@description('Optional. Redis clustering policy. [Learn more](https://learn.microsoft.com/azure/redis/architecture#cluster-policies).')
 param clusteringPolicy string = 'OSSCluster'
 
 @allowed([
@@ -62,12 +63,12 @@ param modules moduleType[] = []
 @maxValue(10000)
 param port int = 10000
 
-@description('Optional. The persistence settings of the service.')
+@description('Optional. The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION.')
 param persistence persistenceType = {
   type: 'disabled'
 }
 
-@description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.')
+@description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.')
 param accessPolicyAssignments accessPolicyAssignmentType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
@@ -81,7 +82,7 @@ param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 // Resources      //
 // ============== //
 
-resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' existing = {
+resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' existing = {
   name: redisClusterName
 }
 
@@ -91,7 +92,7 @@ var isAmr = startsWith(clusterSku, 'Balanced') || startsWith(clusterSku, 'Comput
   'FlashOptimized'
 ) || startsWith(clusterSku, 'MemoryOptimized')
 
-resource redisDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-09-01-preview' = {
+resource redisDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-05-01-preview' = {
   parent: redisCluster
   name: name
   properties: {
@@ -226,6 +227,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The Redis database port.')
 output port int = redisDatabase.properties.port
+
+@description('The Redis host name.')
+output hostname string = redisCluster.properties.hostName
 
 @description('The Redis endpoint.')
 output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
