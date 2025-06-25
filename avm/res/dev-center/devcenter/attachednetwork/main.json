@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "13004105727934341456"
+    },
+    "name": "Dev Center Attached Network",
+    "description": "This module deploys a Dev Center Attached Network."
+  },
+  "parameters": {
+    "devcenterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. The name of the attached network."
+      }
+    },
+    "networkConnectionResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the Network Connection you want to attach to the Dev Center."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DevCenter/devcenters/attachednetworks",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('devcenterName'), parameters('name'))]",
+      "properties": {
+        "networkConnectionId": "[parameters('networkConnectionResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Dev Center Attached Network was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Dev Center Attached Network."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Dev Center Attached Network."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/devcenters/attachednetworks', parameters('devcenterName'), parameters('name'))]"
+    }
+  }
+}

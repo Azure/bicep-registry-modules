@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "8350803602261243353"
+    },
+    "name": "Dev Center Environment Type",
+    "description": "This module deploys a Dev Center Environment Type."
+  },
+  "parameters": {
+    "devcenterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the environment type."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The display name of the environment type."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/devcenters/environmentTypes@2025-02-01#properties/tags"
+        },
+        "description": "Optional. Tags of the resource."
+      },
+      "nullable": true
+    }
+  },
+  "resources": {
+    "devcenter": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/devcenters",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('devcenterName')]"
+    },
+    "environmentType": {
+      "type": "Microsoft.DevCenter/devcenters/environmentTypes",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('devcenterName'), parameters('name'))]",
+      "properties": {
+        "displayName": "[parameters('displayName')]"
+      },
+      "tags": "[parameters('tags')]"
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Dev Center Environment Type was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Dev Center Environment Type."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Dev Center Environment Type."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/devcenters/environmentTypes', parameters('devcenterName'), parameters('name'))]"
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "1653320482716613518"
+    },
+    "name": "Dev Center Project Policy",
+    "description": "This module deploys a Dev Center Project Policy."
+  },
+  "definitions": {
+    "resourcePolicyType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "Deny"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Policy action to be taken on the resources. Defaults to \"Allow\" if not specified. Cannot be used when the \"resources\" property is provided."
+            }
+          },
+          "filter": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. When specified, this expression is used to filter the resources."
+            }
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Explicit resources that are \"allowed\" as part of a project policy. Must be in the format of a resource ID. Cannot be used when the \"resourceType\" property is provided."
+            }
+          },
+          "resourceType": {
+            "type": "string",
+            "allowedValues": [
+              "AttachedNetworks",
+              "Images",
+              "Skus"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource type being restricted or allowed by a project policy. Used with a given \"action\" to restrict or allow access to a resource type. If not specified for a given policy, the action will be set to \"Allow\" for the unspecified resource types. For example, if the action is \"Deny\" for \"Images\" and \"Skus\", the project policy will deny access to images and skus, but allow access for remaining resource types like \"AttachedNetworks\"."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "A resource policy for a Dev Center Project Policy. Each policy can specify an action (Allow/Deny), an optional filter, the resources included, and an optional resource type."
+      }
+    }
+  },
+  "parameters": {
+    "devcenterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. The name of the project policy."
+      }
+    },
+    "resourcePolicies": {
+      "$ref": "#/definitions/resourcePolicyType",
+      "metadata": {
+        "description": "Required. Resource policies that are a part of this project policy."
+      }
+    },
+    "projectsResourceIdOrName": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Project names or resource IDs that will be in scope of this project policy. Project names can be used if the project is in the same resource group as the Dev Center. If the project is in a different resource group or subscription, the full resource ID must be provided. If not provided, the policy status will be set to \"Unassigned\"."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "projectResourceIds",
+        "count": "[length(coalesce(parameters('projectsResourceIdOrName'), createArray()))]",
+        "input": "[if(startsWith(coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')], '/subscriptions/'), coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')], resourceId('Microsoft.DevCenter/projects', coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')]))]"
+      }
+    ]
+  },
+  "resources": {
+    "devcenter": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/devcenters",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('devcenterName')]"
+    },
+    "projectPolicy": {
+      "type": "Microsoft.DevCenter/devcenters/projectPolicies",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('devcenterName'), parameters('name'))]",
+      "properties": {
+        "resourcePolicies": "[parameters('resourcePolicies')]",
+        "scopes": "[variables('projectResourceIds')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Dev Center Project Policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Dev Center Project Policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Dev Center Project Policy."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/devcenters/projectPolicies', parameters('devcenterName'), parameters('name'))]"
+    }
+  }
+}

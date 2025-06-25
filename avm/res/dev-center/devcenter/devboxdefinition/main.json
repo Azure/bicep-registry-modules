@@ -1,0 +1,160 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "15844994380969392958"
+    },
+    "name": "Dev Center DevBox Definition",
+    "description": "This module deploys a Dev Center DevBox Definition."
+  },
+  "definitions": {
+    "skuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the SKU supports scale out/in then the capacity integer should be included. If scale out/in is not possible for the resource this may be omitted."
+          }
+        },
+        "family": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, \"general_i_v2\"."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the SKU. E.g. P3. It is typically a letter+number code. E.g. \"general_i_8c32gb256ssd_v2\" or \"general_i_8c32gb512ssd_v2\". See \"https://learn.microsoft.com/en-us/python/api/azure-developer-devcenter/azure.developer.devcenter.models.hardwareprofile\" for more information about acceptable SKU names."
+          }
+        },
+        "size": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The SKU size. When the name field is the combination of tier and some other value, this would be the standalone code."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the SKU configuration of the DevBox definition."
+      }
+    }
+  },
+  "parameters": {
+    "devcenterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. The name of the DevBox definition."
+      }
+    },
+    "imageResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The Image ID, or Image version ID. When Image ID is provided, its latest version will be used. When using custom images from a compute gallery, Microsoft Dev Box supports only images that are compatible with Dev Box and use the security type Trusted Launch enabled. See \"https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-azure-compute-gallery#compute-gallery-image-requirements\" for more information about image requirements."
+      }
+    },
+    "sku": {
+      "$ref": "#/definitions/skuType",
+      "metadata": {
+        "description": "Required. The SKU configuration for the dev box definition. See \"https://learn.microsoft.com/en-us/rest/api/devcenter/administrator/skus/list-by-subscription?view=rest-devcenter-administrator-2024-02-01\" for more information about SKUs."
+      }
+    },
+    "hibernateSupport": {
+      "type": "string",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "defaultValue": "Disabled",
+      "metadata": {
+        "description": "Optional. Settings for hibernation support."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/devcenters/devboxdefinitions@2025-02-01#properties/tags"
+        },
+        "description": "Optional. Tags for the DevBox definition."
+      },
+      "nullable": true
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for the DevBox definition. Defaults to resource group location."
+      }
+    }
+  },
+  "resources": {
+    "devcenter": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/devcenters",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('devcenterName')]"
+    },
+    "devboxDefinition": {
+      "type": "Microsoft.DevCenter/devcenters/devboxdefinitions",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('devcenterName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "imageReference": {
+          "id": "[parameters('imageResourceId')]"
+        },
+        "sku": "[parameters('sku')]",
+        "hibernateSupport": "[parameters('hibernateSupport')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the DevBox Definition was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the DevBox Definition."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the DevBox Definition."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/devcenters/devboxdefinitions', parameters('devcenterName'), parameters('name'))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the DevBox Definition was deployed into."
+      },
+      "value": "[reference('devboxDefinition', '2025-02-01', 'full').location]"
+    }
+  }
+}

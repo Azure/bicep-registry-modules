@@ -1,0 +1,144 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "10607622508346676220"
+    },
+    "name": "Dev Center Gallery",
+    "description": "This module deploys a Dev Center Gallery."
+  },
+  "parameters": {
+    "devcenterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. It must be between 3 and 63 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with \".\" or \"_\"."
+      }
+    },
+    "galleryResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have \"Contributor\" access to the gallery."
+      }
+    },
+    "devCenterIdentityPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The principal ID of the Dev Center identity (system or user) that will be assigned the \"Contributor\" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically."
+      }
+    }
+  },
+  "resources": {
+    "devcenter": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/devcenters",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('devcenterName')]"
+    },
+    "gallery": {
+      "type": "Microsoft.DevCenter/devcenters/galleries",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('devcenterName'), parameters('name'))]",
+      "properties": {
+        "galleryResourceId": "[parameters('galleryResourceId')]"
+      },
+      "dependsOn": [
+        "computeGallery_roleAssignment"
+      ]
+    },
+    "computeGallery_roleAssignment": {
+      "condition": "[not(equals(parameters('devCenterIdentityPrincipalId'), ''))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Contributor-RoleAssignment', deployment().name)]",
+      "resourceGroup": "[split(parameters('galleryResourceId'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "devCenterIdentityPrincipalId": {
+            "value": "[parameters('devCenterIdentityPrincipalId')]"
+          },
+          "galleryResourceId": {
+            "value": "[parameters('galleryResourceId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.35.1.17967",
+              "templateHash": "813599780832049798"
+            }
+          },
+          "parameters": {
+            "galleryResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the backing Azure Compute Gallery."
+              }
+            },
+            "devCenterIdentityPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the Dev Center identity (system or user) that will be assigned the \"Contributor\" role on the backing Azure Compute Gallery."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/galleries/{0}', last(split(parameters('galleryResourceId'), '/')))]",
+              "name": "[guid(parameters('devCenterIdentityPrincipalId'), resourceId('Microsoft.Compute/galleries', last(split(parameters('galleryResourceId'), '/'))), 'Contributor')]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalId": "[parameters('devCenterIdentityPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Dev Center Gallery was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Dev Center Gallery."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Dev Center Gallery."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/devcenters/galleries', parameters('devcenterName'), parameters('name'))]"
+    }
+  }
+}

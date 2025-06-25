@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "13819882242836998242"
+      "version": "0.35.1.17967",
+      "templateHash": "5291931550402529399"
     },
-    "name": "Dev Center Project Catalog",
-    "description": "This module deploys a Dev Center Project Catalog."
+    "name": "Dev Center Catalog",
+    "description": "This module deploys a Dev Center Catalog."
   },
   "definitions": {
     "sourceType": {
@@ -58,10 +58,10 @@
         "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods."
       }
     },
-    "projectName": {
+    "devcenterName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent dev center project. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment."
       }
     },
     "gitHub": {
@@ -91,10 +91,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/devcenters/catalogs@2025-02-01#properties/tags"
+        },
         "description": "Optional. Resource tags to apply to the catalog."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -105,16 +108,16 @@
     }
   },
   "resources": {
-    "project": {
+    "devCenter": {
       "existing": true,
-      "type": "Microsoft.DevCenter/projects",
+      "type": "Microsoft.DevCenter/devcenters",
       "apiVersion": "2025-02-01",
-      "name": "[parameters('projectName')]"
+      "name": "[parameters('devcenterName')]"
     },
     "catalog": {
-      "type": "Microsoft.DevCenter/projects/catalogs",
+      "type": "Microsoft.DevCenter/devcenters/catalogs",
       "apiVersion": "2025-02-01",
-      "name": "[format('{0}/{1}', parameters('projectName'), parameters('name'))]",
+      "name": "[format('{0}/{1}', parameters('devcenterName'), parameters('name'))]",
       "properties": {
         "syncType": "[parameters('syncType')]",
         "tags": "[parameters('tags')]",
@@ -129,7 +132,7 @@
       "metadata": {
         "description": "The resource ID of the catalog."
       },
-      "value": "[resourceId('Microsoft.DevCenter/projects/catalogs', parameters('projectName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.DevCenter/devcenters/catalogs', parameters('devcenterName'), parameters('name'))]"
     },
     "name": {
       "type": "string",

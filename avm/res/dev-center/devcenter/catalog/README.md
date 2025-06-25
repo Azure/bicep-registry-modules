@@ -1,6 +1,6 @@
-# Dev Center Project Catalog `[Microsoft.DevCenter/projects/catalogs]`
+# Dev Center Catalog `[Microsoft.DevCenter/devcenters/catalogs]`
 
-This module deploys a Dev Center Project Catalog.
+This module deploys a Dev Center Catalog.
 
 ## Navigation
 
@@ -12,7 +12,7 @@ This module deploys a Dev Center Project Catalog.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DevCenter/projects/catalogs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/catalogs) |
+| `Microsoft.DevCenter/devcenters/catalogs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/catalogs) |
 
 ## Parameters
 
@@ -26,7 +26,7 @@ This module deploys a Dev Center Project Catalog.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`projectName`](#parameter-projectname) | string | The name of the parent dev center project. Required if the template is used in a standalone deployment. |
+| [`devcenterName`](#parameter-devcentername) | string | The name of the parent dev center. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -45,9 +45,9 @@ The name of the catalog. Must be between 3 and 63 characters and can contain alp
 - Required: Yes
 - Type: string
 
-### Parameter: `projectName`
+### Parameter: `devcenterName`
 
-The name of the parent dev center project. Required if the template is used in a standalone deployment.
+The name of the parent dev center. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
