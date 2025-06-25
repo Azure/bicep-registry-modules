@@ -1,6 +1,15 @@
 # Changelog
 
-The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
+
+## 0.15
+
+### Changes
+
+
+### Breaking Changes
+
+- Removed the softwareUpdateConfigurations parameter
 
 ## 0.14.1
 
@@ -11,3 +20,4 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Breaking Changes
 
 - None
+
