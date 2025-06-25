@@ -517,8 +517,9 @@ type devboxDefinitionType = {
   tags: object?
 }
 
-import { catalogSettingsType, environmentTypeType as projectEnvironmentTypeType, catalogType as projectCatalogType } from 'br/public:avm/res/dev-center/project:0.1.0'
+import { catalogSettingsType, environmentTypeType as projectEnvironmentTypeType } from 'br/public:avm/res/dev-center/project:0.1.0'
 import { stopOnDisconnectType, stopOnNoConnectType, devBoxDefinitionTypeType, poolScheduleType } from '../project/pool/main.bicep'
+
 @description('The type for Dev Center Projects.')
 type projectType = {
   @description('Required. The name of the project.')
@@ -550,7 +551,7 @@ type projectType = {
   @description('Optional. The resource group resource ID where the project will be deployed. If not provided, the project will be deployed to the same resource group as the Dev Center.')
   resourceGroupResourceId: string?
 
-  @description('Optional. The settings to be used when associating a project with a catalog. The Dev Center this project is associated with must allow configuring catalog item sync types before configuring project level catalog settings.')
+  @description('Optional. Settings to be used when associating a project with a catalog. The Dev Center this project is associated with must allow configuring catalog item sync types before configuring project level catalog settings.')
   catalogSettings: catalogSettingsType?
 
   @description('Optional. When specified, limits the maximum number of Dev Boxes a single user can create across all pools in the project. This will have no effect on existing Dev Boxes when reduced.')
@@ -560,9 +561,9 @@ type projectType = {
   @description('Optional. The environment types to create. Environment types must be first created in the Dev Center and then made available to a project using project level environment types. The name should be equivalent to the name of the environment type in the Dev Center.')
   environmentTypes: projectEnvironmentTypeType[]?
 
-  @description('Optional. The pools to create in the project. Pools are containers for dev boxes that share the same configuration.')
+  @description('Optional. The type of pool to create in the project. A project pool is a container for dev boxes that share the same configuration, like a dev box definition and a network connection. Essentially, a project pool defines the specifications for the dev boxes that developers can create from a specific project in the Dev Box service.')
   pools: {
-    @description('Required. The name of the project pool.')
+    @description('Required. The name of the project pool. This name must be unique within a project and is visible to developers when creating dev boxes.')
     @minLength(3)
     @maxLength(63)
     name: string
@@ -570,10 +571,10 @@ type projectType = {
     @description('Optional. The display name of the pool.')
     displayName: string?
 
-    @description('Optional. Indicates if the pool is created from an existing Dev Box Definition or if one is provided directly.')
+    @description('Optional. Indicates if the pool is created from an existing Dev Box Definition or if one is provided directly. Defaults to "Reference".')
     devBoxDefinitionType: ('Reference' | 'Value')?
 
-    @description('Required. Name of a Dev Box definition in parent Project of this Pool.')
+    @description('Required. Name of a Dev Box definition in parent Project of this Pool. If creating a pool from a definition defined in the Dev Center, then this will be the name of the definition. If creating a pool from a custom definition (e.g. Team Customizations), first the catalog must be added to this project, and second must use the format "\\~Catalog\\~{catalogName}\\~{imagedefinition YAML name}" (e.g. "\\~Catalog\\~eshopRepo\\~frontend-dev").')
     devBoxDefinitionName: string
 
     @description('Conditional. A definition of the machines that are created from this Pool. Required if devBoxDefinitionType is "Value".')
@@ -582,25 +583,25 @@ type projectType = {
     @description('Optional. Resource tags to apply to the pool.')
     tags: object?
 
-    @description('Required. Indicates whether owners of Dev Boxes in this pool are added as a local administrator or standard user.')
+    @description('Required. Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a "local administrator" or "standard user" on the Dev Box.')
     localAdministrator: ('Enabled' | 'Disabled')
 
-    @description('Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network.')
+    @description('Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource.')
     virtualNetworkType: ('Managed' | 'Unmanaged')
 
     @description('Conditional. The region of the managed virtual network. Required if virtualNetworkType is "Managed".')
     managedVirtualNetworkRegion: string?
 
-    @description('Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged".')
+    @description('Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed".')
     networkConnectionName: string?
 
-    @description('Optional. Indicates whether Dev Boxes in this pool are created with single sign on enabled.')
+    @description('Optional. Indicates whether Dev Boxes in this pool are created with single sign on enabled. The also requires that single sign on be enabled on the tenant. Changing this setting will not affect existing dev boxes.')
     singleSignOnStatus: ('Enabled' | 'Disabled')?
 
-    @description('Optional. Stop on "disconnect" configuration settings for Dev Boxes created in this pool.')
+    @description('Optional. Stop on "disconnect" configuration settings for Dev Boxes created in this pool. Dev boxes in this pool will hibernate after the grace period after the user disconnects.')
     stopOnDisconnect: stopOnDisconnectType?
 
-    @description('Optional. Stop on "no connect" configuration settings for Dev Boxes created in this pool.')
+    @description('Optional. Stop on "no connect" configuration settings for Dev Boxes created in this pool. Dev boxes in this pool will hibernate after the grace period if the user never connects.')
     stopOnNoConnect: stopOnNoConnectType?
 
     @description('Optional. The schedule for the pool. Dev boxes in this pool will auto-stop every day as per the schedule configuration.')
@@ -611,5 +612,5 @@ type projectType = {
   }[]?
 
   @description('Optional. The catalogs to create in the project. Catalogs are templates from a git repository that can be used to create environments.')
-  catalogs: projectCatalogType[]?
+  catalogs: catalogType[]?
 }
