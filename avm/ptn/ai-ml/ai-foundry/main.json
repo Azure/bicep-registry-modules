@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10359056732911840272"
+      "templateHash": "16977679211406676704"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51605,7 +51605,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8979744248566535593"
+              "templateHash": "10240992884802986658"
             }
           },
           "parameters": {
@@ -51791,12 +51791,38 @@
               "properties": {
                 "capabilityHostKind": "Agents"
               }
+            },
+            {
+              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
+              "properties": {
+                "capabilityHostKind": "Agents",
+                "vectorStoreConnections": [
+                  "[parameters('nameFormatted')]"
+                ],
+                "storageConnections": [
+                  "[parameters('storageName')]"
+                ],
+                "threadStorageConnections": [
+                  "[parameters('cosmosDBName')]"
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
+              ]
             }
           ],
           "outputs": {
             "projectCapHost": {
               "type": "string",
-              "value": ""
+              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
             },
             "projectId": {
               "type": "string",

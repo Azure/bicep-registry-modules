@@ -139,40 +139,40 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-// // Project capability host with enhanced dependency management
-// resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
-//   name: 'projectCapHost'
-//   parent: project
-//   properties: {
-//     capabilityHostKind: 'Agents'
-//     vectorStoreConnections: [
-//       nameFormatted
-//     ]
-//     storageConnections: [
-//       storageName
-//     ]
-//     threadStorageConnections: [
-//       cosmosDBName
-//     ]
-//   }
-//   dependsOn: [
-//     // Ensure account capability host is created first
-//     accountCapabilityHost
-//     // Wait for ALL connections to be fully created and ready
-//     project_connection_azureai_search
-//     project_connection_azure_storage
-//     project_connection_azure_storage_sysdata
-//     project_connection_cosmosdb
-//     // Reference the existing resources to ensure they're fully provisioned
-//     storageAccount
-//     aiSearchService
-//     cosmosDBAccount
-//   ]
-// }
+// Project capability host with enhanced dependency management
+resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+  name: 'projectCapHost'
+  parent: project
+  properties: {
+    capabilityHostKind: 'Agents'
+    vectorStoreConnections: [
+      aiSearchService.name
+    ]
+    storageConnections: [
+      storageAccount.name
+    ]
+    threadStorageConnections: [
+      cosmosDBAccount.name
+    ]
+  }
+  dependsOn: [
+    // Ensure account capability host is created first
+    accountCapabilityHost
+    // Wait for ALL connections to be fully created and ready
+    project_connection_azureai_search
+    project_connection_azure_storage
+    project_connection_azure_storage_sysdata
+    project_connection_cosmosdb
+    // Reference the existing resources to ensure they're fully provisioned
+    storageAccount
+    aiSearchService
+    cosmosDBAccount
+  ]
+}
 
-// Capability host output commented out while capability hosts are disabled
-// output projectCapHost string = toLower(aiFoundryType) != 'basic' ? projectCapabilityHost.name : ''
-output projectCapHost string = '' // Return empty string temporarily
+//Capability host output commented out while capability hosts are disabled
+output projectCapHost string = toLower(aiFoundryType) != 'basic' ? projectCapabilityHost.name : ''
+//output projectCapHost string = '' // Return empty string temporarily
 
 output projectId string = project.id
 output projectName string = project.name
