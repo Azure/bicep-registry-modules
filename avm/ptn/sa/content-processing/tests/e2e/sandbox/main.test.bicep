@@ -15,7 +15,7 @@ param serviceShort string = 'scpmin'
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 //param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-bk-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
