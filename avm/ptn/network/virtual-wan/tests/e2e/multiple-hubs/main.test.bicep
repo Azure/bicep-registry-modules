@@ -50,17 +50,19 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: 'eastus'
           hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
-          secureHubParameters: {
-            deploySecureHub: false
-          }
+          deploySecureHub: false
+          deployP2SVpnGateway: false
+          deployS2SVpnGateway: false
+          deployExpressRouteGateway: false
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
           hubLocation: 'westus2'
           hubName: 'dep-${namePrefix}-hub-westus2-${serviceShort}'
-          secureHubParameters: {
-            deploySecureHub: false
-          }
+          deploySecureHub: false
+          deployP2SVpnGateway: false
+          deployS2SVpnGateway: false
+          deployExpressRouteGateway: false
         }
       ]
     }

@@ -63,12 +63,13 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     // Required parameters
     virtualHubParameters: [
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: 'eastus'
         hubName: 'dep-hub-eastus-nvwanmin'
-        secureHubParameters: {
-          deploySecureHub: false
-        }
       }
     ]
     virtualWanParameters: {
@@ -95,12 +96,13 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualHubParameters": {
       "value": [
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwanmin",
-          "secureHubParameters": {
-            "deploySecureHub": false
-          }
+          "hubName": "dep-hub-eastus-nvwanmin"
         }
       ]
     },
@@ -127,12 +129,13 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 // Required parameters
 param virtualHubParameters = [
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: 'eastus'
     hubName: 'dep-hub-eastus-nvwanmin'
-    secureHubParameters: {
-      deploySecureHub: false
-    }
   }
 ]
 param virtualWanParameters = {
@@ -161,8 +164,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     virtualHubParameters: [
       {
         allowBranchToBranchTraffic: true
+        deployExpressRouteGateway: true
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: true
+        deploySecureHub: true
         expressRouteParameters: {
-          deployExpressRouteGateway: true
           expressRouteGatewayName: 'dep-ergw-eastus-nvwanmax'
         }
         hubAddressPrefix: '10.0.0.0/24'
@@ -176,7 +182,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           }
         ]
         s2sVpnParameters: {
-          deployS2SVpnGateway: true
           vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
           vpnGatewayScaleUnit: 1
         }
@@ -184,7 +189,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallName: 'dep-fw-eastus-nvwanmax'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
-          deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
           routingIntent: {
             internetToFirewall: true
@@ -195,8 +199,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       }
       {
         allowBranchToBranchTraffic: true
+        deployExpressRouteGateway: true
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: true
+        deploySecureHub: true
         expressRouteParameters: {
-          deployExpressRouteGateway: true
           expressRouteGatewayName: 'dep-ergw-westus2-nvwanmax'
         }
         hubAddressPrefix: '10.0.1.0/24'
@@ -210,7 +217,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           }
         ]
         s2sVpnParameters: {
-          deployS2SVpnGateway: true
+          bgpSettings: {
+            asn: 45000
+            bgpPeeringAddress: '10.0.1.1'
+            peerWeight: 100
+          }
           vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
           vpnGatewayScaleUnit: 1
         }
@@ -218,7 +229,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallName: 'dep-fw-westus2-nvwanmax'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
-          deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
           routingIntent: {
             internetToFirewall: true
@@ -256,8 +266,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       "value": [
         {
           "allowBranchToBranchTraffic": true,
+          "deployExpressRouteGateway": true,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": true,
+          "deploySecureHub": true,
           "expressRouteParameters": {
-            "deployExpressRouteGateway": true,
             "expressRouteGatewayName": "dep-ergw-eastus-nvwanmax"
           },
           "hubAddressPrefix": "10.0.0.0/24",
@@ -271,7 +284,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             }
           ],
           "s2sVpnParameters": {
-            "deployS2SVpnGateway": true,
             "vpnGatewayName": "dep-s2svpngw-eastus-nvwanmax",
             "vpnGatewayScaleUnit": 1
           },
@@ -279,7 +291,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallName": "dep-fw-eastus-nvwanmax",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
             "routingIntent": {
               "internetToFirewall": true,
@@ -290,8 +301,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         },
         {
           "allowBranchToBranchTraffic": true,
+          "deployExpressRouteGateway": true,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": true,
+          "deploySecureHub": true,
           "expressRouteParameters": {
-            "deployExpressRouteGateway": true,
             "expressRouteGatewayName": "dep-ergw-westus2-nvwanmax"
           },
           "hubAddressPrefix": "10.0.1.0/24",
@@ -305,7 +319,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             }
           ],
           "s2sVpnParameters": {
-            "deployS2SVpnGateway": true,
+            "bgpSettings": {
+              "asn": 45000,
+              "bgpPeeringAddress": "10.0.1.1",
+              "peerWeight": 100
+            },
             "vpnGatewayName": "dep-s2svpngw-westus2-nvwanmax",
             "vpnGatewayScaleUnit": 1
           },
@@ -313,7 +331,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallName": "dep-fw-westus2-nvwanmax",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
             "routingIntent": {
               "internetToFirewall": true,
@@ -351,8 +368,11 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 param virtualHubParameters = [
   {
     allowBranchToBranchTraffic: true
+    deployExpressRouteGateway: true
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: true
+    deploySecureHub: true
     expressRouteParameters: {
-      deployExpressRouteGateway: true
       expressRouteGatewayName: 'dep-ergw-eastus-nvwanmax'
     }
     hubAddressPrefix: '10.0.0.0/24'
@@ -366,7 +386,6 @@ param virtualHubParameters = [
       }
     ]
     s2sVpnParameters: {
-      deployS2SVpnGateway: true
       vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
       vpnGatewayScaleUnit: 1
     }
@@ -374,7 +393,6 @@ param virtualHubParameters = [
       azureFirewallName: 'dep-fw-eastus-nvwanmax'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
-      deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
       routingIntent: {
         internetToFirewall: true
@@ -385,8 +403,11 @@ param virtualHubParameters = [
   }
   {
     allowBranchToBranchTraffic: true
+    deployExpressRouteGateway: true
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: true
+    deploySecureHub: true
     expressRouteParameters: {
-      deployExpressRouteGateway: true
       expressRouteGatewayName: 'dep-ergw-westus2-nvwanmax'
     }
     hubAddressPrefix: '10.0.1.0/24'
@@ -400,7 +421,11 @@ param virtualHubParameters = [
       }
     ]
     s2sVpnParameters: {
-      deployS2SVpnGateway: true
+      bgpSettings: {
+        asn: 45000
+        bgpPeeringAddress: '10.0.1.1'
+        peerWeight: 100
+      }
       vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
       vpnGatewayScaleUnit: 1
     }
@@ -408,7 +433,6 @@ param virtualHubParameters = [
       azureFirewallName: 'dep-fw-westus2-nvwanmax'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
-      deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
       routingIntent: {
         internetToFirewall: true
@@ -446,20 +470,22 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     // Required parameters
     virtualHubParameters: [
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: 'eastus'
         hubName: 'dep-hub-eastus-nvwanmultihub'
-        secureHubParameters: {
-          deploySecureHub: false
-        }
       }
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: false
         hubAddressPrefix: '10.0.1.0/24'
         hubLocation: 'westus2'
         hubName: 'dep-hub-westus2-nvwanmultihub'
-        secureHubParameters: {
-          deploySecureHub: false
-        }
       }
     ]
     virtualWanParameters: {
@@ -486,20 +512,22 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualHubParameters": {
       "value": [
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwanmultihub",
-          "secureHubParameters": {
-            "deploySecureHub": false
-          }
+          "hubName": "dep-hub-eastus-nvwanmultihub"
         },
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": false,
           "hubAddressPrefix": "10.0.1.0/24",
           "hubLocation": "westus2",
-          "hubName": "dep-hub-westus2-nvwanmultihub",
-          "secureHubParameters": {
-            "deploySecureHub": false
-          }
+          "hubName": "dep-hub-westus2-nvwanmultihub"
         }
       ]
     },
@@ -526,20 +554,22 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 // Required parameters
 param virtualHubParameters = [
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: 'eastus'
     hubName: 'dep-hub-eastus-nvwanmultihub'
-    secureHubParameters: {
-      deploySecureHub: false
-    }
   }
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: false
     hubAddressPrefix: '10.0.1.0/24'
     hubLocation: 'westus2'
     hubName: 'dep-hub-westus2-nvwanmultihub'
-    secureHubParameters: {
-      deploySecureHub: false
-    }
   }
 ]
 param virtualWanParameters = {
@@ -567,6 +597,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     // Required parameters
     virtualHubParameters: [
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: true
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: 'eastus'
         hubName: 'dep-hub-eastus-nvwanmultisechub'
@@ -574,7 +608,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
-          deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
           routingIntent: {
             internetToFirewall: true
@@ -583,6 +616,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         }
       }
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: true
         hubAddressPrefix: '10.0.1.0/24'
         hubLocation: 'westus2'
         hubName: 'dep-hub-westus2-nvwanmultisechub'
@@ -590,7 +627,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallName: 'dep-fw-westus2-nvwanmultisechub'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
-          deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
           routingIntent: {
             internetToFirewall: true
@@ -623,6 +659,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualHubParameters": {
       "value": [
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": true,
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "eastus",
           "hubName": "dep-hub-eastus-nvwanmultisechub",
@@ -630,7 +670,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallName": "dep-fw-eastus-nvwanmultisechub",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
             "routingIntent": {
               "internetToFirewall": true,
@@ -639,6 +678,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           }
         },
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": true,
           "hubAddressPrefix": "10.0.1.0/24",
           "hubLocation": "westus2",
           "hubName": "dep-hub-westus2-nvwanmultisechub",
@@ -646,7 +689,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallName": "dep-fw-westus2-nvwanmultisechub",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
             "routingIntent": {
               "internetToFirewall": true,
@@ -679,6 +721,10 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 // Required parameters
 param virtualHubParameters = [
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: true
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: 'eastus'
     hubName: 'dep-hub-eastus-nvwanmultisechub'
@@ -686,7 +732,6 @@ param virtualHubParameters = [
       azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
-      deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
       routingIntent: {
         internetToFirewall: true
@@ -695,6 +740,10 @@ param virtualHubParameters = [
     }
   }
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: true
     hubAddressPrefix: '10.0.1.0/24'
     hubLocation: 'westus2'
     hubName: 'dep-hub-westus2-nvwanmultisechub'
@@ -702,7 +751,6 @@ param virtualHubParameters = [
       azureFirewallName: 'dep-fw-westus2-nvwanmultisechub'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
-      deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
       routingIntent: {
         internetToFirewall: true
@@ -736,6 +784,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     // Required parameters
     virtualHubParameters: [
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: true
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: 'eastus'
         hubName: 'dep-hub-eastus-nvwansechub'
@@ -743,7 +795,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallName: 'dep-fw-eastus-nvwansechub'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
-          deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
           routingIntent: {
             internetToFirewall: true
@@ -776,6 +827,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualHubParameters": {
       "value": [
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": true,
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "eastus",
           "hubName": "dep-hub-eastus-nvwansechub",
@@ -783,7 +838,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallName": "dep-fw-eastus-nvwansechub",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
-            "deploySecureHub": true,
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
             "routingIntent": {
               "internetToFirewall": true,
@@ -816,6 +870,10 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 // Required parameters
 param virtualHubParameters = [
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: true
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: 'eastus'
     hubName: 'dep-hub-eastus-nvwansechub'
@@ -823,7 +881,6 @@ param virtualHubParameters = [
       azureFirewallName: 'dep-fw-eastus-nvwansechub'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
-      deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
       routingIntent: {
         internetToFirewall: true
@@ -857,12 +914,13 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     // Required parameters
     virtualHubParameters: [
       {
+        deployExpressRouteGateway: false
+        deployP2SVpnGateway: false
+        deployS2SVpnGateway: false
+        deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: '<hubLocation>'
-        hubName: '<hubName>'
-        secureHubParameters: {
-          deploySecureHub: false
-        }
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwanwaf'
       }
     ]
     virtualWanParameters: {
@@ -889,12 +947,13 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualHubParameters": {
       "value": [
         {
+          "deployExpressRouteGateway": false,
+          "deployP2SVpnGateway": false,
+          "deployS2SVpnGateway": false,
+          "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>",
-          "secureHubParameters": {
-            "deploySecureHub": false
-          }
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwanwaf"
         }
       ]
     },
@@ -921,12 +980,13 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 // Required parameters
 param virtualHubParameters = [
   {
+    deployExpressRouteGateway: false
+    deployP2SVpnGateway: false
+    deployS2SVpnGateway: false
+    deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: '<hubLocation>'
-    hubName: '<hubName>'
-    secureHubParameters: {
-      deploySecureHub: false
-    }
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwanwaf'
   }
 ]
 param virtualWanParameters = {
@@ -966,26 +1026,63 @@ The parameters for the Virtual Hubs and associated networking components, requir
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`deployExpressRouteGateway`](#parameter-virtualhubparametersdeployexpressroutegateway) | bool | Whether to deploy an ExpressRoute Gateway. |
+| [`deployP2SVpnGateway`](#parameter-virtualhubparametersdeployp2svpngateway) | bool | Whether to deploy a P2S VPN Gateway. |
+| [`deployS2SVpnGateway`](#parameter-virtualhubparametersdeploys2svpngateway) | bool | Whether to deploy a S2S VPN Gateway. |
+| [`deploySecureHub`](#parameter-virtualhubparametersdeploysecurehub) | bool | Whether to deploy a Secure Hub. |
 | [`hubAddressPrefix`](#parameter-virtualhubparametershubaddressprefix) | string | The address prefix for the Virtual Hub. |
 | [`hubLocation`](#parameter-virtualhubparametershublocation) | string | The Azure region where the Virtual Hub will be created. |
 | [`hubName`](#parameter-virtualhubparametershubname) | string | The name of the Virtual Hub. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expressRouteParameters`](#parameter-virtualhubparametersexpressrouteparameters) | object | ExpressRoute parameters for the Virtual Hub. Required if deployExpressRouteGateway is true. |
+| [`p2sVpnParameters`](#parameter-virtualhubparametersp2svpnparameters) | object | Point-to-site VPN parameters for the Virtual Hub. Required if deployP2SVpnGateway is true. |
+| [`s2sVpnParameters`](#parameter-virtualhubparameterss2svpnparameters) | object | Site-to-site VPN parameters for the Virtual Hub. Required if deployS2SVpnGateway is true. |
+| [`secureHubParameters`](#parameter-virtualhubparameterssecurehubparameters) | object | Secure Hub parameters for the Virtual Hub. Required if deploySecureHub is true. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-virtualhubparametersallowbranchtobranchtraffic) | bool | Whether to allow branch-to-branch traffic within the Virtual Hub. |
-| [`expressRouteParameters`](#parameter-virtualhubparametersexpressrouteparameters) | object | ExpressRoute parameters for the Virtual Hub. |
 | [`hubRouteTables`](#parameter-virtualhubparametershubroutetables) | array | The route tables for the Virtual Hub. |
 | [`hubRoutingPreference`](#parameter-virtualhubparametershubroutingpreference) | string | The routing preference for the Virtual Hub. |
 | [`hubVirtualNetworkConnections`](#parameter-virtualhubparametershubvirtualnetworkconnections) | array | The virtual network connections for the Virtual Hub. |
-| [`p2sVpnParameters`](#parameter-virtualhubparametersp2svpnparameters) | object | Point-to-site VPN parameters for the Virtual Hub. |
-| [`s2sVpnParameters`](#parameter-virtualhubparameterss2svpnparameters) | object | Site-to-site VPN parameters for the Virtual Hub. |
-| [`secureHubParameters`](#parameter-virtualhubparameterssecurehubparameters) | object | Secure Hub parameters for the Virtual Hub. |
 | [`sku`](#parameter-virtualhubparameterssku) | string | SKU for the Virtual Hub. |
 | [`tags`](#parameter-virtualhubparameterstags) | object | Tags to be applied to the Virtual Hub. |
 | [`virtualRouterAsn`](#parameter-virtualhubparametersvirtualrouterasn) | int | ASN for the Virtual Router. |
 | [`virtualRouterIps`](#parameter-virtualhubparametersvirtualrouterips) | array | IP addresses for the Virtual Router. |
+
+### Parameter: `virtualHubParameters.deployExpressRouteGateway`
+
+Whether to deploy an ExpressRoute Gateway.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `virtualHubParameters.deployP2SVpnGateway`
+
+Whether to deploy a P2S VPN Gateway.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `virtualHubParameters.deployS2SVpnGateway`
+
+Whether to deploy a S2S VPN Gateway.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `virtualHubParameters.deploySecureHub`
+
+Whether to deploy a Secure Hub.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `virtualHubParameters.hubAddressPrefix`
 
@@ -1008,16 +1105,9 @@ The name of the Virtual Hub.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualHubParameters.allowBranchToBranchTraffic`
-
-Whether to allow branch-to-branch traffic within the Virtual Hub.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `virtualHubParameters.expressRouteParameters`
 
-ExpressRoute parameters for the Virtual Hub.
+ExpressRoute parameters for the Virtual Hub. Required if deployExpressRouteGateway is true.
 
 - Required: No
 - Type: object
@@ -1026,7 +1116,7 @@ ExpressRoute parameters for the Virtual Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deployExpressRouteGateway`](#parameter-virtualhubparametersexpressrouteparametersdeployexpressroutegateway) | bool | Whether to deploy an ExpressRoute Gateway. |
+| [`expressRouteGatewayName`](#parameter-virtualhubparametersexpressrouteparametersexpressroutegatewayname) | string | Name of the ExpressRoute Gateway. |
 
 **Optional parameters**
 
@@ -1036,14 +1126,13 @@ ExpressRoute parameters for the Virtual Hub.
 | [`autoScaleConfigurationBoundsMax`](#parameter-virtualhubparametersexpressrouteparametersautoscaleconfigurationboundsmax) | int | Maximum bound for autoscale configuration. |
 | [`autoScaleConfigurationBoundsMin`](#parameter-virtualhubparametersexpressrouteparametersautoscaleconfigurationboundsmin) | int | Minimum bound for autoscale configuration. |
 | [`expressRouteConnections`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnections) | array | ExpressRoute connections. |
-| [`expressRouteGatewayName`](#parameter-virtualhubparametersexpressrouteparametersexpressroutegatewayname) | string | Name of the ExpressRoute Gateway. |
 
-### Parameter: `virtualHubParameters.expressRouteParameters.deployExpressRouteGateway`
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteGatewayName`
 
-Whether to deploy an ExpressRoute Gateway.
+Name of the ExpressRoute Gateway.
 
 - Required: Yes
-- Type: bool
+- Type: string
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.allowNonVirtualWanTraffic`
 
@@ -1200,178 +1289,9 @@ Use policy-based traffic selectors.
 - Required: No
 - Type: bool
 
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteGatewayName`
-
-Name of the ExpressRoute Gateway.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualHubParameters.hubRouteTables`
-
-The route tables for the Virtual Hub.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-virtualhubparametershubroutetablesname) | string | The route table name. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`labels`](#parameter-virtualhubparametershubroutetableslabels) | array | List of labels associated with this route table. |
-| [`routes`](#parameter-virtualhubparametershubroutetablesroutes) | array | List of all routes. |
-
-### Parameter: `virtualHubParameters.hubRouteTables.name`
-
-The route table name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.hubRouteTables.labels`
-
-List of labels associated with this route table.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualHubParameters.hubRouteTables.routes`
-
-List of all routes.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`destinations`](#parameter-virtualhubparametershubroutetablesroutesdestinations) | array | The address prefix for the route. |
-| [`destinationType`](#parameter-virtualhubparametershubroutetablesroutesdestinationtype) | string | The destination type for the route. |
-| [`name`](#parameter-virtualhubparametershubroutetablesroutesname) | string | The name of the route. |
-| [`nextHop`](#parameter-virtualhubparametershubroutetablesroutesnexthop) | string | The next hop IP address for the route. |
-| [`nextHopType`](#parameter-virtualhubparametershubroutetablesroutesnexthoptype) | string | The next hop type for the route. |
-
-### Parameter: `virtualHubParameters.hubRouteTables.routes.destinations`
-
-The address prefix for the route.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `virtualHubParameters.hubRouteTables.routes.destinationType`
-
-The destination type for the route.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CIDR'
-  ]
-  ```
-
-### Parameter: `virtualHubParameters.hubRouteTables.routes.name`
-
-The name of the route.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.hubRouteTables.routes.nextHop`
-
-The next hop IP address for the route.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.hubRouteTables.routes.nextHopType`
-
-The next hop type for the route.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ResourceId'
-  ]
-  ```
-
-### Parameter: `virtualHubParameters.hubRoutingPreference`
-
-The routing preference for the Virtual Hub.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ASPath'
-    'ExpressRoute'
-    'VpnGateway'
-  ]
-  ```
-
-### Parameter: `virtualHubParameters.hubVirtualNetworkConnections`
-
-The virtual network connections for the Virtual Hub.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-virtualhubparametershubvirtualnetworkconnectionsname) | string | The connection name. |
-| [`remoteVirtualNetworkResourceId`](#parameter-virtualhubparametershubvirtualnetworkconnectionsremotevirtualnetworkresourceid) | string | Resource ID of the virtual network to link to. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableInternetSecurity`](#parameter-virtualhubparametershubvirtualnetworkconnectionsenableinternetsecurity) | bool | Enable internet security. |
-| [`routingConfiguration`](#parameter-virtualhubparametershubvirtualnetworkconnectionsroutingconfiguration) | object | Routing Configuration indicating the associated and propagated route tables for this connection. |
-
-### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.name`
-
-The connection name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.remoteVirtualNetworkResourceId`
-
-Resource ID of the virtual network to link to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.enableInternetSecurity`
-
-Enable internet security.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.routingConfiguration`
-
-Routing Configuration indicating the associated and propagated route tables for this connection.
-
-- Required: No
-- Type: object
-
 ### Parameter: `virtualHubParameters.p2sVpnParameters`
 
-Point-to-site VPN parameters for the Virtual Hub.
+Point-to-site VPN parameters for the Virtual Hub. Required if deployP2SVpnGateway is true.
 
 - Required: No
 - Type: object
@@ -1381,7 +1301,6 @@ Point-to-site VPN parameters for the Virtual Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`connectionConfigurationsName`](#parameter-virtualhubparametersp2svpnparametersconnectionconfigurationsname) | string | Name of the connection configurations. |
-| [`deployP2SVpnGateway`](#parameter-virtualhubparametersp2svpnparametersdeployp2svpngateway) | bool | Whether to deploy a P2S VPN Gateway. |
 | [`vpnClientAddressPoolAddressPrefixes`](#parameter-virtualhubparametersp2svpnparametersvpnclientaddresspooladdressprefixes) | array | Address prefixes for the VPN client address pool. |
 | [`vpnGatewayName`](#parameter-virtualhubparametersp2svpnparametersvpngatewayname) | string | Name of the VPN Gateway. |
 
@@ -1406,13 +1325,6 @@ Name of the connection configurations.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `virtualHubParameters.p2sVpnParameters.deployP2SVpnGateway`
-
-Whether to deploy a P2S VPN Gateway.
-
-- Required: Yes
-- Type: bool
 
 ### Parameter: `virtualHubParameters.p2sVpnParameters.vpnClientAddressPoolAddressPrefixes`
 
@@ -1570,7 +1482,7 @@ Scale unit for the VPN Gateway.
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters`
 
-Site-to-site VPN parameters for the Virtual Hub.
+Site-to-site VPN parameters for the Virtual Hub. Required if deployS2SVpnGateway is true.
 
 - Required: No
 - Type: object
@@ -1579,7 +1491,7 @@ Site-to-site VPN parameters for the Virtual Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deployS2SVpnGateway`](#parameter-virtualhubparameterss2svpnparametersdeploys2svpngateway) | bool | Whether to deploy a S2S VPN Gateway. |
+| [`vpnGatewayName`](#parameter-virtualhubparameterss2svpnparametersvpngatewayname) | string | Name of the VPN Gateway. |
 
 **Optional parameters**
 
@@ -1591,15 +1503,14 @@ Site-to-site VPN parameters for the Virtual Hub.
 | [`lock`](#parameter-virtualhubparameterss2svpnparameterslock) | object | Lock settings for the VPN Gateway. |
 | [`natRules`](#parameter-virtualhubparameterss2svpnparametersnatrules) | array | NAT rules for the VPN Gateway. |
 | [`vpnConnections`](#parameter-virtualhubparameterss2svpnparametersvpnconnections) | array | VPN connections for the VPN Gateway. |
-| [`vpnGatewayName`](#parameter-virtualhubparameterss2svpnparametersvpngatewayname) | string | Name of the VPN Gateway. |
 | [`vpnGatewayScaleUnit`](#parameter-virtualhubparameterss2svpnparametersvpngatewayscaleunit) | int | Scale unit for the VPN Gateway. |
 
-### Parameter: `virtualHubParameters.s2sVpnParameters.deployS2SVpnGateway`
+### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayName`
 
-Whether to deploy a S2S VPN Gateway.
+Name of the VPN Gateway.
 
 - Required: Yes
-- Type: bool
+- Type: string
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings`
 
@@ -1612,38 +1523,60 @@ BGP settings for the VPN Gateway.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`asn`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsasn) | int | ASN for BGP. |
-| [`bgpPeeringAddress`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddress) | string | BGP peering address. |
-| [`bgpPeeringAddresses`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddresses) | array | BGP peering addresses. |
-| [`peerWeight`](#parameter-virtualhubparameterss2svpnparametersbgpsettingspeerweight) | int | Peer weight for BGP. |
+| [`asn`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsasn) | int | The BGP speaker's ASN (Autonomous System Number). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bgpPeeringAddresses`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. |
+| [`peerWeight`](#parameter-virtualhubparameterss2svpnparametersbgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.asn`
 
-ASN for BGP.
+The BGP speaker's ASN (Autonomous System Number).
 
 - Required: Yes
 - Type: int
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddress`
-
-BGP peering address.
-
-- Required: Yes
-- Type: string
+- MinValue: 0
+- MaxValue: 4294967295
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddresses`
 
-BGP peering addresses.
+BGP peering addresses for this VPN Gateway.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customBgpIpAddresses`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses. |
+| [`ipconfigurationId`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddressesipconfigurationid) | string | The IP configuration ID. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddresses.customBgpIpAddresses`
+
+The custom BGP peering addresses.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddresses.ipconfigurationId`
+
+The IP configuration ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.peerWeight`
 
-Peer weight for BGP.
+The weight added to routes learned from this BGP speaker.
 
-- Required: Yes
+- Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 100
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.enableBgpRouteTranslationForNat`
 
@@ -1701,6 +1634,130 @@ NAT rules for the VPN Gateway.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualhubparameterss2svpnparametersnatrulesname) | string | The name of the NAT rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`externalMappings`](#parameter-virtualhubparameterss2svpnparametersnatrulesexternalmappings) | array | External mappings. |
+| [`internalMappings`](#parameter-virtualhubparameterss2svpnparametersnatrulesinternalmappings) | array | Internal mappings. |
+| [`ipConfigurationId`](#parameter-virtualhubparameterss2svpnparametersnatrulesipconfigurationid) | string | IP configuration ID. |
+| [`mode`](#parameter-virtualhubparameterss2svpnparametersnatrulesmode) | string | NAT rule mode. |
+| [`type`](#parameter-virtualhubparameterss2svpnparametersnatrulestype) | string | NAT rule type. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.name`
+
+The name of the NAT rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.externalMappings`
+
+External mappings.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-virtualhubparameterss2svpnparametersnatrulesexternalmappingsaddressspace) | string | Address space for VPN NAT rule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-virtualhubparameterss2svpnparametersnatrulesexternalmappingsportrange) | string | Port range for VPN NAT rule mapping. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.externalMappings.addressSpace`
+
+Address space for VPN NAT rule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.externalMappings.portRange`
+
+Port range for VPN NAT rule mapping.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.internalMappings`
+
+Internal mappings.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-virtualhubparameterss2svpnparametersnatrulesinternalmappingsaddressspace) | string | Address space for VPN NAT rule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-virtualhubparameterss2svpnparametersnatrulesinternalmappingsportrange) | string | Port range for VPN NAT rule mapping. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.internalMappings.addressSpace`
+
+Address space for VPN NAT rule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.internalMappings.portRange`
+
+Port range for VPN NAT rule mapping.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.ipConfigurationId`
+
+IP configuration ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.mode`
+
+NAT rule mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EgressSnat'
+    'IngressSnat'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.type`
+
+NAT rule type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections`
 
@@ -1854,13 +1911,6 @@ VPN link connections for the connection.
 - Required: No
 - Type: array
 
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayName`
-
-Name of the VPN Gateway.
-
-- Required: No
-- Type: string
-
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayScaleUnit`
 
 Scale unit for the VPN Gateway.
@@ -1870,7 +1920,7 @@ Scale unit for the VPN Gateway.
 
 ### Parameter: `virtualHubParameters.secureHubParameters`
 
-Secure Hub parameters for the Virtual Hub.
+Secure Hub parameters for the Virtual Hub. Required if deploySecureHub is true.
 
 - Required: No
 - Type: object
@@ -1879,55 +1929,40 @@ Secure Hub parameters for the Virtual Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deploySecureHub`](#parameter-virtualhubparameterssecurehubparametersdeploysecurehub) | bool | Whether to deploy a Secure Hub. |
+| [`azureFirewallName`](#parameter-virtualhubparameterssecurehubparametersazurefirewallname) | string | Name of the Azure Firewall. |
+| [`azureFirewallPublicIPCount`](#parameter-virtualhubparameterssecurehubparametersazurefirewallpublicipcount) | int | Number of public IPs for the Azure Firewall. |
+| [`azureFirewallSku`](#parameter-virtualhubparameterssecurehubparametersazurefirewallsku) | string | SKU for the Azure Firewall. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurationResourceIds`](#parameter-virtualhubparameterssecurehubparametersadditionalpublicipconfigurationresourceids) | array | Additional public IP configuration resource IDs. |
-| [`azureFirewallName`](#parameter-virtualhubparameterssecurehubparametersazurefirewallname) | string | Name of the Azure Firewall. |
-| [`azureFirewallPublicIPCount`](#parameter-virtualhubparameterssecurehubparametersazurefirewallpublicipcount) | int | Number of public IPs for the Azure Firewall. |
-| [`azureFirewallSku`](#parameter-virtualhubparameterssecurehubparametersazurefirewallsku) | string | SKU for the Azure Firewall. |
 | [`diagnosticSettings`](#parameter-virtualhubparameterssecurehubparametersdiagnosticsettings) | array | Diagnostic settings for the Azure Firewall in the Secure Hub. |
 | [`firewallPolicyResourceId`](#parameter-virtualhubparameterssecurehubparametersfirewallpolicyresourceid) | string | Resource ID of the firewall policy. |
 | [`publicIPAddressObject`](#parameter-virtualhubparameterssecurehubparameterspublicipaddressobject) | object | Public IP address object for the Azure Firewall. |
 | [`publicIPResourceID`](#parameter-virtualhubparameterssecurehubparameterspublicipresourceid) | string | Resource ID of the public IP address. |
 | [`routingIntent`](#parameter-virtualhubparameterssecurehubparametersroutingintent) | object | Routing intent for the Azure Firewall. |
 
-### Parameter: `virtualHubParameters.secureHubParameters.deploySecureHub`
-
-Whether to deploy a Secure Hub.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `virtualHubParameters.secureHubParameters.additionalPublicIpConfigurationResourceIds`
-
-Additional public IP configuration resource IDs.
-
-- Required: No
-- Type: array
-
 ### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallName`
 
 Name of the Azure Firewall.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallPublicIPCount`
 
 Number of public IPs for the Azure Firewall.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallSku`
 
 SKU for the Azure Firewall.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
@@ -1937,6 +1972,13 @@ SKU for the Azure Firewall.
     'Standard'
   ]
   ```
+
+### Parameter: `virtualHubParameters.secureHubParameters.additionalPublicIpConfigurationResourceIds`
+
+Additional public IP configuration resource IDs.
+
+- Required: No
+- Type: array
 
 ### Parameter: `virtualHubParameters.secureHubParameters.diagnosticSettings`
 
@@ -2195,6 +2237,175 @@ Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
 
 - Required: No
 - Type: bool
+
+### Parameter: `virtualHubParameters.allowBranchToBranchTraffic`
+
+Whether to allow branch-to-branch traffic within the Virtual Hub.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualHubParameters.hubRouteTables`
+
+The route tables for the Virtual Hub.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualhubparametershubroutetablesname) | string | The route table name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`labels`](#parameter-virtualhubparametershubroutetableslabels) | array | List of labels associated with this route table. |
+| [`routes`](#parameter-virtualhubparametershubroutetablesroutes) | array | List of all routes. |
+
+### Parameter: `virtualHubParameters.hubRouteTables.name`
+
+The route table name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.hubRouteTables.labels`
+
+List of labels associated with this route table.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualHubParameters.hubRouteTables.routes`
+
+List of all routes.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinations`](#parameter-virtualhubparametershubroutetablesroutesdestinations) | array | The address prefix for the route. |
+| [`destinationType`](#parameter-virtualhubparametershubroutetablesroutesdestinationtype) | string | The destination type for the route. |
+| [`name`](#parameter-virtualhubparametershubroutetablesroutesname) | string | The name of the route. |
+| [`nextHop`](#parameter-virtualhubparametershubroutetablesroutesnexthop) | string | The next hop IP address for the route. |
+| [`nextHopType`](#parameter-virtualhubparametershubroutetablesroutesnexthoptype) | string | The next hop type for the route. |
+
+### Parameter: `virtualHubParameters.hubRouteTables.routes.destinations`
+
+The address prefix for the route.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `virtualHubParameters.hubRouteTables.routes.destinationType`
+
+The destination type for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CIDR'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.hubRouteTables.routes.name`
+
+The name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.hubRouteTables.routes.nextHop`
+
+The next hop IP address for the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.hubRouteTables.routes.nextHopType`
+
+The next hop type for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ResourceId'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.hubRoutingPreference`
+
+The routing preference for the Virtual Hub.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ASPath'
+    'ExpressRoute'
+    'VpnGateway'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.hubVirtualNetworkConnections`
+
+The virtual network connections for the Virtual Hub.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualhubparametershubvirtualnetworkconnectionsname) | string | The connection name. |
+| [`remoteVirtualNetworkResourceId`](#parameter-virtualhubparametershubvirtualnetworkconnectionsremotevirtualnetworkresourceid) | string | Resource ID of the virtual network to link to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableInternetSecurity`](#parameter-virtualhubparametershubvirtualnetworkconnectionsenableinternetsecurity) | bool | Enable internet security. |
+| [`routingConfiguration`](#parameter-virtualhubparametershubvirtualnetworkconnectionsroutingconfiguration) | object | Routing Configuration indicating the associated and propagated route tables for this connection. |
+
+### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.name`
+
+The connection name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.remoteVirtualNetworkResourceId`
+
+Resource ID of the virtual network to link to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.enableInternetSecurity`
+
+Enable internet security.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualHubParameters.hubVirtualNetworkConnections.routingConfiguration`
+
+Routing Configuration indicating the associated and propagated route tables for this connection.
+
+- Required: No
+- Type: object
 
 ### Parameter: `virtualHubParameters.sku`
 

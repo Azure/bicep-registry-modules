@@ -48,11 +48,12 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: resourceLocation
-          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
-          secureHubParameters: {
-            deploySecureHub: false
-          }
+          hubLocation: 'eastus'
+          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          deploySecureHub: false
+          deployP2SVpnGateway: false
+          deployExpressRouteGateway: false
+          deployS2SVpnGateway: false
         }
       ]
     }

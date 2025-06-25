@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17171267674677592647"
+      "templateHash": "12130742776134708081"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -284,20 +284,26 @@
             "description": "Optional. The virtual network connections for the Virtual Hub."
           }
         },
+        "deployP2SVpnGateway": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to deploy a P2S VPN Gateway."
+          }
+        },
         "p2sVpnParameters": {
           "type": "object",
           "properties": {
+            "connectionConfigurationsName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the connection configurations."
+              }
+            },
             "customDnsServers": {
               "type": "array",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS servers for the P2S VPN Gateway."
-              }
-            },
-            "deployP2SVpnGateway": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Whether to deploy a P2S VPN Gateway."
               }
             },
             "enableInternetSecurity": {
@@ -361,12 +367,6 @@
                 "description": "Required. Address prefixes for the VPN client address pool."
               }
             },
-            "connectionConfigurationsName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Name of the connection configurations."
-              }
-            },
             "vpnGatewayScaleUnit": {
               "type": "int",
               "nullable": true,
@@ -388,23 +388,22 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Point-to-site VPN parameters for the Virtual Hub."
+            "description": "Conditional. Point-to-site VPN parameters for the Virtual Hub. Required if deployP2SVpnGateway is true."
+          }
+        },
+        "deployS2SVpnGateway": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to deploy a S2S VPN Gateway."
           }
         },
         "s2sVpnParameters": {
           "type": "object",
           "properties": {
-            "deployS2SVpnGateway": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Whether to deploy a S2S VPN Gateway."
-              }
-            },
             "vpnGatewayName": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Name of the VPN Gateway."
+                "description": "Required. Name of the VPN Gateway."
               }
             },
             "vpnGatewayScaleUnit": {
@@ -415,59 +414,7 @@
               }
             },
             "bgpSettings": {
-              "type": "object",
-              "properties": {
-                "asn": {
-                  "type": "int",
-                  "metadata": {
-                    "description": "Required. ASN for BGP."
-                  }
-                },
-                "bgpPeeringAddress": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. BGP peering address."
-                  }
-                },
-                "bgpPeeringAddresses": {
-                  "type": "array",
-                  "prefixItems": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "customBgpIpAddresses": {
-                          "type": "array",
-                          "prefixItems": [
-                            {
-                              "type": "string"
-                            }
-                          ],
-                          "items": false,
-                          "metadata": {
-                            "description": "Required. Custom BGP IP addresses."
-                          }
-                        },
-                        "ipconfigurationId": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. IP configuration ID."
-                          }
-                        }
-                      }
-                    }
-                  ],
-                  "items": false,
-                  "metadata": {
-                    "description": "Required. BGP peering addresses."
-                  }
-                },
-                "peerWeight": {
-                  "type": "int",
-                  "metadata": {
-                    "description": "Required. Peer weight for BGP."
-                  }
-                }
-              },
+              "$ref": "#/definitions/bgpSettingsType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. BGP settings for the VPN Gateway."
@@ -496,80 +443,9 @@
             },
             "natRules": {
               "type": "array",
-              "prefixItems": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "externalMappings": {
-                      "type": "array",
-                      "prefixItems": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "addressSpace": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Address space for external mapping."
-                              }
-                            }
-                          }
-                        }
-                      ],
-                      "items": false,
-                      "metadata": {
-                        "description": "Required. External mappings for NAT rule."
-                      }
-                    },
-                    "internalMappings": {
-                      "type": "array",
-                      "prefixItems": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "addressSpace": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Address space for internal mapping."
-                              }
-                            }
-                          }
-                        }
-                      ],
-                      "items": false,
-                      "metadata": {
-                        "description": "Required. Internal mappings for NAT rule."
-                      }
-                    },
-                    "mode": {
-                      "type": "string",
-                      "allowedValues": [
-                        "EgressSnat",
-                        "IngressSnat"
-                      ],
-                      "metadata": {
-                        "description": "Required. Mode for NAT rule."
-                      }
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the NAT rule."
-                      }
-                    },
-                    "type": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Dynamic",
-                        "Static"
-                      ],
-                      "metadata": {
-                        "description": "Required. Type of NAT rule."
-                      }
-                    }
-                  }
-                }
-              ],
-              "items": false,
+              "items": {
+                "$ref": "#/definitions/natRuleType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. NAT rules for the VPN Gateway."
@@ -705,23 +581,22 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Site-to-site VPN parameters for the Virtual Hub."
+            "description": "Conditional. Site-to-site VPN parameters for the Virtual Hub. Required if deployS2SVpnGateway is true."
+          }
+        },
+        "deployExpressRouteGateway": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to deploy an ExpressRoute Gateway."
           }
         },
         "expressRouteParameters": {
           "type": "object",
           "properties": {
-            "deployExpressRouteGateway": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Whether to deploy an ExpressRoute Gateway."
-              }
-            },
             "expressRouteGatewayName": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Name of the ExpressRoute Gateway."
+                "description": "Required. Name of the ExpressRoute Gateway."
               }
             },
             "allowNonVirtualWanTraffic": {
@@ -845,18 +720,18 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. ExpressRoute parameters for the Virtual Hub."
+            "description": "Conditional. ExpressRoute parameters for the Virtual Hub. Required if deployExpressRouteGateway is true."
+          }
+        },
+        "deploySecureHub": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to deploy a Secure Hub."
           }
         },
         "secureHubParameters": {
           "type": "object",
           "properties": {
-            "deploySecureHub": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Whether to deploy a Secure Hub."
-              }
-            },
             "firewallPolicyResourceId": {
               "type": "string",
               "nullable": true,
@@ -866,9 +741,8 @@
             },
             "azureFirewallName": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Name of the Azure Firewall."
+                "description": "Required. Name of the Azure Firewall."
               }
             },
             "azureFirewallSku": {
@@ -878,16 +752,14 @@
                 "Premium",
                 "Standard"
               ],
-              "nullable": true,
               "metadata": {
-                "description": "Optional. SKU for the Azure Firewall."
+                "description": "Required. SKU for the Azure Firewall."
               }
             },
             "azureFirewallPublicIPCount": {
               "type": "int",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Number of public IPs for the Azure Firewall."
+                "description": "Required. Number of public IPs for the Azure Firewall."
               }
             },
             "publicIPAddressObject": {
@@ -974,7 +846,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Secure Hub parameters for the Virtual Hub."
+            "description": "Conditional. Secure Hub parameters for the Virtual Hub. Required if deploySecureHub is true."
           }
         },
         "sku": {
@@ -1077,6 +949,87 @@
           "metadata": {
             "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
+        }
+      }
+    },
+    "_1.vpnNatRuleMappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for VPN NAT rule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for VPN NAT rule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-gateway:0.2.0"
+        },
+        "description": "The type for a VPN NAT rule mapping."
+      }
+    },
+    "bgpSettingsType": {
+      "type": "object",
+      "properties": {
+        "asn": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Required. The BGP speaker's ASN (Autonomous System Number)."
+          }
+        },
+        "peerWeight": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 100,
+          "metadata": {
+            "description": "Optional. The weight added to routes learned from this BGP speaker."
+          }
+        },
+        "bgpPeeringAddresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ipconfigurationId": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The IP configuration ID."
+                }
+              },
+              "customBgpIpAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The custom BGP peering addresses."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. BGP peering addresses for this VPN Gateway."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of BGP settings for VPN Gateway.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-gateway:0.2.0"
         }
       }
     },
@@ -1341,6 +1294,72 @@
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "natRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the NAT rule."
+          }
+        },
+        "externalMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.vpnNatRuleMappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. External mappings."
+          }
+        },
+        "internalMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.vpnNatRuleMappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Internal mappings."
+          }
+        },
+        "ipConfigurationId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. IP configuration ID."
+          }
+        },
+        "mode": {
+          "type": "string",
+          "allowedValues": [
+            "EgressSnat",
+            "IngressSnat"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. NAT rule mode."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Dynamic",
+            "Static"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. NAT rule type."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of NAT rule for VPN Gateway.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-gateway:0.2.0"
         }
       }
     },
@@ -2817,7 +2836,7 @@
         "name": "firewallModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'secureHubParameters'), 'deploySecureHub')]",
+      "condition": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'deploySecureHub')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'secureHubParameters'), 'azureFirewallName')]",
@@ -5926,7 +5945,7 @@
         "name": "p2sVpnGatewayModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[equals(tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'deployP2SVpnGateway'), true())]",
+      "condition": "[equals(tryGet(parameters('virtualHubParameters')[copyIndex()], 'deployP2SVpnGateway'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'vpnGatewayName')]",
@@ -6374,7 +6393,7 @@
         "name": "s2sVpnGatewayModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[equals(tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 's2sVpnParameters'), 'deployS2SVpnGateway'), true())]",
+      "condition": "[equals(tryGet(parameters('virtualHubParameters')[copyIndex()], 'deployS2SVpnGateway'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 's2sVpnParameters'), 'vpnGatewayName')]",
@@ -8307,7 +8326,7 @@
         "name": "expressRouteGatewayModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[equals(tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'expressRouteParameters'), 'deployExpressRouteGateway'), true())]",
+      "condition": "[equals(tryGet(parameters('virtualHubParameters')[copyIndex()], 'deployExpressRouteGateway'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'expressRouteParameters'), 'expressRouteGatewayName')]",

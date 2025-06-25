@@ -65,8 +65,8 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: 'eastus'
           hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          deploySecureHub: true
           secureHubParameters: {
-            deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
             azureFirewallSku: 'Standard'
@@ -85,22 +85,24 @@ module testDeployment '../../../main.bicep' = [
           hubRoutingPreference: 'ASPath'
           virtualRouterAsn: 65515
           allowBranchToBranchTraffic: true
+          deployExpressRouteGateway: true
           expressRouteParameters: {
-            deployExpressRouteGateway: true
             expressRouteGatewayName: 'dep-${namePrefix}-ergw-eastus-${serviceShort}'
           }
+          deployS2SVpnGateway: true
+
           s2sVpnParameters: {
-            deployS2SVpnGateway: true
             vpnGatewayName: 'dep-${namePrefix}-s2svpngw-eastus-${serviceShort}'
             vpnGatewayScaleUnit: 1
           }
+          deployP2SVpnGateway: false
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
           hubLocation: 'westus2'
           hubName: 'dep-${namePrefix}-hub-westus2-${serviceShort}'
+          deploySecureHub: true
           secureHubParameters: {
-            deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-westus2-${serviceShort}'
             azureFirewallSku: 'Standard'
@@ -119,15 +121,21 @@ module testDeployment '../../../main.bicep' = [
           hubRoutingPreference: 'ASPath'
           virtualRouterAsn: 65515
           allowBranchToBranchTraffic: true
+          deployExpressRouteGateway: true
           expressRouteParameters: {
-            deployExpressRouteGateway: true
             expressRouteGatewayName: 'dep-${namePrefix}-ergw-westus2-${serviceShort}'
           }
+          deployS2SVpnGateway: true
           s2sVpnParameters: {
-            deployS2SVpnGateway: true
             vpnGatewayName: 'dep-${namePrefix}-s2svpngw-westus2-${serviceShort}'
             vpnGatewayScaleUnit: 1
+            bgpSettings: {
+              asn: 45000
+              bgpPeeringAddress: '10.0.1.1'
+              peerWeight: 100
+            }
           }
+          deployP2SVpnGateway: false
         }
       ]
     }

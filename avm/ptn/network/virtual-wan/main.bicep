@@ -61,7 +61,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.0' = [
 ]
 
 module firewallModule 'br/public:avm/res/network/azure-firewall:0.7.1' = [
-  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?secureHubParameters.?deploySecureHub!) {
+  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?deploySecureHub!) {
     name: virtualHub.?secureHubParameters.?azureFirewallName!
     params: {
       name: virtualHub.?secureHubParameters.?azureFirewallName!
@@ -118,7 +118,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 }
 
 module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.2' = [
-  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?p2sVpnParameters.?deployP2SVpnGateway == true) {
+  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?deployP2SVpnGateway == true) {
     name: virtualHub.?p2sVpnParameters.?vpnGatewayName!
     params: {
       name: virtualHub.?p2sVpnParameters.?vpnGatewayName!
@@ -145,7 +145,7 @@ module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.2' = [
 ]
 
 module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.0' = [
-  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?s2sVpnParameters.?deployS2SVpnGateway == true) {
+  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?deployS2SVpnGateway == true) {
     name: virtualHub.?s2sVpnParameters.?vpnGatewayName!
     params: {
       // Required parameters
@@ -167,7 +167,7 @@ module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.0' = [
 ]
 
 module expressRouteGatewayModule 'br/public:avm/res/network/express-route-gateway:0.7.0' = [
-  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?expressRouteParameters.?deployExpressRouteGateway == true) {
+  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?deployExpressRouteGateway == true) {
     name: virtualHub.?expressRouteParameters.?expressRouteGatewayName!
     params: {
       // Required parameters
@@ -244,6 +244,12 @@ import { hubRouteTableType } from 'br/public:avm/res/network/virtual-hub:0.4.0'
 
 @description('Imports the full diagnostic setting type from the AVM common types module.')
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
+@description('Imports the BGP settings type from the VPN Gateway module.')
+import { bgpSettingsType } from 'br/public:avm/res/network/vpn-gateway:0.2.0'
+
+@description('Imports the NAT rule type from the VPN Gateway module.')
+import { natRuleType } from 'br/public:avm/res/network/vpn-gateway:0.2.0'
 
 type virtualWanParameterType = {
   @description('Required. The name of the Virtual WAN.')
@@ -347,13 +353,16 @@ type virtualHubParameterType = {
   @description('Optional. The virtual network connections for the Virtual Hub.')
   hubVirtualNetworkConnections: hubVirtualNetworkConnectionType[]?
 
-  @description('Optional. Point-to-site VPN parameters for the Virtual Hub.')
+  @description('Required. Whether to deploy a P2S VPN Gateway.')
+  deployP2SVpnGateway: bool
+
+  @description('Conditional. Point-to-site VPN parameters for the Virtual Hub. Required if deployP2SVpnGateway is true.')
   p2sVpnParameters: {
+    @description('Required. Name of the connection configurations.')
+    connectionConfigurationsName: string
+
     @description('Optional. Custom DNS servers for the P2S VPN Gateway.')
     customDnsServers: array?
-
-    @description('Required. Whether to deploy a P2S VPN Gateway.')
-    deployP2SVpnGateway: bool
 
     @description('Optional. Enable internet security for the P2S VPN Gateway.')
     enableInternetSecurity: bool?
@@ -382,47 +391,27 @@ type virtualHubParameterType = {
     @description('Required. Address prefixes for the VPN client address pool.')
     vpnClientAddressPoolAddressPrefixes: array
 
-    @description('Required. Name of the connection configurations.')
-    connectionConfigurationsName: string
-
     @description('Optional. Scale unit for the VPN Gateway.')
     vpnGatewayScaleUnit: int?
 
     @description('Optional. Associated route table for the VPN Gateway.')
     vpnGatewayAssociatedRouteTable: ('noneRouteTable' | 'defaultRouteTable')?
   }?
-  @description('Optional. Site-to-site VPN parameters for the Virtual Hub.')
-  s2sVpnParameters: {
-    @description('Required. Whether to deploy a S2S VPN Gateway.')
-    deployS2SVpnGateway: bool
 
-    @description('Optional. Name of the VPN Gateway.')
-    vpnGatewayName: string?
+  @description('Required. Whether to deploy a S2S VPN Gateway.')
+  deployS2SVpnGateway: bool
+
+  @description('Conditional. Site-to-site VPN parameters for the Virtual Hub. Required if deployS2SVpnGateway is true.')
+  s2sVpnParameters: {
+    @description('Required. Name of the VPN Gateway.')
+    vpnGatewayName: string
 
     @description('Optional. Scale unit for the VPN Gateway.')
     vpnGatewayScaleUnit: int?
 
     @description('Optional. BGP settings for the VPN Gateway.')
-    bgpSettings: {
-      @description('Required. ASN for BGP.')
-      asn: int
+    bgpSettings: bgpSettingsType?
 
-      @description('Required. BGP peering address.')
-      bgpPeeringAddress: string
-
-      @description('Required. BGP peering addresses.')
-      bgpPeeringAddresses: [
-        {
-          @description('Required. Custom BGP IP addresses.')
-          customBgpIpAddresses: [string]
-
-          @description('Required. IP configuration ID.')
-          ipconfigurationId: string
-        }
-      ]
-      @description('Required. Peer weight for BGP.')
-      peerWeight: int
-    }?
     @description('Optional. Enable BGP route translation for NAT.')
     enableBgpRouteTranslationForNat: bool?
 
@@ -433,32 +422,8 @@ type virtualHubParameterType = {
     lock: lockType?
 
     @description('Optional. NAT rules for the VPN Gateway.')
-    natRules: [
-      {
-        @description('Required. External mappings for NAT rule.')
-        externalMappings: [
-          {
-            @description('Required. Address space for external mapping.')
-            addressSpace: string
-          }
-        ]
-        @description('Required. Internal mappings for NAT rule.')
-        internalMappings: [
-          {
-            @description('Required. Address space for internal mapping.')
-            addressSpace: string
-          }
-        ]
-        @description('Required. Mode for NAT rule.')
-        mode: ('EgressSnat' | 'IngressSnat')
+    natRules: natRuleType[]?
 
-        @description('Required. Name of the NAT rule.')
-        name: string
-
-        @description('Required. Type of NAT rule.')
-        type: ('Static' | 'Dynamic')
-      }
-    ]?
     @description('Optional. VPN connections for the VPN Gateway.')
     vpnConnections: {
       @description('Required. Name of the VPN connection.')
@@ -510,13 +475,14 @@ type virtualHubParameterType = {
       vpnLinkConnections: []?
     }[]?
   }?
-  @description('Optional. ExpressRoute parameters for the Virtual Hub.')
-  expressRouteParameters: {
-    @description('Required. Whether to deploy an ExpressRoute Gateway.')
-    deployExpressRouteGateway: bool
 
-    @description('Optional. Name of the ExpressRoute Gateway.')
-    expressRouteGatewayName: string?
+  @description('Required. Whether to deploy an ExpressRoute Gateway.')
+  deployExpressRouteGateway: bool
+
+  @description('Conditional. ExpressRoute parameters for the Virtual Hub. Required if deployExpressRouteGateway is true.')
+  expressRouteParameters: {
+    @description('Required. Name of the ExpressRoute Gateway.')
+    expressRouteGatewayName: string
 
     @description('Optional. Allow non-Virtual WAN traffic.')
     allowNonVirtualWanTraffic: bool?
@@ -566,22 +532,23 @@ type virtualHubParameterType = {
       trafficSelectorPolicies: []?
     }[]?
   }?
-  @description('Optional. Secure Hub parameters for the Virtual Hub.')
-  secureHubParameters: {
-    @description('Required. Whether to deploy a Secure Hub.')
-    deploySecureHub: bool
 
+  @description('Required. Whether to deploy a Secure Hub.')
+  deploySecureHub: bool
+
+  @description('Conditional. Secure Hub parameters for the Virtual Hub. Required if deploySecureHub is true.')
+  secureHubParameters: {
     @description('Optional. Resource ID of the firewall policy.')
     firewallPolicyResourceId: string?
 
-    @description('Optional. Name of the Azure Firewall.')
-    azureFirewallName: string?
+    @description('Required. Name of the Azure Firewall.')
+    azureFirewallName: string
 
-    @description('Optional. SKU for the Azure Firewall.')
-    azureFirewallSku: ('Premium' | 'Standard' | 'Basic')?
+    @description('Required. SKU for the Azure Firewall.')
+    azureFirewallSku: ('Premium' | 'Standard' | 'Basic')
 
-    @description('Optional. Number of public IPs for the Azure Firewall.')
-    azureFirewallPublicIPCount: int?
+    @description('Required. Number of public IPs for the Azure Firewall.')
+    azureFirewallPublicIPCount: int
 
     @description('Optional. Public IP address object for the Azure Firewall.')
     publicIPAddressObject: {

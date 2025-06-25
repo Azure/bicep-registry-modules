@@ -58,8 +58,8 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: 'eastus'
           hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          deploySecureHub: true
           secureHubParameters: {
-            deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
             azureFirewallSku: 'Standard'
@@ -69,6 +69,9 @@ module testDeployment '../../../main.bicep' = [
               privateToFirewall: true
             }
           }
+          deployP2SVpnGateway: false
+          deployS2SVpnGateway: false
+          deployExpressRouteGateway: false
         }
       ]
     }
