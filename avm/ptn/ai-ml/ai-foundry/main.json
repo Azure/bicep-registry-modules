@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2188685985963926330"
+      "templateHash": "10359056732911840272"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51618,7 +51618,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1766240383355420954"
+              "templateHash": "8979744248566535593"
             }
           },
           "parameters": {
@@ -51795,6 +51795,15 @@
               "dependsOn": [
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
               ]
+            },
+            {
+              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
+              "properties": {
+                "capabilityHostKind": "Agents"
+              }
             }
           ],
           "outputs": {

@@ -131,16 +131,13 @@ resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/proje
   }
 }
 
-// Capability hosts commented out temporarily to avoid deployment failures
-// TODO: Re-enable once timing/dependency issues are resolved
-
-// resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
-//   name: 'accountCapHost'
-//   parent: foundryAccount
-//   properties: {
-//     capabilityHostKind: 'Agents'
-//   }
-// }
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+  name: 'accountCapHost'
+  parent: foundryAccount
+  properties: {
+    capabilityHostKind: 'Agents'
+  }
+}
 
 // // Project capability host with enhanced dependency management
 // resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
