@@ -518,6 +518,7 @@ type devboxDefinitionType = {
 }
 
 import { catalogSettingsType, environmentTypeType as projectEnvironmentTypeType, catalogType as projectCatalogType } from 'br/public:avm/res/dev-center/project:0.1.0'
+import { stopOnDisconnectType, stopOnNoConnectType, devBoxDefinitionTypeType, poolScheduleType } from '../project/pool/main.bicep'
 @description('The type for Dev Center Projects.')
 type projectType = {
   @description('Required. The name of the project.')
@@ -562,6 +563,8 @@ type projectType = {
   @description('Optional. The pools to create in the project. Pools are containers for dev boxes that share the same configuration.')
   pools: {
     @description('Required. The name of the project pool.')
+    @minLength(3)
+    @maxLength(63)
     name: string
 
     @description('Optional. The display name of the pool.')
@@ -573,6 +576,9 @@ type projectType = {
     @description('Required. Name of a Dev Box definition in parent Project of this Pool.')
     devBoxDefinitionName: string
 
+    @description('Conditional. A definition of the machines that are created from this Pool. Required if devBoxDefinitionType is "Value".')
+    devBoxDefinition: devBoxDefinitionTypeType?
+
     @description('Optional. Resource tags to apply to the pool.')
     tags: object?
 
@@ -582,14 +588,23 @@ type projectType = {
     @description('Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network.')
     virtualNetworkType: ('Managed' | 'Unmanaged')
 
-    @description('Optional. The region of the managed virtual network.')
+    @description('Conditional. The region of the managed virtual network. Required if virtualNetworkType is "Managed".')
     managedVirtualNetworkRegion: string?
 
-    @description('Optional. Name of a Network Connection in parent Project of this Pool.')
+    @description('Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged".')
     networkConnectionName: string?
 
     @description('Optional. Indicates whether Dev Boxes in this pool are created with single sign on enabled.')
     singleSignOnStatus: ('Enabled' | 'Disabled')?
+
+    @description('Optional. Stop on "disconnect" configuration settings for Dev Boxes created in this pool.')
+    stopOnDisconnect: stopOnDisconnectType?
+
+    @description('Optional. Stop on "no connect" configuration settings for Dev Boxes created in this pool.')
+    stopOnNoConnect: stopOnNoConnectType?
+
+    @description('Optional. The schedule for the pool. Dev boxes in this pool will auto-stop every day as per the schedule configuration.')
+    schedule: poolScheduleType?
 
     @description('Optional. Location for the pool.')
     location: string?
