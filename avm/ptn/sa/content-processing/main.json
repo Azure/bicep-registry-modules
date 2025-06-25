@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "8915829158243722295"
+      "templateHash": "706585961570582071"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -18931,9 +18931,7 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "allowBlobPublicAccess": {
-            "value": false
-          },
+          "allowBlobPublicAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'storage-private-endpoint-blob', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0], 'service', 'blob'), createObject('name', 'storage-private-endpoint-queue', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0], 'service', 'queue'))), createObject('value', createArray()))]"
         },
@@ -26995,10 +26993,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -39313,8 +39311,8 @@
         "avmContainerRegistry",
         "avmKeyVault",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)]",
         "avmVirtualNetwork"
       ]
     },
