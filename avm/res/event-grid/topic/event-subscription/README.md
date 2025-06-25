@@ -12,7 +12,7 @@ This module deploys an Event Grid Topic Event Subscription.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.EventGrid/topics/eventSubscriptions` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/topics/eventSubscriptions) |
+| `Microsoft.EventGrid/topics/eventSubscriptions` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics/eventSubscriptions) |
 
 ## Parameters
 
@@ -20,9 +20,14 @@ This module deploys an Event Grid Topic Event Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-destination) | object | The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
 | [`name`](#parameter-name) | string | The name of the Event Subscription. |
 | [`topicName`](#parameter-topicname) | string | Name of the Event Grid Topic. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-destination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
 
 **Optional parameters**
 
@@ -36,13 +41,6 @@ This module deploys an Event Grid Topic Event Subscription.
 | [`filter`](#parameter-filter) | object | The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information). |
 | [`labels`](#parameter-labels) | array | The list of user defined labels. |
 | [`retryPolicy`](#parameter-retrypolicy) | object | The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events. |
-
-### Parameter: `destination`
-
-The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
-
-- Required: Yes
-- Type: object
 
 ### Parameter: `name`
 
@@ -58,13 +56,19 @@ Name of the Event Grid Topic.
 - Required: Yes
 - Type: string
 
+### Parameter: `destination`
+
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
+
+- Required: No
+- Type: object
+
 ### Parameter: `deadLetterDestination`
 
 Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information).
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `deadLetterWithResourceIdentity`
 
@@ -72,7 +76,6 @@ Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.c
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `deliveryWithResourceIdentity`
 
@@ -80,7 +83,6 @@ Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `eventDeliverySchema`
 
@@ -105,7 +107,6 @@ The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTH
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `filter`
 
@@ -113,7 +114,6 @@ The filter for the event subscription. (See https://learn.microsoft.com/en-us/az
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `labels`
 
@@ -121,7 +121,6 @@ The list of user defined labels.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `retryPolicy`
 
@@ -129,7 +128,6 @@ The retry policy for events. This can be used to configure the TTL and maximum n
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ## Outputs
 
