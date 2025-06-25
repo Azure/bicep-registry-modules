@@ -67,6 +67,10 @@ if [[ -z "$PUBLIC_KEY" ]]; then
     --resource-group "$RESOURCE_GROUP_NAME" \
     --query properties.outputs.publicKeySecretValue.value \
     --only-show-errors --output tsv || true)
+
+  shred -u $PRIVATE_KEY_FILE
+  shred -u $PUBLIC_KEY_FILE
+  shred -u 'write.json'
 fi
 
 if [[ -z "$PUBLIC_KEY" ]]; then
