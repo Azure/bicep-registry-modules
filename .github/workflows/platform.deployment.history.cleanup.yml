@@ -86,7 +86,9 @@ jobs:
             . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-SubscriptionDeploymentHistory.ps1')
 
             $functionInput = @{
-              SubscriptionId               = '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+              # TODO remove comment
+              # SubscriptionId               = '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+              SubscriptionId               = '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
               maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
             }
 

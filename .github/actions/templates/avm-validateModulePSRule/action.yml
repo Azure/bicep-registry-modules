@@ -14,9 +14,9 @@ inputs:
     description: "The path to the test file"
     required: true
     default: ""
-  subscriptionId:
-    description: "The subscription ID to deploy to"
-    required: false
+  # subscriptionId:
+  #   description: "The subscription ID to deploy to"
+  #   required: false
   managementGroupId:
     description: "The management group ID to deploy to"
     required: false
@@ -68,7 +68,9 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            subscriptionId    = '${{ inputs.subscriptionId }}'
+            # TODO: remove comment
+            # subscriptionId    = '${{ inputs.subscriptionId }}'
+            subscriptionId    = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
             tenantId          = '${{ env.ARM_TENANT_ID }}'
           }

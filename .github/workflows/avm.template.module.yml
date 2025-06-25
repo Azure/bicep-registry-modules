@@ -22,7 +22,7 @@ on:
 
 env:
   # Used for token replacement steps in both PSRule and deployment validation
-  ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+  # ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
@@ -52,6 +52,7 @@ jobs:
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule [${{ matrix.testCases.name }}]"
+    environment: avm-validation
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -67,13 +68,17 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          # subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Default"
+        env:
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule - WAF Reliability [${{ matrix.testCases.name }}]"
+    environment: avm-validation
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -89,13 +94,17 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          # subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Pillar.Reliability"
+        env:
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   job_psrule_test_waf_security_cb: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule - WAF Security - AVM Custom Baseline [${{ matrix.testCases.name }}]"
+    environment: avm-validation
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -111,13 +120,17 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          # subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "CB.AVM.WAF.Security"
+        env:
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   job_psrule_test_waf_security: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule - WAF Security [${{ matrix.testCases.name }}]"
+    environment: avm-validation
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -133,10 +146,13 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          # subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
           psruleBaseline: "Azure.Pillar.Security"
+        env:
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   #############################
   #   Deployment validation   #
@@ -174,7 +190,7 @@ jobs:
           modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           deploymentMetadataLocation: "WestEurope"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          # subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
