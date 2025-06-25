@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "1813307934619458627"
+      "version": "0.36.1.42791",
+      "templateHash": "1084479322749157657"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -954,7 +954,7 @@
     },
     "searchService": {
       "type": "Microsoft.Search/searchServices",
-      "apiVersion": "2025-02-01-preview",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -1852,8 +1852,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "17210915942533110810"
+              "version": "0.36.1.42791",
+              "templateHash": "15435679105990904674"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource."
@@ -1906,7 +1906,7 @@
             },
             "sharedPrivateLinkResource": {
               "type": "Microsoft.Search/searchServices/sharedPrivateLinkResources",
-              "apiVersion": "2025-02-01-preview",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
               "properties": {
                 "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
@@ -1962,7 +1962,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), 'value', listAdminKeys('searchService', '2025-02-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), 'value', listAdminKeys('searchService', '2025-02-01-preview').secondaryKey)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), 'value', listAdminKeys('searchService', '2025-05-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), 'value', listAdminKeys('searchService', '2025-05-01').secondaryKey)), createArray()))]"
           }
         },
         "template": {
@@ -1972,8 +1972,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15239114698089434749"
+              "version": "0.36.1.42791",
+              "templateHash": "803258357844469941"
             }
           },
           "definitions": {
@@ -2036,7 +2036,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -2045,7 +2045,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -2105,14 +2105,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('searchService', '2025-02-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('searchService', '2025-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('searchService', '2025-02-01-preview', 'full').location]"
+      "value": "[reference('searchService', '2025-05-01', 'full').location]"
     },
     "endpoint": {
       "type": "string",
@@ -2152,14 +2152,14 @@
       "metadata": {
         "description": "The primary admin API key of the search service."
       },
-      "value": "[listAdminKeys('searchService', '2025-02-01-preview').primaryKey]"
+      "value": "[listAdminKeys('searchService', '2025-05-01').primaryKey]"
     },
     "secondaryKey": {
       "type": "securestring",
       "metadata": {
         "description": "The secondaryKey admin API key of the search service."
       },
-      "value": "[listAdminKeys('searchService', '2025-02-01-preview').secondaryKey]"
+      "value": "[listAdminKeys('searchService', '2025-05-01').secondaryKey]"
     }
   }
 }

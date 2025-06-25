@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============== //
 // General resources
 // ============== //
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -33,7 +33,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    location: resourceLocation
   }
 }
 
