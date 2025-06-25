@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12130742776134708081"
+      "templateHash": "596573101450379649"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -8724,6 +8724,13 @@
           "resourceGroupName": "[reference(format('virtualHubModule[{0}]', copyIndex())).outputs.resourceGroupName.value]"
         }
       }
+    },
+    "vpnServerConfigurationResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the VPN Server Configuration, if created. Returns an empty string if not deployed."
+      },
+      "value": "[if(empty(reference('vpnServerConfiguration')), '', reference('vpnServerConfiguration').outputs.resourceId.value)]"
     }
   }
 }

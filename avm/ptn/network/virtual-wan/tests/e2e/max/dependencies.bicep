@@ -4,13 +4,14 @@ param azureFirewallPolicyName string
 @description('The name of the first virtual network.')
 param virtualNetwork1Name string
 
+@description('The location of the first virtual network.')
 param virtualNetwork1Location string
-
-param virtualNetwork2Location string
 
 @description('The name of the second virtual network.')
 param virtualNetwork2Name string
 
+@description('The location of the second virtual network.')
+param virtualNetwork2Location string
 
 resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-07-01' = {
   name: azureFirewallPolicyName

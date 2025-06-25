@@ -165,7 +165,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       {
         allowBranchToBranchTraffic: true
         deployExpressRouteGateway: true
-        deployP2SVpnGateway: false
+        deployP2SVpnGateway: true
         deployS2SVpnGateway: true
         deploySecureHub: true
         expressRouteParameters: {
@@ -181,6 +181,19 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
           }
         ]
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'P2SConnectionConfig'
+          enableInternetSecurity: true
+          propagatedRouteTableNames: [
+            'defaultRouteTable'
+          ]
+          vpnClientAddressPoolAddressPrefixes: [
+            '10.0.2.0/24'
+          ]
+          vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
+          vpnGatewayName: 'dep-hub-p2svpngw-eastus-nvwanmax'
+          vpnGatewayScaleUnit: 1
+        }
         s2sVpnParameters: {
           vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
           vpnGatewayScaleUnit: 1
@@ -218,10 +231,36 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         ]
         s2sVpnParameters: {
           bgpSettings: {
-            asn: 45000
-            bgpPeeringAddress: '10.0.1.1'
+            asn: 65515
+            bgpPeeringAddresses: [
+              {
+                customBgpIpAddresses: [
+                  '10.0.1.50'
+                ]
+              }
+            ]
             peerWeight: 100
           }
+          isRoutingPreferenceInternet: false
+          natRules: [
+            {
+              externalMappings: [
+                {
+                  addressSpace: '172.16.20.0/24'
+                  portRange: '10000-20000'
+                }
+              ]
+              internalMappings: [
+                {
+                  addressSpace: '10.0.1.0/24'
+                  portRange: '10000-20000'
+                }
+              ]
+              mode: 'EgressSnat'
+              name: 'dep-nat-rule-westus2-nvwanmax'
+              type: 'Dynamic'
+            }
+          ]
           vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
           vpnGatewayScaleUnit: 1
         }
@@ -242,6 +281,17 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       allowBranchToBranchTraffic: true
       allowVnetToVnetTraffic: true
       location: '<location>'
+      p2sVpnParameters: {
+        aadAudience: '11111111-1234-4321-1234-111111111111'
+        aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+        aadTenant: '<aadTenant>'
+        createP2sVpnServerConfiguration: true
+        p2sVpnServerConfigurationName: 'dep-p2svpn-nvwanmax'
+        vpnAuthenticationTypes: [
+          'AAD'
+        ]
+        vpnProtocols: 'OpenVPN'
+      }
       type: 'Standard'
       virtualWanName: 'dep-vw-nvwanmax'
     }
@@ -267,7 +317,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         {
           "allowBranchToBranchTraffic": true,
           "deployExpressRouteGateway": true,
-          "deployP2SVpnGateway": false,
+          "deployP2SVpnGateway": true,
           "deployS2SVpnGateway": true,
           "deploySecureHub": true,
           "expressRouteParameters": {
@@ -283,6 +333,19 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
             }
           ],
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "P2SConnectionConfig",
+            "enableInternetSecurity": true,
+            "propagatedRouteTableNames": [
+              "defaultRouteTable"
+            ],
+            "vpnClientAddressPoolAddressPrefixes": [
+              "10.0.2.0/24"
+            ],
+            "vpnGatewayAssociatedRouteTable": "defaultRouteTable",
+            "vpnGatewayName": "dep-hub-p2svpngw-eastus-nvwanmax",
+            "vpnGatewayScaleUnit": 1
+          },
           "s2sVpnParameters": {
             "vpnGatewayName": "dep-s2svpngw-eastus-nvwanmax",
             "vpnGatewayScaleUnit": 1
@@ -320,10 +383,36 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           ],
           "s2sVpnParameters": {
             "bgpSettings": {
-              "asn": 45000,
-              "bgpPeeringAddress": "10.0.1.1",
+              "asn": 65515,
+              "bgpPeeringAddresses": [
+                {
+                  "customBgpIpAddresses": [
+                    "10.0.1.50"
+                  ]
+                }
+              ],
               "peerWeight": 100
             },
+            "isRoutingPreferenceInternet": false,
+            "natRules": [
+              {
+                "externalMappings": [
+                  {
+                    "addressSpace": "172.16.20.0/24",
+                    "portRange": "10000-20000"
+                  }
+                ],
+                "internalMappings": [
+                  {
+                    "addressSpace": "10.0.1.0/24",
+                    "portRange": "10000-20000"
+                  }
+                ],
+                "mode": "EgressSnat",
+                "name": "dep-nat-rule-westus2-nvwanmax",
+                "type": "Dynamic"
+              }
+            ],
             "vpnGatewayName": "dep-s2svpngw-westus2-nvwanmax",
             "vpnGatewayScaleUnit": 1
           },
@@ -346,6 +435,17 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         "allowBranchToBranchTraffic": true,
         "allowVnetToVnetTraffic": true,
         "location": "<location>",
+        "p2sVpnParameters": {
+          "aadAudience": "11111111-1234-4321-1234-111111111111",
+          "aadIssuer": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/",
+          "aadTenant": "<aadTenant>",
+          "createP2sVpnServerConfiguration": true,
+          "p2sVpnServerConfigurationName": "dep-p2svpn-nvwanmax",
+          "vpnAuthenticationTypes": [
+            "AAD"
+          ],
+          "vpnProtocols": "OpenVPN"
+        },
         "type": "Standard",
         "virtualWanName": "dep-vw-nvwanmax"
       }
@@ -369,7 +469,7 @@ param virtualHubParameters = [
   {
     allowBranchToBranchTraffic: true
     deployExpressRouteGateway: true
-    deployP2SVpnGateway: false
+    deployP2SVpnGateway: true
     deployS2SVpnGateway: true
     deploySecureHub: true
     expressRouteParameters: {
@@ -385,6 +485,19 @@ param virtualHubParameters = [
         remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
       }
     ]
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'P2SConnectionConfig'
+      enableInternetSecurity: true
+      propagatedRouteTableNames: [
+        'defaultRouteTable'
+      ]
+      vpnClientAddressPoolAddressPrefixes: [
+        '10.0.2.0/24'
+      ]
+      vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
+      vpnGatewayName: 'dep-hub-p2svpngw-eastus-nvwanmax'
+      vpnGatewayScaleUnit: 1
+    }
     s2sVpnParameters: {
       vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
       vpnGatewayScaleUnit: 1
@@ -422,10 +535,36 @@ param virtualHubParameters = [
     ]
     s2sVpnParameters: {
       bgpSettings: {
-        asn: 45000
-        bgpPeeringAddress: '10.0.1.1'
+        asn: 65515
+        bgpPeeringAddresses: [
+          {
+            customBgpIpAddresses: [
+              '10.0.1.50'
+            ]
+          }
+        ]
         peerWeight: 100
       }
+      isRoutingPreferenceInternet: false
+      natRules: [
+        {
+          externalMappings: [
+            {
+              addressSpace: '172.16.20.0/24'
+              portRange: '10000-20000'
+            }
+          ]
+          internalMappings: [
+            {
+              addressSpace: '10.0.1.0/24'
+              portRange: '10000-20000'
+            }
+          ]
+          mode: 'EgressSnat'
+          name: 'dep-nat-rule-westus2-nvwanmax'
+          type: 'Dynamic'
+        }
+      ]
       vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
       vpnGatewayScaleUnit: 1
     }
@@ -446,6 +585,17 @@ param virtualWanParameters = {
   allowBranchToBranchTraffic: true
   allowVnetToVnetTraffic: true
   location: '<location>'
+  p2sVpnParameters: {
+    aadAudience: '11111111-1234-4321-1234-111111111111'
+    aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+    aadTenant: '<aadTenant>'
+    createP2sVpnServerConfiguration: true
+    p2sVpnServerConfigurationName: 'dep-p2svpn-nvwanmax'
+    vpnAuthenticationTypes: [
+      'AAD'
+    ]
+    vpnProtocols: 'OpenVPN'
+  }
   type: 'Standard'
   virtualWanName: 'dep-vw-nvwanmax'
 }
@@ -2943,6 +3093,7 @@ Specify the name of lock.
 | `resourceGroupName` | string | The resource group where the resource is deployed. |
 | `virtualHubs` | array | The array containing the Virtual Hub information. |
 | `virtualWan` | object | Object containing the Virtual WAN information. |
+| `vpnServerConfigurationResourceId` | string | The resource ID of the VPN Server Configuration, if created. Returns an empty string if not deployed. |
 
 ## Cross-referenced modules
 

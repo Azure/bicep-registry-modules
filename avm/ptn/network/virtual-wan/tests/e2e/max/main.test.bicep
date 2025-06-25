@@ -59,6 +59,17 @@ module testDeployment '../../../main.bicep' = [
         allowBranchToBranchTraffic: true
         allowVnetToVnetTraffic: true
         type: 'Standard'
+        p2sVpnParameters: {
+          createP2sVpnServerConfiguration: true
+          p2sVpnServerConfigurationName: 'dep-${namePrefix}-p2svpn-${serviceShort}'
+          vpnAuthenticationTypes: [
+            'AAD'
+          ]
+          aadAudience: '11111111-1234-4321-1234-111111111111'
+          aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+          aadTenant: '${environment().authentication.loginEndpoint}11111111-1111-1111-1111-111111111111'
+          vpnProtocols: 'OpenVPN'
+        }
       }
       virtualHubParameters: [
         {
@@ -90,12 +101,24 @@ module testDeployment '../../../main.bicep' = [
             expressRouteGatewayName: 'dep-${namePrefix}-ergw-eastus-${serviceShort}'
           }
           deployS2SVpnGateway: true
-
           s2sVpnParameters: {
             vpnGatewayName: 'dep-${namePrefix}-s2svpngw-eastus-${serviceShort}'
             vpnGatewayScaleUnit: 1
           }
-          deployP2SVpnGateway: false
+          deployP2SVpnGateway: true
+          p2sVpnParameters: {
+            connectionConfigurationsName: 'P2SConnectionConfig'
+            vpnClientAddressPoolAddressPrefixes: [
+              '10.0.2.0/24'
+            ]
+            vpnGatewayName: 'dep-${namePrefix}-hub-p2svpngw-eastus-${serviceShort}'
+            vpnGatewayScaleUnit: 1
+            enableInternetSecurity: true
+            vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
+            propagatedRouteTableNames: [
+              'defaultRouteTable'
+            ]
+          }
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
@@ -130,10 +153,36 @@ module testDeployment '../../../main.bicep' = [
             vpnGatewayName: 'dep-${namePrefix}-s2svpngw-westus2-${serviceShort}'
             vpnGatewayScaleUnit: 1
             bgpSettings: {
-              asn: 45000
-              bgpPeeringAddress: '10.0.1.1'
+              asn: 65515
+              bgpPeeringAddresses: [
+                {
+                  customBgpIpAddresses: [
+                    '10.0.1.50'
+                  ]
+                }
+              ]
               peerWeight: 100
             }
+            isRoutingPreferenceInternet: false
+            natRules: [
+              {
+                name: 'dep-${namePrefix}-nat-rule-westus2-${serviceShort}'
+                mode: 'EgressSnat'
+                externalMappings: [
+                  {
+                    addressSpace: '172.16.20.0/24'
+                    portRange: '10000-20000'
+                  }
+                ]
+                internalMappings: [
+                  {
+                    addressSpace: '10.0.1.0/24'
+                    portRange: '10000-20000'
+                  }
+                ]
+                type: 'Dynamic'
+              }
+            ]
           }
           deployP2SVpnGateway: false
         }

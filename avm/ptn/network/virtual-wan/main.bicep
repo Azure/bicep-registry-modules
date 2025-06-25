@@ -227,6 +227,9 @@ output virtualHubs object[] = [
   }
 ]
 
+@description('The resource ID of the VPN Server Configuration, if created. Returns an empty string if not deployed.')
+output vpnServerConfigurationResourceId string = empty(vpnServerConfiguration) ? '' : vpnServerConfiguration.outputs.resourceId
+
 @description('Imports the VPN client IPsec policies type from the VPN server configuration module.')
 import { vpnClientIpsecPoliciesType } from 'br/public:avm/res/network/vpn-server-configuration:0.1.1'
 
