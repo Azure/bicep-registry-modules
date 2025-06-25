@@ -1,6 +1,6 @@
 # Modernize Your Code Solution Accelerator `[Sa/ModernizeYourCode]`
 
-This module deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator).
+This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.
 
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
@@ -447,10 +447,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.10.2` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
+| `br/public:avm/res/compute/proximity-placement-group:0.3.2` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.15.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.12.1` | Remote reference |
+| `br/public:avm/res/insights/data-collection-rule:0.6.0` | Remote reference |
+| `br/public:avm/res/maintenance/maintenance-configuration:0.3.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
