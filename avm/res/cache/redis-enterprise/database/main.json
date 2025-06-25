@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12094637252334328193"
+      "version": "0.35.1.17967",
+      "templateHash": "8755001605214707489"
     },
     "name": "Redis database",
-    "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster."
+    "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster."
   },
   "definitions": {
     "secretsExportConfigurationType": {
@@ -401,7 +401,7 @@
     "redisClusterName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Redis Enterprise or Azure Managed Redis resource. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
@@ -422,7 +422,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION."
+        "description": "Optional. Allow authentication via access keys. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized."
       }
     },
     "clientProtocol": {
@@ -441,10 +441,11 @@
       "defaultValue": "OSSCluster",
       "allowedValues": [
         "EnterpriseCluster",
+        "NoCluster",
         "OSSCluster"
       ],
       "metadata": {
-        "description": "Optional. Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering)."
+        "description": "Optional. Redis clustering policy. [Learn more](https://learn.microsoft.com/azure/redis/architecture#cluster-policies)."
       }
     },
     "deferUpgrade": {
@@ -507,7 +508,7 @@
         "type": "disabled"
       },
       "metadata": {
-        "description": "Optional. The persistence settings of the service."
+        "description": "Optional. The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION."
       }
     },
     "accessPolicyAssignments": {
@@ -517,7 +518,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION."
+        "description": "Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized."
       }
     },
     "secretsExportConfiguration": {
@@ -542,15 +543,15 @@
     "redisCluster": {
       "existing": true,
       "type": "Microsoft.Cache/redisEnterprise",
-      "apiVersion": "2024-09-01-preview",
+      "apiVersion": "2025-05-01-preview",
       "name": "[parameters('redisClusterName')]"
     },
     "redisDatabase": {
       "type": "Microsoft.Cache/redisEnterprise/databases",
-      "apiVersion": "2024-09-01-preview",
+      "apiVersion": "2025-05-01-preview",
       "name": "[format('{0}/{1}', parameters('redisClusterName'), parameters('name'))]",
       "properties": {
-        "accessKeysAuthentication": "[if(or(or(or(startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'Balanced'), startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'ComputeOptimized')), startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'FlashOptimized')), startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'MemoryOptimized')), parameters('accessKeysAuthentication'), null())]",
+        "accessKeysAuthentication": "[if(or(or(or(startsWith(reference('redisCluster', '2025-05-01-preview', 'full').sku.name, 'Balanced'), startsWith(reference('redisCluster', '2025-05-01-preview', 'full').sku.name, 'ComputeOptimized')), startsWith(reference('redisCluster', '2025-05-01-preview', 'full').sku.name, 'FlashOptimized')), startsWith(reference('redisCluster', '2025-05-01-preview', 'full').sku.name, 'MemoryOptimized')), parameters('accessKeysAuthentication'), null())]",
         "clientProtocol": "[parameters('clientProtocol')]",
         "clusteringPolicy": "[parameters('clusteringPolicy')]",
         "deferUpgrade": "[parameters('deferUpgrade')]",
@@ -633,11 +634,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6473026260124919331"
+              "version": "0.35.1.17967",
+              "templateHash": "1102691711402093786"
             },
-            "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
-            "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database."
+            "name": "Azure Managed Redis Database Access Policy Assignment",
+            "description": "This module deploys an access policy assignment for an Azure Managed Redis database."
           },
           "parameters": {
             "name": {
@@ -656,13 +657,13 @@
             "clusterName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the grandparent Azure Managed Redis cluster. Required if the template is used in a standalone deployment."
               }
             },
             "databaseName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Azure Managed Redis (Preview) database. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Azure Managed Redis database. Required if the template is used in a standalone deployment."
               }
             },
             "accessPolicyName": {
@@ -680,18 +681,18 @@
             "redisCluster::database": {
               "existing": true,
               "type": "Microsoft.Cache/redisEnterprise/databases",
-              "apiVersion": "2024-09-01-preview",
+              "apiVersion": "2025-05-01-preview",
               "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
             },
             "redisCluster": {
               "existing": true,
               "type": "Microsoft.Cache/redisEnterprise",
-              "apiVersion": "2024-09-01-preview",
+              "apiVersion": "2025-05-01-preview",
               "name": "[parameters('clusterName')]"
             },
             "accessPolicyAssignment": {
               "type": "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments",
-              "apiVersion": "2024-09-01-preview",
+              "apiVersion": "2025-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('userObjectId')))]",
               "properties": {
                 "accessPolicyName": "[parameters('accessPolicyName')]",
@@ -754,7 +755,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys('redisDatabase', '2025-05-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys('redisDatabase', '2025-05-01-preview').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys('redisDatabase', '2025-05-01-preview').primaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys('redisDatabase', '2025-05-01-preview').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys('redisDatabase', '2025-05-01-preview').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys('redisDatabase', '2025-05-01-preview').secondaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()))]"
           }
         },
         "template": {
@@ -764,8 +765,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8063348652715653257"
+              "version": "0.35.1.17967",
+              "templateHash": "1586204151956272516"
             }
           },
           "definitions": {
@@ -914,6 +915,13 @@
         "description": "The Redis database port."
       },
       "value": "[reference('redisDatabase').port]"
+    },
+    "hostname": {
+      "type": "string",
+      "metadata": {
+        "description": "The Redis host name."
+      },
+      "value": "[reference('redisCluster').hostName]"
     },
     "endpoint": {
       "type": "string",

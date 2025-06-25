@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "10850755139759341002"
+      "version": "0.36.1.42791",
+      "templateHash": "5345467217724307183"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace."
@@ -1612,9 +1612,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Disabled",
         "Enabled",
         "SecuredByPerimeter"
@@ -1649,10 +1648,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ServiceBus/namespaces@2024-01-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1768,7 +1770,7 @@
     },
     "serviceBusNamespace": {
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1784,7 +1786,7 @@
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "premiumMessagingPartitions": "[if(equals(parameters('skuObject').name, 'Premium'), parameters('premiumMessagingPartitions'), 0)]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
       },
       "dependsOn": [
         "cMKKeyVault",
@@ -1898,8 +1900,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3472309488555852386"
+              "version": "0.36.1.42791",
+              "templateHash": "11323070987259402251"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule."
@@ -2001,8 +2003,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14109784390213501614"
+              "version": "0.36.1.42791",
+              "templateHash": "1678241309605832019"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -2105,8 +2107,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "15719533438339680488"
+              "version": "0.36.1.42791",
+              "templateHash": "16710515412351349319"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration."
@@ -2209,8 +2211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "6180219953560179899"
+              "version": "0.36.1.42791",
+              "templateHash": "1486794091593647829"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set."
@@ -2408,8 +2410,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "6215388008501436423"
+              "version": "0.36.1.42791",
+              "templateHash": "6091742950975504352"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue."
@@ -2807,8 +2809,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "6508430894548859396"
+                      "version": "0.36.1.42791",
+                      "templateHash": "15590788022834413497"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -2987,8 +2989,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2537071187930185333"
+              "version": "0.36.1.42791",
+              "templateHash": "12054426509476980309"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic."
@@ -3701,8 +3703,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "2788403188769701932"
+                      "version": "0.36.1.42791",
+                      "templateHash": "555281083108037724"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -3854,8 +3856,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "6989075886470606260"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10194470716819672897"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -4313,8 +4315,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.34.44.8038",
-                              "templateHash": "13321810258056992588"
+                              "version": "0.36.1.42791",
+                              "templateHash": "18396329421177385677"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
                             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -5473,14 +5475,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('serviceBusNamespace', '2022-10-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('serviceBusNamespace', '2024-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('serviceBusNamespace', '2022-10-01-preview', 'full').location]"
+      "value": "[reference('serviceBusNamespace', '2024-01-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
@@ -5507,6 +5509,34 @@
         "description": "The endpoint of the deployed service bus namespace."
       },
       "value": "[reference('serviceBusNamespace').serviceBusEndpoint]"
+    },
+    "primaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary connection string of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString]"
+    },
+    "secondaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary connection string of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString]"
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary key of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryKey]"
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary key of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryKey]"
     }
   }
 }

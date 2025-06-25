@@ -6,10 +6,34 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3552168388159082910"
+      "templateHash": "2314597227337579115"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a VPN Gateway NAT Rule."
+  },
+  "definitions": {
+    "vpnNatRuleMappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for VPN NAT rule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for VPN NAT rule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a VPN NAT rule mapping."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -26,6 +50,9 @@
     },
     "externalMappings": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnNatRuleMappingType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
@@ -33,6 +60,9 @@
     },
     "internalMappings": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnNatRuleMappingType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
