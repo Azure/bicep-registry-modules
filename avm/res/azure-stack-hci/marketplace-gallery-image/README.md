@@ -16,7 +16,7 @@ This module deploys an Azure Stack HCI Marketplace Gallery Image.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/marketplaceGalleryImages` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/marketplaceGalleryImages) |
+| `Microsoft.AzureStackHCI/marketplaceGalleryImages` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-04-01-preview/marketplaceGalleryImages) |
 
 ## Usage examples
 
@@ -43,12 +43,21 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   name: 'marketplaceGalleryImageDeployment'
   params: {
     // Required parameters
-    customLocationResourceId: '<customLocationResourceId>'
-    name: 'ashmgiminmarketplaceimage'
-    offer: 'UbuntuServer'
-    osType: 'Linux'
-    publisher: 'Canonical'
-    sku: '20.04-LTS'
+    extendedLocation: {
+      name: '<name>'
+      type: 'CustomLocation'
+    }
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    name: 'ashmgiminmarketplaceimagemarketplaceimage'
+    osType: 'Windows'
+    // Non-required parameters
+    version: {
+      name: '20348.2461.240510'
+    }
   }
 }
 ```
@@ -66,23 +75,30 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationResourceId": {
-      "value": "<customLocationResourceId>"
+    "extendedLocation": {
+      "value": {
+        "name": "<name>",
+        "type": "CustomLocation"
+      }
+    },
+    "identifier": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition"
+      }
     },
     "name": {
-      "value": "ashmgiminmarketplaceimage"
-    },
-    "offer": {
-      "value": "UbuntuServer"
+      "value": "ashmgiminmarketplaceimagemarketplaceimage"
     },
     "osType": {
-      "value": "Linux"
+      "value": "Windows"
     },
-    "publisher": {
-      "value": "Canonical"
-    },
-    "sku": {
-      "value": "20.04-LTS"
+    // Non-required parameters
+    "version": {
+      "value": {
+        "name": "20348.2461.240510"
+      }
     }
   }
 }
@@ -99,12 +115,21 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
 using 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>'
 
 // Required parameters
-param customLocationResourceId = '<customLocationResourceId>'
-param name = 'ashmgiminmarketplaceimage'
-param offer = 'UbuntuServer'
-param osType = 'Linux'
-param publisher = 'Canonical'
-param sku = '20.04-LTS'
+param extendedLocation = {
+  name: '<name>'
+  type: 'CustomLocation'
+}
+param identifier = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+}
+param name = 'ashmgiminmarketplaceimagemarketplaceimage'
+param osType = 'Windows'
+// Non-required parameters
+param version = {
+  name: '20348.2461.240510'
+}
 ```
 
 </details>
@@ -124,36 +149,28 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   name: 'marketplaceGalleryImageDeployment'
   params: {
     // Required parameters
-    customLocationResourceId: '<customLocationResourceId>'
-    name: 'ashmgiwafmarketplaceimage'
-    offer: 'WindowsServer'
+    extendedLocation: {
+      name: '<name>'
+      type: 'CustomLocation'
+    }
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    name: 'ashmgiwafmarketplaceimagemarketplaceimage'
     osType: 'Windows'
-    publisher: 'MicrosoftWindowsServer'
-    sku: '2022-datacenter-azure-edition'
     // Non-required parameters
     cloudInitDataSource: 'Azure'
-    containerId: 'sample-container-id'
+    containerId: '<containerId>'
     hyperVGeneration: 'V2'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Test'
+      'hidden-title': 'This is visible in the resource name'
       Purpose: 'MarketplaceGalleryImage'
     }
     version: {
-      name: '1.0.0'
-      properties: {
-        storageProfile: {
-          osDiskImage: {
-            sizeInMB: 32768
-          }
-        }
-      }
+      name: '20348.2461.240510'
     }
   }
 }
@@ -172,59 +189,45 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationResourceId": {
-      "value": "<customLocationResourceId>"
+    "extendedLocation": {
+      "value": {
+        "name": "<name>",
+        "type": "CustomLocation"
+      }
+    },
+    "identifier": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition"
+      }
     },
     "name": {
-      "value": "ashmgiwafmarketplaceimage"
-    },
-    "offer": {
-      "value": "WindowsServer"
+      "value": "ashmgiwafmarketplaceimagemarketplaceimage"
     },
     "osType": {
       "value": "Windows"
-    },
-    "publisher": {
-      "value": "MicrosoftWindowsServer"
-    },
-    "sku": {
-      "value": "2022-datacenter-azure-edition"
     },
     // Non-required parameters
     "cloudInitDataSource": {
       "value": "Azure"
     },
     "containerId": {
-      "value": "sample-container-id"
+      "value": "<containerId>"
     },
     "hyperVGeneration": {
       "value": "V2"
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Test",
+        "hidden-title": "This is visible in the resource name",
         "Purpose": "MarketplaceGalleryImage"
       }
     },
     "version": {
       "value": {
-        "name": "1.0.0",
-        "properties": {
-          "storageProfile": {
-            "osDiskImage": {
-              "sizeInMB": 32768
-            }
-          }
-        }
+        "name": "20348.2461.240510"
       }
     }
   }
@@ -242,36 +245,28 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
 using 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>'
 
 // Required parameters
-param customLocationResourceId = '<customLocationResourceId>'
-param name = 'ashmgiwafmarketplaceimage'
-param offer = 'WindowsServer'
+param extendedLocation = {
+  name: '<name>'
+  type: 'CustomLocation'
+}
+param identifier = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+}
+param name = 'ashmgiwafmarketplaceimagemarketplaceimage'
 param osType = 'Windows'
-param publisher = 'MicrosoftWindowsServer'
-param sku = '2022-datacenter-azure-edition'
 // Non-required parameters
 param cloudInitDataSource = 'Azure'
-param containerId = 'sample-container-id'
+param containerId = '<containerId>'
 param hyperVGeneration = 'V2'
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Reader'
-  }
-]
 param tags = {
   Environment: 'Test'
+  'hidden-title': 'This is visible in the resource name'
   Purpose: 'MarketplaceGalleryImage'
 }
 param version = {
-  name: '1.0.0'
-  properties: {
-    storageProfile: {
-      osDiskImage: {
-        sizeInMB: 32768
-      }
-    }
-  }
+  name: '20348.2461.240510'
 }
 ```
 
@@ -284,12 +279,10 @@ param version = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The custom location ID. |
+| [`extendedLocation`](#parameter-extendedlocation) | object | The custom location configuration. |
+| [`identifier`](#parameter-identifier) | object | The gallery image identifier configuration containing publisher, offer, and SKU. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
-| [`offer`](#parameter-offer) | string | The name of the gallery image definition offer. |
 | [`osType`](#parameter-ostype) | string | Operating system type that the gallery image uses. |
-| [`publisher`](#parameter-publisher) | string | The name of the gallery image definition publisher. |
-| [`sku`](#parameter-sku) | string | The name of the gallery image definition SKU. |
 
 **Optional parameters**
 
@@ -302,11 +295,74 @@ param version = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the marketplace gallery image. |
-| [`version`](#parameter-version) | object | Gallery image version information. |
+| [`version`](#parameter-version) | object | Gallery image version configuration. |
 
-### Parameter: `customLocationResourceId`
+### Parameter: `extendedLocation`
 
-The custom location ID.
+The custom location configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-extendedlocationname) | string | The name of the extended location. |
+| [`type`](#parameter-extendedlocationtype) | string | The type of the extended location. |
+
+### Parameter: `extendedLocation.name`
+
+The name of the extended location.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `extendedLocation.type`
+
+The type of the extended location.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CustomLocation'
+  ]
+  ```
+
+### Parameter: `identifier`
+
+The gallery image identifier configuration containing publisher, offer, and SKU.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`offer`](#parameter-identifieroffer) | string | The name of the gallery image definition offer. |
+| [`publisher`](#parameter-identifierpublisher) | string | The name of the gallery image definition publisher. |
+| [`sku`](#parameter-identifiersku) | string | The name of the gallery image definition SKU. |
+
+### Parameter: `identifier.offer`
+
+The name of the gallery image definition offer.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `identifier.publisher`
+
+The name of the gallery image definition publisher.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `identifier.sku`
+
+The name of the gallery image definition SKU.
 
 - Required: Yes
 - Type: string
@@ -314,13 +370,6 @@ The custom location ID.
 ### Parameter: `name`
 
 Name of the resource to create.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `offer`
-
-The name of the gallery image definition offer.
 
 - Required: Yes
 - Type: string
@@ -338,20 +387,6 @@ Operating system type that the gallery image uses.
     'Windows'
   ]
   ```
-
-### Parameter: `publisher`
-
-The name of the gallery image definition publisher.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sku`
-
-The name of the gallery image definition SKU.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `cloudInitDataSource`
 
@@ -517,21 +552,75 @@ Tags for the marketplace gallery image.
 
 ### Parameter: `version`
 
-Gallery image version information.
+Gallery image version configuration.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      name: '1.0.0'
-      properties: {
-        storageProfile: {
-          osDiskImage: {}
-        }
-      }
-  }
-  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-versionname) | string | This is the version of the gallery image. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`properties`](#parameter-versionproperties) | object | Properties of the gallery image version. |
+
+### Parameter: `version.name`
+
+This is the version of the gallery image.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `version.properties`
+
+Properties of the gallery image version.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageProfile`](#parameter-versionpropertiesstorageprofile) | object | This is the storage profile of a Gallery Image Version. |
+
+### Parameter: `version.properties.storageProfile`
+
+This is the storage profile of a Gallery Image Version.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`osDiskImage`](#parameter-versionpropertiesstorageprofileosdiskimage) | object | This is the OS disk image configuration. |
+
+### Parameter: `version.properties.storageProfile.osDiskImage`
+
+This is the OS disk image configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sizeInMB`](#parameter-versionpropertiesstorageprofileosdiskimagesizeinmb) | int | This property indicates the size of the VHD to be created in MB. |
+
+### Parameter: `version.properties.storageProfile.osDiskImage.sizeInMB`
+
+This property indicates the size of the VHD to be created in MB.
+
+- Required: No
+- Type: int
 
 ## Outputs
 

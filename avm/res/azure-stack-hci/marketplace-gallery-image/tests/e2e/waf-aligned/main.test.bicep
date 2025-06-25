@@ -8,14 +8,10 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.marketplacegalleryimage-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashmgiwaf'
+param serviceShort string = 'ashmgiwafmarketplaceimage'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password of the LCM deployment user and local administrator accounts.')
-@secure()
-param localAdminAndDeploymentUserPass string = newGuid()
 
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
@@ -41,10 +37,13 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+@description('Required. The object ID of a user that will be granted necessary permissions for the environment.')
+param userObjectId string = ''
+
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -75,7 +74,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.8' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -173,7 +172,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
   }
 }
 
-resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = {
+resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-15' existing = {
   scope: resourceGroup
   name: '${namePrefix}${serviceShort}-location'
   dependsOn: [
@@ -186,34 +185,26 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}marketplaceimage'
-    customLocationResourceId: customLocation.id
-    osType: 'Windows'
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-azure-edition'
-    hyperVGeneration: 'V2'
-    cloudInitDataSource: 'Azure'
-    containerId: 'sample-container-id'
-    version: {
-      name: '1.0.0'
-      properties: {
-        storageProfile: {
-          osDiskImage: {
-            sizeInMB: 32768
-          }
-        }
-      }
+    extendedLocation: {
+      name: customLocation.id
+      type: 'CustomLocation'
     }
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    osType: 'Windows'
+    cloudInitDataSource: 'Azure'
+    containerId: null
+    hyperVGeneration: 'V2'
     tags: {
       Environment: 'Test'
+      'hidden-title': 'This is visible in the resource name'
       Purpose: 'MarketplaceGalleryImage'
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: hciResourceProviderObjectId
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    version: {
+      name: '20348.2461.240510'
+    }
   }
 }

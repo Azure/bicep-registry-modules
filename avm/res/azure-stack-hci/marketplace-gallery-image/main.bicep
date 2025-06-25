@@ -14,8 +14,8 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. The custom location ID.')
-param customLocationResourceId string
+@description('Required. The custom location configuration.')
+param extendedLocation extendedLocationType
 
 @description('Required. Operating system type that the gallery image uses.')
 @allowed([
@@ -24,14 +24,8 @@ param customLocationResourceId string
 ])
 param osType string
 
-@description('Required. The name of the gallery image definition publisher.')
-param publisher string
-
-@description('Required. The name of the gallery image definition offer.')
-param offer string
-
-@description('Required. The name of the gallery image definition SKU.')
-param sku string
+@description('Required. The gallery image identifier configuration containing publisher, offer, and SKU.')
+param identifier galleryImageIdentifierType
 
 @description('Optional. The hypervisor generation of the Virtual Machine.')
 @allowed([
@@ -50,15 +44,8 @@ param cloudInitDataSource string?
 @description('Optional. Storage ContainerID of the storage container to be used for marketplace gallery image.')
 param containerId string?
 
-@description('Optional. Gallery image version information.')
-param version object = {
-  name: '1.0.0'
-  properties: {
-    storageProfile: {
-      osDiskImage: {}
-    }
-  }
-}
+@description('Optional. Gallery image version configuration.')
+param version galleryImageVersionType?
 
 @description('Optional. Tags for the marketplace gallery image.')
 param tags object?
@@ -100,7 +87,7 @@ var formattedRoleAssignments = [
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
-    '46d3xbcp.res.azurestackhci-markplgalleryimg.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    '46d3xbcp.res.azurestackhci-marketplacegalleryimage.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
   )
   properties: {
@@ -119,25 +106,34 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01' = {
+resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview' = {
   name: name
   location: location
   tags: tags
   extendedLocation: {
-    name: customLocationResourceId
-    type: 'CustomLocation'
+    name: extendedLocation.name
+    type: extendedLocation.type
   }
   properties: {
-    osType: osType
-    identifier: {
-      publisher: publisher
-      offer: offer
-      sku: sku
-    }
-    hyperVGeneration: hyperVGeneration
     cloudInitDataSource: cloudInitDataSource
     containerId: containerId
-    version: version
+    hyperVGeneration: hyperVGeneration
+    identifier: {
+      offer: identifier.offer
+      publisher: identifier.publisher
+      sku: identifier.sku
+    }
+    osType: osType
+    version: version != null
+      ? {
+          name: version!.name
+          properties: {
+            storageProfile: {
+              osDiskImage: version!.properties.storageProfile.?osDiskImage ?? {}
+            }
+          }
+        }
+      : null
   }
 }
 
@@ -178,16 +174,55 @@ output location string = marketplaceGalleryImage.location
 // =============== //
 
 @export()
-@description('The type for gallery image version properties.')
+@description('The type for extended location configuration.')
+type extendedLocationType = {
+  @description('Required. The name of the extended location.')
+  name: string
+
+  @description('Required. The type of the extended location.')
+  type: 'CustomLocation'
+}
+
+@export()
+@description('The type for gallery image identifier configuration.')
+type galleryImageIdentifierType = {
+  @description('Required. The name of the gallery image definition offer.')
+  offer: string
+
+  @description('Required. The name of the gallery image definition publisher.')
+  publisher: string
+
+  @description('Required. The name of the gallery image definition SKU.')
+  sku: string
+}
+
+@export()
+@description('The type for gallery image version configuration.')
 type galleryImageVersionType = {
   @description('Required. This is the version of the gallery image.')
   name: string
-  @description('Required. Properties of the gallery image version.')
-  properties: {
-    @description('Required. This is the storage profile of a Gallery Image Version.')
-    storageProfile: {
-      @description('Optional. This is the OS disk image.')
-      osDiskImage: object?
-    }
-  }
+
+  @description('Optional. Properties of the gallery image version.')
+  properties: galleryImageVersionPropertiesType?
+}
+
+@export()
+@description('The type for gallery image version properties.')
+type galleryImageVersionPropertiesType = {
+  @description('Required. This is the storage profile of a Gallery Image Version.')
+  storageProfile: storageProfileType
+}
+
+@export()
+@description('The type for storage profile configuration.')
+type storageProfileType = {
+  @description('Optional. This is the OS disk image configuration.')
+  osDiskImage: osDiskImageType?
+}
+
+@export()
+@description('The type for OS disk image configuration.')
+type osDiskImageType = {
+  @description('Optional. This property indicates the size of the VHD to be created in MB.')
+  sizeInMB: int?
 }

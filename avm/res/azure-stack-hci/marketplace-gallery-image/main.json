@@ -6,12 +6,63 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16988827010587188258"
+      "templateHash": "11206348901144999557"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
   },
   "definitions": {
+    "extendedLocationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the extended location."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "CustomLocation"
+          ],
+          "metadata": {
+            "description": "Required. The type of the extended location."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for extended location configuration."
+      }
+    },
+    "galleryImageIdentifierType": {
+      "type": "object",
+      "properties": {
+        "offer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the gallery image definition offer."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the gallery image definition publisher."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the gallery image definition SKU."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for gallery image identifier configuration."
+      }
+    },
     "galleryImageVersionType": {
       "type": "object",
       "properties": {
@@ -22,32 +73,63 @@
           }
         },
         "properties": {
-          "type": "object",
-          "properties": {
-            "storageProfile": {
-              "type": "object",
-              "properties": {
-                "osDiskImage": {
-                  "type": "object",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. This is the OS disk image."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. This is the storage profile of a Gallery Image Version."
-              }
-            }
-          },
+          "$ref": "#/definitions/galleryImageVersionPropertiesType",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Properties of the gallery image version."
+            "description": "Optional. Properties of the gallery image version."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for gallery image version configuration."
+      }
+    },
+    "galleryImageVersionPropertiesType": {
+      "type": "object",
+      "properties": {
+        "storageProfile": {
+          "$ref": "#/definitions/storageProfileType",
+          "metadata": {
+            "description": "Required. This is the storage profile of a Gallery Image Version."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for gallery image version properties."
+      }
+    },
+    "storageProfileType": {
+      "type": "object",
+      "properties": {
+        "osDiskImage": {
+          "$ref": "#/definitions/osDiskImageType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This is the OS disk image configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for storage profile configuration."
+      }
+    },
+    "osDiskImageType": {
+      "type": "object",
+      "properties": {
+        "sizeInMB": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property indicates the size of the VHD to be created in MB."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for OS disk image configuration."
       }
     },
     "roleAssignmentType": {
@@ -147,10 +229,10 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "customLocationResourceId": {
-      "type": "string",
+    "extendedLocation": {
+      "$ref": "#/definitions/extendedLocationType",
       "metadata": {
-        "description": "Required. The custom location ID."
+        "description": "Required. The custom location configuration."
       }
     },
     "osType": {
@@ -163,22 +245,10 @@
         "description": "Required. Operating system type that the gallery image uses."
       }
     },
-    "publisher": {
-      "type": "string",
+    "identifier": {
+      "$ref": "#/definitions/galleryImageIdentifierType",
       "metadata": {
-        "description": "Required. The name of the gallery image definition publisher."
-      }
-    },
-    "offer": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the gallery image definition offer."
-      }
-    },
-    "sku": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the gallery image definition SKU."
+        "description": "Required. The gallery image identifier configuration containing publisher, offer, and SKU."
       }
     },
     "hyperVGeneration": {
@@ -211,17 +281,10 @@
       }
     },
     "version": {
-      "type": "object",
-      "defaultValue": {
-        "name": "1.0.0",
-        "properties": {
-          "storageProfile": {
-            "osDiskImage": {}
-          }
-        }
-      },
+      "$ref": "#/definitions/galleryImageVersionType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Gallery image version information."
+        "description": "Optional. Gallery image version configuration."
       }
     },
     "tags": {
@@ -263,7 +326,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.azurestackhci-markplgalleryimg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.res.azurestackhci-marketplacegalleryimage.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -281,25 +344,25 @@
     },
     "marketplaceGalleryImage": {
       "type": "Microsoft.AzureStackHCI/marketplaceGalleryImages",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "extendedLocation": {
-        "name": "[parameters('customLocationResourceId')]",
-        "type": "CustomLocation"
+        "name": "[parameters('extendedLocation').name]",
+        "type": "[parameters('extendedLocation').type]"
       },
       "properties": {
-        "osType": "[parameters('osType')]",
-        "identifier": {
-          "publisher": "[parameters('publisher')]",
-          "offer": "[parameters('offer')]",
-          "sku": "[parameters('sku')]"
-        },
-        "hyperVGeneration": "[parameters('hyperVGeneration')]",
         "cloudInitDataSource": "[parameters('cloudInitDataSource')]",
         "containerId": "[parameters('containerId')]",
-        "version": "[parameters('version')]"
+        "hyperVGeneration": "[parameters('hyperVGeneration')]",
+        "identifier": {
+          "offer": "[parameters('identifier').offer]",
+          "publisher": "[parameters('identifier').publisher]",
+          "sku": "[parameters('identifier').sku]"
+        },
+        "osType": "[parameters('osType')]",
+        "version": "[if(not(equals(parameters('version'), null())), createObject('name', parameters('version').name, 'properties', createObject('storageProfile', createObject('osDiskImage', coalesce(tryGet(parameters('version').properties.storageProfile, 'osDiskImage'), createObject())))), null())]"
       }
     },
     "marketplaceGalleryImage_roleAssignments": {
@@ -352,7 +415,7 @@
       "metadata": {
         "description": "The location of the marketplace gallery image."
       },
-      "value": "[reference('marketplaceGalleryImage', '2024-01-01', 'full').location]"
+      "value": "[reference('marketplaceGalleryImage', '2025-04-01-preview', 'full').location]"
     }
   }
 }

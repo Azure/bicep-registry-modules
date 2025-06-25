@@ -13,10 +13,6 @@ param serviceShort string = 'ashlnwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password of the LCM deployment user and local administrator accounts.')
-@secure()
-param localAdminAndDeploymentUserPass string = newGuid()
-
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param arbLocalAdminAndDeploymentUserPass string = ''
