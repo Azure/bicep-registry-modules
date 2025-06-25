@@ -679,7 +679,6 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     tags: tags
 
     //<======================= WAF related parameters
-    allowBlobPublicAccess: (false) // Disable public access when WAF is enabled
     allowBlobPublicAccess: (enablePrivateNetworking) ? true : false // Disable public access when WAF is enabled
     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
     privateEndpoints: (enablePrivateNetworking)
