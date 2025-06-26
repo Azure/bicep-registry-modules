@@ -6,7 +6,7 @@ metadata description = '''This module contains the resources required to deploy 
 
 @minLength(3)
 @maxLength(16)
-@description('Required. A unique application/solution name for all resources in this deployment. This should be 3-16 characters long..')
+@description('Required. A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.')
 param solutionName string
 
 @maxLength(5)
