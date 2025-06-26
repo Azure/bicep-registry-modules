@@ -280,6 +280,7 @@ param enableTelemetry = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`deploymentTimestamp`](#parameter-deploymenttimestamp) | string | A unique deployment timestamp for solution prefix generation. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
 | [`enableScaling`](#parameter-enablescaling) | bool | Enable scaling for the container apps. Defaults to false. |
@@ -315,6 +316,14 @@ Capacity of the GPT deployment: (minimum 10).
 - Required: Yes
 - Type: int
 - MinValue: 10
+
+### Parameter: `deploymentTimestamp`
+
+A unique deployment timestamp for solution prefix generation.
+
+- Required: No
+- Type: string
+- Default: `[utcNow()]`
 
 ### Parameter: `deploymentType`
 
