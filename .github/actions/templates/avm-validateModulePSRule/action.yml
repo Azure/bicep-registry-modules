@@ -122,6 +122,8 @@ runs:
         source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
         summary: false # Disabling as taken care in customized task
 
+    # [Print to Summary] task(s)
+    #-----------------------------
     - name: "Parse CSV content"
       if: always()
       uses: azure/powershell@v2
