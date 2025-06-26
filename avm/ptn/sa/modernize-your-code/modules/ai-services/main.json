@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15647739526351181854"
+      "templateHash": "18307101296251408984"
     },
     "name": "AI Services and Project Module",
     "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -417,10 +417,13 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+        },
         "description": "Optional. Tags to be applied to the resources."
-      }
+      },
+      "defaultValue": {}
     },
     "enableTelemetry": {
       "type": "bool",
@@ -460,7 +463,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17330037200769804735"
+              "templateHash": "6645429308203028935"
             }
           },
           "parameters": {
@@ -478,10 +481,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -571,7 +577,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17330037200769804735"
+              "templateHash": "6645429308203028935"
             }
           },
           "parameters": {
@@ -589,10 +595,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -682,7 +691,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17330037200769804735"
+              "templateHash": "6645429308203028935"
             }
           },
           "parameters": {
@@ -700,10 +709,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -3129,7 +3141,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13536480337268273627"
+              "templateHash": "10740173806652125784"
             }
           },
           "definitions": {
@@ -3275,10 +3287,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "enableTelemetry": {
               "type": "bool",

@@ -73,8 +73,26 @@ param vmAdminUsername string = take(newGuid(), 20)
 @secure()
 param vmAdminPassword string = newGuid()
 
+@description('Optional. The Container Registry hostname where the docker images for the backend are located.')
+param backendContainerRegistryHostname string = 'cmsacontainerreg.azurecr.io'
+
+@description('Optional. The Container Image Name to deploy on the backend.')
+param backendContainerImageName string = 'cmsabackend'
+
+@description('Optional. The Container Image Tag to deploy on the backend.')
+param backendContainerImageTag string = 'latest_2025-06-24_249'
+
+@description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
+param frontendContainerRegistryHostname string = 'cmsacontainerreg.azurecr.io'
+
+@description('Optional. The Container Image Name to deploy on the frontend.')
+param frontendContainerImageName string = 'cmsafrontend'
+
+@description('Optional. The Container Image Tag to deploy on the frontend.')
+param frontendContainerImageTag string = 'latest_2025-06-24_249'
+
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -355,7 +373,7 @@ module containerAppFrontend 'br/public:avm/res/app/container-app:0.17.0' = {
             value: 'https://${containerAppBackend.outputs.fqdn}'
           }
         ]
-        image: 'cmsacontainerreg.azurecr.io/cmsafrontend:latest'
+        image: '${frontendContainerRegistryHostname}/${frontendContainerImageName}:${frontendContainerImageTag}'
         name: 'cmsafrontend'
         resources: {
           cpu: '1'
@@ -402,7 +420,7 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.17.0' = {
     containers: [
       {
         name: 'cmsabackend'
-        image: 'cmsacontainerreg.azurecr.io/cmsabackend:latest'
+        image: '${backendContainerRegistryHostname}/${backendContainerImageName}:${backendContainerImageTag}'
         env: concat(
           [
             {

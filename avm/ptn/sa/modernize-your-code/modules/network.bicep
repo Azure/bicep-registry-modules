@@ -9,7 +9,7 @@ param logAnalyticsWorkSpaceResourceId string
 param location string
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

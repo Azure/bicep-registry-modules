@@ -18,7 +18,7 @@ param location string
 param skuName string = 'Standard_LRS'
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 @description('Optional. Resource ID of the Log Analytics workspace to use for diagnostic settings.')
 param logAnalyticsWorkspaceResourceId string?

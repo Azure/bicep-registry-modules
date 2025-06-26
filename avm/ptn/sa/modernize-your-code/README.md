@@ -272,19 +272,25 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.. |
+| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for all AI service resources. This location can be different from the resource group location. |
+| [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
+| [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
+| [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
 | [`capacity`](#parameter-capacity) | int | AI model deployment token capacity. Defaults to 5K tokens per minute. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring for the resources. This will enable Application Insights and Log Analytics. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for the resources. Set to true to enable private networking. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources. Defaults to false. |
 | [`enableScaling`](#parameter-enablescaling) | bool | Enable scaling for the container apps. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
+| [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
+| [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`location`](#parameter-location) | string | Azure region for all services. Defaults to the resource group location. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | The secondary location for the Cosmos DB account if redundancy is enabled. Defaults to false. |
 | [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
@@ -294,7 +300,7 @@ param location = '<location>'
 
 ### Parameter: `solutionName`
 
-A unique application/solution name for all resources in this deployment. This should be 3-16 characters long..
+A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.
 
 - Required: Yes
 - Type: string
@@ -334,6 +340,30 @@ Location for all AI service resources. This location can be different from the r
     'westus3'
   ]
   ```
+
+### Parameter: `backendContainerImageName`
+
+The Container Image Name to deploy on the backend.
+
+- Required: No
+- Type: string
+- Default: `'cmsabackend'`
+
+### Parameter: `backendContainerImageTag`
+
+The Container Image Tag to deploy on the backend.
+
+- Required: No
+- Type: string
+- Default: `'latest_2025-06-24_249'`
+
+### Parameter: `backendContainerRegistryHostname`
+
+The Container Registry hostname where the docker images for the backend are located.
+
+- Required: No
+- Type: string
+- Default: `'cmsacontainerreg.azurecr.io'`
 
 ### Parameter: `capacity`
 
@@ -382,6 +412,30 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `frontendContainerImageName`
+
+The Container Image Name to deploy on the frontend.
+
+- Required: No
+- Type: string
+- Default: `'cmsafrontend'`
+
+### Parameter: `frontendContainerImageTag`
+
+The Container Image Tag to deploy on the frontend.
+
+- Required: No
+- Type: string
+- Default: `'latest_2025-06-24_249'`
+
+### Parameter: `frontendContainerRegistryHostname`
+
+The Container Registry hostname where the docker images for the frontend are located.
+
+- Required: No
+- Type: string
+- Default: `'cmsacontainerreg.azurecr.io'`
 
 ### Parameter: `location`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12795672691069877898"
+      "templateHash": "11840950735210329139"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -298,10 +298,13 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+        },
         "description": "Optional. Tags to be applied to the resources."
-      }
+      },
+      "defaultValue": {}
     },
     "enableTelemetry": {
       "type": "bool",
@@ -352,7 +355,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14437579930053139147"
+              "templateHash": "674441231052933645"
             }
           },
           "definitions": {
@@ -543,10 +546,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "logAnalyticsWorkspaceId": {
               "type": "string",
@@ -2979,7 +2985,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15285964895185036705"
+              "templateHash": "10468235459086557442"
             }
           },
           "definitions": {
@@ -3053,10 +3059,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to apply to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "enableTelemetry": {
               "type": "bool",
@@ -4871,7 +4880,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11311557958411643582"
+              "templateHash": "18271683262610935935"
             }
           },
           "definitions": {
@@ -5088,10 +5097,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to apply to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "logAnalyticsWorkspaceId": {
               "type": "string",

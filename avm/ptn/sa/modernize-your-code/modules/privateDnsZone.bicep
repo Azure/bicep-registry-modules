@@ -8,7 +8,7 @@ param name string
 param virtualNetworkResourceId string
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags?
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: name

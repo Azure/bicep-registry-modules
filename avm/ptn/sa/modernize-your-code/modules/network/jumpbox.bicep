@@ -27,7 +27,7 @@ param username string
 param password string
 
 @description('Optional. Tags to apply to the resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 @description('Required. Log Analytics Workspace Resource ID for VM diagnostics.')
 param logAnalyticsWorkspaceId string

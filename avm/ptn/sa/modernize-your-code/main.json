@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9279350771968570055"
+      "templateHash": "6213456024992441"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -17,7 +17,7 @@
       "minLength": 3,
       "maxLength": 16,
       "metadata": {
-        "description": "Required. A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.."
+        "description": "Required. A unique application/solution name for all resources in this deployment. This should be 3-16 characters long."
       }
     },
     "solutionUniqueToken": {
@@ -130,12 +130,57 @@
         "description": "Optional. Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true."
       }
     },
+    "backendContainerRegistryHostname": {
+      "type": "string",
+      "defaultValue": "cmsacontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The Container Registry hostname where the docker images for the backend are located."
+      }
+    },
+    "backendContainerImageName": {
+      "type": "string",
+      "defaultValue": "cmsabackend",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the backend."
+      }
+    },
+    "backendContainerImageTag": {
+      "type": "string",
+      "defaultValue": "latest_2025-06-24_249",
+      "metadata": {
+        "description": "Optional. The Container Image Tag to deploy on the backend."
+      }
+    },
+    "frontendContainerRegistryHostname": {
+      "type": "string",
+      "defaultValue": "cmsacontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The Container Registry hostname where the docker images for the frontend are located."
+      }
+    },
+    "frontendContainerImageName": {
+      "type": "string",
+      "defaultValue": "cmsafrontend",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the frontend."
+      }
+    },
+    "frontendContainerImageTag": {
+      "type": "string",
+      "defaultValue": "latest_2025-06-24_249",
+      "metadata": {
+        "description": "Optional. The Container Image Tag to deploy on the frontend."
+      }
+    },
     "tags": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+        },
         "description": "Optional. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
-      }
+      },
+      "defaultValue": {}
     },
     "enableTelemetry": {
       "type": "bool",
@@ -4502,7 +4547,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12534050895360351183"
+              "templateHash": "5572697523869952670"
             }
           },
           "parameters": {
@@ -4527,10 +4572,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "enableTelemetry": {
               "type": "bool",
@@ -4677,7 +4725,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "12795672691069877898"
+                      "templateHash": "11840950735210329139"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -4969,10 +5017,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "defaultValue": {},
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags to be applied to the resources."
-                      }
+                      },
+                      "defaultValue": {}
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -5023,7 +5074,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "14437579930053139147"
+                              "templateHash": "674441231052933645"
                             }
                           },
                           "definitions": {
@@ -5214,10 +5265,13 @@
                             },
                             "tags": {
                               "type": "object",
-                              "defaultValue": {},
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                                },
                                 "description": "Optional. Tags to be applied to the resources."
-                              }
+                              },
+                              "defaultValue": {}
                             },
                             "logAnalyticsWorkspaceId": {
                               "type": "string",
@@ -7650,7 +7704,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "15285964895185036705"
+                              "templateHash": "10468235459086557442"
                             }
                           },
                           "definitions": {
@@ -7724,10 +7778,13 @@
                             },
                             "tags": {
                               "type": "object",
-                              "defaultValue": {},
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                                },
                                 "description": "Optional. Tags to apply to the resources."
-                              }
+                              },
+                              "defaultValue": {}
                             },
                             "enableTelemetry": {
                               "type": "bool",
@@ -9542,7 +9599,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "11311557958411643582"
+                              "templateHash": "18271683262610935935"
                             }
                           },
                           "definitions": {
@@ -9759,10 +9816,13 @@
                             },
                             "tags": {
                               "type": "object",
-                              "defaultValue": {},
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                                },
                                 "description": "Optional. Tags to apply to the resources."
-                              }
+                              },
+                              "defaultValue": {}
                             },
                             "logAnalyticsWorkspaceId": {
                               "type": "string",
@@ -21192,7 +21252,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15647739526351181854"
+              "templateHash": "18307101296251408984"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -21603,10 +21663,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "enableTelemetry": {
               "type": "bool",
@@ -21646,7 +21709,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17330037200769804735"
+                      "templateHash": "6645429308203028935"
                     }
                   },
                   "parameters": {
@@ -21664,10 +21727,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
@@ -21757,7 +21823,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17330037200769804735"
+                      "templateHash": "6645429308203028935"
                     }
                   },
                   "parameters": {
@@ -21775,10 +21841,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
@@ -21868,7 +21937,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17330037200769804735"
+                      "templateHash": "6645429308203028935"
                     }
                   },
                   "parameters": {
@@ -21886,10 +21955,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
@@ -24315,7 +24387,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "13536480337268273627"
+                      "templateHash": "10740173806652125784"
                     }
                   },
                   "definitions": {
@@ -24461,10 +24533,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "defaultValue": {},
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags to be applied to the resources."
-                      }
+                      },
+                      "defaultValue": {}
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -24904,7 +24979,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14887142397290057042"
+              "templateHash": "782536298342629809"
             }
           },
           "definitions": {
@@ -25051,10 +25126,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "logAnalyticsWorkspaceResourceId": {
               "type": "string",
@@ -25125,7 +25203,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17330037200769804735"
+                      "templateHash": "6645429308203028935"
                     }
                   },
                   "parameters": {
@@ -25143,10 +25221,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
@@ -25236,7 +25317,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17330037200769804735"
+                      "templateHash": "6645429308203028935"
                     }
                   },
                   "parameters": {
@@ -25254,10 +25335,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
@@ -31162,7 +31246,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1194318521883551392"
+              "templateHash": "165921050613048404"
             }
           },
           "definitions": {
@@ -31287,10 +31371,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "dataAccessIdentityPrincipalId": {
               "type": "string",
@@ -31385,7 +31472,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17330037200769804735"
+                      "templateHash": "6645429308203028935"
                     }
                   },
                   "parameters": {
@@ -31403,10 +31490,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
@@ -36347,7 +36437,7 @@
                     "value": "[format('https://{0}', reference('containerAppBackend').outputs.fqdn.value)]"
                   }
                 ],
-                "image": "cmsacontainerreg.azurecr.io/cmsafrontend:latest",
+                "image": "[format('{0}/{1}:{2}', parameters('frontendContainerRegistryHostname'), parameters('frontendContainerImageName'), parameters('frontendContainerImageTag'))]",
                 "name": "cmsafrontend",
                 "resources": {
                   "cpu": "1",
@@ -37843,7 +37933,7 @@
             "value": [
               {
                 "name": "cmsabackend",
-                "image": "cmsacontainerreg.azurecr.io/cmsabackend:latest",
+                "image": "[format('{0}/{1}:{2}', parameters('backendContainerRegistryHostname'), parameters('backendContainerImageName'), parameters('backendContainerImageTag'))]",
                 "env": "[concat(createArray(createObject('name', 'COSMOSDB_ENDPOINT', 'value', reference('cosmosDb').outputs.endpoint.value), createObject('name', 'COSMOSDB_DATABASE', 'value', reference('cosmosDb').outputs.databaseName.value), createObject('name', 'COSMOSDB_BATCH_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.batch), createObject('name', 'COSMOSDB_FILE_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.file), createObject('name', 'COSMOSDB_LOG_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.log), createObject('name', 'AZURE_BLOB_ACCOUNT_NAME', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AZURE_BLOB_CONTAINER_NAME', 'value', variables('appStorageContainerName')), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', format('https://{0}.openai.azure.com/', reference('aiServices').outputs.name.value)), createObject('name', 'MIGRATOR_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'PICKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'FIXER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SEMANTIC_VERIFIER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SYNTAX_CHECKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SELECTION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'TERMINATION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_PROJECT_NAME', 'value', reference('aiServices').outputs.project.value.name), createObject('name', 'AZURE_AI_AGENT_RESOURCE_GROUP_NAME', 'value', resourceGroup().name), createObject('name', 'AZURE_AI_AGENT_SUBSCRIPTION_ID', 'value', subscription().subscriptionId), createObject('name', 'AZURE_AI_AGENT_ENDPOINT', 'value', reference('aiServices').outputs.project.value.apiEndpoint), createObject('name', 'AZURE_CLIENT_ID', 'value', reference('appIdentity').outputs.clientId.value)), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY', 'value', reference('applicationInsights').outputs.instrumentationKey.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]",
                 "resources": {
                   "cpu": 1,
