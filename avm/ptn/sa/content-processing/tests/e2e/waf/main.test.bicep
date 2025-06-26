@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
       //location: resourceLocation
       contentUnderstandingLocation: resourceLocation
       environmentName: '${namePrefix}${serviceShort}'
-      gptDeploymentCapacity: 10
+      gptDeploymentCapacity: 1
       enableScaling: true
       enableTelemetry: true
       enablePrivateNetworking: true

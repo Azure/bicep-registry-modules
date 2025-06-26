@@ -106,7 +106,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
+- [Waf](#example-2-waf)
 
 ### Example 1: _Sandbox configuration with default parameter values_
 
@@ -182,10 +182,7 @@ param enablePrivateNetworking = false
 </details>
 <p>
 
-### Example 2: _waf-aligned configuration with default parameter values_
-
-This instance deploys the [Content Processing Solution Accelerator]
-
+### Example 2: _Waf_
 
 <details>
 
@@ -198,7 +195,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     // Required parameters
     contentUnderstandingLocation: '<contentUnderstandingLocation>'
     environmentName: 'scpwaf'
-    gptDeploymentCapacity: 10
+    gptDeploymentCapacity: 1
     // Non-required parameters
     enablePrivateNetworking: true
     enableScaling: true
@@ -227,7 +224,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": "scpwaf"
     },
     "gptDeploymentCapacity": {
-      "value": 10
+      "value": 1
     },
     // Non-required parameters
     "enablePrivateNetworking": {
@@ -256,7 +253,7 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 // Required parameters
 param contentUnderstandingLocation = '<contentUnderstandingLocation>'
 param environmentName = 'scpwaf'
-param gptDeploymentCapacity = 10
+param gptDeploymentCapacity = 1
 // Non-required parameters
 param enablePrivateNetworking = true
 param enableScaling = true
