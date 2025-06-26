@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -Z "$OPERATION_TYPE"]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -119,6 +119,9 @@ cat > "$PARAM_FILE" << EOF
     },
     "clusterName": {
       "value": "$CLUSTER_NAME"
+    },
+    "operationType": {
+      "value": "$OPERATION_TYPE"
     },
     "cloudId": {
       "value": "$CLOUD_ID"

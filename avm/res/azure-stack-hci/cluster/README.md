@@ -807,6 +807,7 @@ param tags = {
 | [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`operationType`](#parameter-operationtype) | string | The intended operation for a cluster. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
@@ -1495,6 +1496,21 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `operationType`
+
+The intended operation for a cluster.
+
+- Required: No
+- Type: string
+- Default: `'ClusterProvisioning'`
+- Allowed:
+  ```Bicep
+  [
+    'ClusterProvisioning'
+    'ClusterUpgrade'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
