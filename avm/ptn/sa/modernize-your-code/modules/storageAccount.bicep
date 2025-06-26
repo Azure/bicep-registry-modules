@@ -14,8 +14,8 @@ param location string
   'Standard_GZRS'
   'Standard_RAGZRS'
 ])
-@description('Optional. Storage Account Sku Name. Defaults to Standard_LRS.')
-param skuName string = 'Standard_LRS'
+@description('Optional. Storage Account Sku Name. Defaults to Standard_GRS.')
+param skuName string = 'Standard_GRS'
 
 @description('Optional. Tags to be applied to the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}

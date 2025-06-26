@@ -17,7 +17,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
 }
 
 resource virtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
-  name: '${last(split(virtualNetworkResourceId, '/'))}-vnetlink'
+  name: '${name}-vnetlink'
   parent: privateDnsZone
   location: 'global' // Private DNS zones must use 'global' as location
   tags: tags

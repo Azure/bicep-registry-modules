@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1359995383208619325"
+      "templateHash": "17043243387978882394"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -355,7 +355,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "674441231052933645"
+              "templateHash": "15989808933283955734"
             }
           },
           "definitions": {
@@ -555,7 +555,7 @@
               "defaultValue": {}
             },
             "logAnalyticsWorkspaceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Optional. The resource ID of the Log Analytics Workspace to send diagnostic logs to."
               }

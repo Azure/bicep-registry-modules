@@ -16,6 +16,7 @@ param subnets subnetType[]
 @description('Optional. Tags to be applied to the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Optional. The resource ID of the Log Analytics Workspace to send diagnostic logs to.')
 param logAnalyticsWorkspaceId string
 

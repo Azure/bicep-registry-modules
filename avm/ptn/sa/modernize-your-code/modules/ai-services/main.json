@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16877864672325548380"
+      "templateHash": "13817490423852104562"
     },
     "name": "AI Services and Project Module",
     "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -463,7 +463,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8002809226425011530"
+              "templateHash": "12395428687147869203"
             }
           },
           "parameters": {
@@ -501,7 +501,7 @@
             "virtualNetworkLink": {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
               "apiVersion": "2024-06-01",
-              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
               "location": "global",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -577,7 +577,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8002809226425011530"
+              "templateHash": "12395428687147869203"
             }
           },
           "parameters": {
@@ -615,7 +615,7 @@
             "virtualNetworkLink": {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
               "apiVersion": "2024-06-01",
-              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
               "location": "global",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -691,7 +691,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8002809226425011530"
+              "templateHash": "12395428687147869203"
             }
           },
           "parameters": {
@@ -729,7 +729,7 @@
             "virtualNetworkLink": {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
               "apiVersion": "2024-06-01",
-              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
               "location": "global",
               "tags": "[parameters('tags')]",
               "properties": {

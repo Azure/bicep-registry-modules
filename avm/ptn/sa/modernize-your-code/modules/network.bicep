@@ -1,6 +1,7 @@
 @description('Required. Named used for all resource naming.')
 param resourcesName string
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
 param logAnalyticsWorkSpaceResourceId string
 

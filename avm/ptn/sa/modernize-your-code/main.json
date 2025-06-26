@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15965772712319250165"
+      "templateHash": "13632543149586134118"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4550,7 +4550,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7935607853484790985"
+              "templateHash": "884525239607758229"
             }
           },
           "parameters": {
@@ -4561,7 +4561,7 @@
               }
             },
             "logAnalyticsWorkSpaceResourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
               }
@@ -4747,7 +4747,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "1359995383208619325"
+                      "templateHash": "17043243387978882394"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -5096,7 +5096,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "674441231052933645"
+                              "templateHash": "15989808933283955734"
                             }
                           },
                           "definitions": {
@@ -5296,7 +5296,7 @@
                               "defaultValue": {}
                             },
                             "logAnalyticsWorkspaceId": {
-                              "type": "string",
+                              "type": "securestring",
                               "metadata": {
                                 "description": "Optional. The resource ID of the Log Analytics Workspace to send diagnostic logs to."
                               }
@@ -21274,7 +21274,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16877864672325548380"
+              "templateHash": "13817490423852104562"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -21731,7 +21731,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8002809226425011530"
+                      "templateHash": "12395428687147869203"
                     }
                   },
                   "parameters": {
@@ -21769,7 +21769,7 @@
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
                       "apiVersion": "2024-06-01",
-                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
                       "location": "global",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -21845,7 +21845,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8002809226425011530"
+                      "templateHash": "12395428687147869203"
                     }
                   },
                   "parameters": {
@@ -21883,7 +21883,7 @@
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
                       "apiVersion": "2024-06-01",
-                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
                       "location": "global",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -21959,7 +21959,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8002809226425011530"
+                      "templateHash": "12395428687147869203"
                     }
                   },
                   "parameters": {
@@ -21997,7 +21997,7 @@
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
                       "apiVersion": "2024-06-01",
-                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
                       "location": "global",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -25001,7 +25001,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1288936038726730424"
+              "templateHash": "3691309385038795387"
             }
           },
           "definitions": {
@@ -25131,7 +25131,7 @@
             },
             "skuName": {
               "type": "string",
-              "defaultValue": "Standard_LRS",
+              "defaultValue": "Standard_GRS",
               "allowedValues": [
                 "Standard_LRS",
                 "Standard_GRS",
@@ -25143,7 +25143,7 @@
                 "Standard_RAGZRS"
               ],
               "metadata": {
-                "description": "Optional. Storage Account Sku Name. Defaults to Standard_LRS."
+                "description": "Optional. Storage Account Sku Name. Defaults to Standard_GRS."
               }
             },
             "tags": {
@@ -25225,7 +25225,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8002809226425011530"
+                      "templateHash": "12395428687147869203"
                     }
                   },
                   "parameters": {
@@ -25263,7 +25263,7 @@
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
                       "apiVersion": "2024-06-01",
-                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
                       "location": "global",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -25339,7 +25339,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8002809226425011530"
+                      "templateHash": "12395428687147869203"
                     }
                   },
                   "parameters": {
@@ -25377,7 +25377,7 @@
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
                       "apiVersion": "2024-06-01",
-                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
                       "location": "global",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -31308,7 +31308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3821456293410558591"
+              "templateHash": "16005124063442471684"
             }
           },
           "definitions": {
@@ -31448,7 +31448,7 @@
               }
             },
             "logAnalyticsWorkspaceResourceId": {
-              "type": "string",
+              "type": "securestring",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of an existing Log Analytics workspace to associate with AI Foundry for monitoring."
@@ -31534,7 +31534,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8002809226425011530"
+                      "templateHash": "12395428687147869203"
                     }
                   },
                   "parameters": {
@@ -31572,7 +31572,7 @@
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
                       "apiVersion": "2024-06-01",
-                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', parameters('name')))]",
                       "location": "global",
                       "tags": "[parameters('tags')]",
                       "properties": {

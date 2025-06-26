@@ -10,6 +10,7 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
 @description('Required. Managed Identity princpial to assign data plane roles for the Cosmos DB Account.')
 param dataAccessIdentityPrincipalId string
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Optional. The resource ID of an existing Log Analytics workspace to associate with AI Foundry for monitoring.')
 param logAnalyticsWorkspaceResourceId string?
 
