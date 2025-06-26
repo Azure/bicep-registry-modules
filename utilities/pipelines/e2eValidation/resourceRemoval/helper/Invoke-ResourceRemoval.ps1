@@ -278,8 +278,8 @@ function Invoke-ResourceRemoval {
                     # No need to check the replication state in the first hour after it has been enabled, as any attempt to disable it will fail.
                     if ([DateTime]::UtcNow -lt $replicationCreated.AddHours(1)) {
                         $timeLeft = [int]($replicationCreated.AddHours(1) - [DateTime]::UtcNow).TotalSeconds
-                        Write-Verbose ('    [⏱️] Waiting to ensure at least 1 hour has passed since replication creation time [{1}] (UTC). Remaining time: {0} minutes.' -f [int]($timeLeft / 60), $replicationCreated) -Verbose
-                        Start-Sleep -Seconds $retryInterval
+                        Write-Verbose ('    [⏱️] Waiting {0} minutes to ensure at least 1 hour has passed since replication creation time [{1}] (UTC).' -f [int]($timeLeft / 60), $replicationCreated) -Verbose
+                        Start-Sleep -Seconds $timeLeft + 10  # Add 10 seconds to ensure we are past the hour mark
                         $retryCount++
                         continue
                     }
