@@ -633,7 +633,7 @@ type dataSourceType = {
   syslogSeverities: array?
 
   @description('Optional. Tags to configure in the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01'>.tags?
 }
 
 import { schemaType, restoredLogsType, searchResultsType } from 'table/main.bicep'
