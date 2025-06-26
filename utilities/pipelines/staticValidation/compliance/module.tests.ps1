@@ -1551,7 +1551,7 @@ Describe 'Module tests' -Tag 'Module' {
             $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
             $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1') {
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
                 # the module will be published
                 $expectedModuleVersion = $moduleTargetVersion
             } else {
@@ -1562,9 +1562,6 @@ Describe 'Module tests' -Tag 'Module' {
                 if ($publishedVersions.Count -gt 0) {
                     # more than one version have been published
                     $expectedModuleVersion = $publishedVersions[-1]
-                } elseif ($publishedVersions.Count -eq 0) {
-                    # no version has been published yet
-                    $expectedModuleVersion = '0.1.0'
                 } else {
                     # only one version has been published
                     $expectedModuleVersion = $publishedVersions
