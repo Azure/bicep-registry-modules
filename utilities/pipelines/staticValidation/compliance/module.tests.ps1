@@ -1550,27 +1550,26 @@ Describe 'Module tests' -Tag 'Module' {
 
             $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
-            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1) {
-                # the module will be published. Use the new version
-                $expectedModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1') {
+                # the module will be published
+                $expectedModuleVersion = $moduleTargetVersion
             } else {
-                # the module will not be published (in that case use the current version), or is a new module without a version
-                Write-Verbose 'A new version will not be published. Use the current version.' -Verbose
-                $publishedVersions = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/')
-                if (-not $publishedVersions) {
-                    # no published versions found. Check if the module is new
-                    $versionFilePath = Join-Path (Split-Path $templateFilePath) 'version.json'
-                    $moduleJsonVersion = (Get-Content $versionFilePath -Raw | ConvertFrom-Json).version
-                    if ($moduleJsonVersion -eq '0.1') {
-                        # the module is new, so use the version from the version.json file
-                        $expectedModuleVersion = $moduleJsonVersion.ToString()
-                    } else {
-                        Write-Error "No published versions found for module [$moduleFolderName] of type [$moduleType]. Please ensure the module is published before running the tests."
-                    }
+                Write-Verbose 'The module will not be published (in that case use the current version), or is a new module without a version.' -Verbose
+                $publishedVersions = @(Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/'))
+
+                # the last version in the array is the latest published version
+                if ($publishedVersions.Count -gt 0) {
+                    # more than one version have been published
+                    $expectedModuleVersion = $publishedVersions[-1]
+                } elseif ($publishedVersions.Count -eq 0) {
+                    # no version has been published yet
+                    $expectedModuleVersion = '0.1.0'
                 } else {
-                    # the last version in the array is the latest published version
-                    $expectedModuleVersion = $publishedVersions -is [Array] -and $publishedVersions.Count -gt 0 ? $publishedVersions[-1] : $publishedVersions
+                    # only one version has been published
+                    $expectedModuleVersion = $publishedVersions
                 }
+                # $expectedModuleVersion = $publishedVersions -is [Array] -and $publishedVersions.Count -gt 0 ? $publishedVersions[-1] : $publishedVersions
                 Write-Verbose "Latest published version is [$($expectedModuleVersion)]." -Verbose
             }
 
