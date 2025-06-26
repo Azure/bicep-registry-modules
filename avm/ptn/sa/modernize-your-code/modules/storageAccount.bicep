@@ -65,7 +65,7 @@ var filePrivateDnsZoneResourceId = privateNetworking != null
       : privateNetworking.?filePrivateDnsZoneResourceId)
   : ''
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.22.1' = {
   name: take('${name}-sa-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [filePrivateDnsZone, blobPrivateDnsZone] // required due to optional flags that could change dependency
