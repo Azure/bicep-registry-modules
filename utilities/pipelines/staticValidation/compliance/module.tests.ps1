@@ -1551,23 +1551,14 @@ Describe 'Module tests' -Tag 'Module' {
             $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
             $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            # the second condition is for local testing only, as, after committing to GitHub, the first condition picks up the version
             if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
-                # the module will be published
+                # The module will be published
                 $expectedModuleVersion = $moduleTargetVersion
             } else {
-                Write-Verbose 'The module will not be published (in that case use the current version), or is a new module without a version.' -Verbose
-                $publishedVersions = @(Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/'))
-
-                # the last version in the array is the latest published version
-                if ($publishedVersions.Count -gt 0) {
-                    # more than one version have been published
-                    $expectedModuleVersion = $publishedVersions[-1]
-                } else {
-                    # only one version has been published
-                    $expectedModuleVersion = $publishedVersions
-                }
-                # $expectedModuleVersion = $publishedVersions -is [Array] -and $publishedVersions.Count -gt 0 ? $publishedVersions[-1] : $publishedVersions
-                Write-Verbose "Latest published version is [$($expectedModuleVersion)]." -Verbose
+                # Since the module is not being published, we can stop here. The version in the changelog is checked in another test.
+                Set-ItResult -Skipped -Because 'the module is not going to be published and the version number remains unchanged.'
+                return
             }
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
