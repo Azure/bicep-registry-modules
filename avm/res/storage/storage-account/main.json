@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2002035157037571974"
+      "templateHash": "7698580589966887604"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -987,7 +987,7 @@
         "Enabled"
       ],
       "metadata": {
-        "description": "Optional. Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares)."
+        "description": "Optional. Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares)."
       }
     },
     "azureFilesIdentityBasedAuthentication": {
@@ -2572,7 +2572,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10545086308328713938"
+              "templateHash": "15814325138223832726"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -2903,6 +2903,7 @@
             }
           },
           "variables": {
+            "enableReferencedModulesTelemetry": false,
             "name": "default"
           },
           "resources": {
@@ -3029,6 +3030,9 @@
                   },
                   "immutabilityPolicyProperties": {
                     "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyProperties')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3039,7 +3043,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "1644600722605572654"
+                      "templateHash": "16437865284285189352"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3139,7 +3143,7 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. The name of the storage container to deploy."
+                        "description": "Required. The name of the Storage Container to deploy."
                       }
                     },
                     "defaultEncryptionScope": {
@@ -3213,6 +3217,13 @@
                         "description": "Optional. Specifies whether data in the container may be accessed publicly and the level of access."
                       }
                     },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
                     "roleAssignments": {
                       "type": "array",
                       "items": {
@@ -3254,6 +3265,26 @@
                       "type": "Microsoft.Storage/storageAccounts/blobServices",
                       "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "storageAccount": {
                       "existing": true,

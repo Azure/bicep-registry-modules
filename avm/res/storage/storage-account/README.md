@@ -3387,7 +3387,7 @@ param tags = {
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
-| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
+| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
 | [`localUsers`](#parameter-localusers) | array | Local users to deploy for SFTP authentication. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -3808,7 +3808,7 @@ Type of Storage Account to create.
 
 ### Parameter: `largeFileSharesState`
 
-Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
+Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
 
 - Required: No
 - Type: string

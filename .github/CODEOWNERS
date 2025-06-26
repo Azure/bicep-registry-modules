@@ -39,6 +39,7 @@
 /avm/ptn/network/private-link-private-dns-zones/ @Azure/avm-ptn-network-privatelinkprivatednszones-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/conversation-knowledge-mining/ @Azure/avm-ptn-sa-conversationknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/sa/multi-agent-custom-automation-engine/ @Azure/avm-ptn-sa-multiagentcustomautomationengine-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/subscription/service-health-alerts/ @Azure/avm-ptn-subscription-servicehealthalerts-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/virtual-machine-images/azure-image-builder/ @Azure/avm-ptn-virtualmachineimages-azureimagebuilder-module-owners-bicep @Azure/avm-module-reviewers-bicep
