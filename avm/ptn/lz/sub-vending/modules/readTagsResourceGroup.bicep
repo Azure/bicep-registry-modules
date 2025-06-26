@@ -1,7 +1,7 @@
 @description('Optional. The name of the tags resource.')
 param name string = 'default'
 
-resource tags 'Microsoft.Resources/tags@2019-10-01' existing = {
+resource tags 'Microsoft.Resources/tags@2025-04-01' existing = {
   name: name
 }
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "14955935266178407034"
+      "version": "0.36.1.42791",
+      "templateHash": "8956365879743708053"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a Virtual Network Gateway NAT Rule."
@@ -102,12 +102,12 @@
     "virtualNetworkGateway": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('virtualNetworkGatewayName')]"
     },
     "natRule": {
       "type": "Microsoft.Network/virtualNetworkGateways/natRules",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkGatewayName'), parameters('name'))]",
       "properties": {
         "externalMappings": "[parameters('externalMappings')]",

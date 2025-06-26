@@ -345,7 +345,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkin
     )
   }
 }
-module appEnvironment 'br/public:avm/res/app/managed-environment:0.10.1' = if (contains(
+module appEnvironment 'br/public:avm/res/app/managed-environment:0.10.2' = if (contains(
   computeTypes,
   'azure-container-app'
 )) {
@@ -568,7 +568,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
   }
 ]
 
-module acaJob 'br/public:avm/res/app/job:0.4.0' = if (contains(computeTypes, 'azure-container-app')) {
+module acaJob 'br/public:avm/res/app/job:0.6.0' = if (contains(computeTypes, 'azure-container-app')) {
   name: '${namingPrefix}acaJob'
   dependsOn: [
     taskRun
@@ -627,7 +627,7 @@ module acaJob 'br/public:avm/res/app/job:0.4.0' = if (contains(computeTypes, 'az
   }
 }
 
-module acaPlaceholderJob 'br/public:avm/res/app/job:0.4.0' = if (contains(computeTypes, 'azure-container-app') && selfHostedConfig.selfHostedType == 'azuredevops') {
+module acaPlaceholderJob 'br/public:avm/res/app/job:0.6.0' = if (contains(computeTypes, 'azure-container-app') && selfHostedConfig.selfHostedType == 'azuredevops') {
   name: 'acaDevOpsPlaceholderJob'
   dependsOn: [
     taskRun

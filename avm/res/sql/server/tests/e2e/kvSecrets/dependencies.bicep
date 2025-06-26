@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the keyVault to create.')
 param keyVaultName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {

@@ -5,13 +5,157 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13338018442688780965"
+      "version": "0.36.1.42791",
+      "templateHash": "16911264602813109884"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
   },
   "definitions": {
+    "autoScaleBoundsType": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Maximum Scale Units for autoscale configuration."
+          }
+        },
+        "min": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Minimum Scale Units for autoscale configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for Virtual Network Gateway autoscale bounds."
+      }
+    },
+    "autoScaleConfigurationType": {
+      "type": "object",
+      "properties": {
+        "bounds": {
+          "$ref": "#/definitions/autoScaleBoundsType",
+          "metadata": {
+            "description": "Required. The bounds of the autoscale configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for Virtual Network Gateway autoscale."
+      }
+    },
+    "vpnClientAadConfigurationType": {
+      "type": "object",
+      "properties": {
+        "aadTenant": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD tenant property for VPN client connection used for AAD authentication."
+          }
+        },
+        "aadAudience": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD audience property for VPN client connection used for AAD authentication."
+          }
+        },
+        "aadIssuer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD issuer property for VPN client connection used for AAD authentication."
+          }
+        },
+        "vpnAuthenticationTypes": {
+          "type": "array",
+          "allowedValues": [
+            "AAD",
+            "Certificate",
+            "Radius"
+          ],
+          "metadata": {
+            "description": "Required. VPN authentication types for the virtual network gateway."
+          }
+        },
+        "vpnClientProtocols": {
+          "type": "array",
+          "allowedValues": [
+            "IkeV2",
+            "OpenVPN",
+            "SSTP"
+          ],
+          "metadata": {
+            "description": "Required. VPN client protocols for Virtual network gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for VPN client AAD authentication."
+      }
+    },
+    "ipamPoolPrefixAllocationType": {
+      "type": "object",
+      "properties": {
+        "numberOfIpAddresses": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Number of IP addresses to allocate."
+          }
+        },
+        "pool": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource id of the associated Azure IpamPool resource."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Pool configuration for IPAM."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for IPAM Pool Prefix Allocation."
+      }
+    },
+    "customRoutesType": {
+      "type": "object",
+      "properties": {
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of address blocks reserved for this virtual network in CIDR notation."
+          }
+        },
+        "ipamPoolPrefixAllocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ipamPoolPrefixAllocationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IPAM Pools allocating IP address prefixes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for custom routes address space."
+      }
+    },
     "clusterSettingType": {
       "type": "object",
       "discriminator": {
@@ -136,6 +280,13 @@
             "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway."
           }
         },
+        "existingTertiaryPublicIPResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway."
+          }
+        },
         "secondPipName": {
           "type": "string",
           "nullable": true,
@@ -208,6 +359,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
+          }
+        },
+        "existingTertiaryPublicIPResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway."
           }
         },
         "asn": {
@@ -391,6 +549,34 @@
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
@@ -591,7 +777,8 @@
         "UltraPerformance",
         "ErGw1AZ",
         "ErGw2AZ",
-        "ErGw3AZ"
+        "ErGw3AZ",
+        "ErGwScale"
       ],
       "metadata": {
         "description": "Optional. The SKU of the Gateway."
@@ -739,10 +926,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworkGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -752,10 +942,53 @@
       }
     },
     "vpnClientAadConfiguration": {
-      "type": "object",
+      "$ref": "#/definitions/vpnClientAadConfigurationType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided."
+      }
+    },
+    "managedIdentity": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource. Supports system-assigned and user-assigned identities."
+      }
+    },
+    "adminState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet. Only applicable for ExpressRoute gateways."
+      }
+    },
+    "resiliencyModel": {
+      "type": "string",
+      "defaultValue": "SingleHomed",
+      "allowedValues": [
+        "SingleHomed",
+        "MultiHomed"
+      ],
+      "metadata": {
+        "description": "Optional. Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways."
+      }
+    },
+    "autoScaleConfiguration": {
+      "$ref": "#/definitions/autoScaleConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Autoscale configuration for virtual network gateway. Only applicable for certain SKUs."
+      }
+    },
+    "customRoutes": {
+      "$ref": "#/definitions/customRoutesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients."
       }
     }
   },
@@ -772,10 +1005,12 @@
     "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
     "isActiveActive": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp')), not(variables('isExpressRoute')))]",
     "existingSecondaryPublicIPResourceIdVar": "[if(variables('isActiveActive'), tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), null())]",
+    "existingTertiaryPublicIPResourceIdVar": "[if(variables('isActiveActive'), tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), null())]",
     "secondaryPublicIPNameVar": "[if(variables('isActiveActive'), coalesce(tryGet(parameters('clusterSettings'), 'secondPipName'), format('{0}-pip2', parameters('name'))), null())]",
-    "arrayPipNameVar": "[if(variables('isActiveActive'), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName')))))]",
+    "tertiaryPublicIPNameVar": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), format('{0}-pip3', parameters('name')), null())]",
+    "arrayPipNameVar": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar'))), if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), createArray(), createArray(variables('tertiaryPublicIPNameVar')))), if(variables('isActiveActive'), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))))))]",
     "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
-    "ipConfiguration": "[if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1')))]",
+    "ipConfiguration": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig2'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), variables('existingTertiaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('tertiaryPublicIPNameVar'))))), 'name', 'vNetGatewayConfig3')), if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'))))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -784,7 +1019,9 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "isAzSku": "[contains(parameters('skuName'), 'AZ')]",
+    "publicIpZonesToApply": "[if(variables('isAzSku'), parameters('publicIpZones'), createArray())]"
   },
   "resources": {
     "primaryPublicIP": {
@@ -804,6 +1041,15 @@
       "subscriptionId": "[split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/'))]"
+    },
+    "tertiaryPublicIP": {
+      "condition": "[not(empty(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-05-01",
+      "subscriptionId": "[split(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), '/'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -827,10 +1073,11 @@
     },
     "virtualNetworkGateway": {
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
+      "identity": "[if(not(equals(parameters('managedIdentity'), null())), createObject('type', if(and(coalesce(tryGet(parameters('managedIdentity'), 'systemAssigned'), false()), not(equals(coalesce(tryGet(parameters('managedIdentity'), 'userAssignedResourceIds'), createArray()), createArray()))), 'SystemAssigned, UserAssigned', if(coalesce(tryGet(parameters('managedIdentity'), 'systemAssigned'), false()), 'SystemAssigned', if(not(equals(coalesce(tryGet(parameters('managedIdentity'), 'userAssignedResourceIds'), createArray()), createArray())), 'UserAssigned', 'None'))), 'userAssignedIdentities', if(not(equals(coalesce(tryGet(parameters('managedIdentity'), 'userAssignedResourceIds'), createArray()), createArray())), reduce(map(coalesce(tryGet(parameters('managedIdentity'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next')))), null())), null())]",
       "properties": {
         "ipConfigurations": "[variables('ipConfiguration')]",
         "activeActive": "[variables('isActiveActive')]",
@@ -850,7 +1097,11 @@
         },
         "vpnType": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
         "vpnClientConfiguration": "[if(not(empty(parameters('vpnClientAddressPoolPrefix'))), variables('vpnClientConfiguration'), null())]",
-        "vpnGatewayGeneration": "[if(equals(parameters('gatewayType'), 'Vpn'), parameters('vpnGatewayGeneration'), 'None')]"
+        "vpnGatewayGeneration": "[if(equals(parameters('gatewayType'), 'Vpn'), parameters('vpnGatewayGeneration'), 'None')]",
+        "customRoutes": "[parameters('customRoutes')]",
+        "adminState": "[if(variables('isExpressRoute'), parameters('adminState'), null())]",
+        "resiliencyModel": "[if(variables('isExpressRoute'), parameters('resiliencyModel'), null())]",
+        "autoScaleConfiguration": "[parameters('autoScaleConfiguration')]"
       },
       "dependsOn": [
         "publicIPAddress"
@@ -967,11 +1218,13 @@
             "value": "[parameters('tags')]"
           },
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
-          "zones": "[if(not(equals(parameters('skuName'), 'Basic')), createObject('value', parameters('publicIpZones')), createObject('value', createArray()))]",
+          "zones": {
+            "value": "[variables('publicIpZonesToApply')]"
+          },
           "dnsSettings": {
             "value": {
               "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
-              "domainNameLabelScope": ""
+              "domainNameLabelScope": "TenantReuse"
             }
           },
           "enableTelemetry": {
@@ -985,112 +1238,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14450344965065009842"
+              "version": "0.33.93.31351",
+              "templateHash": "5168739580767459761"
             },
             "name": "Public IP Addresses",
-            "description": "This module deploys a Public IP Address.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Public IP Address."
           },
           "definitions": {
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                    }
-                  },
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "lockType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the name of lock."
-                  }
-                },
-                "kind": {
-                  "type": "string",
-                  "allowedValues": [
-                    "CanNotDelete",
-                    "None",
-                    "ReadOnly"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the type of lock."
-                  }
-                }
-              },
-              "nullable": true
-            },
             "dnsSettingsType": {
               "type": "object",
               "properties": {
@@ -1103,14 +1257,14 @@
                 "domainNameLabelScope": {
                   "type": "string",
                   "allowedValues": [
-                    "",
                     "NoReuse",
                     "ResourceGroupReuse",
                     "SubscriptionReuse",
                     "TenantReuse"
                   ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
+                    "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
                   }
                 },
                 "fqdn": {
@@ -1127,6 +1281,9 @@
                     "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
             "ddosSettingsType": {
@@ -1156,127 +1313,257 @@
                     "description": "Required. The DDoS protection policy customizations."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
-            "diagnosticSettingType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name of diagnostic setting."
-                    }
-                  },
-                  "logCategoriesAndGroups": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "category": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                          }
-                        },
-                        "categoryGroup": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                          }
-                        },
-                        "enabled": {
-                          "type": "bool",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-                    }
-                  },
-                  "metricCategories": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "category": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                          }
-                        },
-                        "enabled": {
-                          "type": "bool",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-                    }
-                  },
-                  "logAnalyticsDestinationType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "AzureDiagnostics",
-                      "Dedicated"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-                    }
-                  },
-                  "workspaceResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                    }
-                  },
-                  "storageAccountResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                    }
-                  },
-                  "eventHubAuthorizationRuleResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-                    }
-                  },
-                  "eventHubName": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                    }
-                  },
-                  "marketplacePartnerResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-                    }
+            "ipTagType": {
+              "type": "object",
+              "properties": {
+                "ipTagType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IP tag type."
+                  }
+                },
+                "tag": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IP tag."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "diagnosticSettingFullType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the diagnostic setting."
+                  }
+                },
+                "logCategoriesAndGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                        }
+                      },
+                      "categoryGroup": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                  }
+                },
+                "metricCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -1341,8 +1628,19 @@
                 "description": "Optional. The DNS settings of the public IP address."
               }
             },
+            "ipTags": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipTagType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of tags associated with the public IP address."
+              }
+            },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
@@ -1384,7 +1682,11 @@
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -1411,7 +1713,11 @@
               }
             },
             "diagnosticSettings": {
-              "$ref": "#/definitions/diagnosticSettingType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The diagnostic settings of the service."
               }
@@ -1435,7 +1741,7 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
@@ -1443,7 +1749,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1461,7 +1767,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1477,7 +1783,7 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": null
+                "ipTags": "[parameters('ipTags')]"
               }
             },
             "publicIpAddress_lock": {
@@ -1592,7 +1898,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
             }
           }
         }
@@ -1641,8 +1947,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14955935266178407034"
+              "version": "0.36.1.42791",
+              "templateHash": "8956365879743708053"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."
@@ -1738,12 +2044,12 @@
             "virtualNetworkGateway": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworkGateways",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('virtualNetworkGatewayName')]"
             },
             "natRule": {
               "type": "Microsoft.Network/virtualNetworkGateways/natRules",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
@@ -1818,7 +2124,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualNetworkGateway', '2023-04-01', 'full').location]"
+      "value": "[reference('virtualNetworkGateway', '2024-05-01', 'full').location]"
     },
     "asn": {
       "type": "int",
@@ -1869,6 +2175,14 @@
         "description": "The secondary public IP address of the virtual network gateway (Active-Active mode)."
       },
       "value": "[if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), reference('secondaryPublicIP').ipAddress, reference(format('publicIPAddress[{0}]', 1)).outputs.ipAddress.value), null())]"
+    },
+    "tertiaryPublicIpAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The tertiary public IP address of the virtual network gateway (Active-Active with P2S mode)."
+      },
+      "value": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), reference('tertiaryPublicIP').ipAddress, reference(format('publicIPAddress[{0}]', 2)).outputs.ipAddress.value), null())]"
     },
     "secondaryDefaultBgpIpAddress": {
       "type": "string",
