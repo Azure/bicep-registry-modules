@@ -39,7 +39,7 @@ param enableTelemetry bool = true
 //@description('Resource naming abbreviations')
 //param namingAbbrs object
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
