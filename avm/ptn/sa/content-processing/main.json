@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "706585961570582071"
+      "templateHash": "10535722019570690815"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -128,10 +128,17 @@
       "metadata": {
         "description": "Optional. Enable scaling for the container apps. Defaults to false."
       }
+    },
+    "deploymentTimestamp": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Optional. A unique deployment timestamp for solution prefix generation."
+      }
     }
   },
   "variables": {
-    "solutionPrefix": "[format('cps-{0}', padLeft(take(toLower(uniqueString(subscription().id, parameters('environmentName'), resourceGroup().location)), 12), 12, '0'))]",
+    "solutionPrefix": "[format('cps-{0}', padLeft(take(toLower(uniqueString(subscription().id, parameters('environmentName'), resourceGroup().location, parameters('deploymentTimestamp'))), 12), 12, '0'))]",
     "privateDnsZones": [
       "privatelink.cognitiveservices.azure.com",
       "privatelink.openai.azure.com",
@@ -24630,8 +24637,8 @@
         "avmContainerApp",
         "avmContainerApp_API",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "avmVirtualNetwork"
       ]
     },
@@ -24694,7 +24701,7 @@
           "networkAcls": {
             "value": {
               "bypass": "AzureServices",
-              "defaultAction": "Deny"
+              "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
             }
           },
           "disableLocalAuth": {
@@ -26993,10 +27000,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -27045,6 +27052,15 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "roleAssignments": {
+            "value": [
+              {
+                "principalId": "[reference('avmContainerApp').outputs.systemAssignedMIPrincipalId.value]",
+                "roleDefinitionIdOrName": "a97b65f3-24c7-4388-baec-2e87135dc908",
+                "principalType": "ServicePrincipal"
+              }
+            ]
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'aicu-private-endpoint', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aicu-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'aicu-dns-zone-contentunderstanding', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
@@ -29317,9 +29333,10 @@
         }
       },
       "dependsOn": [
+        "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "avmVirtualNetwork"
       ]
     },
@@ -35087,8 +35104,8 @@
       },
       "dependsOn": [
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -53520,7 +53537,9 @@
               }
             ]
           },
-          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]"
+          "publicNetworkAccess": {
+            "value": "Enabled"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
