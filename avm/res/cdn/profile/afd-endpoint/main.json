@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3425641369818634458"
+      "templateHash": "10968148801425056098"
     },
     "name": "CDN Profiles AFD Endpoints",
     "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -304,12 +304,12 @@
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('profileName')]"
     },
     "afdEndpoint": {
       "type": "Microsoft.Cdn/profiles/afdEndpoints",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -383,7 +383,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9880354439474902054"
+              "templateHash": "17117420688790383138"
             },
             "name": "CDN Profiles AFD Endpoint Route",
             "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -679,7 +679,7 @@
             "profile::afdEndpoint": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles/afdEndpoints",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
             },
             "profile::customDomains": {
@@ -689,13 +689,13 @@
               },
               "existing": true,
               "type": "Microsoft.Cdn/profiles/customDomains",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
             },
             "profile::originGroup": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles/originGroups",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
             },
             "profile::ruleSet": {
@@ -705,18 +705,18 @@
               },
               "existing": true,
               "type": "Microsoft.Cdn/profiles/ruleSets",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
             },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('profileName')]"
             },
             "route": {
               "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]",
               "properties": {
                 "copy": [
@@ -806,7 +806,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('afdEndpoint', '2023-05-01', 'full').location]"
+      "value": "[reference('afdEndpoint', '2025-04-15', 'full').location]"
     },
     "routes": {
       "type": "array",

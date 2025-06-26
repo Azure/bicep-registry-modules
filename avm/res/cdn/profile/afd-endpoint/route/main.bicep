@@ -61,31 +61,31 @@ param ruleSets array = []
 @description('Optional. The supported protocols of the rule.')
 param supportedProtocols array?
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 
-  resource afdEndpoint 'afdEndpoints@2023-05-01' existing = {
+  resource afdEndpoint 'afdEndpoints@2025-04-15' existing = {
     name: afdEndpointName
   }
 
-  resource customDomains 'customDomains@2023-05-01' existing = [
+  resource customDomains 'customDomains@2025-04-15' existing = [
     for customDomainName in (customDomainNames ?? []): {
       name: customDomainName
     }
   ]
 
-  resource originGroup 'originGroups@2023-05-01' existing = {
+  resource originGroup 'originGroups@2025-04-15' existing = {
     name: originGroupName
   }
 
-  resource ruleSet 'ruleSets@2023-05-01' existing = [
+  resource ruleSet 'ruleSets@2025-04-15' existing = [
     for ruleSet in ruleSets: {
       name: ruleSet.name
     }
   ]
 }
 
-resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-01' = {
+resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-04-15' = {
   name: name
   parent: profile::afdEndpoint
   properties: {

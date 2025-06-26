@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2865939729232700527"
+      "templateHash": "564000263660798116"
     },
     "name": "CDN Profiles Security Policy",
     "description": "This module deploys a CDN Profile Security Policy."
@@ -81,12 +81,12 @@
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('profileName')]"
     },
     "securityPolicies": {
       "type": "Microsoft.Cdn/profiles/securityPolicies",
-      "apiVersion": "2024-02-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
         "parameters": {

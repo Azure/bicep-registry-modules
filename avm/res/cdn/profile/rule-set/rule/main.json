@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16773330898279227772"
+      "templateHash": "13557087255389320076"
     },
     "name": "CDN Profiles Rules",
     "description": "This module deploys a CDN Profile rule."
@@ -114,18 +114,18 @@
     "profile::ruleSet": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles/ruleSets",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
     },
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('profileName')]"
     },
     "rule": {
       "type": "Microsoft.Cdn/profiles/ruleSets/rules",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]",
       "properties": {
         "order": "[parameters('order')]",
