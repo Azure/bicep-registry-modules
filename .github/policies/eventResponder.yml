@@ -212,3 +212,23 @@ configuration:
                 > **To indicate this PR needs the core team''s attention, apply the "Needs: Core Team 🧞" label!**
                 >
                 > The core team will only review and approve PRs that have this label applied!
+
+      - description: "ITA27 - AVM Bicep GitHub Workflows For All Modules Will Be Triggered"
+        if:
+          - payloadType: Pull_Request
+          - isAction:
+              action: Opened
+          - includesModifiedFiles:
+              files:
+              - .github/actions/templates
+              - .github/workflows/avm.template.module.yml
+              - utilities/pipelines
+              excludedFiles:
+              - utilities/pipelines/platform
+        then:
+          - addReply:
+              reply: |
+                > [!WARNING]
+                > **FAO: AVM Core Team**
+                > 
+                > When merging this PR it will trigger **all** AVM modules to be triggered! Please consider disabling the GitHub actions prior to merging and then re-enable once merged.
