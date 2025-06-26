@@ -127,10 +127,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.22.1' = {
     roleAssignments: roleAssignments
     blobServices: {
       containers: containers ?? []
+      corsRules: []
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
       deleteRetentionPolicyEnabled: true
       deleteRetentionPolicyDays: 6
+      diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
+        ? [
+            {
+              workspaceResourceId: logAnalyticsWorkspaceResourceId
+            }
+          ]
+        : []
     }
     enableTelemetry: enableTelemetry
   }

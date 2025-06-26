@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18198544057423445292"
+      "templateHash": "6641275456113407064"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4547,7 +4547,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5572697523869952670"
+              "templateHash": "629671073252826821"
             }
           },
           "parameters": {
@@ -4725,7 +4725,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "11840950735210329139"
+                      "templateHash": "1208241070956353693"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -4785,7 +4785,7 @@
                       }
                     },
                     "jumpBoxConfigurationType": {
-                      "type": "object",
+                      "type": "secureObject",
                       "properties": {
                         "name": {
                           "type": "string",
@@ -9599,12 +9599,12 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "18271683262610935935"
+                              "templateHash": "12682049580059717273"
                             }
                           },
                           "definitions": {
                             "jumpBoxConfigurationType": {
-                              "type": "object",
+                              "type": "secureObject",
                               "properties": {
                                 "name": {
                                   "type": "string",
@@ -24979,7 +24979,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3907628084023751192"
+              "templateHash": "4464481103977571824"
             }
           },
           "definitions": {
@@ -25475,10 +25475,12 @@
                   "blobServices": {
                     "value": {
                       "containers": "[coalesce(parameters('containers'), createArray())]",
+                      "corsRules": [],
                       "containerDeleteRetentionPolicyEnabled": true,
                       "containerDeleteRetentionPolicyDays": 7,
                       "deleteRetentionPolicyEnabled": true,
-                      "deleteRetentionPolicyDays": 6
+                      "deleteRetentionPolicyDays": 6,
+                      "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'))), createArray())]"
                     }
                   },
                   "enableTelemetry": {
@@ -36492,8 +36494,8 @@
           },
           "scaleSettings": {
             "value": {
-              "maxReplicas": "[if(parameters('enableScaling'), 3, 1)]",
-              "minReplicas": 1,
+              "maxReplicas": "[if(parameters('enableScaling'), 4, 2)]",
+              "minReplicas": 2,
               "rules": "[if(parameters('enableScaling'), createArray(createObject('name', 'http-scaler', 'http', createObject('metadata', createObject('concurrentRequests', 100)))), createArray())]"
             }
           },
@@ -37989,8 +37991,8 @@
           },
           "scaleSettings": {
             "value": {
-              "maxReplicas": "[if(parameters('enableScaling'), 3, 1)]",
-              "minReplicas": 1,
+              "maxReplicas": "[if(parameters('enableScaling'), 4, 2)]",
+              "minReplicas": 2,
               "rules": "[if(parameters('enableScaling'), createArray(createObject('name', 'http-scaler', 'http', createObject('metadata', createObject('concurrentRequests', 100)))), createArray())]"
             }
           },

@@ -384,8 +384,8 @@ module containerAppFrontend 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressTargetPort: 3000
     ingressExternal: true
     scaleSettings: {
-      maxReplicas: enableScaling ? 3 : 1
-      minReplicas: 1
+      maxReplicas: enableScaling ? 4 : 2
+      minReplicas: 2
       rules: enableScaling
         ? [
             {
@@ -543,8 +543,8 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressTargetPort: 8000
     ingressExternal: true
     scaleSettings: {
-      maxReplicas: enableScaling ? 3 : 1
-      minReplicas: 1
+      maxReplicas: enableScaling ? 4 : 2
+      minReplicas: 2
       rules: enableScaling
         ? [
             {

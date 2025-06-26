@@ -54,7 +54,7 @@ This module creates a secure Virtual Network with optional Azure Bastion Host an
 | :-- | :-- | :-- |
 | [`bastionConfiguration`](#parameter-bastionconfiguration) | object | Configuration for the Azure Bastion Host. Leave null to omit Bastion creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`jumpboxConfiguration`](#parameter-jumpboxconfiguration) | object | Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation. |
+| [`jumpboxConfiguration`](#parameter-jumpboxconfiguration) | secureObject | Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation. |
 | [`location`](#parameter-location) | string | Azure region for all services. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 
@@ -259,7 +259,7 @@ Enable/Disable usage telemetry for module.
 Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation.
 
 - Required: No
-- Type: object
+- Type: secureObject
 
 **Required parameters**
 

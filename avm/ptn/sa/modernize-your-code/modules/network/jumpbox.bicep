@@ -315,6 +315,7 @@ output nsgId string = nsg.outputs.resourceId
 output nsgName string = nsg.outputs.name
 
 @export()
+@secure()
 @description('Custom type definition for establishing Jumpbox Virtual Machine and its associated resources.')
 type jumpBoxConfigurationType = {
   @description('Required. The name of the Virtual Machine.')
