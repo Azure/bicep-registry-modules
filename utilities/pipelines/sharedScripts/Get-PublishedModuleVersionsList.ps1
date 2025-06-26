@@ -37,7 +37,7 @@ function Get-PublishedModuleVersionsList {
     } catch {
         if (Test-McrConnection) {
             Write-Verbose "MCR connection test passed. New modules don't have a published version."
-            return '0.1.0'
+            return $null
         }
         Write-Error "Error occurred while accessing URL: $tagListUrl"
         Write-Error "Error message: $($_.Exception.Message)"

@@ -1557,8 +1557,20 @@ Describe 'Module tests' -Tag 'Module' {
                 # the module will not be published (in that case use the current version), or is a new module without a version
                 Write-Verbose 'A new version will not be published. Use the current version.' -Verbose
                 $publishedVersions = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/')
-                # the last version in the array is the latest published version
-                $expectedModuleVersion = $publishedVersions -is [Array] -and $publishedVersions.Count -gt 0 ? $publishedVersions[-1] : $publishedVersions
+                if (-not $publishedVersions) {
+                    # no published versions found. Check if the module is new
+                    $versionFilePath = Join-Path (Split-Path $templateFilePath) 'version.json'
+                    $moduleJsonVersion = (Get-Content $versionFilePath -Raw | ConvertFrom-Json).version
+                    if ($moduleJsonVersion -eq '0.1') {
+                        # the module is new, so use the version from the version.json file
+                        $expectedModuleVersion = $moduleJsonVersion.ToString()
+                    } else {
+                        Write-Error "No published versions found for module [$moduleFolderName] of type [$moduleType]. Please ensure the module is published before running the tests."
+                    }
+                } else {
+                    # the last version in the array is the latest published version
+                    $expectedModuleVersion = $publishedVersions -is [Array] -and $publishedVersions.Count -gt 0 ? $publishedVersions[-1] : $publishedVersions
+                }
                 Write-Verbose "Latest published version is [$($expectedModuleVersion)]." -Verbose
             }
 
