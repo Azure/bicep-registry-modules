@@ -6,11 +6,14 @@ metadata description = '''This module contains the resources required to deploy 
 
 @minLength(3)
 @maxLength(16)
+@secure()
 @description('Required. A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.')
 param solutionName string
 
+@secure()
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
+#disable-next-line secure-parameter-default
 param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
 
 @minLength(3)
