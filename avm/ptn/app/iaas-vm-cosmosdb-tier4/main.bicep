@@ -398,7 +398,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
 }
 
 // Storage account for boot diagnostics
-module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.22.1' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     name: 'st${take(replace(replace(replace(replace(toLower(name), '-', ''), '_', ''), '#', ''), '.', ''), 6)}${take(uniqueString(resourceGroup().id), 10)}'
@@ -564,11 +564,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
           {
             name: 'ipconfig1'
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
-            loadBalancerBackendAddressPools: [
-              {
-                id: '${loadBalancer.outputs.resourceId}/backendAddressPools/${name}-lb-backendpool01'
-              }
-            ]
           }
         ]
         networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
