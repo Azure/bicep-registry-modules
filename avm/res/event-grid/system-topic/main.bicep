@@ -14,7 +14,7 @@ param source string
 param topicType string
 
 @description('Optional. Event subscriptions to deploy.')
-param eventSubscriptions array?
+param eventSubscriptions eventSubscriptionType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -23,6 +23,9 @@ param diagnosticSettings diagnosticSettingFullType[]?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID).')
+param externalResourceRoleAssignments externalResourceRoleAssignmentType[] = []
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -33,7 +36,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.EventGrid/systemTopics@2025-02-15'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -94,6 +97,16 @@ var formattedRoleAssignments = [
   })
 ]
 
+var formattedExternalResourceRoleAssignments = [
+  for (assignment, index) in (externalResourceRoleAssignments ?? []): union(assignment, {
+    roleDefinitionId: contains(assignment.roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
+      ? assignment.roleDefinitionId
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionId)
+  })
+]
+
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
@@ -116,7 +129,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2025-02-15' = {
   name: name
   location: location
   identity: identity
@@ -132,7 +145,7 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
   for (eventSubscription, index) in eventSubscriptions ?? []: {
     name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopics-EventSubs-${index}'
     params: {
-      destination: eventSubscription.destination
+      destination: empty(eventSubscription.?deliveryWithResourceIdentity) ? eventSubscription.?destination : null
       systemTopicName: systemTopic.name
       name: eventSubscription.name
       deadLetterDestination: eventSubscription.?deadLetterDestination
@@ -144,6 +157,9 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
       labels: eventSubscription.?labels
       retryPolicy: eventSubscription.?retryPolicy
     }
+    dependsOn: [
+      systemTopic_externalResourceRoleAssignments
+    ]
   }
 ]
 
@@ -203,6 +219,22 @@ resource systemTopic_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
+// External resource role assignments using the pattern template
+module systemTopic_externalResourceRoleAssignments 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
+  for (assignment, index) in formattedExternalResourceRoleAssignments: if (managedIdentities.?systemAssigned ?? false) {
+    name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopic-ExtRoleAssign-${index}'
+    params: {
+      resourceId: assignment.resourceId
+      roleDefinitionId: assignment.roleDefinitionId
+      principalId: systemTopic.identity.principalId
+      principalType: 'ServicePrincipal'
+      description: assignment.?description ?? 'Role assignment for Event Grid System Topic ${systemTopic.name}'
+      roleName: assignment.?roleName ?? assignment.roleDefinitionId
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
 @description('The name of the event grid system topic.')
 output name string = systemTopic.name
 
@@ -213,7 +245,60 @@ output resourceId string = systemTopic.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = systemTopic.?identity.?principalId
+output systemAssignedMIPrincipalId string? = (managedIdentities.?systemAssigned ?? false) ? systemTopic.identity.principalId : null
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
+
+// ================ //
+// Definitions      //
+// ================ //
+
+
+@description('Event subscription configuration.')
+type eventSubscriptionType = {
+  @description('Required. The name of the event subscription.')
+  name: string
+  
+  @description('Optional. Dead Letter Destination.')
+  deadLetterDestination: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deadLetterDestination?
+  
+  @description('Optional. Dead Letter with Resource Identity Configuration.')
+  deadLetterWithResourceIdentity: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deadLetterWithResourceIdentity?
+  
+  @description('Optional. Delivery with Resource Identity Configuration.')
+  deliveryWithResourceIdentity: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deliveryWithResourceIdentity?
+  
+  @description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.')
+  destination: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.destination?
+  
+  @description('Optional. The event delivery schema for the event subscription.')
+  eventDeliverySchema: 'CloudEventSchemaV1_0' | 'CustomInputSchema' | 'EventGridSchema' | 'EventGridEvent'?
+  
+  @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
+  expirationTimeUtc: string?
+  
+  @description('Optional. The filter for the event subscription.')
+  filter: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.filter?
+  
+  @description('Optional. The list of user defined labels.')
+  labels: string[]?
+  
+  @description('Optional. The retry policy for events.')
+  retryPolicy: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.retryPolicy?
+}
+
+@description('External resource role assignment configuration.')
+type externalResourceRoleAssignmentType = {
+  @description('Required. The resource ID of the target resource to assign permissions to.')
+  resourceId: string
+  
+  @description('Required. The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".')
+  roleDefinitionId: string
+  
+  @description('Optional. Description of the role assignment.')
+  description: string?
+  
+  @description('Optional. Name of the role for logging purposes.')
+  roleName: string?
+}

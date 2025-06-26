@@ -12,7 +12,7 @@ This module deploys an API Management Service API Diagnostics.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics) |
 
 ## Parameters
 
@@ -118,7 +118,6 @@ Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `frontend`
 
@@ -126,7 +125,6 @@ Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `logClientIp`
 
