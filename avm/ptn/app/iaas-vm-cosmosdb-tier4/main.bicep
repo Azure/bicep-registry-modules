@@ -1,5 +1,5 @@
 metadata name = 'IaaS VM with CosmosDB Tier 4'
-metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 configuration.'
+metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.'
 
 @description('Required. Name of the solution which is used to generate unique resource names.')
 param name string
@@ -117,19 +117,58 @@ param sshPublicKey string = ''
 @description('Security. Enables encryption at host for the virtual machine.')
 param encryptionAtHost bool = true
 
+@description('Compute. Virtual machine availability zone. Set to 0 for no zone.')
+param virtualMachineZone int = 1
+
+@description('Compute. Virtual machine image reference configuration.')
+param virtualMachineImageReference object = {
+  publisher: 'canonical'
+  offer: 'ubuntu-24_04-lts'
+  sku: 'server'
+  version: 'latest'
+}
+
+@description('Storage. Virtual machine OS disk configuration.')
+param virtualMachineOsDisk object = {
+  createOption: 'FromImage'
+  diskSizeGB: 30
+  caching: 'ReadWrite'
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+
+@description('Identity. Virtual machine managed identity configuration.')
+param virtualMachineManagedIdentities object = {
+  systemAssigned: true
+}
+
+@description('Networking. Virtual machine NIC configurations.')
+param virtualMachineNicConfigurations array = [
+  {
+    name: 'primary-nic'
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+      }
+    ]
+    deleteOption: 'Delete'
+  }
+]
+
 // Storage account parameters
-@description('Storage. Storage account SKU.')
-param storageAccountSku object = {
+@description('Storage. Storage account SKU configuration.')
+param storageAccountConfiguration object = {
   name: 'Standard_GRS'
   tier: 'Standard'
 }
 
 // Load balancer parameters
-@description('Networking. Load balancer frontend port.')
-param lbFrontendPort int = 80
-
-@description('Networking. Load balancer backend port.')
-param lbBackendPort int = 80
+@description('Networking. Load balancer configuration.')
+param loadBalancerConfiguration object = {
+  frontendPort: 80
+  backendPort: 80
+}
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -404,10 +443,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.22.1' = {
     name: 'st${take(replace(replace(replace(replace(toLower(name), '-', ''), '_', ''), '#', ''), '.', ''), 6)}${take(uniqueString(resourceGroup().id), 10)}'
     location: location
     tags: tags ?? {}
-    skuName: storageAccountSku.name
+    skuName: storageAccountConfiguration.name
     allowBlobPublicAccess: false
     defaultToOAuthAuthentication: true
     minimumTlsVersion: 'TLS1_2'
+    publicNetworkAccess: 'Disabled'
+    networkAcls: {
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+    }
     enableTelemetry: enableTelemetry
   }
 }
@@ -494,8 +538,8 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
       {
         name: '${name}-lb-lbrule01'
         frontendIPConfigurationName: '${name}-lb-frontendconfig01'
-        frontendPort: lbFrontendPort
-        backendPort: lbBackendPort
+        frontendPort: loadBalancerConfiguration.frontendPort
+        backendPort: loadBalancerConfiguration.backendPort
         enableFloatingIP: false
         idleTimeoutInMinutes: 15
         protocol: 'Tcp'
@@ -510,7 +554,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
       {
         name: '${name}-lb-probe01'
         protocol: 'Tcp'
-        port: lbBackendPort
+        port: loadBalancerConfiguration.backendPort
         intervalInSeconds: 15
         numberOfProbes: 2
         probeThreshold: 1
@@ -527,10 +571,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     name: 'vm-${name}'
     location: location
     tags: tags ?? {}
-    zone: 1
-    managedIdentities: {
-      systemAssigned: true
-    }
+    zone: virtualMachineZone
+    managedIdentities: virtualMachineManagedIdentities
     osType: 'Linux'
     vmSize: vmSize
     adminUsername: adminUsername
@@ -542,32 +584,19 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
         path: '/home/${adminUsername}/.ssh/authorized_keys'
       }
     ]
-    imageReference: {
-      publisher: 'canonical'
-      offer: 'ubuntu-24_04-lts'
-      sku: 'server'
-      version: 'latest'
-    }
-    osDisk: {
-      createOption: 'FromImage'
-      diskSizeGB: 30
-      caching: 'ReadWrite'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
+    imageReference: virtualMachineImageReference
+    osDisk: virtualMachineOsDisk
     nicConfigurations: [
-      {
-        name: 'primary-nic'
+      for (nicConfig, index) in virtualMachineNicConfigurations: {
+        name: nicConfig.name
         tags: tags ?? {}
         ipConfigurations: [
           {
-            name: 'ipconfig1'
+            name: nicConfig.ipConfigurations[0].name
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
           }
         ]
-        networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
-        deleteOption: 'Delete'
+        deleteOption: nicConfig.deleteOption
       }
     ]
     bootDiagnostics: true
@@ -690,6 +719,55 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
   }
 }
 
+// Private DNS Zone for Storage Account
+module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: '${uniqueString(deployment().name, location)}-storage-dns'
+  params: {
+    name: 'privatelink.blob.${environment().suffixes.storage}'
+    location: 'global'
+    tags: tags ?? {}
+    virtualNetworkLinks: [
+      {
+        name: uniqueString(virtualNetwork.outputs.resourceId, 'storage')
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
+    enableTelemetry: enableTelemetry
+  }
+}
+
+// Private Endpoint for Storage Account
+module storagePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
+  name: '${uniqueString(deployment().name, location)}-storage-pe'
+  params: {
+    name: 'pep-${name}-storage'
+    location: location
+    tags: tags ?? {}
+    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    privateLinkServiceConnections: [
+      {
+        name: 'pep-${name}-storage-conn'
+        properties: {
+          groupIds: [
+            'blob'
+          ]
+          privateLinkServiceId: storageAccount.outputs.resourceId
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      name: 'default'
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: storagePrivateDnsZone.outputs.resourceId
+        }
+      ]
+    }
+    enableTelemetry: enableTelemetry
+  }
+}
+
 // Outputs
 @description('Resource. The resource ID of the virtual machine.')
 output virtualMachineResourceId string = virtualMachine.outputs.resourceId
@@ -711,3 +789,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('Resource. The name of the virtual machine.')
 output name string = virtualMachine.outputs.name
+
+@description('Resource. The resource ID of the storage account.')
+output storageAccountResourceId string = storageAccount.outputs.resourceId
+
+@description('Resource. The resource ID of the storage private endpoint.')
+output storagePrivateEndpointResourceId string = storagePrivateEndpoint.outputs.resourceId

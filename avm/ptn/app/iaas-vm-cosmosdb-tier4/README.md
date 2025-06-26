@@ -1,6 +1,6 @@
 # IaaS VM with CosmosDB Tier 4 `[App/IaasVmCosmosdbTier4]`
 
-Creates an IaaS VM with CosmosDB Tier 4 configuration.
+Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.
 
 ## Navigation
 
@@ -221,22 +221,31 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`lbBackendPort`](#parameter-lbbackendport) | int | Load balancer backend port. |
-| [`lbFrontendPort`](#parameter-lbfrontendport) | int | Load balancer frontend port. |
+| [`loadBalancerConfiguration`](#parameter-loadbalancerconfiguration) | object | Load balancer configuration. |
 | [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. |
+| [`virtualMachineNicConfigurations`](#parameter-virtualmachinenicconfigurations) | array | Virtual machine NIC configurations. |
 | [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. |
 
 **Compute parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`virtualMachineImageReference`](#parameter-virtualmachineimagereference) | object | Virtual machine image reference configuration. |
+| [`virtualMachineZone`](#parameter-virtualmachinezone) | int | Virtual machine availability zone. Set to 0 for no zone. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the virtual machine. |
 
 **Storage parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`storageAccountSku`](#parameter-storageaccountsku) | object | Storage account SKU. |
+| [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Storage account SKU configuration. |
+| [`virtualMachineOsDisk`](#parameter-virtualmachineosdisk) | object | Virtual machine OS disk configuration. |
+
+**Identity parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualMachineManagedIdentities`](#parameter-virtualmachinemanagedidentities) | object | Virtual machine managed identity configuration. |
 
 ### Parameter: `name`
 
@@ -366,21 +375,19 @@ Network security group rules for the VM.
   ]
   ```
 
-### Parameter: `lbBackendPort`
+### Parameter: `loadBalancerConfiguration`
 
-Load balancer backend port.
-
-- Required: No
-- Type: int
-- Default: `80`
-
-### Parameter: `lbFrontendPort`
-
-Load balancer frontend port.
+Load balancer configuration.
 
 - Required: No
-- Type: int
-- Default: `80`
+- Type: object
+- Default:
+  ```Bicep
+  {
+      backendPort: 80
+      frontendPort: 80
+  }
+  ```
 
 ### Parameter: `subnets`
 
@@ -410,6 +417,27 @@ Subnet configuration for the virtual network.
   ]
   ```
 
+### Parameter: `virtualMachineNicConfigurations`
+
+Virtual machine NIC configurations.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    {
+      deleteOption: 'Delete'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+        }
+      ]
+      name: 'primary-nic'
+    }
+  ]
+  ```
+
 ### Parameter: `vnetAddressPrefix`
 
 Address prefix for the virtual network.
@@ -417,6 +445,30 @@ Address prefix for the virtual network.
 - Required: No
 - Type: string
 - Default: `'10.0.0.0/16'`
+
+### Parameter: `virtualMachineImageReference`
+
+Virtual machine image reference configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      version: 'latest'
+  }
+  ```
+
+### Parameter: `virtualMachineZone`
+
+Virtual machine availability zone. Set to 0 for no zone.
+
+- Required: No
+- Type: int
+- Default: `1`
 
 ### Parameter: `vmSize`
 
@@ -426,9 +478,9 @@ Size of the virtual machine.
 - Type: string
 - Default: `'Standard_D2s_v3'`
 
-### Parameter: `storageAccountSku`
+### Parameter: `storageAccountConfiguration`
 
-Storage account SKU.
+Storage account SKU configuration.
 
 - Required: No
 - Type: object
@@ -437,6 +489,37 @@ Storage account SKU.
   {
       name: 'Standard_GRS'
       tier: 'Standard'
+  }
+  ```
+
+### Parameter: `virtualMachineOsDisk`
+
+Virtual machine OS disk configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      caching: 'ReadWrite'
+      createOption: 'FromImage'
+      diskSizeGB: 30
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+  }
+  ```
+
+### Parameter: `virtualMachineManagedIdentities`
+
+Virtual machine managed identity configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      systemAssigned: true
   }
   ```
 
@@ -449,6 +532,8 @@ Storage account SKU.
 | `name` | string | Resource. The name of the virtual machine. |
 | `resourceGroupName` | string | Resource. Resource Group Name. |
 | `resourceId` | string | Resource. The resource ID. |
+| `storageAccountResourceId` | string | Resource. The resource ID of the storage account. |
+| `storagePrivateEndpointResourceId` | string | Resource. The resource ID of the storage private endpoint. |
 | `virtualMachineResourceId` | string | Resource. The resource ID of the virtual machine. |
 | `virtualNetworkResourceId` | string | Resource. The resource ID of the virtual network. |
 
