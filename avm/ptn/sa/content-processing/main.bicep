@@ -1034,7 +1034,8 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
+      //defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
+      defaultAction: 'Allow' // Always allow for AI Services
     }
     disableLocalAuth: true
     enableTelemetry: enableTelemetry
@@ -1127,7 +1128,11 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     customSubDomainName: 'aicu-${solutionPrefix}'
     disableLocalAuth: true
     enableTelemetry: enableTelemetry
-
+    networkAcls: {
+      bypass: 'AzureServices'
+      //defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
+      defaultAction: 'Allow' // Always allow for AI Services
+    }
     roleAssignments: [
       {
         principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
