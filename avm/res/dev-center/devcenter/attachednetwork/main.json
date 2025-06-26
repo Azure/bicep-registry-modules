@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "13004105727934341456"
+      "version": "0.36.1.42791",
+      "templateHash": "8622446296126991730"
     },
     "name": "Dev Center Attached Network",
     "description": "This module deploys a Dev Center Attached Network."

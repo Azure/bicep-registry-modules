@@ -239,11 +239,6 @@ module testDeployment '../../../main.bicep' = [
           syncType: 'Manual'
         }
       ]
-      //customerManagedKey: {
-      //  keyName: nestedDependencies1.outputs.keyVaultKeyName
-      //  keyVaultResourceId: nestedDependencies1.outputs.keyVaultResourceId
-      //  userAssignedIdentityResourceId: nestedDependencies1.outputs.managedIdentityResourceId
-      //}
       displayName: 'Dev Center Test'
       devBoxProvisioningSettings: {
         installAzureMonitorAgentEnableStatus: 'Enabled'

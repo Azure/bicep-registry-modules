@@ -28,10 +28,6 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-// mport { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-// description('Optional. The customer managed key definition.')
-// aram customerManagedKey customerManagedKeyWithAutoRotateType?
-
 @description('Optional. The display name of the Dev Center.')
 param displayName string?
 
@@ -157,26 +153,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-//   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-//     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
-//   )
-// }
-//
-// resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-//   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-//   )
-//
-//   resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-//     name: customerManagedKey.?keyName!
-//   }
-// }
-
 resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
   name: name
   location: location
@@ -185,26 +161,6 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
   properties: {
     devBoxProvisioningSettings: devBoxProvisioningSettings
     displayName: displayName
-    encryption: {}
-    //encryption: !empty(customerManagedKey)
-    //  ? {
-    //      customerManagedKeyEncryption: {
-    //        keyEncryptionKeyIdentity: {
-    //          userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-    //            ? cMKUserAssignedIdentity.id
-    //            : null
-    //          identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-    //            ? 'userAssignedIdentity'
-    //            : 'systemAssignedIdentity'
-    //        }
-    //        keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion ?? '')
-    //          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-    //          : (customerManagedKey.?autoRotationEnabled ?? true)
-    //              ? cMKKeyVault::cMKKey.properties.keyUri
-    //              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
-    //      }
-    //    }
-    //  : {}
     networkSettings: networkSettings
     projectCatalogSettings: projectCatalogSettings
   }

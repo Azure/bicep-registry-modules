@@ -299,7 +299,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
                 '<managedIdentityResourceId>'
               ]
             }
-            name: 'dep-et-dcdcmax'
+            name: 'dev'
             status: 'Enabled'
           }
         ]
@@ -579,7 +579,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
                   "<managedIdentityResourceId>"
                 ]
               },
-              "name": "dep-et-dcdcmax",
+              "name": "dev",
               "status": "Enabled"
             }
           ],
@@ -831,7 +831,7 @@ param projects = [
             '<managedIdentityResourceId>'
           ]
         }
-        name: 'dep-et-dcdcmax'
+        name: 'dev'
         status: 'Enabled'
       }
     ]

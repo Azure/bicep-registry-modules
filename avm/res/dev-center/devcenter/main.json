@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "14866852824181727412"
+      "version": "0.36.1.42791",
+      "templateHash": "13860137318725175925"
     },
     "name": "Dev Center",
     "description": "This module deploys an Azure Dev Center."
@@ -1498,7 +1498,6 @@
       "properties": {
         "devBoxProvisioningSettings": "[parameters('devBoxProvisioningSettings')]",
         "displayName": "[parameters('displayName')]",
-        "encryption": {},
         "networkSettings": "[parameters('networkSettings')]",
         "projectCatalogSettings": "[parameters('projectCatalogSettings')]"
       }
@@ -1623,8 +1622,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "5291931550402529399"
+              "version": "0.36.1.42791",
+              "templateHash": "13838234998351439652"
             },
             "name": "Dev Center Catalog",
             "description": "This module deploys a Dev Center Catalog."
@@ -1814,8 +1813,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "8350803602261243353"
+              "version": "0.36.1.42791",
+              "templateHash": "8838408887852189679"
             },
             "name": "Dev Center Environment Type",
             "description": "This module deploys a Dev Center Environment Type."
@@ -1931,8 +1930,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10607622508346676220"
+              "version": "0.36.1.42791",
+              "templateHash": "1657089960111879310"
             },
             "name": "Dev Center Gallery",
             "description": "This module deploys a Dev Center Gallery."
@@ -2009,8 +2008,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "813599780832049798"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8784163666264837034"
                     }
                   },
                   "parameters": {
@@ -2103,8 +2102,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13004105727934341456"
+              "version": "0.36.1.42791",
+              "templateHash": "8622446296126991730"
             },
             "name": "Dev Center Attached Network",
             "description": "This module deploys a Dev Center Attached Network."
@@ -2213,8 +2212,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15844994380969392958"
+              "version": "0.36.1.42791",
+              "templateHash": "9120116075135990292"
             },
             "name": "Dev Center DevBox Definition",
             "description": "This module deploys a Dev Center DevBox Definition."
@@ -2408,8 +2407,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "2704815512301553110"
+              "version": "0.36.1.42791",
+              "templateHash": "8998217148988690277"
             },
             "name": "Dev Center Project Policy",
             "description": "This module deploys a Dev Center Project Policy."
