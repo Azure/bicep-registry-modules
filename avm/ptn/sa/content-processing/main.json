@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7484559883917775684"
+      "templateHash": "5292219062367503896"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -58,7 +58,7 @@
     },
     "gptDeploymentCapacity": {
       "type": "int",
-      "minValue": 10,
+      "minValue": 1,
       "metadata": {
         "description": "Required. Capacity of the GPT deployment: (minimum 10)."
       }
