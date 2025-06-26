@@ -258,7 +258,7 @@ module storageAccount 'modules/storageAccount.bicep' = {
     name: take('st${resourcesName}', 24)
     location: location
     tags: allTags
-    skuName: enableRedundancy ? 'Standard_GZRS' : 'Standard_LRS'
+    skuName: enableRedundancy ? 'Standard_GZRS' : 'Standard_GRS'
     logAnalyticsWorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
     privateNetworking: enablePrivateNetworking
       ? {
