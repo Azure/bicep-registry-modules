@@ -21,7 +21,7 @@ param gptModelName string = 'gpt-4o'
   '2024-08-06'
 ])
 param gptModelVersion string = '2024-08-06'
-@minValue(10)
+@minValue(1)
 @description('Required. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
