@@ -1165,17 +1165,6 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
   }
 }
 
-// module avmAiServices_cu_roleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-//   name: format(resourceNameFormatString, 'rbac-ai-services-cu')
-//   params: {
-//     resourceId: avmAiServices_cu.outputs.resourceId
-//     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
-//     roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908' //'Cognitive Services User'
-//     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
-//   }
-// }
-
 module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: format(resourceNameFormatString, 'aistoragehub-')
   params: {
