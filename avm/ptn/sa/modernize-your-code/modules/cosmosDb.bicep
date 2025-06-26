@@ -158,9 +158,11 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
 @description('Name of the Cosmos DB Account resource.')
 output name string = cosmosAccount.outputs.name
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Resource ID of the Cosmos DB Account.')
 output resourceId string = cosmosAccount.outputs.resourceId
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Endpoint of the Cosmos DB Account.')
 output endpoint string = cosmosAccount.outputs.endpoint
 

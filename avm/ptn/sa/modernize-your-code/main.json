@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7208550134506911803"
+      "templateHash": "15965772712319250165"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -3795,6 +3795,9 @@
               }
             ]
           },
+          "disableLocalAuth": {
+            "value": "[parameters('enablePrivateNetworking')]"
+          },
           "tags": {
             "value": "[variables('allTags')]"
           },
@@ -4547,7 +4550,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "629671073252826821"
+              "templateHash": "7935607853484790985"
             }
           },
           "parameters": {
@@ -4597,6 +4600,23 @@
               "type": "securestring",
               "metadata": {
                 "description": "Required. Admin password for the VM."
+              }
+            }
+          },
+          "variables": {
+            "denyHopOutboundRule": {
+              "name": "deny-hop-outbound",
+              "properties": {
+                "priority": 200,
+                "access": "Deny",
+                "protocol": "Tcp",
+                "direction": "Outbound",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "destinationAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "3389",
+                  "22"
+                ]
               }
             }
           },
@@ -4654,7 +4674,8 @@
                                   "10.0.0.0/23"
                                 ]
                               }
-                            }
+                            },
+                            "[variables('denyHopOutboundRule')]"
                           ]
                         },
                         "delegation": "Microsoft.App/environments"
@@ -4707,7 +4728,8 @@
                                   "10.0.12.0/23"
                                 ]
                               }
-                            }
+                            },
+                            "[variables('denyHopOutboundRule')]"
                           ]
                         }
                       }
@@ -4725,7 +4747,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "1208241070956353693"
+                      "templateHash": "1359995383208619325"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -4981,7 +5003,7 @@
                       }
                     },
                     "logAnalyticsWorkSpaceResourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
                       }
@@ -7704,7 +7726,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "10468235459086557442"
+                              "templateHash": "3293491919483148039"
                             }
                           },
                           "definitions": {
@@ -7771,7 +7793,7 @@
                               }
                             },
                             "logAnalyticsWorkspaceId": {
-                              "type": "string",
+                              "type": "securestring",
                               "metadata": {
                                 "description": "Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
                               }
@@ -9599,7 +9621,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "12682049580059717273"
+                              "templateHash": "2898767550335987155"
                             }
                           },
                           "definitions": {
@@ -9825,7 +9847,7 @@
                               "defaultValue": {}
                             },
                             "logAnalyticsWorkspaceId": {
-                              "type": "string",
+                              "type": "securestring",
                               "metadata": {
                                 "description": "Required. Log Analytics Workspace Resource ID for VM diagnostics."
                               }
@@ -21252,7 +21274,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "18307101296251408984"
+              "templateHash": "16877864672325548380"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -21628,7 +21650,7 @@
               }
             },
             "logAnalyticsWorkspaceResourceId": {
-              "type": "string",
+              "type": "securestring",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the Log Analytics workspace to use for diagnostic settings."
@@ -21709,7 +21731,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6645429308203028935"
+                      "templateHash": "8002809226425011530"
                     }
                   },
                   "parameters": {
@@ -21777,7 +21799,7 @@
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "The resource ID of the private DNS zone."
                       },
@@ -21823,7 +21845,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6645429308203028935"
+                      "templateHash": "8002809226425011530"
                     }
                   },
                   "parameters": {
@@ -21891,7 +21913,7 @@
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "The resource ID of the private DNS zone."
                       },
@@ -21937,7 +21959,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6645429308203028935"
+                      "templateHash": "8002809226425011530"
                     }
                   },
                   "parameters": {
@@ -22005,7 +22027,7 @@
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "The resource ID of the private DNS zone."
                       },
@@ -22069,7 +22091,7 @@
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
-                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(reference('openAiPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(reference('aiServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-cognitiveservices-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-openai-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-ai-services-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }
@@ -24885,7 +24907,7 @@
               "value": "[reference('cognitiveService').outputs.name.value]"
             },
             "resourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Resource ID of the Cognitive Services resource."
               },
@@ -24979,7 +25001,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "4464481103977571824"
+              "templateHash": "1288936038726730424"
             }
           },
           "definitions": {
@@ -25203,7 +25225,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6645429308203028935"
+                      "templateHash": "8002809226425011530"
                     }
                   },
                   "parameters": {
@@ -25271,7 +25293,7 @@
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "The resource ID of the private DNS zone."
                       },
@@ -25317,7 +25339,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6645429308203028935"
+                      "templateHash": "8002809226425011530"
                     }
                   },
                   "parameters": {
@@ -25385,7 +25407,7 @@
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "The resource ID of the private DNS zone."
                       },
@@ -25468,7 +25490,7 @@
                     "value": true
                   },
                   "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId')))), createObject('value', createArray()))]",
-                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), coalesce(reference('blobPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), '')))), 'service', 'blob', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')), createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), coalesce(reference('filePrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), '')))), 'service', 'file', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-blob-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), '')))), 'service', 'blob', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')), createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-file-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), '')))), 'service', 'file', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
@@ -31231,7 +31253,7 @@
               "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-sa-deployment', parameters('name')), 64)), '2022-09-01').name]"
             },
             "resourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Resource ID of the Storage Account."
               },
@@ -31286,7 +31308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "165921050613048404"
+              "templateHash": "3821456293410558591"
             }
           },
           "definitions": {
@@ -31512,7 +31534,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6645429308203028935"
+                      "templateHash": "8002809226425011530"
                     }
                   },
                   "parameters": {
@@ -31580,7 +31602,7 @@
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "The resource ID of the private DNS zone."
                       },
@@ -31649,7 +31671,7 @@
                     "value": "[not(equals(parameters('privateNetworking'), null()))]"
                   },
                   "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId')))), createObject('value', createArray()))]",
-                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId')), coalesce(reference('privateDnsZone').outputs.resourceId.value, ''), coalesce(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId'), '')), '')))), 'service', 'Sql', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-documents-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), coalesce(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId'), '')), '')))), 'service', 'Sql', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
                   "sqlDatabases": {
                     "value": [
                       {
@@ -35482,14 +35504,14 @@
               "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-account-deployment', parameters('name')), 64)), '2022-09-01').name]"
             },
             "resourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Resource ID of the Cosmos DB Account."
               },
               "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-account-deployment', parameters('name')), 64)), '2022-09-01').resourceId]"
             },
             "endpoint": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Endpoint of the Cosmos DB Account."
               },
@@ -37974,7 +37996,7 @@
               {
                 "name": "cmsabackend",
                 "image": "[format('{0}/{1}:{2}', parameters('backendContainerRegistryHostname'), parameters('backendContainerImageName'), parameters('backendContainerImageTag'))]",
-                "env": "[concat(createArray(createObject('name', 'COSMOSDB_ENDPOINT', 'value', reference('cosmosDb').outputs.endpoint.value), createObject('name', 'COSMOSDB_DATABASE', 'value', reference('cosmosDb').outputs.databaseName.value), createObject('name', 'COSMOSDB_BATCH_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.batch), createObject('name', 'COSMOSDB_FILE_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.file), createObject('name', 'COSMOSDB_LOG_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.log), createObject('name', 'AZURE_BLOB_ACCOUNT_NAME', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AZURE_BLOB_CONTAINER_NAME', 'value', variables('appStorageContainerName')), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', format('https://{0}.openai.azure.com/', reference('aiServices').outputs.name.value)), createObject('name', 'MIGRATOR_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'PICKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'FIXER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SEMANTIC_VERIFIER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SYNTAX_CHECKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SELECTION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'TERMINATION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_PROJECT_NAME', 'value', reference('aiServices').outputs.project.value.name), createObject('name', 'AZURE_AI_AGENT_RESOURCE_GROUP_NAME', 'value', resourceGroup().name), createObject('name', 'AZURE_AI_AGENT_SUBSCRIPTION_ID', 'value', subscription().subscriptionId), createObject('name', 'AZURE_AI_AGENT_ENDPOINT', 'value', reference('aiServices').outputs.project.value.apiEndpoint), createObject('name', 'AZURE_CLIENT_ID', 'value', reference('appIdentity').outputs.clientId.value)), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY', 'value', reference('applicationInsights').outputs.instrumentationKey.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]",
+                "env": "[concat(createArray(createObject('name', 'COSMOSDB_ENDPOINT', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('cosmos-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').endpoint), createObject('name', 'COSMOSDB_DATABASE', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('cosmos-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').databaseName), createObject('name', 'COSMOSDB_BATCH_CONTAINER', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('cosmos-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').containerNames.batch), createObject('name', 'COSMOSDB_FILE_CONTAINER', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('cosmos-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').containerNames.file), createObject('name', 'COSMOSDB_LOG_CONTAINER', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('cosmos-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').containerNames.log), createObject('name', 'AZURE_BLOB_ACCOUNT_NAME', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('storage-account-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').name), createObject('name', 'AZURE_BLOB_CONTAINER_NAME', 'value', variables('appStorageContainerName')), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', format('https://{0}.openai.azure.com/', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('aiservices-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').name)), createObject('name', 'MIGRATOR_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'PICKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'FIXER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SEMANTIC_VERIFIER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SYNTAX_CHECKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SELECTION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'TERMINATION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_PROJECT_NAME', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('aiservices-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').project.name), createObject('name', 'AZURE_AI_AGENT_RESOURCE_GROUP_NAME', 'value', resourceGroup().name), createObject('name', 'AZURE_AI_AGENT_SUBSCRIPTION_ID', 'value', subscription().subscriptionId), createObject('name', 'AZURE_AI_AGENT_ENDPOINT', 'value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('aiservices-{0}-deployment', variables('resourcesName')), 64)), '2022-09-01').project.apiEndpoint), createObject('name', 'AZURE_CLIENT_ID', 'value', reference('appIdentity').outputs.clientId.value)), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY', 'value', reference('applicationInsights').outputs.instrumentationKey.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]",
                 "resources": {
                   "cpu": 1,
                   "memory": "2.0Gi"

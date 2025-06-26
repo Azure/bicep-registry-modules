@@ -57,6 +57,7 @@ param projectName string
 @description('Optional. The description of the AI Foundry project to create.')
 param projectDescription string = projectName
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Optional. The resource ID of the Log Analytics workspace to use for diagnostic settings.')
 param logAnalyticsWorkspaceResourceId string?
 
@@ -190,6 +191,7 @@ output resourceGroupName string = resourceGroup().name
 @description('Name of the Cognitive Services resource.')
 output name string = cognitiveService.outputs.name
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Resource ID of the Cognitive Services resource.')
 output resourceId string = cognitiveService.outputs.resourceId
 

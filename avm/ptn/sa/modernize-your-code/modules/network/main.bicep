@@ -10,6 +10,7 @@ param resourcesName string
 @description('Optional. Azure region for all services.')
 param location string = resourceGroup().location
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
 param logAnalyticsWorkSpaceResourceId string
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18307101296251408984"
+      "templateHash": "16877864672325548380"
     },
     "name": "AI Services and Project Module",
     "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -382,7 +382,7 @@
       }
     },
     "logAnalyticsWorkspaceResourceId": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the Log Analytics workspace to use for diagnostic settings."
@@ -463,7 +463,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6645429308203028935"
+              "templateHash": "8002809226425011530"
             }
           },
           "parameters": {
@@ -531,7 +531,7 @@
               "value": "[parameters('name')]"
             },
             "resourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "The resource ID of the private DNS zone."
               },
@@ -577,7 +577,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6645429308203028935"
+              "templateHash": "8002809226425011530"
             }
           },
           "parameters": {
@@ -645,7 +645,7 @@
               "value": "[parameters('name')]"
             },
             "resourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "The resource ID of the private DNS zone."
               },
@@ -691,7 +691,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6645429308203028935"
+              "templateHash": "8002809226425011530"
             }
           },
           "parameters": {
@@ -759,7 +759,7 @@
               "value": "[parameters('name')]"
             },
             "resourceId": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "The resource ID of the private DNS zone."
               },
@@ -823,7 +823,7 @@
           "roleAssignments": {
             "value": "[parameters('roleAssignments')]"
           },
-          "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(reference('openAiPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(reference('aiServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-cognitiveservices-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-openai-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-ai-services-pdns-deployment', parameters('name')), 64)), '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -3639,7 +3639,7 @@
       "value": "[reference('cognitiveService').outputs.name.value]"
     },
     "resourceId": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Resource ID of the Cognitive Services resource."
       },

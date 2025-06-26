@@ -43,7 +43,7 @@ This module creates an AI Services resource and an AI Foundry project within it.
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | Kind of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`location`](#parameter-location) | string | The location of the Cognitive Services resource. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The resource ID of the Log Analytics workspace to use for diagnostic settings. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | securestring | The resource ID of the Log Analytics workspace to use for diagnostic settings. |
 | [`privateNetworking`](#parameter-privatenetworking) | object | Values to establish private networking for the AI Services resource. |
 | [`projectDescription`](#parameter-projectdescription) | string | The description of the AI Foundry project to create. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -259,7 +259,7 @@ The location of the Cognitive Services resource.
 The resource ID of the Log Analytics workspace to use for diagnostic settings.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `privateNetworking`
 
@@ -463,7 +463,7 @@ Tags to be applied to the resources.
 | `name` | string | Name of the Cognitive Services resource. |
 | `project` |  | AI Foundry Project information. |
 | `resourceGroupName` | string | The resource group the resources were deployed into. |
-| `resourceId` | string | Resource ID of the Cognitive Services resource. |
+| `resourceId` | securestring | Resource ID of the Cognitive Services resource. |
 | `systemAssignedMIPrincipalId` | string | Principal ID of the system assigned managed identity for the Cognitive Services resource. This is only available if the resource has a system assigned managed identity. |
 
 ## Cross-referenced modules

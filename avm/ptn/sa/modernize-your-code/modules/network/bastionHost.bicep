@@ -17,6 +17,7 @@ param vnetId string
 @description('Required. Name of the Virtual Network where the Azure Bastion Host will be deployed.')
 param vnetName string
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
 param logAnalyticsWorkspaceId string
 

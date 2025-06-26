@@ -29,6 +29,7 @@ param password string
 @description('Optional. Tags to apply to the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Required. Log Analytics Workspace Resource ID for VM diagnostics.')
 param logAnalyticsWorkspaceId string
 

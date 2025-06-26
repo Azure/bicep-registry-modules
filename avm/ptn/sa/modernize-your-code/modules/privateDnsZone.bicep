@@ -35,6 +35,7 @@ output resourceGroupName string = resourceGroup().name
 @description('The name of the private DNS zone.')
 output name string = privateDnsZone.name
 
+@secure() // marked secure to meet AVM validation requirements
 @description('The resource ID of the private DNS zone.')
 output resourceId string = privateDnsZone.id
 

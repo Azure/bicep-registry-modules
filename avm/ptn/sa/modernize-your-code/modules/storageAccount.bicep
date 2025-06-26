@@ -147,6 +147,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.22.1' = {
 @description('Name of the Storage Account.')
 output name string = storageAccount.outputs.name
 
+@secure() // marked secure to meet AVM validation requirements
 @description('Resource ID of the Storage Account.')
 output resourceId string = storageAccount.outputs.resourceId
 

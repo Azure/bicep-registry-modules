@@ -44,7 +44,7 @@ This module creates a secure Virtual Network with optional Azure Bastion Host an
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | Networking address prefix for the VNET. |
-| [`logAnalyticsWorkSpaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of the Log Analytics Workspace for monitoring and diagnostics. |
+| [`logAnalyticsWorkSpaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | securestring | Resource ID of the Log Analytics Workspace for monitoring and diagnostics. |
 | [`resourcesName`](#parameter-resourcesname) | string | Name used for naming all network resources. |
 | [`subnets`](#parameter-subnets) | array | Array of subnets to be created within the VNET. |
 
@@ -70,7 +70,7 @@ Networking address prefix for the VNET.
 Resource ID of the Log Analytics Workspace for monitoring and diagnostics.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `resourcesName`
 

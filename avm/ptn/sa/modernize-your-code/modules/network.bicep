@@ -22,6 +22,22 @@ param vmAdminUsername string
 @secure()
 param vmAdminPassword string
 
+var denyHopOutboundRule = {
+  name: 'deny-hop-outbound'
+  properties: {
+    priority: 200
+    access: 'Deny'
+    protocol: 'Tcp'
+    direction: 'Outbound'
+    sourceAddressPrefix: 'VirtualNetwork'
+    destinationAddressPrefix: '*'
+    destinationPortRanges: [
+      '3389'
+      '22'
+    ]
+  }
+}
+
 // Subnet Classless Inter-Doman Routing (CIDR)  Sizing Reference Table (Best Practices)
 // | CIDR      | # of Addresses | # of /24s | Notes                                 |
 // |-----------|---------------|-----------|----------------------------------------|
@@ -81,6 +97,7 @@ module network 'network/main.bicep' = {
                 destinationAddressPrefixes: ['10.0.0.0/23']
               }
             }
+            denyHopOutboundRule
           ]
         }
         delegation: 'Microsoft.App/environments'
@@ -122,6 +139,7 @@ module network 'network/main.bicep' = {
                 destinationAddressPrefixes: ['10.0.12.0/23']
               }
             }
+            denyHopOutboundRule
           ]
         }
       }

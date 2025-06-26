@@ -185,6 +185,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
     location: location
     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    disableLocalAuth: enablePrivateNetworking
     tags: allTags
     retentionInDays: 365
     kind: 'web'
