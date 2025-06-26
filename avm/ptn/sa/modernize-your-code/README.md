@@ -273,7 +273,7 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`solutionName`](#parameter-solutionname) | securestring | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
+| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 
 **Optional parameters**
 
@@ -294,7 +294,7 @@ param vmAdminUsername = 'adminuser'
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`location`](#parameter-location) | string | Azure region for all services. Defaults to the resource group location. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | The secondary location for the Cosmos DB account if redundancy is enabled. Defaults to false. |
-| [`solutionUniqueToken`](#parameter-solutionuniquetoken) | securestring | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
+| [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | securestring | Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
@@ -304,7 +304,7 @@ param vmAdminUsername = 'adminuser'
 A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.
 
 - Required: Yes
-- Type: securestring
+- Type: string
 
 ### Parameter: `azureAiServiceLocation`
 
@@ -453,12 +453,12 @@ The secondary location for the Cosmos DB account if redundancy is enabled. Defau
 - Required: No
 - Type: string
 
-### Parameter: `solutionUniqueToken`
+### Parameter: `solutionUniqueText`
 
-A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.
+A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.
 
 - Required: No
-- Type: securestring
+- Type: string
 - Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 5)]`
 
 ### Parameter: `tags`
