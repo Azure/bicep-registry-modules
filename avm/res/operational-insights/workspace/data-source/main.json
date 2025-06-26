@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13861641947418282681"
+      "templateHash": "8336916453932906250"
     },
     "name": "Log Analytics Workspace Datasources",
     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -43,10 +43,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+        },
         "description": "Optional. Tags to configure in the resource."
-      }
+      },
+      "nullable": true
     },
     "linkedResourceId": {
       "type": "string",

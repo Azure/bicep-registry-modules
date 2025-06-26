@@ -21,7 +21,7 @@ param name string
 param kind string = 'AzureActivityLog'
 
 @description('Optional. Tags to configure in the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01'>.tags?
 
 @description('Optional. Resource ID of the resource to be linked.')
 param linkedResourceId string?

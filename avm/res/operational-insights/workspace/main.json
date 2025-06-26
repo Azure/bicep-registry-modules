@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1026220488169805255"
+      "templateHash": "14295745238997519515"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -1180,10 +1180,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.OperationalInsights/workspaces@2025-02-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1391,7 +1394,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6549520255479591704"
+              "templateHash": "1306323182548882150"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -1438,10 +1441,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Tags to configure in the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -1536,7 +1542,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13960282648492438275"
+              "templateHash": "5230241501765697269"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -1570,10 +1576,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces/linkedServices@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Tags to configure in the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -1788,7 +1797,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12935674153111684167"
+              "templateHash": "9015459905306126128"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -1826,10 +1835,13 @@
             },
             "tags": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01#properties/properties/properties/tags"
+                },
                 "description": "Optional. Tags to configure in the resource."
-              }
+              },
+              "nullable": true
             },
             "functionAlias": {
               "type": "string",
@@ -2144,7 +2156,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13861641947418282681"
+              "templateHash": "8336916453932906250"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -2181,10 +2193,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Tags to configure in the resource."
-              }
+              },
+              "nullable": true
             },
             "linkedResourceId": {
               "type": "string",

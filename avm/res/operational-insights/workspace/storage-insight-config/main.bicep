@@ -17,7 +17,7 @@ param containers string[]?
 param tables string[]?
 
 @description('Optional. Tags to configure in the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01'>.tags?
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: last(split(storageAccountResourceId, '/'))!
