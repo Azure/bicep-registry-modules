@@ -35,6 +35,10 @@ function Get-PublishedModuleVersionsList {
     try {
         $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
     } catch {
+        if (Test-McrConnection) {
+            Write-Verbose "MCR connection test passed. New modules don't have a published version."
+            return '0.1.0'
+        }
         Write-Error "Error occurred while accessing URL: $tagListUrl"
         Write-Error "Error message: $($_.Exception.Message)"
         throw $_.Exception
@@ -42,4 +46,38 @@ function Get-PublishedModuleVersionsList {
     $publishedTags = $tagListResponse.tags | Sort-Object { [Version]$_ } -Culture 'en-US'
     Write-Verbose "  Found tags: $($publishedTags -join ', ')" -Verbose
     return $publishedTags
+}
+
+<#
+.SYNOPSIS
+Test connectivity to the Microsoft Container Registry (MCR)
+
+.DESCRIPTION
+Tests the ability to connect to the Microsoft Container Registry (MCR) by sending a request to the root URL.
+
+.PARAMETER None
+No parameters are required for this function.
+
+.OUTPUTS
+Returns `$true` if the connection is successful, otherwise throws an error.
+
+.EXAMPLE
+Test-McrConnection
+
+Tests the connection to MCR and returns `$true` if successful.
+#>
+function Test-McrConnection {
+    [CmdletBinding()]
+    param ()
+
+    $testUrl = 'https://mcr.microsoft.com'
+    Write-Verbose "Testing MCR connection at '$testUrl'..."
+    try {
+        Invoke-RestMethod -Uri $testUrl -TimeoutSec 5 | Out-Null
+        Write-Verbose 'MCR connection test successful.' -Verbose
+        return $true
+    } catch {
+        Write-Error 'Failed to connect to MCR. Please check your network connection and try again.'
+        return $false
+    }
 }

@@ -1554,12 +1554,12 @@ Describe 'Module tests' -Tag 'Module' {
                 # the module will be published. Use the new version
                 $expectedModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
             } else {
-                # the module will not be published. Use the current version
+                # the module will not be published (in that case use the current version), or is a new module without a version
                 Write-Verbose 'A new version will not be published. Use the current version.' -Verbose
                 $publishedVersions = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/')
                 # the last version in the array is the latest published version
-                Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
-                $expectedModuleVersion = $publishedVersions[-1]
+                $expectedModuleVersion = $publishedVersions -is [Array] -and $publishedVersions.Count -gt 0 ? $publishedVersions[-1] : $publishedVersions
+                Write-Verbose "Latest published version is [$($expectedModuleVersion)]." -Verbose
             }
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }

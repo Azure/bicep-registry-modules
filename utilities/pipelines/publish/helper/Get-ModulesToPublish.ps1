@@ -204,6 +204,7 @@ Get any template (main.json) files in the given folder path that would qualify f
 .DESCRIPTION
 Get any template (main.json) files in the given folder path that would qualify for publishing.
 Uses Head^-1 to check for changed files and filters them by the module path & path filter of the version.json
+Note: This logic does not return new files that were added, but only files that were modified. Therefore, it is not suitable for new modules that have not been published before.
 
 .PARAMETER ModuleFolderPath
 Mandatory. The path to the module to check for changed files in.
