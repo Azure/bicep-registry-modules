@@ -142,7 +142,6 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           hubRoutingPreference: 'ASPath'
-          virtualRouterAsn: 65515
           allowBranchToBranchTraffic: true
           deployExpressRouteGateway: true
           expressRouteParameters: {
@@ -152,18 +151,20 @@ module testDeployment '../../../main.bicep' = [
           s2sVpnParameters: {
             vpnGatewayName: 'dep-${namePrefix}-s2svpngw-westus2-${serviceShort}'
             vpnGatewayScaleUnit: 1
+            isRoutingPreferenceInternet: false
             bgpSettings: {
               asn: 65515
               bgpPeeringAddresses: [
                 {
-                  customBgpIpAddresses: [
-                    '10.0.1.50'
-                  ]
+                  ipconfigurationId: 'Instance0'
+                  customBgpIpAddresses: []
+                }
+                {
+                  ipconfigurationId: 'Instance1'
+                  customBgpIpAddresses: []
                 }
               ]
-              peerWeight: 100
             }
-            isRoutingPreferenceInternet: false
             natRules: [
               {
                 name: 'dep-${namePrefix}-nat-rule-westus2-${serviceShort}'
@@ -190,3 +191,46 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+module testVpnSite 'br/public:avm/res/network/vpn-site:0.3.1' = {
+  scope: resourceGroup
+  params: {
+    name: 'dep-${namePrefix}-vpnSite-${serviceShort}'
+    virtualWanId: testDeployment[0].outputs.virtualWan.resourceId
+    ipAddress: '100.1.125.50'
+    bgpProperties: {
+      asn: 63000
+      bgpPeeringAddress: '10.60.60.10'
+    }
+    vpnSiteLinks: [
+      {
+        name: '${namePrefix}-vSite-${serviceShort}'
+        properties: {
+          bgpProperties: {
+            asn: 65010
+            bgpPeeringAddress: '1.1.1.1'
+          }
+          ipAddress: '1.2.3.4'
+          linkProperties: {
+            linkProviderName: 'contoso'
+            linkSpeedInMbps: 5
+          }
+        }
+      }
+      {
+        name: 'Link1'
+        properties: {
+          bgpProperties: {
+            asn: 65020
+            bgpPeeringAddress: '192.168.1.0'
+          }
+          ipAddress: '2.2.2.2'
+          linkProperties: {
+            linkProviderName: 'contoso'
+            linkSpeedInMbps: 5
+          }
+        }
+      }
+    ]
+  }
+}

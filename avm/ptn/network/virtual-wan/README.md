@@ -234,12 +234,14 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             asn: 65515
             bgpPeeringAddresses: [
               {
-                customBgpIpAddresses: [
-                  '10.0.1.50'
-                ]
+                customBgpIpAddresses: []
+                ipconfigurationId: 'Instance0'
+              }
+              {
+                customBgpIpAddresses: []
+                ipconfigurationId: 'Instance1'
               }
             ]
-            peerWeight: 100
           }
           isRoutingPreferenceInternet: false
           natRules: [
@@ -274,7 +276,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             privateToFirewall: true
           }
         }
-        virtualRouterAsn: 65515
       }
     ]
     virtualWanParameters: {
@@ -386,12 +387,14 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "asn": 65515,
               "bgpPeeringAddresses": [
                 {
-                  "customBgpIpAddresses": [
-                    "10.0.1.50"
-                  ]
+                  "customBgpIpAddresses": [],
+                  "ipconfigurationId": "Instance0"
+                },
+                {
+                  "customBgpIpAddresses": [],
+                  "ipconfigurationId": "Instance1"
                 }
-              ],
-              "peerWeight": 100
+              ]
             },
             "isRoutingPreferenceInternet": false,
             "natRules": [
@@ -425,8 +428,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "internetToFirewall": true,
               "privateToFirewall": true
             }
-          },
-          "virtualRouterAsn": 65515
+          }
         }
       ]
     },
@@ -538,12 +540,14 @@ param virtualHubParameters = [
         asn: 65515
         bgpPeeringAddresses: [
           {
-            customBgpIpAddresses: [
-              '10.0.1.50'
-            ]
+            customBgpIpAddresses: []
+            ipconfigurationId: 'Instance0'
+          }
+          {
+            customBgpIpAddresses: []
+            ipconfigurationId: 'Instance1'
           }
         ]
-        peerWeight: 100
       }
       isRoutingPreferenceInternet: false
       natRules: [
@@ -578,7 +582,6 @@ param virtualHubParameters = [
         privateToFirewall: true
       }
     }
-    virtualRouterAsn: 65515
   }
 ]
 param virtualWanParameters = {
