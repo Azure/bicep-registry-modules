@@ -279,7 +279,7 @@ function Invoke-ResourceRemoval {
                     if ([DateTime]::UtcNow -lt $replicationCreated.AddHours(1)) {
                         $timeLeft = [int]($replicationCreated.AddHours(1) - [DateTime]::UtcNow).TotalSeconds
                         Write-Verbose ('    [⏱️] Waiting {0} minutes to ensure at least 1 hour has passed since replication creation time [{1}] (UTC).' -f [int]($timeLeft / 60), $replicationCreated) -Verbose
-                        Start-Sleep -Seconds $timeLeft + 10  # Add 10 seconds to ensure we are past the hour mark
+                        Start-Sleep -Seconds ([int]$timeLeft + 10)  # Add 10 seconds to ensure we are past the hour mark
                         $retryCount++
                         continue
                     }
