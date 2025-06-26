@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       // location: resourceGroupLocation
       enablePrivateNetworking: false
       contentUnderstandingLocation: enforcedLocation
-      gptDeploymentCapacity: 80
+      gptDeploymentCapacity: 10
     }
   }
 ]
