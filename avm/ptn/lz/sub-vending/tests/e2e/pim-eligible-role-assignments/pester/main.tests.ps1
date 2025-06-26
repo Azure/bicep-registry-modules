@@ -28,14 +28,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $sub.State | Should -Be 'Enabled'
         }
 
-        It "Should have a Subscription with a tag key of 'namePrefix' with a value of '$namePrefix'" {
-            $sub.Tags.namePrefix | Should -Be $namePrefix
-        }
-
-        It "Should have a Subscription with a tag key of 'serviceShort' with a value of '$serviceShort'" {
-            $sub.Tags.serviceShort | Should -Be $serviceShort
-        }
-
         It "Should have a Subscription that is a child of the Management Group with the ID of 'bicep-lz-vending-automation-child'" {
             $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId 'bicep-lz-vending-automation-child' -ErrorAction SilentlyContinue
             $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"

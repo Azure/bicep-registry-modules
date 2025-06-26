@@ -7,7 +7,7 @@ param waitTimeInSeconds string
 
 param tags object
 
-resource deployDelay 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource deployDelay 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-wait-${serviceShort}'
   location: resourceLocation
   kind: 'AzurePowerShell'
