@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5292219062367503896"
+      "templateHash": "5067302787760260299"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -24640,8 +24640,8 @@
         "avmContainerApp",
         "avmContainerApp_API",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "avmVirtualNetwork"
       ]
     },
@@ -24704,7 +24704,7 @@
           "networkAcls": {
             "value": {
               "bypass": "AzureServices",
-              "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
+              "defaultAction": "Allow"
             }
           },
           "disableLocalAuth": {
@@ -27003,10 +27003,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -27055,6 +27055,12 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "networkAcls": {
+            "value": {
+              "bypass": "AzureServices",
+              "defaultAction": "Allow"
+            }
           },
           "roleAssignments": {
             "value": [
@@ -29338,8 +29344,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "avmVirtualNetwork"
       ]
     },
@@ -35107,8 +35113,8 @@
       },
       "dependsOn": [
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
