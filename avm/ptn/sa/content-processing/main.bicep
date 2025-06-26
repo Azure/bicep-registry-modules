@@ -278,7 +278,7 @@ module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if 
   name: format(resourceNameFormatString, 'vnet-')
   params: {
     // name: '${namingAbbrs.networking.virtualNetwork}${solutionPrefix}'
-    name: 'vnet-cps'
+    name: 'vnet-cps-${solutionPrefix}'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -353,7 +353,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'dns-zone-${i}'
     params: {
-      name: zone
+      name: '${zone}-${solutionPrefix}'
       tags: tags
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [{ virtualNetworkResourceId: avmVirtualNetwork.outputs.resourceId }]
@@ -687,7 +687,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {
-            name: 'storage-private-endpoint-blob'
+            name: 'storage-private-endpoint-blob-${solutionPrefix}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -700,7 +700,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
             service: 'blob'
           }
           {
-            name: 'storage-private-endpoint-queue'
+            name: 'storage-private-endpoint-queue-${solutionPrefix}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -1060,7 +1060,7 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {
-            name: 'ai-services-private-endpoint'
+            name: 'ai-services-private-endpoint-${solutionPrefix}'
             privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
@@ -1142,7 +1142,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {
-            name: 'aicu-private-endpoint'
+            name: 'aicu-private-endpoint-${solutionPrefix}'
             privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
@@ -1214,7 +1214,7 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {
-            name: 'aistoragehub-private-endpoint-blob'
+            name: 'aistoragehub-private-endpoint-blob-${solutionPrefix}'
             privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
             service: 'blob'
             privateDnsZoneGroup: {
@@ -1229,7 +1229,7 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
             subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
           }
           {
-            name: 'aistoragehub-private-endpoint-file'
+            name: 'aistoragehub-private-endpoint-file-${solutionPrefix}'
             privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
             service: 'file'
             privateDnsZoneGroup: {
@@ -1299,7 +1299,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {
-            name: 'ai-hub-private-endpoint'
+            name: 'ai-hub-private-endpoint-${solutionPrefix}'
             privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
@@ -1716,7 +1716,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {
-            name: 'cosmosdb-private-endpoint'
+            name: 'cosmosdb-private-endpoint-${solutionPrefix}'
             privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
@@ -1902,7 +1902,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
-        name: 'appconfig-private-endpoint'
+        name: 'appconfig-private-endpoint-${solutionPrefix}'
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {

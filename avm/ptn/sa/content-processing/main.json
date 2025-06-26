@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10535722019570690815"
+      "templateHash": "6389655915688725115"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -2988,7 +2988,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "vnet-cps"
+            "value": "[format('vnet-cps-{0}', variables('solutionPrefix'))]"
           },
           "location": {
             "value": "[parameters('resourceGroupLocation')]"
@@ -4682,7 +4682,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('privateDnsZones')[copyIndex()]]"
+            "value": "[format('{0}-{1}', variables('privateDnsZones')[copyIndex()], variables('solutionPrefix'))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -18940,7 +18940,7 @@
           },
           "allowBlobPublicAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'storage-private-endpoint-blob', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0], 'service', 'blob'), createObject('name', 'storage-private-endpoint-queue', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0], 'service', 'queue'))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('storage-private-endpoint-blob-{0}', variables('solutionPrefix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0], 'service', 'blob'), createObject('name', format('storage-private-endpoint-queue-{0}', variables('solutionPrefix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0], 'service', 'queue'))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -24728,7 +24728,7 @@
             ]
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'ai-services-private-endpoint', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-services-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-openai', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-aiservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-contentunderstanding', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('ai-services-private-endpoint-{0}', variables('solutionPrefix')), 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-services-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-openai', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-aiservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-contentunderstanding', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -27000,10 +27000,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -27063,7 +27063,7 @@
             ]
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'aicu-private-endpoint', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aicu-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'aicu-dns-zone-contentunderstanding', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('aicu-private-endpoint-{0}', variables('solutionPrefix')), 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aicu-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'aicu-dns-zone-contentunderstanding', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -29335,8 +29335,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork"
       ]
     },
@@ -29409,7 +29409,7 @@
           "publicNetworkAccess": {
             "value": "Disabled"
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'aistoragehub-private-endpoint-blob', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'service', 'blob', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aistoragehub-dns-zone-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]), createObject('name', 'aistoragehub-private-endpoint-file', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'service', 'file', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aistoragehub-dns-zone-file', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('aistoragehub-private-endpoint-blob-{0}', variables('solutionPrefix')), 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'service', 'blob', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aistoragehub-dns-zone-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]), createObject('name', format('aistoragehub-private-endpoint-file-{0}', variables('solutionPrefix')), 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'service', 'file', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'aistoragehub-dns-zone-file', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -35104,8 +35104,8 @@
       },
       "dependsOn": [
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -35188,7 +35188,7 @@
             ]
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'ai-hub-private-endpoint', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-hub-dns-zone-amlworkspace', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)).outputs.resourceId.value), createObject('name', 'ai-hub-dns-zone-notebooks', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('ai-hub-private-endpoint-{0}', variables('solutionPrefix')), 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-hub-dns-zone-amlworkspace', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)).outputs.resourceId.value), createObject('name', 'ai-hub-dns-zone-notebooks', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)).outputs.resourceId.value))), 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -39328,8 +39328,8 @@
         "avmContainerRegistry",
         "avmKeyVault",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
         "avmVirtualNetwork"
       ]
     },
@@ -49612,7 +49612,7 @@
               "virtualNetworkRules": []
             }
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', 'cosmosdb-private-endpoint', 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cosmosdb-dns-zone-group', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cosmosDB)).outputs.resourceId.value))), 'service', 'MongoDB', 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('cosmosdb-private-endpoint-{0}', variables('solutionPrefix')), 'privateEndpointResourceId', reference('avmVirtualNetwork').outputs.resourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cosmosdb-dns-zone-group', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cosmosDB)).outputs.resourceId.value))), 'service', 'MongoDB', 'subnetResourceId', reference('avmVirtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -55555,7 +55555,7 @@
           "privateEndpoints": {
             "value": [
               {
-                "name": "appconfig-private-endpoint",
+                "name": "[format('appconfig-private-endpoint-{0}', variables('solutionPrefix'))]",
                 "privateDnsZoneGroup": {
                   "privateDnsZoneGroupConfigs": [
                     {
