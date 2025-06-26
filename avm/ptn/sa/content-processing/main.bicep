@@ -50,7 +50,10 @@ param useLocalBuild bool = false
 param enableScaling bool = false
 
 // ========== Solution Prefix Variable ========== //
-var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
+@description('Optional. A unique deployment timestamp for solution prefix generation.')
+param deploymentTimestamp string = utcNow()
+
+var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location, deploymentTimestamp)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
 // @description('Resource naming abbreviations.')
 // var namingAbbrs = loadJsonContent('abbreviations.json')
