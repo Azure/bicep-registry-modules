@@ -68,11 +68,9 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            # TODO: remove comment
-            # subscriptionId    = '${{ inputs.subscriptionId }}'
             subscriptionId    = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
-            tenantId          = '${{ env.ARM_TENANT_ID }}'
+            tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
 
           # Add local (source control) tokens
