@@ -26,16 +26,17 @@ param vmAdminPassword string
 var denyHopOutboundRule = {
   name: 'deny-hop-outbound'
   properties: {
-    priority: 200
     access: 'Deny'
-    protocol: 'Tcp'
-    direction: 'Outbound'
-    sourceAddressPrefix: 'VirtualNetwork'
     destinationAddressPrefix: '*'
     destinationPortRanges: [
-      '3389'
       '22'
+      '3389'
     ]
+    direction: 'Outbound'
+    priority: 200
+    protocol: 'Tcp'
+    sourceAddressPrefix: 'VirtualNetwork'
+    sourcePortRange: '*'
   }
 }
 
