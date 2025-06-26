@@ -108,7 +108,6 @@ runs:
         if(Test-Path $functionInput.outputFilePath) {
           Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $functionInput.outputFilePath) >> $env:GITHUB_OUTPUT
         }
-
     - name: "Output to GitHub job summaries"
       if: always() && steps.pester_run_step.outputs.formattedPesterResultsPath != ''
       shell: pwsh

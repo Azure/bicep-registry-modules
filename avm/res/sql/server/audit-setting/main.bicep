@@ -52,30 +52,13 @@ var primaryUserAssignedIdentityPrincipalId = filter(
   identity => identity.key == server.properties.primaryUserAssignedIdentityId
 )[0].value.principalId
 
-// If storage account is in a different resource group
-module storageAccount_sbdc_rbac_rg 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId) && split(
-  storageAccountResourceId,
-  '/'
-)[4] != resourceGroup().name) {
-  name: '${server.name}-stau-rbac-rg'
-  scope: resourceGroup(split(storageAccountResourceId, '/')[2], split(storageAccountResourceId, '/')[4])
+module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId)) {
+  scope: resourceGroup(
+    split(storageAccountResourceId ?? resourceGroup().id, '/')[2],
+    split(storageAccountResourceId ?? resourceGroup().id, '/')[4]
+  )
   params: {
-    storageAccountName: last(split(storageAccountResourceId, '/'))
-    managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
-      ? primaryUserAssignedIdentityPrincipalId
-      : server.identity.principalId
-  }
-}
-
-// If storage account is in the same resource group
-module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId) && split(
-  storageAccountResourceId,
-  '/'
-)[4] == resourceGroup().name) {
-  name: '${server.name}-stau-rbac'
-  scope: resourceGroup()
-  params: {
-    storageAccountName: last(split(storageAccountResourceId, '/'))
+    storageAccountName: last(split(storageAccountResourceId!, '/'))
     managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
       ? primaryUserAssignedIdentityPrincipalId
       : server.identity.principalId
