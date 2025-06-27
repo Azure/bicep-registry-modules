@@ -1,6 +1,6 @@
 # IaaS VM with CosmosDB Tier 4 `[App/IaasVmCosmosdbTier4]`
 
-Creates an IaaS VM with CosmosDB Tier 4 configuration.
+Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.
 
 ## Navigation
 
@@ -221,22 +221,35 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`lbBackendPort`](#parameter-lbbackendport) | int | Load balancer backend port. |
-| [`lbFrontendPort`](#parameter-lbfrontendport) | int | Load balancer frontend port. |
-| [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. |
-| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. |
+| [`deployVirtualNetwork`](#parameter-deployvirtualnetwork) | bool | Whether to deploy a new virtual network or use an existing one. |
+| [`existingApplicationSubnetResourceId`](#parameter-existingapplicationsubnetresourceid) | string | Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false. |
+| [`existingPrivateEndpointSubnetResourceId`](#parameter-existingprivateendpointsubnetresourceid) | string | Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false. |
+| [`existingVirtualNetworkResourceId`](#parameter-existingvirtualnetworkresourceid) | string | Existing virtual network resource ID. Required when deployVirtualNetwork is false. |
+| [`loadBalancerConfiguration`](#parameter-loadbalancerconfiguration) | object | Load balancer configuration. |
+| [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true. |
+| [`virtualMachineNicConfigurations`](#parameter-virtualmachinenicconfigurations) | array | Virtual machine NIC configurations. |
+| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. Only used when deployVirtualNetwork is true. |
 
 **Compute parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`virtualMachineImageReference`](#parameter-virtualmachineimagereference) | object | Virtual machine image reference configuration. |
+| [`virtualMachineZone`](#parameter-virtualmachinezone) | int | Virtual machine availability zone. Set to 0 for no zone. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the virtual machine. |
 
 **Storage parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`storageAccountSku`](#parameter-storageaccountsku) | object | Storage account SKU. |
+| [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Storage account SKU configuration. |
+| [`virtualMachineOsDisk`](#parameter-virtualmachineosdisk) | object | Virtual machine OS disk configuration. |
+
+**Identity parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualMachineManagedIdentities`](#parameter-virtualmachinemanagedidentities) | object | Virtual machine managed identity configuration. |
 
 ### Parameter: `name`
 
@@ -366,25 +379,55 @@ Network security group rules for the VM.
   ]
   ```
 
-### Parameter: `lbBackendPort`
+### Parameter: `deployVirtualNetwork`
 
-Load balancer backend port.
-
-- Required: No
-- Type: int
-- Default: `80`
-
-### Parameter: `lbFrontendPort`
-
-Load balancer frontend port.
+Whether to deploy a new virtual network or use an existing one.
 
 - Required: No
-- Type: int
-- Default: `80`
+- Type: bool
+- Default: `True`
+
+### Parameter: `existingApplicationSubnetResourceId`
+
+Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `existingPrivateEndpointSubnetResourceId`
+
+Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `existingVirtualNetworkResourceId`
+
+Existing virtual network resource ID. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `loadBalancerConfiguration`
+
+Load balancer configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      backendPort: 80
+      frontendPort: 80
+  }
+  ```
 
 ### Parameter: `subnets`
 
-Subnet configuration for the virtual network.
+Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.
 
 - Required: No
 - Type: array
@@ -410,13 +453,58 @@ Subnet configuration for the virtual network.
   ]
   ```
 
+### Parameter: `virtualMachineNicConfigurations`
+
+Virtual machine NIC configurations.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    {
+      deleteOption: 'Delete'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+        }
+      ]
+      name: 'primary-nic'
+    }
+  ]
+  ```
+
 ### Parameter: `vnetAddressPrefix`
 
-Address prefix for the virtual network.
+Address prefix for the virtual network. Only used when deployVirtualNetwork is true.
 
 - Required: No
 - Type: string
 - Default: `'10.0.0.0/16'`
+
+### Parameter: `virtualMachineImageReference`
+
+Virtual machine image reference configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      version: 'latest'
+  }
+  ```
+
+### Parameter: `virtualMachineZone`
+
+Virtual machine availability zone. Set to 0 for no zone.
+
+- Required: No
+- Type: int
+- Default: `1`
 
 ### Parameter: `vmSize`
 
@@ -426,9 +514,9 @@ Size of the virtual machine.
 - Type: string
 - Default: `'Standard_D2s_v3'`
 
-### Parameter: `storageAccountSku`
+### Parameter: `storageAccountConfiguration`
 
-Storage account SKU.
+Storage account SKU configuration.
 
 - Required: No
 - Type: object
@@ -440,15 +528,49 @@ Storage account SKU.
   }
   ```
 
+### Parameter: `virtualMachineOsDisk`
+
+Virtual machine OS disk configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      caching: 'ReadWrite'
+      createOption: 'FromImage'
+      diskSizeGB: 30
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+  }
+  ```
+
+### Parameter: `virtualMachineManagedIdentities`
+
+Virtual machine managed identity configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      systemAssigned: true
+  }
+  ```
+
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `cosmosDbPrivateEndpointResourceId` | string | Resource. The resource ID of the CosmosDB private endpoint. |
 | `cosmosDbResourceId` | string | Resource. The resource ID of the CosmosDB MongoDB vCore cluster. |
 | `loadBalancerResourceId` | string | Resource. The resource ID of the load balancer. |
 | `name` | string | Resource. The name of the virtual machine. |
 | `resourceGroupName` | string | Resource. Resource Group Name. |
 | `resourceId` | string | Resource. The resource ID. |
+| `storageAccountResourceId` | string | Resource. The resource ID of the storage account. |
+| `storagePrivateEndpointResourceId` | string | Resource. The resource ID of the storage account private endpoint. |
 | `virtualMachineResourceId` | string | Resource. The resource ID of the virtual machine. |
 | `virtualNetworkResourceId` | string | Resource. The resource ID of the virtual network. |
 
