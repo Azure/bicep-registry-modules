@@ -24,7 +24,7 @@ This module deploys a SignalR Service SignalR.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.SignalRService/signalR` | [2022-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2022-02-01/signalR) |
+| `Microsoft.SignalRService/signalR` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2024-03-01/signalR) |
 
 ## Usage examples
 
@@ -112,6 +112,11 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     disableAadAuth: false
     disableLocalAuth: true
     kind: 'SignalR'
+    liveTraceCatagoriesToEnable: [
+      'ConnectivityLogs'
+      'HttpRequestLogs'
+      'MessagingLogs'
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -170,6 +175,8 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     ]
     resourceLogConfigurationsToEnable: [
       'ConnectivityLogs'
+      'HttpRequestLogs'
+      'MessagingLogs'
     ]
     roleAssignments: [
       {
@@ -231,6 +238,13 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     },
     "kind": {
       "value": "SignalR"
+    },
+    "liveTraceCatagoriesToEnable": {
+      "value": [
+        "ConnectivityLogs",
+        "HttpRequestLogs",
+        "MessagingLogs"
+      ]
     },
     "location": {
       "value": "<location>"
@@ -300,7 +314,9 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     },
     "resourceLogConfigurationsToEnable": {
       "value": [
-        "ConnectivityLogs"
+        "ConnectivityLogs",
+        "HttpRequestLogs",
+        "MessagingLogs"
       ]
     },
     "roleAssignments": {
@@ -356,6 +372,11 @@ param clientCertEnabled = false
 param disableAadAuth = false
 param disableLocalAuth = true
 param kind = 'SignalR'
+param liveTraceCatagoriesToEnable = [
+  'ConnectivityLogs'
+  'HttpRequestLogs'
+  'MessagingLogs'
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -414,6 +435,8 @@ param privateEndpoints = [
 ]
 param resourceLogConfigurationsToEnable = [
   'ConnectivityLogs'
+  'HttpRequestLogs'
+  'MessagingLogs'
 ]
 param roleAssignments = [
   {
@@ -683,7 +706,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the SignalR Service resource. |
+| [`name`](#parameter-name) | string | The name of the SignalR service resource. |
 
 **Optional parameters**
 
@@ -713,7 +736,7 @@ param tags = {
 
 ### Parameter: `name`
 
-The name of the SignalR Service resource.
+The name of the SignalR service resource.
 
 - Required: Yes
 - Type: string
@@ -812,6 +835,7 @@ Control permission for data plane traffic coming from public networks while priv
   ```Bicep
   [
     'ConnectivityLogs'
+    'HttpRequestLogs'
     'MessagingLogs'
   ]
   ```
@@ -819,6 +843,7 @@ Control permission for data plane traffic coming from public networks while priv
   ```Bicep
   [
     'ConnectivityLogs'
+    'HttpRequestLogs'
     'MessagingLogs'
   ]
   ```
@@ -1337,6 +1362,7 @@ Control permission for data plane traffic coming from public networks while priv
   ```Bicep
   [
     'ConnectivityLogs'
+    'HttpRequestLogs'
     'MessagingLogs'
   ]
   ```
@@ -1344,6 +1370,7 @@ Control permission for data plane traffic coming from public networks while priv
   ```Bicep
   [
     'ConnectivityLogs'
+    'HttpRequestLogs'
     'MessagingLogs'
   ]
   ```

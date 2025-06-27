@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -38,6 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -203,6 +205,10 @@ module testDeployment '../../../main.bicep' = [
       ]
       features: {
         enableLogAccessUsingOnlyResourcePermissions: true
+      }
+      replication: {
+        enabled: true
+        location: nestedDependencies.outputs.pairedRegionName
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'
