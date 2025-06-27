@@ -28,15 +28,21 @@ param kind string = 'StorageV2'
 
 @allowed([
   'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
   'Standard_ZRS'
+  'Standard_GRS'
+  'Standard_GZRS'
+  'Standard_RAGRS'
+  'Standard_RAGZRS'
+  'StandardV2_LRS'
+  'StandardV2_ZRS'
+  'StandardV2_GRS'
+  'StandardV2_GZRS'
   'Premium_LRS'
   'Premium_ZRS'
-  'Standard_GZRS'
-  'Standard_RAGZRS'
+  'PremiumV2_LRS'
+  'PremiumV2_ZRS'
 ])
-@description('Optional. Storage Account Sku Name.')
+@description('Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.')
 param skuName string = 'Standard_GRS'
 
 @allowed([
@@ -52,7 +58,7 @@ param accessTier string = 'Hot'
   'Disabled'
   'Enabled'
 ])
-@description('Optional. Allow large file shares if sets to \'Enabled\'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).')
+@description('Optional. Allow large file shares if set to \'Enabled\'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).')
 param largeFileSharesState string = 'Disabled'
 
 @description('Optional. Provides the identity based authentication settings for Azure Files.')
@@ -737,7 +743,7 @@ output primaryAccessKey string = storageAccount.listKeys().keys[0].value
 
 @secure()
 @description('The secondary access key of the storage account.')
-output secondayAccessKey string = storageAccount.listKeys().keys[1].value
+output secondaryAccessKey string = storageAccount.listKeys().keys[1].value
 
 @secure()
 @description('The primary connection string of the storage account.')
