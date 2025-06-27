@@ -181,7 +181,7 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   scope: virtualHub
 }
 
-module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
+module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
   name: '${uniqueString(deployment().name, location)}-routingIntent'
   params: {
     virtualHubName: virtualHub.name
@@ -192,7 +192,7 @@ module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFir
 }
 
 // Initially create the route tables without routes
-module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
+module virtualHub_routeTables 'hub-route-table/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
     params: {
@@ -204,7 +204,7 @@ module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
   }
 ]
 
-module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main.bicep' = [
+module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/main.bicep' = [
   for (virtualNetworkConnection, index) in (hubVirtualNetworkConnections ?? []): {
     name: '${uniqueString(deployment().name, location)}-connection-${index}'
     params: {

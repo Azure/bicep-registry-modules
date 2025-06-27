@@ -38,7 +38,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.AnalysisServices/servers@2017-08-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

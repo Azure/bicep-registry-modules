@@ -78,21 +78,25 @@ param publicNetworkAccess string?
 @allowed([
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
 param liveTraceCatagoriesToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ]
 
 @allowed([
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
 param resourceLogConfigurationsToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ]
 
 @description('Optional. Request client certificate during TLS handshake if enabled.')
@@ -230,7 +234,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
+resource signalR 'Microsoft.SignalRService/signalR@2024-03-01' = {
   name: name
   location: location
   kind: kind
