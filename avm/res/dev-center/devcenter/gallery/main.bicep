@@ -16,7 +16,7 @@ param name string
 @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')
 param galleryResourceId string
 
-@description('Optional. The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically.')
+@description('Optional. The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. Note that the identity performing the deployment must have permissions to perform role assignments on the resource group of the gallery to assign the role, otherwise the deployment will fail.')
 param devCenterIdentityPrincipalId string?
 
 // ============== //
