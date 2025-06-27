@@ -3403,7 +3403,7 @@ param tags = {
 | [`sasExpirationAction`](#parameter-sasexpirationaction) | string | The SAS expiration action. Allowed values are Block and Log. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
+| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage. |
 | [`supportsHttpsTrafficOnly`](#parameter-supportshttpstrafficonly) | bool | Allows HTTPS traffic only to storage service if sets to true. |
 | [`tableServices`](#parameter-tableservices) | object | Table service and tables to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -4796,7 +4796,7 @@ The connectionString2 secret name to create.
 
 ### Parameter: `skuName`
 
-Storage Account Sku Name.
+Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.
 
 - Required: No
 - Type: string
@@ -4806,12 +4806,18 @@ Storage Account Sku Name.
   [
     'Premium_LRS'
     'Premium_ZRS'
+    'PremiumV2_LRS'
+    'PremiumV2_ZRS'
     'Standard_GRS'
     'Standard_GZRS'
     'Standard_LRS'
     'Standard_RAGRS'
     'Standard_RAGZRS'
     'Standard_ZRS'
+    'StandardV2_GRS'
+    'StandardV2_GZRS'
+    'StandardV2_LRS'
+    'StandardV2_ZRS'
   ]
   ```
 
