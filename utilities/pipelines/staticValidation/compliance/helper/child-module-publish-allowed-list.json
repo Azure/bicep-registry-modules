@@ -4,6 +4,7 @@
     "avm/res/authorization/role-assignment/sub-scope",
     "avm/res/authorization/role-assignment/rg-scope",
     "avm/res/storage/storage-account/blob-service/container",
+    "avm/res/storage/storage-account/file-service/share",
     "avm/res/network/virtual-network/subnet"
   ]
 }
