@@ -73,31 +73,8 @@ resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' = {
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     isRoutingPreferenceInternet: isRoutingPreferenceInternet
     vpnGatewayScaleUnit: vpnGatewayScaleUnit
-    connections: [
-      for (connection, index) in vpnConnections: {
-        name: connection.name
-        properties: {
-          connectionBandwidth: connection.?connectionBandwidth
-          enableBgp: connection.?enableBgp
-          enableInternetSecurity: connection.?enableInternetSecurity
-          remoteVpnSite: contains(connection, 'remoteVpnSiteResourceId')
-            ? {
-                id: connection.?remoteVpnSiteResourceId
-              }
-            : null
-          enableRateLimiting: connection.?enableRateLimiting
-          routingConfiguration: connection.?routingConfiguration
-          routingWeight: connection.?routingWeight
-          sharedKey: connection.?sharedKey
-          useLocalAzureIpAddress: connection.?useLocalAzureIpAddress
-          usePolicyBasedTrafficSelectors: connection.?usePolicyBasedTrafficSelectors
-          vpnConnectionProtocolType: connection.?vpnConnectionProtocolType
-          ipsecPolicies: connection.?ipsecPolicies
-          trafficSelectorPolicies: connection.?trafficSelectorPolicies
-          vpnLinkConnections: connection.?vpnLinkConnections
-        }
-      }
-    ]
+    // Remove connections from main resource - handle via child modules only
+    // This prevents NAT rule reference issues during initial deployment
     virtualHub: {
       id: virtualHubResourceId
     }
@@ -133,6 +110,7 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [
 module vpnGateway_vpnConnections 'vpn-connection/main.bicep' = [
   for (connection, index) in vpnConnections: {
     name: '${deployment().name}-Connection-${index}'
+    dependsOn: vpnGateway_natRules
     params: {
       name: connection.name
       vpnGatewayName: vpnGateway.name
@@ -165,6 +143,16 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = vpnGateway.location
+
+@description('The resource IDs of the NAT rules.')
+output natRuleResourceIds array = [
+  for (natRule, index) in natRules: vpnGateway_natRules[index].outputs.resourceId
+]
+
+@description('The resource IDs of the VPN connections.')
+output vpnConnectionResourceIds array = [
+  for (connection, index) in vpnConnections: vpnGateway_vpnConnections[index].outputs.resourceId
+]
 
 // =============== //
 //   Definitions   //

@@ -115,6 +115,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       resourceLogConfigurationsToEnable: [
         'ConnectivityLogs'
+        'MessagingLogs'
+        'HttpRequestLogs'
+      ]
+      liveTraceCatagoriesToEnable: [
+        'ConnectivityLogs'
+        'MessagingLogs'
+        'HttpRequestLogs'
       ]
       roleAssignments: [
         {

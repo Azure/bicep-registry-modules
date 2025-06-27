@@ -24,8 +24,9 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Sql/servers` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers) |
 | `Microsoft.Sql/servers/auditingSettings` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings) |
+| `Microsoft.Sql/servers/connectionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/connectionPolicies) |
 | `Microsoft.Sql/servers/databases` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases) |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies) |
 | `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies) |
 | `Microsoft.Sql/servers/elasticPools` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/elasticPools) |
 | `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector) |
@@ -1007,7 +1008,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
-      sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+      sqlAzureConnectionStringSecretName: 'sqlConnectionStringKey'
     }
   }
 }
@@ -1052,7 +1053,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "sqlAdminPasswordSecretName": "adminLoginPasswordKey",
-        "sqlAzureConnectionStringSercretName": "sqlConnectionStringKey"
+        "sqlAzureConnectionStringSecretName": "sqlConnectionStringKey"
       }
     }
   }
@@ -1085,7 +1086,7 @@ param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
-  sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+  sqlAzureConnectionStringSecretName: 'sqlConnectionStringKey'
 }
 ```
 
@@ -1169,6 +1170,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           name: 'myCustomLockName'
         }
         name: 'sqlsmax-ep-001'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'SQL DB Contributor'
+          }
+        ]
         sku: {
           capacity: 10
           name: 'GP_Gen5'
@@ -1364,6 +1372,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "myCustomLockName"
           },
           "name": "sqlsmax-ep-001",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "SQL DB Contributor"
+            }
+          ],
           "sku": {
             "capacity": 10,
             "name": "GP_Gen5",
@@ -1571,6 +1586,13 @@ param elasticPools = [
       name: 'myCustomLockName'
     }
     name: 'sqlsmax-ep-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'SQL DB Contributor'
+      }
+    ]
     sku: {
       capacity: 10
       name: 'GP_Gen5'
@@ -2021,6 +2043,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       sid: '<sid>'
       tenantId: '<tenantId>'
     }
+    connectionPolicy: 'Redirect'
     customerManagedKey: {
       autoRotationEnabled: true
       keyName: '<keyName>'
@@ -2156,6 +2179,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "sid": "<sid>",
         "tenantId": "<tenantId>"
       }
+    },
+    "connectionPolicy": {
+      "value": "Redirect"
     },
     "customerManagedKey": {
       "value": {
@@ -2311,6 +2337,7 @@ param administrators = {
   sid: '<sid>'
   tenantId: '<tenantId>'
 }
+param connectionPolicy = 'Redirect'
 param customerManagedKey = {
   autoRotationEnabled: true
   keyName: '<keyName>'
@@ -2444,6 +2471,7 @@ param vulnerabilityAssessmentsObj = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
+| [`connectionPolicy`](#parameter-connectionpolicy) | string | SQL logical server connection policy. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for server TDE. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
@@ -2679,6 +2707,22 @@ Specifies the identifier key of the auditing storage account.
 - Required: No
 - Type: string
 
+### Parameter: `connectionPolicy`
+
+SQL logical server connection policy.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'Proxy'
+    'Redirect'
+  ]
+  ```
+
 ### Parameter: `customerManagedKey`
 
 The customer managed key definition for server TDE.
@@ -2834,33 +2878,10 @@ The long term backup retention policy for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupStorageAccessTier`](#parameter-databasesbackuplongtermretentionpolicybackupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
-| [`makeBackupsImmutable`](#parameter-databasesbackuplongtermretentionpolicymakebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
 | [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
-
-### Parameter: `databases.backupLongTermRetentionPolicy.backupStorageAccessTier`
-
-The BackupStorageAccessTier for the LTR backups.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Archive'
-    'Hot'
-  ]
-  ```
-
-### Parameter: `databases.backupLongTermRetentionPolicy.makeBackupsImmutable`
-
-The setting whether to make LTR backups immutable.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -3531,6 +3552,7 @@ The Elastic Pools to create in the server.
 | [`minCapacity`](#parameter-elasticpoolsmincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused. |
 | [`perDatabaseSettings`](#parameter-elasticpoolsperdatabasesettings) | object | The per database settings for the elastic pool. |
 | [`preferredEnclaveType`](#parameter-elasticpoolspreferredenclavetype) | string | Type of enclave requested on the elastic pool. |
+| [`roleAssignments`](#parameter-elasticpoolsroleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-elasticpoolssku) | object | The elastic pool SKU. |
 | [`tags`](#parameter-elasticpoolstags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-elasticpoolszoneredundant) | bool | Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones. |
@@ -3695,6 +3717,118 @@ Type of enclave requested on the elastic pool.
   [
     'Default'
     'VBS'
+  ]
+  ```
+
+### Parameter: `elasticPools.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Metrics Publisher'`
+  - `'Monitoring Reader'`
+  - `'Reservation Purchaser'`
+  - `'Resource Policy Contributor'`
+  - `'SQL DB Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-elasticpoolsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-elasticpoolsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-elasticpoolsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-elasticpoolsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-elasticpoolsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-elasticpoolsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-elasticpoolsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-elasticpoolsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `elasticPools.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `elasticPools.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `elasticPools.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `elasticPools.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
   ]
   ```
 
@@ -4582,15 +4716,17 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Metrics Publisher'`
+  - `'Monitoring Reader'`
   - `'Reservation Purchaser'`
-  - `'Role Based Access Control Administrator'`
+  - `'Resource Policy Contributor'`
   - `'SQL DB Contributor'`
-  - `'SQL Managed Instance Contributor'`
   - `'SQL Security Manager'`
   - `'SQL Server Contributor'`
   - `'SqlDb Migration Role'`
-  - `'SqlMI Migration Role'`
-  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -4700,7 +4836,7 @@ Key vault reference and secret settings for the module's secrets export.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The sqlAdminPassword secret name to create. |
-| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The sqlAzureConnectionString secret name to create. |
+| [`sqlAzureConnectionStringSecretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsecretname) | string | The sqlAzureConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4716,7 +4852,7 @@ The sqlAdminPassword secret name to create.
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
+### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSecretName`
 
 The sqlAzureConnectionString secret name to create.
 
