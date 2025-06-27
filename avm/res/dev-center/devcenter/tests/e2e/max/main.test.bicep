@@ -60,7 +60,6 @@ module nestedDependencies1 'dependencies1.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     devCenterNetworkConnectionName: 'dep-${namePrefix}-dcnc-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -71,7 +70,6 @@ module nestedDependencies2 'dependencies2.bicep' = {
     galleryName: 'dep${namePrefix}gal${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-img-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-img-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -90,7 +88,6 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
     deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
     virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
     imageTemplateResourceGroupName: ''
-    location: enforcedLocation
     assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
     assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
     storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
