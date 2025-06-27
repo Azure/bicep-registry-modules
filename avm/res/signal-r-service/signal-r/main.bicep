@@ -8,7 +8,7 @@ metadata description = 'This module deploys a SignalR Service SignalR.'
 @description('Optional. The location for the resource.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the SignalR Service resource.')
+@description('Required. The name of the SignalR service resource.')
 param name string
 
 @description('Optional. The kind of the service.')
@@ -78,21 +78,25 @@ param publicNetworkAccess string?
 @allowed([
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
 param liveTraceCatagoriesToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ]
 
 @allowed([
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
 param resourceLogConfigurationsToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
+  'HttpRequestLogs'
 ]
 
 @description('Optional. Request client certificate during TLS handshake if enabled.')
@@ -230,7 +234,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
+resource signalR 'Microsoft.SignalRService/signalR@2024-03-01' = {
   name: name
   location: location
   kind: kind

@@ -18,14 +18,14 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
 
@@ -1221,6 +1221,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     onboardWorkspaceToSentinel: true
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
     roleAssignments: [
       {
         name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
@@ -1566,6 +1570,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "publicNetworkAccessForQuery": {
       "value": "Disabled"
     },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
     "roleAssignments": {
       "value": [
         {
@@ -1891,6 +1901,10 @@ param managedIdentities = {
 param onboardWorkspaceToSentinel = true
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
 param roleAssignments = [
   {
     name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
@@ -2181,6 +2195,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
     storageInsightsConfigs: [
       {
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -2370,6 +2388,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "publicNetworkAccessForQuery": {
       "value": "Disabled"
     },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
     "storageInsightsConfigs": {
       "value": [
         {
@@ -2537,6 +2561,10 @@ param managedIdentities = {
 }
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
 param storageInsightsConfigs = [
   {
     storageAccountResourceId: '<storageAccountResourceId>'
@@ -2592,6 +2620,7 @@ param tags = {
 | [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
+| [`replication`](#parameter-replication) | object | The workspace replication properties. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`savedSearches`](#parameter-savedsearches) | array | Kusto Query Language searches to save. |
 | [`skuCapacityReservationLevel`](#parameter-skucapacityreservationlevel) | int | The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000. |
@@ -3298,6 +3327,39 @@ The network access type for accessing Log Analytics query.
   ]
   ```
 
+### Parameter: `replication`
+
+The workspace replication properties.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicationlocation) | string | The location to which the workspace is replicated. Required if replication is enabled. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-replicationenabled) | bool | Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location. |
+
+### Parameter: `replication.location`
+
+The location to which the workspace is replicated. Required if replication is enabled.
+
+- Required: No
+- Type: string
+
+### Parameter: `replication.enabled`
+
+Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -3968,8 +4030,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

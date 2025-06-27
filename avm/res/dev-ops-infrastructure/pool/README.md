@@ -18,7 +18,7 @@ This module deploys the Managed DevOps Pool resource.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DevOpsInfrastructure/pools` | [2024-10-19](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2024-10-19/pools) |
+| `Microsoft.DevOpsInfrastructure/pools` | [2025-01-21](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2025-01-21/pools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -212,6 +212,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           'windows-2022'
         ]
         buffer: '*'
+        ephemeralType: 'Automatic'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -220,6 +221,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -232,10 +234,30 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     }
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -329,6 +351,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
             "windows-2022"
           ],
           "buffer": "*",
+          "ephemeralType": "Automatic",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -341,6 +364,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -354,6 +378,22 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -361,6 +401,14 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -452,6 +500,7 @@ param images = [
       'windows-2022'
     ]
     buffer: '*'
+    ephemeralType: 'Automatic'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -460,6 +509,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -472,10 +522,30 @@ param organizationProfile = {
   }
 }
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {
@@ -542,6 +612,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     fabricProfileSkuName: 'Standard_D2_v2'
     images: [
       {
+        ephemeralType: 'CacheDisk'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -550,6 +621,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -602,6 +674,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     "images": {
       "value": [
         {
+          "ephemeralType": "CacheDisk",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -614,6 +687,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -660,6 +734,7 @@ param devCenterProjectResourceId = '<devCenterProjectResourceId>'
 param fabricProfileSkuName = 'Standard_D2_v2'
 param images = [
   {
+    ephemeralType: 'CacheDisk'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -668,6 +743,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -1720,6 +1796,7 @@ The VM images of the machines in the pool.
 | :-- | :-- | :-- |
 | [`aliases`](#parameter-imagesaliases) | array | List of aliases to reference the image by. |
 | [`buffer`](#parameter-imagesbuffer) | string | The percentage of the buffer to be allocated to this image. |
+| [`ephemeralType`](#parameter-imagesephemeraltype) | string | The ephemeral type of the image. |
 
 ### Parameter: `images.resourceId`
 
@@ -1748,6 +1825,21 @@ The percentage of the buffer to be allocated to this image.
 
 - Required: No
 - Type: string
+
+### Parameter: `images.ephemeralType`
+
+The ephemeral type of the image.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'CacheDisk'
+    'ResourceDisk'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -1806,6 +1898,7 @@ The list of Azure DevOps organizations the pool should be present in..
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`openAccess`](#parameter-organizationprofileorganizationsopenaccess) | bool | Determines if the pool should have open access to all projects in this organization. |
 | [`parallelism`](#parameter-organizationprofileorganizationsparallelism) | int | How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool. |
 | [`projects`](#parameter-organizationprofileorganizationsprojects) | array | List of projects in which the pool should be created. |
 
@@ -1815,6 +1908,13 @@ The Azure DevOps organization URL in which the pool should be created.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `organizationProfile.organizations.openAccess`
+
+Determines if the pool should have open access to all projects in this organization.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `organizationProfile.organizations.parallelism`
 
@@ -2181,6 +2281,7 @@ The secret management settings of the machines in the pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateStoreLocation`](#parameter-osprofilesecretsmanagementsettingscertificatestorelocation) | string | Where to store certificates on the machine. |
+| [`certificateStoreName`](#parameter-osprofilesecretsmanagementsettingscertificatestorename) | string | Name of the certificate store to use on the machine, currently "My" and "Root" are supported. |
 
 ### Parameter: `osProfile.secretsManagementSettings.keyExportable`
 
@@ -2202,6 +2303,20 @@ Where to store certificates on the machine.
 
 - Required: No
 - Type: string
+
+### Parameter: `osProfile.secretsManagementSettings.certificateStoreName`
+
+Name of the certificate store to use on the machine, currently "My" and "Root" are supported.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'My'
+    'Root'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

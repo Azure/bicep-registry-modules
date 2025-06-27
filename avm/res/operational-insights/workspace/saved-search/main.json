@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5149844663841891327"
+      "version": "0.36.1.42791",
+      "templateHash": "9015459905306126128"
     },
     "name": "Log Analytics Workspace Saved Searches",
     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -44,10 +44,13 @@
     },
     "tags": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01#properties/properties/properties/tags"
+        },
         "description": "Optional. Tags to configure in the resource."
-      }
+      },
+      "nullable": true
     },
     "functionAlias": {
       "type": "string",
@@ -82,12 +85,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "savedSearch": {
       "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "properties": {
         "etag": "[parameters('etag')]",
