@@ -32,11 +32,11 @@ param enabledState string = 'Enabled'
 @description('Optional. The list of routes for this AFD Endpoint.')
 param routes routeType[]?
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource afdEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-05-01' = {
+resource afdEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2025-04-15' = {
   name: name
   parent: profile
   location: location

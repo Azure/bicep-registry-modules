@@ -41,15 +41,15 @@ param sharedPrivateLinkResource object?
 @description('Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000.')
 param weight int = 1000
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 
-  resource originGroup 'originGroups@2023-05-01' existing = {
+  resource originGroup 'originGroups@2025-04-15' existing = {
     name: originGroupName
   }
 }
 
-resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2023-05-01' = {
+resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2025-04-15' = {
   name: name
   parent: profile::originGroup
   properties: {
