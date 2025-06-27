@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17608266178495339940"
+      "templateHash": "10526507575200553282"
     },
     "name": "Modernize Your Code Solution Accelerator",
-    "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
+    "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and enterprise-grade environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
   },
   "parameters": {
     "solutionName": {
@@ -4550,7 +4550,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "524557886553290164"
+              "templateHash": "17083737113954436851"
             }
           },
           "parameters": {
@@ -4748,13 +4748,175 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17043243387978882394"
+                      "templateHash": "15074180739068106696"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
                   },
                   "definitions": {
-                    "_1.networkSecurityGroupType": {
+                    "_1.securityRuleType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the security rule."
+                          }
+                        },
+                        "properties": {
+                          "type": "object",
+                          "properties": {
+                            "access": {
+                              "type": "string",
+                              "allowedValues": [
+                                "Allow",
+                                "Deny"
+                              ],
+                              "metadata": {
+                                "description": "Required. Whether network traffic is allowed or denied."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The description of the security rule."
+                              }
+                            },
+                            "destinationAddressPrefix": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                              }
+                            },
+                            "destinationAddressPrefixes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                              }
+                            },
+                            "destinationApplicationSecurityGroupResourceIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The resource IDs of the application security groups specified as destination."
+                              }
+                            },
+                            "destinationPortRange": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                              }
+                            },
+                            "destinationPortRanges": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The destination port ranges."
+                              }
+                            },
+                            "direction": {
+                              "type": "string",
+                              "allowedValues": [
+                                "Inbound",
+                                "Outbound"
+                              ],
+                              "metadata": {
+                                "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                              }
+                            },
+                            "priority": {
+                              "type": "int",
+                              "minValue": 100,
+                              "maxValue": 4096,
+                              "metadata": {
+                                "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                              }
+                            },
+                            "protocol": {
+                              "type": "string",
+                              "allowedValues": [
+                                "*",
+                                "Ah",
+                                "Esp",
+                                "Icmp",
+                                "Tcp",
+                                "Udp"
+                              ],
+                              "metadata": {
+                                "description": "Required. Network protocol this rule applies to."
+                              }
+                            },
+                            "sourceAddressPrefix": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                              }
+                            },
+                            "sourceAddressPrefixes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The CIDR or source IP ranges."
+                              }
+                            },
+                            "sourceApplicationSecurityGroupResourceIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The resource IDs of the application security groups specified as source."
+                              }
+                            },
+                            "sourcePortRange": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                              }
+                            },
+                            "sourcePortRanges": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The source port ranges."
+                              }
+                            }
+                          },
+                          "metadata": {
+                            "description": "Required. The properties of the security rule."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "The type of a security rule.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-security-group:0.5.1"
+                        }
+                      }
+                    },
+                    "_2.networkSecurityGroupType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -4766,7 +4928,7 @@
                         "securityRules": {
                           "type": "array",
                           "items": {
-                            "type": "object"
+                            "$ref": "#/definitions/_1.securityRuleType"
                           },
                           "metadata": {
                             "description": "Required. The security rules for the network security group."
@@ -4937,7 +5099,7 @@
                           }
                         },
                         "networkSecurityGroup": {
-                          "$ref": "#/definitions/_1.networkSecurityGroupType",
+                          "$ref": "#/definitions/_2.networkSecurityGroupType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Network Security Group configuration for the subnet."
@@ -5097,7 +5259,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "15989808933283955734"
+                              "templateHash": "5053804475584899300"
                             }
                           },
                           "definitions": {
@@ -5244,7 +5406,7 @@
                                 "securityRules": {
                                   "type": "array",
                                   "items": {
-                                    "type": "object"
+                                    "$ref": "#/definitions/securityRuleType"
                                   },
                                   "metadata": {
                                     "description": "Required. The security rules for the network security group."
@@ -5254,6 +5416,168 @@
                               "metadata": {
                                 "__bicep_export!": true,
                                 "description": "Custom type definition for network security group configuration"
+                              }
+                            },
+                            "securityRuleType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The name of the security rule."
+                                  }
+                                },
+                                "properties": {
+                                  "type": "object",
+                                  "properties": {
+                                    "access": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "Allow",
+                                        "Deny"
+                                      ],
+                                      "metadata": {
+                                        "description": "Required. Whether network traffic is allowed or denied."
+                                      }
+                                    },
+                                    "description": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The description of the security rule."
+                                      }
+                                    },
+                                    "destinationAddressPrefix": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                                      }
+                                    },
+                                    "destinationAddressPrefixes": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                                      }
+                                    },
+                                    "destinationApplicationSecurityGroupResourceIds": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The resource IDs of the application security groups specified as destination."
+                                      }
+                                    },
+                                    "destinationPortRange": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                                      }
+                                    },
+                                    "destinationPortRanges": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The destination port ranges."
+                                      }
+                                    },
+                                    "direction": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "Inbound",
+                                        "Outbound"
+                                      ],
+                                      "metadata": {
+                                        "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                                      }
+                                    },
+                                    "priority": {
+                                      "type": "int",
+                                      "minValue": 100,
+                                      "maxValue": 4096,
+                                      "metadata": {
+                                        "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                                      }
+                                    },
+                                    "protocol": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "*",
+                                        "Ah",
+                                        "Esp",
+                                        "Icmp",
+                                        "Tcp",
+                                        "Udp"
+                                      ],
+                                      "metadata": {
+                                        "description": "Required. Network protocol this rule applies to."
+                                      }
+                                    },
+                                    "sourceAddressPrefix": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                                      }
+                                    },
+                                    "sourceAddressPrefixes": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The CIDR or source IP ranges."
+                                      }
+                                    },
+                                    "sourceApplicationSecurityGroupResourceIds": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The resource IDs of the application security groups specified as source."
+                                      }
+                                    },
+                                    "sourcePortRange": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                                      }
+                                    },
+                                    "sourcePortRanges": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The source port ranges."
+                                      }
+                                    }
+                                  },
+                                  "metadata": {
+                                    "description": "Required. The properties of the security rule."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "The type of a security rule.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-security-group:0.5.1"
+                                }
                               }
                             }
                           },
@@ -9622,7 +9946,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "2898767550335987155"
+                              "templateHash": "17881512426985651189"
                             }
                           },
                           "definitions": {
@@ -9667,7 +9991,169 @@
                                 "description": "Custom type definition for establishing Jumpbox Virtual Machine and its associated resources."
                               }
                             },
-                            "_1.networkSecurityGroupType": {
+                            "_1.securityRuleType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The name of the security rule."
+                                  }
+                                },
+                                "properties": {
+                                  "type": "object",
+                                  "properties": {
+                                    "access": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "Allow",
+                                        "Deny"
+                                      ],
+                                      "metadata": {
+                                        "description": "Required. Whether network traffic is allowed or denied."
+                                      }
+                                    },
+                                    "description": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The description of the security rule."
+                                      }
+                                    },
+                                    "destinationAddressPrefix": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                                      }
+                                    },
+                                    "destinationAddressPrefixes": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                                      }
+                                    },
+                                    "destinationApplicationSecurityGroupResourceIds": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The resource IDs of the application security groups specified as destination."
+                                      }
+                                    },
+                                    "destinationPortRange": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                                      }
+                                    },
+                                    "destinationPortRanges": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The destination port ranges."
+                                      }
+                                    },
+                                    "direction": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "Inbound",
+                                        "Outbound"
+                                      ],
+                                      "metadata": {
+                                        "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                                      }
+                                    },
+                                    "priority": {
+                                      "type": "int",
+                                      "minValue": 100,
+                                      "maxValue": 4096,
+                                      "metadata": {
+                                        "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                                      }
+                                    },
+                                    "protocol": {
+                                      "type": "string",
+                                      "allowedValues": [
+                                        "*",
+                                        "Ah",
+                                        "Esp",
+                                        "Icmp",
+                                        "Tcp",
+                                        "Udp"
+                                      ],
+                                      "metadata": {
+                                        "description": "Required. Network protocol this rule applies to."
+                                      }
+                                    },
+                                    "sourceAddressPrefix": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                                      }
+                                    },
+                                    "sourceAddressPrefixes": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The CIDR or source IP ranges."
+                                      }
+                                    },
+                                    "sourceApplicationSecurityGroupResourceIds": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The resource IDs of the application security groups specified as source."
+                                      }
+                                    },
+                                    "sourcePortRange": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                                      }
+                                    },
+                                    "sourcePortRanges": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The source port ranges."
+                                      }
+                                    }
+                                  },
+                                  "metadata": {
+                                    "description": "Required. The properties of the security rule."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "The type of a security rule.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-security-group:0.5.1"
+                                }
+                              }
+                            },
+                            "_2.networkSecurityGroupType": {
                               "type": "object",
                               "properties": {
                                 "name": {
@@ -9679,7 +10165,7 @@
                                 "securityRules": {
                                   "type": "array",
                                   "items": {
-                                    "type": "object"
+                                    "$ref": "#/definitions/_1.securityRuleType"
                                   },
                                   "metadata": {
                                     "description": "Required. The security rules for the network security group."
@@ -9743,7 +10229,7 @@
                                   }
                                 },
                                 "networkSecurityGroup": {
-                                  "$ref": "#/definitions/_1.networkSecurityGroupType",
+                                  "$ref": "#/definitions/_2.networkSecurityGroupType",
                                   "nullable": true,
                                   "metadata": {
                                     "description": "Optional. Network Security Group configuration for the subnet."

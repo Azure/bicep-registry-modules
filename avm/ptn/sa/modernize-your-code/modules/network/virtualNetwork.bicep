@@ -150,6 +150,8 @@ type subnetType = {
   defaultOutboundAccess: bool?
 }
 
+import { securityRuleType } from 'br/public:avm/res/network/network-security-group:0.5.1'
+
 @export()
 @description('Custom type definition for network security group configuration')
 type networkSecurityGroupType = {
@@ -157,5 +159,5 @@ type networkSecurityGroupType = {
   name: string
 
   @description('Required. The security rules for the network security group.')
-  securityRules: object[]
+  securityRules: securityRuleType[]
 }
