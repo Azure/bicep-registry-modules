@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "2449414576443390469"
+      "version": "0.36.1.42791",
+      "templateHash": "12259520026866948342"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -258,6 +258,17 @@
         "description": "Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource."
       }
     },
+    "operationType": {
+      "type": "string",
+      "defaultValue": "ClusterProvisioning",
+      "allowedValues": [
+        "ClusterProvisioning",
+        "ClusterUpgrade"
+      ],
+      "metadata": {
+        "description": "Optional. The intended operation for a cluster."
+      }
+    },
     "hciResourceProviderObjectId": {
       "type": "securestring",
       "metadata": {
@@ -271,6 +282,16 @@
         "name": "arcNodeResourceIds",
         "count": "[length(parameters('clusterNodeNames'))]",
         "input": "[resourceId('Microsoft.HybridCompute/machines', parameters('clusterNodeNames')[copyIndex('arcNodeResourceIds')])]"
+      },
+      {
+        "name": "storageNetworksArray",
+        "count": "[length(parameters('storageNetworks'))]",
+        "input": {
+          "name": "[parameters('storageNetworks')[copyIndex('storageNetworksArray')].name]",
+          "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworksArray')].adapterName]",
+          "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworksArray')].vlan]",
+          "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworksArray')], 'storageAdapterIPInfo')]"
+        }
       }
     ],
     "azureConnectedMachineResourceManagerRoleID": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f5819b54-e033-4d82-ac66-4fec3cbf3f4c')]",
@@ -354,7 +375,7 @@
         "arcNodeResourceIds": "[variables('arcNodeResourceIds')]",
         "deploymentMode": "[parameters('deploymentMode')]",
         "deploymentConfiguration": {
-          "version": "10.0.0.0",
+          "version": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), '10.1.0.0', '10.0.0.0')]",
           "scaleUnits": [
             {
               "deploymentData": {
@@ -377,18 +398,7 @@
                     }
                   }
                 ],
-                "securitySettings": {
-                  "hvciProtection": "[parameters('hvciProtection')]",
-                  "drtmProtection": "[parameters('drtmProtection')]",
-                  "driftControlEnforced": "[parameters('driftControlEnforced')]",
-                  "credentialGuardEnforced": "[parameters('credentialGuardEnforced')]",
-                  "smbSigningEnforced": "[parameters('smbSigningEnforced')]",
-                  "smbClusterEncryption": "[parameters('smbClusterEncryption')]",
-                  "sideChannelMitigationEnforced": "[parameters('sideChannelMitigationEnforced')]",
-                  "bitlockerBootVolume": "[parameters('bitlockerBootVolume')]",
-                  "bitlockerDataVolumes": "[parameters('bitlockerDataVolumes')]",
-                  "wdacEnforced": "[parameters('wdacEnforced')]"
-                },
+                "securitySettings": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), null(), createObject('hvciProtection', parameters('hvciProtection'), 'drtmProtection', parameters('drtmProtection'), 'driftControlEnforced', parameters('driftControlEnforced'), 'credentialGuardEnforced', parameters('credentialGuardEnforced'), 'smbSigningEnforced', parameters('smbSigningEnforced'), 'smbClusterEncryption', parameters('smbClusterEncryption'), 'sideChannelMitigationEnforced', parameters('sideChannelMitigationEnforced'), 'bitlockerBootVolume', parameters('bitlockerBootVolume'), 'bitlockerDataVolumes', parameters('bitlockerDataVolumes'), 'wdacEnforced', parameters('wdacEnforced')))]",
                 "observability": {
                   "streamingDataClient": "[parameters('streamingDataClient')]",
                   "euLocation": "[parameters('isEuropeanUnionLocation')]",
@@ -419,23 +429,7 @@
                     "dnsServers": "[parameters('dnsServers')]"
                   }
                 ],
-                "hostNetwork": {
-                  "copy": [
-                    {
-                      "name": "storageNetworks",
-                      "count": "[length(parameters('storageNetworks'))]",
-                      "input": {
-                        "name": "[parameters('storageNetworks')[copyIndex('storageNetworks')].name]",
-                        "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
-                        "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
-                        "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"
-                      }
-                    }
-                  ],
-                  "intents": "[parameters('networkIntents')]",
-                  "storageConnectivitySwitchless": "[parameters('storageConnectivitySwitchless')]",
-                  "enableStorageAutoIp": "[parameters('enableStorageAutoIp')]"
-                },
+                "hostNetwork": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), null(), createObject('intents', parameters('networkIntents'), 'storageConnectivitySwitchless', parameters('storageConnectivitySwitchless'), 'storageNetworks', variables('storageNetworksArray'), 'enableStorageAutoIp', parameters('enableStorageAutoIp')))]",
                 "adouPath": "[parameters('domainOUPath')]",
                 "secretsLocation": "[format('https://{0}{1}', parameters('keyVaultName'), environment().suffixes.keyvaultDns)]",
                 "optionalServices": {
