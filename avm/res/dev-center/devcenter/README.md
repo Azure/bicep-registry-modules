@@ -56,10 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
   name: 'devcenterDeployment'
   params: {
-    // Required parameters
     name: 'dcdcmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -76,13 +73,8 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dcdcmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -98,10 +90,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/dev-center/devcenter:<version>'
 
-// Required parameters
 param name = 'dcdcmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -936,7 +925,6 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
     devBoxProvisioningSettings: {
       installAzureMonitorAgentEnableStatus: 'Enabled'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1027,9 +1015,6 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
         "installAzureMonitorAgentEnableStatus": "Enabled"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -1116,7 +1101,6 @@ param devboxDefinitions = [
 param devBoxProvisioningSettings = {
   installAzureMonitorAgentEnableStatus: 'Enabled'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -1728,7 +1712,7 @@ The compute galleries to associate with the Dev Center. The Dev Center identity 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`devCenterIdentityPrincipalId`](#parameter-galleriesdevcenteridentityprincipalid) | string | The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. |
+| [`devCenterIdentityPrincipalId`](#parameter-galleriesdevcenteridentityprincipalid) | string | The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. Note that the identity performing the deployment must have permissions to perform role assignments on the resource group of the gallery to assign the role, otherwise the deployment will fail. |
 
 ### Parameter: `galleries.galleryResourceId`
 
@@ -1746,7 +1730,7 @@ It must be between 3 and 63 characters, can only include alphanumeric characters
 
 ### Parameter: `galleries.devCenterIdentityPrincipalId`
 
-The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically.
+The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. Note that the identity performing the deployment must have permissions to perform role assignments on the resource group of the gallery to assign the role, otherwise the deployment will fail.
 
 - Required: No
 - Type: string
@@ -1772,6 +1756,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1791,6 +1776,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2445,6 +2437,7 @@ The lock settings of the project.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-projectslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-projectslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-projectslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `projects.lock.kind`
 
@@ -2464,6 +2457,13 @@ Specify the type of lock.
 ### Parameter: `projects.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `projects.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3075,7 +3075,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/dev-center/project:0.1.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

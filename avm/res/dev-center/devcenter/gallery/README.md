@@ -34,7 +34,7 @@ This module deploys a Dev Center Gallery.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`devCenterIdentityPrincipalId`](#parameter-devcenteridentityprincipalid) | string | The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. |
+| [`devCenterIdentityPrincipalId`](#parameter-devcenteridentityprincipalid) | string | The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. Note that the identity performing the deployment must have permissions to perform role assignments on the resource group of the gallery to assign the role, otherwise the deployment will fail. |
 
 ### Parameter: `galleryResourceId`
 
@@ -59,7 +59,7 @@ The name of the parent dev center. Required if the template is used in a standal
 
 ### Parameter: `devCenterIdentityPrincipalId`
 
-The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically.
+The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically. Note that the identity performing the deployment must have permissions to perform role assignments on the resource group of the gallery to assign the role, otherwise the deployment will fail.
 
 - Required: No
 - Type: string
