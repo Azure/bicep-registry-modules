@@ -12,7 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
-## 0.22
+## 0.22.1
 
 ### Changes
 
