@@ -25,6 +25,7 @@ on:
   push:
     branches:
       - "main"
+      - "avm/ptn/sa/content-processing"
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"

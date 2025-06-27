@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "8324865625561111656"
+      "templateHash": "2694483112751864563"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -46530,7 +46530,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionPrefix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{{apiContainerImageTag}}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName'), parameters('apiContainerImageTag')), reference('avmContainerRegistry').outputs.loginServer.value)]",
                 "resources": {
                   "cpu": "4",
                   "memory": "8.0Gi"

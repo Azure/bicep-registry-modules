@@ -972,7 +972,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
       {
         name: 'ca-${solutionPrefix}-api'
         image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/${apiContainerImageName}:{apiContainerImageTag}'
+          ? '${publicContainerImageEndpoint}/${apiContainerImageName}:${apiContainerImageTag}'
           : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'
