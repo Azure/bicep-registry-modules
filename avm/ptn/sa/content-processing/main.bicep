@@ -28,8 +28,6 @@ param gptModelVersion string = '2024-08-06'
 param gptDeploymentCapacity int
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
-@description('Optional. The public container image endpoint.')
-param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
 @description('Optional. The resource group location.')
 param resourceGroupLocation string = resourceGroup().location
 @description('Optional. The resource name format string.')
@@ -48,6 +46,27 @@ param useLocalBuild bool = false
 
 @description('Optional. Enable scaling for the container apps. Defaults to false.')
 param enableScaling bool = false
+
+@description('Optional. The public container image endpoint.')
+param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
+
+@description('Optional. The Container Image Name to deploy on the Web Container App.')
+param webContainerImageName string = 'contentprocessorweb'
+
+@description('Optional. The Container Image Tag to deploy on the Web Container App.')
+param webContainerImageTag string = 'latest'
+
+@description('Optional. The Container Image Name to deploy on the App Container App.')
+param appContainerImageName string = 'contentprocessor'
+
+@description('Optional. The Container Image Tag to deploy on the backend.')
+param appContainerImageTag string = 'latest'
+
+@description('Optional. The Container Image Name to deploy on the Api Container App.')
+param apiContainerImageName string = 'contentprocessorapi'
+
+@description('Optional. The Container Image Tag to deploy on the backend.')
+param apiContainerImageTag string = 'latest'
 
 // ========== Solution Prefix Variable ========== //
 @description('Optional. A unique deployment timestamp for solution prefix generation.')
@@ -899,7 +918,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
     containers: [
       {
         name: 'ca-${solutionPrefix}'
-        image: '${publicContainerImageEndpoint}/contentprocessor:latest'
+        image: '${publicContainerImageEndpoint}/${appContainerImageName}:${appContainerImageTag}'
 
         resources: {
           cpu: '4'
@@ -953,7 +972,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
       {
         name: 'ca-${solutionPrefix}-api'
         image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+          ? '${publicContainerImageEndpoint}/${apiContainerImageName}:{apiContainerImageTag}'
           : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'
@@ -1086,7 +1105,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
       {
         name: 'ca-${solutionPrefix}-web'
         image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/contentprocessorweb:latest'
+          ? '${publicContainerImageEndpoint}/${webContainerImageName}:${webContainerImageTag}'
           : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'
@@ -1368,7 +1387,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
     containers: [
       {
         name: 'ca-${solutionPrefix}'
-        image: '${publicContainerImageEndpoint}/contentprocessor:latest'
+        image: '${publicContainerImageEndpoint}/${appContainerImageName}:${appContainerImageTag}'
 
         resources: {
           cpu: '4'
@@ -1435,7 +1454,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' =
       {
         name: 'ca-${solutionPrefix}-api'
         image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+          ? '${publicContainerImageEndpoint}/${apiContainerImageName}:${apiContainerImageTag}'
           : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'

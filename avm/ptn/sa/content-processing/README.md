@@ -1,6 +1,8 @@
 # Content Processing Solution Accelerator `[Sa/ContentProcessing]`
 
-Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.
+This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+
 
 ## Navigation
 
@@ -280,6 +282,10 @@ param enablePrivateNetworking = false
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apiContainerImageName`](#parameter-apicontainerimagename) | string | The Container Image Name to deploy on the Api Container App. |
+| [`apiContainerImageTag`](#parameter-apicontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
+| [`appContainerImageName`](#parameter-appcontainerimagename) | string | The Container Image Name to deploy on the App Container App. |
+| [`appContainerImageTag`](#parameter-appcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`deploymentTimestamp`](#parameter-deploymenttimestamp) | string | A unique deployment timestamp for solution prefix generation. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
@@ -294,6 +300,8 @@ param enablePrivateNetworking = false
 | [`secondaryLocation`](#parameter-secondarylocation) | string | Location used for Azure Cosmos DB, Azure Container App deployment. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 | [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images. |
+| [`webContainerImageName`](#parameter-webcontainerimagename) | string | The Container Image Name to deploy on the Web Container App. |
+| [`webContainerImageTag`](#parameter-webcontainerimagetag) | string | The Container Image Tag to deploy on the Web Container App. |
 
 ### Parameter: `contentUnderstandingLocation`
 
@@ -316,6 +324,38 @@ Capacity of the GPT deployment: (minimum 10).
 - Required: Yes
 - Type: int
 - MinValue: 1
+
+### Parameter: `apiContainerImageName`
+
+The Container Image Name to deploy on the Api Container App.
+
+- Required: No
+- Type: string
+- Default: `'contentprocessorapi'`
+
+### Parameter: `apiContainerImageTag`
+
+The Container Image Tag to deploy on the backend.
+
+- Required: No
+- Type: string
+- Default: `'latest'`
+
+### Parameter: `appContainerImageName`
+
+The Container Image Name to deploy on the App Container App.
+
+- Required: No
+- Type: string
+- Default: `'contentprocessor'`
+
+### Parameter: `appContainerImageTag`
+
+The Container Image Tag to deploy on the backend.
+
+- Required: No
+- Type: string
+- Default: `'latest'`
 
 ### Parameter: `deploymentTimestamp`
 
@@ -440,6 +480,22 @@ Set to true to use local build for container app images, otherwise use container
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `webContainerImageName`
+
+The Container Image Name to deploy on the Web Container App.
+
+- Required: No
+- Type: string
+- Default: `'contentprocessorweb'`
+
+### Parameter: `webContainerImageTag`
+
+The Container Image Tag to deploy on the Web Container App.
+
+- Required: No
+- Type: string
+- Default: `'latest'`
 
 ## Outputs
 

@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9739758348069453460"
+      "templateHash": "8324865625561111656"
     },
     "name": "Content Processing Solution Accelerator",
-    "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
+    "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
   },
   "parameters": {
     "environmentName": {
@@ -70,13 +70,6 @@
         "description": "Optional. Location used for Azure Cosmos DB, Azure Container App deployment."
       }
     },
-    "publicContainerImageEndpoint": {
-      "type": "string",
-      "defaultValue": "cpscontainerreg.azurecr.io",
-      "metadata": {
-        "description": "Optional. The public container image endpoint."
-      }
-    },
     "resourceGroupLocation": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -130,6 +123,55 @@
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Enable scaling for the container apps. Defaults to false."
+      }
+    },
+    "publicContainerImageEndpoint": {
+      "type": "string",
+      "defaultValue": "cpscontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The public container image endpoint."
+      }
+    },
+    "webContainerImageName": {
+      "type": "string",
+      "defaultValue": "contentprocessorweb",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the Web Container App."
+      }
+    },
+    "webContainerImageTag": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Optional. The Container Image Tag to deploy on the Web Container App."
+      }
+    },
+    "appContainerImageName": {
+      "type": "string",
+      "defaultValue": "contentprocessor",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the App Container App."
+      }
+    },
+    "appContainerImageTag": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Optional. The Container Image Tag to deploy on the backend."
+      }
+    },
+    "apiContainerImageName": {
+      "type": "string",
+      "defaultValue": "contentprocessorapi",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the Api Container App."
+      }
+    },
+    "apiContainerImageTag": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Optional. The Container Image Tag to deploy on the backend."
       }
     },
     "deploymentTimestamp": {
@@ -27003,10 +27045,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -29344,8 +29386,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "avmVirtualNetwork"
       ]
     },
@@ -35113,8 +35155,8 @@
       },
       "dependsOn": [
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -39337,8 +39379,8 @@
         "avmContainerRegistry",
         "avmKeyVault",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').notebooks)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiFoundry)]",
         "avmVirtualNetwork"
       ]
     },
@@ -44978,7 +45020,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}', variables('solutionPrefix'))]",
-                "image": "[format('{0}/contentprocessor:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('appContainerImageName'), parameters('appContainerImageTag'))]",
                 "resources": {
                   "cpu": "4",
                   "memory": "8.0Gi"
@@ -46488,7 +46530,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionPrefix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/contentprocessorapi:latest', parameters('publicContainerImageEndpoint')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{{apiContainerImageTag}}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName')), reference('avmContainerRegistry').outputs.loginServer.value)]",
                 "resources": {
                   "cpu": "4",
                   "memory": "8.0Gi"
@@ -48085,7 +48127,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-web', variables('solutionPrefix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/contentprocessorweb:latest', parameters('publicContainerImageEndpoint')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('webContainerImageName'), parameters('webContainerImageTag')), reference('avmContainerRegistry').outputs.loginServer.value)]",
                 "resources": {
                   "cpu": "4",
                   "memory": "8.0Gi"
@@ -57594,7 +57636,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}', variables('solutionPrefix'))]",
-                "image": "[format('{0}/contentprocessor:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('appContainerImageName'), parameters('appContainerImageTag'))]",
                 "resources": {
                   "cpu": "4",
                   "memory": "8.0Gi"
@@ -59103,7 +59145,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionPrefix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/contentprocessorapi:latest', parameters('publicContainerImageEndpoint')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName'), parameters('apiContainerImageTag')), reference('avmContainerRegistry').outputs.loginServer.value)]",
                 "resources": {
                   "cpu": "4",
                   "memory": "8.0Gi"
