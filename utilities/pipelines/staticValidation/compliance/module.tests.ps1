@@ -1534,7 +1534,7 @@ Describe 'Module tests' -Tag 'Module' {
             $changelogContent[1] | Should -BeNullOrEmpty -Because "the changelog's second line should be empty"
 
             # The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
-            $linkToLatestVersionChangelog = 'The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/{0}/{1}/Changelog.md).' -f $moduleType, $moduleFolderName
+            $linkToLatestVersionChangelog = 'The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/{0}/{1}/Changelog.md).' -f $moduleType, $moduleFolderName
             $changelogContent[2] | Should -Be $linkToLatestVersionChangelog -Because ('the changelog must contain a link to the latest version {0}' -f $linkToLatestVersionChangelog)
             $changelogContent[3] | Should -BeNullOrEmpty -Because "the changelog's forth line should be empty"
         }
@@ -1550,16 +1550,15 @@ Describe 'Module tests' -Tag 'Module' {
 
             $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
-            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1) {
-                # the module will be published. Use the new version
-                $expectedModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            # the second condition is for local testing only, as, after committing to GitHub, the first condition picks up the version
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
+                # The module will be published
+                $expectedModuleVersion = $moduleTargetVersion
             } else {
-                # the module will not be published. Use the current version
-                Write-Verbose 'A new version will not be published. Use the current version.' -Verbose
-                $publishedVersions = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/')
-                # the last version in the array is the latest published version
-                Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
-                $expectedModuleVersion = $publishedVersions[-1]
+                # Since the module is not being published, we can stop here. The version in the changelog is checked in another test.
+                Set-ItResult -Skipped -Because 'the module is not going to be published and the version number remains unchanged.'
+                return
             }
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }

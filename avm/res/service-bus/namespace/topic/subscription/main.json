@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6989075886470606260"
+      "version": "0.36.1.42791",
+      "templateHash": "10194470716819672897"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -464,8 +464,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13321810258056992588"
+              "version": "0.36.1.42791",
+              "templateHash": "18396329421177385677"
             },
             "name": "Service Bus Namespace Topic Subscription Rule",
             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
