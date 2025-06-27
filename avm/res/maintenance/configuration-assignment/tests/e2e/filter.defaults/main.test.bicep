@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time. '
+metadata description = 'This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.'
 
 // ========== //
 // Parameters //
@@ -12,7 +12,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-maintenance.configurationassignments-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mcamin'

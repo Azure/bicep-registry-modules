@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "1838657778317765566"
+      "version": "0.35.1.17967",
+      "templateHash": "3474530161120912819"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow)."
@@ -412,7 +412,7 @@
     },
     "workflowActions": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The definitions for one or more actions to execute at workflow runtime."
       }
@@ -433,7 +433,7 @@
     },
     "workflowOutputs": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The definitions for the outputs to return from a workflow run."
       }
@@ -454,7 +454,7 @@
     },
     "workflowTriggers": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer."
       }

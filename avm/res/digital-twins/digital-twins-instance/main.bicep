@@ -10,7 +10,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -138,7 +138,7 @@ module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
   }
 ]
 
-module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-digitalTwins-PrivateEndpoint-${index}'
     scope: resourceGroup(

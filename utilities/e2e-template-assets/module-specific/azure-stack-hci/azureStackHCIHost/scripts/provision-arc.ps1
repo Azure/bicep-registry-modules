@@ -34,40 +34,13 @@ try {
     $session = New-PSSession -ComputerName $IP -Port $Port -Authentication $Authentication -Credential $credential
 
     Invoke-Command -Session $session -ScriptBlock {
-        function Install-ModuleIfMissing {
-            param(
-                [Parameter(Mandatory = $true)]
-                [string]$Name,
-                [Parameter(Mandatory = $false)]
-                [string]$Repository = 'PSGallery',
-                [Parameter(Mandatory = $false)]
-                [switch]$Force,
-                [Parameter(Mandatory = $false)]
-                [switch]$AllowClobber
-            )
-            $module = Get-Module -Name $Name -ListAvailable
-            if (!$module) {
-                Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
-            }
-        }
-
-        Invoke-WebRequest -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
-        msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
-
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
-        Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
-        Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
-
         $machineName = [System.Net.Dns]::GetHostName()
         $correlationID = New-Guid
         $secureServicePrincipalSecret = ConvertTo-SecureString $Using:ServicePrincipalSecret -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:ServicePrincipalId, $secureServicePrincipalSecret
         Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId
-        $token = (Get-AzAccessToken).Token
-        # TODO: PowerShell 7
-        # $token = ConvertFrom-SecureString -SecureString ((Get-AzAccessToken -AsSecureString).Token) -AsPlainText
+        $secureToken = (Get-AzAccessToken -AsSecureString).Token
+        $token = [Net.NetworkCredential]::new('', $secureToken).Password
 
         $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
         & "$azcmagentPath" --version
@@ -94,13 +67,12 @@ try {
         Write-Output 'Waiting for Edge device resource to be ready'
         Start-Sleep -Seconds 600
         $waitInterval = 60
-        $maxWaitCount = 10
+        $maxWaitCount = 30
         $ready = $false
         for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
             Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId | Out-Null
-            $token = (Get-AzAccessToken).Token
-            # TODO: PowerShell 7
-            # $token = ConvertFrom-SecureString -SecureString ((Get-AzAccessToken -AsSecureString).Token) -AsPlainText
+            $secureToken = (Get-AzAccessToken -AsSecureString).Token
+            $token = [Net.NetworkCredential]::new('', $secureToken).Password
             $headers = @{
                 'Authorization' = "Bearer $token";
             }

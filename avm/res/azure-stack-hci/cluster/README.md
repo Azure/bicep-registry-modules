@@ -8,6 +8,7 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,8 +17,9 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/clusters` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters) |
-| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
 
@@ -797,8 +799,8 @@ param tags = {
 | [`deploymentUserPassword`](#parameter-deploymentuserpassword) | securestring | The password of the deployment user. Required if useSharedKeyVault is true. |
 | [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is true. |
 | [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is true. |
-| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true. |
-| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true. |
+| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id. |
 
 **Optional parameters**
 
@@ -815,6 +817,7 @@ param tags = {
 | [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`operationType`](#parameter-operationtype) | string | The intended operation for a cluster. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
@@ -1396,14 +1399,14 @@ The name of the local admin user. Required if useSharedKeyVault is true.
 
 ### Parameter: `servicePrincipalId`
 
-The service principal ID for ARB. Required if useSharedKeyVault is true.
+The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id.
 
 - Required: No
 - Type: string
 
 ### Parameter: `servicePrincipalSecret`
 
-The service principal secret for ARB. Required if useSharedKeyVault is true.
+The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id.
 
 - Required: No
 - Type: securestring
@@ -1503,6 +1506,21 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `operationType`
+
+The intended operation for a cluster.
+
+- Required: No
+- Type: string
+- Default: `'ClusterProvisioning'`
+- Allowed:
+  ```Bicep
+  [
+    'ClusterProvisioning'
+    'ClusterUpgrade'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1663,6 +1681,37 @@ Tags of the witness storage key.
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
 | `vSwitchName` | string | The name of the vSwitch. |
+
+## Notes
+
+This module requires prerequisites, that can't be done via ARM/Bicep directly.
+
+### Required Azure Role Assignments
+
+To successfully deploy and manage Azure Stack HCI clusters, ensure the following service principals have the appropriate role assignments at the subscription level:
+
+#### 1. Service Principal Permissions
+
+The service principal referenced as `CI-arbDeploymentAppId` in the Key Vault must have the following roles assigned:
+
+- **Contributor** - For resource operations
+- **Reader** - For read access to resources
+- **Azure Connected Machine Onboarding** - For onboarding Azure Arc-enabled servers
+- **Azure Connected Machine Resource Administrator** - For managing Arc-enabled server resources
+- **Key Vault Secrets Officer** - For managing Key Vault secrets
+- **User Access Administrator** - For managing role assignments
+
+#### 2. Microsoft.AzureStackHCI Resource Provider Permissions
+
+The Microsoft.AzureStackHCI Resource Provider must have the following role assigned:
+
+- **Azure Connected Machine Resource Manager** - Required for extension reconciliation and hybrid compute operations
+
+To find the correct service principal for role assignment:
+
+1. Use the client ID `1412d89f-b8a8-4111-b4fd-e82905cbd85d` to locate the Microsoft.AzureStackHCI service principal
+
+2. Use the Object ID of this service principal for role assignment
 
 ## Data Collection
 

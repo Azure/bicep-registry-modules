@@ -115,6 +115,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       resourceLogConfigurationsToEnable: [
         'ConnectivityLogs'
+        'MessagingLogs'
+        'HttpRequestLogs'
+      ]
+      liveTraceCatagoriesToEnable: [
+        'ConnectivityLogs'
+        'MessagingLogs'
+        'HttpRequestLogs'
       ]
       roleAssignments: [
         {
@@ -145,8 +152,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

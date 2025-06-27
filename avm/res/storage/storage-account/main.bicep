@@ -8,11 +8,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -28,15 +28,21 @@ param kind string = 'StorageV2'
 
 @allowed([
   'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
   'Standard_ZRS'
+  'Standard_GRS'
+  'Standard_GZRS'
+  'Standard_RAGRS'
+  'Standard_RAGZRS'
+  'StandardV2_LRS'
+  'StandardV2_ZRS'
+  'StandardV2_GRS'
+  'StandardV2_GZRS'
   'Premium_LRS'
   'Premium_ZRS'
-  'Standard_GZRS'
-  'Standard_RAGZRS'
+  'PremiumV2_LRS'
+  'PremiumV2_ZRS'
 ])
-@description('Optional. Storage Account Sku Name.')
+@description('Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.')
 param skuName string = 'Standard_GRS'
 
 @allowed([
@@ -52,7 +58,7 @@ param accessTier string = 'Hot'
   'Disabled'
   'Enabled'
 ])
-@description('Optional. Allow large file shares if sets to \'Enabled\'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).')
+@description('Optional. Allow large file shares if set to \'Enabled\'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).')
 param largeFileSharesState string = 'Disabled'
 
 @description('Optional. Provides the identity based authentication settings for Azure Files.')
@@ -64,7 +70,7 @@ param defaultToOAuthAuthentication bool = false
 @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.')
 param allowSharedKeyAccess bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -136,11 +142,11 @@ param isLocalUserEnabled bool = false
 @description('Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableNfsV3 bool = false
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -167,7 +173,7 @@ param publicNetworkAccess string?
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -478,9 +484,9 @@ resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: storageAccount
 }
@@ -725,7 +731,7 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
@@ -737,7 +743,7 @@ output primaryAccessKey string = storageAccount.listKeys().keys[0].value
 
 @secure()
 @description('The secondary access key of the storage account.')
-output secondayAccessKey string = storageAccount.listKeys().keys[1].value
+output secondaryAccessKey string = storageAccount.listKeys().keys[1].value
 
 @secure()
 @description('The primary connection string of the storage account.')

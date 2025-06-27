@@ -31,8 +31,6 @@ try {
     $session = New-PSSession -ComputerName $IP -Port $Port -Authentication $Authentication -Credential $credential
 
     Invoke-Command -Session $session -ScriptBlock {
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false -Verbose
-        Install-Module AsHciADArtifactsPreCreationTool -Repository PSGallery -Force -Confirm:$false -Verbose
         Add-KdsRootKey -EffectiveTime ((Get-Date).addhours(-10)) -Verbose # TODO: is this idempotent?
 
         $deploymentSecurePassword = ConvertTo-SecureString $Using:DeploymentUserPassword -AsPlainText -Force

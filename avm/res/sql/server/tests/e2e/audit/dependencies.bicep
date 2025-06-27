@@ -4,7 +4,7 @@ param storageAccountName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
   sku: {

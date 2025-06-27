@@ -18,7 +18,7 @@ This module deploys a Storage Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
@@ -629,6 +629,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock note.'
     }
     managedIdentities: {
       systemAssigned: true
@@ -1180,7 +1181,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock note."
       }
     },
     "managedIdentities": {
@@ -1731,6 +1733,7 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock note.'
 }
 param managedIdentities = {
   systemAssigned: true
@@ -3384,7 +3387,7 @@ param tags = {
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
-| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
+| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
 | [`localUsers`](#parameter-localusers) | array | Local users to deploy for SFTP authentication. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -3400,7 +3403,7 @@ param tags = {
 | [`sasExpirationAction`](#parameter-sasexpirationaction) | string | The SAS expiration action. Allowed values are Block and Log. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
+| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage. |
 | [`supportsHttpsTrafficOnly`](#parameter-supportshttpstrafficonly) | bool | Allows HTTPS traffic only to storage service if sets to true. |
 | [`tableServices`](#parameter-tableservices) | object | Table service and tables to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -3805,7 +3808,7 @@ Type of Storage Account to create.
 
 ### Parameter: `largeFileSharesState`
 
-Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
+Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
 
 - Required: No
 - Type: string
@@ -3967,6 +3970,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -3986,6 +3990,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4318,6 +4329,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -4337,6 +4349,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4777,7 +4796,7 @@ The connectionString2 secret name to create.
 
 ### Parameter: `skuName`
 
-Storage Account Sku Name.
+Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.
 
 - Required: No
 - Type: string
@@ -4787,12 +4806,18 @@ Storage Account Sku Name.
   [
     'Premium_LRS'
     'Premium_ZRS'
+    'PremiumV2_LRS'
+    'PremiumV2_ZRS'
     'Standard_GRS'
     'Standard_GZRS'
     'Standard_LRS'
     'Standard_RAGRS'
     'Standard_RAGZRS'
     'Standard_ZRS'
+    'StandardV2_GRS'
+    'StandardV2_GZRS'
+    'StandardV2_LRS'
+    'StandardV2_ZRS'
   ]
   ```
 
@@ -4832,8 +4857,8 @@ Tags of the resource.
 | `privateEndpoints` | array | The private endpoints of the Storage Account. |
 | `resourceGroupName` | string | The resource group of the deployed storage account. |
 | `resourceId` | string | The resource ID of the deployed storage account. |
+| `secondaryAccessKey` | securestring | The secondary access key of the storage account. |
 | `secondaryConnectionString` | securestring | The secondary connection string of the storage account. |
-| `secondayAccessKey` | securestring | The secondary access key of the storage account. |
 | `serviceEndpoints` | object | All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
@@ -4844,7 +4869,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

@@ -75,12 +75,15 @@ param publicNetworkAccessForIngestion string = 'Enabled'
 ])
 param publicNetworkAccessForQuery string = 'Enabled'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. The workspace features.')
 param features workspaceFeaturesType?
+
+@description('Optional. The workspace replication properties.')
+param replication workspaceReplicationType?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType[]?
@@ -88,16 +91,16 @@ param diagnosticSettings diagnosticSettingType[]?
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
 param forceCmkForQuery bool = true
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.OperationalInsights/workspaces@2025-02-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -187,7 +190,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   location: location
   name: name
   tags: tags
@@ -210,6 +213,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     forceCmkForQuery: forceCmkForQuery
+    replication: replication
   }
   identity: identity
 }
@@ -354,7 +358,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   }
 ]
 
-module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
+module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
     name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
     params: {
@@ -485,7 +489,7 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }
 
-import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
+import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.1'
 
 @export()
 @description('Properties of the gallery solutions to be created in the log analytics workspace.')
@@ -629,7 +633,7 @@ type dataSourceType = {
   syslogSeverities: array?
 
   @description('Optional. Tags to configure in the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01'>.tags?
 }
 
 import { schemaType, restoredLogsType, searchResultsType } from 'table/main.bicep'
@@ -676,4 +680,14 @@ type workspaceFeaturesType = {
 
   @description('Optional. Flag that describes if we want to remove the data after 30 days.')
   immediatePurgeDataOn30Days: bool?
+}
+
+@export()
+@description('Replication properties of the workspace.')
+type workspaceReplicationType = {
+  @description('Optional. Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.')
+  enabled: bool?
+
+  @description('Conditional. The location to which the workspace is replicated. Required if replication is enabled.')
+  location: string?
 }
