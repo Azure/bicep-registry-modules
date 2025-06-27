@@ -360,7 +360,7 @@ output systemAssignedMIPrincipalId string? = devcenter.?identity.?principalId
 output devCenterUri string = devcenter.properties.devCenterUri
 
 @description('The names of the DevBox definitions.')
-output devboxDefinitionNames array = [
+output devboxDefinitionNames string[] = [
   for (devboxDefinition, index) in (devboxDefinitions ?? []): devcenter_devboxDefinition[index].outputs.name
 ]
 
