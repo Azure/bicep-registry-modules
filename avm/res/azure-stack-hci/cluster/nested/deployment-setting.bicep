@@ -15,6 +15,13 @@ param useSharedKeyVault bool = true
 @secure()
 param hciResourceProviderObjectId string
 
+@description('Optional. The intended operation for a cluster.')
+@allowed([
+  'ClusterProvisioning'
+  'ClusterUpgrade'
+])
+param operationType string = 'ClusterProvisioning'
+
 param clusterName string
 param cloudId string
 
@@ -30,6 +37,7 @@ module deploymentSetting '../deployment-setting/main.bicep' = [
     params: {
       cloudId: useSharedKeyVault ? cloudId : null
       clusterName: clusterName
+      operationType: operationType
       deploymentMode: deploymentOperation
       clusterNodeNames: deploymentSettings!.clusterNodeNames
       clusterWitnessStorageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
