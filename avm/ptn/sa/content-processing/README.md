@@ -417,7 +417,7 @@ Location used for Azure Cosmos DB, Azure Container App deployment.
 
 - Required: No
 - Type: string
-- Default: `'EastUs2'`
+- Default: `[if(equals(parameters('location'), 'eastus2'), 'westus2', 'eastus2')]`
 
 ### Parameter: `tags`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5067302787760260299"
+      "templateHash": "9739758348069453460"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -65,7 +65,7 @@
     },
     "secondaryLocation": {
       "type": "string",
-      "defaultValue": "EastUs2",
+      "defaultValue": "[if(equals(parameters('location'), 'eastus2'), 'westus2', 'eastus2')]",
       "metadata": {
         "description": "Optional. Location used for Azure Cosmos DB, Azure Container App deployment."
       }
@@ -4685,7 +4685,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-{1}', variables('privateDnsZones')[copyIndex()], variables('solutionPrefix'))]"
+            "value": "[variables('privateDnsZones')[copyIndex()]]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -18928,7 +18928,7 @@
           "networkAcls": {
             "value": {
               "bypass": "AzureServices",
-              "defaultAction": "Deny",
+              "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]",
               "ipRules": []
             }
           },
@@ -27003,10 +27003,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -29344,8 +29344,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork"
       ]
     },
@@ -53441,11 +53441,7 @@
           "disableLocalAuth": {
             "value": false
           },
-          "replicaLocations": {
-            "value": [
-              "[parameters('secondaryLocation')]"
-            ]
-          },
+          "replicaLocations": "[if(not(equals(parameters('resourceGroupLocation'), parameters('secondaryLocation'))), createObject('value', createArray(parameters('secondaryLocation'))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {

@@ -25,7 +25,7 @@ param gptModelVersion string = '2024-08-06'
 @description('Required. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
-param secondaryLocation string = 'EastUs2'
+param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
 @description('Optional. The public container image endpoint.')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
 @description('Optional. The resource group location.')
@@ -353,7 +353,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'dns-zone-${i}'
     params: {
-      name: '${zone}-${solutionPrefix}'
+      name: zone
       tags: tags
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [{ virtualNetworkResourceId: avmVirtualNetwork.outputs.resourceId }]
@@ -674,7 +674,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
       ipRules: []
     }
     supportsHttpsTrafficOnly: true
@@ -1754,9 +1754,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
     ]
     disableLocalAuth: false
-    replicaLocations: [
-      secondaryLocation
-    ]
+    replicaLocations: (resourceGroupLocation != secondaryLocation) ? [secondaryLocation] : []
     roleAssignments: [
       {
         principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId!
