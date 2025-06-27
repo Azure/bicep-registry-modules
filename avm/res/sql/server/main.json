@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "441156217882584740"
+      "templateHash": "8900848350284880182"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -689,6 +689,16 @@
             "description": "Optional. Type of enclave requested on the elastic pool."
           }
         },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
         "zoneRedundant": {
           "type": "bool",
           "nullable": true,
@@ -1359,24 +1369,6 @@
     "longTermBackupRetentionPolicyType": {
       "type": "object",
       "properties": {
-        "backupStorageAccessTier": {
-          "type": "string",
-          "allowedValues": [
-            "Archive",
-            "Hot"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-          }
-        },
-        "makeBackupsImmutable": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The setting whether to make LTR backups immutable."
-          }
-        },
         "monthlyRetention": {
           "type": "string",
           "nullable": true,
@@ -2113,6 +2105,18 @@
         "description": "Optional. Whether or not to restrict outbound network access for this server."
       }
     },
+    "connectionPolicy": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "Redirect",
+        "Proxy"
+      ],
+      "metadata": {
+        "description": "Optional. SQL logical server connection policy."
+      }
+    },
     "vulnerabilityAssessmentsObj": {
       "$ref": "#/definitions/vulnerabilityAssessmentType",
       "nullable": true,
@@ -2162,15 +2166,17 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
       "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
-      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
       "SQL DB Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')]",
-      "SQL Managed Instance Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')]",
       "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
       "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
-      "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]",
-      "SqlMI Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d335eef-eee1-47fe-a9e0-53214eba8872')]",
-      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+      "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
     }
   },
   "resources": {
@@ -2267,6 +2273,17 @@
         "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "server_connection_policy": {
+      "type": "Microsoft.Sql/servers/connectionPolicies",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+      "properties": {
+        "connectionType": "[parameters('connectionPolicy')]"
       },
       "dependsOn": [
         "server"
@@ -2421,7 +2438,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15961431104919711857"
+              "templateHash": "13916745959726876819"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -2496,24 +2513,6 @@
             "longTermBackupRetentionPolicyType": {
               "type": "object",
               "properties": {
-                "backupStorageAccessTier": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Archive",
-                    "Hot"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-                  }
-                },
-                "makeBackupsImmutable": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The setting whether to make LTR backups immutable."
-                  }
-                },
                 "monthlyRetention": {
                   "type": "string",
                   "nullable": true,
@@ -3364,12 +3363,6 @@
                   "databaseName": {
                     "value": "[parameters('name')]"
                   },
-                  "backupStorageAccessTier": {
-                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'backupStorageAccessTier')]"
-                  },
-                  "makeBackupsImmutable": {
-                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'makeBackupsImmutable')]"
-                  },
                   "weeklyRetention": {
                     "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
                   },
@@ -3391,7 +3384,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "101116542806833061"
+                      "templateHash": "10140872033464442933"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3407,24 +3400,6 @@
                       "type": "string",
                       "metadata": {
                         "description": "Required. The name of the parent database."
-                      }
-                    },
-                    "backupStorageAccessTier": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Archive",
-                        "Hot"
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-                      }
-                    },
-                    "makeBackupsImmutable": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The setting whether to make LTR backups immutable."
                       }
                     },
                     "monthlyRetention": {
@@ -3471,11 +3446,9 @@
                     },
                     "backupLongTermRetentionPolicy": {
                       "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-                      "apiVersion": "2023-05-01-preview",
+                      "apiVersion": "2023-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
-                        "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
-                        "makeBackupsImmutable": "[parameters('makeBackupsImmutable')]",
                         "monthlyRetention": "[parameters('monthlyRetention')]",
                         "weeklyRetention": "[parameters('weeklyRetention')]",
                         "weekOfYear": "[parameters('weekOfYear')]",
@@ -3621,7 +3594,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8266622523187177483"
+              "templateHash": "13597336529535443631"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -3737,6 +3710,81 @@
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
@@ -3874,6 +3922,41 @@
               "metadata": {
                 "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
               }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+              "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
+              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+              "SQL DB Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')]",
+              "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
+              "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
+              "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
             }
           },
           "resources": {
@@ -3912,6 +3995,28 @@
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                 "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "elasticPool"
+              ]
+            },
+            "elasticPool_roleAssignments": {
+              "copy": {
+                "name": "elasticPool_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Sql/servers/{0}/elasticPools/{1}', parameters('serverName'), parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Sql/servers', parameters('serverName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "elasticPool"
@@ -5743,7 +5848,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "18380400942025106313"
+              "templateHash": "10207867872798857173"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5861,66 +5966,13 @@
                 "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
               }
             },
-            "storageAccount_sbdc_rbac_rg": {
-              "condition": "[and(and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId')))), not(equals(split(parameters('storageAccountResourceId'), '/')[4], resourceGroup().name)))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-stau-rbac-rg', parameters('serverName'))]",
-              "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
-              "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "storageAccountName": {
-                    "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
-                  },
-                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01', 'full').identity.principalId))]"
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "16469435463567159258"
-                    }
-                  },
-                  "parameters": {
-                    "storageAccountName": {
-                      "type": "string"
-                    },
-                    "managedIdentityPrincipalId": {
-                      "type": "string"
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedIdentityPrincipalId')))]",
-                      "properties": {
-                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                        "principalId": "[parameters('managedIdentityPrincipalId')]",
-                        "principalType": "ServicePrincipal"
-                      }
-                    }
-                  ]
-                }
-              },
-              "dependsOn": [
-                "server"
-              ]
-            },
             "storageAccount_sbdc_rbac": {
-              "condition": "[and(and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId')))), equals(split(parameters('storageAccountResourceId'), '/')[4], resourceGroup().name))]",
+              "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-stau-rbac', parameters('serverName'))]",
+              "name": "[format('storageAccount_sbdc_rbac-{0}', uniqueString('storageAccount_sbdc_rbac', deployment().name))]",
+              "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), resourceGroup().id), '/')[2]]",
+              "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), resourceGroup().id), '/')[4]]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
