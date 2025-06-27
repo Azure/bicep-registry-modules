@@ -9,7 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added 'HttpRequestLogs' option to `liveTraceCatagoriesToEnable` and `resourceLogConfigurationsToEnable` properties
 - Resource provider updates
 
-## Breaking Changes
+### Breaking Changes
 
 - None
 
