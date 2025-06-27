@@ -158,45 +158,45 @@ module redisPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 
 // App Service Environment
 
-module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
-  name: 'ase-${uniqueString(deployment().name, location)}'
-  params: {
-    name: '${name}-${suffix}'
-    location: location
-    tags: tags
-    kind: 'ASEv3'
-    internalLoadBalancingMode: 'Web, Publishing'
-    // Worker pool configuration is defined in clusterSettings
-    clusterSettings: [
-      {
-        name: 'WorkerSize'
-        value: 'Standard_D2d_v4'
-      }
-    ]
-    customDnsSuffix: '${name}.appserviceenvironment.net'
-    networkConfiguration: {
-      frontEndScaleFactor: 15
-      upgradePreference: 'None'
-      zoneRedundant: false
-    }
-    subnetResourceId: vnet.outputs.subnetResourceIds[0]
-  }
-}
+// module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
+//   name: 'ase-${uniqueString(deployment().name, location)}'
+//   params: {
+//     name: '${name}-${suffix}'
+//     location: location
+//     tags: tags
+//     kind: 'ASEv3'
+//     internalLoadBalancingMode: 'Web, Publishing'
+//     // Worker pool configuration is defined in clusterSettings
+//     clusterSettings: [
+//       {
+//         name: 'WorkerSize'
+//         value: 'Standard_D2d_v4'
+//       }
+//     ]
+//     customDnsSuffix: '${name}.appserviceenvironment.net'
+//     networkConfiguration: {
+//       frontEndScaleFactor: 15
+//       upgradePreference: 'None'
+//       zoneRedundant: false
+//     }
+//     subnetResourceId: vnet.outputs.subnetResourceIds[0]
+//   }
+// }
 
 // App Service Plan
 
-module asp 'br/public:avm/res/web/serverfarm:0.4.1' = {
-  name: 'asp-${uniqueString(deployment().name, location)}'
-  params: {
-    name: '${name}-asp-${suffix}'
-    location: location
-    tags: tags
-    kind: 'linux'
-    skuName: 'S1'
-    skuCapacity: 1
-    appServiceEnvironmentId: ase.outputs.resourceId
-  }
-}
+// module asp 'br/public:avm/res/web/serverfarm:0.4.1' = {
+//   name: 'asp-${uniqueString(deployment().name, location)}'
+//   params: {
+//     name: '${name}-asp-${suffix}'
+//     location: location
+//     tags: tags
+//     kind: 'linux'
+//     skuName: 'S1'
+//     skuCapacity: 1
+//     appServiceEnvironmentId: ase.outputs.resourceId
+//   }
+// }
 
 // CosmosDB Account
 
