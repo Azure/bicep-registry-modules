@@ -80,10 +80,22 @@ param vmNsgRules array = [
 ]
 
 // Virtual network parameters
-@description('Networking. Address prefix for the virtual network.')
+@description('Networking. Whether to deploy a new virtual network or use an existing one.')
+param deployVirtualNetwork bool = true
+
+@description('Networking. Existing virtual network resource ID. Required when deployVirtualNetwork is false.')
+param existingVirtualNetworkResourceId string = ''
+
+@description('Networking. Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.')
+param existingApplicationSubnetResourceId string = ''
+
+@description('Networking. Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.')
+param existingPrivateEndpointSubnetResourceId string = ''
+
+@description('Networking. Address prefix for the virtual network. Only used when deployVirtualNetwork is true.')
 param vnetAddressPrefix string = '10.0.0.0/16'
 
-@description('Networking. Subnet configuration for the virtual network.')
+@description('Networking. Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.')
 param subnets array = [
   {
     name: 'snet-application'
@@ -102,6 +114,22 @@ param subnets array = [
     addressPrefix: '10.0.3.0/26'
   }
 ]
+
+// Subnet reference variables - determine whether to use new VNet outputs or existing subnet resource IDs
+var applicationSubnetResourceId = deployVirtualNetwork
+  ? virtualNetwork.outputs.subnetResourceIds[0]
+  : existingApplicationSubnetResourceId
+var privateEndpointSubnetResourceId = deployVirtualNetwork
+  ? virtualNetwork.outputs.subnetResourceIds[1]
+  : existingPrivateEndpointSubnetResourceId
+
+// Virtual network resource ID - for DNS zone links
+var virtualNetworkResourceId = deployVirtualNetwork
+  ? virtualNetwork.outputs.resourceId
+  : existingVirtualNetworkResourceId
+
+// Parameter validation - ensure required parameters are provided when using existing VNet
+// When deployVirtualNetwork is false, existingVirtualNetworkResourceId, existingApplicationSubnetResourceId, and existingPrivateEndpointSubnetResourceId must all be provided
 
 // Virtual machine parameters
 @description('Compute. Size of the virtual machine.')
@@ -189,8 +217,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// Network security group for VM
-module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = {
+// Network security group for VM (only deployed when creating new VNet)
+module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = if (deployVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-vm-nsg'
   params: {
     name: 'nsg-${name}-vm'
@@ -201,8 +229,8 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
   }
 }
 
-// Network security groups for subnets
-module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
+// Network security groups for subnets (only deployed when creating new VNet)
+module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (deployVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-application-nsg'
   params: {
     name: 'nsg-${name}-application'
@@ -213,7 +241,7 @@ module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' =
   }
 }
 
-module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
+module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (deployVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-privateendpoint-nsg'
   params: {
     name: 'nsg-${name}-privateendpoints'
@@ -243,7 +271,7 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.
   }
 }
 
-module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
+module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (deployVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-bootdiagnostics-nsg'
   params: {
     name: 'nsg-${name}-bootdiagnostics'
@@ -273,7 +301,7 @@ module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.
   }
 }
 
-module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
+module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (deployVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-bastion-nsg'
   params: {
     name: 'nsg-${name}-bastion'
@@ -400,8 +428,8 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   }
 }
 
-// Virtual network with subnets
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
+// Virtual network with subnets (only deployed when creating new VNet)
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (deployVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -521,7 +549,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
     frontendIPConfigurations: [
       {
         name: '${name}-lb-frontendconfig01'
-        subnetId: virtualNetwork.outputs.subnetResourceIds[0]
+        subnetId: applicationSubnetResourceId
         zones: [
           1
           2
@@ -593,7 +621,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
         ipConfigurations: [
           {
             name: nicConfig.ipConfigurations[0].name
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            subnetResourceId: applicationSubnetResourceId
           }
         ]
         deleteOption: nicConfig.deleteOption
@@ -679,8 +707,8 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
     tags: tags ?? {}
     virtualNetworkLinks: [
       {
-        name: uniqueString(virtualNetwork.outputs.resourceId)
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        name: uniqueString(virtualNetworkResourceId)
+        virtualNetworkResourceId: virtualNetworkResourceId
         registrationEnabled: false
       }
     ]
@@ -695,7 +723,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
     name: 'pep-${name}-cosmos'
     location: location
     tags: tags ?? {}
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    subnetResourceId: privateEndpointSubnetResourceId
     privateLinkServiceConnections: [
       {
         name: 'pep-${name}-cosmos-conn'
@@ -728,8 +756,8 @@ module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' 
     tags: tags ?? {}
     virtualNetworkLinks: [
       {
-        name: uniqueString(virtualNetwork.outputs.resourceId, 'storage')
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        name: uniqueString(virtualNetworkResourceId, 'storage')
+        virtualNetworkResourceId: virtualNetworkResourceId
         registrationEnabled: false
       }
     ]
@@ -744,7 +772,7 @@ module storagePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0
     name: 'pep-${name}-storage'
     location: location
     tags: tags ?? {}
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    subnetResourceId: privateEndpointSubnetResourceId
     privateLinkServiceConnections: [
       {
         name: 'pep-${name}-storage-conn'
@@ -776,10 +804,19 @@ output virtualMachineResourceId string = virtualMachine.outputs.resourceId
 output cosmosDbResourceId string = cosmosdbAccount.outputs.resourceId
 
 @description('Resource. The resource ID of the virtual network.')
-output virtualNetworkResourceId string = virtualNetwork.outputs.resourceId
+output virtualNetworkResourceId string = virtualNetworkResourceId
 
 @description('Resource. The resource ID of the load balancer.')
 output loadBalancerResourceId string = loadBalancer.outputs.resourceId
+
+@description('Resource. The resource ID of the storage account.')
+output storageAccountResourceId string = storageAccount.outputs.resourceId
+
+@description('Resource. The resource ID of the storage account private endpoint.')
+output storagePrivateEndpointResourceId string = storagePrivateEndpoint.outputs.resourceId
+
+@description('Resource. The resource ID of the CosmosDB private endpoint.')
+output cosmosDbPrivateEndpointResourceId string = privateEndpoint.outputs.resourceId
 
 @description('Resource. The resource ID.')
 output resourceId string = virtualMachine.outputs.resourceId
@@ -789,9 +826,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('Resource. The name of the virtual machine.')
 output name string = virtualMachine.outputs.name
-
-@description('Resource. The resource ID of the storage account.')
-output storageAccountResourceId string = storageAccount.outputs.resourceId
-
-@description('Resource. The resource ID of the storage private endpoint.')
-output storagePrivateEndpointResourceId string = storagePrivateEndpoint.outputs.resourceId

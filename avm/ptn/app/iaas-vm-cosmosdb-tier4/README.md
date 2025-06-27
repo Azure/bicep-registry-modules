@@ -221,10 +221,14 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`deployVirtualNetwork`](#parameter-deployvirtualnetwork) | bool | Whether to deploy a new virtual network or use an existing one. |
+| [`existingApplicationSubnetResourceId`](#parameter-existingapplicationsubnetresourceid) | string | Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false. |
+| [`existingPrivateEndpointSubnetResourceId`](#parameter-existingprivateendpointsubnetresourceid) | string | Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false. |
+| [`existingVirtualNetworkResourceId`](#parameter-existingvirtualnetworkresourceid) | string | Existing virtual network resource ID. Required when deployVirtualNetwork is false. |
 | [`loadBalancerConfiguration`](#parameter-loadbalancerconfiguration) | object | Load balancer configuration. |
-| [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. |
+| [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true. |
 | [`virtualMachineNicConfigurations`](#parameter-virtualmachinenicconfigurations) | array | Virtual machine NIC configurations. |
-| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. |
+| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. Only used when deployVirtualNetwork is true. |
 
 **Compute parameters**
 
@@ -375,6 +379,38 @@ Network security group rules for the VM.
   ]
   ```
 
+### Parameter: `deployVirtualNetwork`
+
+Whether to deploy a new virtual network or use an existing one.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `existingApplicationSubnetResourceId`
+
+Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `existingPrivateEndpointSubnetResourceId`
+
+Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `existingVirtualNetworkResourceId`
+
+Existing virtual network resource ID. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `loadBalancerConfiguration`
 
 Load balancer configuration.
@@ -391,7 +427,7 @@ Load balancer configuration.
 
 ### Parameter: `subnets`
 
-Subnet configuration for the virtual network.
+Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.
 
 - Required: No
 - Type: array
@@ -440,7 +476,7 @@ Virtual machine NIC configurations.
 
 ### Parameter: `vnetAddressPrefix`
 
-Address prefix for the virtual network.
+Address prefix for the virtual network. Only used when deployVirtualNetwork is true.
 
 - Required: No
 - Type: string
@@ -527,13 +563,14 @@ Virtual machine managed identity configuration.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `cosmosDbPrivateEndpointResourceId` | string | Resource. The resource ID of the CosmosDB private endpoint. |
 | `cosmosDbResourceId` | string | Resource. The resource ID of the CosmosDB MongoDB vCore cluster. |
 | `loadBalancerResourceId` | string | Resource. The resource ID of the load balancer. |
 | `name` | string | Resource. The name of the virtual machine. |
 | `resourceGroupName` | string | Resource. Resource Group Name. |
 | `resourceId` | string | Resource. The resource ID. |
 | `storageAccountResourceId` | string | Resource. The resource ID of the storage account. |
-| `storagePrivateEndpointResourceId` | string | Resource. The resource ID of the storage private endpoint. |
+| `storagePrivateEndpointResourceId` | string | Resource. The resource ID of the storage account private endpoint. |
 | `virtualMachineResourceId` | string | Resource. The resource ID of the virtual machine. |
 | `virtualNetworkResourceId` | string | Resource. The resource ID of the virtual network. |
 
