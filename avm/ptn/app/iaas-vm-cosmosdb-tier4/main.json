@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "235996286425785939"
+      "templateHash": "410889998196215514"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration."
@@ -110,11 +110,39 @@
         "description": "Security. Network security group rules for the VM."
       }
     },
+    "deployVirtualNetwork": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Networking. Whether to deploy a new virtual network or use an existing one."
+      }
+    },
+    "existingVirtualNetworkResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Networking. Existing virtual network resource ID. Required when deployVirtualNetwork is false."
+      }
+    },
+    "existingApplicationSubnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Networking. Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false."
+      }
+    },
+    "existingPrivateEndpointSubnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Networking. Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false."
+      }
+    },
     "vnetAddressPrefix": {
       "type": "string",
       "defaultValue": "10.0.0.0/16",
       "metadata": {
-        "description": "Networking. Address prefix for the virtual network."
+        "description": "Networking. Address prefix for the virtual network. Only used when deployVirtualNetwork is true."
       }
     },
     "subnets": {
@@ -138,7 +166,7 @@
         }
       ],
       "metadata": {
-        "description": "Networking. Subnet configuration for the virtual network."
+        "description": "Networking. Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true."
       }
     },
     "vmSize": {
@@ -336,6 +364,7 @@
       ]
     },
     "vmNetworkSecurityGroup": {
+      "condition": "[parameters('deployVirtualNetwork')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))]",
@@ -988,6 +1017,7 @@
       }
     },
     "applicationNsg": {
+      "condition": "[parameters('deployVirtualNetwork')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-application-nsg', uniqueString(deployment().name, parameters('location')))]",
@@ -1640,6 +1670,7 @@
       }
     },
     "privateEndpointNsg": {
+      "condition": "[parameters('deployVirtualNetwork')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-privateendpoint-nsg', uniqueString(deployment().name, parameters('location')))]",
@@ -2311,6 +2342,7 @@
       }
     },
     "bootDiagnosticsNsg": {
+      "condition": "[parameters('deployVirtualNetwork')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-bootdiagnostics-nsg', uniqueString(deployment().name, parameters('location')))]",
@@ -2982,6 +3014,7 @@
       }
     },
     "bastionNsg": {
+      "condition": "[parameters('deployVirtualNetwork')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-bastion-nsg', uniqueString(deployment().name, parameters('location')))]",
@@ -3748,6 +3781,7 @@
       }
     },
     "virtualNetwork": {
+      "condition": "[parameters('deployVirtualNetwork')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('location')))]",
@@ -11222,7 +11256,7 @@
             "value": [
               {
                 "name": "[format('{0}-lb-frontendconfig01', parameters('name'))]",
-                "subnetId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
+                "subnetId": "[if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], parameters('existingApplicationSubnetResourceId'))]",
                 "zones": [
                   1,
                   2,
@@ -12290,7 +12324,7 @@
               {
                 "name": "value",
                 "count": "[length(parameters('virtualMachineNicConfigurations'))]",
-                "input": "[createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].name, 'tags', coalesce(parameters('tags'), createObject()), 'ipConfigurations', createArray(createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].ipConfigurations[0].name, 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[0])), 'deleteOption', parameters('virtualMachineNicConfigurations')[copyIndex('value')].deleteOption)]"
+                "input": "[createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].name, 'tags', coalesce(parameters('tags'), createObject()), 'ipConfigurations', createArray(createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].ipConfigurations[0].name, 'subnetResourceId', if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], parameters('existingApplicationSubnetResourceId')))), 'deleteOption', parameters('virtualMachineNicConfigurations')[copyIndex('value')].deleteOption)]"
               }
             ]
           },
@@ -28203,8 +28237,8 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[uniqueString(reference('virtualNetwork').outputs.resourceId.value)]",
-                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "name": "[uniqueString(if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.resourceId.value, parameters('existingVirtualNetworkResourceId')))]",
+                "virtualNetworkResourceId": "[if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.resourceId.value, parameters('existingVirtualNetworkResourceId'))]",
                 "registrationEnabled": false
               }
             ]
@@ -31371,9 +31405,7 @@
           "tags": {
             "value": "[coalesce(parameters('tags'), createObject())]"
           },
-          "subnetResourceId": {
-            "value": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]"
-          },
+          "subnetResourceId": "[if(parameters('deployVirtualNetwork'), createObject('value', reference('virtualNetwork').outputs.subnetResourceIds.value[1]), createObject('value', parameters('existingPrivateEndpointSubnetResourceId')))]",
           "privateLinkServiceConnections": {
             "value": [
               {
@@ -32127,8 +32159,8 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[uniqueString(reference('virtualNetwork').outputs.resourceId.value, 'storage')]",
-                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "name": "[uniqueString(if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.resourceId.value, parameters('existingVirtualNetworkResourceId')), 'storage')]",
+                "virtualNetworkResourceId": "[if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.resourceId.value, parameters('existingVirtualNetworkResourceId'))]",
                 "registrationEnabled": false
               }
             ]
@@ -35295,9 +35327,7 @@
           "tags": {
             "value": "[coalesce(parameters('tags'), createObject())]"
           },
-          "subnetResourceId": {
-            "value": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]"
-          },
+          "subnetResourceId": "[if(parameters('deployVirtualNetwork'), createObject('value', reference('virtualNetwork').outputs.subnetResourceIds.value[1]), createObject('value', parameters('existingPrivateEndpointSubnetResourceId')))]",
           "privateLinkServiceConnections": {
             "value": [
               {
@@ -36050,7 +36080,7 @@
       "metadata": {
         "description": "Resource. The resource ID of the virtual network."
       },
-      "value": "[reference('virtualNetwork').outputs.resourceId.value]"
+      "value": "[if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.resourceId.value, parameters('existingVirtualNetworkResourceId'))]"
     },
     "loadBalancerResourceId": {
       "type": "string",
@@ -36058,6 +36088,27 @@
         "description": "Resource. The resource ID of the load balancer."
       },
       "value": "[reference('loadBalancer').outputs.resourceId.value]"
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource. The resource ID of the storage account."
+      },
+      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-storage', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
+    },
+    "storagePrivateEndpointResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource. The resource ID of the storage account private endpoint."
+      },
+      "value": "[reference('storagePrivateEndpoint').outputs.resourceId.value]"
+    },
+    "cosmosDbPrivateEndpointResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource. The resource ID of the CosmosDB private endpoint."
+      },
+      "value": "[reference('privateEndpoint').outputs.resourceId.value]"
     },
     "resourceId": {
       "type": "string",
@@ -36079,20 +36130,6 @@
         "description": "Resource. The name of the virtual machine."
       },
       "value": "[reference('virtualMachine').outputs.name.value]"
-    },
-    "storageAccountResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource. The resource ID of the storage account."
-      },
-      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-storage', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
-    },
-    "storagePrivateEndpointResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource. The resource ID of the storage private endpoint."
-      },
-      "value": "[reference('storagePrivateEndpoint').outputs.resourceId.value]"
     }
   }
 }
