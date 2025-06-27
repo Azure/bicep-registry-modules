@@ -56,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: devcenterName
-      location: enforcedLocation
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
