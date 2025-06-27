@@ -60,9 +60,11 @@ param restorePolicyDays int = 7
 @description('Optional. Blob containers to create.')
 param containers array?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
+
+var enableReferencedModulesTelemetry = false
 
 // The name of the blob services
 var name = 'default'
@@ -162,6 +164,7 @@ module blobServices_container 'container/main.bicep' = [
       publicAccess: container.?publicAccess
       roleAssignments: container.?roleAssignments
       immutabilityPolicyProperties: container.?immutabilityPolicyProperties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

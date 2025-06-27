@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -75,6 +75,15 @@ fi
 
 echo "Use shared key vault: $USE_SHARED_KEYVAULT_JSON"
 
+NEED_ARB_SECRET_JSON=$(echo "$NEED_ARB_SECRET" | tr '[:upper:]' '[:lower:]')
+if [ "$NEED_ARB_SECRET_JSON" = "true" ] || [ "$NEED_ARB_SECRET_JSON" = "1" ]; then
+    NEED_ARB_SECRET_JSON="true"
+else
+    NEED_ARB_SECRET_JSON="false"
+fi
+
+echo "Use shared key vault: $NEED_ARB_SECRET_JSON"
+
 # Debug: Check the content of DEPLOYMENT_SETTINGS
 echo "Debug: DEPLOYMENT_SETTINGS type check..."
 echo "First 100 chars of DEPLOYMENT_SETTINGS: ${DEPLOYMENT_SETTINGS:0:100}"
@@ -113,6 +122,9 @@ cat > "$PARAM_FILE" << EOF
     },
     "cloudId": {
       "value": "$CLOUD_ID"
+    },
+    "needArbSecret": {
+      "value": $NEED_ARB_SECRET_JSON
     }
   }
 }
