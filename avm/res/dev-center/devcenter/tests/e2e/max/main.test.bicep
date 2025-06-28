@@ -77,6 +77,7 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
   name: '${uniqueString(deployment().name, enforcedLocation)}-imageBuilder'
   params: {
     imageTemplateName: 'dep-${namePrefix}-it-${serviceShort}'
+    location: enforcedLocation
     deploymentsToPerform: 'All'
     waitForImageBuild: true
     resourceGroupName: resourceGroup2.name
