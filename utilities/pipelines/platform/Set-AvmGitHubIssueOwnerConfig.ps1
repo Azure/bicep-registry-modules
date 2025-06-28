@@ -36,6 +36,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
     $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
@@ -49,6 +50,8 @@ function Set-AvmGitHubIssueOwnerConfig {
         $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
         # get CSV data
         $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
+
+        $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleOwnersGHTeam)
 
         # new/unknown module
         if ($null -eq $module) {
@@ -95,6 +98,11 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
                 # assign owner
                 $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+
+                #assign team
+                $teamMembers | ForEach-Object {
+                    gh issue edit $issue.url --add-assignee $_ --repo $Repo
+                }
             }
 
             if ([String]::IsNullOrEmpty($assign)) {
