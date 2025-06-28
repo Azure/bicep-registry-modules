@@ -99,7 +99,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                 # assign owner
                 $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
 
-                #assign team
+                #assign team members
                 $teamMembers | ForEach-Object {
                     gh issue edit $issue.url --add-assignee $_ --repo $Repo
                 }
