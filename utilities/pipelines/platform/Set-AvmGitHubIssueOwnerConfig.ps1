@@ -51,7 +51,8 @@ function Set-AvmGitHubIssueOwnerConfig {
         # get CSV data
         $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
-        $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleOwnersGHTeam)
+        $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleOwnersGHTeam)
+        $contributorTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleContributorsGHTeam)
 
         # new/unknown module
         if ($null -eq $module) {
@@ -99,8 +100,13 @@ function Set-AvmGitHubIssueOwnerConfig {
                 # assign owner
                 $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
 
-                #assign team members
-                $teamMembers | ForEach-Object {
+                #assign owner team members
+                $ownerTeamMembers | ForEach-Object {
+                    gh issue edit $issue.url --add-assignee $_ --repo $Repo
+                }
+
+                #assign contributor team members
+                $contributorTeamMembers | ForEach-Object {
                     gh issue edit $issue.url --add-assignee $_ --repo $Repo
                 }
             }
