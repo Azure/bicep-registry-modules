@@ -518,18 +518,18 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.6.0' = [
           server: acr.outputs.loginServer
         }
       ]
-      subnets: [
-        {
-          subnetResourceId: privateNetworking && networkingConfiguration.networkType == 'createNew'
-            ? filter(
-                newVnet.outputs.subnetResourceIds,
-                subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
-              )[0]
-            : privateNetworking && networkingConfiguration.networkType == 'useExisting'
-                ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
-                : null
-        }
-      ]
+      subnets: privateNetworking
+        ? [
+            {
+              subnetResourceId: networkingConfiguration.networkType == 'createNew'
+                ? filter(
+                    newVnet.outputs.subnetResourceIds,
+                    subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
+                  )[0]
+                : '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
+            }
+          ]
+        : null
       ipAddress: {
         type: privateNetworking ? 'Private' : 'Public'
         ports: [

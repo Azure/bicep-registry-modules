@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1392603194364987564"
+      "templateHash": "18162755961109646353"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -15819,13 +15819,7 @@
               }
             ]
           },
-          "subnets": {
-            "value": [
-              {
-                "subnetResourceId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0], if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration').computeNetworking, 'containerInstanceSubnetName')), null()))]"
-              }
-            ]
-          },
+          "subnets": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0], format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))))), createObject('value', null()))]",
           "ipAddress": {
             "value": {
               "type": "[if(parameters('privateNetworking'), 'Private', 'Public')]",
