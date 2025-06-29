@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = {
     computeTypes: [
       'azure-container-app'
     ]
-    logAnalyticsReplicationRegion: 'northcentralus'
+    logAnalyticsReplicationRegion: 'westus2'
     selfHostedConfig: {
       githubOrganization: 'githHubOrganization'
       githubRepository: 'dummyRepo'
