@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2448264125731919361"
+      "templateHash": "1392603194364987564"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -694,6 +694,13 @@
         "description": "Optional. The availability zone to be used for the supported resources."
       }
     },
+    "logAnalyticsReplicationRegion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The Azure region to replicate the Log Analytics workspace to. If not specified, replication is disabled."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -828,6 +835,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "replication": "[if(not(empty(parameters('logAnalyticsReplicationRegion'))), createObject('value', createObject('enabled', true(), 'location', parameters('logAnalyticsReplicationRegion'))), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -839,8 +847,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10549387460031423688"
+              "version": "0.36.1.42791",
+              "templateHash": "1749032521457140145"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace."
@@ -1279,10 +1287,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                    },
                     "description": "Optional. Tags to configure in the resource."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -1392,6 +1403,29 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Features of the workspace."
+              }
+            },
+            "workspaceReplicationType": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The location to which the workspace is replicated. Required if replication is enabled."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Replication properties of the workspace."
               }
             },
             "_1.columnType": {
@@ -1513,7 +1547,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1541,7 +1575,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1648,7 +1682,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1763,7 +1797,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.1"
                 }
               }
             }
@@ -1948,6 +1982,13 @@
                 "description": "Optional. The workspace features."
               }
             },
+            "replication": {
+              "$ref": "#/definitions/workspaceReplicationType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The workspace replication properties."
+              }
+            },
             "diagnosticSettings": {
               "type": "array",
               "items": {
@@ -1984,10 +2025,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -2027,7 +2071,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.11.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2045,7 +2089,7 @@
             },
             "logAnalyticsWorkspace": {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2025-02-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2067,7 +2111,8 @@
                 },
                 "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
                 "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
-                "forceCmkForQuery": "[parameters('forceCmkForQuery')]"
+                "forceCmkForQuery": "[parameters('forceCmkForQuery')]",
+                "replication": "[parameters('replication')]"
               },
               "identity": "[variables('identity')]"
             },
@@ -2193,8 +2238,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "2043978404537017691"
+                      "version": "0.36.1.42791",
+                      "templateHash": "1306323182548882150"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -2241,28 +2286,31 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2024-01-01",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                     },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "storageinsightconfig": {
                       "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2270,7 +2318,7 @@
                         "tables": "[parameters('tables')]",
                         "storageAccount": {
                           "id": "[parameters('storageAccountResourceId')]",
-                          "key": "[listKeys('storageAccount', '2022-09-01').keys[0].value]"
+                          "key": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
                         }
                       }
                     }
@@ -2338,8 +2386,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "15624488954958814427"
+                      "version": "0.36.1.42791",
+                      "templateHash": "5230241501765697269"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -2373,22 +2421,25 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/linkedServices@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "linkedService": {
                       "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2457,8 +2508,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "8250559094478594611"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10372135754202496594"
                     },
                     "name": "Log Analytics Workspace Linked Storage Accounts",
                     "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -2497,12 +2548,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "linkedStorageAccount": {
                       "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "properties": {
                         "storageAccountIds": "[parameters('storageAccountIds')]"
@@ -2590,8 +2641,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5149844663841891327"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9015459905306126128"
                     },
                     "name": "Log Analytics Workspace Saved Searches",
                     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -2629,10 +2680,13 @@
                     },
                     "tags": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01#properties/properties/properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "functionAlias": {
                       "type": "string",
@@ -2667,12 +2721,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "savedSearch": {
                       "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "properties": {
                         "etag": "[parameters('etag')]",
@@ -2753,8 +2807,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1695158270142527557"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8586520532175356447"
                     },
                     "name": "Log Analytics Workspace Data Exports",
                     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2836,12 +2890,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('workspaceName')]"
                     },
                     "dataExport": {
                       "type": "Microsoft.OperationalInsights/workspaces/dataExports",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
                       "properties": {
                         "destination": "[parameters('destination')]",
@@ -2946,8 +3000,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "3062149733782372246"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8336916453932906250"
                     },
                     "name": "Log Analytics Workspace Datasources",
                     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -2984,10 +3038,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "linkedResourceId": {
                       "type": "string",
@@ -3071,12 +3128,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "dataSource": {
                       "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "kind": "[parameters('kind')]",
                       "tags": "[parameters('tags')]",
@@ -3173,8 +3230,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5855172714151847939"
+                      "version": "0.36.1.42791",
+                      "templateHash": "315390662258960765"
                     },
                     "name": "Log Analytics Workspace Tables",
                     "description": "This module deploys a Log Analytics Workspace Table."
@@ -3420,7 +3477,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     }
@@ -3523,12 +3580,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('workspaceName')]"
                     },
                     "table": {
                       "type": "Microsoft.OperationalInsights/workspaces/tables",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
                       "properties": {
                         "plan": "[parameters('plan')]",
@@ -3629,8 +3686,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "1867653058254938383"
+                      "version": "0.32.4.45862",
+                      "templateHash": "10255889523646649592"
                     },
                     "name": "Operations Management Solutions",
                     "description": "This module deploys an Operations Management Solution.",
@@ -3705,7 +3762,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3740,10 +3797,7 @@
                         "promotionCode": "",
                         "product": "[parameters('plan').product]",
                         "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
-                      },
-                      "dependsOn": [
-                        "logAnalyticsWorkspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3817,7 +3871,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('logAnalyticsWorkspace', '2023-09-01', 'full').location]"
+              "value": "[reference('logAnalyticsWorkspace', '2025-02-01', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -3825,21 +3879,21 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2023-09-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2025-02-01', 'full'), 'identity'), 'principalId')]"
             },
             "primarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The primary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey]"
             },
             "secondarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The secondary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').secondarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').secondarySharedKey]"
             }
           }
         }

@@ -46,6 +46,7 @@ module testDeployment '../../../main.bicep' = {
     computeTypes: [
       'azure-container-instance'
     ]
+    logAnalyticsReplicationRegion: 'eastus'
     selfHostedConfig: {
       agentsPoolName: 'aci-pool'
       devOpsOrganization: 'azureDevOpsOrganization'

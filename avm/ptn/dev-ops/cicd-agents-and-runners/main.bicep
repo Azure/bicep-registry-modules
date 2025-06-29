@@ -26,6 +26,9 @@ param privateNetworking bool = true
 @description('Optional. The availability zone to be used for the supported resources.')
 param availabilityZone int = -1
 
+@description('Optional. The Azure region to replicate the Log Analytics workspace to. If not specified, replication is disabled.')
+param logAnalyticsReplicationRegion string = ''
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -210,11 +213,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = {
   name: 'logAnalyticsWorkspace-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
     location: location
+    replication: !empty(logAnalyticsReplicationRegion)
+      ? {
+          enabled: true
+          location: logAnalyticsReplicationRegion
+        }
+      : null
     enableTelemetry: enableTelemetry
   }
 }

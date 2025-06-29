@@ -54,14 +54,14 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
@@ -247,6 +247,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     location: '<location>'
+    logAnalyticsReplicationRegion: 'eastus'
     privateNetworking: false
   }
 }
@@ -292,6 +293,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "location": {
       "value": "<location>"
     },
+    "logAnalyticsReplicationRegion": {
+      "value": "eastus"
+    },
     "privateNetworking": {
       "value": false
     }
@@ -327,6 +331,7 @@ param selfHostedConfig = {
 }
 // Non-required parameters
 param location = '<location>'
+param logAnalyticsReplicationRegion = 'eastus'
 param privateNetworking = false
 ```
 
@@ -370,6 +375,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     location: '<location>'
+    logAnalyticsReplicationRegion: 'eastus'
     privateNetworking: false
   }
 }
@@ -421,6 +427,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "location": {
       "value": "<location>"
     },
+    "logAnalyticsReplicationRegion": {
+      "value": "eastus"
+    },
     "privateNetworking": {
       "value": false
     }
@@ -462,6 +471,7 @@ param selfHostedConfig = {
 }
 // Non-required parameters
 param location = '<location>'
+param logAnalyticsReplicationRegion = 'eastus'
 param privateNetworking = false
 ```
 
@@ -1327,6 +1337,7 @@ param privateNetworking = true
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`logAnalyticsReplicationRegion`](#parameter-loganalyticsreplicationregion) | string | The Azure region to replicate the Log Analytics workspace to. If not specified, replication is disabled. |
 | [`privateNetworking`](#parameter-privatenetworking) | bool | Whether to use private or public networking for the Azure Container Registry. |
 
 ### Parameter: `computeTypes`
@@ -2269,6 +2280,14 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `logAnalyticsReplicationRegion`
+
+The Azure region to replicate the Log Analytics workspace to. If not specified, replication is disabled.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `privateNetworking`
 
 Whether to use private or public networking for the Azure Container Registry.
@@ -2300,7 +2319,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.22.1` | Remote reference |
 
