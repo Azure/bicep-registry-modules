@@ -289,8 +289,6 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
   params: {
     serverName: serverName
     databaseName: database.name
-    backupStorageAccessTier: backupLongTermRetentionPolicy.?backupStorageAccessTier
-    makeBackupsImmutable: backupLongTermRetentionPolicy.?makeBackupsImmutable
     weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
@@ -350,12 +348,6 @@ type shortTermBackupRetentionPolicyType = {
 @export()
 @description('The long-term backup retention policy for the database.')
 type longTermBackupRetentionPolicyType = {
-  @description('Optional. The BackupStorageAccessTier for the LTR backups.')
-  backupStorageAccessTier: 'Archive' | 'Hot'?
-
-  @description('Optional. The setting whether to make LTR backups immutable.')
-  makeBackupsImmutable: bool?
-
   @description('Optional. Monthly retention in ISO 8601 duration format.')
   monthlyRetention: string?
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "6925118343392632473"
+      "version": "0.36.1.42791",
+      "templateHash": "16416955710777620943"
     },
     "name": "Azure Health Bots",
     "description": "This module deploys an Azure Health Bot."
@@ -190,10 +190,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.HealthBot/healthBots@2022-08-08#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",

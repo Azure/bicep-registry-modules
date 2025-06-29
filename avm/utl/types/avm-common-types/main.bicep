@@ -171,6 +171,9 @@ type lockType = {
 
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+
+  @description('Optional. Specify the notes of the lock.')
+  notes: string?
 }
 
 // ====================== //

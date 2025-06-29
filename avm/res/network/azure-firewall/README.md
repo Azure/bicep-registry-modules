@@ -497,7 +497,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     }
     publicIPResourceID: '<publicIPResourceID>'
-    virtualHubResoureId: '<virtualHubResoureId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
 ```
@@ -529,8 +529,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "publicIPResourceID": {
       "value": "<publicIPResourceID>"
     },
-    "virtualHubResoureId": {
-      "value": "<virtualHubResoureId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     }
   }
 }
@@ -555,7 +555,7 @@ param hubIPAddresses = {
   }
 }
 param publicIPResourceID = '<publicIPResourceID>'
-param virtualHubResoureId = '<virtualHubResoureId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
@@ -584,7 +584,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     }
     location: '<location>'
-    virtualHubResoureId: '<virtualHubResoureId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
 ```
@@ -619,8 +619,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualHubResoureId": {
-      "value": "<virtualHubResoureId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     }
   }
 }
@@ -646,7 +646,7 @@ param hubIPAddresses = {
   }
 }
 param location = '<location>'
-param virtualHubResoureId = '<virtualHubResoureId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
@@ -674,7 +674,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     }
     location: '<location>'
-    virtualHubResoureId: '<virtualHubResoureId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
 ```
@@ -706,8 +706,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualHubResoureId": {
-      "value": "<virtualHubResoureId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     }
   }
 }
@@ -732,7 +732,7 @@ param hubIPAddresses = {
   }
 }
 param location = '<location>'
-param virtualHubResoureId = '<virtualHubResoureId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
@@ -1905,7 +1905,7 @@ param zones = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`hubIPAddresses`](#parameter-hubipaddresses) | object | IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied. |
-| [`virtualHubResoureId`](#parameter-virtualhubresoureid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
+| [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty. |
 
 **Optional parameters**
@@ -1990,7 +1990,7 @@ Public IP address count.
 - Required: No
 - Type: int
 
-### Parameter: `virtualHubResoureId`
+### Parameter: `virtualHubResourceId`
 
 The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.
 

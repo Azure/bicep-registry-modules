@@ -5,7 +5,7 @@ Calculates the module target SemVer version.
 .DESCRIPTION
 Calculates the module target SemVer version based on version.json file and existing published release tags.
 Resets patch version if major or minor is updated.
-Bumps patch version otherwise
+Bumps patch version otherwise.
 Builds target version as major.minor.patch
 
 .PARAMETER ModuleFolderPath
@@ -34,17 +34,17 @@ function Get-ModuleTargetVersion {
 
     # 1. Get [version.json] file path
     $versionFilePath = Join-Path $ModuleFolderPath 'version.json'
-    if (-not (Test-Path -Path $VersionFilePath)) {
-        throw "No version file found at: [$VersionFilePath]"
+    if (-not (Test-Path -Path $versionFilePath)) {
+        throw "No version file found at: [$versionFilePath]"
     }
 
     # 2. Get MAJOR and MINOR from [version.json]
-    $versionFileTargetVersion = (Get-Content $VersionFilePath | ConvertFrom-Json).version
+    $versionFileTargetVersion = (Get-Content $versionFilePath | ConvertFrom-Json).version
     $major, $minor = $versionFileTargetVersion -split '\.'
 
     # 3. Get PATCH
     # Check if [version.json] file version property was updated (compare with previous head)
-    $versionChange = Get-ModuleVersionChange -VersionFilePath $VersionFilePath
+    $versionChange = Get-ModuleVersionChange -VersionFilePath $versionFilePath
 
     if ($versionChange) {
         # If [version.json] file version property was updated, reset the patch/bug version back to 0

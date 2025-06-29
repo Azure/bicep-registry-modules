@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15961431104919711857"
+      "templateHash": "13916745959726876819"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -81,24 +81,6 @@
     "longTermBackupRetentionPolicyType": {
       "type": "object",
       "properties": {
-        "backupStorageAccessTier": {
-          "type": "string",
-          "allowedValues": [
-            "Archive",
-            "Hot"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-          }
-        },
-        "makeBackupsImmutable": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The setting whether to make LTR backups immutable."
-          }
-        },
         "monthlyRetention": {
           "type": "string",
           "nullable": true,
@@ -949,12 +931,6 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
-          "backupStorageAccessTier": {
-            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'backupStorageAccessTier')]"
-          },
-          "makeBackupsImmutable": {
-            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'makeBackupsImmutable')]"
-          },
           "weeklyRetention": {
             "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
           },
@@ -976,7 +952,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "101116542806833061"
+              "templateHash": "10140872033464442933"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -992,24 +968,6 @@
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the parent database."
-              }
-            },
-            "backupStorageAccessTier": {
-              "type": "string",
-              "allowedValues": [
-                "Archive",
-                "Hot"
-              ],
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-              }
-            },
-            "makeBackupsImmutable": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The setting whether to make LTR backups immutable."
               }
             },
             "monthlyRetention": {
@@ -1056,11 +1014,9 @@
             },
             "backupLongTermRetentionPolicy": {
               "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
-                "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
-                "makeBackupsImmutable": "[parameters('makeBackupsImmutable')]",
                 "monthlyRetention": "[parameters('monthlyRetention')]",
                 "weeklyRetention": "[parameters('weeklyRetention')]",
                 "weekOfYear": "[parameters('weekOfYear')]",
