@@ -184,7 +184,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
+resource searchService 'Microsoft.Search/searchServices@2025-02-01-preview' = {
   location: location
   name: name
   sku: {

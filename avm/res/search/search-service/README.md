@@ -21,8 +21,8 @@ This module deploys a Search Service.
 | `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Search/searchServices` | [2025-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices) |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices/sharedPrivateLinkResources) |
+| `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
 
 ## Usage examples
 
