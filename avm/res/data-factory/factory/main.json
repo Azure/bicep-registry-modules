@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "9353606164080840290"
+      "version": "0.36.1.42791",
+      "templateHash": "16252198932786620492"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -1049,8 +1049,8 @@
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null())]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "cMKKeyVault",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "dataFactory_lock": {
@@ -1157,8 +1157,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17988798320328415885"
+              "version": "0.36.1.42791",
+              "templateHash": "14700868208060134211"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -1230,8 +1230,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "12304621154639480158"
+                      "version": "0.36.1.42791",
+                      "templateHash": "13532538255788105281"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -1381,8 +1381,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "12984160632921626743"
+              "version": "0.36.1.42791",
+              "templateHash": "12926344531553539246"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -1518,8 +1518,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8426964975127254817"
+              "version": "0.36.1.42791",
+              "templateHash": "8433607221603016160"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "1695158270142527557"
+      "version": "0.36.1.42791",
+      "templateHash": "8586520532175356447"
     },
     "name": "Log Analytics Workspace Data Exports",
     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -88,12 +88,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('workspaceName')]"
     },
     "dataExport": {
       "type": "Microsoft.OperationalInsights/workspaces/dataExports",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "destination": "[parameters('destination')]",

@@ -7,12 +7,6 @@ param serverName string
 @description('Required. The name of the parent database.')
 param databaseName string
 
-@description('Optional. The BackupStorageAccessTier for the LTR backups.')
-param backupStorageAccessTier 'Archive' | 'Hot'?
-
-@description('Optional. The setting whether to make LTR backups immutable.')
-param makeBackupsImmutable bool?
-
 @description('Optional. Monthly retention in ISO 8601 duration format.')
 param monthlyRetention string?
 
@@ -33,12 +27,10 @@ resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   }
 }
 
-resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2023-05-01-preview' = {
+resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2023-08-01' = {
   name: 'default'
   parent: server::database
   properties: {
-    backupStorageAccessTier: backupStorageAccessTier
-    makeBackupsImmutable: makeBackupsImmutable
     monthlyRetention: monthlyRetention
     weeklyRetention: weeklyRetention
     weekOfYear: weekOfYear

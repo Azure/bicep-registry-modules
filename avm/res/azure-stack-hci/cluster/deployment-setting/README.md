@@ -33,6 +33,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`endingIPAddress`](#parameter-endingipaddress) | string | The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs. |
 | [`hciResourceProviderObjectId`](#parameter-hciresourceproviderobjectid) | securestring | The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription. |
 | [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault to be used for storing secrets for the HCI cluster. |
+| [`needArbSecret`](#parameter-needarbsecret) | bool | If true, the service principal secret for ARB is required. If false, the secrets wiil not be required. |
 | [`networkIntents`](#parameter-networkintents) | array | An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster. |
 | [`startingIPAddress`](#parameter-startingipaddress) | string | The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs. |
 | [`storageConnectivitySwitchless`](#parameter-storageconnectivityswitchless) | bool | Specify whether the Storage Network connectivity is switched or switchless. |
@@ -60,6 +61,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`hvciProtection`](#parameter-hvciprotection) | bool | The Hypervisor-protected Code Integrity setting. |
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`name`](#parameter-name) | string | The name of the deployment settings. |
+| [`operationType`](#parameter-operationtype) | string | The intended operation for a cluster. |
 | [`sideChannelMitigationEnforced`](#parameter-sidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled. |
 | [`smbClusterEncryption`](#parameter-smbclusterencryption) | bool | When set to true, cluster east-west traffic is encrypted. |
 | [`smbSigningEnforced`](#parameter-smbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
@@ -157,6 +159,13 @@ The name of the key vault to be used for storing secrets for the HCI cluster.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `needArbSecret`
+
+If true, the service principal secret for ARB is required. If false, the secrets wiil not be required.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `networkIntents`
 
@@ -290,6 +299,21 @@ The name of the deployment settings.
   ```Bicep
   [
     'default'
+  ]
+  ```
+
+### Parameter: `operationType`
+
+The intended operation for a cluster.
+
+- Required: No
+- Type: string
+- Default: `'ClusterProvisioning'`
+- Allowed:
+  ```Bicep
+  [
+    'ClusterProvisioning'
+    'ClusterUpgrade'
   ]
   ```
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7735623461754235254"
+      "templateHash": "3495431819795381783"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -895,31 +895,6 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "copy": [
-          {
-            "name": "connections",
-            "count": "[length(parameters('vpnConnections'))]",
-            "input": {
-              "name": "[parameters('vpnConnections')[copyIndex('connections')].name]",
-              "properties": {
-                "connectionBandwidth": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'connectionBandwidth')]",
-                "enableBgp": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableBgp')]",
-                "enableInternetSecurity": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableInternetSecurity')]",
-                "remoteVpnSite": "[if(contains(parameters('vpnConnections')[copyIndex('connections')], 'remoteVpnSiteResourceId'), createObject('id', tryGet(parameters('vpnConnections')[copyIndex('connections')], 'remoteVpnSiteResourceId')), null())]",
-                "enableRateLimiting": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableRateLimiting')]",
-                "routingConfiguration": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'routingConfiguration')]",
-                "routingWeight": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'routingWeight')]",
-                "sharedKey": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'sharedKey')]",
-                "useLocalAzureIpAddress": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'useLocalAzureIpAddress')]",
-                "usePolicyBasedTrafficSelectors": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'usePolicyBasedTrafficSelectors')]",
-                "vpnConnectionProtocolType": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'vpnConnectionProtocolType')]",
-                "ipsecPolicies": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'ipsecPolicies')]",
-                "trafficSelectorPolicies": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'trafficSelectorPolicies')]",
-                "vpnLinkConnections": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'vpnLinkConnections')]"
-              }
-            }
-          }
-        ],
         "bgpSettings": "[parameters('bgpSettings')]",
         "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
         "isRoutingPreferenceInternet": "[parameters('isRoutingPreferenceInternet')]",
@@ -1842,7 +1817,8 @@
         }
       },
       "dependsOn": [
-        "vpnGateway"
+        "vpnGateway",
+        "vpnGateway_natRules"
       ]
     }
   },
@@ -1874,6 +1850,26 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('vpnGateway', '2024-07-01', 'full').location]"
+    },
+    "natRuleResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the NAT rules."
+      },
+      "copy": {
+        "count": "[length(parameters('natRules'))]",
+        "input": "[reference(format('vpnGateway_natRules[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    },
+    "vpnConnectionResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the VPN connections."
+      },
+      "copy": {
+        "count": "[length(parameters('vpnConnections'))]",
+        "input": "[reference(format('vpnGateway_vpnConnections[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
     }
   }
 }

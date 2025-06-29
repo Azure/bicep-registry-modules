@@ -31,7 +31,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using NAT Rules](#example-3-using-nat-rules)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -302,7 +303,317 @@ param vpnConnections = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using NAT Rules_
+
+This instance deploys the module using NAT rule.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
+  name: 'vpnGatewayDeployment'
+  params: {
+    // Required parameters
+    name: 'vpngnat001'
+    virtualHubResourceId: '<virtualHubResourceId>'
+    // Non-required parameters
+    bgpSettings: {
+      asn: 65515
+      peerWeight: 0
+    }
+    enableTelemetry: true
+    location: '<location>'
+    natRules: [
+      {
+        externalMappings: [
+          {
+            addressSpace: '10.52.18.0/28'
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: '10.33.5.64/28'
+          }
+        ]
+        mode: 'EgressSnat'
+        name: 'testnatrule'
+        type: 'Static'
+      }
+      {
+        externalMappings: [
+          {
+            addressSpace: '192.168.100.0/24'
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: '10.10.10.0/24'
+          }
+        ]
+        mode: 'IngressSnat'
+        name: 'ingress-nat-rule'
+        type: 'Static'
+      }
+    ]
+    vpnConnections: [
+      {
+        enableBgp: false
+        enableInternetSecurity: true
+        enableRateLimiting: false
+        name: 'test-connection-with-nat'
+        remoteVpnSiteResourceId: '<remoteVpnSiteResourceId>'
+        useLocalAzureIpAddress: false
+        usePolicyBasedTrafficSelectors: false
+        vpnConnectionProtocolType: 'IKEv2'
+        vpnLinkConnections: [
+          {
+            name: 'link-connection-with-egress-nat'
+            properties: {
+              connectionBandwidth: 100
+              egressNatRules: [
+                {
+                  id: '<id>'
+                }
+              ]
+              enableBgp: false
+              enableRateLimiting: false
+              ingressNatRules: [
+                {
+                  id: '<id>'
+                }
+              ]
+              routingWeight: 10
+              usePolicyBasedTrafficSelectors: false
+              vpnConnectionProtocolType: 'IKEv2'
+              vpnLinkConnectionMode: 'Default'
+              vpnSiteLink: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+      }
+    ]
+    vpnGatewayScaleUnit: 2
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "vpngnat001"
+    },
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
+    },
+    // Non-required parameters
+    "bgpSettings": {
+      "value": {
+        "asn": 65515,
+        "peerWeight": 0
+      }
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "natRules": {
+      "value": [
+        {
+          "externalMappings": [
+            {
+              "addressSpace": "10.52.18.0/28"
+            }
+          ],
+          "internalMappings": [
+            {
+              "addressSpace": "10.33.5.64/28"
+            }
+          ],
+          "mode": "EgressSnat",
+          "name": "testnatrule",
+          "type": "Static"
+        },
+        {
+          "externalMappings": [
+            {
+              "addressSpace": "192.168.100.0/24"
+            }
+          ],
+          "internalMappings": [
+            {
+              "addressSpace": "10.10.10.0/24"
+            }
+          ],
+          "mode": "IngressSnat",
+          "name": "ingress-nat-rule",
+          "type": "Static"
+        }
+      ]
+    },
+    "vpnConnections": {
+      "value": [
+        {
+          "enableBgp": false,
+          "enableInternetSecurity": true,
+          "enableRateLimiting": false,
+          "name": "test-connection-with-nat",
+          "remoteVpnSiteResourceId": "<remoteVpnSiteResourceId>",
+          "useLocalAzureIpAddress": false,
+          "usePolicyBasedTrafficSelectors": false,
+          "vpnConnectionProtocolType": "IKEv2",
+          "vpnLinkConnections": [
+            {
+              "name": "link-connection-with-egress-nat",
+              "properties": {
+                "connectionBandwidth": 100,
+                "egressNatRules": [
+                  {
+                    "id": "<id>"
+                  }
+                ],
+                "enableBgp": false,
+                "enableRateLimiting": false,
+                "ingressNatRules": [
+                  {
+                    "id": "<id>"
+                  }
+                ],
+                "routingWeight": 10,
+                "usePolicyBasedTrafficSelectors": false,
+                "vpnConnectionProtocolType": "IKEv2",
+                "vpnLinkConnectionMode": "Default",
+                "vpnSiteLink": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "vpnGatewayScaleUnit": {
+      "value": 2
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngnat001'
+param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param bgpSettings = {
+  asn: 65515
+  peerWeight: 0
+}
+param enableTelemetry = true
+param location = '<location>'
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '10.52.18.0/28'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.33.5.64/28'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'testnatrule'
+    type: 'Static'
+  }
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.100.0/24'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.10.10.0/24'
+      }
+    ]
+    mode: 'IngressSnat'
+    name: 'ingress-nat-rule'
+    type: 'Static'
+  }
+]
+param vpnConnections = [
+  {
+    enableBgp: false
+    enableInternetSecurity: true
+    enableRateLimiting: false
+    name: 'test-connection-with-nat'
+    remoteVpnSiteResourceId: '<remoteVpnSiteResourceId>'
+    useLocalAzureIpAddress: false
+    usePolicyBasedTrafficSelectors: false
+    vpnConnectionProtocolType: 'IKEv2'
+    vpnLinkConnections: [
+      {
+        name: 'link-connection-with-egress-nat'
+        properties: {
+          connectionBandwidth: 100
+          egressNatRules: [
+            {
+              id: '<id>'
+            }
+          ]
+          enableBgp: false
+          enableRateLimiting: false
+          ingressNatRules: [
+            {
+              id: '<id>'
+            }
+          ]
+          routingWeight: 10
+          usePolicyBasedTrafficSelectors: false
+          vpnConnectionProtocolType: 'IKEv2'
+          vpnLinkConnectionMode: 'Default'
+          vpnSiteLink: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+  }
+]
+param vpnGatewayScaleUnit = 2
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1642,8 +1953,10 @@ The scale unit for this VPN gateway.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the VPN gateway. |
+| `natRuleResourceIds` | array | The resource IDs of the NAT rules. |
 | `resourceGroupName` | string | The name of the resource group the VPN gateway was deployed into. |
 | `resourceId` | string | The resource ID of the VPN gateway. |
+| `vpnConnectionResourceIds` | array | The resource IDs of the VPN connections. |
 
 ## Cross-referenced modules
 
