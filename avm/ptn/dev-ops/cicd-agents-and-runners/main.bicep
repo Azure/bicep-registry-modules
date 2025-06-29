@@ -750,7 +750,7 @@ module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zon
   }
 }
 
-module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.22.1' = if (contains(
+module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.23.0' = if (contains(
   computeTypes,
   'azure-container-app'
 ) && selfHostedConfig.selfHostedType == 'azuredevops' && privateNetworking) {
@@ -796,7 +796,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.22.1' = 
   }
 }
 
-module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.22.1' = if (privateNetworking) {
+module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.23.0' = if (privateNetworking) {
   name: 'deploymentScriptAcrStg-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'stgacr${uniqueString(resourceGroup().id, acr.outputs.name,location)}'
