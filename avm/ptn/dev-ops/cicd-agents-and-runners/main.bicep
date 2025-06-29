@@ -216,7 +216,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = {
   name: 'logAnalyticsWorkspace-${uniqueString(resourceGroup().id)}'
   params: {
-    name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
+    name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}'
     location: location
     replication: !empty(logAnalyticsReplicationRegion)
       ? {
