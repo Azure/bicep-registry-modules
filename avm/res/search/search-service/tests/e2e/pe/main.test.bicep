@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -40,7 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     privateDnsZoneName: 'privatelink.search.windows.net'
-    location: resourceLocation
   }
 }
 
@@ -55,7 +54,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {
