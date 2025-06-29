@@ -549,7 +549,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.6.0' = [
             resources: {
               requests: {
                 cpu: selfHostedConfig.?cpu ?? 1
-                memoryInGB: selfHostedConfig.?memoryInGB ?? 2
+                memoryInGB: selfHostedConfig.?memoryInGB ?? '2'
               }
             }
             environmentVariables: selfHostedConfig.selfHostedType == 'github'
@@ -1043,7 +1043,7 @@ type azureContainerInstanceTargetType = {
   cpu: int?
 
   @description('Optional. The Azure Container Instance container memory.')
-  memoryInGB: int?
+  memoryInGB: string?
 
   @description('Optional. The Azure Container Instance container port.')
   port: int?

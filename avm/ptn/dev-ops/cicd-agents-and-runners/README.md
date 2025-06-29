@@ -646,7 +646,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     selfHostedConfig: {
       azureContainerInstanceTarget: {
         cpu: 1
-        memoryInGB: 2
+        memoryInGB: '2'
         numberOfInstances: 3
         sku: 'Standard'
       }
@@ -700,7 +700,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       "value": {
         "azureContainerInstanceTarget": {
           "cpu": 1,
-          "memoryInGB": 2,
+          "memoryInGB": "2",
           "numberOfInstances": 3,
           "sku": "Standard"
         },
@@ -750,7 +750,7 @@ param networkingConfiguration = {
 param selfHostedConfig = {
   azureContainerInstanceTarget: {
     cpu: 1
-    memoryInGB: 2
+    memoryInGB: '2'
     numberOfInstances: 3
     sku: 'Standard'
   }
@@ -1893,7 +1893,7 @@ The GitHub runner Azure Container instance configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cpu`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetcpu) | int | The Azure Container Instance container cpu. |
-| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetmemoryingb) | int | The Azure Container Instance container memory. |
+| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetmemoryingb) | string | The Azure Container Instance container memory. |
 | [`numberOfInstances`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetnumberofinstances) | int | The number of the Azure Container Instances to deploy. |
 | [`port`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetport) | int | The Azure Container Instance container port. |
 | [`sku`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetsku) | string | The Azure Container Instance Sku name. |
@@ -1910,7 +1910,7 @@ The Azure Container Instance container cpu.
 The Azure Container Instance container memory.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.numberOfInstances`
 
@@ -2177,7 +2177,7 @@ The GitHub runner Azure Container instance configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cpu`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetcpu) | int | The Azure Container Instance container cpu. |
-| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetmemoryingb) | int | The Azure Container Instance container memory. |
+| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetmemoryingb) | string | The Azure Container Instance container memory. |
 | [`numberOfInstances`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetnumberofinstances) | int | The number of the Azure Container Instances to deploy. |
 | [`port`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetport) | int | The Azure Container Instance container port. |
 | [`sku`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetsku) | string | The Azure Container Instance Sku name. |
@@ -2194,7 +2194,7 @@ The Azure Container Instance container cpu.
 The Azure Container Instance container memory.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.numberOfInstances`
 

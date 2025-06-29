@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16165915341096455488"
+      "templateHash": "2448264125731919361"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -334,7 +334,7 @@
           }
         },
         "memoryInGB": {
-          "type": "int",
+          "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The Azure Container Instance container memory."
@@ -15801,7 +15801,7 @@
                   "resources": {
                     "requests": {
                       "cpu": "[coalesce(tryGet(parameters('selfHostedConfig'), 'cpu'), 1)]",
-                      "memoryInGB": "[coalesce(tryGet(parameters('selfHostedConfig'), 'memoryInGB'), 2)]"
+                      "memoryInGB": "[coalesce(tryGet(parameters('selfHostedConfig'), 'memoryInGB'), '2')]"
                     }
                   },
                   "environmentVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'GH_RUNNER_NAME', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerName'), format('runner-{0}', range(0, int(coalesce(tryGet(tryGet(parameters('selfHostedConfig'), 'azureContainerInstanceTarget'), 'numberOfInstances'), 1)))[copyIndex()]))), createObject('name', 'GH_RUNNER_URL', 'value', variables('gitHubRunnerURL')), createObject('name', 'GH_RUNNER_GROUP', 'value', if(not(equals(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), null())), format('{0}', tryGet(parameters('selfHostedConfig'), 'runnerGroup')), '')), createObject('name', 'GH_RUNNER_TOKEN', 'secureValue', parameters('selfHostedConfig').personalAccessToken)), createArray(createObject('name', 'AZP_URL', 'value', variables('devOpsOrgURL')), createObject('name', 'AZP_POOL', 'value', parameters('selfHostedConfig').agentsPoolName), createObject('name', 'AZP_AGENT_NAME', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'agentName'), format('agent-{0}', range(0, int(coalesce(tryGet(tryGet(parameters('selfHostedConfig'), 'azureContainerInstanceTarget'), 'numberOfInstances'), 1)))[copyIndex()]))), createObject('name', 'AZP_TOKEN', 'secureValue', parameters('selfHostedConfig').personalAccessToken)))]"
