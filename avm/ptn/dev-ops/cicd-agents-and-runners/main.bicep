@@ -23,6 +23,9 @@ param networkingConfiguration networkType
 @description('Optional. Whether to use private or public networking for the Azure Container Registry.')
 param privateNetworking bool = true
 
+@description('Optional. The availability zone to be used for the supported resources.')
+param availabilityZone int = -1
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -401,11 +404,11 @@ module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.8.0' = 
   }
 }
 
-module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (privateNetworking && empty(networkingConfiguration.?natGatewayResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
+module natGateway 'br/public:avm/res/network/nat-gateway:1.4.0' = if (privateNetworking && empty(networkingConfiguration.?natGatewayResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
   name: 'natGateway-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGateway-${namingPrefix}-${uniqueString(resourceGroup().id)}'
-    zone: 0
+    availabilityZone: availabilityZone
     location: location
     enableTelemetry: enableTelemetry
     publicIpResourceIds: [
@@ -482,7 +485,7 @@ resource taskRun 'Microsoft.ContainerRegistry/registries/taskRuns@2025-03-01-pre
   }
 ]
 
-module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
+module aciJob 'br/public:avm/res/container-instance/container-group:0.6.0' = [
   for i in range(0, int(selfHostedConfig.?azureContainerInstanceTarget.?numberOfInstances ?? 1)): if (contains(
     computeTypes,
     'azure-container-instance'
@@ -498,6 +501,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
           userAssignedIdentity.outputs.resourceId
         ]
       }
+      availabilityZone: availabilityZone
       enableTelemetry: enableTelemetry
       imageRegistryCredentials: [
         {
@@ -505,15 +509,27 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
           server: acr.outputs.loginServer
         }
       ]
-      subnetId: privateNetworking && networkingConfiguration.networkType == 'createNew'
-        ? filter(
-            newVnet.outputs.subnetResourceIds,
-            subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
-          )[0]
-        : privateNetworking && networkingConfiguration.networkType == 'useExisting'
-            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
-            : null
-      ipAddressType: privateNetworking ? 'Private' : 'Public'
+      subnets: [
+        {
+          subnetResourceId: privateNetworking && networkingConfiguration.networkType == 'createNew'
+            ? filter(
+                newVnet.outputs.subnetResourceIds,
+                subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
+              )[0]
+            : privateNetworking && networkingConfiguration.networkType == 'useExisting'
+                ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
+                : null
+        }
+      ]
+      ipAddress: {
+        type: privateNetworking ? 'Private' : 'Public'
+        ports: [
+          {
+            port: 80
+            protocol: 'TCP'
+          }
+        ]
+      }
       sku: 'Standard'
       containers: [
         {
@@ -574,12 +590,6 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
                   }
                 ]
           }
-        }
-      ]
-      ipAddressPorts: [
-        {
-          port: 80
-          protocol: 'TCP'
         }
       ]
     }
@@ -731,7 +741,7 @@ module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zon
   }
 }
 
-module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = if (contains(
+module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.22.1' = if (contains(
   computeTypes,
   'azure-container-app'
 ) && selfHostedConfig.selfHostedType == 'azuredevops' && privateNetworking) {
@@ -764,16 +774,20 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
                   networkingConfiguration.?containerAppDeploymentScriptSubnetName ?? 'app-deployment-script-subnet'
                 )
             )[0]
-        privateDnsZoneGroupName: 'stgPrivateDNSZoneGroup'
-        privateDnsZoneResourceIds: [
-          networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
+              name: 'stgPrivateDNSZoneGroup'
+            }
+          ]
+        }
       }
     ]
   }
 }
 
-module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.13.0' = if (privateNetworking) {
+module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.22.1' = if (privateNetworking) {
   name: 'deploymentScriptAcrStg-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'stgacr${uniqueString(resourceGroup().id, acr.outputs.name,location)}'
@@ -800,11 +814,15 @@ module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.13.0'
               subnetId =>
                 contains(subnetId, networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet')
             )[0]
-        privateDnsZoneResourceIds: !empty(networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? '')
-          ? [
-              networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? ''
-            ]
-          : [deploymentScriptPrivateDNSZone.outputs.resourceId]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: !empty(networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? '')
+                ? networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? ''
+                : deploymentScriptPrivateDNSZone.outputs.resourceId
+            }
+          ]
+        }
       }
     ]
   }
