@@ -247,7 +247,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     location: '<location>'
-    logAnalyticsReplicationRegion: 'northcentralus'
+    logAnalyticsReplicationRegion: 'westus2'
     privateNetworking: false
   }
 }
@@ -294,7 +294,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       "value": "<location>"
     },
     "logAnalyticsReplicationRegion": {
-      "value": "northcentralus"
+      "value": "westus2"
     },
     "privateNetworking": {
       "value": false
@@ -331,7 +331,7 @@ param selfHostedConfig = {
 }
 // Non-required parameters
 param location = '<location>'
-param logAnalyticsReplicationRegion = 'northcentralus'
+param logAnalyticsReplicationRegion = 'westus2'
 param privateNetworking = false
 ```
 
@@ -375,7 +375,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     location: '<location>'
-    logAnalyticsReplicationRegion: 'northcentralus'
+    logAnalyticsReplicationRegion: 'westus2'
     privateNetworking: false
   }
 }
@@ -428,7 +428,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       "value": "<location>"
     },
     "logAnalyticsReplicationRegion": {
-      "value": "northcentralus"
+      "value": "westus2"
     },
     "privateNetworking": {
       "value": false
@@ -471,7 +471,7 @@ param selfHostedConfig = {
 }
 // Non-required parameters
 param location = '<location>'
-param logAnalyticsReplicationRegion = 'northcentralus'
+param logAnalyticsReplicationRegion = 'westus2'
 param privateNetworking = false
 ```
 
