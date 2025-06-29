@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14700868208060134211"
+      "templateHash": "9191613554357178875"
     },
     "name": "Data Factory Managed Virtual Networks",
     "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -157,7 +157,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('dataFactoryName'), parameters('name'))]"
+      ]
     }
   ],
   "outputs": {
