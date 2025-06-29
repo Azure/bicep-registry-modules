@@ -1724,7 +1724,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
             }
 
-            $wrongOrder | Should -BeNullOrEmpty -Because ('all versions should contain the `### Changes` section before the `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($wrongOrder -join ', '))
+            $wrongOrder | Should -BeNullOrEmpty -Because ('all versions should contain the `### Changes` section before the `### Breaking Changes` section. Found invalid versions: [{0}]. Please note that the casing **must** match.' -f ($wrongOrder -join ', '))
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` must contain only versions, that are published.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {

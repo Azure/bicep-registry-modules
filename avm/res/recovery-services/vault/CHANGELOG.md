@@ -8,7 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Fix bug where API versions are not matched.
 
-### Breaking changes
+### Breaking Changes
 
 - None
 
