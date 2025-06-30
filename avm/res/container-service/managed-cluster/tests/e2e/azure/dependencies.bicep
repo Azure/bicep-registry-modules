@@ -25,6 +25,12 @@ param dnsZoneName string
 @description('Required. The name of the log analytics workspace to create.')
 param logAnalyticsWorkspaceName string
 
+@description('Optional. The names of the Public IP addresses to create for load balancer outbound configuration.')
+param publicIPNames array = [
+  'pip-outbound-01'
+  'pip-outbound-02'
+]
+
 var addressPrefix = '10.1.0.0/22'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -122,6 +128,23 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   location: location
 }
 
+// Public IPs for load balancer outbound configuration
+resource publicIPs 'Microsoft.Network/publicIPAddresses@2023-11-01' = [
+  for (pipName, index) in publicIPNames: {
+    name: pipName
+    location: location
+    sku: {
+      name: 'Standard'
+      tier: 'Regional'
+    }
+    properties: {
+      publicIPAllocationMethod: 'Static'
+      publicIPAddressVersion: 'IPv4'
+    }
+    zones: []
+  }
+]
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceIds array = [
   virtualNetwork.properties.subnets[0].id
@@ -172,3 +195,6 @@ output dnsZoneResourceId string = dnsZone.id
 
 @description('The resource ID of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+
+@description('The resource IDs of the created Public IP addresses for load balancer outbound configuration.')
+output publicIPResourceIds array = [for (pipName, index) in publicIPNames: publicIPs[index].id]
