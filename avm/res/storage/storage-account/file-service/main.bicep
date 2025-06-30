@@ -27,6 +27,8 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. File shares to create.')
 param shares array?
 
+var enableReferencedModulesTelemetry = false
+
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
@@ -88,6 +90,7 @@ module fileServices_shares 'share/main.bicep' = [
       rootSquash: share.?rootSquash
       shareQuota: share.?shareQuota
       roleAssignments: share.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
