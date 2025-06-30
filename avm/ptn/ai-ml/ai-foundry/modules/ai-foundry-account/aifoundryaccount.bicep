@@ -31,6 +31,9 @@ param networkAcls object
 @description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 module cognitiveServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-cognitiveservices-deployment'
   params: {
@@ -41,6 +44,7 @@ module cognitiveServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -54,6 +58,7 @@ module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -101,6 +106,7 @@ module aiServices 'service.bicep' = {
           }
         ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -119,6 +125,7 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
         ]
       : []
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 

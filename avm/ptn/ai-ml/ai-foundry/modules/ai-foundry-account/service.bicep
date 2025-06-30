@@ -73,6 +73,9 @@ param tags object = {}
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var privateDnsZones = [
   for id in privateDnsZonesResourceIds: {
     privateDnsZoneResourceId: id
@@ -109,6 +112,7 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
           }
         ]
       : []
+    enableTelemetry: enableTelemetry
   }
 }
 

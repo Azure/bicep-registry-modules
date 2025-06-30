@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2796401519622980788"
+      "templateHash": "5397349496108606425"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -381,7 +381,7 @@
         "description": "Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed."
       }
     },
-    "logAnalyticsWorkspaceId": {
+    "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -392,7 +392,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceId is provided."
+        "description": "Optional. Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided."
       }
     },
     "aiFoundryType": {
@@ -14384,7 +14384,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12266585078954238484"
+              "templateHash": "1903342667709589144"
             }
           },
           "definitions": {
@@ -14560,6 +14560,13 @@
               "metadata": {
                 "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -14586,6 +14593,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -17747,6 +17757,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -20919,6 +20932,9 @@
                   "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services User'))))]",
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -20929,7 +20945,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6504158764956712223"
+                      "templateHash": "13069779669410899924"
                     }
                   },
                   "definitions": {
@@ -21235,6 +21251,13 @@
                       "metadata": {
                         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
@@ -21299,7 +21322,10 @@
                           "networkAcls": {
                             "value": "[parameters('networkAcls')]"
                           },
-                          "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZones')), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]"
+                          "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZones')), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -23645,6 +23671,9 @@
                   "privateDnsZonesResourceIds": "[if(parameters('networkIsolation'), createObject('value', createArray(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value)), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -23655,7 +23684,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6504158764956712223"
+                      "templateHash": "13069779669410899924"
                     }
                   },
                   "definitions": {
@@ -23961,6 +23990,13 @@
                       "metadata": {
                         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
@@ -24025,7 +24061,10 @@
                           "networkAcls": {
                             "value": "[parameters('networkAcls')]"
                           },
-                          "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZones')), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]"
+                          "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZones')), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -51860,8 +51899,8 @@
           "tags": {
             "value": "[variables('allTags')]"
           },
-          "logAnalyticsWorkspaceId": {
-            "value": "[parameters('logAnalyticsWorkspaceId')]"
+          "logAnalyticsWorkspaceResourceId": {
+            "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
           },
           "enableMonitoring": {
             "value": "[parameters('enableVmMonitoring')]"
@@ -51874,7 +51913,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7856430650986555314"
+              "templateHash": "13099844425949049501"
             }
           },
           "parameters": {
@@ -52037,7 +52076,7 @@
                 "description": "Specifies the resource tags."
               }
             },
-            "logAnalyticsWorkspaceId": {
+            "logAnalyticsWorkspaceResourceId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -52048,12 +52087,12 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Enable data collection and monitoring. Requires logAnalyticsWorkspaceId to be provided."
+                "description": "Optional. Enable data collection and monitoring. Requires logAnalyticsWorkspaceResourceId to be provided."
               }
             }
           },
           "variables": {
-            "shouldEnableMonitoring": "[and(parameters('enableMonitoring'), not(empty(parameters('logAnalyticsWorkspaceId'))))]",
+            "shouldEnableMonitoring": "[and(parameters('enableMonitoring'), not(empty(parameters('logAnalyticsWorkspaceResourceId'))))]",
             "randomString": "[uniqueString(resourceGroup().id, parameters('vmName'), parameters('vmAdminPasswordOrKey'))]",
             "adminPassword": "[if(less(length(parameters('vmAdminPasswordOrKey')), 8), format('{0}{1}', parameters('vmAdminPasswordOrKey'), take(variables('randomString'), 12)), parameters('vmAdminPasswordOrKey'))]",
             "linuxConfiguration": {
@@ -52293,7 +52332,7 @@
                   "logAnalytics": [
                     {
                       "name": "logAnalyticsWorkspace",
-                      "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
+                      "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
                     }
                   ]
                 }
@@ -52384,7 +52423,7 @@
                   "logAnalytics": [
                     {
                       "name": "logAnalyticsWorkspace",
-                      "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
+                      "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
                     }
                   ]
                 }

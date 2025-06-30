@@ -79,13 +79,13 @@ param location string = resourceGroup().location
 param tags object
 
 @description('Optional. Resource ID of a Log Analytics workspace for monitoring. If provided, data collection rules will be created.')
-param logAnalyticsWorkspaceId string = ''
+param logAnalyticsWorkspaceResourceId string = ''
 
-@description('Optional. Enable data collection and monitoring. Requires logAnalyticsWorkspaceId to be provided.')
+@description('Optional. Enable data collection and monitoring. Requires logAnalyticsWorkspaceResourceId to be provided.')
 param enableMonitoring bool = false
 
 // Monitoring should only be enabled if we have a valid Log Analytics workspace ID
-var shouldEnableMonitoring = enableMonitoring && !empty(logAnalyticsWorkspaceId)
+var shouldEnableMonitoring = enableMonitoring && !empty(logAnalyticsWorkspaceResourceId)
 
 var randomString = uniqueString(resourceGroup().id, vmName, vmAdminPasswordOrKey)
 
@@ -326,7 +326,7 @@ resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (
       logAnalytics: [
         {
           name: 'logAnalyticsWorkspace'
-          workspaceResourceId: logAnalyticsWorkspaceId
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
         }
       ]
     }
@@ -417,7 +417,7 @@ resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (sh
       logAnalytics: [
         {
           name: 'logAnalyticsWorkspace'
-          workspaceResourceId: logAnalyticsWorkspaceId
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
         }
       ]
     }

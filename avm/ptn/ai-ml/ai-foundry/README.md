@@ -289,9 +289,9 @@ param vmSize = 'Standard_DS4_v2'
 | [`allowedIpAddress`](#parameter-allowedipaddress) | string | IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed. |
 | [`cosmosDatabases`](#parameter-cosmosdatabases) | array | List of Cosmos DB databases to create. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableVmMonitoring`](#parameter-enablevmmonitoring) | bool | Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceId is provided. |
+| [`enableVmMonitoring`](#parameter-enablevmmonitoring) | bool | Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`logAnalyticsWorkspaceId`](#parameter-loganalyticsworkspaceid) | string | Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
@@ -703,7 +703,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `enableVmMonitoring`
 
-Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceId is provided.
+Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided.
 
 - Required: No
 - Type: bool
@@ -717,7 +717,7 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `logAnalyticsWorkspaceId`
+### Parameter: `logAnalyticsWorkspaceResourceId`
 
 Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM.
 
