@@ -15,7 +15,7 @@ resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2
   name: networkPerimeterName
 }
 
-resource networkSecurityPerimeter_profile 'Microsoft.Network/networkSecurityPerimeters/profiles@2023-08-01-preview' = {
+resource networkSecurityPerimeter_profile 'Microsoft.Network/networkSecurityPerimeters/profiles@2024-07-01' = {
   name: name
   parent: networkSecurityPerimeter
 }
