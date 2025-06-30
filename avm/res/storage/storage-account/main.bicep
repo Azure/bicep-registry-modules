@@ -128,7 +128,7 @@ param allowBlobPublicAccess bool = false
 param minimumTlsVersion string = 'TLS1_2'
 
 @description('Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true.')
-param enableHierarchicalNamespace bool = false
+param enableHierarchicalNamespace bool?
 
 @description('Optional. If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableSftp bool = false
@@ -428,7 +428,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
         }
       : null
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-    isHnsEnabled: enableHierarchicalNamespace
     isSftpEnabled: enableSftp
     isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
@@ -455,6 +454,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     ...(!empty(azureFilesIdentityBasedAuthentication)
       ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
       : {})
+    ...(enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {})
   }
 }
 
