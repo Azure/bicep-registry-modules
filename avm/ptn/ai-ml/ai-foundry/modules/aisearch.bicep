@@ -19,9 +19,6 @@ param networkIsolation bool = true
 @description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType[]?
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -89,8 +86,6 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
     tags: tags
   }
 }
-
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
 output searchResourceId string = aiSearch.outputs.resourceId
 output searchName string = aiSearch.outputs.name

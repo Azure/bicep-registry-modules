@@ -169,7 +169,6 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   params: {
     aiFoundryType: aiFoundryType
     name: name
-    resourceToken: resourceToken
     location: location
     networkIsolation: networkIsolation
     networkAcls: networkAcls
@@ -192,29 +191,6 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
     userObjectId: userObjectId
     enableTelemetry: enableTelemetry
-    roleAssignments: union(
-      empty(userObjectId)
-        ? []
-        : [
-            {
-              principalId: userObjectId
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Search Index Data Contributor'
-            }
-          ],
-      [
-        {
-          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Search Index Data Contributor'
-        }
-        {
-          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Search Service Contributor'
-        }
-      ]
-    )
     tags: allTags
   }
 }

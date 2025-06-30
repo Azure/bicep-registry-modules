@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10359056732911840272"
+      "templateHash": "2796401519622980788"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14352,9 +14352,6 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "resourceToken": {
-            "value": "[variables('resourceToken')]"
-          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -14387,7 +14384,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5347104182700128078"
+              "templateHash": "12266585078954238484"
             }
           },
           "definitions": {
@@ -14497,13 +14494,6 @@
               "type": "string",
               "metadata": {
                 "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
-              }
-            },
-            "resourceToken": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Unique string to use when naming global resources."
               }
             },
             "location": {
@@ -26407,99 +26397,18 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "roleAssignments": {
-            "value": "[union(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Service Contributor')))]"
-          },
           "tags": {
             "value": "[variables('allTags')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9700117063289062302"
-            }
-          },
-          "definitions": {
-            "roleAssignmentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                  }
-                },
-                "roleDefinitionIdOrName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                  }
-                },
-                "principalId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                  }
-                },
-                "principalType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Device",
-                    "ForeignGroup",
-                    "Group",
-                    "ServicePrincipal",
-                    "User"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The principal type of the assigned principal ID."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The description of the role assignment."
-                  }
-                },
-                "condition": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                  }
-                },
-                "conditionVersion": {
-                  "type": "string",
-                  "allowedValues": [
-                    "2.0"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Version of the condition."
-                  }
-                },
-                "delegatedManagedIdentityResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
-              }
+              "templateHash": "12199673600687548807"
             }
           },
           "parameters": {
@@ -26547,16 +26456,6 @@
                 "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
               }
             },
-            "roleAssignments": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/roleAssignmentType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Array of role assignments to create."
-              }
-            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -26568,8 +26467,8 @@
           "variables": {
             "nameFormatted": "[take(toLower(parameters('name')), 60)]"
           },
-          "resources": {
-            "privateDnsZone": {
+          "resources": [
+            {
               "condition": "[parameters('networkIsolation')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -29733,7 +29632,7 @@
                 }
               }
             },
-            "aiSearch": {
+            {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-search-services-deployment', variables('nameFormatted')), 64)]",
@@ -29774,7 +29673,7 @@
                     "value": 3
                   },
                   "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
-                  "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('privateDnsZone').outputs.resourceId.value))), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', 'private-dns-search-deployment'), '2022-09-01').outputs.resourceId.value))), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -31846,28 +31745,27 @@
                 }
               },
               "dependsOn": [
-                "privateDnsZone"
+                "[resourceId('Microsoft.Resources/deployments', 'private-dns-search-deployment')]"
               ]
             }
-          },
+          ],
           "outputs": {
             "searchResourceId": {
               "type": "string",
-              "value": "[reference('aiSearch').outputs.resourceId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-search-services-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.resourceId.value]"
             },
             "searchName": {
               "type": "string",
-              "value": "[reference('aiSearch').outputs.name.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-search-services-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.name.value]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
-              "value": "[coalesce(tryGet(tryGet(reference('aiSearch').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]"
+              "value": "[coalesce(tryGet(tryGet(reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-search-services-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]"
             }
           }
         }
       },
       "dependsOn": [
-        "cognitiveServices",
         "network"
       ]
     },
@@ -31914,7 +31812,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16736316110059089810"
+              "templateHash": "5107570527485471633"
             }
           },
           "definitions": {
@@ -38503,8 +38401,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "13086360467000063396"
+                      "version": "0.36.1.42791",
+                      "templateHash": "2976041146101438020"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account."
@@ -38770,7 +38668,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -38812,7 +38710,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -38853,7 +38751,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -38882,7 +38780,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -38926,7 +38824,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39048,7 +38946,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39073,12 +38971,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39106,7 +39011,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39275,7 +39180,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39350,7 +39255,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39366,7 +39271,7 @@
                       "metadata": {
                         "description": "A map of the exported secrets",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -39445,16 +39350,22 @@
                       "defaultValue": "Standard_GRS",
                       "allowedValues": [
                         "Standard_LRS",
-                        "Standard_GRS",
-                        "Standard_RAGRS",
                         "Standard_ZRS",
+                        "Standard_GRS",
+                        "Standard_GZRS",
+                        "Standard_RAGRS",
+                        "Standard_RAGZRS",
+                        "StandardV2_LRS",
+                        "StandardV2_ZRS",
+                        "StandardV2_GRS",
+                        "StandardV2_GZRS",
                         "Premium_LRS",
                         "Premium_ZRS",
-                        "Standard_GZRS",
-                        "Standard_RAGZRS"
+                        "PremiumV2_LRS",
+                        "PremiumV2_ZRS"
                       ],
                       "metadata": {
-                        "description": "Optional. Storage Account Sku Name."
+                        "description": "Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage."
                       }
                     },
                     "accessTier": {
@@ -39478,7 +39389,7 @@
                         "Enabled"
                       ],
                       "metadata": {
-                        "description": "Optional. Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares)."
+                        "description": "Optional. Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares)."
                       }
                     },
                     "azureFilesIdentityBasedAuthentication": {
@@ -39812,7 +39723,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.20.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.23.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -39903,7 +39814,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "storageAccount"
@@ -40712,8 +40623,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11585123047105458062"
+                              "version": "0.36.1.42791",
+                              "templateHash": "15460042769205098170"
                             },
                             "name": "Storage Account Management Policies",
                             "description": "This module deploys a Storage Account Management Policy."
@@ -40824,8 +40735,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "18350684375691178826"
+                              "version": "0.36.1.42791",
+                              "templateHash": "9887081627902627152"
                             },
                             "name": "Storage Account Local Users",
                             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -41062,8 +40973,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "6864791231608714221"
+                              "version": "0.36.1.42791",
+                              "templateHash": "15814325138223832726"
                             },
                             "name": "Storage Account blob Services",
                             "description": "This module deploys a Storage Account Blob Service."
@@ -41247,7 +41158,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                 }
                               }
                             }
@@ -41394,6 +41305,7 @@
                             }
                           },
                           "variables": {
+                            "enableReferencedModulesTelemetry": false,
                             "name": "default"
                           },
                           "resources": {
@@ -41520,6 +41432,9 @@
                                   },
                                   "immutabilityPolicyProperties": {
                                     "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyProperties')]"
+                                  },
+                                  "enableTelemetry": {
+                                    "value": "[variables('enableReferencedModulesTelemetry')]"
                                   }
                                 },
                                 "template": {
@@ -41529,8 +41444,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "16608863835956278253"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "16437865284285189352"
                                     },
                                     "name": "Storage Account Blob Containers",
                                     "description": "This module deploys a Storage Account Blob Container."
@@ -41607,7 +41522,7 @@
                                       "metadata": {
                                         "description": "An AVM-aligned type for a role assignment.",
                                         "__bicep_imported_from!": {
-                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                         }
                                       }
                                     }
@@ -41630,7 +41545,7 @@
                                     "name": {
                                       "type": "string",
                                       "metadata": {
-                                        "description": "Required. The name of the storage container to deploy."
+                                        "description": "Required. The name of the Storage Container to deploy."
                                       }
                                     },
                                     "defaultEncryptionScope": {
@@ -41704,6 +41619,13 @@
                                         "description": "Optional. Specifies whether data in the container may be accessed publicly and the level of access."
                                       }
                                     },
+                                    "enableTelemetry": {
+                                      "type": "bool",
+                                      "defaultValue": true,
+                                      "metadata": {
+                                        "description": "Optional. Enable/Disable usage telemetry for module."
+                                      }
+                                    },
                                     "roleAssignments": {
                                       "type": "array",
                                       "items": {
@@ -41745,6 +41667,26 @@
                                       "type": "Microsoft.Storage/storageAccounts/blobServices",
                                       "apiVersion": "2024-01-01",
                                       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
+                                    },
+                                    "avmTelemetry": {
+                                      "condition": "[parameters('enableTelemetry')]",
+                                      "type": "Microsoft.Resources/deployments",
+                                      "apiVersion": "2024-03-01",
+                                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                                      "properties": {
+                                        "mode": "Incremental",
+                                        "template": {
+                                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                          "contentVersion": "1.0.0.0",
+                                          "resources": [],
+                                          "outputs": {
+                                            "telemetry": {
+                                              "type": "String",
+                                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                            }
+                                          }
+                                        }
+                                      }
                                     },
                                     "storageAccount": {
                                       "existing": true,
@@ -41821,8 +41763,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.35.1.17967",
-                                              "templateHash": "16507112099495773673"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "8550034166416361637"
                                             },
                                             "name": "Storage Account Blob Container Immutability Policies",
                                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -42001,8 +41943,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "16585885324390135986"
+                              "version": "0.36.1.42791",
+                              "templateHash": "1154226771534321833"
                             },
                             "name": "Storage Account File Share Services",
                             "description": "This module deploys a Storage Account File Share Service."
@@ -42186,7 +42128,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                 }
                               }
                             }
@@ -42361,8 +42303,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "190690872747761309"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "10293576827034199934"
                                     },
                                     "name": "Storage Account File Shares",
                                     "description": "This module deploys a Storage Account File Share."
@@ -42439,7 +42381,7 @@
                                       "metadata": {
                                         "description": "An AVM-aligned type for a role assignment.",
                                         "__bicep_imported_from!": {
-                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                         }
                                       }
                                     }
@@ -42796,8 +42738,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "15089132876669102729"
+                              "version": "0.36.1.42791",
+                              "templateHash": "12471258242431737986"
                             },
                             "name": "Storage Account Queue Services",
                             "description": "This module deploys a Storage Account Queue Service."
@@ -42981,7 +42923,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                 }
                               }
                             }
@@ -43115,8 +43057,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "9203389950224823099"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "4374879850096827769"
                                     },
                                     "name": "Storage Account Queues",
                                     "description": "This module deploys a Storage Account Queue."
@@ -43193,7 +43135,7 @@
                                       "metadata": {
                                         "description": "An AVM-aligned type for a role assignment.",
                                         "__bicep_imported_from!": {
-                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                         }
                                       }
                                     }
@@ -43388,8 +43330,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "17345564162551993063"
+                              "version": "0.36.1.42791",
+                              "templateHash": "14024954014872913175"
                             },
                             "name": "Storage Account Table Services",
                             "description": "This module deploys a Storage Account Table Service."
@@ -43573,7 +43515,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                 }
                               }
                             }
@@ -43704,8 +43646,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "6286190839827082273"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "9958350701479452427"
                                     },
                                     "name": "Storage Account Table",
                                     "description": "This module deploys a Storage Account Table."
@@ -43782,7 +43724,7 @@
                                       "metadata": {
                                         "description": "An AVM-aligned type for a role assignment.",
                                         "__bicep_imported_from!": {
-                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                         }
                                       }
                                     }
@@ -43958,8 +43900,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "15126360152170162999"
+                              "version": "0.36.1.42791",
+                              "templateHash": "8001412005028765743"
                             }
                           },
                           "definitions": {
@@ -43988,7 +43930,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                 }
                               }
                             },
@@ -44011,7 +43953,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                                 }
                               }
                             }
@@ -44037,7 +43979,7 @@
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
-                              "apiVersion": "2022-07-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('keyVaultName')]"
                             },
                             "secrets": {
@@ -44046,7 +43988,7 @@
                                 "count": "[length(parameters('secretsToSet'))]"
                               },
                               "type": "Microsoft.KeyVault/vaults/secrets",
-                              "apiVersion": "2023-07-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
                               "properties": {
                                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -44163,7 +44105,7 @@
                       },
                       "value": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
                     },
-                    "secondayAccessKey": {
+                    "secondaryAccessKey": {
                       "type": "securestring",
                       "metadata": {
                         "description": "The secondary access key of the storage account."

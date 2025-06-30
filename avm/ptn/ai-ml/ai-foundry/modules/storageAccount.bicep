@@ -60,7 +60,7 @@ var nameFormatted = take(toLower(storageName), 12)
 var projUploadsContainerName = '${nameFormatted}proj-uploads'
 var sysDataContainerName = '${nameFormatted}sys-data'
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.23.0' = {
   name: take('${nameFormatted}-storage-account-deployment', 64)
   params: {
     name: nameFormatted

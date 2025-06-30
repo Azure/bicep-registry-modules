@@ -1,9 +1,6 @@
 @description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
 param name string
 
-@description('Optional. Unique string to use when naming global resources.')
-param resourceToken string = ''
-
 @description('Required. Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
 param location string
 
