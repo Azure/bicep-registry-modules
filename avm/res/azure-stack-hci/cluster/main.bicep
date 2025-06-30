@@ -97,6 +97,13 @@ param witnessStorageAccountResourceGroup string?
 @secure()
 param hciResourceProviderObjectId string
 
+@description('Optional. The intended operation for a cluster.')
+@allowed([
+  'ClusterProvisioning'
+  'ClusterUpgrade'
+])
+param operationType string = 'ClusterProvisioning'
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -291,7 +298,11 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       }
       {
         name: 'DEPLOYMENT_OPERATIONS'
-        value: join(deploymentOperations, ',')
+        value: join(sortedDeploymentOperations, ',')
+      }
+      {
+        name: 'OPERATION_TYPE'
+        value: operationType
       }
       {
         name: 'HCI_RESOURCE_PROVIDER_OBJECT_ID'
