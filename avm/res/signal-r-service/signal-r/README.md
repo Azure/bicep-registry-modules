@@ -706,7 +706,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the SignalR Service resource. |
+| [`name`](#parameter-name) | string | The name of the SignalR service resource. |
 
 **Optional parameters**
 
@@ -736,7 +736,7 @@ param tags = {
 
 ### Parameter: `name`
 
-The name of the SignalR Service resource.
+The name of the SignalR service resource.
 
 - Required: Yes
 - Type: string

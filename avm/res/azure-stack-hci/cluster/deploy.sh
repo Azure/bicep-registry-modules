@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -120,6 +120,9 @@ cat > "$PARAM_FILE" << EOF
     "clusterName": {
       "value": "$CLUSTER_NAME"
     },
+    "operationType": {
+      "value": "$OPERATION_TYPE"
+    },
     "cloudId": {
       "value": "$CLOUD_ID"
     },
@@ -158,7 +161,26 @@ echo "Checking resource: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
 # Check if the deployment-settings resource exists
 # Redirect both stdout and stderr to suppress all output, only check exit code
 if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; then
-    echo "✅ Deployment-settings resource already exists. Skipping deployment."
+    echo "✅ Deployment-settings resource already exists. Checking status..."
+
+    # Get the provisioning state
+    PROVISIONING_STATE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.provisioningState" --output tsv 2>/dev/null)
+
+    # Check if provisioning state is Failed
+    if [ "$PROVISIONING_STATE" = "Failed" ]; then
+        echo "❌ Error: Deployment-settings resource exists but is in Failed state!"
+        echo "Resource ID: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
+        echo "Provisioning State: $PROVISIONING_STATE"
+
+        # Show resource details for debugging
+        echo "Resource details:"
+        az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
+
+        exit 1
+    fi
+
+    echo "✅ Resource is in good state. Skipping deployment."
+    echo "Provisioning State: $PROVISIONING_STATE"
 
     # Show existing resource details
     echo "Existing deployment-settings details:"

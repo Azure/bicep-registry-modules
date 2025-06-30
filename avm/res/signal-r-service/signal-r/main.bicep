@@ -8,7 +8,7 @@ metadata description = 'This module deploys a SignalR Service SignalR.'
 @description('Optional. The location for the resource.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the SignalR Service resource.')
+@description('Required. The name of the SignalR service resource.')
 param name string
 
 @description('Optional. The kind of the service.')

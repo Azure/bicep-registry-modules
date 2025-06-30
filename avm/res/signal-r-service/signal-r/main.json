@@ -471,7 +471,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the SignalR Service resource."
+        "description": "Required. The name of the SignalR service resource."
       }
     },
     "kind": {
