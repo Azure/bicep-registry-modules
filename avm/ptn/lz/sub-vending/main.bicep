@@ -451,6 +451,7 @@ module createSubscription './modules/subscriptionAlias.bicep' = if (subscription
 module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
   name: deploymentNames.createSubscriptionResources
   params: {
+    subscriptionDisplayName: subscriptionDisplayName
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
       ? createSubscription.outputs.subscriptionId
       : existingSubscriptionId

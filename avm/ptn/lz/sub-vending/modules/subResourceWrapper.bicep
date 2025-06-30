@@ -26,6 +26,8 @@ param subscriptionManagementGroupId string = ''
 @sys.description('An object of tag key/value pairs to be appended to a subscription. NOTE: Tags will only be overwriten if existing tag exists with same key; values provided here win.')
 param subscriptionTags object = {}
 
+param subscriptionDisplayName string = ''
+
 @sys.description('Whether to create a virtual network or not.')
 param virtualNetworkEnabled bool = false
 
@@ -326,6 +328,10 @@ var deploymentNames = {
   )
   registerResourceProviders: take(
     'lz-vend-ds-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptName, deployment().name)}',
+    64
+  )
+  renameSubscription: take(
+    'lz-vend-sub-rename-${uniqueString(subscriptionId, subscriptionDisplayName, deployment().name)}',
     64
   )
   createDeploymentScriptManagedIdentity: take(
@@ -1515,6 +1521,35 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
       : null
     arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
     scriptContent: loadTextContent('../scripts/Register-SubscriptionResourceProviderList.ps1')
+  }
+}
+
+module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.renameSubscription
+  params: {
+    name: deploymentScriptName
+    kind: 'AzurePowerShell'
+    azPowerShellVersion: '12.3'
+    cleanupPreference: 'Always'
+    enableTelemetry: enableTelemetry
+    location: deploymentScriptLocation
+    retentionInterval: 'P1D'
+    timeout: 'PT1H'
+    runOnce: true
+    managedIdentities: !(empty(resourceProviders))
+      ? {
+          userAssignedResourcesIds: [
+            createManagedIdentityForDeploymentScript.outputs.resourceId
+          ]
+        }
+      : null
+    storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
+    subnetResourceIds: !(empty(resourceProviders))
+      ? [filter(createDsVnet.outputs.subnetResourceIds, subnetResourceId => contains(subnetResourceId, 'ds-subnet'))[0]]
+      : null
+    arguments: '-subscriptionName ${subscriptionDisplayName} -subscriptionId ${subscriptionId}'
+    scriptContent: loadTextContent('../scripts/Rename-Subscription.ps1')
   }
 }
 
