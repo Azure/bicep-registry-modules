@@ -1,6 +1,6 @@
 # Changelog
 
-The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
 
 ## 0.7.2
 
