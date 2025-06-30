@@ -61,9 +61,11 @@ param privateDnsZonesResourceIds string[] = []
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.11.0'
 @description('Optional. Specifies the OpenAI deployments to create.')
-param aiModelDeployments deploymentsType[] = []
+param aiModelDeployments deploymentType[] = []
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -115,9 +117,6 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     enableTelemetry: enableTelemetry
   }
 }
-
-import { deploymentsType } from '../customTypes.bicep'
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
 output cognitiveResourceId string = cognitiveService.outputs.resourceId
 output cognitiveName string = cognitiveService.outputs.name

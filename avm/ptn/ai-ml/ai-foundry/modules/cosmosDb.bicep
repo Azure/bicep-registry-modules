@@ -16,9 +16,11 @@ param virtualNetworkSubnetResourceId string
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Cosmos DB Account and link the private DNS zone.')
 param networkIsolation bool = true
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+import { sqlDatabaseType } from 'br/public:avm/res/document-db/database-account:0.15.0'
 @description('Optional. List of Cosmos DB databases to deploy.')
 param databases sqlDatabaseType[]?
 
@@ -77,9 +79,6 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
     tags: tags
   }
 }
-
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { sqlDatabaseType } from 'customTypes.bicep'
 
 output resourceId string = cosmosDb.outputs.resourceId
 output cosmosDBname string = cosmosDb.outputs.name

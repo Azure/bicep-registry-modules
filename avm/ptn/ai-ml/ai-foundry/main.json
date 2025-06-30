@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5397349496108606425"
+      "templateHash": "14272189812512386359"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
   },
   "definitions": {
-    "deploymentsType": {
+    "deploymentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -107,8 +107,9 @@
         }
       },
       "metadata": {
+        "description": "The type for a cognitive services account deployment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "modules/customTypes.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
         }
       }
     },
@@ -118,21 +119,21 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. Name of the SQL database ."
+            "description": "Required. Name of the database ."
           }
         },
         "throughput": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+            "description": "Optional. Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400."
           }
         },
         "autoscaleSettingsMaxThroughput": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+            "description": "Optional. Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
           }
         },
         "containers": {
@@ -275,13 +276,14 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Array of containers to deploy in the SQL database."
+            "description": "Optional. Set of containers to deploy in the database."
           }
         }
       },
       "metadata": {
+        "description": "The type for an Azure Cosmos DB for NoSQL database.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "modules/customTypes.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/document-db/database-account:0.15.0"
         }
       }
     }
@@ -319,7 +321,7 @@
     "aiModelDeployments": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/deploymentsType"
+        "$ref": "#/definitions/deploymentType"
       },
       "defaultValue": [],
       "metadata": {
@@ -14384,11 +14386,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1903342667709589144"
+              "templateHash": "5233404141446106891"
             }
           },
           "definitions": {
-            "deploymentsType": {
+            "deploymentType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -14483,8 +14485,9 @@
                 }
               },
               "metadata": {
+                "description": "The type for a cognitive services account deployment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "../customTypes.bicep"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
                 }
               }
             }
@@ -14536,7 +14539,7 @@
             "aiModelDeployments": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/deploymentsType"
+                "$ref": "#/definitions/deploymentType"
               },
               "defaultValue": [],
               "metadata": {
@@ -20945,11 +20948,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "13069779669410899924"
+                      "templateHash": "18228853220812051923"
                     }
                   },
                   "definitions": {
-                    "deploymentsType": {
+                    "deploymentType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -21044,8 +21047,9 @@
                         }
                       },
                       "metadata": {
+                        "description": "The type for a cognitive services account deployment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "../customTypes.bicep"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
                         }
                       }
                     },
@@ -21222,7 +21226,7 @@
                     "aiModelDeployments": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/definitions/deploymentsType"
+                        "$ref": "#/definitions/deploymentType"
                       },
                       "defaultValue": [],
                       "metadata": {
@@ -23684,11 +23688,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "13069779669410899924"
+                      "templateHash": "18228853220812051923"
                     }
                   },
                   "definitions": {
-                    "deploymentsType": {
+                    "deploymentType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -23783,8 +23787,9 @@
                         }
                       },
                       "metadata": {
+                        "description": "The type for a cognitive services account deployment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "../customTypes.bicep"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
                         }
                       }
                     },
@@ -23961,7 +23966,7 @@
                     "aiModelDeployments": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/definitions/deploymentsType"
+                        "$ref": "#/definitions/deploymentType"
                       },
                       "defaultValue": [],
                       "metadata": {
@@ -44240,7 +44245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1113170130934482388"
+              "templateHash": "13539667028059151204"
             }
           },
           "definitions": {
@@ -44325,21 +44330,21 @@
                 "name": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. Name of the SQL database ."
+                    "description": "Required. Name of the database ."
                   }
                 },
                 "throughput": {
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+                    "description": "Optional. Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400."
                   }
                 },
                 "autoscaleSettingsMaxThroughput": {
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+                    "description": "Optional. Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
                   }
                 },
                 "containers": {
@@ -44482,13 +44487,14 @@
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Array of containers to deploy in the SQL database."
+                    "description": "Optional. Set of containers to deploy in the database."
                   }
                 }
               },
               "metadata": {
+                "description": "The type for an Azure Cosmos DB for NoSQL database.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "customTypes.bicep"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/document-db/database-account:0.15.0"
                 }
               }
             }

@@ -1,10 +1,6 @@
 metadata name = 'ai-foundry'
 metadata description = 'Creates an AI Foundry account and project with Standard Agent Services.'
 
-targetScope = 'resourceGroup'
-
-import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
-
 @minLength(3)
 @maxLength(12)
 @description('Required. Name of the resource to create.')
@@ -19,9 +15,11 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.11.0'
 @description('Optional. Specifies the OpenAI deployments to create.')
-param aiModelDeployments deploymentsType[] = []
+param aiModelDeployments deploymentType[] = []
 
+import { sqlDatabaseType } from 'br/public:avm/res/document-db/database-account:0.15.0'
 @description('Optional. List of Cosmos DB databases to create.')
 param cosmosDatabases sqlDatabaseType[] = []
 

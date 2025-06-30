@@ -19,8 +19,9 @@ param virtualNetworkResourceId string
 @description('Required. Resource ID of the subnet for the private endpoint only required if networkIsolation is true.')
 param virtualNetworkSubnetResourceId string
 
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.11.0'
 @description('Optional. Specifies the OpenAI deployments to create.')
-param aiModelDeployments deploymentsType[] = []
+param aiModelDeployments deploymentType[] = []
 
 @description('Required. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
@@ -128,8 +129,6 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
     enableTelemetry: enableTelemetry
   }
 }
-
-import { deploymentsType } from '../customTypes.bicep'
 
 output aiServicesResourceId string = aiServices.outputs.cognitiveResourceId
 output aiServicesName string = aiServices.outputs.cognitiveName
