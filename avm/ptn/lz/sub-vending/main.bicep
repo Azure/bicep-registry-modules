@@ -288,6 +288,8 @@ param deploymentScriptResourceGroupName string = 'rsg-${deployment().location}-d
 @description('Optional. The name of the deployment script to register resource providers.')
 param deploymentScriptName string = 'ds-${deployment().location}'
 
+param renameSubscriptionDeploymentScriptName string = 'ds-rename-sub-${deployment().location}'
+
 @description('Optional. The name of the user managed identity for the resource providers registration deployment script.')
 param deploymentScriptManagedIdentityName string = 'id-${deployment().location}'
 
@@ -484,6 +486,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     pimRoleAssignments: pimRoleAssignments
     deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
     deploymentScriptName: deploymentScriptName
+    renameSubscriptionDeploymentScriptName: renameSubscriptionDeploymentScriptName
     deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
     resourceProviders: resourceProviders
     deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName

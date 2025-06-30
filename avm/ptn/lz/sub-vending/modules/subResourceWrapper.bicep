@@ -130,6 +130,8 @@ param deploymentScriptLocation string = deployment().location
 @sys.description('The name of the deployment script to register resource providers')
 param deploymentScriptName string
 
+param renameSubscriptionDeploymentScriptName string
+
 @maxLength(64)
 @sys.description('The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.')
 param deploymentScriptVirtualNetworkName string = ''
@@ -1379,7 +1381,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
   params: {
     location: deploymentScriptLocation
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
-    roleDefinitionIdOrName: 'Contributor'
+    roleDefinitionIdOrName: 'Owner'
     subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'
   }
@@ -1528,7 +1530,7 @@ module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' 
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.renameSubscription
   params: {
-    name: deploymentScriptName
+    name: renameSubscriptionDeploymentScriptName
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.3'
     cleanupPreference: 'Always'
@@ -1548,7 +1550,7 @@ module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' 
     subnetResourceIds: !(empty(resourceProviders))
       ? [filter(createDsVnet.outputs.subnetResourceIds, subnetResourceId => contains(subnetResourceId, 'ds-subnet'))[0]]
       : null
-    arguments: '-subscriptionName ${subscriptionDisplayName} -subscriptionId ${subscriptionId}'
+    arguments: '-subscriptionDisplayName ${subscriptionDisplayName} -subscriptionId ${subscriptionId}'
     scriptContent: loadTextContent('../scripts/Rename-Subscription.ps1')
   }
 }
