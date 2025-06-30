@@ -11,3 +11,14 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+## 0.1.1
+
+### Changes
+
+- Update API to latest versions
+- Added `batchSize(1)` to `resourceAssociations` to prevent concurrency issues
+
+### Breaking Changes
+
+- None
