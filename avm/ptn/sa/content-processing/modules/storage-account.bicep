@@ -37,6 +37,9 @@ param supportsHttpsTrafficOnly bool = true
 @description('Access tier for the Storage Account')
 param accessTier string = 'Hot'
 
+@description('Enable telemetry for the AVM deployment')
+param enableTelemetry bool
+
 module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
   name: storageAccountName
   params: {
@@ -50,6 +53,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     networkAcls: networkAcls
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
     accessTier: accessTier
+    enableTelemetry: enableTelemetry
     tags: tags
     blobServices: {
       deleteRetentionPolicyEnabled: false

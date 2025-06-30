@@ -405,6 +405,7 @@ module avmManagedIdentity './modules/managed-identity.bicep' = {
     name: 'id-${solutionPrefix}'
     location: resourceGroupLocation
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -450,6 +451,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
