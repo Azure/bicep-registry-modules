@@ -1343,7 +1343,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
   }
 ]
 
-module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(resourceProviders)) {
+module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForDeploymentScript
   params: {
@@ -1363,7 +1363,7 @@ module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-g
   }
 }
 
-module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (!empty(resourceProviders)) {
+module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
   dependsOn: [
@@ -1376,22 +1376,26 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
-    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    principalId: (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
+      ? createManagedIdentityForDeploymentScript.outputs.principalId
+      : ''
     roleDefinitionIdOrName: 'Owner'
     subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
-    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    principalId: (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
+      ? createManagedIdentityForDeploymentScript.outputs.principalId
+      : ''
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd'
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
@@ -1400,7 +1404,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   }
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(resourceProviders)) {
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
     createResourceGroupForDeploymentScript
@@ -1413,7 +1417,7 @@ module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if
   }
 }
 
-module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (!empty(resourceProviders)) {
+module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   name: deploymentNames.createDsFilePrivateDnsZone
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   params: {
@@ -1428,7 +1432,7 @@ module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
   }
 }
 
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (!empty(resourceProviders)) {
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
   ]
@@ -1466,7 +1470,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0'
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -1475,22 +1479,26 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!emp
     addressPrefixes: [
       virtualNetworkDeploymentScriptAddressPrefix
     ]
-    subnets: !empty(resourceProviders)
+    subnets: ((!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId))) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
       ? [
           {
-            addressPrefix: !empty(resourceProviders)
+            addressPrefix: (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
               ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 25, 0)
               : null
             name: 'ds-subnet'
-            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+            networkSecurityGroupResourceId: (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
+              ? createDsNsg.outputs.resourceId
+              : null
             delegation: 'Microsoft.ContainerInstance/containerGroups'
           }
           {
             name: 'ds-pe-subnet'
-            addressPrefix: !empty(resourceProviders)
+            addressPrefix: (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
               ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 25, 1)
               : null
-            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+            networkSecurityGroupResourceId: (!empty(resourceProviders) || (!empty(subscriptionDisplayName) && !empty(subscriptionId)))
+              ? createDsNsg.outputs.resourceId
+              : null
           }
         ]
       : null
@@ -1526,7 +1534,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
   }
 }
 
-module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
+module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(subscriptionDisplayName) && !empty(subscriptionId)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.renameSubscription
   params: {
@@ -1539,15 +1547,17 @@ module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' 
     retentionInterval: 'P1D'
     timeout: 'PT1H'
     runOnce: true
-    managedIdentities: !(empty(resourceProviders))
+    managedIdentities: !empty(subscriptionDisplayName) && !empty(subscriptionId)
       ? {
           userAssignedResourcesIds: [
             createManagedIdentityForDeploymentScript.outputs.resourceId
           ]
         }
       : null
-    storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
-    subnetResourceIds: !(empty(resourceProviders))
+    storageAccountResourceId: !empty(subscriptionDisplayName) && !empty(subscriptionId)
+      ? createDsStorageAccount.outputs.resourceId
+      : null
+    subnetResourceIds: !empty(subscriptionDisplayName) && !empty(subscriptionId)
       ? [filter(createDsVnet.outputs.subnetResourceIds, subnetResourceId => contains(subnetResourceId, 'ds-subnet'))[0]]
       : null
     arguments: '-subscriptionDisplayName ${subscriptionDisplayName} -subscriptionId ${subscriptionId}'
