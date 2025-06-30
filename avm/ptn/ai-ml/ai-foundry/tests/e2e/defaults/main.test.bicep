@@ -1,5 +1,5 @@
 targetScope = 'subscription'
-metadata name = 'ai-foundry'
+metadata name = 'Using only defaults'
 metadata description = 'Creates an AI Foundry account and project with Basic services.'
 
 // ========== //

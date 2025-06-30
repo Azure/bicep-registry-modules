@@ -1,6 +1,7 @@
 targetScope = 'subscription'
-metadata name = 'ai-foundry'
+metadata name = 'WAF-aligned'
 metadata description = 'Creates an AI Foundry account and project with Standard Agent Services in a network.'
+
 // ========== //
 // Parameters //
 // ========== //
