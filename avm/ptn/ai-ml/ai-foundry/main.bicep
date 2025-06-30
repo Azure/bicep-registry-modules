@@ -169,6 +169,7 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
     aiModelDeployments: aiModelDeployments
     userObjectId: userObjectId
     contentSafetyEnabled: contentSafetyEnabled
+    enableTelemetry: enableTelemetry
     tags: allTags
   }
 }

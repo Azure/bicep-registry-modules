@@ -95,10 +95,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
-- [ai-foundry](#example-1-ai-foundry)
-- [ai-foundry](#example-2-ai-foundry)
+- [Using only defaults](#example-1-using-only-defaults)
+- [WAF-aligned](#example-2-waf-aligned)
 
-### Example 1: _ai-foundry_
+### Example 1: _Using only defaults_
 
 Creates an AI Foundry account and project with Basic services.
 
@@ -116,7 +116,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     contentSafetyEnabled: false
     name: '<name>'
     // Non-required parameters
-    location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
   }
 }
@@ -145,9 +144,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "userObjectId": {
       "value": "00000000-0000-0000-0000-000000000000"
     }
@@ -170,14 +166,13 @@ param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
 param name = '<name>'
 // Non-required parameters
-param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
 ```
 
 </details>
 <p>
 
-### Example 2: _ai-foundry_
+### Example 2: _WAF-aligned_
 
 Creates an AI Foundry account and project with Standard Agent Services in a network.
 
@@ -196,7 +191,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     name: '<name>'
     // Non-required parameters
     aiModelDeployments: []
-    location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
     vmAdminPasswordOrKey: '$tart12345'
     vmSize: 'Standard_DS4_v2'
@@ -230,9 +224,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "aiModelDeployments": {
       "value": []
     },
-    "location": {
-      "value": "<location>"
-    },
     "userObjectId": {
       "value": "00000000-0000-0000-0000-000000000000"
     },
@@ -262,7 +253,6 @@ param contentSafetyEnabled = true
 param name = '<name>'
 // Non-required parameters
 param aiModelDeployments = []
-param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
 param vmAdminPasswordOrKey = '$tart12345'
 param vmSize = 'Standard_DS4_v2'
