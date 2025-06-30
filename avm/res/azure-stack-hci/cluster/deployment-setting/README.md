@@ -61,6 +61,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`hvciProtection`](#parameter-hvciprotection) | bool | The Hypervisor-protected Code Integrity setting. |
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`name`](#parameter-name) | string | The name of the deployment settings. |
+| [`operationType`](#parameter-operationtype) | string | The intended operation for a cluster. |
 | [`sideChannelMitigationEnforced`](#parameter-sidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled. |
 | [`smbClusterEncryption`](#parameter-smbclusterencryption) | bool | When set to true, cluster east-west traffic is encrypted. |
 | [`smbSigningEnforced`](#parameter-smbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
@@ -298,6 +299,21 @@ The name of the deployment settings.
   ```Bicep
   [
     'default'
+  ]
+  ```
+
+### Parameter: `operationType`
+
+The intended operation for a cluster.
+
+- Required: No
+- Type: string
+- Default: `'ClusterProvisioning'`
+- Allowed:
+  ```Bicep
+  [
+    'ClusterProvisioning'
+    'ClusterUpgrade'
   ]
   ```
 

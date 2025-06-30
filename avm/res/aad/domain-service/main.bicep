@@ -1,12 +1,12 @@
-metadata name = 'Azure Active Directory Domain Services'
-metadata description = 'This module deploys an Azure Active Directory Domain Services (AADDS) instance.'
+metadata name = 'Microsoft Entra Domain Services'
+metadata description = 'This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.'
 
 @minLength(1)
 @maxLength(19) // 15 characters for domain name + 4 characters for the suffix
-@description('Optional. The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.')
+@description('Optional. The name of the Azure AD DS resource. Defaults to the domain name specific to the Azure AD DS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.')
 param name string = domainName
 
-@description('Optional. The location to deploy the Azure ADDS Services. Uses the resource group location if not specified.')
+@description('Optional. The location to deploy the Azure AD DS Services. Uses the resource group location if not specified.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -23,16 +23,16 @@ param enableTelemetry bool = true
   - 'aaddscontoso.com'
   '''
 })
-@description('Required. The domain name specific to the Azure ADDS service.')
+@description('Required. The domain name specific to the Azure AD DS service.')
 param domainName string
 
-@description('Optional. The name of the SKU specific to Azure ADDS Services.')
+@description('Optional. The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise.')
 @allowed([
   'Standard'
   'Enterprise'
   'Premium'
 ])
-param sku string = 'Standard'
+param sku string = 'Enterprise'
 
 @description('Optional. Additional replica set for the managed domain.')
 param replicaSets replicaSetType[]?
@@ -126,7 +126,7 @@ param notifyDcAdmins string = 'Enabled'
 ])
 param notifyGlobalAdmins string = 'Enabled'
 
-@description('Optional. The value is to enable the Secure LDAP for external services of Azure ADDS Services.')
+@description('Optional. The value is to enable the Secure LDAP for external services of Azure AD DS Services.')
 @allowed([
   'Enabled'
   'Disabled'
@@ -139,6 +139,10 @@ param externalAccess string = 'Enabled'
   'Disabled'
 ])
 param ldaps string = 'Enabled'
+
+@description('Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.')
+@allowed(['All', 'CloudOnly'])
+param syncScope string = 'All'
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -153,7 +157,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -241,6 +245,7 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
       kerberosArmoring: kerberosArmoring
     }
     sku: sku
+    syncScope: syncScope
   }
 }
 
@@ -304,13 +309,13 @@ resource domainservice_roleAssignments 'Microsoft.Authorization/roleAssignments@
 // Outputs      //
 // ============ //
 
-@description('The domain name of the Azure Active Directory Domain Services(Azure ADDS).')
+@description('The domain name of the Microsoft Entra Domain Services(Azure AD DS).')
 output name string = domainservice.name
 
-@description('The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in.')
+@description('The name of the resource group the Microsoft Entra Domain Services(Azure AD DS) was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource ID of the Azure Active Directory Domain Services(Azure ADDS).')
+@description('The resource ID of the Microsoft Entra Domain Services(Azure AD DS).')
 output resourceId string = domainservice.id
 
 @description('The location the resource was deployed into.')

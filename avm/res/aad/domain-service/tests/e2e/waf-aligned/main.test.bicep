@@ -14,6 +14,9 @@ param resourceGroupName string = 'dep-${namePrefix}-aad-domainservices-${service
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+@description('Optional. The location to deploy the replica to.')
+param replicaLocation string = 'NorthEurope'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aaddswaf'
 
@@ -26,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -36,7 +39,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
+    replicaLocation: replicaLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    replicaVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-replica'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     namePrefix: namePrefix
@@ -62,7 +67,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
   scope: resourceGroup
 }
@@ -106,11 +111,14 @@ module testDeployment '../../../main.bicep' = {
     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
     replicaSets: [
       {
-        location: 'NorthEurope'
+        location: resourceLocation
         subnetId: nestedDependencies.outputs.subnetResourceId
       }
+      {
+        location: replicaLocation
+        subnetId: nestedDependencies.outputs.replicaSubnetResourceId
+      }
     ]
-    sku: 'Standard'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
@@ -119,70 +127,74 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
-module waitForDeployment 'main.wait.bicep' = {
-  dependsOn: [testDeployment]
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-waitForDeployment'
-  params: {
-    serviceShort: serviceShort
-    resourceLocation: resourceLocation
-    waitTimeInSeconds: '3000' // 50 min
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
+// idem test is not working, as AAD DS is not ready for a second deployment during its provisioning state even when reported as 'succeeded' by the init iteration
+// module waitForDeployment 'main.wait.bicep' = {
+//   dependsOn: [testDeployment]
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, resourceLocation)}-waitForDeployment'
+//   params: {
+//     serviceShort: serviceShort
+//     resourceLocation: resourceLocation
+//     waitTimeInSeconds: '3000' // 50 min
+//     tags: {
+//       'hidden-title': 'This is visible in the resource name'
+//       Environment: 'Non-Prod'
+//       Role: 'DeploymentValidation'
+//     }
+//   }
+// }
 
-// copy from the init test. Will be executed after a wait time
-module testDeploymentIdem '../../../main.bicep' = {
-  dependsOn: [waitForDeployment]
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    domainName: '${namePrefix}.onmicrosoft.com'
-    additionalRecipients: ['${namePrefix}@noreply.github.com']
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-      }
-    ]
-    lock: {
-      kind: 'None'
-      name: 'myCustomLockName'
-    }
-    ldaps: 'Enabled'
-    externalAccess: 'Enabled'
-    pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
-    pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
-    replicaSets: [
-      {
-        location: 'NorthEurope'
-        subnetId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
-    sku: 'Standard'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
+// // copy from the init test. Will be executed after a wait time
+// module testDeploymentIdem '../../../main.bicep' = {
+//   dependsOn: [waitForDeployment]
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
+//   params: {
+//     name: '${namePrefix}${serviceShort}001'
+//     location: resourceLocation
+//     domainName: '${namePrefix}.onmicrosoft.com'
+//     additionalRecipients: ['${namePrefix}@noreply.github.com']
+//     diagnosticSettings: [
+//       {
+//         name: 'customSetting'
+//         metricCategories: [
+//           {
+//             category: 'AllMetrics'
+//           }
+//         ]
+//         logCategoriesAndGroups: [
+//           {
+//             categoryGroup: 'allLogs'
+//           }
+//         ]
+//         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+//         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+//         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+//         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+//       }
+//     ]
+//     lock: {
+//       kind: 'None'
+//       name: 'myCustomLockName'
+//     }
+//     ldaps: 'Enabled'
+//     externalAccess: 'Enabled'
+//     pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
+//     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
+//     replicaSets: [
+//       {
+//         location: resourceLocation
+//         subnetId: nestedDependencies.outputs.subnetResourceId
+//       }
+//       {
+//         location: replicaLocation
+//         subnetId: nestedDependencies.outputs.replicaSubnetResourceId
+//       }
+//     ]
+//     tags: {
+//       'hidden-title': 'This is visible in the resource name'
+//       Environment: 'Non-Prod'
+//       Role: 'DeploymentValidation'
+//     }
+//   }
+// }
