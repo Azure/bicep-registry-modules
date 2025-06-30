@@ -34,15 +34,15 @@ param subscriptions {
   id: string
 }[]?
 
-resource networkPerimeter 'Microsoft.Network/networkSecurityPerimeters@2023-08-01-preview' existing = {
+resource networkPerimeter 'Microsoft.Network/networkSecurityPerimeters@2024-07-01' existing = {
   name: networkPerimeterName
 
-  resource networkSecurityPerimeterProfile 'profiles@2023-08-01-preview' existing = {
+  resource networkSecurityPerimeterProfile 'profiles@2024-07-01' existing = {
     name: networkPerimeterProfileName
   }
 }
 
-resource nsp_accessRule 'Microsoft.Network/networkSecurityPerimeters/profiles/accessRules@2023-08-01-preview' = {
+resource nsp_accessRule 'Microsoft.Network/networkSecurityPerimeters/profiles/accessRules@2024-07-01' = {
   name: name
   parent: networkPerimeter::networkSecurityPerimeterProfile
   properties: {
