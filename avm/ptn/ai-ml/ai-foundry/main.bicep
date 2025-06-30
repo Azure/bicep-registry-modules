@@ -134,7 +134,7 @@ module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
     userObjectId: userObjectId
     logAnalyticsWorkspaceResourceId: ''
     enableTelemetry: enableTelemetry
@@ -150,7 +150,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     tags: allTags
   }
@@ -165,7 +165,7 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
     networkIsolation: networkIsolation
     networkAcls: networkAcls
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
     aiModelDeployments: aiModelDeployments
     userObjectId: userObjectId
     contentSafetyEnabled: contentSafetyEnabled
@@ -180,7 +180,7 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
     userObjectId: userObjectId
     enableTelemetry: enableTelemetry
     tags: allTags
@@ -195,7 +195,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
       empty(userObjectId)
@@ -233,7 +233,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     databases: cosmosDatabases
     tags: allTags
@@ -272,7 +272,7 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     vmName: toLower('vm-${name}-jump')
     vmNicName: toLower('nic-vm-${name}-jump')
     vmSize: vmSize
-    vmSubnetId: network.outputs.vmSubnetId
+    vmSubnetResourceId: network.outputs.vmSubnetResourceId
     storageAccountName: storageAccount.outputs.storageName
     storageAccountResourceGroup: resourceGroup().name
     imagePublisher: 'MicrosoftWindowsServer'

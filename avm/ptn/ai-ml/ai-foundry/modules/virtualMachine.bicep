@@ -6,7 +6,7 @@ param vmName string = 'TestVm'
 param vmSize string = 'Standard_DS4_v2'
 
 @description('Specifies the resource id of the subnet hosting the virtual machine.')
-param vmSubnetId string
+param vmSubnetResourceId string
 
 @description('Specifies the name of the storage account where the bootstrap diagnostic logs of the virtual machine are stored.')
 param storageAccountName string
@@ -150,7 +150,7 @@ resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
-            id: vmSubnetId
+            id: vmSubnetResourceId
           }
         }
       }

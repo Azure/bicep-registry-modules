@@ -604,9 +604,13 @@ resource foundryAgentSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticS
 // Outputs
 output virtualNetworkId string = vnet.id
 output virtualNetworkName string = vnet.name
-output vmSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnet.name, vmSubnetName)
-output bastionSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnet.name, bastionSubnetName)
-output foundryAgentSubnetId string = resourceId(
+output vmSubnetResourceId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnet.name, vmSubnetName)
+output bastionSubnetResourceId string = resourceId(
+  'Microsoft.Network/virtualNetworks/subnets',
+  vnet.name,
+  bastionSubnetName
+)
+output foundryAgentSubnetResourceId string = resourceId(
   'Microsoft.Network/virtualNetworks/subnets',
   vnet.name,
   foundryAgentSubnetName

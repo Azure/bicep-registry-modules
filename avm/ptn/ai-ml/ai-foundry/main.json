@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14272189812512386359"
+      "templateHash": "16517044860511269693"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -541,7 +541,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "4786532261185988091"
+              "templateHash": "551517921700255430"
             }
           },
           "parameters": {
@@ -1300,15 +1300,15 @@
               "type": "string",
               "value": "[parameters('virtualNetworkName')]"
             },
-            "vmSubnetId": {
+            "vmSubnetResourceId": {
               "type": "string",
               "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('vmSubnetName'))]"
             },
-            "bastionSubnetId": {
+            "bastionSubnetResourceId": {
               "type": "string",
               "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), variables('bastionSubnetName'))]"
             },
-            "foundryAgentSubnetId": {
+            "foundryAgentSubnetResourceId": {
               "type": "string",
               "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('foundryAgentSubnetName'))]"
             },
@@ -1356,7 +1356,7 @@
             "value": "[variables('networkIsolation')]"
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
-          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
           "userObjectId": {
             "value": "[parameters('userObjectId')]"
           },
@@ -8004,7 +8004,7 @@
             "value": "[variables('networkIsolation')]"
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
-          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -14364,7 +14364,7 @@
             "value": "[parameters('networkAcls')]"
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
-          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
           },
@@ -26434,7 +26434,7 @@
             "value": "[variables('networkIsolation')]"
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
-          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
           "userObjectId": {
             "value": "[parameters('userObjectId')]"
           },
@@ -31837,7 +31837,7 @@
             "value": "[variables('networkIsolation')]"
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
-          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -44226,7 +44226,7 @@
             "value": "[variables('networkIsolation')]"
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
-          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -51848,8 +51848,8 @@
           "vmSize": {
             "value": "[parameters('vmSize')]"
           },
-          "vmSubnetId": {
-            "value": "[reference('network').outputs.vmSubnetId.value]"
+          "vmSubnetResourceId": {
+            "value": "[reference('network').outputs.vmSubnetResourceId.value]"
           },
           "storageAccountName": {
             "value": "[reference('storageAccount').outputs.storageName.value]"
@@ -51919,7 +51919,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13099844425949049501"
+              "templateHash": "11414254854534647509"
             }
           },
           "parameters": {
@@ -51937,7 +51937,7 @@
                 "description": "Specifies the size of the virtual machine."
               }
             },
-            "vmSubnetId": {
+            "vmSubnetResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Specifies the resource id of the subnet hosting the virtual machine."
@@ -52158,7 +52158,7 @@
                     "properties": {
                       "privateIPAllocationMethod": "Dynamic",
                       "subnet": {
-                        "id": "[parameters('vmSubnetId')]"
+                        "id": "[parameters('vmSubnetResourceId')]"
                       }
                     }
                   }
