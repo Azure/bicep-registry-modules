@@ -12,7 +12,7 @@ This module deploys a Network Security Perimeter Access Rule.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkSecurityPerimeters/profiles/accessRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters/profiles/accessRules) |
+| `Microsoft.Network/networkSecurityPerimeters/profiles/accessRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters/profiles/accessRules) |
 
 ## Parameters
 
