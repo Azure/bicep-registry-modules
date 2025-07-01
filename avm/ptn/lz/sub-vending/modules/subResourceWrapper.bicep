@@ -1505,7 +1505,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!emp
     enableTelemetry: enableTelemetry
   }
 }
-module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
+module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.5.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.registerResourceProviders
   params: {
@@ -1534,7 +1534,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
   }
 }
 
-module renameSubscription 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(subscriptionDisplayName) && !empty(subscriptionId)) {
+module renameSubscription 'br/public:avm/res/resources/deployment-script:0.5.1' = if (!empty(subscriptionDisplayName) && !empty(subscriptionId)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.renameSubscription
   params: {
