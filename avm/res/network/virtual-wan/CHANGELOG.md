@@ -14,7 +14,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- The default for 'allowBranchToBranchTraffic' has been changed from 'false' to 'true' to align with the Virtual WAN product group's recommendations.
 
 ## 0.3.1
 
