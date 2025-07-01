@@ -11,3 +11,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+## 0.4.0
+
+### Changes
+
+- Updated API versions for Virtual WAN from 2024-03-01 to 2025-04-01
+- Updated API versions Resource Group creation in all tests from 2021-04-01 to 2025-04-01
+- Removed unnecessary ternary expression from 'allowVnetToVnetTraffic'
+- Updated default parameter values to match product group recommendations
+- Updated userAssignedIdentities API version from 2018-11-30 to 2024-11-30 in test dependencies
+
+### Breaking Changes
+
+- None
