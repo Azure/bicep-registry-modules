@@ -280,8 +280,10 @@ function Test-IsMultiScopeModule {
     Tests if a module is a multi-scope module that should not be published directly.
 
     .DESCRIPTION
-    Checks if a module is a multi-scope module by looking for the specific marker in the README.md file
-    that indicates the module won't be published as is and only its nested modules should be used.
+    Checks if a module is a multi-scope module using multiple reliable methods:
+    1. Checks the main.json metadata description for the multi-scope marker
+    2. Falls back to directory structure pattern (multiple *-scope directories)
+    3. Final fallback to README.md content check
 
     .PARAMETER modulePath
     The path to the module.
@@ -294,19 +296,62 @@ function Test-IsMultiScopeModule {
         [string] $modulePath
     )
 
-    $readmePath = "$modulePath/README.md"
-    if (-not (Test-Path -Path $readmePath)) {
-        return $false
+    # Method 1: Check main.json metadata description (most reliable)
+    $mainJsonPath = "$modulePath/main.json"
+    if (Test-Path -Path $mainJsonPath) {
+        try {
+            $mainJsonContent = Get-Content -Path $mainJsonPath -Raw | ConvertFrom-Json
+            if ($mainJsonContent.metadata -and $mainJsonContent.metadata.description) {
+                $description = $mainJsonContent.metadata.description
+                if ($description -match "This multi-scope module won't be published as is and only its nested modules should be used") {
+                    Write-Verbose "  Multi-scope module detected via main.json metadata: '$modulePath'" -Verbose
+                    return $true
+                }
+            }
+        } catch {
+            Write-Verbose "  Warning: Could not parse main.json for module '$modulePath': $($_.Exception.Message)" -Verbose
+        }
     }
 
+    # Method 2: Check directory structure pattern (scope-specific subdirectories)
     try {
-        $readmeContent = Get-Content -Path $readmePath -Raw
-        # Check for the specific marker that indicates a multi-scope module
-        return $readmeContent -match "This multi-scope module won't be published as is and only its nested modules should be used"
+        $subdirectories = Get-ChildItem -Path $modulePath -Directory -Exclude 'tests' -ErrorAction SilentlyContinue
+        $scopeDirectories = $subdirectories | Where-Object { $_.Name -match '-scope$' }
+        
+        if ($scopeDirectories.Count -ge 2) {
+            # Check if these scope directories have the expected module structure
+            $validScopeModules = 0
+            foreach ($scopeDir in $scopeDirectories) {
+                $scopePath = $scopeDir.FullName
+                if ((Test-Path "$scopePath/main.bicep") -and (Test-Path "$scopePath/main.json") -and (Test-Path "$scopePath/README.md")) {
+                    $validScopeModules++
+                }
+            }
+            
+            if ($validScopeModules -ge 2) {
+                Write-Verbose "  Multi-scope module detected via directory structure: '$modulePath' (found $validScopeModules scope modules)" -Verbose
+                return $true
+            }
+        }
     } catch {
-        Write-Verbose "  Error reading README.md for module '$modulePath': $($_.Exception.Message)" -Verbose
-        return $false
+        Write-Verbose "  Warning: Could not analyze directory structure for module '$modulePath': $($_.Exception.Message)" -Verbose
     }
+
+    # Method 3: Fallback to README.md content check (for backward compatibility)
+    $readmePath = "$modulePath/README.md"
+    if (Test-Path -Path $readmePath) {
+        try {
+            $readmeContent = Get-Content -Path $readmePath -Raw
+            if ($readmeContent -match "This multi-scope module won't be published as is and only its nested modules should be used") {
+                Write-Verbose "  Multi-scope module detected via README.md content: '$modulePath'" -Verbose
+                return $true
+            }
+        } catch {
+            Write-Verbose "  Warning: Could not read README.md for module '$modulePath': $($_.Exception.Message)" -Verbose
+        }
+    }
+
+    return $false
 }
 
 function Add-ModuleToAvmJsonModuleIndex {
