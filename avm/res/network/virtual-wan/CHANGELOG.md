@@ -15,6 +15,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - The default for 'allowBranchToBranchTraffic' has been changed from 'false' to 'true' to align with the Virtual WAN product group's recommendations.
+- Removed 'disableVpnEncryption' and 'allowVnetToVnet' parameters, as they are no longer relevant per the Virtual WAN product group's recommendations.
 
 ## 0.3.1
 

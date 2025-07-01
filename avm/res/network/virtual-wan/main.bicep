@@ -17,12 +17,6 @@ param type string = 'Standard'
 @description('Optional. True if branch to branch traffic is allowed.')
 param allowBranchToBranchTraffic bool = true
 
-@description('Optional. True if VNET to VNET traffic is allowed.')
-param allowVnetToVnetTraffic bool = true
-
-@description('Optional. VPN encryption to be disabled or not.')
-param disableVpnEncryption bool = false
-
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -91,8 +85,6 @@ resource virtualWan 'Microsoft.Network/virtualWans@2024-07-01' = {
   tags: tags
   properties: {
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
-    allowVnetToVnetTraffic: allowVnetToVnetTraffic
-    disableVpnEncryption: disableVpnEncryption
     type: type
   }
 }

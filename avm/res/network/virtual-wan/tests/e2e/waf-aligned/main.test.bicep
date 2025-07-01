@@ -43,8 +43,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       allowBranchToBranchTraffic: true
-      allowVnetToVnetTraffic: true
-      disableVpnEncryption: true
       type: 'Basic'
       tags: {
         'hidden-title': 'This is visible in the resource name'

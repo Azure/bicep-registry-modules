@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12768790144059597191"
+      "templateHash": "5670388860728626342"
     },
     "name": "Virtual WANs",
     "description": "This module deploys a Virtual WAN."
@@ -150,20 +150,6 @@
         "description": "Optional. True if branch to branch traffic is allowed."
       }
     },
-    "allowVnetToVnetTraffic": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. True if VNET to VNET traffic is allowed."
-      }
-    },
-    "disableVpnEncryption": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. VPN encryption to be disabled or not."
-      }
-    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -242,8 +228,6 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]",
-        "allowVnetToVnetTraffic": "[parameters('allowVnetToVnetTraffic')]",
-        "disableVpnEncryption": "[parameters('disableVpnEncryption')]",
         "type": "[parameters('type')]"
       }
     },
