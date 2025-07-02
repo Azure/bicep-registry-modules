@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7899406089070485994"
+      "templateHash": "5005003427864380360"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -34,55 +34,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for extended location configuration."
-      }
-    },
-    "galleryImageIdentifierType": {
-      "type": "object",
-      "properties": {
-        "offer": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the gallery image definition offer."
-          }
-        },
-        "publisher": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the gallery image definition publisher."
-          }
-        },
-        "sku": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the gallery image definition SKU."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for gallery image identifier configuration."
-      }
-    },
-    "galleryImageVersionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. This is the version of the gallery image."
-          }
-        },
-        "properties": {
-          "$ref": "#/definitions/galleryImageVersionPropertiesType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Properties of the gallery image version."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for gallery image version configuration."
       }
     },
     "galleryImageVersionPropertiesType": {
@@ -246,8 +197,11 @@
       }
     },
     "identifier": {
-      "$ref": "#/definitions/galleryImageIdentifierType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview#properties/properties/properties/identifier"
+        },
         "description": "Required. The gallery image identifier configuration containing publisher, offer, and SKU."
       }
     },
@@ -281,8 +235,11 @@
       }
     },
     "version": {
-      "$ref": "#/definitions/galleryImageVersionType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview#properties/properties/properties/version"
+        },
         "description": "Required. Gallery image version configuration."
       }
     },

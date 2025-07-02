@@ -25,7 +25,7 @@ param customLocationResourceId string
 param osType string
 
 @description('Required. The gallery image identifier configuration containing publisher, offer, and SKU.')
-param identifier galleryImageIdentifierType
+param identifier resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.properties.identifier
 
 @description('Optional. The hypervisor generation of the Virtual Machine.')
 @allowed([
@@ -45,7 +45,7 @@ param cloudInitDataSource string?
 param containerResourceId string?
 
 @description('Required. Gallery image version configuration.')
-param version galleryImageVersionType
+param version resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.properties.version
 
 @description('Optional. Tags for the marketplace gallery image.')
 param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.tags?
@@ -172,29 +172,6 @@ type extendedLocationType = {
 
   @description('Required. The type of the extended location.')
   type: 'CustomLocation'
-}
-
-@export()
-@description('The type for gallery image identifier configuration.')
-type galleryImageIdentifierType = {
-  @description('Required. The name of the gallery image definition offer.')
-  offer: string
-
-  @description('Required. The name of the gallery image definition publisher.')
-  publisher: string
-
-  @description('Required. The name of the gallery image definition SKU.')
-  sku: string
-}
-
-@export()
-@description('The type for gallery image version configuration.')
-type galleryImageVersionType = {
-  @description('Required. This is the version of the gallery image.')
-  name: string
-
-  @description('Optional. Properties of the gallery image version.')
-  properties: galleryImageVersionPropertiesType?
 }
 
 @export()
