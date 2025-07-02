@@ -144,21 +144,37 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Log Analytics Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+  )
+  'Log Analytics Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '73c42c96-874c-492b-b04d-ab87d138a893'
+  )
+  'Monitoring Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+  )
+  'Monitoring Metrics Publisher': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '3913510d-42f4-4e42-8a64-420c390055eb'
+  )
+  'Monitoring Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
+  )
   'Reservation Purchaser': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f7b75c60-3036-4b75-91c3-6b41c27c1689'
   )
-  'Role Based Access Control Administrator': subscriptionResourceId(
+  'Resource Policy Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
-    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+    '36243c78-bf99-498c-9df9-86d9f8d28608'
   )
   'SQL DB Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec'
-  )
-  'SQL Managed Instance Contributor': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d'
   )
   'SQL Security Manager': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -171,14 +187,6 @@ var builtInRoleNames = {
   'SqlDb Migration Role': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     '189207d4-bb67-4208-a635-b06afe8b2c57'
-  )
-  'SqlMI Migration Role': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '1d335eef-eee1-47fe-a9e0-53214eba8872'
-  )
-  'User Access Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
 
@@ -902,6 +910,9 @@ type elasticPoolType = {
 
   @description('Optional. Type of enclave requested on the elastic pool.')
   preferredEnclaveType: 'Default' | 'VBS'?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
   zoneRedundant: bool?
