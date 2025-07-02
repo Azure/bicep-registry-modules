@@ -43,10 +43,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   name: 'marketplaceGalleryImageDeployment'
   params: {
     // Required parameters
-    extendedLocation: {
-      name: '<name>'
-      type: 'CustomLocation'
-    }
+    customLocationResourceId: '<customLocationResourceId>'
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -74,11 +71,8 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "extendedLocation": {
-      "value": {
-        "name": "<name>",
-        "type": "CustomLocation"
-      }
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "identifier": {
       "value": {
@@ -113,10 +107,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
 using 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>'
 
 // Required parameters
-param extendedLocation = {
-  name: '<name>'
-  type: 'CustomLocation'
-}
+param customLocationResourceId = '<customLocationResourceId>'
 param identifier = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -146,10 +137,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   name: 'marketplaceGalleryImageDeployment'
   params: {
     // Required parameters
-    extendedLocation: {
-      name: '<name>'
-      type: 'CustomLocation'
-    }
+    customLocationResourceId: '<customLocationResourceId>'
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -162,7 +150,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     }
     // Non-required parameters
     cloudInitDataSource: 'Azure'
-    containerId: '<containerId>'
+    containerResourceId: '<containerResourceId>'
     hyperVGeneration: 'V2'
     tags: {
       Environment: 'Test'
@@ -186,11 +174,8 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "extendedLocation": {
-      "value": {
-        "name": "<name>",
-        "type": "CustomLocation"
-      }
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "identifier": {
       "value": {
@@ -214,8 +199,8 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
     "cloudInitDataSource": {
       "value": "Azure"
     },
-    "containerId": {
-      "value": "<containerId>"
+    "containerResourceId": {
+      "value": "<containerResourceId>"
     },
     "hyperVGeneration": {
       "value": "V2"
@@ -242,10 +227,7 @@ module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-ga
 using 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>'
 
 // Required parameters
-param extendedLocation = {
-  name: '<name>'
-  type: 'CustomLocation'
-}
+param customLocationResourceId = '<customLocationResourceId>'
 param identifier = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -258,7 +240,7 @@ param version = {
 }
 // Non-required parameters
 param cloudInitDataSource = 'Azure'
-param containerId = '<containerId>'
+param containerResourceId = '<containerResourceId>'
 param hyperVGeneration = 'V2'
 param tags = {
   Environment: 'Test'
@@ -276,7 +258,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`extendedLocation`](#parameter-extendedlocation) | object | The custom location configuration. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The custom location ID. |
 | [`identifier`](#parameter-identifier) | object | The gallery image identifier configuration containing publisher, offer, and SKU. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`osType`](#parameter-ostype) | string | Operating system type that the gallery image uses. |
@@ -287,46 +269,19 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cloudInitDataSource`](#parameter-cloudinitdatasource) | string | Datasource for the gallery image when provisioning with cloud-init. |
-| [`containerId`](#parameter-containerid) | string | Storage ContainerID of the storage container to be used for marketplace gallery image. |
+| [`containerResourceId`](#parameter-containerresourceid) | string | Storage Container resourceId of the storage container to be used for marketplace gallery image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the marketplace gallery image. |
 
-### Parameter: `extendedLocation`
+### Parameter: `customLocationResourceId`
 
-The custom location configuration.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-extendedlocationname) | string | The name of the extended location. |
-| [`type`](#parameter-extendedlocationtype) | string | The type of the extended location. |
-
-### Parameter: `extendedLocation.name`
-
-The name of the extended location.
+The custom location ID.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `extendedLocation.type`
-
-The type of the extended location.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CustomLocation'
-  ]
-  ```
 
 ### Parameter: `identifier`
 
@@ -471,9 +426,9 @@ Datasource for the gallery image when provisioning with cloud-init.
   ]
   ```
 
-### Parameter: `containerId`
+### Parameter: `containerResourceId`
 
-Storage ContainerID of the storage container to be used for marketplace gallery image.
+Storage Container resourceId of the storage container to be used for marketplace gallery image.
 
 - Required: No
 - Type: string

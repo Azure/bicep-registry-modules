@@ -185,10 +185,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}marketplaceimage'
-    extendedLocation: {
-      name: customLocation.id
-      type: 'CustomLocation'
-    }
+    customLocationResourceId: customLocation.id
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -196,7 +193,7 @@ module testDeployment '../../../main.bicep' = {
     }
     osType: 'Windows'
     cloudInitDataSource: 'Azure'
-    containerId: null
+    containerResourceId: null
     hyperVGeneration: 'V2'
     tags: {
       Environment: 'Test'

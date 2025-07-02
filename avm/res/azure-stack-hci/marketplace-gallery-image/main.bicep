@@ -14,8 +14,8 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. The custom location configuration.')
-param extendedLocation extendedLocationType
+@description('Required. The custom location ID.')
+param customLocationResourceId string
 
 @description('Required. Operating system type that the gallery image uses.')
 @allowed([
@@ -41,14 +41,14 @@ param hyperVGeneration string = 'V2'
 ])
 param cloudInitDataSource string?
 
-@description('Optional. Storage ContainerID of the storage container to be used for marketplace gallery image.')
-param containerId string?
+@description('Optional. Storage Container resourceId of the storage container to be used for marketplace gallery image.')
+param containerResourceId string?
 
 @description('Required. Gallery image version configuration.')
 param version galleryImageVersionType
 
 @description('Optional. Tags for the marketplace gallery image.')
-param tags object?
+param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.tags?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -111,12 +111,12 @@ resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImag
   location: location
   tags: tags
   extendedLocation: {
-    name: extendedLocation.name
-    type: extendedLocation.type
+    name: customLocationResourceId
+    type: 'CustomLocation'
   }
   properties: {
     cloudInitDataSource: cloudInitDataSource
-    containerId: containerId
+    containerId: containerResourceId
     hyperVGeneration: hyperVGeneration
     identifier: {
       offer: identifier.offer

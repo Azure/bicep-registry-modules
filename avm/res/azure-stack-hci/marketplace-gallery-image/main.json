@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10940260551336833571"
+      "templateHash": "7899406089070485994"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -229,10 +229,10 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "extendedLocation": {
-      "$ref": "#/definitions/extendedLocationType",
+    "customLocationResourceId": {
+      "type": "string",
       "metadata": {
-        "description": "Required. The custom location configuration."
+        "description": "Required. The custom location ID."
       }
     },
     "osType": {
@@ -273,11 +273,11 @@
         "description": "Optional. Datasource for the gallery image when provisioning with cloud-init."
       }
     },
-    "containerId": {
+    "containerResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Storage ContainerID of the storage container to be used for marketplace gallery image."
+        "description": "Optional. Storage Container resourceId of the storage container to be used for marketplace gallery image."
       }
     },
     "version": {
@@ -288,10 +288,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview#properties/tags"
+        },
         "description": "Optional. Tags for the marketplace gallery image."
-      }
+      },
+      "nullable": true
     },
     "roleAssignments": {
       "type": "array",
@@ -348,12 +351,12 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "extendedLocation": {
-        "name": "[parameters('extendedLocation').name]",
-        "type": "[parameters('extendedLocation').type]"
+        "name": "[parameters('customLocationResourceId')]",
+        "type": "CustomLocation"
       },
       "properties": {
         "cloudInitDataSource": "[parameters('cloudInitDataSource')]",
-        "containerId": "[parameters('containerId')]",
+        "containerId": "[parameters('containerResourceId')]",
         "hyperVGeneration": "[parameters('hyperVGeneration')]",
         "identifier": {
           "offer": "[parameters('identifier').offer]",

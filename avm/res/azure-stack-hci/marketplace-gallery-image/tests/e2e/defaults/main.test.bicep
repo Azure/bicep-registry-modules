@@ -182,10 +182,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}marketplaceimage'
-    extendedLocation: {
-      name: customLocation.id
-      type: 'CustomLocation'
-    }
+    customLocationResourceId: customLocation.id
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
