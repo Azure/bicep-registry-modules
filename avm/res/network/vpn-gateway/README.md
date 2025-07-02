@@ -29,12 +29,152 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/vpn-gateway:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using NAT Rules](#example-3-using-nat-rules)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using custom BGP peering addresses](#example-1-using-custom-bgp-peering-addresses)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using NAT Rules](#example-4-using-nat-rules)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using custom BGP peering addresses_
+
+This instance deploys the module with custom BGP peering addresses to test both bgpPeeringAddress and bgpPeeringAddresses properties.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+targetScope = 'subscription'
+
+metadata name = 'Using custom BGP peering addresses'
+metadata description = 'This instance deploys the module with custom BGP peering addresses to test both bgpPeeringAddress and bgpPeeringAddresses properties.'
+
+// ========== //
+// Parameters //
+// ========== //
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-network.vpngateways-${serviceShort}-rg'
+
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'vpngbgp'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    virtualHubName: 'dep-${namePrefix}-vh-${serviceShort}'
+    virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
+    vpnSiteName: 'dep-${namePrefix}-vs-${serviceShort}'
+  }
+}
+
+// ============== //
+// Test Execution //
+// ============== //
+
+// Test 1: Using bgpPeeringAddress (for custom IPs outside APIPA range)
+@batchSize(1)
+module testDeploymentCustomBgp '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-custom-bgp-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}custom001'
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
+      bgpSettings: {
+        asn: 65515
+        peerWeight: 5
+        // Using bgpPeeringAddress for custom IP outside APIPA range
+        bgpPeeringAddress: '10.1.1.1'
+      }
+      vpnConnections: [
+        {
+          enableBgp: true
+          name: 'Connection-Custom-BGP-${last(split(nestedDependencies.outputs.vpnSiteResourceId, '/'))}'
+          remoteVpnSiteResourceId: nestedDependencies.outputs.vpnSiteResourceId
+          enableInternetSecurity: true
+          vpnConnectionProtocolType: 'IKEv2'
+        }
+      ]
+      tags: {
+        'hidden-title': 'Custom BGP IP Test'
+        Environment: 'Test'
+        Role: 'BGPValidation'
+        TestType: 'CustomBgpPeeringAddress'
+      }
+    }
+  }
+]
+
+// Test 2: Using bgpPeeringAddresses (for APIPA ranges)
+@batchSize(1) 
+module testDeploymentApipaBgp '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-apipa-bgp-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}apipa001'
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
+      bgpSettings: {
+        asn: 65516
+        peerWeight: 10
+        // Using bgpPeeringAddresses for APIPA range
+        bgpPeeringAddresses: [
+          {
+            customBgpIpAddresses: [
+              '169.254.21.1'
+              '169.254.22.1'
+            ]
+          }
+        ]
+      }
+      vpnConnections: [
+        {
+          enableBgp: true
+          name: 'Connection-APIPA-BGP-${last(split(nestedDependencies.outputs.vpnSiteResourceId, '/'))}'
+          remoteVpnSiteResourceId: nestedDependencies.outputs.vpnSiteResourceId
+          enableInternetSecurity: true
+          vpnConnectionProtocolType: 'IKEv2'
+        }
+      ]
+      tags: {
+        'hidden-title': 'APIPA BGP Test'
+        Environment: 'Test'
+        Role: 'BGPValidation'
+        TestType: 'ApipaBgpPeeringAddresses'
+      }
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -95,7 +235,7 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -303,7 +443,7 @@ param vpnConnections = [
 </details>
 <p>
 
-### Example 3: _Using NAT Rules_
+### Example 4: _Using NAT Rules_
 
 This instance deploys the module using NAT rule.
 
@@ -613,7 +753,7 @@ param vpnGatewayScaleUnit = 2
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -820,7 +960,7 @@ param vpnConnections = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. |
+| [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | Enable BGP routes translation for NAT on this VPN gateway. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isRoutingPreferenceInternet`](#parameter-isroutingpreferenceinternet) | bool | Enable routing preference property for the public IP interface of the VPN gateway. |
@@ -847,7 +987,7 @@ The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gatewa
 
 ### Parameter: `bgpSettings`
 
-BGP settings details.
+BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously.
 
 - Required: No
 - Type: object
@@ -862,7 +1002,8 @@ BGP settings details.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. |
+| [`bgpPeeringAddress`](#parameter-bgpsettingsbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses. |
+| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress. |
 | [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
 
 ### Parameter: `bgpSettings.asn`
@@ -874,9 +1015,16 @@ The BGP speaker's ASN (Autonomous System Number).
 - MinValue: 0
 - MaxValue: 4294967295
 
+### Parameter: `bgpSettings.bgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses.
+
+- Required: No
+- Type: string
+
 ### Parameter: `bgpSettings.bgpPeeringAddresses`
 
-BGP peering addresses for this VPN Gateway.
+BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress.
 
 - Required: No
 - Type: array
@@ -885,12 +1033,12 @@ BGP peering addresses for this VPN Gateway.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customBgpIpAddresses`](#parameter-bgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses. |
+| [`customBgpIpAddresses`](#parameter-bgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*). |
 | [`ipconfigurationId`](#parameter-bgpsettingsbgppeeringaddressesipconfigurationid) | string | The IP configuration ID. |
 
 ### Parameter: `bgpSettings.bgpPeeringAddresses.customBgpIpAddresses`
 
-The custom BGP peering addresses.
+The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*).
 
 - Required: No
 - Type: array
