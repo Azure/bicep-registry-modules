@@ -68,7 +68,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
+        hubLocation: '<hubLocation>'
         hubName: 'dep-hub-eastus-nvwanmin'
       }
     ]
@@ -101,7 +101,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
+          "hubLocation": "<hubLocation>",
           "hubName": "dep-hub-eastus-nvwanmin"
         }
       ]
@@ -134,7 +134,7 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
+    hubLocation: '<hubLocation>'
     hubName: 'dep-hub-eastus-nvwanmin'
   }
 ]
@@ -1072,7 +1072,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
+        hubLocation: '<hubLocation>'
         hubName: 'dep-hub-eastus-nvwanwaf'
       }
     ]
@@ -1105,7 +1105,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
+          "hubLocation": "<hubLocation>",
           "hubName": "dep-hub-eastus-nvwanwaf"
         }
       ]
@@ -1138,7 +1138,7 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
+    hubLocation: '<hubLocation>'
     hubName: 'dep-hub-eastus-nvwanwaf'
   }
 ]
