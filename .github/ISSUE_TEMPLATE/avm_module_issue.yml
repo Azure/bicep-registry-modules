@@ -74,6 +74,7 @@ body:
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
+        - "avm/ptn/sa/content-processing"
         - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/sa/multi-agent-custom-automation-engine"
         - "avm/ptn/security/security-center"
