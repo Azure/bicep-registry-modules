@@ -9,7 +9,7 @@ param virtualWanParameters virtualWanParameterType
 
 @description('Required. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
 param virtualHubParameters virtualHubParameterType[]
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
 param lock lockType?
@@ -17,7 +17,7 @@ param lock lockType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
+module virtualWan 'br/public:avm/res/network/virtual-wan:0.4.0' = {
   name: '${uniqueString(deployment().name, location)}-${virtualWanParameters.virtualWanName}'
   params: {
     // Required parameters
@@ -25,8 +25,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
     // Optional parameters
     location: virtualWanParameters.?location
     allowBranchToBranchTraffic: virtualWanParameters.?allowBranchToBranchTraffic
-    allowVnetToVnetTraffic: virtualWanParameters.?allowVnetToVnetTraffic
-    disableVpnEncryption: virtualWanParameters.?disableVpnEncryption
     enableTelemetry: enableTelemetry
     lock: virtualWanParameters.?lock ?? lock
     roleAssignments: virtualWanParameters.?roleAssignments
@@ -263,12 +261,6 @@ type virtualWanParameterType = {
 
   @description('Optional. Whether to allow branch-to-branch traffic within the Virtual WAN.')
   allowBranchToBranchTraffic: bool?
-
-  @description('Optional. Whether to allow VNet-to-VNet traffic within the Virtual WAN.')
-  allowVnetToVnetTraffic: bool?
-
-  @description('Optional. Whether to disable VPN encryption for the Virtual WAN.')
-  disableVpnEncryption: bool?
 
   @description('Optional. Lock settings for the Virtual WAN and associated resources.')
   lock: lockType?

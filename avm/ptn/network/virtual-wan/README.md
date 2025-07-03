@@ -26,7 +26,7 @@ This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure
 | `Microsoft.Network/virtualHubs/hubRouteTables` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubRouteTables) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubVirtualNetworkConnections) |
 | `Microsoft.Network/virtualHubs/routingIntent` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/routingIntent) |
-| `Microsoft.Network/virtualWans` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualWans) |
+| `Microsoft.Network/virtualWans` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualWans) |
 | `Microsoft.Network/vpnGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways) |
 | `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules) |
 | `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections) |
@@ -69,7 +69,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
-        hubName: 'dep-hub-eastus-nvwanmin'
+        hubName: 'dep-hub-nvwanmin'
       }
     ]
     virtualWanParameters: {
@@ -102,7 +102,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "<hubLocation>",
-          "hubName": "dep-hub-eastus-nvwanmin"
+          "hubName": "dep-hub-nvwanmin"
         }
       ]
     },
@@ -135,7 +135,7 @@ param virtualHubParameters = [
     deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: '<hubLocation>'
-    hubName: 'dep-hub-eastus-nvwanmin'
+    hubName: 'dep-hub-nvwanmin'
   }
 ]
 param virtualWanParameters = {
@@ -1758,6 +1758,7 @@ Lock settings for the VPN Gateway.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-virtualhubparameterss2svpnparameterslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-virtualhubparameterss2svpnparameterslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-virtualhubparameterss2svpnparameterslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.lock.kind`
 
@@ -1777,6 +1778,13 @@ Specify the type of lock.
 ### Parameter: `virtualHubParameters.s2sVpnParameters.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2613,8 +2621,6 @@ The parameters for the Virtual WAN.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-virtualwanparametersallowbranchtobranchtraffic) | bool | Whether to allow branch-to-branch traffic within the Virtual WAN. |
-| [`allowVnetToVnetTraffic`](#parameter-virtualwanparametersallowvnettovnettraffic) | bool | Whether to allow VNet-to-VNet traffic within the Virtual WAN. |
-| [`disableVpnEncryption`](#parameter-virtualwanparametersdisablevpnencryption) | bool | Whether to disable VPN encryption for the Virtual WAN. |
 | [`location`](#parameter-virtualwanparameterslocation) | string | The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified. |
 | [`lock`](#parameter-virtualwanparameterslock) | object | Lock settings for the Virtual WAN and associated resources. |
 | [`p2sVpnParameters`](#parameter-virtualwanparametersp2svpnparameters) | object | Point-to-site VPN server configuration parameters for the Virtual WAN. |
@@ -2632,20 +2638,6 @@ The name of the Virtual WAN.
 ### Parameter: `virtualWanParameters.allowBranchToBranchTraffic`
 
 Whether to allow branch-to-branch traffic within the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.allowVnetToVnetTraffic`
-
-Whether to allow VNet-to-VNet traffic within the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.disableVpnEncryption`
-
-Whether to disable VPN encryption for the Virtual WAN.
 
 - Required: No
 - Type: bool
@@ -2670,6 +2662,7 @@ Lock settings for the Virtual WAN and associated resources.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-virtualwanparameterslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-virtualwanparameterslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-virtualwanparameterslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `virtualWanParameters.lock.kind`
 
@@ -2689,6 +2682,13 @@ Specify the type of lock.
 ### Parameter: `virtualWanParameters.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3066,6 +3066,7 @@ The lock settings for the Virtual WAN and associated components.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -3085,6 +3086,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
