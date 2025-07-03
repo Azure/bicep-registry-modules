@@ -18,10 +18,10 @@ This module deploys a Network Security Perimeter (NSP).
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/networkSecurityPerimeters` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters) |
-| `Microsoft.Network/networkSecurityPerimeters/profiles` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters/profiles) |
-| `Microsoft.Network/networkSecurityPerimeters/profiles/accessRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters/profiles/accessRules) |
-| `Microsoft.Network/networkSecurityPerimeters/resourceAssociations` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters/resourceAssociations) |
+| `Microsoft.Network/networkSecurityPerimeters` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters) |
+| `Microsoft.Network/networkSecurityPerimeters/profiles` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters/profiles) |
+| `Microsoft.Network/networkSecurityPerimeters/profiles/accessRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters/profiles/accessRules) |
+| `Microsoft.Network/networkSecurityPerimeters/resourceAssociations` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters/resourceAssociations) |
 
 ## Usage examples
 
@@ -737,6 +737,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -756,6 +757,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1062,7 +1070,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

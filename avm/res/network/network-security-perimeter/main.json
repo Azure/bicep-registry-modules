@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "5001761265450278752"
+      "version": "0.36.1.42791",
+      "templateHash": "3744759178927565445"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -258,7 +258,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -283,12 +283,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -363,7 +370,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -431,10 +438,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkSecurityPerimeters@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the NSG resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -465,7 +475,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-nwsecurityperimeter.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -484,7 +494,7 @@
     },
     "networkSecurityPerimeter": {
       "type": "Microsoft.Network/networkSecurityPerimeters",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
@@ -492,10 +502,12 @@
     "networkSecurityPerimeter_resourceAssociations": {
       "copy": {
         "name": "networkSecurityPerimeter_resourceAssociations",
-        "count": "[length(coalesce(parameters('resourceAssociations'), createArray()))]"
+        "count": "[length(coalesce(parameters('resourceAssociations'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-07-01",
       "name": "[format('{0}/{1}', parameters('name'), format('{0}-nsp-ra', guid(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource, parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].profile)))]",
       "properties": {
         "privateLinkResource": {
@@ -610,8 +622,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12754329895696619344"
+              "version": "0.36.1.42791",
+              "templateHash": "18183393498532860472"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile."
@@ -740,12 +752,12 @@
             "networkSecurityPerimeter": {
               "existing": true,
               "type": "Microsoft.Network/networkSecurityPerimeters",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-07-01",
               "name": "[parameters('networkPerimeterName')]"
             },
             "networkSecurityPerimeter_profile": {
               "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('name'))]"
             },
             "nsp_accessRules": {
@@ -800,8 +812,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12994955439990027696"
+                      "version": "0.36.1.42791",
+                      "templateHash": "5803193043229403363"
                     },
                     "name": "Network Security Perimeter Access Rule",
                     "description": "This module deploys a Network Security Perimeter Access Rule."
@@ -908,18 +920,18 @@
                     "networkPerimeter::networkSecurityPerimeterProfile": {
                       "existing": true,
                       "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2024-07-01",
                       "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'))]"
                     },
                     "networkPerimeter": {
                       "existing": true,
                       "type": "Microsoft.Network/networkSecurityPerimeters",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2024-07-01",
                       "name": "[parameters('networkPerimeterName')]"
                     },
                     "nsp_accessRule": {
                       "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2024-07-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'), parameters('name'))]",
                       "properties": {
                         "addressPrefixes": "[parameters('addressPrefixes')]",
@@ -1013,7 +1025,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkSecurityPerimeter', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('networkSecurityPerimeter', '2024-07-01', 'full').location]"
     }
   }
 }
