@@ -48,10 +48,6 @@ try {
         if ($LASTEXITCODE -ne 0) {
             throw 'Arc server connection failed'
         }
-
-        # TODO: work around
-        Get-NetAdapter StorageA | Disable-NetAdapter -Confirm:$false
-        Get-NetAdapter StorageB | Disable-NetAdapter -Confirm:$false
     }
 
     Write-Output 'Arc server connected and all mandatory extensions are ready!'
