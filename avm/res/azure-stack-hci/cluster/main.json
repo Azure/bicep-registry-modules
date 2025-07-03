@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "6994775516008676614"
+      "version": "0.36.1.42791",
+      "templateHash": "12816698443505912614"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -1072,6 +1072,7 @@
       },
       "dependsOn": [
         "cluster",
+        "edgeDevices",
         "managedIdentity",
         "roleAssignmentContributor",
         "roleAssignmentRBACAdmin",
@@ -1188,8 +1189,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "2600734851724854766"
+              "version": "0.36.1.42791",
+              "templateHash": "4811908376566732628"
             }
           },
           "parameters": {
