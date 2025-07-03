@@ -114,9 +114,6 @@ cat > "$PARAM_FILE" << EOF
     "useSharedKeyVault": {
       "value": $USE_SHARED_KEYVAULT_JSON
     },
-    "hciResourceProviderObjectId": {
-      "value": "$HCI_RESOURCE_PROVIDER_OBJECT_ID"
-    },
     "clusterName": {
       "value": "$CLUSTER_NAME"
     },

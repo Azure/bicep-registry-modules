@@ -414,10 +414,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         value: operationType
       }
       {
-        name: 'HCI_RESOURCE_PROVIDER_OBJECT_ID'
-        secureValue: hciResourceProviderObjectId
-      }
-      {
         name: 'DEPLOYMENT_SETTINGS'
         value: string(deploymentSettings)
       }
