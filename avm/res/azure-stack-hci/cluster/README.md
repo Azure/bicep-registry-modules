@@ -790,7 +790,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`hciResourceProviderObjectId`](#parameter-hciresourceproviderobjectid) | securestring | The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription. |
-| [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
+| [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. |
 
 **Conditional parameters**
 
@@ -809,6 +809,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`azureStackLCMUserCredentialContentType`](#parameter-azurestacklcmusercredentialcontenttype) | string | Content type of the azure stack lcm user credential. |
 | [`azureStackLCMUserCredentialTags`](#parameter-azurestacklcmusercredentialtags) | object | Tags of azure stack LCM user credential. |
+| [`clusterADName`](#parameter-clusteradname) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. |
 | [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
 | [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
@@ -1365,7 +1366,7 @@ The service principal object ID of the Azure Stack HCI Resource Provider in this
 
 ### Parameter: `name`
 
-The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.
+The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure.
 
 - Required: Yes
 - Type: string
@@ -1426,6 +1427,13 @@ Tags of azure stack LCM user credential.
 
 - Required: No
 - Type: object
+
+### Parameter: `clusterADName`
+
+The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `defaultARBApplicationContentType`
 

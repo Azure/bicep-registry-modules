@@ -7,10 +7,15 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster Deploymen
 ])
 param name string = 'default'
 
-@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
-@maxLength(15)
+@description('Conditional. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
+@maxLength(40)
 @minLength(4)
 param clusterName string
+
+@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment.')
+@maxLength(15)
+@minLength(4)
+param clusterADName string
 
 @description('Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry.')
 @allowed([
@@ -193,7 +198,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
               episodicDataUpload: episodicDataUpload
             }
             cluster: {
-              name: clusterName
+              name: clusterADName
               witnessType: 'Cloud'
               witnessPath: ''
               cloudAccountName: clusterWitnessStorageAccountName

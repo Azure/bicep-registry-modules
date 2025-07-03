@@ -23,6 +23,7 @@ param hciResourceProviderObjectId string
 param operationType string = 'ClusterProvisioning'
 
 param clusterName string
+param clusterADName string
 param cloudId string
 
 param needArbSecret bool
@@ -37,6 +38,7 @@ module deploymentSetting '../deployment-setting/main.bicep' = [
     params: {
       cloudId: useSharedKeyVault ? cloudId : null
       clusterName: clusterName
+      clusterADName: clusterADName
       operationType: operationType
       deploymentMode: deploymentOperation
       clusterNodeNames: deploymentSettings!.clusterNodeNames

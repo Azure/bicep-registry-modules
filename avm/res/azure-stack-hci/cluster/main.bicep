@@ -5,10 +5,15 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster on the pr
 //   Parameters   //
 // ============== //
 
-@description('Required. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
-@maxLength(15)
+@description('Required. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure.')
+@maxLength(40)
 @minLength(4)
 param name string
+
+@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name.')
+@maxLength(15)
+@minLength(4)
+param clusterADName string?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -380,6 +385,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       {
         name: 'CLUSTER_NAME'
         value: cluster.name
+      }
+      {
+        name: 'CLUSTER_AD_NAME'
+        value: clusterADName ?? cluster.name
       }
       {
         name: 'CLOUD_ID'
