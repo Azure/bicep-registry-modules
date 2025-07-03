@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2694483112751864563"
+      "templateHash": "7743899209393705494"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -11678,6 +11678,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -11687,7 +11690,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "2317259662067975763"
+              "templateHash": "11769349999931184039"
             }
           },
           "parameters": {
@@ -11707,6 +11710,12 @@
               "type": "object",
               "metadata": {
                 "description": "Tags to be applied to the managed identity"
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enable telemetry for the AVM deployment"
               }
             }
           },
@@ -11729,6 +11738,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -15797,6 +15809,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -15806,7 +15821,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8441318505264724450"
+              "templateHash": "3950860007479512648"
             },
             "name": "Container Registry Module"
           },
@@ -15850,6 +15865,12 @@
               "metadata": {
                 "description": "Tags to be applied to the Container Registry"
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enable telemetry for the AVM deployment"
+              }
             }
           },
           "resources": [
@@ -15880,6 +15901,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -27046,9 +27070,9 @@
         "avmContainerApp",
         "avmManagedIdentity",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]

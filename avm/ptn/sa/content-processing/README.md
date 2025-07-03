@@ -107,12 +107,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [waf-aligned configuration with default parameter values](#example-1-waf-aligned-configuration-with-default-parameter-values)
+- [Waf-aligned configuration with default parameter values](#example-1-waf-aligned-configuration-with-default-parameter-values)
 - [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _waf-aligned configuration with default parameter values_
+### Example 1: _Waf-aligned configuration with default parameter values_
 
-This instance deploys the [Content Processing Solution Accelerator]
+This instance deploys the Content Processing Solution Accelerator
 
 
 <details>
@@ -125,7 +125,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     contentUnderstandingLocation: '<contentUnderstandingLocation>'
-    environmentName: 'scpwaf'
+    environmentName: 'scpeg'
     gptDeploymentCapacity: 1
     // Non-required parameters
     enablePrivateNetworking: true
@@ -152,7 +152,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": "<contentUnderstandingLocation>"
     },
     "environmentName": {
-      "value": "scpwaf"
+      "value": "scpeg"
     },
     "gptDeploymentCapacity": {
       "value": 1
@@ -183,7 +183,7 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param contentUnderstandingLocation = '<contentUnderstandingLocation>'
-param environmentName = 'scpwaf'
+param environmentName = 'scpeg'
 param gptDeploymentCapacity = 1
 // Non-required parameters
 param enablePrivateNetworking = true
@@ -196,7 +196,7 @@ param enableTelemetry = true
 
 ### Example 2: _Sandbox configuration with default parameter values_
 
-This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+This instance deploys the Content Processing Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
 
 <details>
