@@ -44,7 +44,8 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clusterName`](#parameter-clustername) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment. |
+| [`clusterADName`](#parameter-clusteradname) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment. |
+| [`clusterName`](#parameter-clustername) | string | The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -202,9 +203,16 @@ The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.
 - Required: Yes
 - Type: string
 
+### Parameter: `clusterADName`
+
+The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `clusterName`
 
-The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.
+The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
