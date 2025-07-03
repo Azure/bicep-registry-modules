@@ -159,38 +159,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location of the marketplace gallery image.')
 output location string = marketplaceGalleryImage.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for extended location configuration.')
-type extendedLocationType = {
-  @description('Required. The name of the extended location.')
-  name: string
-
-  @description('Required. The type of the extended location.')
-  type: 'CustomLocation'
-}
-
-@export()
-@description('The type for gallery image version properties.')
-type galleryImageVersionPropertiesType = {
-  @description('Required. This is the storage profile of a Gallery Image Version.')
-  storageProfile: storageProfileType
-}
-
-@export()
-@description('The type for storage profile configuration.')
-type storageProfileType = {
-  @description('Optional. This is the OS disk image configuration.')
-  osDiskImage: osDiskImageType?
-}
-
-@export()
-@description('The type for OS disk image configuration.')
-type osDiskImageType = {
-  @description('Optional. This property indicates the size of the VHD to be created in MB.')
-  sizeInMB: int?
-}

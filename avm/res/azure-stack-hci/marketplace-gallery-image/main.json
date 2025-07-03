@@ -5,84 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "5005003427864380360"
+      "version": "0.35.1.17967",
+      "templateHash": "11752184984779140264"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
   },
   "definitions": {
-    "extendedLocationType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the extended location."
-          }
-        },
-        "type": {
-          "type": "string",
-          "allowedValues": [
-            "CustomLocation"
-          ],
-          "metadata": {
-            "description": "Required. The type of the extended location."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for extended location configuration."
-      }
-    },
-    "galleryImageVersionPropertiesType": {
-      "type": "object",
-      "properties": {
-        "storageProfile": {
-          "$ref": "#/definitions/storageProfileType",
-          "metadata": {
-            "description": "Required. This is the storage profile of a Gallery Image Version."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for gallery image version properties."
-      }
-    },
-    "storageProfileType": {
-      "type": "object",
-      "properties": {
-        "osDiskImage": {
-          "$ref": "#/definitions/osDiskImageType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. This is the OS disk image configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for storage profile configuration."
-      }
-    },
-    "osDiskImageType": {
-      "type": "object",
-      "properties": {
-        "sizeInMB": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. This property indicates the size of the VHD to be created in MB."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for OS disk image configuration."
-      }
-    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
