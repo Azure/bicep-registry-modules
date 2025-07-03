@@ -50,7 +50,7 @@ param version resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@20
 @description('Optional. Tags for the marketplace gallery image.')
 param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.tags?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
