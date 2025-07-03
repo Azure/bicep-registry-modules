@@ -260,9 +260,16 @@ var arcNodeResourceIds = [
   )
 ]
 
-resource edgeDevice 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
-  for (arcNodeResourceId, index) in arcNodeResourceIds: if (operationType == 'ClusterProvisioning') {
-    name: last(split(arcNodeResourceId, '/'))
+resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
+  for nodeName in deploymentSettings!.clusterNodeNames: {
+    name: nodeName
+  }
+]
+
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
+    name: 'default'
+    scope: arcMachines[index]
     kind: 'HCI'
     properties: {
       deviceConfiguration: {
@@ -282,7 +289,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
   tags: tags
   dependsOn: [
-    edgeDevice
+    edgeDevices
   ]
 }
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "17468240197242690916"
+      "templateHash": "6994775516008676614"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -910,15 +910,25 @@
         }
       }
     },
-    "edgeDevice": {
+    "arcMachines": {
       "copy": {
-        "name": "edgeDevice",
-        "count": "[length(variables('arcNodeResourceIds'))]"
+        "name": "arcMachines",
+        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
       },
-      "condition": "[equals(parameters('operationType'), 'ClusterProvisioning')]",
+      "existing": true,
+      "type": "Microsoft.HybridCompute/machines",
+      "apiVersion": "2024-07-10",
+      "name": "[parameters('deploymentSettings').clusterNodeNames[copyIndex()]]"
+    },
+    "edgeDevices": {
+      "copy": {
+        "name": "edgeDevices",
+        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
+      },
       "type": "Microsoft.AzureStackHCI/edgeDevices",
       "apiVersion": "2024-02-15-preview",
-      "name": "[last(split(variables('arcNodeResourceIds')[copyIndex()], '/'))]",
+      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('deploymentSettings').clusterNodeNames[copyIndex()])]",
+      "name": "default",
       "kind": "HCI",
       "properties": {
         "deviceConfiguration": {
@@ -938,7 +948,7 @@
       "properties": {},
       "tags": "[parameters('tags')]",
       "dependsOn": [
-        "edgeDevice"
+        "edgeDevices"
       ]
     },
     "managedIdentity": {
