@@ -261,7 +261,7 @@ var arcNodeResourceIds = [
 ]
 
 resource edgeDevice 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
-  for (arcNodeResourceId, index) in arcNodeResourceIds: {
+  for (arcNodeResourceId, index) in arcNodeResourceIds: if (operationType == 'ClusterProvisioning') {
     name: last(split(arcNodeResourceId, '/'))
     kind: 'HCI'
     properties: {

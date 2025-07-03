@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "17158617020707043400"
+      "templateHash": "9018246858317391662"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -275,12 +275,6 @@
       ],
       "metadata": {
         "description": "Optional. The intended operation for a cluster."
-      }
-    },
-    "hciResourceProviderObjectId": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription."
       }
     }
   },
