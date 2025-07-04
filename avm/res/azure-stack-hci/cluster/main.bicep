@@ -260,26 +260,6 @@ var arcNodeResourceIds = [
   )
 ]
 
-resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
-  for nodeName in deploymentSettings!.clusterNodeNames: {
-    name: nodeName
-  }
-]
-
-resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
-  for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
-    name: 'default'
-    scope: arcMachines[index]
-    kind: 'HCI'
-    properties: {
-      deviceConfiguration: {
-        deviceMetadata: ''
-        nicDetails: []
-      }
-    }
-  }
-]
-
 resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   name: name
   identity: {
@@ -288,9 +268,6 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   location: location
   properties: {}
   tags: tags
-  dependsOn: [
-    edgeDevices
-  ]
 }
 
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
@@ -437,7 +414,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     roleAssignmentContributor
     roleAssignmentReader
     roleAssignmentRBACAdmin
-    edgeDevices
   ]
 }
 

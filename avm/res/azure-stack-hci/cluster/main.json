@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7873128603195197212"
+      "templateHash": "9777282475688536073"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -910,33 +910,6 @@
         }
       }
     },
-    "arcMachines": {
-      "copy": {
-        "name": "arcMachines",
-        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
-      },
-      "existing": true,
-      "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2024-07-10",
-      "name": "[parameters('deploymentSettings').clusterNodeNames[copyIndex()]]"
-    },
-    "edgeDevices": {
-      "copy": {
-        "name": "edgeDevices",
-        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
-      },
-      "type": "Microsoft.AzureStackHCI/edgeDevices",
-      "apiVersion": "2024-02-15-preview",
-      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('deploymentSettings').clusterNodeNames[copyIndex()])]",
-      "name": "default",
-      "kind": "HCI",
-      "properties": {
-        "deviceConfiguration": {
-          "deviceMetadata": "",
-          "nicDetails": []
-        }
-      }
-    },
     "cluster": {
       "type": "Microsoft.AzureStackHCI/clusters",
       "apiVersion": "2024-04-01",
@@ -946,10 +919,7 @@
       },
       "location": "[parameters('location')]",
       "properties": {},
-      "tags": "[parameters('tags')]",
-      "dependsOn": [
-        "edgeDevices"
-      ]
+      "tags": "[parameters('tags')]"
     },
     "managedIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
@@ -1068,7 +1038,6 @@
       },
       "dependsOn": [
         "cluster",
-        "edgeDevices",
         "managedIdentity",
         "roleAssignmentContributor",
         "roleAssignmentRBACAdmin",
