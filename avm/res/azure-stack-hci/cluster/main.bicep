@@ -5,10 +5,15 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster on the pr
 //   Parameters   //
 // ============== //
 
-@description('Required. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
-@maxLength(15)
+@description('Required. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure.')
+@maxLength(40)
 @minLength(4)
 param name string
+
+@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name.')
+@maxLength(15)
+@minLength(4)
+param clusterADName string?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -142,6 +147,83 @@ var formattedRoleAssignments = [
   })
 ]
 
+var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
+)
+var readerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+)
+var azureStackHCIDeviceManagementRole = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
+)
+
+resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId,
+    'ConnectedMachineResourceManagerRolePermissions',
+    resourceGroup().id
+  )
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'azureConnectedMachineResourceManager',
+      hciNode,
+      resourceGroup().id
+    )
+    properties: {
+      roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+  }
+]
+
+resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'azureStackHCIDeviceManagementRole',
+      hciNode,
+      resourceGroup().id
+    )
+    properties: {
+      roleDefinitionId: azureStackHCIDeviceManagementRole
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+  }
+]
+
+resource NodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
+    properties: {
+      roleDefinitionId: readerRoleID
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+  }
+]
+
 // if deployment operations requested, validation must be performed first so we reverse sort the array
 var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
 
@@ -171,6 +253,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+var arcNodeResourceIds = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: resourceId(
+    'Microsoft.HybridCompute/machines',
+    nodeName
+  )
+]
+
 resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   name: name
   identity: {
@@ -180,13 +269,6 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
   tags: tags
 }
-
-var arcNodeResourceIds = [
-  for (nodeName, index) in deploymentSettings!.clusterNodeNames: resourceId(
-    'Microsoft.HybridCompute/machines',
-    nodeName
-  )
-]
 
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
@@ -289,6 +371,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         value: cluster.name
       }
       {
+        name: 'CLUSTER_AD_NAME'
+        value: clusterADName ?? cluster.name
+      }
+      {
         name: 'CLOUD_ID'
         value: cluster.properties.cloudId
       }
@@ -303,10 +389,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       {
         name: 'OPERATION_TYPE'
         value: operationType
-      }
-      {
-        name: 'HCI_RESOURCE_PROVIDER_OBJECT_ID'
-        secureValue: hciResourceProviderObjectId
       }
       {
         name: 'DEPLOYMENT_SETTINGS'

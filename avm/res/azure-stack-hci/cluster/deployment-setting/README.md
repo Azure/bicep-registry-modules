@@ -12,7 +12,6 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/clusters/deploymentSettings` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings) |
 
 ## Parameters
@@ -31,7 +30,6 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`domainFqdn`](#parameter-domainfqdn) | string | The domain name of the Active Directory Domain Services. Example: "contoso.com". |
 | [`domainOUPath`](#parameter-domainoupath) | string | The ADDS OU path - ex "OU=HCI,DC=contoso,DC=com". |
 | [`endingIPAddress`](#parameter-endingipaddress) | string | The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs. |
-| [`hciResourceProviderObjectId`](#parameter-hciresourceproviderobjectid) | securestring | The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription. |
 | [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault to be used for storing secrets for the HCI cluster. |
 | [`needArbSecret`](#parameter-needarbsecret) | bool | If true, the service principal secret for ARB is required. If false, the secrets wiil not be required. |
 | [`networkIntents`](#parameter-networkintents) | array | An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster. |
@@ -44,7 +42,8 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clusterName`](#parameter-clustername) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment. |
+| [`clusterADName`](#parameter-clusteradname) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment. |
+| [`clusterName`](#parameter-clustername) | string | The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -146,13 +145,6 @@ The ending IP address for the Infrastructure Network IP pool. There must be at l
 - Required: Yes
 - Type: string
 
-### Parameter: `hciResourceProviderObjectId`
-
-The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription.
-
-- Required: Yes
-- Type: securestring
-
 ### Parameter: `keyVaultName`
 
 The name of the key vault to be used for storing secrets for the HCI cluster.
@@ -202,9 +194,16 @@ The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.
 - Required: Yes
 - Type: string
 
+### Parameter: `clusterADName`
+
+The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `clusterName`
 
-The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.
+The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
