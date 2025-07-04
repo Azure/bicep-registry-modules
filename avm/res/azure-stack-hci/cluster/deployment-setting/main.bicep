@@ -7,10 +7,15 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster Deploymen
 ])
 param name string = 'default'
 
-@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
-@maxLength(15)
+@description('Conditional. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
+@maxLength(40)
 @minLength(4)
 param clusterName string
+
+@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment.')
+@maxLength(15)
+@minLength(4)
+param clusterADName string
 
 @description('Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry.')
 @allowed([
@@ -133,77 +138,8 @@ param cloudId string?
 ])
 param operationType string = 'ClusterProvisioning'
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
-@secure()
-param hciResourceProviderObjectId string
-
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
-]
-
-var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
-)
-var readerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-)
-var azureStackHCIDeviceManagementRole = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
-)
-
-resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(
-    subscription().subscriptionId,
-    hciResourceProviderObjectId,
-    'ConnectedMachineResourceManagerRolePermissions',
-    resourceGroup().id
-  )
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
-  }
-}
-
-resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId,
-      'azureConnectedMachineResourceManager',
-      hciNode,
-      resourceGroup().id
-    )
-    properties: {
-      roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-  }
-]
-
-resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId,
-      'azureStackHCIDeviceManagementRole',
-      hciNode,
-      resourceGroup().id
-    )
-    properties: {
-      roleDefinitionId: azureStackHCIDeviceManagementRole
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-  }
 ]
 
 var storageNetworksArray = [
@@ -212,18 +148,6 @@ var storageNetworksArray = [
     networkAdapterName: storageAdapter.adapterName
     vlanId: storageAdapter.vlan
     storageAdapterIPInfo: storageAdapter.?storageAdapterIPInfo
-  }
-]
-
-resource NodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
-    properties: {
-      roleDefinitionId: readerRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
   }
 ]
 
@@ -270,7 +194,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
               episodicDataUpload: episodicDataUpload
             }
             cluster: {
-              name: clusterName
+              name: clusterADName
               witnessType: 'Cloud'
               witnessPath: ''
               cloudAccountName: clusterWitnessStorageAccountName
