@@ -1494,7 +1494,7 @@ Describe 'Module tests' -Tag 'Module' {
                     isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType          = $moduleType
                     moduleVersionExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    changelogContent    = (Test-Path (Join-Path -Path $moduleFolderPath 'CHANGELOG.md') ? (Get-Content (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')) : @())
+                    changelogContent    = ((Test-Path (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')) ? (Get-Content (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')) : @())
                 }
             }
         }
