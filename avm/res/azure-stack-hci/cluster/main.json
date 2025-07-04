@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9777282475688536073"
+      "templateHash": "16420173837477881151"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -834,7 +834,7 @@
     "managementIntentName": "[if(greater(length(variables('managementNetworks')), 0), variables('managementNetworks')[0].name, '')]"
   },
   "resources": {
-    "SPConnectedMachineResourceManagerRolePermissions": {
+    "spConnectedMachineResourceManagerRolePermissions": {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'ConnectedMachineResourceManagerRolePermissions', resourceGroup().id)]",
@@ -845,9 +845,9 @@
         "description": "Created by Azure Stack HCI deployment template"
       }
     },
-    "NodeAzureConnectedMachineResourceManagerRolePermissions": {
+    "nodeAzureConnectedMachineResourceManagerRolePermissions": {
       "copy": {
-        "name": "NodeAzureConnectedMachineResourceManagerRolePermissions",
+        "name": "nodeAzureConnectedMachineResourceManagerRolePermissions",
         "count": "[length(variables('arcNodeResourceIds'))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
@@ -860,9 +860,9 @@
         "description": "Created by Azure Stack HCI deployment template"
       }
     },
-    "NodeazureStackHCIDeviceManagementRole": {
+    "nodeazureStackHCIDeviceManagementRole": {
       "copy": {
-        "name": "NodeazureStackHCIDeviceManagementRole",
+        "name": "nodeazureStackHCIDeviceManagementRole",
         "count": "[length(variables('arcNodeResourceIds'))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
@@ -875,9 +875,9 @@
         "description": "Created by Azure Stack HCI deployment template"
       }
     },
-    "NodereaderRoleIDPermissions": {
+    "nodereaderRoleIDPermissions": {
       "copy": {
-        "name": "NodereaderRoleIDPermissions",
+        "name": "nodereaderRoleIDPermissions",
         "count": "[length(variables('arcNodeResourceIds'))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
@@ -910,6 +910,33 @@
         }
       }
     },
+    "arcMachines": {
+      "copy": {
+        "name": "arcMachines",
+        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
+      },
+      "existing": true,
+      "type": "Microsoft.HybridCompute/machines",
+      "apiVersion": "2024-07-10",
+      "name": "[parameters('deploymentSettings').clusterNodeNames[copyIndex()]]"
+    },
+    "edgeDevices": {
+      "copy": {
+        "name": "edgeDevices",
+        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
+      },
+      "type": "Microsoft.AzureStackHCI/edgeDevices",
+      "apiVersion": "2024-02-15-preview",
+      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('deploymentSettings').clusterNodeNames[copyIndex()])]",
+      "name": "default",
+      "kind": "HCI",
+      "properties": {
+        "deviceConfiguration": {
+          "deviceMetadata": "",
+          "nicDetails": []
+        }
+      }
+    },
     "cluster": {
       "type": "Microsoft.AzureStackHCI/clusters",
       "apiVersion": "2024-04-01",
@@ -919,7 +946,10 @@
       },
       "location": "[parameters('location')]",
       "properties": {},
-      "tags": "[parameters('tags')]"
+      "tags": "[parameters('tags')]",
+      "dependsOn": [
+        "edgeDevices"
+      ]
     },
     "managedIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
@@ -1038,11 +1068,16 @@
       },
       "dependsOn": [
         "cluster",
+        "edgeDevices",
         "managedIdentity",
+        "nodeAzureConnectedMachineResourceManagerRolePermissions",
+        "nodeazureStackHCIDeviceManagementRole",
+        "nodereaderRoleIDPermissions",
         "roleAssignmentContributor",
         "roleAssignmentRBACAdmin",
         "roleAssignmentReader",
-        "secrets"
+        "secrets",
+        "spConnectedMachineResourceManagerRolePermissions"
       ]
     },
     "cluster_roleAssignments": {
