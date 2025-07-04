@@ -1761,7 +1761,7 @@ Describe 'Module tests' -Tag 'Module' {
             $wrongOrder | Should -BeNullOrEmpty -Because ('all versions should contain the `### Changes` section before the `### Breaking Changes` section. Found invalid versions: [{0}]. Please note that the casing **must** match.' -f ($wrongOrder -join ', '))
         }
 
-        It '[<moduleFolderName>] `CHANGELOG.md` must contain only versions, that are published.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $changelogContent.Count -gt 0 }) {
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain only versions, that are published.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
                 [string] $moduleFolderPath,
@@ -1769,6 +1769,11 @@ Describe 'Module tests' -Tag 'Module' {
                 [string] $moduleFolderName,
                 [string[]] $changelogContent
             )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
 
             # all versions, that are mentioned in the changelog
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
