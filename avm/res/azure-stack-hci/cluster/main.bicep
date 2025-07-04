@@ -160,7 +160,7 @@ var azureStackHCIDeviceManagementRole = subscriptionResourceId(
   '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
 )
 
-resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(
     subscription().subscriptionId,
     hciResourceProviderObjectId,
@@ -176,7 +176,7 @@ resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorizati
   }
 }
 
-resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
     name: guid(
       subscription().subscriptionId,
@@ -194,7 +194,7 @@ resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Auth
   }
 ]
 
-resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
     name: guid(
       subscription().subscriptionId,
@@ -212,7 +212,7 @@ resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssi
   }
 ]
 
-resource NodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource nodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
     name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
     properties: {
@@ -260,6 +260,26 @@ var arcNodeResourceIds = [
   )
 ]
 
+resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
+  for nodeName in deploymentSettings!.clusterNodeNames: {
+    name: nodeName
+  }
+]
+
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
+    name: 'default'
+    scope: arcMachines[index]
+    kind: 'HCI'
+    properties: {
+      deviceConfiguration: {
+        deviceMetadata: ''
+        nicDetails: []
+      }
+    }
+  }
+]
+
 resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   name: name
   identity: {
@@ -268,6 +288,9 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   location: location
   properties: {}
   tags: tags
+  dependsOn: [
+    edgeDevices
+  ]
 }
 
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
@@ -410,10 +433,15 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     scriptContent: loadTextContent('./deploy.sh')
   }
   dependsOn: [
-    secrets
+    edgeDevices
+    spConnectedMachineResourceManagerRolePermissions
+    nodeAzureConnectedMachineResourceManagerRolePermissions
+    nodeazureStackHCIDeviceManagementRole
+    nodereaderRoleIDPermissions
     roleAssignmentContributor
     roleAssignmentReader
     roleAssignmentRBACAdmin
+    secrets
   ]
 }
 
