@@ -61,26 +61,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
     associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
-    connections: [
-      {
-        category: 'AIServices'
-        connectionProperties: {
-          authType: 'ApiKey'
-          credentials: {
-            key: 'key'
-          }
-        }
-        metadata: {
-          ApiType: 'Azure'
-          ApiVersion: '2023-07-01-preview'
-          DeploymentApiVersion: '2023-10-01-preview'
-          Location: '<Location>'
-          ResourceId: '<ResourceId>'
-        }
-        name: 'ai'
-        target: '<target>'
-      }
-    ]
     kind: 'Hub'
     location: '<location>'
     workspaceHubConfig: {
@@ -120,28 +100,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "connections": {
-      "value": [
-        {
-          "category": "AIServices",
-          "connectionProperties": {
-            "authType": "ApiKey",
-            "credentials": {
-              "key": "key"
-            }
-          },
-          "metadata": {
-            "ApiType": "Azure",
-            "ApiVersion": "2023-07-01-preview",
-            "DeploymentApiVersion": "2023-10-01-preview",
-            "Location": "<Location>",
-            "ResourceId": "<ResourceId>"
-          },
-          "name": "ai",
-          "target": "<target>"
-        }
-      ]
-    },
     "kind": {
       "value": "Hub"
     },
@@ -175,26 +133,6 @@ param sku = 'Basic'
 param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
 param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
 param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
-param connections = [
-  {
-    category: 'AIServices'
-    connectionProperties: {
-      authType: 'ApiKey'
-      credentials: {
-        key: 'key'
-      }
-    }
-    metadata: {
-      ApiType: 'Azure'
-      ApiVersion: '2023-07-01-preview'
-      DeploymentApiVersion: '2023-10-01-preview'
-      Location: '<Location>'
-      ResourceId: '<ResourceId>'
-    }
-    name: 'ai'
-    target: '<target>'
-  }
-]
 param kind = 'Hub'
 param location = '<location>'
 param workspaceHubConfig = {
