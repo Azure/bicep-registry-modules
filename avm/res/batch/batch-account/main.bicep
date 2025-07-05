@@ -170,7 +170,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
   }
 }
 
-resource batchAccount 'Microsoft.Batch/batchAccounts@2024-07-01' = {
+resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
   name: name
   location: location
   tags: tags

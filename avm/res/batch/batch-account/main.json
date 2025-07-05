@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13327731166251715055"
+      "templateHash": "11219223927151655346"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account."
@@ -917,7 +917,7 @@
     },
     "batchAccount": {
       "type": "Microsoft.Batch/batchAccounts",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2022-06-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1802,7 +1802,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('batchAccount', '2024-07-01', 'full').location]"
+      "value": "[reference('batchAccount', '2022-06-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1810,7 +1810,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('batchAccount', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('batchAccount', '2022-06-01', 'full'), 'identity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",
