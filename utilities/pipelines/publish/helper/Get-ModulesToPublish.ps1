@@ -17,12 +17,22 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
+    # Cases
+    # 1. We're in a dev branch of a fork
+    # ->
+    # 2. We're in the main branch of a fork
+    # ->
+    # 3. We're in a dev branch in upstream
+    # ->
+    # 4. We're in the main branch in upstream
+    # ->
+
     $CurrentBranch = Get-GitBranchName
     if ($CurrentBranch -eq 'main') {
         Write-Verbose 'Gathering modified files from the pull request' -Verbose
         $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
     } else {
-        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
+        Write-Verbose 'Gathering modified files between current branch and upstream main' -Verbose
         $Diff = git diff --name-only --diff-filter=AM 'origin/main'
     }
     $ModifiedFiles = $Diff | Get-Item -Force
