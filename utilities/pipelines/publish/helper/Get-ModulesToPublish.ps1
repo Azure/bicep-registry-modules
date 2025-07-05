@@ -17,20 +17,36 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    # Cases
-    # 1. We're in a dev branch of a fork
-    # ->
-    # 2. We're in the main branch of a fork
-    # ->
-    # 3. We're in a dev branch in upstream
-    # ->
-    # 4. We're in the main branch in upstream
-    # ->
+    <#
+    Note:
+    - HEAD points to checked out branch
+    - origin/main points to the main branch in the upstream repository
+    - origin/main^ points to the commit before the last commit in the main branch in the upstream repository
+
+    Commands
+    - git diff --name-only --diff-filter=AM 'origin/main'
+      - Shows the diff of the current branch vs latest upstream main (e.g., shows one change)
+      - git diff --name-only --diff-filter=AM 'origin/main^
+        - Shows the diff of the current branch vs the upstream main minus one commit (e.g., shows two changes)
+    - git diff --name-only --diff-filter=AM 'origin/main^' 'main'
+      - Shows the diff of the latest local main vs the upstream main minus one commit (e.g., shows one change)
+
+    Cases
+    -----
+    1. We're in a dev branch of a fork
+    ->
+    2. We're in the main branch of a fork
+    ->
+    3. We're in a dev branch in upstream
+    ->
+    4. We're in the main branch in upstream
+    ->
+    #>
 
     $CurrentBranch = Get-GitBranchName
     if ($CurrentBranch -eq 'main') {
         Write-Verbose 'Gathering modified files from the pull request' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
+        $Diff = git diff --name-only --diff-filter=AM 'origin/main^' 'main'
     } else {
         Write-Verbose 'Gathering modified files between current branch and upstream main' -Verbose
         $Diff = git diff --name-only --diff-filter=AM 'origin/main'
