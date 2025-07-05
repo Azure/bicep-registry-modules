@@ -25,11 +25,11 @@ function Get-ModifiedFileList {
 
     Commands
     - git diff --name-only --diff-filter=AM 'origin/main'
-      - Shows the diff of the current branch vs latest upstream main (e.g., shows one change)
-      - git diff --name-only --diff-filter=AM 'origin/main^
+        - Shows the diff of the current branch vs latest upstream main (e.g., shows one change)
+    - git diff --name-only --diff-filter=AM 'origin/main^
         - Shows the diff of the current branch vs the upstream main minus one commit (e.g., shows two changes)
     - git diff --name-only --diff-filter=AM 'origin/main^' 'main'
-      - Shows the diff of the latest local main vs the upstream main minus one commit (e.g., shows one change)
+        - Shows the diff of the latest local main vs the upstream main minus one commit (e.g., shows one change)
 
     Cases
     -----
