@@ -525,7 +525,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     outboundPublicIPResourceIds: '<outboundPublicIPResourceIds>'
     roleAssignments: [
       {
-        name: 'ac915208-669e-4665-9792-7e2dc861f569'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -537,6 +537,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -852,7 +853,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "roleAssignments": {
       "value": [
         {
-          "name": "ac915208-669e-4665-9792-7e2dc861f569",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -864,6 +865,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -1113,7 +1115,7 @@ param openServiceMeshEnabled = true
 param outboundPublicIPResourceIds = '<outboundPublicIPResourceIds>'
 param roleAssignments = [
   {
-    name: 'ac915208-669e-4665-9792-7e2dc861f569'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1125,6 +1127,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   }
   {
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -1504,7 +1507,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPlugin: 'kubenet'
     roleAssignments: [
       {
-        name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1516,6 +1519,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -1629,7 +1633,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "roleAssignments": {
       "value": [
         {
-          "name": "6acf186b-abbd-491b-8bd7-39fa199da81e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1641,6 +1645,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -1740,7 +1745,7 @@ param managedIdentities = {
 param networkPlugin = 'kubenet'
 param roleAssignments = [
   {
-    name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1752,6 +1757,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   }
   {
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
