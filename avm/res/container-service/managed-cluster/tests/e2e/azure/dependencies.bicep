@@ -87,15 +87,15 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
   }
 }
 
-resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment')
+resource keyPermissionsKeyVaultCryptoServiceEncryptionUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-Service-Encryption-User-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // KeyVault-Crypto-User
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
     principalType: 'ServicePrincipal'
   }
 }
@@ -119,7 +119,7 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
     encryptionType: 'EncryptionAtRestWithCustomerKey'
   }
   dependsOn: [
-    keyPermissionsKeyVaultCryptoUser
+    keyPermissionsKeyVaultCryptoServiceEncryptionUser
   ]
 }
 
