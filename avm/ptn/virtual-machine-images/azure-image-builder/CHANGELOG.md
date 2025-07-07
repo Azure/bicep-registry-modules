@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated to latest AVM versions
-- Adjusted image template deployment to make use of the `containerInstanceSubnetResourceId` vnetConfig parameter of the `avm/res/virtual-machine-images/image-template` version `0.6.0`
+- Adjusted image template deployment to make use of the of the `vnetConfig` parameter's `containerInstanceSubnetResourceId` property of the `avm/res/virtual-machine-images/image-template` version `0.6.0`
 
 ### Breaking Changes
 
