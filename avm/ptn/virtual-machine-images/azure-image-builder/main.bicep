@@ -58,8 +58,14 @@ param virtualNetworkAddressPrefix string = '10.0.0.0/16'
 @description('Optional. The name of the Image Template Virtual Network Subnet to create.')
 param imageSubnetName string = 'subnet-it'
 
+@description('Optional. The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds.')
+param imagecontainerInstanceSubnetName string = 'subnet-it-container'
+
 @description('Optional. The address space of the Virtual Network Subnet.')
 param virtualNetworkSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 0)
+
+@description('Optional. The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imagecontainerInstanceSubnetName` is not empty.')
+param imagecontainerInstanceSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 2)
 
 @description('Optional. The name of the Image Template Virtual Network Subnet to create.')
 param deploymentScriptSubnetName string = 'subnet-ds'
@@ -117,7 +123,7 @@ var formattedTime = replace(replace(replace(baseTime, ':', ''), '-', ''), ' ', '
 // =========== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.vmimages-azureimagebuilder.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
@@ -205,7 +211,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.1' = if (
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -217,7 +223,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.1' = if (deplo
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -234,6 +240,16 @@ module vnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (deploymentsT
           'Microsoft.Storage'
         ]
       }
+      ...(!empty(imagecontainerInstanceSubnetName)
+        ? [
+            {
+              name: imagecontainerInstanceSubnetName
+              addressPrefix: imagecontainerInstanceSubnetAddressPrefix
+              privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
+              delegation: 'Microsoft.ContainerInstance/containerGroups'
+            }
+          ]
+        : [])
       {
         name: deploymentScriptSubnetName
         addressPrefix: virtualNetworkDeploymentScriptSubnetAddressPrefix
@@ -250,7 +266,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (deploymentsT
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
@@ -313,7 +329,7 @@ resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleD
 }
 
 // Deployment scripts & their storage account
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {
@@ -384,7 +400,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.
       value: file.?value
       secureValue: file.?secureValue
     })
-    arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}"'
+    arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}"  -SubscriptionId "${subscription().subscriptionId}"'
     timeout: 'PT30M'
     cleanupPreference: 'Always'
     location: location
@@ -423,12 +439,12 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.
 // ===================== //
 
 // Image template
-resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: deploymentScriptManagedIdentityName
   scope: resourceGroup(resourceGroupName)
 }
 
-module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.5.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.6.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -458,13 +474,24 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
         )
       }
     ]
-    subnetResourceId: resourceId(
-      subscription().subscriptionId,
-      resourceGroupName,
-      'Microsoft.Network/virtualNetworks/subnets',
-      virtualNetworkName,
-      imageSubnetName
-    )
+    vnetConfig: {
+      subnetResourceId: resourceId(
+        subscription().subscriptionId,
+        resourceGroupName,
+        'Microsoft.Network/virtualNetworks/subnets',
+        virtualNetworkName,
+        imageSubnetName
+      )
+      containerInstanceSubnetResourceId: !empty(imagecontainerInstanceSubnetName)
+        ? resourceId(
+            subscription().subscriptionId,
+            resourceGroupName,
+            'Microsoft.Network/virtualNetworks/subnets',
+            virtualNetworkName,
+            imagecontainerInstanceSubnetName
+          )
+        : null
+    }
     location: location
     stagingResourceGroupResourceId: !empty(imageTemplateResourceGroupName)
       ? subscriptionResourceId(
@@ -487,7 +514,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   dependsOn: [
     storageAccount_upload
     imageMSI_rg_rbac
-    rg
+    // rg
     imageMSI
     azureComputeGallery
     vnet
@@ -514,7 +541,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
     }
     enableTelemetry: enableTelemetry
     scriptContent: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')
-      ? imageTemplate.outputs.runThisCommand
+      ? 'Set-AzContext -Subscription ${subscription().subscriptionId }; ${imageTemplate.outputs.runThisCommand }'
       : '' // Requires condition als Bicep will otherwise try to resolve the null reference
     timeout: 'PT30M'
     cleanupPreference: 'Always'
@@ -539,10 +566,10 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
   }
   dependsOn: [
     // Always required
-    imageTemplate
+    // imageTemplate
     // Conditionally required
-    rg
-    dsMsi
+    // rg
+    // dsMsi
     dsStorageAccount
     storageAccount_upload
     vnet
@@ -567,7 +594,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.1' 
       ]
     }
     scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/Wait-ForImageBuild.ps1')
-    arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}"'
+    arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}" -SubscriptionId "${subscription().subscriptionId}"'
     timeout: waitForImageBuildTimeout
     cleanupPreference: 'Always'
     location: location
@@ -590,10 +617,10 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.1' 
   }
   dependsOn: [
     imageTemplate_trigger
-    rg
+    // rg
     vnet
     dsStorageAccount
-    dsMsi
+    // dsMsi
   ]
 }
 

@@ -6,7 +6,7 @@ param msiResourceId string
 @description('Required. Then role definition ID of the role to assign.')
 param roleDefinitionId string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
   name: last(split(msiResourceId, '/'))
   scope: resourceGroup(split(msiResourceId, '/')[2], split(msiResourceId, '/')[4])
 }
