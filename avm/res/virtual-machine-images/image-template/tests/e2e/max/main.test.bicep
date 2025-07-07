@@ -104,7 +104,6 @@ module testDeployment '../../../main.bicep' = {
     buildTimeoutInMinutes: 60
     vnetConfig: {
       subnetResourceId: nestedDependencies.outputs.vmSubnetResourceId
-      containerInstanceSubnetResourceId: nestedDependencies.outputs.containerSubnetResourceId
       proxyVmSize: 'Standard_A1_v2'
     }
     osDiskSizeGB: 127

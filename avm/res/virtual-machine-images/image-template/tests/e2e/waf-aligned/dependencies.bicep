@@ -103,14 +103,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
       {
         name: vmSubnetName
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           privateLinkServiceNetworkPolicies: 'Disabled'
         }
       }
       {
         name: imageContainerInstanceSubnetName
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 2)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
           privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
           delegations: [
             {

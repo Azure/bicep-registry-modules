@@ -272,7 +272,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       '<managedIdentityResourceId>'
     ]
     vnetConfig: {
-      containerInstanceSubnetResourceId: '<containerInstanceSubnetResourceId>'
       proxyVmSize: 'Standard_A1_v2'
       subnetResourceId: '<subnetResourceId>'
     }
@@ -444,7 +443,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "vnetConfig": {
       "value": {
-        "containerInstanceSubnetResourceId": "<containerInstanceSubnetResourceId>",
         "proxyVmSize": "Standard_A1_v2",
         "subnetResourceId": "<subnetResourceId>"
       }
@@ -574,7 +572,6 @@ param vmUserAssignedIdentities = [
   '<managedIdentityResourceId>'
 ]
 param vnetConfig = {
-  containerInstanceSubnetResourceId: '<containerInstanceSubnetResourceId>'
   proxyVmSize: 'Standard_A1_v2'
   subnetResourceId: '<subnetResourceId>'
 }
