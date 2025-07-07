@@ -39,6 +39,7 @@ body:
       options:
         - ""
         - "avm/ptn/aca-lza/hosting-environment"
+        - "avm/ptn/ai-ml/ai-foundry"
         - "avm/ptn/ai-platform/baseline"
         - "avm/ptn/alz/empty"
         - "avm/ptn/app-service-lza/hosting-environment"
@@ -73,6 +74,7 @@ body:
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
+        - "avm/ptn/sa/content-processing"
         - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/sa/multi-agent-custom-automation-engine"
         - "avm/ptn/security/security-center"
@@ -91,6 +93,7 @@ body:
         - "avm/res/automation/automation-account"
         - "avm/res/azure-stack-hci/cluster"
         - "avm/res/azure-stack-hci/logical-network"
+        - "avm/res/azure-stack-hci/marketplace-gallery-image"
         - "avm/res/azure-stack-hci/network-interface"
         - "avm/res/azure-stack-hci/virtual-hard-disk"
         - "avm/res/batch/batch-account"
