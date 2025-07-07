@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'All Week Schema'
+metadata description = 'This instance deploys the module using an All-Week Scheme for the manual scaling prediction configuration.'
 
 // ========== //
 // Parameters //
@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-dev-ops-infrastructure.pool-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mdpwaf'
+param serviceShort string = 'mdpwk'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -21,14 +21,6 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param azureDevOpsOrganizationName string = ''
 
-@description('Required. Name of the Azure DevOps WAF Project. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsProjectName\'.')
-@secure()
-param azureDevOpsProjectName string = ''
-
-@description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-DevOpsInfrastructureObjectID\'.')
-@secure()
-param devOpsInfrastructureObjectID string = ''
-
 // The Managed DevOps Pools resource is not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
@@ -36,6 +28,7 @@ var enforcedLocation = 'uksouth'
 // ============ //
 // Dependencies //
 // ============ //
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
@@ -47,9 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     devCenterName: 'dep-${namePrefix}-dc-${serviceShort}'
     devCenterProjectName: 'dep-${namePrefix}-dcp-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    devOpsInfrastructureObjectID: devOpsInfrastructureObjectID
   }
 }
 
@@ -64,12 +54,18 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
       agentProfile: {
         kind: 'Stateless'
         resourcePredictionsProfile: {
-          kind: 'Automatic'
-          predictionPreference: 'Balanced'
+          kind: 'Manual'
+        }
+        resourcePredictions: {
+          timeZone: 'UTC'
+          daysData: {
+            allWeekScheme: {
+              provisioningCount: 3
+            }
+          }
         }
       }
       concurrency: 1
@@ -77,26 +73,16 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           wellKnownImageName: 'windows-2022/latest'
-          ephemeralType: 'CacheDisk'
         }
       ]
-      fabricProfileSkuName: 'Standard_D2_v2'
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      fabricProfileSkuName: 'Standard_DS2_v2'
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [
           {
             url: 'https://dev.azure.com/${azureDevOpsOrganizationName}'
-            projects: [
-              azureDevOpsProjectName
-            ]
-            parallelism: 1
-            openAccess: false
           }
         ]
-        permissionProfile: {
-          kind: 'CreatorOnly'
-        }
       }
     }
   }
