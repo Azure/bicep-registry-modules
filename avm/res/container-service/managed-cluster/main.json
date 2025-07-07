@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3700231312893763462"
+      "templateHash": "6181717056890837435"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -918,6 +918,9 @@
     },
     "outboundPublicIPResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules."
@@ -925,6 +928,9 @@
     },
     "outboundPublicIPPrefixResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules."
