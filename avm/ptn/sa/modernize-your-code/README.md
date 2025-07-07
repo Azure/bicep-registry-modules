@@ -11,7 +11,6 @@ This module contains the resources required to deploy the [Modernize Your Code S
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -101,12 +100,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/modernize-your-code:<version>`.
 
-- [Default configuration with WAF aligned parameter values](#example-1-default-configuration-with-waf-aligned-parameter-values)
+- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
 - [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Default configuration with WAF aligned parameter values_
+### Example 1: _Default configuration with enterprise-grade parameter values_
 
-This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the WAF aligned configuration.
+This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the enterprise-grade configuration.
 
 
 <details>
@@ -118,7 +117,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
   name: 'modernizeYourCodeDeployment'
   params: {
     // Required parameters
-    solutionName: 'samycwaf001'
+    solutionName: 'samyceg001'
     // Non-required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     enableMonitoring: true
@@ -126,7 +125,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
     enableRedundancy: true
     enableScaling: true
     location: '<location>'
-    vmAdminPassword: 'a#aoWui1fgha%sjna2sdf%h'
+    vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
 }
@@ -146,7 +145,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
   "parameters": {
     // Required parameters
     "solutionName": {
-      "value": "samycwaf001"
+      "value": "samyceg001"
     },
     // Non-required parameters
     "azureAiServiceLocation": {
@@ -168,7 +167,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
       "value": "<location>"
     },
     "vmAdminPassword": {
-      "value": "a#aoWui1fgha%sjna2sdf%h"
+      "value": "<vmAdminPassword>"
     },
     "vmAdminUsername": {
       "value": "adminuser"
@@ -188,7 +187,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
 using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
 
 // Required parameters
-param solutionName = 'samycwaf001'
+param solutionName = 'samyceg001'
 // Non-required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 param enableMonitoring = true
@@ -196,7 +195,7 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScaling = true
 param location = '<location>'
-param vmAdminPassword = 'a#aoWui1fgha%sjna2sdf%h'
+param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
 
@@ -487,35 +486,7 @@ Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePri
 
 ## Outputs
 
-| Output | Type | Description |
-| :-- | :-- | :-- |
-| `resourceGroupName` | string | The resource group the resources were deployed into. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/app/container-app:0.17.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.10.2` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
-| `br/public:avm/res/compute/proximity-placement-group:0.3.2` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.15.0` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.6.0` | Remote reference |
-| `br/public:avm/res/insights/data-collection-rule:0.6.0` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.3.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network/subnet:0.1.2` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.22.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+_None_
 
 ## Data Collection
 

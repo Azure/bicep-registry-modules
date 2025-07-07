@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Default configuration with WAF aligned parameter values'
-metadata description = 'This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the WAF aligned configuration.'
+metadata name = 'Default configuration with enterprise-grade parameter values'
+metadata description = 'This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the enterprise-grade configuration.'
 
 // ========== //
 // Parameters //
@@ -9,17 +9,21 @@ metadata description = 'This instance deploys the [Modernize Your Code Solution 
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.moderncode-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.moderncode-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 #disable-next-line no-unused-params // overridden below to avoid the allowed location list validation
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'samycwaf'
+param serviceShort string = 'samyceg'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The password used for VM authentication.')
+@secure()
+param vmAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -53,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
       enablePrivateNetworking: true
       azureAiServiceLocation: enforcedLocation
       vmAdminUsername: 'adminuser'
-      vmAdminPassword: 'a#aoWui1fgha%sjna2sdf%h'
+      vmAdminPassword: vmAdminPassword
     }
   }
 ]
