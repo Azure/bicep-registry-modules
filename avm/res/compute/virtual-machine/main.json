@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "7550018186284349950"
+      "version": "0.35.1.17967",
+      "templateHash": "17675001299145418136"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2699,8 +2699,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3333482934245501039"
+              "version": "0.35.1.17967",
+              "templateHash": "8672724576831743385"
             }
           },
           "definitions": {
@@ -5610,8 +5610,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5814,8 +5814,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6021,8 +6021,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6223,8 +6223,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6430,8 +6430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6632,8 +6632,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6842,8 +6842,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7056,8 +7056,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7264,8 +7264,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7468,8 +7468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7681,8 +7681,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7890,8 +7890,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8064,7 +8064,7 @@
             "value": "[parameters('location')]"
           },
           "policyId": {
-            "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
+            "value": "[resourceId(parameters('backupVaultResourceGroup'), 'Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
           },
           "protectedItemType": {
             "value": "Microsoft.Compute/virtualMachines"
@@ -8085,8 +8085,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "7743264001610407207"
+              "version": "0.35.1.17967",
+              "templateHash": "1854213848782186224"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
