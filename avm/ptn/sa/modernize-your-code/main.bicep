@@ -160,7 +160,7 @@ module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (enableMonitoring || enablePrivateNetworking) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring || enablePrivateNetworking) {
   name: take('log-analytics-${resourcesName}-deployment', 64)
   params: {
     name: 'log-${resourcesName}'
@@ -168,10 +168,13 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     skuName: 'PerGB2018'
     dataRetention: 30
     diagnosticSettings: [{ useThisWorkspace: true }]
-
     features: {
       enableLogAccessUsingOnlyResourcePermissions: true
       disableLocalAuth: enablePrivateNetworking
+    }
+    replication: {
+      enabled: enableRedundancy && !empty(secondaryLocation)
+      location: enableRedundancy && !empty(secondaryLocation) ? secondaryLocation : ''
     }
     tags: allTags
     enableTelemetry: enableTelemetry

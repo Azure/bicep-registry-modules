@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5212987437925031849"
+      "templateHash": "14771713318741077579"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and enterprise-grade environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -748,6 +748,12 @@
               "disableLocalAuth": "[parameters('enablePrivateNetworking')]"
             }
           },
+          "replication": {
+            "value": {
+              "enabled": "[and(parameters('enableRedundancy'), not(empty(parameters('secondaryLocation'))))]",
+              "location": "[if(and(parameters('enableRedundancy'), not(empty(parameters('secondaryLocation')))), parameters('secondaryLocation'), '')]"
+            }
+          },
           "tags": {
             "value": "[variables('allTags')]"
           },
@@ -762,8 +768,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10549387460031423688"
+              "version": "0.36.1.42791",
+              "templateHash": "1749032521457140145"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace."
@@ -1202,10 +1208,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                    },
                     "description": "Optional. Tags to configure in the resource."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -1315,6 +1324,29 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Features of the workspace."
+              }
+            },
+            "workspaceReplicationType": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The location to which the workspace is replicated. Required if replication is enabled."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Replication properties of the workspace."
               }
             },
             "_1.columnType": {
@@ -1436,7 +1468,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1464,7 +1496,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1571,7 +1603,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1686,7 +1718,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.1"
                 }
               }
             }
@@ -1871,6 +1903,13 @@
                 "description": "Optional. The workspace features."
               }
             },
+            "replication": {
+              "$ref": "#/definitions/workspaceReplicationType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The workspace replication properties."
+              }
+            },
             "diagnosticSettings": {
               "type": "array",
               "items": {
@@ -1907,10 +1946,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -1950,7 +1992,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.11.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1968,7 +2010,7 @@
             },
             "logAnalyticsWorkspace": {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2025-02-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1990,7 +2032,8 @@
                 },
                 "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
                 "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
-                "forceCmkForQuery": "[parameters('forceCmkForQuery')]"
+                "forceCmkForQuery": "[parameters('forceCmkForQuery')]",
+                "replication": "[parameters('replication')]"
               },
               "identity": "[variables('identity')]"
             },
@@ -2116,8 +2159,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "2043978404537017691"
+                      "version": "0.36.1.42791",
+                      "templateHash": "1306323182548882150"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -2164,28 +2207,31 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2024-01-01",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                     },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "storageinsightconfig": {
                       "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2193,7 +2239,7 @@
                         "tables": "[parameters('tables')]",
                         "storageAccount": {
                           "id": "[parameters('storageAccountResourceId')]",
-                          "key": "[listKeys('storageAccount', '2022-09-01').keys[0].value]"
+                          "key": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
                         }
                       }
                     }
@@ -2261,8 +2307,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "15624488954958814427"
+                      "version": "0.36.1.42791",
+                      "templateHash": "5230241501765697269"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -2296,22 +2342,25 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/linkedServices@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "linkedService": {
                       "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2380,8 +2429,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "8250559094478594611"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10372135754202496594"
                     },
                     "name": "Log Analytics Workspace Linked Storage Accounts",
                     "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -2420,12 +2469,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "linkedStorageAccount": {
                       "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "properties": {
                         "storageAccountIds": "[parameters('storageAccountIds')]"
@@ -2513,8 +2562,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5149844663841891327"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9015459905306126128"
                     },
                     "name": "Log Analytics Workspace Saved Searches",
                     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -2552,10 +2601,13 @@
                     },
                     "tags": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01#properties/properties/properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "functionAlias": {
                       "type": "string",
@@ -2590,12 +2642,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "savedSearch": {
                       "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "properties": {
                         "etag": "[parameters('etag')]",
@@ -2676,8 +2728,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1695158270142527557"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8586520532175356447"
                     },
                     "name": "Log Analytics Workspace Data Exports",
                     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2759,12 +2811,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('workspaceName')]"
                     },
                     "dataExport": {
                       "type": "Microsoft.OperationalInsights/workspaces/dataExports",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
                       "properties": {
                         "destination": "[parameters('destination')]",
@@ -2869,8 +2921,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "3062149733782372246"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8336916453932906250"
                     },
                     "name": "Log Analytics Workspace Datasources",
                     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -2907,10 +2959,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "linkedResourceId": {
                       "type": "string",
@@ -2994,12 +3049,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "dataSource": {
                       "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "kind": "[parameters('kind')]",
                       "tags": "[parameters('tags')]",
@@ -3096,8 +3151,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5855172714151847939"
+                      "version": "0.36.1.42791",
+                      "templateHash": "315390662258960765"
                     },
                     "name": "Log Analytics Workspace Tables",
                     "description": "This module deploys a Log Analytics Workspace Table."
@@ -3343,7 +3398,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     }
@@ -3446,12 +3501,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('workspaceName')]"
                     },
                     "table": {
                       "type": "Microsoft.OperationalInsights/workspaces/tables",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
                       "properties": {
                         "plan": "[parameters('plan')]",
@@ -3552,8 +3607,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "1867653058254938383"
+                      "version": "0.32.4.45862",
+                      "templateHash": "10255889523646649592"
                     },
                     "name": "Operations Management Solutions",
                     "description": "This module deploys an Operations Management Solution.",
@@ -3628,7 +3683,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3663,10 +3718,7 @@
                         "promotionCode": "",
                         "product": "[parameters('plan').product]",
                         "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
-                      },
-                      "dependsOn": [
-                        "logAnalyticsWorkspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3740,7 +3792,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('logAnalyticsWorkspace', '2023-09-01', 'full').location]"
+              "value": "[reference('logAnalyticsWorkspace', '2025-02-01', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -3748,21 +3800,21 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2023-09-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2025-02-01', 'full'), 'identity'), 'principalId')]"
             },
             "primarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The primary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey]"
             },
             "secondarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The secondary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').secondarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').secondarySharedKey]"
             }
           }
         }
@@ -4550,7 +4602,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17083737113954436851"
+              "templateHash": "17224168661561147849"
             }
           },
           "parameters": {
@@ -4748,7 +4800,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "15074180739068106696"
+                      "templateHash": "12852929879967654667"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -9946,7 +9998,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "17881512426985651189"
+                              "templateHash": "4493923457434660627"
                             }
                           },
                           "definitions": {
@@ -13257,8 +13309,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.34.44.8038",
-                                      "templateHash": "1057634180502804806"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "2656369421652316938"
                                     },
                                     "name": "Virtual Machines",
                                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -15632,7 +15684,7 @@
                                       "condition": "[parameters('enableTelemetry')]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2024-03-01",
-                                      "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.15.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                                      "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.15.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                                       "properties": {
                                         "mode": "Incremental",
                                         "template": {
@@ -15951,8 +16003,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "3333482934245501039"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "2958498370438766793"
                                             }
                                           },
                                           "definitions": {
@@ -18862,8 +18914,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -19066,8 +19118,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -19273,8 +19325,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -19475,8 +19527,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -19682,8 +19734,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -19884,8 +19936,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -20094,8 +20146,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -20308,8 +20360,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -20516,8 +20568,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -20720,8 +20772,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -20933,8 +20985,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -21142,8 +21194,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "8482591295619883067"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "4125647230047670832"
                                             },
                                             "name": "Virtual Machine Extensions",
                                             "description": "This module deploys a Virtual Machine Extension."
@@ -21316,7 +21368,7 @@
                                             "value": "[parameters('location')]"
                                           },
                                           "policyId": {
-                                            "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
+                                            "value": "[resourceId(parameters('backupVaultResourceGroup'), 'Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
                                           },
                                           "protectedItemType": {
                                             "value": "Microsoft.Compute/virtualMachines"
@@ -21337,8 +21389,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.34.44.8038",
-                                              "templateHash": "7743264001610407207"
+                                              "version": "0.36.1.42791",
+                                              "templateHash": "7803302576034373529"
                                             },
                                             "name": "Recovery Service Vaults Protection Container Protected Item",
                                             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -25488,7 +25540,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3691309385038795387"
+              "templateHash": "2848883512262826999"
             }
           },
           "definitions": {
@@ -26004,7 +26056,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "9362101002862671096"
+                      "templateHash": "11337232077129027386"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account."
@@ -26952,16 +27004,22 @@
                       "defaultValue": "Standard_GRS",
                       "allowedValues": [
                         "Standard_LRS",
-                        "Standard_GRS",
-                        "Standard_RAGRS",
                         "Standard_ZRS",
+                        "Standard_GRS",
+                        "Standard_GZRS",
+                        "Standard_RAGRS",
+                        "Standard_RAGZRS",
+                        "StandardV2_LRS",
+                        "StandardV2_ZRS",
+                        "StandardV2_GRS",
+                        "StandardV2_GZRS",
                         "Premium_LRS",
                         "Premium_ZRS",
-                        "Standard_GZRS",
-                        "Standard_RAGZRS"
+                        "PremiumV2_LRS",
+                        "PremiumV2_ZRS"
                       ],
                       "metadata": {
-                        "description": "Optional. Storage Account Sku Name."
+                        "description": "Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage."
                       }
                     },
                     "accessTier": {
@@ -27122,7 +27180,7 @@
                     },
                     "enableHierarchicalNamespace": {
                       "type": "bool",
-                      "defaultValue": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true."
                       }
@@ -27319,7 +27377,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.22.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -27364,7 +27422,7 @@
                       },
                       "identity": "[variables('identity')]",
                       "tags": "[parameters('tags')]",
-                      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isHnsEnabled', parameters('enableHierarchicalNamespace'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject())))]",
+                      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject()), if(not(equals(parameters('enableHierarchicalNamespace'), null())), createObject('isHnsEnabled', parameters('enableHierarchicalNamespace')), createObject())))]",
                       "dependsOn": [
                         "cMKKeyVault",
                         "cMKKeyVault::cMKKey"
@@ -28570,7 +28628,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "15541518653203894847"
+                              "templateHash": "2268741299785261985"
                             },
                             "name": "Storage Account blob Services",
                             "description": "This module deploys a Storage Account Blob Service."
@@ -29041,7 +29099,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.36.1.42791",
-                                      "templateHash": "8060919573476762712"
+                                      "templateHash": "16916608328363874370"
                                     },
                                     "name": "Storage Account Blob Containers",
                                     "description": "This module deploys a Storage Account Blob Container."
@@ -29268,7 +29326,7 @@
                                       "condition": "[parameters('enableTelemetry')]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2024-03-01",
-                                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                                       "properties": {
                                         "mode": "Incremental",
                                         "template": {
@@ -29330,7 +29388,7 @@
                                       "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[parameters('immutabilityPolicyName')]",
+                                      "name": "[format('{0}-{1}', parameters('name'), parameters('immutabilityPolicyName'))]",
                                       "properties": {
                                         "expressionEvaluationOptions": {
                                           "scope": "inner"

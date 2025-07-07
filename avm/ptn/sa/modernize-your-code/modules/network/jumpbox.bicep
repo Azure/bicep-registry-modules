@@ -207,7 +207,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.15.1' = {
   name: take('${vmName}-jumpbox', 64)
   params: {
     name: vmName
