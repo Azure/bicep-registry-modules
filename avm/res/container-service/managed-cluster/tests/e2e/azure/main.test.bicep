@@ -61,7 +61,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-lawdiag-${serviceShort}-diag'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-lawdiag-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation
@@ -251,7 +251,6 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Reader assignment ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
             'acdd72a7-3385-48ef-bd42-f606fba81ae7'

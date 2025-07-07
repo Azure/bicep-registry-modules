@@ -68,10 +68,10 @@ param allocatedOutboundPorts int = 0
 param idleTimeoutInMinutes int = 30
 
 @description('Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules.')
-param outboundPublicIPResourceIds array?
+param outboundPublicIPResourceIds string[]?
 
 @description('Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules.')
-param outboundPublicIPPrefixResourceIds array?
+param outboundPublicIPPrefixResourceIds string[]?
 
 @description('Optional. The type of the managed inbound Load Balancer BackendPool.')
 @allowed([

@@ -537,7 +537,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -865,7 +864,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -1127,7 +1125,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   }
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -1519,7 +1516,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -1645,7 +1641,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -1757,7 +1752,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   }
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
