@@ -172,10 +172,6 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
       enableLogAccessUsingOnlyResourcePermissions: true
       disableLocalAuth: enablePrivateNetworking
     }
-    replication: {
-      enabled: enableRedundancy && !empty(secondaryLocation)
-      location: enableRedundancy && !empty(secondaryLocation) ? secondaryLocation : ''
-    }
     tags: allTags
     enableTelemetry: enableTelemetry
   }
