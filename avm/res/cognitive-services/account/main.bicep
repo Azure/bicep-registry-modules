@@ -52,6 +52,7 @@ param kind string
   'S7'
   'S8'
   'S9'
+  'DC0'
 ])
 param sku string = 'S0'
 
@@ -134,6 +135,30 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. Enable/Disable project management feature for AI Foundry.')
 param allowProjectManagement bool?
+
+@description('Enable commitment plan for disconnected container for Neural TTS')
+param isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS bool = false
+
+@description('Commitment plan properties for disconnected container for Neural TTS')
+param commitmentPlanForDisconnectedContainerForNeuralTTS disconnectedContainerCommitmentPlanType?
+
+@description('Enable commitment plan for disconnected container for STT')
+param isCommitmentPlanForDisconnectedContainerEnabledForSTT bool = false
+
+@description('Commitment plan properties for disconnected container for STT')
+param commitmentPlanForDisconnectedContainerForSTT disconnectedContainerCommitmentPlanType?
+
+@description('Enable commitment plan for disconnected container for Custom STT')
+param isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT bool = false
+
+@description('Commitment plan properties for disconnected container for Custom STT')
+param commitmentPlanForDisconnectedContainerForCustomSTT disconnectedContainerCommitmentPlanType?
+
+@description('Enable commitment plan for disconnected container for Add-On')
+param isCommitmentPlanForDisconnectedContainerEnabledForAddOn bool = false
+
+@description('Commitment plan properties for disconnected container for Add-On')
+param commitmentPlanForDisconnectedContainerForAddOn disconnectedContainerCommitmentPlanType?
 
 var enableReferencedModulesTelemetry = false
 
@@ -358,7 +383,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
     migrationToken: migrationToken
     restore: restore
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
-    userOwnedStorage: userOwnedStorage
+    userOwnedStorage: !empty(userOwnedStorage) ? userOwnedStorage : null
     dynamicThrottlingEnabled: dynamicThrottlingEnabled
   }
 }
@@ -393,6 +418,37 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   }
   scope: cognitiveService
 }
+
+var disconnectedCommitmentPlans = [
+  {
+    name: 'DisconnectedContainer-NeuralTTS'
+    enabled: isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS
+    properties: commitmentPlanForDisconnectedContainerForNeuralTTS
+  }
+  {
+    name: 'DisconnectedContainer-STT'
+    enabled: isCommitmentPlanForDisconnectedContainerEnabledForSTT
+    properties: commitmentPlanForDisconnectedContainerForSTT
+  }
+  {
+    name: 'DisconnectedContainer-CustomSTT'
+    enabled: isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT
+    properties: commitmentPlanForDisconnectedContainerForCustomSTT
+  }
+  {
+    name: 'DisconnectedContainer-AddOn'
+    enabled: isCommitmentPlanForDisconnectedContainerEnabledForAddOn
+    properties: commitmentPlanForDisconnectedContainerForAddOn
+  }
+]
+
+resource disconnectedCommitmentPlansRes 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-04-01-preview' = [
+  for plan in disconnectedCommitmentPlans: if (plan.enabled && !empty(plan.properties)) {
+    parent: cognitiveService
+    name: plan.name
+    properties: plan.properties
+  }
+]
 
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -654,4 +710,22 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The name for the accessKey2 secret to create.')
   accessKey2Name: string?
+}
+
+@export()
+@description('The type for a disconnected container commitment plan.')
+type disconnectedContainerCommitmentPlanType = {
+  autoRenew: bool
+  current: {
+    count: int
+    tier: string
+  }
+  hostingModel: string
+  planType: string
+  // Optional properties
+  commitmentPlanGuid: string?
+  next: {
+    count: int
+    tier: string
+  }?
 }
