@@ -568,3 +568,6 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.17.0' = {
     enableTelemetry: enableTelemetry
   }
 }
+
+@description('The resource group the resources were deployed into.')
+output resourceGroupName string = resourceGroup().name

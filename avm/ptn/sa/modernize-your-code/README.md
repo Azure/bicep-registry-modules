@@ -486,7 +486,9 @@ Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePri
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Data Collection
 
