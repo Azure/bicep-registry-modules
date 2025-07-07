@@ -296,7 +296,7 @@ output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?princi
 // =============== //
 
 @export()
-@description('The type of an os profile.')
+@description('The type of an OS profile.')
 type osProfileType = {
   @description('Required. The logon type of the machine.')
   logonType: ('Interactive' | 'Service')
