@@ -14,11 +14,11 @@ param wafPolicyResourceId string
 @description('Required. Waf associations (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies?pivots=deployment-language-bicep#securitypolicywebapplicationfirewallassociation for details).')
 param associations associationsType[]
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource securityPolicies 'Microsoft.Cdn/profiles/securityPolicies@2024-02-01' = {
+resource securityPolicies 'Microsoft.Cdn/profiles/securityPolicies@2025-04-15' = {
   name: name
   parent: profile
   properties: {

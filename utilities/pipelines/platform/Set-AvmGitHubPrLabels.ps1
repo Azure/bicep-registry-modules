@@ -56,7 +56,7 @@ function Set-AvmGitHubPrLabels {
                 gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
                 # add team members as reviewers
                 $teamMembers | ForEach-Object {
-                    gh pr review $pr.url --add-reviewer $_ --repo $Repo
+                    gh pr edit $pr.url --add-reviewer $_ --repo $Repo
                 }
             }
 
