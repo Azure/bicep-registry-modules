@@ -26,11 +26,11 @@ param trafficRestorationTimeToHealedOrNewEndpointsInMinutes int = 10
 @description('Required. The list of origins within the origin group.')
 param origins array
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource originGroup 'Microsoft.Cdn/profiles/originGroups@2023-05-01' = {
+resource originGroup 'Microsoft.Cdn/profiles/originGroups@2025-04-15' = {
   name: name
   parent: profile
   properties: {

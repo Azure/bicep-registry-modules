@@ -37,7 +37,7 @@ param searchResults searchResultsType?
 @maxValue(2555)
 param totalRetentionInDays int = -1
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -86,11 +86,11 @@ var formattedRoleAssignments = [
 //   Deployments   //
 // =============== //
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
   name: workspaceName
 }
 
-resource table 'Microsoft.OperationalInsights/workspaces/tables@2023-09-01' = {
+resource table 'Microsoft.OperationalInsights/workspaces/tables@2025-02-01' = {
   parent: workspace
   name: name
   properties: {

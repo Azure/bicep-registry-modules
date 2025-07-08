@@ -28,15 +28,21 @@ param kind string = 'StorageV2'
 
 @allowed([
   'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
   'Standard_ZRS'
+  'Standard_GRS'
+  'Standard_GZRS'
+  'Standard_RAGRS'
+  'Standard_RAGZRS'
+  'StandardV2_LRS'
+  'StandardV2_ZRS'
+  'StandardV2_GRS'
+  'StandardV2_GZRS'
   'Premium_LRS'
   'Premium_ZRS'
-  'Standard_GZRS'
-  'Standard_RAGZRS'
+  'PremiumV2_LRS'
+  'PremiumV2_ZRS'
 ])
-@description('Optional. Storage Account Sku Name.')
+@description('Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.')
 param skuName string = 'Standard_GRS'
 
 @allowed([
@@ -122,7 +128,7 @@ param allowBlobPublicAccess bool = false
 param minimumTlsVersion string = 'TLS1_2'
 
 @description('Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true.')
-param enableHierarchicalNamespace bool = false
+param enableHierarchicalNamespace bool?
 
 @description('Optional. If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableSftp bool = false
@@ -422,7 +428,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
         }
       : null
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-    isHnsEnabled: enableHierarchicalNamespace
     isSftpEnabled: enableSftp
     isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
@@ -449,6 +454,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     ...(!empty(azureFilesIdentityBasedAuthentication)
       ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
       : {})
+    ...(enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {})
   }
 }
 

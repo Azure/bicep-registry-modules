@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3495431819795381783"
+      "templateHash": "13474977498121948861"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -32,6 +32,13 @@
             "description": "Optional. The weight added to routes learned from this BGP speaker."
           }
         },
+        "bgpPeeringAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses."
+          }
+        },
         "bgpPeeringAddresses": {
           "type": "array",
           "items": {
@@ -51,14 +58,14 @@
                 },
                 "nullable": true,
                 "metadata": {
-                  "description": "Optional. The custom BGP peering addresses."
+                  "description": "Optional. The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*)."
                 }
               }
             }
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. BGP peering addresses for this VPN Gateway."
+            "description": "Optional. BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress."
           }
         }
       },
@@ -818,7 +825,7 @@
       "$ref": "#/definitions/bgpSettingsType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. BGP settings details."
+        "description": "Optional. BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously."
       }
     },
     "enableBgpRouteTranslationForNat": {
@@ -867,6 +874,9 @@
       }
     }
   },
+  "variables": {
+    "finalBgpSettings": "[if(not(equals(parameters('bgpSettings'), null())), createObject('asn', parameters('bgpSettings').asn, 'peerWeight', tryGet(parameters('bgpSettings'), 'peerWeight'), 'bgpPeeringAddress', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), 'bgpPeeringAddresses', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null())), null())]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -895,7 +905,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "bgpSettings": "[parameters('bgpSettings')]",
+        "bgpSettings": "[variables('finalBgpSettings')]",
         "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
         "isRoutingPreferenceInternet": "[parameters('isRoutingPreferenceInternet')]",
         "vpnGatewayScaleUnit": "[parameters('vpnGatewayScaleUnit')]",
