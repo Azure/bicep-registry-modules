@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
-## 0.10.0
+## 0.9.1
 
 ### Changes
 
