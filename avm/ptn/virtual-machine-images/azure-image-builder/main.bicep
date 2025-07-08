@@ -185,7 +185,7 @@ module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == '
   params: {
     // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
     msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI.outputs.resourceId
+      ? imageMSI!.outputs.resourceId
       : ''
     roleDefinitionId: contributorRole.id
   }
@@ -201,7 +201,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.1' = if (
     roleAssignments: [
       {
         principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-          ? imageMSI.outputs.principalId
+          ? imageMSI!.outputs.principalId
           : ''
         roleDefinitionIdOrName: contributorRole.id
         principalType: 'ServicePrincipal'
@@ -301,7 +301,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
               // Allow Infra MSI to access storage account container to upload files - DO NOT REMOVE
               roleDefinitionIdOrName: 'Storage Blob Data Contributor'
               principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-                ? dsMsi.outputs.principalId
+                ? dsMsi!.outputs.principalId
                 : '' // Requires condition als Bicep will otherwise try to resolve the null reference
               principalType: 'ServicePrincipal'
             }
@@ -309,7 +309,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
               // Allow image MSI to access storage account container to read files - DO NOT REMOVE
               roleDefinitionIdOrName: 'Storage Blob Data Reader' // 'Storage Blob Data Reader'
               principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-                ? imageMSI.outputs.principalId
+                ? imageMSI!.outputs.principalId
                 : '' // Requires condition als Bicep will otherwise try to resolve the null reference
               principalType: 'ServicePrincipal'
             }
@@ -342,7 +342,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if 
         // ref: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep#access-private-virtual-network
         roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Privileged Contributor
         principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-          ? dsMsi.outputs.principalId
+          ? dsMsi!.outputs.principalId
           : '' // Requires condition als Bicep will otherwise try to resolve the null reference
         principalType: 'ServicePrincipal'
       }
@@ -507,8 +507,8 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
         roleDefinitionIdOrName: 'Contributor'
         // Allow deployment script to trigger image build. Use 'existing' reference if only part of solution is deployed
         principalId: (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')
-          ? dsMsi_existing.properties.principalId
-          : dsMsi.outputs.principalId
+          ? dsMsi_existing!.properties.principalId
+          : dsMsi!.outputs.principalId
         principalType: 'ServicePrincipal'
       }
     ]
@@ -528,7 +528,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
   name: '${deployment().name}-imageTemplate-trigger-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
-    name: '${imageTemplateDeploymentScriptName}-${formattedTime}-${(deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') ? imageTemplate.outputs.name : ''}' // Requires condition als Bicep will otherwise try to resolve the null reference
+    name: '${imageTemplateDeploymentScriptName}-${formattedTime}-${(deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') ? imageTemplate!.outputs.name : ''}' // Requires condition als Bicep will otherwise try to resolve the null reference
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
@@ -543,7 +543,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
     }
     enableTelemetry: enableTelemetry
     scriptContent: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')
-      ? 'Set-AzContext -Subscription ${subscription().subscriptionId }; ${imageTemplate.outputs.runThisCommand }'
+      ? 'Set-AzContext -Subscription ${subscription().subscriptionId }; ${imageTemplate!.outputs.runThisCommand }'
       : '' // Requires condition als Bicep will otherwise try to resolve the null reference
     timeout: 'PT30M'
     cleanupPreference: 'Always'
@@ -596,7 +596,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.1' 
       ]
     }
     scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/Wait-ForImageBuild.ps1')
-    arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}" -SubscriptionId "${subscription().subscriptionId}"'
+    arguments: ' -ImageTemplateName "${imageTemplate!.outputs.name}" -ResourceGroupName "${resourceGroupName}" -SubscriptionId "${subscription().subscriptionId}"'
     timeout: waitForImageBuildTimeout
     cleanupPreference: 'Always'
     location: location
