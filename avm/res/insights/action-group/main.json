@@ -232,6 +232,13 @@
         "description": "Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported."
       }
     },
+    "incidentReceivers": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of incident receivers that are part of this action group."
+      }
+    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -311,6 +318,7 @@
         "logicAppReceivers": "[parameters('logicAppReceivers')]",
         "azureFunctionReceivers": "[parameters('azureFunctionReceivers')]",
         "armRoleReceivers": "[parameters('armRoleReceivers')]"
+        "incidentReceivers": "[parameters('incidentReceivers')]"
       }
     },
     "actionGroup_lock": {

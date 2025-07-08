@@ -51,6 +51,9 @@ param azureFunctionReceivers array?
 @description('Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported.')
 param armRoleReceivers array?
 
+@description('Optional. The list of incident receivers that are part of this action group.')
+param incidentReceivers array?
+
 @description('Optional. Tags of the resource.')
 param tags object?
 
@@ -122,6 +125,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     logicAppReceivers: logicAppReceivers
     azureFunctionReceivers: azureFunctionReceivers
     armRoleReceivers: armRoleReceivers
+    incidentReceivers: incidentReceivers
   }
 }
 

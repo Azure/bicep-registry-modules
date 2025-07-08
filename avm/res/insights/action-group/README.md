@@ -242,6 +242,21 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
         }
       ]
     },
+    "incidentReceivers": {
+      "value": [
+        {
+          "connection": {
+            "id": "0",
+            "name": "MyConnectionName"
+          },
+          "incidentManagementService": "ServiceNow",
+          "mappings": {
+            "CustomProperty": "Allowed"
+          },
+          "name": "MyIncidentReceiver"
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -277,6 +292,19 @@ param emailReceivers = [
     emailAddress: 'test.user2@testcompany.com'
     name: 'TestUser2'
     useCommonAlertSchema: true
+  }
+]
+param incidentReceivers: [
+  {
+    connection: {
+      id: 'TestId',
+      name: 'TestConnectionName'
+    },
+    incidentManagementService: 'ServiceNow',
+    mappings: {
+      CustomProperty: 'CustomPropertyValue'
+    },
+    name: 'MyIncidentReceiver'
   }
 ]
 param location = 'global'
@@ -436,6 +464,7 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`voiceReceivers`](#parameter-voicereceivers) | array | The list of voice receivers that are part of this action group. |
 | [`webhookReceivers`](#parameter-webhookreceivers) | array | The list of webhook receivers that are part of this action group. |
+| [`incidentReceivers`](#parameter-incidentreceivers) | array | The list of incident receivers that are part of this action group. | 
 
 ### Parameter: `groupShortName`
 
@@ -694,6 +723,13 @@ The list of voice receivers that are part of this action group.
 ### Parameter: `webhookReceivers`
 
 The list of webhook receivers that are part of this action group.
+
+- Required: No
+- Type: array
+  
+### Parameter: `incidentReceivers`
+
+The list of incident receivers that are part of this action group.
 
 - Required: No
 - Type: array
