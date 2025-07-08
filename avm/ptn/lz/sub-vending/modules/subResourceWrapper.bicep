@@ -1735,6 +1735,36 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
   }
 ]
 
+module createAdditionalLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = [
+  for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks) && (!empty(vnet.?alternativeVwanHubResourceId ?? '') || !empty(virtualHubResourceIdChecked))) {
+    dependsOn: [
+      createResourceGroupForAdditionalLzNetworking
+      createAdditionalVnets
+    ]
+    scope: resourceGroup(
+      split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[2],
+      split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[4]
+    )
+    params: {
+      name: 'vhc-${vnet.name}-${substring(guid(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked), 0, 5)}'
+      virtualHubName: split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[8]
+      remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${vnet.resourceGroupName}/providers/Microsoft.Network/virtualNetworks/${vnet.name}'
+      enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
+      routingConfiguration: !vHubRoutingIntentEnabled
+        ? {
+            associatedRouteTable: {
+              id: virtualWanHubConnectionAssociatedRouteTable
+            }
+            propagatedRouteTables: {
+              ids: virtualWanHubConnectionPropogatedRouteTables
+              labels: virtualWanHubConnectionPropogatedLabels
+            }
+          }
+        : {}
+    }
+  }
+]
+
 // Mesh peering for additional VNets only
 module meshPeerAdditionalVnets 'peering.bicep' = [
   for (peering, i) in peeringCombinations: if (peerAllVirtualNetworks && !empty(additionalVirtualNetworks) && peering.sourceResourceGroupName != virtualNetworkResourceGroupName) {

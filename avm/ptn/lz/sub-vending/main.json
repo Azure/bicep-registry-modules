@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11683847175195525490"
+      "templateHash": "2566462571972383573"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -2135,7 +2135,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "11395742683372098680"
+              "templateHash": "3271616371178264641"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -47049,6 +47049,125 @@
                 "[format('createAdditonalNatGateway[{0}]', copyIndex())]",
                 "createBastionNsg",
                 "createLzRouteTable",
+                "createResourceGroupForAdditionalLzNetworking"
+              ]
+            },
+            "createAdditionalLzVirtualWanConnection": {
+              "copy": {
+                "name": "createAdditionalLzVirtualWanConnection",
+                "count": "[length(parameters('additionalVirtualNetworks'))]"
+              },
+              "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('additionalVirtualNetworks')))), or(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), ''))), not(empty(variables('virtualHubResourceIdChecked')))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('createAdditionalLzVirtualWanConnection-{0}-{1}', copyIndex(), uniqueString('createAdditionalLzVirtualWanConnection', deployment().name))]",
+              "subscriptionId": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[2]]",
+              "resourceGroup": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[4]]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[format('vhc-{0}-{1}', parameters('additionalVirtualNetworks')[copyIndex()].name, substring(guid(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked'))), 0, 5))]"
+                  },
+                  "virtualHubName": {
+                    "value": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[8]]"
+                  },
+                  "remoteVirtualNetworkId": {
+                    "value": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, parameters('additionalVirtualNetworks')[copyIndex()].name)]"
+                  },
+                  "enableInternetSecurity": {
+                    "value": "[parameters('virtualNetworkVwanEnableInternetSecurity')]"
+                  },
+                  "routingConfiguration": "[if(not(parameters('vHubRoutingIntentEnabled')), createObject('value', createObject('associatedRouteTable', createObject('id', variables('virtualWanHubConnectionAssociatedRouteTable')), 'propagatedRouteTables', createObject('ids', variables('virtualWanHubConnectionPropogatedRouteTables'), 'labels', variables('virtualWanHubConnectionPropogatedLabels')))), createObject('value', createObject()))]"
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "18339309058131370516"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The connection name."
+                      }
+                    },
+                    "virtualHubName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "enableInternetSecurity": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable internet security."
+                      }
+                    },
+                    "remoteVirtualNetworkId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the virtual network to link to."
+                      }
+                    },
+                    "routingConfiguration": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+                      "apiVersion": "2023-11-01",
+                      "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+                      "properties": {
+                        "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+                        "remoteVirtualNetwork": {
+                          "id": "[parameters('remoteVirtualNetworkId')]"
+                        },
+                        "routingConfiguration": "[if(not(empty(parameters('routingConfiguration'))), parameters('routingConfiguration'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the virtual hub connection was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the virtual hub connection."
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualHubs/hubVirtualNetworkConnections', parameters('virtualHubName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual hub connection."
+                      },
+                      "value": "[parameters('name')]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "createAdditionalVnets",
                 "createResourceGroupForAdditionalLzNetworking"
               ]
             },
