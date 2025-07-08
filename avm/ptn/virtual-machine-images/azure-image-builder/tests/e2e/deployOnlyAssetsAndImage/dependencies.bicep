@@ -61,21 +61,18 @@ resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' ex
 }
 
 // Resource Groups
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: location
 }
 
-// Always deployed as both an infra element & needed as a staging resource group for image building
-module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: '${deployment().name}-image-rg'
-  params: {
-    name: imageTemplateResourceGroupName
-    location: location
-  }
+resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: imageTemplateResourceGroupName
+  location: location
 }
 
 // User Assigned Identity (MSI)
+#disable-next-line use-recent-module-versions
 module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${deployment().name}-ds-msi'
   scope: rg
@@ -85,6 +82,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' =
   }
 }
 
+#disable-next-line use-recent-module-versions
 module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${deployment().name}-image-msi'
   scope: rg
@@ -105,6 +103,7 @@ resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // Azure Compute Gallery
+#disable-next-line use-recent-module-versions
 module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
   name: '${deployment().name}-acg'
   scope: rg
@@ -116,6 +115,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
 }
 
 // Image Template Virtual Network
+#disable-next-line use-recent-module-versions
 module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
   name: '${deployment().name}-vnet'
   scope: rg
@@ -154,6 +154,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
 }
 
 // Assets Storage Account
+#disable-next-line use-recent-module-versions
 module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
   name: '${deployment().name}-files-sa'
   scope: rg
@@ -190,6 +191,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
 }
 
 // Deployment scripts & their storage account
+#disable-next-line use-recent-module-versions
 module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
   name: '${deployment().name}-ds-sa'
   scope: rg
@@ -257,4 +259,4 @@ output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourc
 output imageManagedIdentityName string = imageMSI.outputs.name
 
 @description('The name of the Resource Group used by the Azure Image Builder.')
-output imageTemplateResourceGroupName string = imageTemplateRg.outputs.name
+output imageTemplateResourceGroupName string = imageTemplateRg.name

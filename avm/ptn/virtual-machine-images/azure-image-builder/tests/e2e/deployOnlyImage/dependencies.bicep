@@ -81,6 +81,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = {
 }
 
 // User Assigned Identity (MSI)
+#disable-next-line use-recent-module-versions
 module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: '${deployment().name}-ds-msi'
   scope: rg
@@ -90,6 +91,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' =
   }
 }
 
+#disable-next-line use-recent-module-versions
 module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: '${deployment().name}-image-msi'
   scope: rg
@@ -100,6 +102,7 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1
 }
 
 // MSI Subscription contributor assignment
+#disable-next-line use-recent-module-versions
 resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
   properties: {
@@ -110,6 +113,7 @@ resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // Azure Compute Gallery
+#disable-next-line use-recent-module-versions
 module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = {
   name: '${deployment().name}-acg'
   scope: rg
@@ -121,6 +125,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = {
 }
 
 // Image Template Virtual Network
+#disable-next-line use-recent-module-versions
 module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
   name: '${deployment().name}-vnet'
   scope: rg
@@ -159,6 +164,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
 }
 
 // Assets Storage Account
+#disable-next-line use-recent-module-versions
 module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: '${deployment().name}-files-sa'
   scope: rg
@@ -195,6 +201,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
 }
 
 // Deployment scripts & their storage account
+#disable-next-line use-recent-module-versions
 module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: '${deployment().name}-ds-sa'
   scope: rg
@@ -226,6 +233,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
 }
 
 // Upload storage account files
+#disable-next-line use-recent-module-versions
 module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
@@ -234,7 +242,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,
