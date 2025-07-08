@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7946895044875578031"
+      "templateHash": "10067883076016580906"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -410,7 +410,7 @@
       "type": "string",
       "defaultValue": "subnet-it-container",
       "metadata": {
-        "description": "Optional. The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds."
+        "description": "Optional. The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet)."
       }
     },
     "virtualNetworkSubnetAddressPrefix": {

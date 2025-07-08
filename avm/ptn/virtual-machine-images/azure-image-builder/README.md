@@ -1255,7 +1255,7 @@ param virtualNetworkName = '<virtualNetworkName>'
 | [`deploymentsToPerform`](#parameter-deploymentstoperform) | string | A parameter to control which deployments should be executed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`imagecontainerInstanceSubnetAddressPrefix`](#parameter-imagecontainerinstancesubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imagecontainerInstanceSubnetName` is not empty. |
-| [`imagecontainerInstanceSubnetName`](#parameter-imagecontainerinstancesubnetname) | string | The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. |
+| [`imagecontainerInstanceSubnetName`](#parameter-imagecontainerinstancesubnetname) | string | The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet). |
 | [`imageManagedIdentityName`](#parameter-imagemanagedidentityname) | string | The name of the Managed Identity used by the Azure Image Builder. |
 | [`imageSubnetName`](#parameter-imagesubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
 | [`imageTemplateCustomizationSteps`](#parameter-imagetemplatecustomizationsteps) | array | The customization steps to use for the Image Template. |
@@ -1701,7 +1701,7 @@ The address space of the Virtual Network Subnet used by the Azure Container Inst
 
 ### Parameter: `imagecontainerInstanceSubnetName`
 
-The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds.
+The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet).
 
 - Required: No
 - Type: string

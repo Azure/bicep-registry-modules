@@ -58,7 +58,7 @@ param virtualNetworkAddressPrefix string = '10.0.0.0/16'
 @description('Optional. The name of the Image Template Virtual Network Subnet to create.')
 param imageSubnetName string = 'subnet-it'
 
-@description('Optional. The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds.')
+@description('Optional. The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet).')
 param imagecontainerInstanceSubnetName string = 'subnet-it-container'
 
 @description('Optional. The address space of the Virtual Network Subnet.')
