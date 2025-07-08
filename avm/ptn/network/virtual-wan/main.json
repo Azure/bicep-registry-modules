@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15027207657798552130"
+      "templateHash": "17083103865585983918"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -6419,7 +6419,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17862080998442979884"
+              "templateHash": "6352606905449698216"
             },
             "name": "VPN Gateways",
             "description": "This module deploys a VPN Gateway."
@@ -6445,6 +6445,13 @@
                     "description": "Optional. The weight added to routes learned from this BGP speaker."
                   }
                 },
+                "bgpPeeringAddress": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses."
+                  }
+                },
                 "bgpPeeringAddresses": {
                   "type": "array",
                   "items": {
@@ -6464,14 +6471,14 @@
                         },
                         "nullable": true,
                         "metadata": {
-                          "description": "Optional. The custom BGP peering addresses."
+                          "description": "Optional. The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*)."
                         }
                       }
                     }
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. BGP peering addresses for this VPN Gateway."
+                    "description": "Optional. BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress."
                   }
                 }
               },
@@ -7231,7 +7238,7 @@
               "$ref": "#/definitions/bgpSettingsType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. BGP settings details."
+                "description": "Optional. BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously."
               }
             },
             "enableBgpRouteTranslationForNat": {
@@ -7280,12 +7287,15 @@
               }
             }
           },
+          "variables": {
+            "finalBgpSettings": "[if(not(equals(parameters('bgpSettings'), null())), createObject('asn', parameters('bgpSettings').asn, 'peerWeight', tryGet(parameters('bgpSettings'), 'peerWeight'), 'bgpPeeringAddress', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), 'bgpPeeringAddresses', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null())), null())]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-vpngateway.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.res.network-vpngateway.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7308,7 +7318,7 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "bgpSettings": "[parameters('bgpSettings')]",
+                "bgpSettings": "[variables('finalBgpSettings')]",
                 "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
                 "isRoutingPreferenceInternet": "[parameters('isRoutingPreferenceInternet')]",
                 "vpnGatewayScaleUnit": "[parameters('vpnGatewayScaleUnit')]",
@@ -8698,10 +8708,11 @@
     },
     "vpnServerConfigurationResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the VPN Server Configuration, if created. Returns an empty string if not deployed."
       },
-      "value": "[if(empty(reference('vpnServerConfiguration')), '', reference('vpnServerConfiguration').outputs.resourceId.value)]"
+      "value": "[if(coalesce(tryGet(tryGet(parameters('virtualWanParameters'), 'p2sVpnParameters'), 'createP2sVpnServerConfiguration'), false()), reference('vpnServerConfiguration').outputs.resourceId.value, null())]"
     }
   }
 }

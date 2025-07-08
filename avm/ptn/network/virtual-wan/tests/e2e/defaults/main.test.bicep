@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
         {
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: resourceLocation
-          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          hubName: 'dep-${namePrefix}-hub-${serviceShort}'
           deploySecureHub: false
           deployP2SVpnGateway: false
           deployExpressRouteGateway: false

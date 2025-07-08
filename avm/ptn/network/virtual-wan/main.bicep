@@ -122,7 +122,7 @@ module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.2' = [
       name: virtualHub.?p2sVpnParameters.?vpnGatewayName!
       location: virtualHubModule[i].outputs.location
       virtualHubResourceId: virtualHubModule[i].outputs.resourceId
-      vpnServerConfigurationResourceId: vpnServerConfiguration.outputs.resourceId
+      vpnServerConfigurationResourceId: vpnServerConfiguration!.outputs.resourceId
       associatedRouteTableName: virtualHub.?p2sVpnParameters.?vpnGatewayAssociatedRouteTable
       vpnGatewayScaleUnit: virtualHub.?p2sVpnParameters.?vpnGatewayScaleUnit
       vpnClientAddressPoolAddressPrefixes: virtualHub.?p2sVpnParameters.?vpnClientAddressPoolAddressPrefixes
@@ -142,7 +142,7 @@ module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.2' = [
   }
 ]
 
-module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.0' = [
+module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.1' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?deployS2SVpnGateway == true) {
     name: virtualHub.?s2sVpnParameters.?vpnGatewayName!
     params: {
@@ -226,7 +226,7 @@ output virtualHubs object[] = [
 ]
 
 @description('The resource ID of the VPN Server Configuration, if created. Returns an empty string if not deployed.')
-output vpnServerConfigurationResourceId string = empty(vpnServerConfiguration) ? '' : vpnServerConfiguration.outputs.resourceId
+output vpnServerConfigurationResourceId string? = (virtualWanParameters.?p2sVpnParameters.?createP2sVpnServerConfiguration ?? false) ? vpnServerConfiguration!.outputs.resourceId : null
 
 @description('Imports the VPN client IPsec policies type from the VPN server configuration module.')
 import { vpnClientIpsecPoliciesType } from 'br/public:avm/res/network/vpn-server-configuration:0.1.1'
