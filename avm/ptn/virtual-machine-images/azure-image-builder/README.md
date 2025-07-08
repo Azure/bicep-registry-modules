@@ -1091,7 +1091,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
     deploymentsToPerform: 'Only image'
-    imagecontainerInstanceSubnetName: '<imagecontainerInstanceSubnetName>'
+    imagecontainerInstanceSubnetName: ''
     imageManagedIdentityName: '<imageManagedIdentityName>'
     imageSubnetName: '<imageSubnetName>'
     imageTemplateCustomizationSteps: [
@@ -1154,7 +1154,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": "Only image"
     },
     "imagecontainerInstanceSubnetName": {
-      "value": "<imagecontainerInstanceSubnetName>"
+      "value": ""
     },
     "imageManagedIdentityName": {
       "value": "<imageManagedIdentityName>"
@@ -1213,7 +1213,7 @@ param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityNam
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
 param deploymentsToPerform = 'Only image'
-param imagecontainerInstanceSubnetName = '<imagecontainerInstanceSubnetName>'
+param imagecontainerInstanceSubnetName = ''
 param imageManagedIdentityName = '<imageManagedIdentityName>'
 param imageSubnetName = '<imageSubnetName>'
 param imageTemplateCustomizationSteps = [
