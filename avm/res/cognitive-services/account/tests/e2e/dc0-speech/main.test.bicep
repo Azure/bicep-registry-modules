@@ -63,6 +63,11 @@ module speechDeployment '../../../main.bicep' = {
     customerManagedKey: null
     managedIdentities: null
     secretsExportConfiguration: null
-    networkAcls: null
+    disableLocalAuth: false
+    networkAcls: {
+      defaultAction: 'Allow'
+      ipRules: []
+      virtualNetworkRules: []
+    }
   }
 }

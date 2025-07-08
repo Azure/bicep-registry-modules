@@ -136,28 +136,28 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. Enable/Disable project management feature for AI Foundry.')
 param allowProjectManagement bool?
 
-@description('Enable commitment plan for disconnected container for Neural TTS')
+@description('Optional. Enable commitment plan for disconnected container for Neural TTS')
 param isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS bool = false
 
-@description('Commitment plan properties for disconnected container for Neural TTS')
+@description('Optional. Commitment plan properties for disconnected container for Neural TTS')
 param commitmentPlanForDisconnectedContainerForNeuralTTS disconnectedContainerCommitmentPlanType?
 
-@description('Enable commitment plan for disconnected container for STT')
+@description('Optional. Enable commitment plan for disconnected container for STT')
 param isCommitmentPlanForDisconnectedContainerEnabledForSTT bool = false
 
-@description('Commitment plan properties for disconnected container for STT')
+@description('Optional. Commitment plan properties for disconnected container for STT')
 param commitmentPlanForDisconnectedContainerForSTT disconnectedContainerCommitmentPlanType?
 
-@description('Enable commitment plan for disconnected container for Custom STT')
+@description('Optional. Enable commitment plan for disconnected container for Custom STT')
 param isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT bool = false
 
-@description('Commitment plan properties for disconnected container for Custom STT')
+@description('Optional. Commitment plan properties for disconnected container for Custom STT')
 param commitmentPlanForDisconnectedContainerForCustomSTT disconnectedContainerCommitmentPlanType?
 
-@description('Enable commitment plan for disconnected container for Add-On')
+@description('Optional. Enable commitment plan for disconnected container for Add-On')
 param isCommitmentPlanForDisconnectedContainerEnabledForAddOn bool = false
 
-@description('Commitment plan properties for disconnected container for Add-On')
+@description('Optional. Commitment plan properties for disconnected container for Add-On')
 param commitmentPlanForDisconnectedContainerForAddOn disconnectedContainerCommitmentPlanType?
 
 var enableReferencedModulesTelemetry = false
@@ -715,17 +715,33 @@ type secretsExportConfigurationType = {
 @export()
 @description('The type for a disconnected container commitment plan.')
 type disconnectedContainerCommitmentPlanType = {
+  @description('Required. Whether the plan should auto-renew at the end of the current commitment period.')
   autoRenew: bool
+
+  @description('Required. The current commitment configuration.')
   current: {
+    @description('Required. The number of committed instances (e.g., number of containers or cores).')
     count: int
+
+    @description('Required. The tier of the commitment plan (e.g., T1, T2).')
     tier: string
   }
+
+  @description('Required. The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer".')
   hostingModel: string
+
+  @description('Required. The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).')
   planType: string
-  // Optional properties
+
+  @description('Optional. The unique identifier of an existing commitment plan to update. Set to null to create a new plan.')
   commitmentPlanGuid: string?
+
+  @description('Optional. The configuration of the next commitment period, if scheduled.')
   next: {
+    @description('Required. The number of committed instances for the next period.')
     count: int
+
+    @description('Required. The tier for the next commitment period.')
     tier: string
   }?
 }
