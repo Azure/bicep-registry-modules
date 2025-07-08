@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
         virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
         location: resourceLocation
         allowBranchToBranchTraffic: true
-        allowVnetToVnetTraffic: true
         type: 'Standard'
         p2sVpnParameters: {
           createP2sVpnServerConfiguration: true

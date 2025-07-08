@@ -56,12 +56,12 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: 'eastus'
-          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          hubLocation: resourceLocation
+          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           deploySecureHub: true
           secureHubParameters: {
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-${resourceLocation}-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
             routingIntent: {

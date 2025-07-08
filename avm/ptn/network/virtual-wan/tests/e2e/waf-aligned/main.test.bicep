@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
         {
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: resourceLocation
-          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           deploySecureHub: false
           deployP2SVpnGateway: false
           deployExpressRouteGateway: false
