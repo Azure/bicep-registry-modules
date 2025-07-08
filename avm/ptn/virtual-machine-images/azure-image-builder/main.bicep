@@ -482,15 +482,17 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
         virtualNetworkName,
         imageSubnetName
       )
-      containerInstanceSubnetResourceId: !empty(imagecontainerInstanceSubnetName)
-        ? resourceId(
-            subscription().subscriptionId,
-            resourceGroupName,
-            'Microsoft.Network/virtualNetworks/subnets',
-            virtualNetworkName,
-            imagecontainerInstanceSubnetName
-          )
-        : null
+      ...(!empty(imagecontainerInstanceSubnetName)
+        ? {
+            containerInstanceSubnetResourceId: resourceId(
+              subscription().subscriptionId,
+              resourceGroupName,
+              'Microsoft.Network/virtualNetworks/subnets',
+              virtualNetworkName,
+              imagecontainerInstanceSubnetName
+            )
+          }
+        : {})
     }
     location: location
     stagingResourceGroupResourceId: !empty(imageTemplateResourceGroupName)

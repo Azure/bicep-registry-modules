@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "9444868318016810414"
+      "version": "0.36.177.2456",
+      "templateHash": "7946895044875578031"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -1582,8 +1582,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1789971918118124678"
+              "version": "0.36.177.2456",
+              "templateHash": "18396812836772760929"
             }
           },
           "parameters": {
@@ -17775,10 +17775,7 @@
             ]
           },
           "vnetConfig": {
-            "value": {
-              "subnetResourceId": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imageSubnetName'))]",
-              "containerInstanceSubnetResourceId": "[if(not(empty(parameters('imagecontainerInstanceSubnetName'))), resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imagecontainerInstanceSubnetName')), null())]"
-            }
+            "value": "[shallowMerge(createArray(createObject('subnetResourceId', resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imageSubnetName'))), if(not(empty(parameters('imagecontainerInstanceSubnetName'))), createObject('containerInstanceSubnetResourceId', resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imagecontainerInstanceSubnetName'))), createObject())))]"
           },
           "location": {
             "value": "[parameters('location')]"
