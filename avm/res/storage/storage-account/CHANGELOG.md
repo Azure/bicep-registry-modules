@@ -12,6 +12,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Update the `immutabilityPolicy` module name to avoid deployment name conflicts
 
+## 0.23.0
+
+### Changes
+
+- Added additional SKU's to support v2 Filestorage
+
+### Breaking Changes
+
+- None
+
 ## 0.24.0
 
 ### Changes
@@ -23,15 +33,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Changed the default value for `enableHierarchicalNamespace` to `null` and changed its type from `bool` to nullable `bool`: `bool?`
   - **Only** if a non-null value is passed to the resource provider, allowing users to completely omitting the parameter
 
-## 0.23.0
-
-### Changes
-
-- Added additional SKU's to support v2 Filestorage
-
-### Breaking Changes
-
-- None
 
 ## 0.22.1
 
