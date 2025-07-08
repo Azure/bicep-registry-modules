@@ -21,7 +21,7 @@ param containerRegistryResourceGroupName string = ''
 @description('Optional. Enable admin user that have push / pull permission to the registry.')
 param acrAdminUserEnabled bool = false
 
-@description('Required. Existing Log Analytics Workspace name. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
+@description('Required. Existing Log Analytics Workspace name.')
 param logAnalyticsWorkspaceName string
 
 @description('Optional. Application Insights connection string.')

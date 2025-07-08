@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18175627472960089526"
+      "templateHash": "17979867207448517123"
     },
     "name": "avm/ptn/azd/container-apps-stack",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -55,7 +55,7 @@
     "logAnalyticsWorkspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Existing Log Analytics Workspace name. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
+        "description": "Required. Existing Log Analytics Workspace name."
       }
     },
     "appInsightsConnectionString": {

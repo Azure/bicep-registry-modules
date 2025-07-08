@@ -190,7 +190,7 @@ param zoneRedundant = true
 | :-- | :-- | :-- |
 | [`containerAppsEnvironmentName`](#parameter-containerappsenvironmentname) | string | Name of the Container Apps Managed Environment. |
 | [`containerRegistryName`](#parameter-containerregistryname) | string | Name of the Azure Container Registry. |
-| [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | Existing Log Analytics Workspace name. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
+| [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | Existing Log Analytics Workspace name. |
 
 **Conditional parameters**
 
@@ -234,7 +234,7 @@ Name of the Azure Container Registry.
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
-Existing Log Analytics Workspace name. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
+Existing Log Analytics Workspace name.
 
 - Required: Yes
 - Type: string
