@@ -71,6 +71,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
 }
 
 // Always deployed as both an infra element & needed as a staging resource group for image building
+#disable-next-line use-recent-module-versions
 module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = {
   name: '${deployment().name}-image-rg'
   params: {
@@ -80,7 +81,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = {
 }
 
 // User Assigned Identity (MSI)
-module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: '${deployment().name}-ds-msi'
   scope: rg
   params: {
@@ -89,7 +90,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' =
   }
 }
 
-module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: '${deployment().name}-image-msi'
   scope: rg
   params: {
@@ -109,7 +110,7 @@ resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -120,7 +121,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
+module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -138,8 +139,14 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
         ]
       }
       {
-        name: 'subnet-ds'
+        name: 'subnet-ci'
         addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+        privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
+      }
+      {
+        name: 'subnet-ds'
+        addressPrefix: cidrSubnet(addressPrefix, 24, 2)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
         serviceEndpoints: [
           'Microsoft.Storage'
@@ -152,7 +159,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
@@ -188,7 +195,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
 }
 
 // Deployment scripts & their storage account
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {
@@ -219,7 +226,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
 }
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.0' = {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -282,8 +289,11 @@ output deploymentScriptStorageAccountName string = dsStorageAccount.outputs.name
 @description('The name of the subnet used by the Azure Image Builder.')
 output imageSubnetName string = last(split(vnet.outputs.subnetResourceIds[0], '/'))
 
+@description('The name of the subnet used by the Container Instance of the AIB.')
+output containerInstanceSubnetName string = last(split(vnet.outputs.subnetResourceIds[1], '/'))
+
 @description('The name of the subnet used by the Deployment Scripts.')
-output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourceIds[1], '/'))
+output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourceIds[2], '/'))
 
 @description('The name of the User-Assigned-Identity used by the Azure Image Builder.')
 output imageManagedIdentityName string = imageMSI.outputs.name

@@ -740,6 +740,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
     deploymentsToPerform: 'Only assets & image'
+    imagecontainerInstanceSubnetName: '<imagecontainerInstanceSubnetName>'
     imageManagedIdentityName: '<imageManagedIdentityName>'
     imageSubnetName: '<imageSubnetName>'
     imageTemplateCustomizationSteps: [
@@ -813,6 +814,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "deploymentsToPerform": {
       "value": "Only assets & image"
     },
+    "imagecontainerInstanceSubnetName": {
+      "value": "<imagecontainerInstanceSubnetName>"
+    },
     "imageManagedIdentityName": {
       "value": "<imageManagedIdentityName>"
     },
@@ -880,6 +884,7 @@ param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityNam
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
 param deploymentsToPerform = 'Only assets & image'
+param imagecontainerInstanceSubnetName = '<imagecontainerInstanceSubnetName>'
 param imageManagedIdentityName = '<imageManagedIdentityName>'
 param imageSubnetName = '<imageSubnetName>'
 param imageTemplateCustomizationSteps = [
@@ -1086,6 +1091,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
     deploymentsToPerform: 'Only image'
+    imagecontainerInstanceSubnetName: '<imagecontainerInstanceSubnetName>'
     imageManagedIdentityName: '<imageManagedIdentityName>'
     imageSubnetName: '<imageSubnetName>'
     imageTemplateCustomizationSteps: [
@@ -1147,6 +1153,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "deploymentsToPerform": {
       "value": "Only image"
     },
+    "imagecontainerInstanceSubnetName": {
+      "value": "<imagecontainerInstanceSubnetName>"
+    },
     "imageManagedIdentityName": {
       "value": "<imageManagedIdentityName>"
     },
@@ -1204,6 +1213,7 @@ param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityNam
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
 param deploymentsToPerform = 'Only image'
+param imagecontainerInstanceSubnetName = '<imagecontainerInstanceSubnetName>'
 param imageManagedIdentityName = '<imageManagedIdentityName>'
 param imageSubnetName = '<imageSubnetName>'
 param imageTemplateCustomizationSteps = [

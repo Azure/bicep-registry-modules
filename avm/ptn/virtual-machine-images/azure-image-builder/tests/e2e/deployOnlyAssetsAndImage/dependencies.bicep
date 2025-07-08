@@ -134,8 +134,14 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
         ]
       }
       {
-        name: 'subnet-ds'
+        name: 'subnet-ci'
         addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+        privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
+      }
+      {
+        name: 'subnet-ds'
+        addressPrefix: cidrSubnet(addressPrefix, 24, 2)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
         serviceEndpoints: [
           'Microsoft.Storage'
@@ -241,8 +247,11 @@ output deploymentScriptStorageAccountName string = dsStorageAccount.outputs.name
 @description('The name of the subnet used by the Azure Image Builder.')
 output imageSubnetName string = last(split(vnet.outputs.subnetResourceIds[0], '/'))
 
+@description('The name of the subnet used by the Container Instance of the AIB.')
+output containerInstanceSubnetName string = last(split(vnet.outputs.subnetResourceIds[1], '/'))
+
 @description('The name of the subnet used by the Deployment Scripts.')
-output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourceIds[1], '/'))
+output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourceIds[2], '/'))
 
 @description('The name of the User-Assigned-Identity used by the Azure Image Builder.')
 output imageManagedIdentityName string = imageMSI.outputs.name
