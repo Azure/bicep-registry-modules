@@ -26,12 +26,12 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
 
-module wafPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.2.0' = {
+module wafPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.2' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-dep-waf-policy-${serviceShort}'
   params: {

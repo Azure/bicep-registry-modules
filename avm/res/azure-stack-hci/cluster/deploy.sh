@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLUSTER_AD_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -114,11 +114,11 @@ cat > "$PARAM_FILE" << EOF
     "useSharedKeyVault": {
       "value": $USE_SHARED_KEYVAULT_JSON
     },
-    "hciResourceProviderObjectId": {
-      "value": "$HCI_RESOURCE_PROVIDER_OBJECT_ID"
-    },
     "clusterName": {
       "value": "$CLUSTER_NAME"
+    },
+    "clusterADName": {
+      "value": "$CLUSTER_AD_NAME"
     },
     "operationType": {
       "value": "$OPERATION_TYPE"
