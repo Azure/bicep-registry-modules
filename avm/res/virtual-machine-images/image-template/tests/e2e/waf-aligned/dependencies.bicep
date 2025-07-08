@@ -13,6 +13,12 @@ param managedIdentityName string
 @description('Optional. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Optional. The name of the Image Virtual Network Subnet to create.')
+param vmSubnetName string = 'imageSubnet'
+
+@description('Optional. The name of the Deployment Script Virtual Network Subnet to create.')
+param imageContainerInstanceSubnetName string = 'containerSubnet'
+
 // Roles
 resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
@@ -24,20 +30,20 @@ resource managedIdentityOperatorRole 'Microsoft.Authorization/roleDefinitions@20
 }
 
 // Resources
-resource imageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource imageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
 var addressPrefix = '10.0.0.0/16'
 
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' = {
   name: galleryName
   location: location
   properties: {}
 }
 
-resource galleryImageDefinition 'Microsoft.Compute/galleries/images@2022-03-03' = {
+resource galleryImageDefinition 'Microsoft.Compute/galleries/images@2024-03-03' = {
   name: sigImageDefinitionName
   location: location
   parent: gallery
@@ -84,7 +90,7 @@ resource imageManagedIdentityOperatorRbac 'Microsoft.Authorization/roleAssignmen
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -95,10 +101,25 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     }
     subnets: [
       {
-        name: 'defaultSubnet'
+        name: vmSubnetName
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           privateLinkServiceNetworkPolicies: 'Disabled'
+        }
+      }
+      {
+        name: imageContainerInstanceSubnetName
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
+          delegations: [
+            {
+              name: 'Microsoft.ContainerInstance/containerGroups'
+              properties: {
+                serviceName: 'Microsoft.ContainerInstance/containerGroups'
+              }
+            }
+          ]
         }
       }
     ]
@@ -118,4 +139,7 @@ output managedIdentityName string = imageManagedIdentity.name
 output sigImageDefinitionId string = galleryImageDefinition.id
 
 @description('The subnet resource id of the defaultSubnet of the created Virtual Network.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+output vmSubnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The subnet resource id of the defaultSubnet of the created Virtual Network.')
+output containerSubnetResourceId string = virtualNetwork.properties.subnets[1].id

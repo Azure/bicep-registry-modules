@@ -65,8 +65,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       ]
     }
     name: 'vmiitmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -110,10 +108,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "name": {
       "value": "vmiitmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -149,8 +143,6 @@ param managedIdentities = {
   ]
 }
 param name = 'vmiitmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -257,7 +249,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     stagingResourceGroupResourceId: '<stagingResourceGroupResourceId>'
-    subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -280,6 +271,10 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     vmUserAssignedIdentities: [
       '<managedIdentityResourceId>'
     ]
+    vnetConfig: {
+      proxyVmSize: 'Standard_A1_v2'
+      subnetResourceId: '<subnetResourceId>'
+    }
   }
 }
 ```
@@ -416,9 +411,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     "stagingResourceGroupResourceId": {
       "value": "<stagingResourceGroupResourceId>"
     },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -448,6 +440,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": [
         "<managedIdentityResourceId>"
       ]
+    },
+    "vnetConfig": {
+      "value": {
+        "proxyVmSize": "Standard_A1_v2",
+        "subnetResourceId": "<subnetResourceId>"
+      }
     }
   }
 }
@@ -551,7 +549,6 @@ param roleAssignments = [
   }
 ]
 param stagingResourceGroupResourceId = '<stagingResourceGroupResourceId>'
-param subnetResourceId = '<subnetResourceId>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -574,6 +571,10 @@ param vmSize = 'Standard_D2s_v3'
 param vmUserAssignedIdentities = [
   '<managedIdentityResourceId>'
 ]
+param vnetConfig = {
+  proxyVmSize: 'Standard_A1_v2'
+  subnetResourceId: '<subnetResourceId>'
+}
 ```
 
 </details>
@@ -619,12 +620,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         type: 'WindowsRestart'
       }
     ]
-    location: '<location>'
-    subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    vnetConfig: {
+      containerInstanceSubnetResourceId: '<containerInstanceSubnetResourceId>'
+      subnetResourceId: '<subnetResourceId>'
     }
   }
 }
@@ -679,17 +682,17 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "vnetConfig": {
+      "value": {
+        "containerInstanceSubnetResourceId": "<containerInstanceSubnetResourceId>",
+        "subnetResourceId": "<subnetResourceId>"
       }
     }
   }
@@ -733,12 +736,14 @@ param customizationSteps = [
     type: 'WindowsRestart'
   }
 ]
-param location = '<location>'
-param subnetResourceId = '<subnetResourceId>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
+}
+param vnetConfig = {
+  containerInstanceSubnetResourceId: '<containerInstanceSubnetResourceId>'
+  subnetResourceId: '<subnetResourceId>'
 }
 ```
 
@@ -773,11 +778,11 @@ param tags = {
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`stagingResourceGroupResourceId`](#parameter-stagingresourcegroupresourceid) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`validationProcess`](#parameter-validationprocess) | object | Configuration options and list of validations to be performed on the resulting image. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VM. |
 | [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the 'managedIdentities' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM. |
+| [`vnetConfig`](#parameter-vnetconfig) | object | Optional configuration of the virtual network to use to deploy the build VM and validation VM in. Omit if no specific virtual network needs to be used. |
 
 **Generated parameters**
 
@@ -1302,13 +1307,6 @@ Resource ID of the staging resource group in the same subscription and location 
 - Required: No
 - Type: string
 
-### Parameter: `subnetResourceId`
-
-Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.
-
-- Required: No
-- Type: string
-
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -1465,6 +1463,42 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `vnetConfig`
+
+Optional configuration of the virtual network to use to deploy the build VM and validation VM in. Omit if no specific virtual network needs to be used.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerInstanceSubnetResourceId`](#parameter-vnetconfigcontainerinstancesubnetresourceid) | string | Resource id of a pre-existing subnet on which Azure Container Instance will be deployed for Isolated Builds. This field may be specified only if subnetResourceId is also specified and must be on the same Virtual Network as the subnet specified in subnetResourceId. |
+| [`proxyVmSize`](#parameter-vnetconfigproxyvmsize) | string | Size of the proxy virtual machine used to pass traffic to the build VM and validation VM. This must not be specified if containerInstanceSubnetResourceId is specified because no proxy virtual machine is deployed in that case. Omit or specify empty string to use the default (Standard_A1_v2). |
+| [`subnetResourceId`](#parameter-vnetconfigsubnetresourceid) | string | Resource id of a pre-existing subnet on which the build VM and validation VM will be deployed. |
+
+### Parameter: `vnetConfig.containerInstanceSubnetResourceId`
+
+Resource id of a pre-existing subnet on which Azure Container Instance will be deployed for Isolated Builds. This field may be specified only if subnetResourceId is also specified and must be on the same Virtual Network as the subnet specified in subnetResourceId.
+
+- Required: No
+- Type: string
+
+### Parameter: `vnetConfig.proxyVmSize`
+
+Size of the proxy virtual machine used to pass traffic to the build VM and validation VM. This must not be specified if containerInstanceSubnetResourceId is specified because no proxy virtual machine is deployed in that case. Omit or specify empty string to use the default (Standard_A1_v2).
+
+- Required: No
+- Type: string
+
+### Parameter: `vnetConfig.subnetResourceId`
+
+Resource id of a pre-existing subnet on which the build VM and validation VM will be deployed.
+
+- Required: No
+- Type: string
 
 ### Parameter: `baseTime`
 
