@@ -183,7 +183,7 @@ if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; th
             echo "❌ Failed to delete the validation resource. Please check permissions and try again."
             exit 1
         fi
-    elif [ "$DEPLOYMENT_MODE" = "Deploy" ] then
+    elif [ "$DEPLOYMENT_MODE" = "Deploy" ]; then
         # Check if deployment is successful
         if [ "$PROVISIONING_STATE" = "Succeeded" ]; then
             echo "✅ Deployment resource is in successful state. Skipping deployment."
