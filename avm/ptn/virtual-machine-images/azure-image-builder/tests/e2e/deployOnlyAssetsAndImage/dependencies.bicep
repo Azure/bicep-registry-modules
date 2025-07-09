@@ -215,7 +215,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
         {
           // Allow deployment script to use storage account for private networking of container instance
           action: 'Allow'
-          id: vnet.outputs.subnetResourceIds[1] // subnet-ds
+          id: vnet.outputs.subnetResourceIds[2] // subnet-ds
         }
       ]
     }
