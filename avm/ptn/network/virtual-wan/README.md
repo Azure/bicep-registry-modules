@@ -169,15 +169,15 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: true
         deploySecureHub: true
         expressRouteParameters: {
-          expressRouteGatewayName: 'dep-ergw-eastus-nvwanmax'
+          expressRouteGatewayName: '<expressRouteGatewayName>'
         }
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
-        hubName: 'dep-hub-eastus-nvwanmax'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
         hubRoutingPreference: 'ASPath'
         hubVirtualNetworkConnections: [
           {
-            name: 'dep-vnet1-eastus-nvwanmax'
+            name: '<name>'
             remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
           }
         ]
@@ -191,15 +191,15 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             '10.0.2.0/24'
           ]
           vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
-          vpnGatewayName: 'dep-hub-p2svpngw-eastus-nvwanmax'
+          vpnGatewayName: '<vpnGatewayName>'
           vpnGatewayScaleUnit: 1
         }
         s2sVpnParameters: {
-          vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
+          vpnGatewayName: '<vpnGatewayName>'
           vpnGatewayScaleUnit: 1
         }
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-eastus-nvwanmax'
+          azureFirewallName: '<azureFirewallName>'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -217,15 +217,15 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: true
         deploySecureHub: true
         expressRouteParameters: {
-          expressRouteGatewayName: 'dep-ergw-westus2-nvwanmax'
+          expressRouteGatewayName: '<expressRouteGatewayName>'
         }
         hubAddressPrefix: '10.0.1.0/24'
         hubLocation: 'westus2'
-        hubName: 'dep-hub-westus2-nvwanmax'
+        hubName: '<hubName>'
         hubRoutingPreference: 'ASPath'
         hubVirtualNetworkConnections: [
           {
-            name: 'dep-vnet2-westus2-nvwanmax'
+            name: '<name>'
             remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
           }
         ]
@@ -234,11 +234,17 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             asn: 65515
             bgpPeeringAddresses: [
               {
-                customBgpIpAddresses: []
+                customBgpIpAddresses: [
+                  '169.254.21.4'
+                  '169.254.21.5'
+                ]
                 ipconfigurationId: 'Instance0'
               }
               {
-                customBgpIpAddresses: []
+                customBgpIpAddresses: [
+                  '169.254.21.6'
+                  '169.254.21.7'
+                ]
                 ipconfigurationId: 'Instance1'
               }
             ]
@@ -263,11 +269,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               type: 'Dynamic'
             }
           ]
-          vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
+          vpnGatewayName: '<vpnGatewayName>'
           vpnGatewayScaleUnit: 1
         }
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-westus2-nvwanmax'
+          azureFirewallName: '<azureFirewallName>'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -280,7 +286,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     ]
     virtualWanParameters: {
       allowBranchToBranchTraffic: true
-      allowVnetToVnetTraffic: true
       location: '<location>'
       p2sVpnParameters: {
         aadAudience: '11111111-1234-4321-1234-111111111111'
@@ -322,15 +327,15 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": true,
           "deploySecureHub": true,
           "expressRouteParameters": {
-            "expressRouteGatewayName": "dep-ergw-eastus-nvwanmax"
+            "expressRouteGatewayName": "<expressRouteGatewayName>"
           },
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwanmax",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
           "hubRoutingPreference": "ASPath",
           "hubVirtualNetworkConnections": [
             {
-              "name": "dep-vnet1-eastus-nvwanmax",
+              "name": "<name>",
               "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
             }
           ],
@@ -344,15 +349,15 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "10.0.2.0/24"
             ],
             "vpnGatewayAssociatedRouteTable": "defaultRouteTable",
-            "vpnGatewayName": "dep-hub-p2svpngw-eastus-nvwanmax",
+            "vpnGatewayName": "<vpnGatewayName>",
             "vpnGatewayScaleUnit": 1
           },
           "s2sVpnParameters": {
-            "vpnGatewayName": "dep-s2svpngw-eastus-nvwanmax",
+            "vpnGatewayName": "<vpnGatewayName>",
             "vpnGatewayScaleUnit": 1
           },
           "secureHubParameters": {
-            "azureFirewallName": "dep-fw-eastus-nvwanmax",
+            "azureFirewallName": "<azureFirewallName>",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
@@ -370,15 +375,15 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": true,
           "deploySecureHub": true,
           "expressRouteParameters": {
-            "expressRouteGatewayName": "dep-ergw-westus2-nvwanmax"
+            "expressRouteGatewayName": "<expressRouteGatewayName>"
           },
           "hubAddressPrefix": "10.0.1.0/24",
           "hubLocation": "westus2",
-          "hubName": "dep-hub-westus2-nvwanmax",
+          "hubName": "<hubName>",
           "hubRoutingPreference": "ASPath",
           "hubVirtualNetworkConnections": [
             {
-              "name": "dep-vnet2-westus2-nvwanmax",
+              "name": "<name>",
               "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
             }
           ],
@@ -387,11 +392,17 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "asn": 65515,
               "bgpPeeringAddresses": [
                 {
-                  "customBgpIpAddresses": [],
+                  "customBgpIpAddresses": [
+                    "169.254.21.4",
+                    "169.254.21.5"
+                  ],
                   "ipconfigurationId": "Instance0"
                 },
                 {
-                  "customBgpIpAddresses": [],
+                  "customBgpIpAddresses": [
+                    "169.254.21.6",
+                    "169.254.21.7"
+                  ],
                   "ipconfigurationId": "Instance1"
                 }
               ]
@@ -416,11 +427,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
                 "type": "Dynamic"
               }
             ],
-            "vpnGatewayName": "dep-s2svpngw-westus2-nvwanmax",
+            "vpnGatewayName": "<vpnGatewayName>",
             "vpnGatewayScaleUnit": 1
           },
           "secureHubParameters": {
-            "azureFirewallName": "dep-fw-westus2-nvwanmax",
+            "azureFirewallName": "<azureFirewallName>",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
@@ -435,7 +446,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualWanParameters": {
       "value": {
         "allowBranchToBranchTraffic": true,
-        "allowVnetToVnetTraffic": true,
         "location": "<location>",
         "p2sVpnParameters": {
           "aadAudience": "11111111-1234-4321-1234-111111111111",
@@ -475,15 +485,15 @@ param virtualHubParameters = [
     deployS2SVpnGateway: true
     deploySecureHub: true
     expressRouteParameters: {
-      expressRouteGatewayName: 'dep-ergw-eastus-nvwanmax'
+      expressRouteGatewayName: '<expressRouteGatewayName>'
     }
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
-    hubName: 'dep-hub-eastus-nvwanmax'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
     hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
-        name: 'dep-vnet1-eastus-nvwanmax'
+        name: '<name>'
         remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
       }
     ]
@@ -497,15 +507,15 @@ param virtualHubParameters = [
         '10.0.2.0/24'
       ]
       vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
-      vpnGatewayName: 'dep-hub-p2svpngw-eastus-nvwanmax'
+      vpnGatewayName: '<vpnGatewayName>'
       vpnGatewayScaleUnit: 1
     }
     s2sVpnParameters: {
-      vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
+      vpnGatewayName: '<vpnGatewayName>'
       vpnGatewayScaleUnit: 1
     }
     secureHubParameters: {
-      azureFirewallName: 'dep-fw-eastus-nvwanmax'
+      azureFirewallName: '<azureFirewallName>'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -523,15 +533,15 @@ param virtualHubParameters = [
     deployS2SVpnGateway: true
     deploySecureHub: true
     expressRouteParameters: {
-      expressRouteGatewayName: 'dep-ergw-westus2-nvwanmax'
+      expressRouteGatewayName: '<expressRouteGatewayName>'
     }
     hubAddressPrefix: '10.0.1.0/24'
     hubLocation: 'westus2'
-    hubName: 'dep-hub-westus2-nvwanmax'
+    hubName: '<hubName>'
     hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
-        name: 'dep-vnet2-westus2-nvwanmax'
+        name: '<name>'
         remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
       }
     ]
@@ -540,11 +550,17 @@ param virtualHubParameters = [
         asn: 65515
         bgpPeeringAddresses: [
           {
-            customBgpIpAddresses: []
+            customBgpIpAddresses: [
+              '169.254.21.4'
+              '169.254.21.5'
+            ]
             ipconfigurationId: 'Instance0'
           }
           {
-            customBgpIpAddresses: []
+            customBgpIpAddresses: [
+              '169.254.21.6'
+              '169.254.21.7'
+            ]
             ipconfigurationId: 'Instance1'
           }
         ]
@@ -569,11 +585,11 @@ param virtualHubParameters = [
           type: 'Dynamic'
         }
       ]
-      vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
+      vpnGatewayName: '<vpnGatewayName>'
       vpnGatewayScaleUnit: 1
     }
     secureHubParameters: {
-      azureFirewallName: 'dep-fw-westus2-nvwanmax'
+      azureFirewallName: '<azureFirewallName>'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -586,7 +602,6 @@ param virtualHubParameters = [
 ]
 param virtualWanParameters = {
   allowBranchToBranchTraffic: true
-  allowVnetToVnetTraffic: true
   location: '<location>'
   p2sVpnParameters: {
     aadAudience: '11111111-1234-4321-1234-111111111111'
@@ -628,8 +643,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
-        hubName: 'dep-hub-eastus-nvwanmultihub'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
       }
       {
         deployExpressRouteGateway: false
@@ -637,8 +652,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: false
         hubAddressPrefix: '10.0.1.0/24'
-        hubLocation: 'westus2'
-        hubName: 'dep-hub-westus2-nvwanmultihub'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
       }
     ]
     virtualWanParameters: {
@@ -670,8 +685,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwanmultihub"
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>"
         },
         {
           "deployExpressRouteGateway": false,
@@ -679,8 +694,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": false,
           "hubAddressPrefix": "10.0.1.0/24",
-          "hubLocation": "westus2",
-          "hubName": "dep-hub-westus2-nvwanmultihub"
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>"
         }
       ]
     },
@@ -712,8 +727,8 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
-    hubName: 'dep-hub-eastus-nvwanmultihub'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
   }
   {
     deployExpressRouteGateway: false
@@ -721,8 +736,8 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: false
     hubAddressPrefix: '10.0.1.0/24'
-    hubLocation: 'westus2'
-    hubName: 'dep-hub-westus2-nvwanmultihub'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
   }
 ]
 param virtualWanParameters = {
@@ -755,10 +770,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: true
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
-        hubName: 'dep-hub-eastus-nvwanmultisechub'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
+          azureFirewallName: '<azureFirewallName>'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -774,10 +789,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: true
         hubAddressPrefix: '10.0.1.0/24'
-        hubLocation: 'westus2'
-        hubName: 'dep-hub-westus2-nvwanmultisechub'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-westus2-nvwanmultisechub'
+          azureFirewallName: '<azureFirewallName>'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -817,10 +832,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": true,
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwanmultisechub",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
           "secureHubParameters": {
-            "azureFirewallName": "dep-fw-eastus-nvwanmultisechub",
+            "azureFirewallName": "<azureFirewallName>",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
@@ -836,10 +851,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": true,
           "hubAddressPrefix": "10.0.1.0/24",
-          "hubLocation": "westus2",
-          "hubName": "dep-hub-westus2-nvwanmultisechub",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
           "secureHubParameters": {
-            "azureFirewallName": "dep-fw-westus2-nvwanmultisechub",
+            "azureFirewallName": "<azureFirewallName>",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
@@ -879,10 +894,10 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: true
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
-    hubName: 'dep-hub-eastus-nvwanmultisechub'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
     secureHubParameters: {
-      azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
+      azureFirewallName: '<azureFirewallName>'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -898,10 +913,10 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: true
     hubAddressPrefix: '10.0.1.0/24'
-    hubLocation: 'westus2'
-    hubName: 'dep-hub-westus2-nvwanmultisechub'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
     secureHubParameters: {
-      azureFirewallName: 'dep-fw-westus2-nvwanmultisechub'
+      azureFirewallName: '<azureFirewallName>'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -942,10 +957,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deployS2SVpnGateway: false
         deploySecureHub: true
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: 'eastus'
-        hubName: 'dep-hub-eastus-nvwansechub'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-eastus-nvwansechub'
+          azureFirewallName: '<azureFirewallName>'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -985,10 +1000,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deployS2SVpnGateway": false,
           "deploySecureHub": true,
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "eastus",
-          "hubName": "dep-hub-eastus-nvwansechub",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
           "secureHubParameters": {
-            "azureFirewallName": "dep-fw-eastus-nvwansechub",
+            "azureFirewallName": "<azureFirewallName>",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
@@ -1028,10 +1043,10 @@ param virtualHubParameters = [
     deployS2SVpnGateway: false
     deploySecureHub: true
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: 'eastus'
-    hubName: 'dep-hub-eastus-nvwansechub'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
     secureHubParameters: {
-      azureFirewallName: 'dep-fw-eastus-nvwansechub'
+      azureFirewallName: '<azureFirewallName>'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -1073,7 +1088,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         deploySecureHub: false
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
-        hubName: 'dep-hub-eastus-nvwanwaf'
+        hubName: '<hubName>'
       }
     ]
     virtualWanParameters: {
@@ -1106,7 +1121,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "deploySecureHub": false,
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "<hubLocation>",
-          "hubName": "dep-hub-eastus-nvwanwaf"
+          "hubName": "<hubName>"
         }
       ]
     },
@@ -1139,7 +1154,7 @@ param virtualHubParameters = [
     deploySecureHub: false
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: '<hubLocation>'
-    hubName: 'dep-hub-eastus-nvwanwaf'
+    hubName: '<hubName>'
   }
 ]
 param virtualWanParameters = {
