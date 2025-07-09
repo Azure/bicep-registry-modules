@@ -38,7 +38,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (n
 
 var nameFormatted = take(toLower(name), 60)
 
-module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
+module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = {
   name: take('${nameFormatted}-search-services-deployment', 64)
   // dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
@@ -75,7 +75,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                  privateDnsZoneResourceId: privateDnsZone!.outputs.resourceId
                 }
               ]
             }

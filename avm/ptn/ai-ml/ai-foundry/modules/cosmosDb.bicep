@@ -65,7 +65,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                  privateDnsZoneResourceId: privateDnsZone!.outputs.resourceId
                 }
               ]
             }

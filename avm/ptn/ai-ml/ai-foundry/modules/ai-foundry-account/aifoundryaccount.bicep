@@ -80,8 +80,8 @@ module aiServices 'service.bicep' = {
     virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
     privateDnsZonesResourceIds: networkIsolation
       ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
-          openAiPrivateDnsZone.outputs.resourceId
+          cognitiveServicesPrivateDnsZone!.outputs.resourceId
+          openAiPrivateDnsZone!.outputs.resourceId
         ]
       : []
 
@@ -122,7 +122,7 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
     virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
     privateDnsZonesResourceIds: networkIsolation
       ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
+          cognitiveServicesPrivateDnsZone!.outputs.resourceId
         ]
       : []
     tags: tags
@@ -137,5 +137,5 @@ output aiServicesSystemAssignedMIPrincipalId string = aiServices.outputs.?system
 
 output connections array = union(
   [aiServices.outputs.foundryConnection],
-  contentSafetyEnabled ? [contentSafety.outputs.foundryConnection] : []
+  contentSafetyEnabled ? [contentSafety!.outputs.foundryConnection] : []
 )

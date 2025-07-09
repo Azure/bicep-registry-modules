@@ -71,12 +71,12 @@ resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/
   parent: project
   properties: {
     category: 'AzureBlob'
-    target: storageAccount.properties.primaryEndpoints.blob
+    target: storageAccount!.properties.primaryEndpoints.blob
     authType: 'AAD'
     metadata: {
       ApiType: 'Azure'
       ResourceId: storageAccount.id
-      location: storageAccount.location
+      location: storageAccount!.location
       accountName: storageAccount.name
       containerName: projUploadsContainerName
     }
@@ -88,12 +88,12 @@ resource project_connection_azure_storage_sysdata 'Microsoft.CognitiveServices/a
   parent: project
   properties: {
     category: 'AzureBlob'
-    target: storageAccount.properties.primaryEndpoints.blob
+    target: storageAccount!.properties.primaryEndpoints.blob
     authType: 'AAD'
     metadata: {
       ApiType: 'Azure'
       ResourceId: storageAccount.id
-      location: storageAccount.location
+      location: storageAccount!.location
       accountName: storageAccount.name
       containerName: sysDataContainerName
     }
@@ -111,7 +111,7 @@ resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts
     metadata: {
       ApiType: 'Azure'
       ResourceId: aiSearchService.id
-      location: aiSearchService.location
+      location: aiSearchService!.location
     }
   }
 }
@@ -121,12 +121,12 @@ resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/proje
   parent: project
   properties: {
     category: 'CosmosDB'
-    target: cosmosDBAccount.properties.documentEndpoint
+    target: cosmosDBAccount!.properties.documentEndpoint
     authType: 'AAD'
     metadata: {
       ApiType: 'Azure'
       ResourceId: cosmosDBAccount.id
-      location: cosmosDBAccount.location
+      location: cosmosDBAccount!.location
     }
   }
 }

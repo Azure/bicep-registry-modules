@@ -51,9 +51,6 @@ param logAnalyticsWorkspaceResourceId string = ''
 @description('Optional. Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided.')
 param enableVmMonitoring bool = false
 
-@description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled. This is automatically set based on aiFoundryType.')
-var networkIsolation = toLower(aiFoundryType) == 'StandardPrivate'
-
 @allowed([
   'Basic'
   'StandardPublic'
@@ -71,11 +68,7 @@ param networkAcls object = {
   bypass: 'AzureServices' // ✅ Allows trusted Microsoft services
 }
 
-var defaultTags = {
-  'azd-env-name': name
-}
-var allTags = union(defaultTags, tags)
-
+var networkIsolation = toLower(aiFoundryType) == 'StandardPrivate'
 var resourceToken = substring(uniqueString(subscription().id, location, name), 0, 5)
 var servicesUsername = take(replace(vmAdminUsername, '.', ''), 20)
 
@@ -98,7 +91,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module network 'modules/virtualNetwork.bicep' = if (toLower(aiFoundryType) == 'standardprivate') {
+module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
   name: take('${name}-network-deployment', 64)
   params: {
     virtualNetworkName: toLower('vnet-${name}')
@@ -122,81 +115,91 @@ module network 'modules/virtualNetwork.bicep' = if (toLower(aiFoundryType) == 's
     natGatewayIdleTimeoutMins: 30
     allowedIpAddress: allowedIpAddress
     location: location
-    tags: allTags
+    tags: tags
   }
 }
 
 module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-keyvault-deployment', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [network]
   params: {
     name: 'kv${name}${resourceToken}'
     aiFoundryType: aiFoundryType
     location: location
     networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
+    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     userObjectId: userObjectId
     logAnalyticsWorkspaceResourceId: ''
     enableTelemetry: enableTelemetry
-    tags: allTags
+    tags: tags
   }
 }
 
 module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-container-registry-deployment', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [network]
   params: {
     name: 'cr${name}${resourceToken}'
     aiFoundryType: aiFoundryType
     location: location
     networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
+    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
-    tags: allTags
+    tags: tags
   }
 }
 
 module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   name: '${name}-cognitive-services-deployment'
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [network]
   params: {
     aiFoundryType: aiFoundryType
     name: name
     location: location
     networkIsolation: networkIsolation
     networkAcls: networkAcls
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
+    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     aiModelDeployments: aiModelDeployments
     userObjectId: userObjectId
     contentSafetyEnabled: contentSafetyEnabled
     enableTelemetry: enableTelemetry
-    tags: allTags
+    tags: tags
   }
 }
 
 module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-ai-search-deployment', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [network]
   params: {
     name: 'srch${name}${resourceToken}'
     location: location
     networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
+    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     userObjectId: userObjectId
     enableTelemetry: enableTelemetry
-    tags: allTags
+    tags: tags
   }
 }
 
 module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-storage-account-deployment', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [network]
   params: {
     aiFoundryType: aiFoundryType
     storageName: 'st${name}${resourceToken}'
     location: location
     networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
+    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
       empty(userObjectId)
@@ -217,44 +220,34 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
       ],
       [
         {
-          principalId: aiSearch.outputs.systemAssignedMIPrincipalId
+          principalId: aiSearch!.outputs.systemAssignedMIPrincipalId
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
       ]
     )
-    tags: allTags
+    tags: tags
   }
 }
 
 module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-cosmosdb-deployment', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [network]
   params: {
     name: 'cos${name}${resourceToken}'
     location: location
     networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetResourceId : ''
+    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     databases: cosmosDatabases
-    tags: allTags
+    tags: tags
   }
 }
 
-// Add the new FDP cognitive services module
 module project 'modules/aifoundryproject.bicep' = {
   name: take('${name}-project-deployment', 64)
-  params: {
-    aiFoundryType: aiFoundryType
-    cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
-    name: projectName
-    location: location
-    storageName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
-    aiServicesName: cognitiveServices.outputs.aiServicesName
-    aiSearchName: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
-    projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.projUploadsContainerName : ''
-    sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.sysDataContainerName : ''
-  }
   dependsOn: toLower(aiFoundryType) != 'basic'
     ? [
         storageAccount
@@ -262,6 +255,17 @@ module project 'modules/aifoundryproject.bicep' = {
         cosmosDb
       ]
     : []
+  params: {
+    aiFoundryType: aiFoundryType
+    cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb!.outputs.cosmosDBname : ''
+    name: projectName
+    location: location
+    storageName: toLower(aiFoundryType) != 'basic' ? storageAccount!.outputs.storageName : ''
+    aiServicesName: cognitiveServices.outputs.aiServicesName
+    aiSearchName: toLower(aiFoundryType) != 'basic' ? aiSearch!.outputs.searchName : ''
+    projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount!.outputs.projUploadsContainerName : ''
+    sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount!.outputs.sysDataContainerName : ''
+  }
 }
 
 // Only deploy the VM if we're doing a StandardPrivate deployment and have a valid password
@@ -273,8 +277,8 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     vmName: toLower('vm-${name}-jump')
     vmNicName: toLower('nic-vm-${name}-jump')
     vmSize: vmSize
-    vmSubnetResourceId: network.outputs.vmSubnetResourceId
-    storageAccountName: storageAccount.outputs.storageName
+    vmSubnetResourceId: network!.outputs.vmSubnetResourceId
+    storageAccountName: storageAccount!.outputs.storageName
     storageAccountResourceGroup: resourceGroup().name
     imagePublisher: 'MicrosoftWindowsServer'
     imageOffer: 'WindowsServer'
@@ -291,7 +295,7 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     enableMicrosoftEntraIdAuth: true
     userObjectId: userObjectId
     location: location
-    tags: allTags
+    tags: tags
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     enableMonitoring: enableVmMonitoring
   }
@@ -301,37 +305,41 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output azureKeyVaultName string = toLower(aiFoundryType) != 'basic' ? keyvault.outputs.name : ''
+output azureKeyVaultName string = toLower(aiFoundryType) != 'basic' ? keyvault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
 output azureAiServicesName string = cognitiveServices.outputs.aiServicesName
 
 @description('Name of the deployed Azure AI Search service.')
-output azureAiSearchName string = toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
+output azureAiSearchName string = toLower(aiFoundryType) != 'basic' ? aiSearch!.outputs.searchName : ''
 
 @description('Name of the deployed Azure AI Project.')
 output azureAiProjectName string = project.outputs.projectName
 
 @description('Name of the deployed Azure Bastion host.')
-output azureBastionName string = networkIsolation ? network.outputs.bastionName : ''
+output azureBastionName string = networkIsolation ? network!.outputs.bastionName : ''
 
 @description('Resource ID of the deployed Azure VM.')
-output azureVmResourceId string = shouldDeployVM ? virtualMachine.outputs.id : ''
+output azureVmResourceId string = shouldDeployVM ? virtualMachine!.outputs.id : ''
 
 @description('Username for the deployed Azure VM.')
 output azureVmUsername string = toLower(aiFoundryType) != 'basic' ? servicesUsername : ''
 
 @description('Name of the deployed Azure Container Registry.')
-output azureContainerRegistryName string = toLower(aiFoundryType) != 'basic' ? containerRegistry.outputs.name : ''
+output azureContainerRegistryName string = toLower(aiFoundryType) != 'basic'
+  ? containerRegistry.?outputs.name ?? ''
+  : ''
 
 @description('Name of the deployed Azure Storage Account.')
-output azureStorageAccountName string = toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
+output azureStorageAccountName string = toLower(aiFoundryType) != 'basic'
+  ? storageAccount.?outputs.storageName ?? ''
+  : ''
 
 @description('Name of the deployed Azure Virtual Network.')
-output azureVirtualNetworkName string = networkIsolation ? network.outputs.virtualNetworkName : ''
+output azureVirtualNetworkName string = networkIsolation ? network!.outputs.virtualNetworkName : ''
 
 @description('Name of the deployed Azure Virtual Network Subnet.')
-output azureVirtualNetworkSubnetName string = networkIsolation ? network.outputs.vmSubnetName : ''
+output azureVirtualNetworkSubnetName string = networkIsolation ? network!.outputs.vmSubnetName : ''
 
 @description('Name of the deployed Azure Cosmos DB account.')
-output azureCosmosAccountName string = toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
+output azureCosmosAccountName string = toLower(aiFoundryType) != 'basic' ? cosmosDb!.outputs.cosmosDBname : ''
