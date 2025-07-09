@@ -13,17 +13,14 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Specifies whether network isolation is enabled. This will create a private endpoint for the Key Vault and link the private DNS zone.')
-param networkIsolation bool = true
-
 @description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string
 
 @description('Resource ID of the Log Analytics workspace for diagnostic logs.')
 param logAnalyticsWorkspaceResourceId string = ''
 
-@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
-param aiFoundryType string
+@description('Optional. Specifies if the Key Vault should be deployed with private networking enabled. This will disable public access to the Key Vault and require all access to go through the private endpoint.')
+param networkIsolation bool = false
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -51,9 +48,9 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     networkAcls: {
-      defaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
+      defaultAction: networkIsolation ? 'Deny' : 'Allow'
     }
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true

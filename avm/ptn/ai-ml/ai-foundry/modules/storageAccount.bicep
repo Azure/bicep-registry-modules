@@ -22,9 +22,6 @@ param userObjectId string = deployer().objectId
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
-param aiFoundryType string
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -69,7 +66,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
     enableTelemetry: enableTelemetry
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     accessTier: 'Hot'
-    allowBlobPublicAccess: toLower(aiFoundryType) != 'standardprivate'
+    allowBlobPublicAccess: !networkIsolation
     allowSharedKeyAccess: false
     allowCrossTenantReplication: false
     blobServices: {
@@ -118,7 +115,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
     }
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
-      defaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
+      defaultAction: networkIsolation ? 'Deny' : 'Allow'
       bypass: 'AzureServices'
       // Optionally add ipRules or virtualNetworkRules here
     }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "15782660157951654682"
+      "templateHash": "8433943239855748911"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -426,10 +426,11 @@
     }
   },
   "variables": {
-    "networkIsolation": "[equals(toLower(parameters('aiFoundryType')), 'StandardPrivate')]",
+    "networkIsolation": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]",
+    "basicDeployment": "[equals(toLower(parameters('aiFoundryType')), 'basic')]",
     "resourceToken": "[substring(uniqueString(subscription().id, parameters('location'), parameters('name')), 0, 5)]",
     "servicesUsername": "[take(replace(parameters('vmAdminUsername'), '.', ''), 20)]",
-    "shouldDeployVM": "[and(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), greaterOrEquals(length(parameters('vmAdminPasswordOrKey')), 4))]"
+    "shouldDeployVM": "[and(variables('networkIsolation'), greaterOrEquals(length(parameters('vmAdminPasswordOrKey')), 4))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -1329,7 +1330,7 @@
       }
     },
     "keyvault": {
-      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+      "condition": "[not(variables('basicDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-keyvault-deployment', parameters('name')), 64)]",
@@ -1341,9 +1342,6 @@
         "parameters": {
           "name": {
             "value": "[format('kv{0}{1}', parameters('name'), variables('resourceToken'))]"
-          },
-          "aiFoundryType": {
-            "value": "[parameters('aiFoundryType')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1373,7 +1371,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "442459614801414993"
+              "templateHash": "15424366723295031675"
             }
           },
           "parameters": {
@@ -1408,13 +1406,6 @@
                 "description": "Resource ID of the subnet for the private endpoint."
               }
             },
-            "networkIsolation": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Specifies whether network isolation is enabled. This will create a private endpoint for the Key Vault and link the private DNS zone."
-              }
-            },
             "userObjectId": {
               "type": "string",
               "metadata": {
@@ -1428,10 +1419,11 @@
                 "description": "Resource ID of the Log Analytics workspace for diagnostic logs."
               }
             },
-            "aiFoundryType": {
-              "type": "string",
+            "networkIsolation": {
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
-                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
+                "description": "Optional. Specifies if the Key Vault should be deployed with private networking enabled. This will disable public access to the Key Vault and require all access to go through the private endpoint."
               }
             },
             "enableTelemetry": {
@@ -4632,10 +4624,10 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "publicNetworkAccess": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
                     "value": {
-                      "defaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), 'Deny', 'Allow')]"
+                      "defaultAction": "[if(parameters('networkIsolation'), 'Deny', 'Allow')]"
                     }
                   },
                   "enableVaultForDeployment": {
@@ -7977,7 +7969,7 @@
       ]
     },
     "containerRegistry": {
-      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+      "condition": "[not(variables('basicDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-container-registry-deployment', parameters('name')), 64)]",
@@ -7989,9 +7981,6 @@
         "parameters": {
           "name": {
             "value": "[format('cr{0}{1}', parameters('name'), variables('resourceToken'))]"
-          },
-          "aiFoundryType": {
-            "value": "[parameters('aiFoundryType')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -8015,7 +8004,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12362188043607659694"
+              "templateHash": "5996435237792672178"
             }
           },
           "parameters": {
@@ -8053,15 +8042,9 @@
             },
             "networkIsolation": {
               "type": "bool",
-              "defaultValue": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]",
+              "defaultValue": false,
               "metadata": {
-                "description": "Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone."
-              }
-            },
-            "aiFoundryType": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
+                "description": "Optional. Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone."
               }
             },
             "enableTelemetry": {
@@ -11281,9 +11264,9 @@
                   "trustPolicyStatus": {
                     "value": "enabled"
                   },
-                  "networkRuleSetDefaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
-                  "exportPolicyStatus": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
-                  "publicNetworkAccess": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "networkRuleSetDefaultAction": "[if(parameters('networkIsolation'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
+                  "exportPolicyStatus": "[if(parameters('networkIsolation'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
+                  "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "zoneRedundancy": {
                     "value": "Disabled"
                   },
@@ -14344,9 +14327,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "aiFoundryType": {
-            "value": "[parameters('aiFoundryType')]"
-          },
           "name": {
             "value": "[parameters('name')]"
           },
@@ -14385,7 +14365,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12851161367173343794"
+              "templateHash": "1151936951356976513"
             }
           },
           "definitions": {
@@ -14555,12 +14535,6 @@
               "type": "object",
               "metadata": {
                 "description": "Required. A collection of rules governing the accessibility from specific network locations."
-              }
-            },
-            "aiFoundryType": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             },
             "enableTelemetry": {
@@ -20925,7 +20899,7 @@
                   "networkIsolation": {
                     "value": "[parameters('networkIsolation')]"
                   },
-                  "networkAcls": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', parameters('networkAcls')), createObject('value', createObject('defaultAction', 'Allow', 'bypass', 'AzureServices')))]",
+                  "networkAcls": "[if(parameters('networkIsolation'), createObject('value', parameters('networkAcls')), createObject('value', createObject('defaultAction', 'Allow', 'bypass', 'AzureServices')))]",
                   "virtualNetworkSubnetResourceId": "[if(parameters('networkIsolation'), createObject('value', parameters('virtualNetworkSubnetResourceId')), createObject('value', ''))]",
                   "privateDnsZonesResourceIds": "[if(parameters('networkIsolation'), createObject('value', createArray(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value, reference('openAiPrivateDnsZone').outputs.resourceId.value)), createObject('value', createArray()))]",
                   "aiModelDeployments": {
@@ -26413,7 +26387,7 @@
       ]
     },
     "aiSearch": {
-      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+      "condition": "[not(variables('basicDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-ai-search-deployment', parameters('name')), 64)]",
@@ -31914,7 +31888,7 @@
       ]
     },
     "storageAccount": {
-      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+      "condition": "[not(variables('basicDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-storage-account-deployment', parameters('name')), 64)]",
@@ -31924,9 +31898,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "aiFoundryType": {
-            "value": "[parameters('aiFoundryType')]"
-          },
           "storageName": {
             "value": "[format('st{0}{1}', parameters('name'), variables('resourceToken'))]"
           },
@@ -31956,7 +31927,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16315597106280016964"
+              "templateHash": "18358436785079698743"
             }
           },
           "definitions": {
@@ -32090,12 +32061,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "aiFoundryType": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             },
             "enableTelemetry": {
@@ -38467,7 +38432,7 @@
                     "value": "Hot"
                   },
                   "allowBlobPublicAccess": {
-                    "value": "[not(equals(toLower(parameters('aiFoundryType')), 'standardprivate'))]"
+                    "value": "[not(parameters('networkIsolation'))]"
                   },
                   "allowSharedKeyAccess": {
                     "value": false
@@ -38526,7 +38491,7 @@
                   },
                   "networkAcls": {
                     "value": {
-                      "defaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), 'Deny', 'Allow')]",
+                      "defaultAction": "[if(parameters('networkIsolation'), 'Deny', 'Allow')]",
                       "bypass": "AzureServices"
                     }
                   },
@@ -44306,7 +44271,7 @@
       ]
     },
     "cosmosDb": {
-      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+      "condition": "[not(variables('basicDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-cosmosdb-deployment', parameters('name')), 64)]",
@@ -51680,23 +51645,23 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "aiFoundryType": {
-            "value": "[parameters('aiFoundryType')]"
+          "basicDeploymentOnly": {
+            "value": "[variables('basicDeployment')]"
           },
-          "cosmosDBName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('cosmosDb').outputs.cosmosDBname.value), createObject('value', ''))]",
+          "cosmosDBName": "[if(not(variables('basicDeployment')), createObject('value', reference('cosmosDb').outputs.cosmosDBname.value), createObject('value', ''))]",
           "name": {
             "value": "[parameters('projectName')]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
-          "storageName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
+          "storageName": "[if(not(variables('basicDeployment')), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
           "aiServicesName": {
             "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
           },
-          "aiSearchName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
-          "projUploadsContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('value', ''))]",
-          "sysDataContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.sysDataContainerName.value), createObject('value', ''))]"
+          "aiSearchName": "[if(not(variables('basicDeployment')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
+          "projUploadsContainerName": "[if(not(variables('basicDeployment')), createObject('value', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('value', ''))]",
+          "sysDataContainerName": "[if(not(variables('basicDeployment')), createObject('value', reference('storageAccount').outputs.sysDataContainerName.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -51705,7 +51670,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12112285806594014473"
+              "templateHash": "9675609833958926199"
             }
           },
           "parameters": {
@@ -51723,15 +51688,11 @@
                 "description": "Specifies the location for all the Azure resources. Defaults to the location of the resource group."
               }
             },
-            "aiFoundryType": {
-              "type": "string",
-              "allowedValues": [
-                "Basic",
-                "StandardPublic",
-                "StandardPrivate"
-              ],
+            "basicDeploymentOnly": {
+              "type": "bool",
+              "defaultValue": true,
               "metadata": {
-                "description": "Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
+                "description": "Optional. Specifies if the AI Foundry deployment should be basic only. If false, it will deploy the full AI Foundry project with all connections and capabilities and requires dependencies like Azure Storage, CosmosDB, and Azure Search Service."
               }
             },
             "cosmosDBName": {
@@ -51803,7 +51764,7 @@
               }
             },
             {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName'))))]",
+              "condition": "[and(not(parameters('basicDeploymentOnly')), not(empty(parameters('storageName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
@@ -51824,7 +51785,7 @@
               ]
             },
             {
-              "condition": "[and(and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
+              "condition": "[and(and(not(parameters('basicDeploymentOnly')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
@@ -51845,7 +51806,7 @@
               ]
             },
             {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('aiSearchName'))))]",
+              "condition": "[and(not(parameters('basicDeploymentOnly')), not(empty(parameters('aiSearchName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('aiSearchName'))]",
@@ -51865,7 +51826,7 @@
               ]
             },
             {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('cosmosDBName'))))]",
+              "condition": "[and(not(parameters('basicDeploymentOnly')), not(empty(parameters('cosmosDBName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
@@ -51884,7 +51845,7 @@
               ]
             },
             {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "condition": "[not(parameters('basicDeploymentOnly'))]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
@@ -51893,7 +51854,7 @@
               }
             },
             {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "condition": "[not(parameters('basicDeploymentOnly'))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
@@ -51922,7 +51883,7 @@
           "outputs": {
             "projectCapHost": {
               "type": "string",
-              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
+              "value": "[if(not(parameters('basicDeploymentOnly')), 'projectCapHost', '')]"
             },
             "projectId": {
               "type": "string",
@@ -52641,7 +52602,7 @@
       "metadata": {
         "description": "Name of the deployed Azure Key Vault."
       },
-      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('keyvault').outputs.name.value, '')]"
+      "value": "[if(not(variables('basicDeployment')), reference('keyvault').outputs.name.value, '')]"
     },
     "azureAiServicesName": {
       "type": "string",
@@ -52655,7 +52616,7 @@
       "metadata": {
         "description": "Name of the deployed Azure AI Search service."
       },
-      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('aiSearch').outputs.searchName.value, '')]"
+      "value": "[if(not(variables('basicDeployment')), reference('aiSearch').outputs.searchName.value, '')]"
     },
     "azureAiProjectName": {
       "type": "string",
@@ -52683,21 +52644,21 @@
       "metadata": {
         "description": "Username for the deployed Azure VM."
       },
-      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), variables('servicesUsername'), '')]"
+      "value": "[if(not(variables('basicDeployment')), variables('servicesUsername'), '')]"
     },
     "azureContainerRegistryName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Container Registry."
       },
-      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), coalesce(tryGet(if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('containerRegistry'), null()), 'outputs', 'name', 'value'), ''), '')]"
+      "value": "[if(not(variables('basicDeployment')), coalesce(tryGet(if(not(variables('basicDeployment')), reference('containerRegistry'), null()), 'outputs', 'name', 'value'), ''), '')]"
     },
     "azureStorageAccountName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Storage Account."
       },
-      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), coalesce(tryGet(if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('storageAccount'), null()), 'outputs', 'storageName', 'value'), ''), '')]"
+      "value": "[if(not(variables('basicDeployment')), coalesce(tryGet(if(not(variables('basicDeployment')), reference('storageAccount'), null()), 'outputs', 'storageName', 'value'), ''), '')]"
     },
     "azureVirtualNetworkName": {
       "type": "string",
@@ -52718,7 +52679,7 @@
       "metadata": {
         "description": "Name of the deployed Azure Cosmos DB account."
       },
-      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('cosmosDb').outputs.cosmosDBname.value, '')]"
+      "value": "[if(not(variables('basicDeployment')), reference('cosmosDb').outputs.cosmosDBname.value, '')]"
     }
   }
 }

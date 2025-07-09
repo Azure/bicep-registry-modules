@@ -29,9 +29,6 @@ param contentSafetyEnabled bool
 @description('Required. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object
 
-@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
-param aiFoundryType string
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -71,7 +68,7 @@ module aiServices 'service.bicep' = {
     kind: 'AIServices'
     category: 'AIServices'
     networkIsolation: networkIsolation
-    networkAcls: toLower(aiFoundryType) == 'standardprivate'
+    networkAcls: networkIsolation
       ? networkAcls
       : {
           defaultAction: 'Allow'

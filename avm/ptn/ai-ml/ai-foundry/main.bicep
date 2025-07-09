@@ -68,7 +68,8 @@ param networkAcls object = {
   bypass: 'AzureServices' // ✅ Allows trusted Microsoft services
 }
 
-var networkIsolation = toLower(aiFoundryType) == 'StandardPrivate'
+var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
+var basicDeployment = toLower(aiFoundryType) == 'basic'
 var resourceToken = substring(uniqueString(subscription().id, location, name), 0, 5)
 var servicesUsername = take(replace(vmAdminUsername, '.', ''), 20)
 
@@ -119,13 +120,12 @@ module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
   }
 }
 
-module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic') {
+module keyvault 'modules/keyvault.bicep' = if (!basicDeployment) {
   name: take('${name}-keyvault-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
     name: 'kv${name}${resourceToken}'
-    aiFoundryType: aiFoundryType
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -137,13 +137,12 @@ module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic'
   }
 }
 
-module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFoundryType) != 'basic') {
+module containerRegistry 'modules/containerRegistry.bicep' = if (!basicDeployment) {
   name: take('${name}-container-registry-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
     name: 'cr${name}${resourceToken}'
-    aiFoundryType: aiFoundryType
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -158,7 +157,6 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    aiFoundryType: aiFoundryType
     name: name
     location: location
     networkIsolation: networkIsolation
@@ -173,7 +171,7 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   }
 }
 
-module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic') {
+module aiSearch 'modules/aisearch.bicep' = if (!basicDeployment) {
   name: take('${name}-ai-search-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
@@ -189,12 +187,11 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
   }
 }
 
-module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType) != 'basic') {
+module storageAccount 'modules/storageAccount.bicep' = if (!basicDeployment) {
   name: take('${name}-storage-account-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    aiFoundryType: aiFoundryType
     storageName: 'st${name}${resourceToken}'
     location: location
     networkIsolation: networkIsolation
@@ -230,7 +227,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
   }
 }
 
-module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
+module cosmosDb 'modules/cosmosDb.bicep' = if (!basicDeployment) {
   name: take('${name}-cosmosdb-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
@@ -248,7 +245,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
 
 module project 'modules/aifoundryproject.bicep' = {
   name: take('${name}-project-deployment', 64)
-  dependsOn: toLower(aiFoundryType) != 'basic'
+  dependsOn: !basicDeployment
     ? [
         storageAccount
         aiSearch
@@ -256,20 +253,20 @@ module project 'modules/aifoundryproject.bicep' = {
       ]
     : []
   params: {
-    aiFoundryType: aiFoundryType
-    cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb!.outputs.cosmosDBname : ''
+    basicDeploymentOnly: basicDeployment
+    cosmosDBName: !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''
     name: projectName
     location: location
-    storageName: toLower(aiFoundryType) != 'basic' ? storageAccount!.outputs.storageName : ''
+    storageName: !basicDeployment ? storageAccount!.outputs.storageName : ''
     aiServicesName: cognitiveServices.outputs.aiServicesName
-    aiSearchName: toLower(aiFoundryType) != 'basic' ? aiSearch!.outputs.searchName : ''
-    projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount!.outputs.projUploadsContainerName : ''
-    sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount!.outputs.sysDataContainerName : ''
+    aiSearchName: !basicDeployment ? aiSearch!.outputs.searchName : ''
+    projUploadsContainerName: !basicDeployment ? storageAccount!.outputs.projUploadsContainerName : ''
+    sysDataContainerName: !basicDeployment ? storageAccount!.outputs.sysDataContainerName : ''
   }
 }
 
 // Only deploy the VM if we're doing a StandardPrivate deployment and have a valid password
-var shouldDeployVM = (toLower(aiFoundryType) == 'standardprivate') && (length(vmAdminPasswordOrKey) >= 4)
+var shouldDeployVM = networkIsolation && (length(vmAdminPasswordOrKey) >= 4)
 
 module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
   name: take('${name}-virtual-machine-deployment', 64)
@@ -305,13 +302,13 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output azureKeyVaultName string = toLower(aiFoundryType) != 'basic' ? keyvault!.outputs.name : ''
+output azureKeyVaultName string = !basicDeployment ? keyvault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
 output azureAiServicesName string = cognitiveServices.outputs.aiServicesName
 
 @description('Name of the deployed Azure AI Search service.')
-output azureAiSearchName string = toLower(aiFoundryType) != 'basic' ? aiSearch!.outputs.searchName : ''
+output azureAiSearchName string = !basicDeployment ? aiSearch!.outputs.searchName : ''
 
 @description('Name of the deployed Azure AI Project.')
 output azureAiProjectName string = project.outputs.projectName
@@ -323,17 +320,13 @@ output azureBastionName string = networkIsolation ? network!.outputs.bastionName
 output azureVmResourceId string = shouldDeployVM ? virtualMachine!.outputs.id : ''
 
 @description('Username for the deployed Azure VM.')
-output azureVmUsername string = toLower(aiFoundryType) != 'basic' ? servicesUsername : ''
+output azureVmUsername string = !basicDeployment ? servicesUsername : ''
 
 @description('Name of the deployed Azure Container Registry.')
-output azureContainerRegistryName string = toLower(aiFoundryType) != 'basic'
-  ? containerRegistry.?outputs.name ?? ''
-  : ''
+output azureContainerRegistryName string = !basicDeployment ? containerRegistry.?outputs.name ?? '' : ''
 
 @description('Name of the deployed Azure Storage Account.')
-output azureStorageAccountName string = toLower(aiFoundryType) != 'basic'
-  ? storageAccount.?outputs.storageName ?? ''
-  : ''
+output azureStorageAccountName string = !basicDeployment ? storageAccount.?outputs.storageName ?? '' : ''
 
 @description('Name of the deployed Azure Virtual Network.')
 output azureVirtualNetworkName string = networkIsolation ? network!.outputs.virtualNetworkName : ''
@@ -342,4 +335,4 @@ output azureVirtualNetworkName string = networkIsolation ? network!.outputs.virt
 output azureVirtualNetworkSubnetName string = networkIsolation ? network!.outputs.vmSubnetName : ''
 
 @description('Name of the deployed Azure Cosmos DB account.')
-output azureCosmosAccountName string = toLower(aiFoundryType) != 'basic' ? cosmosDb!.outputs.cosmosDBname : ''
+output azureCosmosAccountName string = !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''

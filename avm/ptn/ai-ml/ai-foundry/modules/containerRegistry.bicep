@@ -14,11 +14,8 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone.')
-param networkIsolation bool = toLower(aiFoundryType) == 'standardprivate'
-
-@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
-param aiFoundryType string
+@description('Optional. Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone.')
+param networkIsolation bool = false
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -55,9 +52,9 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     dataEndpointEnabled: false
     networkRuleBypassOptions: 'AzureServices'
     trustPolicyStatus: 'enabled'
-    networkRuleSetDefaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
-    exportPolicyStatus: toLower(aiFoundryType) == 'standardprivate' ? 'disabled' : 'enabled'
-    publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'
+    networkRuleSetDefaultAction: networkIsolation ? 'Deny' : 'Allow'
+    exportPolicyStatus: networkIsolation ? 'disabled' : 'enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
 
     managedIdentities: {
@@ -80,9 +77,6 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
       : []
   }
 }
-
-// Enable content trust policy using the AVM module's built-in parameter
-// The trustPolicyStatus: 'enabled' parameter above handles this automatically
 
 output resourceId string = containerRegistry.outputs.resourceId
 output loginServer string = containerRegistry.outputs.loginServer
