@@ -7,9 +7,6 @@ param location string
 @description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled.')
 param networkIsolation bool
 
-@description('Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
-param userObjectId string
-
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
@@ -28,6 +25,10 @@ param contentSafetyEnabled bool
 
 @description('Required. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -83,26 +84,7 @@ module aiServices 'service.bicep' = {
       : []
 
     aiModelDeployments: aiModelDeployments
-    roleAssignments: empty(userObjectId)
-      ? []
-      : [
-          {
-            principalId: userObjectId
-            // Allow for either User or ServicePrincipal
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-          }
-          {
-            principalId: userObjectId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Cognitive Services Contributor'
-          }
-          {
-            principalId: userObjectId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Cognitive Services User'
-          }
-        ]
+    roleAssignments: roleAssignments
     tags: tags
     enableTelemetry: enableTelemetry
   }

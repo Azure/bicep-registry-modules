@@ -13,8 +13,9 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
-param userObjectId string
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
 @description('Resource ID of the Log Analytics workspace for diagnostic logs.')
 param logAnalyticsWorkspaceResourceId string = ''
@@ -98,15 +99,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
           }
         ]
       : []
-    roleAssignments: empty(userObjectId)
-      ? []
-      : [
-          {
-            principalId: userObjectId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Key Vault Secrets User'
-          }
-        ]
+    roleAssignments: roleAssignments
   }
 }
 

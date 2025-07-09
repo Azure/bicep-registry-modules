@@ -46,7 +46,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'stdprv${substring(uniqueString(subscription().id, enforcedLocation, utcValue), 0, 2)}' // Use time-based uniqueness to avoid soft-delete conflicts
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
-      userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: true // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
       vmSize: 'Standard_DS4_v2'

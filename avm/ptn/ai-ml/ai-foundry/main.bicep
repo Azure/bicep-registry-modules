@@ -39,8 +39,8 @@ param vmAdminPasswordOrKey string = ''
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
 param tags object = {}
 
-@description('Optional. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
-param userObjectId string = deployer().objectId
+@description('Optional. Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created.')
+param identityPrincipalId string?
 
 @description('Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')
 param allowedIpAddress string = ''
@@ -130,7 +130,15 @@ module keyvault 'modules/keyvault.bicep' = if (!basicDeployment) {
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
-    userObjectId: userObjectId
+    roleAssignments: empty(identityPrincipalId)
+      ? []
+      : [
+          {
+            principalId: identityPrincipalId!
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Key Vault Secrets User'
+          }
+        ]
     logAnalyticsWorkspaceResourceId: ''
     enableTelemetry: enableTelemetry
     tags: tags
@@ -164,7 +172,25 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     aiModelDeployments: aiModelDeployments
-    userObjectId: userObjectId
+    roleAssignments: empty(identityPrincipalId)
+      ? []
+      : [
+          {
+            principalId: identityPrincipalId
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+          }
+          {
+            principalId: identityPrincipalId
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Cognitive Services Contributor'
+          }
+          {
+            principalId: identityPrincipalId
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Cognitive Services User'
+          }
+        ]
     contentSafetyEnabled: contentSafetyEnabled
     enableTelemetry: enableTelemetry
     tags: tags
@@ -181,7 +207,20 @@ module aiSearch 'modules/aisearch.bicep' = if (!basicDeployment) {
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
-    userObjectId: userObjectId
+    roleAssignments: empty(identityPrincipalId)
+      ? []
+      : [
+          {
+            principalId: identityPrincipalId
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Search Index Data Contributor'
+          }
+          {
+            principalId: identityPrincipalId
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Search Index Data Reader'
+          }
+        ]
     enableTelemetry: enableTelemetry
     tags: tags
   }
@@ -199,11 +238,11 @@ module storageAccount 'modules/storageAccount.bicep' = if (!basicDeployment) {
     virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
-      empty(userObjectId)
+      empty(identityPrincipalId)
         ? []
         : [
             {
-              principalId: userObjectId
+              principalId: identityPrincipalId
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Storage Blob Data Contributor'
             }
@@ -290,7 +329,6 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     dataDiskCaching: 'ReadOnly'
     enableAcceleratedNetworking: true
     enableMicrosoftEntraIdAuth: true
-    userObjectId: userObjectId
     location: location
     tags: tags
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId

@@ -116,8 +116,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryType: 'Basic'
     contentSafetyEnabled: false
     name: '<name>'
-    // Non-required parameters
-    userObjectId: '00000000-0000-0000-0000-000000000000'
   }
 }
 ```
@@ -143,10 +141,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "name": {
       "value": "<name>"
-    },
-    // Non-required parameters
-    "userObjectId": {
-      "value": "00000000-0000-0000-0000-000000000000"
     }
   }
 }
@@ -166,8 +160,6 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
 param name = '<name>'
-// Non-required parameters
-param userObjectId = '00000000-0000-0000-0000-000000000000'
 ```
 
 </details>
@@ -192,7 +184,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     name: '<name>'
     // Non-required parameters
     aiModelDeployments: []
-    userObjectId: '00000000-0000-0000-0000-000000000000'
     vmAdminPasswordOrKey: '$tart12345'
     vmSize: 'Standard_DS4_v2'
   }
@@ -225,9 +216,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "aiModelDeployments": {
       "value": []
     },
-    "userObjectId": {
-      "value": "00000000-0000-0000-0000-000000000000"
-    },
     "vmAdminPasswordOrKey": {
       "value": "$tart12345"
     },
@@ -254,7 +242,6 @@ param contentSafetyEnabled = true
 param name = '<name>'
 // Non-required parameters
 param aiModelDeployments = []
-param userObjectId = '00000000-0000-0000-0000-000000000000'
 param vmAdminPasswordOrKey = '$tart12345'
 param vmSize = 'Standard_DS4_v2'
 ```
@@ -281,12 +268,12 @@ param vmSize = 'Standard_DS4_v2'
 | [`cosmosDatabases`](#parameter-cosmosdatabases) | array | List of Cosmos DB databases to create. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmMonitoring`](#parameter-enablevmmonitoring) | bool | Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided. |
+| [`identityPrincipalId`](#parameter-identityprincipalid) | string | Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
-| [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
 | [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | string | Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size of the jump-box Virtual Machine. |
@@ -700,6 +687,13 @@ Enable VM monitoring with data collection rules. Only effective if logAnalyticsW
 - Type: bool
 - Default: `False`
 
+### Parameter: `identityPrincipalId`
+
+Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created.
+
+- Required: No
+- Type: string
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -745,14 +739,6 @@ Specifies the resource tags for all the resources. Tag "azd-env-name" is automat
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `userObjectId`
-
-Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.
-
-- Required: No
-- Type: string
-- Default: `[deployer().objectId]`
 
 ### Parameter: `vmAdminPasswordOrKey`
 
@@ -810,6 +796,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/search/search-service:0.11.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

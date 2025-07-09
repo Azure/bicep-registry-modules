@@ -69,9 +69,6 @@ param enableAcceleratedNetworking bool = true
 @description('Specifies the name of the network interface of the virtual machine.')
 param vmNicName string
 
-@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources.')
-param userObjectId string = ''
-
 @description('Specifies the location.')
 param location string = resourceGroup().location
 
@@ -444,22 +441,6 @@ resource dcrPerfLawAssociation 'Microsoft.Insights/dataCollectionRuleAssociation
   properties: {
     description: 'Association of data collection rule. Deleting this association will break the data collection for this virtual machine.'
     dataCollectionRuleId: dcrPerfLaw.id
-  }
-}
-
-resource virtualMachineAdministratorLoginRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '1c0163c0-47e6-4577-8991-ea5c82e286e4'
-  scope: subscription()
-}
-
-// This role assignment grants the Virtual Machine Administrator Login role to the current user.
-resource virtualMachineAdministratorLoginUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableMicrosoftEntraIdAuth && !empty(userObjectId)) {
-  name: guid(virtualMachine.id, virtualMachineAdministratorLoginRoleDefinition.id, userObjectId)
-  scope: virtualMachine
-  properties: {
-    roleDefinitionId: virtualMachineAdministratorLoginRoleDefinition.id
-    principalType: 'ServicePrincipal'
-    principalId: userObjectId
   }
 }
 

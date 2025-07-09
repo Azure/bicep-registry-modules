@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "8433943239855748911"
+      "templateHash": "12884126553726681456"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -369,11 +369,11 @@
         "description": "Optional. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
       }
     },
-    "userObjectId": {
+    "identityPrincipalId": {
       "type": "string",
-      "defaultValue": "[deployer().objectId]",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+        "description": "Optional. Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created."
       }
     },
     "allowedIpAddress": {
@@ -1351,9 +1351,7 @@
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
           "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
-          "userObjectId": {
-            "value": "[parameters('userObjectId')]"
-          },
+          "roleAssignments": "[if(empty(parameters('identityPrincipalId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]",
           "logAnalyticsWorkspaceResourceId": {
             "value": ""
           },
@@ -1366,12 +1364,90 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "15424366723295031675"
+              "templateHash": "10431476636700700085"
+            }
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
             }
           },
           "parameters": {
@@ -1406,10 +1482,14 @@
                 "description": "Resource ID of the subnet for the private endpoint."
               }
             },
-            "userObjectId": {
-              "type": "string",
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "logAnalyticsWorkspaceResourceId": {
@@ -1437,8 +1517,8 @@
           "variables": {
             "nameFormatted": "[take(toLower(parameters('name')), 24)]"
           },
-          "resources": [
-            {
+          "resources": {
+            "privateDnsZone": {
               "condition": "[parameters('networkIsolation')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -4602,7 +4682,7 @@
                 }
               }
             },
-            {
+            "keyvault": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-keyvault-deployment', variables('nameFormatted')), 64)]",
@@ -4652,8 +4732,10 @@
                     "value": 7
                   },
                   "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('name', 'sendToLogAnalytics', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('category', 'AuditEvent', 'enabled', true()), createObject('category', 'AzurePolicyEvaluationDetails', 'enabled', true())), 'metricCategories', createArray(createObject('category', 'AllMetrics', 'enabled', true()))))), createObject('value', createArray()))]",
-                  "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', 'private-dns-keyvault-deployment'), '2022-09-01').outputs.resourceId.value))), 'service', 'vault', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
-                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]"
+                  "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('privateDnsZone').outputs.resourceId.value))), 'service', 'vault', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -7948,18 +8030,18 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'private-dns-keyvault-deployment')]"
+                "privateDnsZone"
               ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-keyvault-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.resourceId.value]"
+              "value": "[reference('keyvault').outputs.resourceId.value]"
             },
             "name": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-keyvault-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.name.value]"
+              "value": "[reference('keyvault').outputs.name.value]"
             }
           }
         }
@@ -14344,9 +14426,7 @@
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
           },
-          "userObjectId": {
-            "value": "[parameters('userObjectId')]"
-          },
+          "roleAssignments": "[if(empty(parameters('identityPrincipalId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor'), createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services Contributor'), createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services User'))))]",
           "contentSafetyEnabled": {
             "value": "[parameters('contentSafetyEnabled')]"
           },
@@ -14365,7 +14445,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "1151936951356976513"
+              "templateHash": "17778290696889225808"
             }
           },
           "definitions": {
@@ -14469,6 +14549,81 @@
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
                 }
               }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
             }
           },
           "parameters": {
@@ -14488,12 +14643,6 @@
               "type": "bool",
               "metadata": {
                 "description": "Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled."
-              }
-            },
-            "userObjectId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
               }
             },
             "tags": {
@@ -14535,6 +14684,16 @@
               "type": "object",
               "metadata": {
                 "description": "Required. A collection of rules governing the accessibility from specific network locations."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "enableTelemetry": {
@@ -20905,7 +21064,9 @@
                   "aiModelDeployments": {
                     "value": "[parameters('aiModelDeployments')]"
                   },
-                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services User'))))]",
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  },
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
@@ -26408,9 +26569,7 @@
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
           "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetResourceId.value), createObject('value', ''))]",
-          "userObjectId": {
-            "value": "[parameters('userObjectId')]"
-          },
+          "roleAssignments": "[if(empty(parameters('identityPrincipalId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -26426,7 +26585,84 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "8429874053069857764"
+              "templateHash": "17625419657133337512"
+            }
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
             }
           },
           "parameters": {
@@ -26468,10 +26704,14 @@
                 "description": "Specifies whether network isolation is enabled. This will create a private endpoint for the AI Search resource and link the private DNS zone."
               }
             },
-            "userObjectId": {
-              "type": "string",
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "enableTelemetry": {
@@ -29690,7 +29930,9 @@
                   "replicaCount": {
                     "value": 3
                   },
-                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  },
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('privateDnsZone').outputs.resourceId.value))), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -31913,7 +32155,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
-            "value": "[concat(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
+            "value": "[concat(if(empty(parameters('identityPrincipalId')), createArray(), createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -51983,9 +52225,6 @@
           "enableMicrosoftEntraIdAuth": {
             "value": true
           },
-          "userObjectId": {
-            "value": "[parameters('userObjectId')]"
-          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -52006,7 +52245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "4851966477454768649"
+              "templateHash": "4943905376396384439"
             }
           },
           "parameters": {
@@ -52147,13 +52386,6 @@
               "type": "string",
               "metadata": {
                 "description": "Specifies the name of the network interface of the virtual machine."
-              }
-            },
-            "userObjectId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources."
               }
             },
             "location": {
@@ -52552,21 +52784,6 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Perf-to-LAW')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "condition": "[and(parameters('enableMicrosoftEntraIdAuth'), not(empty(parameters('userObjectId'))))]",
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "[guid(resourceId('Microsoft.Compute/virtualMachines', parameters('vmName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4'), parameters('userObjectId'))]",
-              "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                "principalType": "ServicePrincipal",
-                "principalId": "[parameters('userObjectId')]"
-              },
-              "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
             }

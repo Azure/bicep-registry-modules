@@ -16,8 +16,9 @@ param virtualNetworkSubnetResourceId string
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the AI Search resource and link the private DNS zone.')
 param networkIsolation bool = true
 
-@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
-param userObjectId string
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -54,20 +55,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = {
     sku: 'standard'
     partitionCount: 1
     replicaCount: 3
-    roleAssignments: empty(userObjectId)
-      ? []
-      : [
-          {
-            principalId: userObjectId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Search Index Data Contributor'
-          }
-          {
-            principalId: userObjectId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Search Index Data Reader'
-          }
-        ]
+    roleAssignments: roleAssignments
     // Removed empty diagnosticSettings that was causing "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [

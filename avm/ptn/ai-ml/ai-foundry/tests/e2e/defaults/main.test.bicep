@@ -46,7 +46,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'basic${substring(uniqueString(subscription().id, enforcedLocation, utcValue), 0, 3)}' // Use time-based uniqueness to avoid soft-delete conflicts
       aiFoundryType: 'Basic' // Basic deployment - minimal resources only
-      userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: false // Set to true or false as required
       // Note: vmAdminPasswordOrKey not needed for Basic deployment (no VM deployed)
     }
