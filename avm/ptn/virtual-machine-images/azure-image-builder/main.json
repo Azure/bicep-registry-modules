@@ -406,7 +406,7 @@
         "description": "Optional. The name of the Image Template Virtual Network Subnet to create."
       }
     },
-    "imagecontainerInstanceSubnetName": {
+    "imageContainerInstanceSubnetName": {
       "type": "string",
       "defaultValue": "subnet-it-container",
       "metadata": {
@@ -424,7 +424,7 @@
       "type": "string",
       "defaultValue": "[cidrSubnet(parameters('virtualNetworkAddressPrefix'), 24, 2)]",
       "metadata": {
-        "description": "Optional. The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imagecontainerInstanceSubnetName` is not empty."
+        "description": "Optional. The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imageContainerInstanceSubnetName` is not empty."
       }
     },
     "deploymentScriptSubnetName": {
@@ -3933,7 +3933,7 @@
             ]
           },
           "subnets": {
-            "value": "[flatten(createArray(createArray(createObject('name', parameters('imageSubnetName'), 'addressPrefix', parameters('virtualNetworkSubnetAddressPrefix'), 'privateLinkServiceNetworkPolicies', 'Disabled', 'serviceEndpoints', createArray('Microsoft.Storage'))), if(not(empty(parameters('imagecontainerInstanceSubnetName'))), createArray(createObject('name', parameters('imagecontainerInstanceSubnetName'), 'addressPrefix', parameters('imagecontainerInstanceSubnetAddressPrefix'), 'privateLinkServiceNetworkPolicies', 'Disabled', 'delegation', 'Microsoft.ContainerInstance/containerGroups')), createArray()), createArray(createObject('name', parameters('deploymentScriptSubnetName'), 'addressPrefix', parameters('virtualNetworkDeploymentScriptSubnetAddressPrefix'), 'privateLinkServiceNetworkPolicies', 'Disabled', 'serviceEndpoints', createArray('Microsoft.Storage'), 'delegation', 'Microsoft.ContainerInstance/containerGroups'))))]"
+            "value": "[flatten(createArray(createArray(createObject('name', parameters('imageSubnetName'), 'addressPrefix', parameters('virtualNetworkSubnetAddressPrefix'), 'privateLinkServiceNetworkPolicies', 'Disabled', 'serviceEndpoints', createArray('Microsoft.Storage'))), if(not(empty(parameters('imageContainerInstanceSubnetName'))), createArray(createObject('name', parameters('imageContainerInstanceSubnetName'), 'addressPrefix', parameters('imagecontainerInstanceSubnetAddressPrefix'), 'privateLinkServiceNetworkPolicies', 'Disabled', 'delegation', 'Microsoft.ContainerInstance/containerGroups')), createArray()), createArray(createObject('name', parameters('deploymentScriptSubnetName'), 'addressPrefix', parameters('virtualNetworkDeploymentScriptSubnetAddressPrefix'), 'privateLinkServiceNetworkPolicies', 'Disabled', 'serviceEndpoints', createArray('Microsoft.Storage'), 'delegation', 'Microsoft.ContainerInstance/containerGroups'))))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -17778,7 +17778,7 @@
             ]
           },
           "vnetConfig": {
-            "value": "[shallowMerge(createArray(createObject('subnetResourceId', resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imageSubnetName'))), if(not(empty(parameters('imagecontainerInstanceSubnetName'))), createObject('containerInstanceSubnetResourceId', resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imagecontainerInstanceSubnetName'))), createObject())))]"
+            "value": "[shallowMerge(createArray(createObject('subnetResourceId', resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imageSubnetName'))), if(not(empty(parameters('imageContainerInstanceSubnetName'))), createObject('containerInstanceSubnetResourceId', resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imageContainerInstanceSubnetName'))), createObject())))]"
           },
           "location": {
             "value": "[parameters('location')]"

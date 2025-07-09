@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptSubnetName: nestedDependencies.outputs.deploymentScriptSubnetName
     imageManagedIdentityName: nestedDependencies.outputs.imageManagedIdentityName
     imageSubnetName: nestedDependencies.outputs.imageSubnetName
-    imagecontainerInstanceSubnetName: nestedDependencies.outputs.containerInstanceSubnetName
+    imageContainerInstanceSubnetName: nestedDependencies.outputs.containerInstanceSubnetName
     imageTemplateResourceGroupName: nestedDependencies.outputs.imageTemplateResourceGroupName
     imageTemplateCustomizationSteps: [
       {

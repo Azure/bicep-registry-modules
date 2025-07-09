@@ -50,6 +50,10 @@ var computeGalleryImageDefinitionsVar = [
 ]
 var assetsStorageAccountContainerName = 'aibscripts'
 
+var subnetITName = 'subnet-it'
+var subnetCIName = 'subnet-ci'
+var subnetDSName = 'subnet-ds'
+
 // Role required for deployment script to be able to use a storage account via private networking
 resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
@@ -126,7 +130,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
     ]
     subnets: [
       {
-        name: 'subnet-it'
+        name: subnetITName
         addressPrefix: cidrSubnet(addressPrefix, 24, 0)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
         serviceEndpoints: [
@@ -134,13 +138,13 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
         ]
       }
       {
-        name: 'subnet-ci'
+        name: subnetCIName
         addressPrefix: cidrSubnet(addressPrefix, 24, 1)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
         delegation: 'Microsoft.ContainerInstance/containerGroups'
       }
       {
-        name: 'subnet-ds'
+        name: subnetDSName
         addressPrefix: cidrSubnet(addressPrefix, 24, 2)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
         serviceEndpoints: [
@@ -215,7 +219,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
         {
           // Allow deployment script to use storage account for private networking of container instance
           action: 'Allow'
-          id: vnet.outputs.subnetResourceIds[2] // subnet-ds
+          id: filter(vnet.outputs.subnetResourceIds, resourceId => last(split(resourceId, '/')) == subnetDSName)[0]
         }
       ]
     }
@@ -247,13 +251,13 @@ output deploymentScriptManagedIdentityName string = dsMsi.outputs.name
 output deploymentScriptStorageAccountName string = dsStorageAccount.outputs.name
 
 @description('The name of the subnet used by the Azure Image Builder.')
-output imageSubnetName string = last(split(vnet.outputs.subnetResourceIds[0], '/'))
+output imageSubnetName string = subnetITName
 
 @description('The name of the subnet used by the Container Instance of the AIB.')
-output containerInstanceSubnetName string = last(split(vnet.outputs.subnetResourceIds[1], '/'))
+output containerInstanceSubnetName string = subnetCIName
 
 @description('The name of the subnet used by the Deployment Scripts.')
-output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourceIds[2], '/'))
+output deploymentScriptSubnetName string = subnetDSName
 
 @description('The name of the User-Assigned-Identity used by the Azure Image Builder.')
 output imageManagedIdentityName string = imageMSI.outputs.name

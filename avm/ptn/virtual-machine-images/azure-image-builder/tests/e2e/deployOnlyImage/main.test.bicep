@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptSubnetName: nestedDependencies.outputs.deploymentScriptSubnetName
     imageManagedIdentityName: nestedDependencies.outputs.imageManagedIdentityName
     imageSubnetName: nestedDependencies.outputs.imageSubnetName
-    imagecontainerInstanceSubnetName: '' // Validate that the logic for not using a container instance subnet works
+    imageContainerInstanceSubnetName: '' // Validate that the logic for not using a container instance subnet works
     imageTemplateResourceGroupName: nestedDependencies.outputs.imageTemplateResourceGroupName
     imageTemplateImageSource: {
       type: 'PlatformImage'

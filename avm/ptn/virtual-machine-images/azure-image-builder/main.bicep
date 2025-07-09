@@ -59,12 +59,12 @@ param virtualNetworkAddressPrefix string = '10.0.0.0/16'
 param imageSubnetName string = 'subnet-it'
 
 @description('Optional. The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet).')
-param imagecontainerInstanceSubnetName string = 'subnet-it-container'
+param imageContainerInstanceSubnetName string = 'subnet-it-container'
 
 @description('Optional. The address space of the Virtual Network Subnet.')
 param virtualNetworkSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 0)
 
-@description('Optional. The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imagecontainerInstanceSubnetName` is not empty.')
+@description('Optional. The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imageContainerInstanceSubnetName` is not empty.')
 param imagecontainerInstanceSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 2)
 
 @description('Optional. The name of the Image Template Virtual Network Subnet to create.')
@@ -240,10 +240,10 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (deploymentsT
           'Microsoft.Storage'
         ]
       }
-      ...(!empty(imagecontainerInstanceSubnetName)
+      ...(!empty(imageContainerInstanceSubnetName)
         ? [
             {
-              name: imagecontainerInstanceSubnetName
+              name: imageContainerInstanceSubnetName
               addressPrefix: imagecontainerInstanceSubnetAddressPrefix
               privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
               delegation: 'Microsoft.ContainerInstance/containerGroups'
@@ -282,12 +282,12 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
       //   {
       //     // Allow image template to access data
       //     action: 'Allow'
-      //     id: vnet.outputs.subnetResourceIds[0] // imageSubnet
+      //     id: filter(vnet.outputs.subnetResourceIds, resourceId => last(split(resourceId, '/')) == imageSubnetName)[0]
       //   }
       //   {
       //     // Allow deployment script to access storage account to upload data
       //     action: 'Allow'
-      //     id: vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+      //     id: filter(vnet.outputs.subnetResourceIds, resourceId => last(split(resourceId, '/')) == deploymentScriptSubnetName)[0]
       //   }
       // ]
     }
@@ -482,14 +482,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
         virtualNetworkName,
         imageSubnetName
       )
-      ...(!empty(imagecontainerInstanceSubnetName)
+      ...(!empty(imageContainerInstanceSubnetName)
         ? {
             containerInstanceSubnetResourceId: resourceId(
               subscription().subscriptionId,
               resourceGroupName,
               'Microsoft.Network/virtualNetworks/subnets',
               virtualNetworkName,
-              imagecontainerInstanceSubnetName
+              imageContainerInstanceSubnetName
             )
           }
         : {})
@@ -556,7 +556,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
       deploymentScriptStorageAccountName
     )
     subnetResourceIds: [
-      // vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+      // filter(vnet.outputs.subnetResourceIds, resourceId => last(split(resourceId, '/')) == deploymentScriptSubnetName)[0]
       resourceId(
         subscription().subscriptionId,
         resourceGroupName,

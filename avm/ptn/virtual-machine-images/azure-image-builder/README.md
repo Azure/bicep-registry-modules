@@ -740,7 +740,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
     deploymentsToPerform: 'Only assets & image'
-    imagecontainerInstanceSubnetName: '<imagecontainerInstanceSubnetName>'
+    imageContainerInstanceSubnetName: '<imageContainerInstanceSubnetName>'
     imageManagedIdentityName: '<imageManagedIdentityName>'
     imageSubnetName: '<imageSubnetName>'
     imageTemplateCustomizationSteps: [
@@ -814,8 +814,8 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "deploymentsToPerform": {
       "value": "Only assets & image"
     },
-    "imagecontainerInstanceSubnetName": {
-      "value": "<imagecontainerInstanceSubnetName>"
+    "imageContainerInstanceSubnetName": {
+      "value": "<imageContainerInstanceSubnetName>"
     },
     "imageManagedIdentityName": {
       "value": "<imageManagedIdentityName>"
@@ -884,7 +884,7 @@ param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityNam
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
 param deploymentsToPerform = 'Only assets & image'
-param imagecontainerInstanceSubnetName = '<imagecontainerInstanceSubnetName>'
+param imageContainerInstanceSubnetName = '<imageContainerInstanceSubnetName>'
 param imageManagedIdentityName = '<imageManagedIdentityName>'
 param imageSubnetName = '<imageSubnetName>'
 param imageTemplateCustomizationSteps = [
@@ -1091,7 +1091,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
     deploymentsToPerform: 'Only image'
-    imagecontainerInstanceSubnetName: ''
+    imageContainerInstanceSubnetName: ''
     imageManagedIdentityName: '<imageManagedIdentityName>'
     imageSubnetName: '<imageSubnetName>'
     imageTemplateCustomizationSteps: [
@@ -1153,7 +1153,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     "deploymentsToPerform": {
       "value": "Only image"
     },
-    "imagecontainerInstanceSubnetName": {
+    "imageContainerInstanceSubnetName": {
       "value": ""
     },
     "imageManagedIdentityName": {
@@ -1213,7 +1213,7 @@ param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityNam
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
 param deploymentsToPerform = 'Only image'
-param imagecontainerInstanceSubnetName = ''
+param imageContainerInstanceSubnetName = ''
 param imageManagedIdentityName = '<imageManagedIdentityName>'
 param imageSubnetName = '<imageSubnetName>'
 param imageTemplateCustomizationSteps = [
@@ -1254,8 +1254,8 @@ param virtualNetworkName = '<virtualNetworkName>'
 | [`deploymentScriptSubnetName`](#parameter-deploymentscriptsubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
 | [`deploymentsToPerform`](#parameter-deploymentstoperform) | string | A parameter to control which deployments should be executed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`imagecontainerInstanceSubnetAddressPrefix`](#parameter-imagecontainerinstancesubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imagecontainerInstanceSubnetName` is not empty. |
-| [`imagecontainerInstanceSubnetName`](#parameter-imagecontainerinstancesubnetname) | string | The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet). |
+| [`imagecontainerInstanceSubnetAddressPrefix`](#parameter-imagecontainerinstancesubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imageContainerInstanceSubnetName` is not empty. |
+| [`imageContainerInstanceSubnetName`](#parameter-imagecontainerinstancesubnetname) | string | The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet). |
 | [`imageManagedIdentityName`](#parameter-imagemanagedidentityname) | string | The name of the Managed Identity used by the Azure Image Builder. |
 | [`imageSubnetName`](#parameter-imagesubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
 | [`imageTemplateCustomizationSteps`](#parameter-imagetemplatecustomizationsteps) | array | The customization steps to use for the Image Template. |
@@ -1693,13 +1693,13 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `imagecontainerInstanceSubnetAddressPrefix`
 
-The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imagecontainerInstanceSubnetName` is not empty.
+The address space of the Virtual Network Subnet used by the Azure Container Instances for isolated builds. Only relevant if `imageContainerInstanceSubnetName` is not empty.
 
 - Required: No
 - Type: string
 - Default: `[cidrSubnet(parameters('virtualNetworkAddressPrefix'), 24, 2)]`
 
-### Parameter: `imagecontainerInstanceSubnetName`
+### Parameter: `imageContainerInstanceSubnetName`
 
 The name of the Virtual Network Subnet to create and use for Azure Container Instances for isolated builds. For more information please refer to [docs](https://learn.microsoft.com/en-us/azure/virtual-machines/security-isolated-image-builds-image-builder#bring-your-own-build-vm-subnet-and-bring-your-own-aci-subnet).
 
