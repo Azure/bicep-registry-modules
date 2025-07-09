@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Sql/servers@2023-08-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -201,14 +201,14 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -245,8 +245,8 @@ resource server 'Microsoft.Sql/servers@2023-08-01' = {
     isIPv6Enabled: isIPv6Enabled
     keyId: customerManagedKey != null
       ? !empty(customerManagedKey.?keyVersion)
-          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+          ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
       : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
@@ -500,11 +500,11 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
-    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))}'
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.?properties.keyUriWithVersion ?? '', '/'))}'
     serverKeyType: 'AzureKeyVault'
     uri: !empty(customerManagedKey.?keyVersion)
-      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-      : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
   }
 }
 
@@ -512,7 +512,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: cmk_key.outputs.name
+    serverKeyName: cmk_key.?outputs.name ?? ''
     serverKeyType: 'AzureKeyVault'
     autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
@@ -573,7 +573,7 @@ module failover_groups 'failover-group/main.bicep' = [
       tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
-      partnerServers: failoverGroup.partnerServers
+      partnerServerResourceIds: failoverGroup.partnerServerResourceIds
       readOnlyEndpoint: failoverGroup.?readOnlyEndpoint
       readWriteEndpoint: failoverGroup.readWriteEndpoint
       secondaryType: failoverGroup.secondaryType
@@ -613,7 +613,11 @@ output location string = server.location
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(
+      secretsExport.?outputs.?secretsSet ?? [],
+      secret => last(split(secret.secretResourceId, '/')),
+      secret => secret
+    )
   : {}
 
 @description('The private endpoints of the SQL server.')
@@ -738,7 +742,7 @@ type databaseType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/databases@2023-08-01'>.tags?
 
   @description('Optional. The lock settings of the database.')
   lock: lockType?
@@ -1022,8 +1026,8 @@ type failoverGroupType = {
   @description('Required. List of databases in the failover group.')
   databases: string[]
 
-  @description('Required. List of the partner servers for the failover group.')
-  partnerServers: string[]
+  @description('Required. List of the partner server Resource Id for the failover group.')
+  partnerServerResourceIds: string[]
 
   @description('Optional. Read-only endpoint of the failover group instance.')
   readOnlyEndpoint: readOnlyEndpointType?
