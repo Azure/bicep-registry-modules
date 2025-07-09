@@ -11,3 +11,14 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+## 0.20.0
+
+### Changes
+
+- Renamed `partnerServers` array to `partnerServerResourceIds` in the failover group module to make it possible to use SQL servers from different resource groups.
+- `tags` parameters are now properly typed instead of using `object` type.
+
+### Breaking Changes
+
+- None
