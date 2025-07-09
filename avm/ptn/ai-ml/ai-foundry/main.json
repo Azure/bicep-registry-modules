@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "8649464459142131523"
+      "version": "0.36.177.2456",
+      "templateHash": "8321168580768558993"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -540,8 +540,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "551517921700255430"
+              "version": "0.36.177.2456",
+              "templateHash": "4780440939655916441"
             }
           },
           "parameters": {
@@ -1376,8 +1376,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11168660871676928172"
+              "version": "0.36.177.2456",
+              "templateHash": "442459614801414993"
             }
           },
           "parameters": {
@@ -8018,8 +8018,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "6262426141732340664"
+              "version": "0.36.177.2456",
+              "templateHash": "12362188043607659694"
             }
           },
           "parameters": {
@@ -14388,8 +14388,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "5233404141446106891"
+              "version": "0.36.177.2456",
+              "templateHash": "12851161367173343794"
             }
           },
           "definitions": {
@@ -20950,8 +20950,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "18228853220812051923"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13309154882525416116"
                     }
                   },
                   "definitions": {
@@ -23690,8 +23690,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "18228853220812051923"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13309154882525416116"
                     }
                   },
                   "definitions": {
@@ -26454,8 +26454,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "12199673600687548807"
+              "version": "0.36.177.2456",
+              "templateHash": "10010825442709327263"
             }
           },
           "parameters": {
@@ -31858,8 +31858,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "16650555630050230817"
+              "version": "0.36.177.2456",
+              "templateHash": "2823409470772345638"
             }
           },
           "definitions": {
@@ -44189,11 +44189,11 @@
           "outputs": {
             "storageName": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-storage-account-deployment', variables('nameFormatted')), 64)), '2022-09-01').name]"
+              "value": "[reference('storageAccount').outputs.name.value]"
             },
             "storageResourceId": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-storage-account-deployment', variables('nameFormatted')), 64)), '2022-09-01').resourceId]"
+              "value": "[reference('storageAccount').outputs.resourceId.value]"
             },
             "projUploadsContainerName": {
               "type": "string",
@@ -44251,8 +44251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13539667028059151204"
+              "version": "0.36.177.2456",
+              "templateHash": "1450112199603291300"
             }
           },
           "definitions": {
@@ -51564,11 +51564,11 @@
           "outputs": {
             "resourceId": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-cosmosdb-deployment', variables('nameFormatted')), 64)), '2022-09-01').resourceId]"
+              "value": "[reference('cosmosDb').outputs.resourceId.value]"
             },
             "cosmosDBname": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-cosmosdb-deployment', variables('nameFormatted')), 64)), '2022-09-01').name]"
+              "value": "[reference('cosmosDb').outputs.name.value]"
             }
           }
         }
@@ -51611,8 +51611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11656342596774918643"
+              "version": "0.36.177.2456",
+              "templateHash": "12112285806594014473"
             }
           },
           "parameters": {
@@ -51951,8 +51951,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11414254854534647509"
+              "version": "0.36.177.2456",
+              "templateHash": "4851966477454768649"
             }
           },
           "parameters": {
