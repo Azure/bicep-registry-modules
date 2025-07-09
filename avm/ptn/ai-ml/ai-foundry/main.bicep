@@ -251,7 +251,7 @@ module project 'modules/aifoundryproject.bicep' = {
     location: location
     storageName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
     aiServicesName: cognitiveServices.outputs.aiServicesName
-    nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
+    aiSearchName: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
     projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.projUploadsContainerName : ''
     sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.sysDataContainerName : ''
   }

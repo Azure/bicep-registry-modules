@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "16517044860511269693"
+      "version": "0.36.177.2456",
+      "templateHash": "8321168580768558993"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -540,8 +540,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "551517921700255430"
+              "version": "0.36.177.2456",
+              "templateHash": "4780440939655916441"
             }
           },
           "parameters": {
@@ -1376,8 +1376,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11168660871676928172"
+              "version": "0.36.177.2456",
+              "templateHash": "442459614801414993"
             }
           },
           "parameters": {
@@ -8018,8 +8018,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "6262426141732340664"
+              "version": "0.36.177.2456",
+              "templateHash": "12362188043607659694"
             }
           },
           "parameters": {
@@ -14374,6 +14374,9 @@
           "contentSafetyEnabled": {
             "value": "[parameters('contentSafetyEnabled')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "tags": {
             "value": "[variables('allTags')]"
           }
@@ -14385,8 +14388,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "5233404141446106891"
+              "version": "0.36.177.2456",
+              "templateHash": "12851161367173343794"
             }
           },
           "definitions": {
@@ -20947,8 +20950,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "18228853220812051923"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13309154882525416116"
                     }
                   },
                   "definitions": {
@@ -23687,8 +23690,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "18228853220812051923"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13309154882525416116"
                     }
                   },
                   "definitions": {
@@ -26451,8 +26454,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "12199673600687548807"
+              "version": "0.36.177.2456",
+              "templateHash": "10010825442709327263"
             }
           },
           "parameters": {
@@ -31855,8 +31858,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "5107570527485471633"
+              "version": "0.36.177.2456",
+              "templateHash": "2823409470772345638"
             }
           },
           "definitions": {
@@ -32004,10 +32007,14 @@
               "metadata": {
                 "description": "Optional. Enable/Disable usage telemetry for module."
               }
+            },
+            "dummyParam": {
+              "type": "bool",
+              "defaultValue": true
             }
           },
           "variables": {
-            "nameFormatted": "[take(toLower(parameters('storageName')), 12)]",
+            "nameFormatted": "[if(parameters('dummyParam'), take(toLower(parameters('storageName')), 12), take(toLower(parameters('storageName')), 12))]",
             "projUploadsContainerName": "[format('{0}proj-uploads', variables('nameFormatted'))]",
             "sysDataContainerName": "[format('{0}sys-data', variables('nameFormatted'))]"
           },
@@ -38446,7 +38453,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "2976041146101438020"
+                      "templateHash": "11337232077129027386"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account."
@@ -39570,7 +39577,7 @@
                     },
                     "enableHierarchicalNamespace": {
                       "type": "bool",
-                      "defaultValue": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true."
                       }
@@ -39767,7 +39774,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.23.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -39812,7 +39819,7 @@
                       },
                       "identity": "[variables('identity')]",
                       "tags": "[parameters('tags')]",
-                      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isHnsEnabled', parameters('enableHierarchicalNamespace'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject())))]",
+                      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject()), if(not(equals(parameters('enableHierarchicalNamespace'), null())), createObject('isHnsEnabled', parameters('enableHierarchicalNamespace')), createObject())))]",
                       "dependsOn": [
                         "cMKKeyVault",
                         "cMKKeyVault::cMKKey"
@@ -41018,7 +41025,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "15814325138223832726"
+                              "templateHash": "2268741299785261985"
                             },
                             "name": "Storage Account blob Services",
                             "description": "This module deploys a Storage Account Blob Service."
@@ -41489,7 +41496,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.36.1.42791",
-                                      "templateHash": "16437865284285189352"
+                                      "templateHash": "16916608328363874370"
                                     },
                                     "name": "Storage Account Blob Containers",
                                     "description": "This module deploys a Storage Account Blob Container."
@@ -41716,7 +41723,7 @@
                                       "condition": "[parameters('enableTelemetry')]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2024-03-01",
-                                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                                       "properties": {
                                         "mode": "Incremental",
                                         "template": {
@@ -41778,7 +41785,7 @@
                                       "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[parameters('immutabilityPolicyName')]",
+                                      "name": "[format('{0}-{1}', parameters('name'), parameters('immutabilityPolicyName'))]",
                                       "properties": {
                                         "expressionEvaluationOptions": {
                                           "scope": "inner"
@@ -44182,11 +44189,11 @@
           "outputs": {
             "storageName": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-storage-account-deployment', variables('nameFormatted')), 64)), '2022-09-01').name]"
+              "value": "[reference('storageAccount').outputs.name.value]"
             },
             "storageResourceId": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-storage-account-deployment', variables('nameFormatted')), 64)), '2022-09-01').resourceId]"
+              "value": "[reference('storageAccount').outputs.resourceId.value]"
             },
             "projUploadsContainerName": {
               "type": "string",
@@ -44244,8 +44251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13539667028059151204"
+              "version": "0.36.177.2456",
+              "templateHash": "1450112199603291300"
             }
           },
           "definitions": {
@@ -51557,11 +51564,11 @@
           "outputs": {
             "resourceId": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-cosmosdb-deployment', variables('nameFormatted')), 64)), '2022-09-01').resourceId]"
+              "value": "[reference('cosmosDb').outputs.resourceId.value]"
             },
             "cosmosDBname": {
               "type": "string",
-              "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-cosmosdb-deployment', variables('nameFormatted')), 64)), '2022-09-01').name]"
+              "value": "[reference('cosmosDb').outputs.name.value]"
             }
           }
         }
@@ -51594,7 +51601,7 @@
           "aiServicesName": {
             "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
           },
-          "nameFormatted": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
+          "aiSearchName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
           "projUploadsContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('value', ''))]",
           "sysDataContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.sysDataContainerName.value), createObject('value', ''))]"
         },
@@ -51604,8 +51611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8979744248566535593"
+              "version": "0.36.177.2456",
+              "templateHash": "12112285806594014473"
             }
           },
           "parameters": {
@@ -51652,7 +51659,7 @@
                 "description": "Foundry Account Name"
               }
             },
-            "nameFormatted": {
+            "aiSearchName": {
               "type": "string",
               "metadata": {
                 "description": "Azure Search Service Name"
@@ -51691,7 +51698,7 @@
           "resources": [
             {
               "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('defaultProjectName'))]",
               "location": "[parameters('location')]",
               "identity": {
@@ -51705,7 +51712,7 @@
             {
               "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
               "properties": {
                 "category": "AzureBlob",
@@ -51726,7 +51733,7 @@
             {
               "condition": "[and(and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
               "properties": {
                 "category": "AzureBlob",
@@ -51745,19 +51752,19 @@
               ]
             },
             {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('nameFormatted'))))]",
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('aiSearchName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('aiSearchName'))]",
               "properties": {
                 "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', parameters('nameFormatted'))]",
+                "target": "[format('https://{0}.search.windows.net/', parameters('aiSearchName'))]",
                 "authType": "AAD",
                 "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('nameFormatted'))]",
-                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('nameFormatted')), '2023-11-01', 'full').location]"
+                  "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('aiSearchName'))]",
+                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('aiSearchName')), '2023-11-01', 'full').location]"
                 }
               },
               "dependsOn": [
@@ -51767,7 +51774,7 @@
             {
               "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('cosmosDBName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
               "properties": {
                 "category": "CosmosDB",
@@ -51786,17 +51793,43 @@
             {
               "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
               "properties": {
                 "capabilityHostKind": "Agents"
               }
+            },
+            {
+              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
+              "properties": {
+                "capabilityHostKind": "Agents",
+                "vectorStoreConnections": [
+                  "[parameters('aiSearchName')]"
+                ],
+                "storageConnections": [
+                  "[parameters('storageName')]"
+                ],
+                "threadStorageConnections": [
+                  "[parameters('cosmosDBName')]"
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('aiSearchName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
+              ]
             }
           ],
           "outputs": {
             "projectCapHost": {
               "type": "string",
-              "value": ""
+              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
             },
             "projectId": {
               "type": "string",
@@ -51816,7 +51849,7 @@
             },
             "aiSearchConnection": {
               "type": "string",
-              "value": "[parameters('nameFormatted')]"
+              "value": "[parameters('aiSearchName')]"
             }
           }
         }
@@ -51918,8 +51951,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11414254854534647509"
+              "version": "0.36.177.2456",
+              "templateHash": "4851966477454768649"
             }
           },
           "parameters": {
