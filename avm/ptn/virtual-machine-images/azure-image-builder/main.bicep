@@ -185,10 +185,7 @@ module imageMSI_build_rg_rbac 'br/public:avm/res/authorization/role-assignment/r
   scope: imageTemplateRg
   name: '${deployment().name}-image-msi-rbac-build-rg'
   params: {
-    // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
-    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI!.outputs.principalId
-      : ''
+    principalId: imageMSI!.outputs.principalId
     roleDefinitionIdOrName: 'Contributor' // Required to build the image in the build-rg
     principalType: 'ServicePrincipal'
     enableTelemetry: enableTelemetry
@@ -299,17 +296,13 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
             {
               // Allow Infra MSI to access storage account container to upload files - DO NOT REMOVE
               roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-              principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-                ? dsMsi!.outputs.principalId
-                : '' // Requires condition als Bicep will otherwise try to resolve the null reference
+              principalId: dsMsi!.outputs.principalId
               principalType: 'ServicePrincipal'
             }
             {
               // Allow image MSI to access storage account container to read files - DO NOT REMOVE
               roleDefinitionIdOrName: 'Storage Blob Data Reader' // 'Storage Blob Data Reader'
-              principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-                ? imageMSI!.outputs.principalId
-                : '' // Requires condition als Bicep will otherwise try to resolve the null reference
+              principalId: imageMSI!.outputs.principalId
               principalType: 'ServicePrincipal'
             }
           ]
@@ -334,9 +327,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if 
         // Allow MSI to leverage the storage account for private networking of container instance
         // ref: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep#access-private-virtual-network
         roleDefinitionIdOrName: 'Storage File Data Privileged Contributor'
-        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-          ? dsMsi!.outputs.principalId
-          : '' // Requires condition als Bicep will otherwise try to resolve the null reference
+        principalId: dsMsi!.outputs.principalId
         principalType: 'ServicePrincipal'
       }
     ]
