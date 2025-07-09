@@ -98,7 +98,7 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 
 // MSI Subscription contributor assignment
 module imageMSI_rbac 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0' = {
-  scope: rg
+  scope: imageTemplateRg
   name: '${deployment().name}-image-msi-rbac'
   params: {
     principalId: imageMSI.outputs.principalId
