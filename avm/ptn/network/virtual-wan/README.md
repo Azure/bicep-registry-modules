@@ -240,13 +240,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
                 ]
                 ipconfigurationId: 'Instance0'
               }
-              {
-                customBgpIpAddresses: [
-                  '169.254.21.6'
-                  '169.254.21.7'
-                ]
-                ipconfigurationId: 'Instance1'
-              }
             ]
           }
           isRoutingPreferenceInternet: false
@@ -397,13 +390,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
                     "169.254.21.5"
                   ],
                   "ipconfigurationId": "Instance0"
-                },
-                {
-                  "customBgpIpAddresses": [
-                    "169.254.21.6",
-                    "169.254.21.7"
-                  ],
-                  "ipconfigurationId": "Instance1"
                 }
               ]
             },
@@ -555,13 +541,6 @@ param virtualHubParameters = [
               '169.254.21.5'
             ]
             ipconfigurationId: 'Instance0'
-          }
-          {
-            customBgpIpAddresses: [
-              '169.254.21.6'
-              '169.254.21.7'
-            ]
-            ipconfigurationId: 'Instance1'
           }
         ]
       }

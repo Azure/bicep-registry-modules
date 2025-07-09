@@ -158,10 +158,6 @@ module testDeployment '../../../main.bicep' = [
                   ipconfigurationId: 'Instance0'
                   customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
                 }
-                {
-                  ipconfigurationId: 'Instance1'
-                  customBgpIpAddresses: ['169.254.21.6', '169.254.21.7']
-                }
               ]
             }
             natRules: [
