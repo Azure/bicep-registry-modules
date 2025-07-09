@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10067883076016580906"
+      "templateHash": "6509346053463376179"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -482,6 +482,9 @@
     "imageTemplateImageSource": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.VirtualMachineImages/imageTemplates@2024-02-01#properties/properties/properties/source"
+        },
         "description": "Required. The image source to use for the Image Template."
       }
     },
@@ -565,7 +568,7 @@
     "rg": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[parameters('location')]"
     },

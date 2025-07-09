@@ -91,7 +91,7 @@ param waitDeploymentScriptName string = 'ds-wait-imageTemplate-build'
 param imageTemplateName string = 'it-aib'
 
 @description('Required. The image source to use for the Image Template.')
-param imageTemplateImageSource object
+param imageTemplateImageSource resourceInput<'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01'>.properties.source
 
 @description('Optional. The customization steps to use for the Image Template.')
 @minLength(1)
@@ -148,7 +148,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 // ==================== //
 
 // Primary Resource Group
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: resourceGroupName
   location: location
 }
