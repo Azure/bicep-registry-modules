@@ -24,7 +24,7 @@ param storageName string
 param aiServicesName string
 
 @description('Azure Search Service Name')
-param nameFormatted string
+param aiSearchName string
 
 @description('Name of the container for project uploads')
 param projUploadsContainerName string = ''
@@ -37,7 +37,7 @@ param defaultProjectName string = name
 param defaultProjectDisplayName string = name
 param defaultProjectDescription string = 'This is the default project for AI Foundry.'
 
-resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: aiServicesName
 }
 
@@ -46,14 +46,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing 
 }
 
 resource aiSearchService 'Microsoft.Search/searchServices@2023-11-01' existing = if (toLower(aiFoundryType) != 'basic') {
-  name: nameFormatted
+  name: aiSearchName
 }
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = if (toLower(aiFoundryType) != 'basic') {
   name: cosmosDBName
 }
 
-resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   name: defaultProjectName
   parent: foundryAccount
   location: location
@@ -66,7 +66,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   }
 }
 
-resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(storageName)) {
+resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (toLower(aiFoundryType) != 'basic' && !empty(storageName)) {
   name: storageName
   parent: project
   properties: {
@@ -83,7 +83,7 @@ resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/
   }
 }
 
-resource project_connection_azure_storage_sysdata 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(storageName) && !empty(sysDataContainerName)) {
+resource project_connection_azure_storage_sysdata 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (toLower(aiFoundryType) != 'basic' && !empty(storageName) && !empty(sysDataContainerName)) {
   name: '${storageName}-sysdata'
   parent: project
   properties: {
@@ -100,12 +100,12 @@ resource project_connection_azure_storage_sysdata 'Microsoft.CognitiveServices/a
   }
 }
 
-resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(nameFormatted)) {
-  name: nameFormatted // Use the parameter directly instead of aiSearchService.name
+resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (toLower(aiFoundryType) != 'basic' && !empty(aiSearchName)) {
+  name: aiSearchName // Use the parameter directly instead of aiSearchService.name
   parent: project
   properties: {
     category: 'CognitiveSearch'
-    target: 'https://${nameFormatted}.search.windows.net/' // Use the parameter directly
+    target: 'https://${aiSearchName}.search.windows.net/' // Use the parameter directly
     authType: 'AAD'
     isSharedToAll: true
     metadata: {
@@ -116,7 +116,7 @@ resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts
   }
 }
 
-resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(cosmosDBName)) {
+resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (toLower(aiFoundryType) != 'basic' && !empty(cosmosDBName)) {
   name: cosmosDBName
   parent: project
   properties: {
@@ -131,7 +131,7 @@ resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/proje
   }
 }
 
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (toLower(aiFoundryType) != 'basic') {
   name: 'accountCapHost'
   parent: foundryAccount
   properties: {
@@ -140,7 +140,7 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
 }
 
 // Project capability host with enhanced dependency management
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (toLower(aiFoundryType) != 'basic') {
   name: 'projectCapHost'
   parent: project
   properties: {
@@ -163,20 +163,14 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
     project_connection_azure_storage
     project_connection_azure_storage_sysdata
     project_connection_cosmosdb
-    // Reference the existing resources to ensure they're fully provisioned
-    storageAccount
-    aiSearchService
-    cosmosDBAccount
   ]
 }
 
-//Capability host output commented out while capability hosts are disabled
 output projectCapHost string = toLower(aiFoundryType) != 'basic' ? projectCapabilityHost.name : ''
-//output projectCapHost string = '' // Return empty string temporarily
 
 output projectId string = project.id
 output projectName string = project.name
-// BYO connection names
+
 output cosmosDBConnection string = cosmosDBName
 output azureStorageConnection string = storageName
-output aiSearchConnection string = nameFormatted
+output aiSearchConnection string = aiSearchName
