@@ -73,12 +73,12 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: 'eastus'
-          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          hubLocation: nestedDependencies.outputs.virtualNetwork1Location
+          hubName: 'dep-${namePrefix}-hub-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
           deploySecureHub: true
           secureHubParameters: {
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
             routingIntent: {
@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
           }
           hubVirtualNetworkConnections: [
             {
-              name: 'dep-${namePrefix}-vnet1-eastus-${serviceShort}'
+              name: nestedDependencies.outputs.virtualNetwork1Name
               remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork1Id
             }
           ]
@@ -97,11 +97,11 @@ module testDeployment '../../../main.bicep' = [
           allowBranchToBranchTraffic: true
           deployExpressRouteGateway: true
           expressRouteParameters: {
-            expressRouteGatewayName: 'dep-${namePrefix}-ergw-eastus-${serviceShort}'
+            expressRouteGatewayName: 'dep-${namePrefix}-ergw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
           }
           deployS2SVpnGateway: true
           s2sVpnParameters: {
-            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-eastus-${serviceShort}'
+            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
             vpnGatewayScaleUnit: 1
           }
           deployP2SVpnGateway: true
@@ -110,7 +110,7 @@ module testDeployment '../../../main.bicep' = [
             vpnClientAddressPoolAddressPrefixes: [
               '10.0.2.0/24'
             ]
-            vpnGatewayName: 'dep-${namePrefix}-hub-p2svpngw-eastus-${serviceShort}'
+            vpnGatewayName: 'dep-${namePrefix}-p2svpngw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
             vpnGatewayScaleUnit: 1
             enableInternetSecurity: true
             vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
@@ -122,11 +122,11 @@ module testDeployment '../../../main.bicep' = [
         {
           hubAddressPrefix: '10.0.1.0/24'
           hubLocation: 'westus2'
-          hubName: 'dep-${namePrefix}-hub-westus2-${serviceShort}'
+          hubName: 'dep-${namePrefix}-hub-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
           deploySecureHub: true
           secureHubParameters: {
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-westus2-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
             routingIntent: {
@@ -136,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
           }
           hubVirtualNetworkConnections: [
             {
-              name: 'dep-${namePrefix}-vnet2-westus2-${serviceShort}'
+              name: nestedDependencies.outputs.virtualNetwork2Name
               remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork2Id
             }
           ]
@@ -144,11 +144,11 @@ module testDeployment '../../../main.bicep' = [
           allowBranchToBranchTraffic: true
           deployExpressRouteGateway: true
           expressRouteParameters: {
-            expressRouteGatewayName: 'dep-${namePrefix}-ergw-westus2-${serviceShort}'
+            expressRouteGatewayName: 'dep-${namePrefix}-ergw-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
           }
           deployS2SVpnGateway: true
           s2sVpnParameters: {
-            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-westus2-${serviceShort}'
+            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
             vpnGatewayScaleUnit: 1
             isRoutingPreferenceInternet: false
             bgpSettings: {
@@ -156,11 +156,11 @@ module testDeployment '../../../main.bicep' = [
               bgpPeeringAddresses: [
                 {
                   ipconfigurationId: 'Instance0'
-                  customBgpIpAddresses: []
+                  customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
                 }
                 {
                   ipconfigurationId: 'Instance1'
-                  customBgpIpAddresses: []
+                  customBgpIpAddresses: ['169.254.21.6', '169.254.21.7']
                 }
               ]
             }

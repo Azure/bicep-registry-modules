@@ -20,6 +20,12 @@ param serviceShort string = 'nvwanmultisechub'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The location for the first virtual hub. Defaults to the main resource location.')
+param virtualHub1Location string = resourceLocation
+
+@description('Optional. The location for the second virtual hub. Defaults to westus2.')
+param virtualHub2Location string = 'westus2'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -56,13 +62,12 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: 'eastus'
-          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          hubLocation: virtualHub1Location
+          hubName: 'dep-${namePrefix}-hub-${virtualHub1Location}-${serviceShort}'
           deploySecureHub: true
-
           secureHubParameters: {
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-${virtualHub1Location}-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
             routingIntent: {
@@ -76,13 +81,12 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
-          hubLocation: 'westus2'
-          hubName: 'dep-${namePrefix}-hub-westus2-${serviceShort}'
+          hubLocation: virtualHub2Location
+          hubName: 'dep-${namePrefix}-hub-${virtualHub2Location}-${serviceShort}'
           deploySecureHub: true
-
           secureHubParameters: {
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-westus2-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-${virtualHub2Location}-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
             routingIntent: {
