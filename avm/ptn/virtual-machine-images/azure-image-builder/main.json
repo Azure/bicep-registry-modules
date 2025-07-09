@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "1520237918217104782"
+      "templateHash": "12328659693701538576"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -1556,7 +1556,7 @@
       ]
     },
     "imageMSI_build_rg_rbac": {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
+      "condition": "[and(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), not(empty(parameters('imageTemplateResourceGroupName'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-image-msi-rbac-build-rg', deployment().name)]",
