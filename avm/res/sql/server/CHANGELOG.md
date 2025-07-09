@@ -11,7 +11,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - Renamed `partnerServers` array to `partnerServerResourceIds` in the failover group module to make it possible to use SQL servers from different resource groups.
-- None
 
 ## 0.19.1
 
