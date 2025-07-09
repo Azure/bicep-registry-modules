@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13493891394479028525"
+      "templateHash": "8649464459142131523"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -31859,7 +31859,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3574058469546686723"
+              "templateHash": "16650555630050230817"
             }
           },
           "definitions": {
@@ -32007,10 +32007,14 @@
               "metadata": {
                 "description": "Optional. Enable/Disable usage telemetry for module."
               }
+            },
+            "dummyParam": {
+              "type": "bool",
+              "defaultValue": true
             }
           },
           "variables": {
-            "nameFormatted": "[take(toLower(parameters('storageName')), 12)]",
+            "nameFormatted": "[if(parameters('dummyParam'), take(toLower(parameters('storageName')), 12), take(toLower(parameters('storageName')), 12))]",
             "projUploadsContainerName": "[format('{0}proj-uploads', variables('nameFormatted'))]",
             "sysDataContainerName": "[format('{0}sys-data', variables('nameFormatted'))]"
           },
