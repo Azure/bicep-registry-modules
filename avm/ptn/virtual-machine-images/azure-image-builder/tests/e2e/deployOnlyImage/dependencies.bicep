@@ -74,12 +74,9 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
 
 // Always deployed as both an infra element & needed as a staging resource group for image building
 #disable-next-line use-recent-module-versions
-module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: '${deployment().name}-image-rg'
-  params: {
-    name: imageTemplateResourceGroupName
-    location: location
-  }
+resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: imageTemplateResourceGroupName
+  location: location
 }
 
 // User Assigned Identity (MSI)
@@ -105,11 +102,12 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1
 
 // MSI Subscription contributor assignment
 #disable-next-line use-recent-module-versions
-resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
-  properties: {
+module imageMSI_build_rg_rbac 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0' = {
+  scope: imageTemplateRg
+  name: '${deployment().name}-image-msi-rbac'
+  params: {
     principalId: imageMSI.outputs.principalId
-    roleDefinitionId: contributorRole.id
+    roleDefinitionIdOrName: contributorRole.id
     principalType: 'ServicePrincipal'
   }
 }
@@ -123,6 +121,13 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = {
     name: computeGalleryName
     images: computeGalleryImageDefinitionsVar
     location: location
+    roleAssignments: [
+      {
+        principalId: imageMSI.outputs.principalId
+        roleDefinitionIdOrName: 'Contributor' // Required to publish images to the Azure Compute Gallery (ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#allow-vm-image-builder-to-distribute-images)
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
@@ -148,7 +153,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
       {
         name: subnetDSName
         addressPrefix: cidrSubnet(addressPrefix, 24, 1)
-        privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
+        privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
         serviceEndpoints: [
           'Microsoft.Storage'
         ]
@@ -156,6 +161,13 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
       }
     ]
     location: location
+    roleAssignments: [
+      {
+        principalId: imageMSI.outputs.principalId
+        roleDefinitionIdOrName: 'Network Contributor' // Required to use private networking (ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#permission-to-customize-images-on-your-virtual-networks)
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
@@ -299,7 +311,7 @@ output deploymentScriptSubnetName string = subnetDSName
 output imageManagedIdentityName string = imageMSI.outputs.name
 
 @description('The name of the Resource Group used by the Azure Image Builder.')
-output imageTemplateResourceGroupName string = imageTemplateRg.outputs.name
+output imageTemplateResourceGroupName string = imageTemplateRg.name
 
 @description('The name of the script uploaded to the Assets Storage Account to use in the Azure Image Builder customization steps.')
 output exampleScriptName string = exampleScriptName

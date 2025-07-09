@@ -96,16 +96,8 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
   }
 }
 
-// MSI Subscription contributor assignment
-// module imageMSI_gallery_rg_rbac 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0' = {
-//   scope: rg
-//   name: '${deployment().name}-image-msi-rbac'
-//   params: {
-//     principalId: imageMSI.outputs.principalId
-//     roleDefinitionIdOrName: contributorRole.id
-//     principalType: 'ServicePrincipal'
-//   }
-// }
+// MSI Build-Rg contributor assignment
+#disable-next-line use-recent-module-versions
 module imageMSI_build_rg_rbac 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0' = {
   scope: imageTemplateRg
   name: '${deployment().name}-image-msi-rbac'
@@ -128,7 +120,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
     roleAssignments: [
       {
         principalId: imageMSI.outputs.principalId
-        roleDefinitionIdOrName: 'Contributor' // Required to publish images to the Azure Compute Gallery
+        roleDefinitionIdOrName: 'Contributor' // Required to publish images to the Azure Compute Gallery (ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#allow-vm-image-builder-to-distribute-images)
         principalType: 'ServicePrincipal'
       }
     ]
@@ -163,7 +155,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
       {
         name: subnetDSName
         addressPrefix: cidrSubnet(addressPrefix, 24, 2)
-        privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
+        privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
         serviceEndpoints: [
           'Microsoft.Storage'
         ]
