@@ -384,7 +384,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.
       value: file.?value
       secureValue: file.?secureValue
     })
-    arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}"  -SubscriptionId "${subscription().subscriptionId}"'
+    arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}" -SubscriptionId "${subscription().subscriptionId}"'
     timeout: 'PT30M'
     cleanupPreference: 'Always'
     location: location
@@ -511,7 +511,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
   name: '${deployment().name}-imageTemplate-trigger-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
-    name: '${imageTemplateDeploymentScriptName}-${formattedTime}-${(deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') ? imageTemplate!.outputs.name : ''}' // Requires condition als Bicep will otherwise try to resolve the null reference
+    name: '${imageTemplateDeploymentScriptName}-${formattedTime}-${imageTemplate!.outputs.name}'
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
@@ -525,13 +525,10 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
       ]
     }
     enableTelemetry: enableTelemetry
-    scriptContent: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')
-      ? 'Set-AzContext -Subscription ${subscription().subscriptionId }; ${imageTemplate!.outputs.runThisCommand }'
-      : '' // Requires condition als Bicep will otherwise try to resolve the null reference
+    scriptContent: 'Set-AzContext -Subscription ${subscription().subscriptionId }; ${imageTemplate!.outputs.runThisCommand}'
     timeout: 'PT30M'
     cleanupPreference: 'Always'
     location: location
-    // storageAccountResourceId: dsStorageAccount.outputs.resourceId
     storageAccountResourceId: resourceId(
       subscription().subscriptionId,
       resourceGroupName,
@@ -539,7 +536,6 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
       deploymentScriptStorageAccountName
     )
     subnetResourceIds: [
-      // filter(vnet.outputs.subnetResourceIds, resourceId => last(split(resourceId, '/')) == deploymentScriptSubnetName)[0]
       resourceId(
         subscription().subscriptionId,
         resourceGroupName,

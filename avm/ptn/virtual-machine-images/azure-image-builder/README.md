@@ -32,7 +32,6 @@ This module provides you with a packaged solution to create custom images using 
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2025-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/resourceGroups) |
-| `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 | `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers) |
@@ -1893,12 +1892,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0` | Remote reference |
 | `br/public:avm/res/compute/gallery:0.9.1` | Remote reference |
 | `br/public:avm/res/compute/gallery:0.9.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
 | `br/public:avm/res/virtual-machine-images/image-template:0.6.0` | Remote reference |
 
