@@ -29,16 +29,16 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    acrName: 'dep${namePrefix}acr${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
-    keyVaultName: 'dep${namePrefix}kv${serviceShort}'
+    acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 6)}'
+    keyVaultName: 'dep${namePrefix}kv${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 6)}'
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -66,9 +66,8 @@ module testDeployment '../../../main.bicep' = [
       acrName: dependencies.outputs.acrName
       location: resourceLocation
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest' // e.g. for docker images, that will be authenticated with the below properties 'docker.io/hello-world:latest'
-      // commented out, as the user is not available in the test environment
-      // sourceRegistryUsername: 'username'
-      // sourceRegistryPassword: keyVault.getSecret(dependencies.outputs.keyVaultSecretName)
+      sourceRegistryUsername: 'username'
+      sourceRegistryPassword: keyVault.getSecret(dependencies.outputs.keyVaultSecretName)
       newImageName: 'application/your-image-name:tag'
       cleanupPreference: 'OnExpiration'
       assignRbacRole: true

@@ -1,6 +1,6 @@
-# Redis Enterprise and Azure Managed Redis (Preview) `[Microsoft.Cache/redisEnterprise]`
+# Redis Enterprise and Azure Managed Redis `[Microsoft.Cache/redisEnterprise]`
 
-This module deploys a Redis Enterprise or Azure Managed Redis (Preview) cache.
+This module deploys a Redis Enterprise or Azure Managed Redis cache.
 
 ## Navigation
 
@@ -17,13 +17,13 @@ This module deploys a Redis Enterprise or Azure Managed Redis (Preview) cache.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cache/redisEnterprise` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise) |
-| `Microsoft.Cache/redisEnterprise/databases` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases) |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
+| `Microsoft.Cache/redisEnterprise` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise) |
+| `Microsoft.Cache/redisEnterprise/databases` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases) |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -34,8 +34,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cache/redis-enterprise:<version>`.
 
 - [Active geo-replication](#example-1-active-geo-replication)
-- [Azure Managed Redis (Preview) with Entra ID authentication](#example-2-azure-managed-redis-preview-with-entra-id-authentication)
-- [Azure Managed Redis (Preview)](#example-3-azure-managed-redis-preview)
+- [Azure Managed Redis with Entra ID authentication](#example-2-azure-managed-redis-with-entra-id-authentication)
+- [Azure Managed Redis with non-clustered policy (Preview)](#example-3-azure-managed-redis-with-non-clustered-policy-preview)
 - [Using only defaults](#example-4-using-only-defaults)
 - [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
 - [Using large parameter set](#example-6-using-large-parameter-set)
@@ -152,9 +152,9 @@ param skuName = 'Balanced_B10'
 </details>
 <p>
 
-### Example 2: _Azure Managed Redis (Preview) with Entra ID authentication_
+### Example 2: _Azure Managed Redis with Entra ID authentication_
 
-This instance deploys an Azure Managed Redis (Preview) cache with Entra ID authentication.
+This instance deploys an Azure Managed Redis cache with Entra ID authentication.
 
 
 <details>
@@ -178,7 +178,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       ]
     }
     location: '<location>'
-    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -213,9 +212,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "skuName": {
-      "value": "Balanced_B10"
     }
   }
 }
@@ -244,15 +240,14 @@ param database = {
   ]
 }
 param location = '<location>'
-param skuName = 'Balanced_B10'
 ```
 
 </details>
 <p>
 
-### Example 3: _Azure Managed Redis (Preview)_
+### Example 3: _Azure Managed Redis with non-clustered policy (Preview)_
 
-This instance deploys an Azure Managed Redis (Preview) cache with the minimum set of required parameters.
+This instance deploys an Azure Managed Redis cache in non-clustered mode (Preview).
 
 
 <details>
@@ -264,9 +259,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   name: 'redisEnterpriseDeployment'
   params: {
     // Required parameters
-    name: 'creamr001'
+    name: 'creanc001'
     // Non-required parameters
-    skuName: 'Balanced_B10'
+    database: {
+      clusteringPolicy: 'NoCluster'
+    }
   }
 }
 ```
@@ -285,11 +282,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creamr001"
+      "value": "creanc001"
     },
     // Non-required parameters
-    "skuName": {
-      "value": "Balanced_B10"
+    "database": {
+      "value": {
+        "clusteringPolicy": "NoCluster"
+      }
     }
   }
 }
@@ -306,9 +305,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creamr001'
+param name = 'creanc001'
 // Non-required parameters
-param skuName = 'Balanced_B10'
+param database = {
+  clusteringPolicy: 'NoCluster'
+}
 ```
 
 </details>
@@ -327,10 +328,7 @@ This instance deploys the module with the minimum set of required parameters.
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   name: 'redisEnterpriseDeployment'
   params: {
-    // Required parameters
     name: 'cremin001'
-    // Non-required parameters
-    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -347,13 +345,8 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "cremin001"
-    },
-    // Non-required parameters
-    "skuName": {
-      "value": "Balanced_B10"
     }
   }
 }
@@ -369,10 +362,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
-// Required parameters
 param name = 'cremin001'
-// Non-required parameters
-param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -405,7 +395,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
       }
     }
-    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -439,9 +428,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "secondaryStackExchangeRedisConnectionStringName": "custom-secondaryStackExchangeRedisConnectionString-name"
         }
       }
-    },
-    "skuName": {
-      "value": "Balanced_B10"
     }
   }
 }
@@ -471,7 +457,6 @@ param database = {
     secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
   }
 }
-param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -895,7 +880,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -938,9 +922,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "skuName": {
-      "value": "Balanced_B10"
     }
   }
 }
@@ -975,7 +956,6 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -1261,13 +1241,13 @@ param zones = [
 | [`database`](#parameter-database) | object | Database configuration. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The cluster-level diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`highAvailability`](#parameter-highavailability) | string | Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. HIGH AVAILABILITY IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-high-availability) FOR CLARIFICATION. |
+| [`highAvailability`](#parameter-highavailability) | string | Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | The minimum TLS version for the Redis cluster to support. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-overview#tiers-and-skus-at-a-glance) FOR CLARIFICATION. |
+| [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zones`](#parameter-zones) | array | The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs. |
 
@@ -1378,8 +1358,8 @@ Database configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessKeysAuthentication`](#parameter-databaseaccesskeysauthentication) | string | Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION. |
-| [`accessPolicyAssignments`](#parameter-databaseaccesspolicyassignments) | array | Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION. |
+| [`accessKeysAuthentication`](#parameter-databaseaccesskeysauthentication) | string | Allow authentication via access keys. |
+| [`accessPolicyAssignments`](#parameter-databaseaccesspolicyassignments) | array | Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
 | [`clientProtocol`](#parameter-databaseclientprotocol) | string | Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols. |
 | [`clusteringPolicy`](#parameter-databaseclusteringpolicy) | string | Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering). |
 | [`deferUpgrade`](#parameter-databasedeferupgrade) | string | Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades). |
@@ -1394,7 +1374,7 @@ Database configuration.
 
 ### Parameter: `database.accessKeysAuthentication`
 
-Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.
+Allow authentication via access keys.
 
 - Required: No
 - Type: string
@@ -1408,7 +1388,7 @@ Allow authentication via access keys. Only supported on Azure Managed Redis (Pre
 
 ### Parameter: `database.accessPolicyAssignments`
 
-Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.
+Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.
 
 - Required: No
 - Type: array
@@ -1477,6 +1457,7 @@ Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering
   ```Bicep
   [
     'EnterpriseCluster'
+    'NoCluster'
     'OSSCluster'
   ]
   ```
@@ -2042,7 +2023,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `highAvailability`
 
-Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. HIGH AVAILABILITY IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-high-availability) FOR CLARIFICATION.
+Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.
 
 - Required: No
 - Type: string
@@ -2630,11 +2611,11 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `skuName`
 
-The type of cluster to deploy. Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-overview#tiers-and-skus-at-a-glance) FOR CLARIFICATION.
+The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION.
 
 - Required: No
 - Type: string
-- Default: `'Enterprise_E5'`
+- Default: `'Balanced_B5'`
 - Allowed:
   ```Bicep
   [
@@ -2734,8 +2715,10 @@ The Availability Zones to place the resources in. Currently only supported on En
 | `databaseResourceId` | string | The resource ID of the database. |
 | `endpoint` | string | The Redis endpoint. |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
+| `hostName` | string | The Redis host name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Redis cluster. |
+| `port` | int | The Redis port. |
 | `privateEndpoints` | array | The private endpoints of the Redis resource. |
 | `resourceGroupName` | string | The name of the resource group the Redis resource was created in. |
 | `resourceId` | string | The resource ID of the Redis cluster. |
@@ -2746,7 +2729,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

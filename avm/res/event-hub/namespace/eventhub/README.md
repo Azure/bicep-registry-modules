@@ -234,7 +234,7 @@ Number of days to retain the events for this Event Hub, value should be 1 to 7 d
 - Type: int
 - Default: `1`
 - MinValue: 1
-- MaxValue: 7
+- MaxValue: 90
 
 ### Parameter: `partitionCount`
 
@@ -277,7 +277,7 @@ Retention time in hours. Number of hours to retain the events for this Event Hub
 - Type: int
 - Default: `1`
 - MinValue: 1
-- MaxValue: 168
+- MaxValue: 2160
 
 ### Parameter: `retentionDescriptionTombstoneRetentionTimeInHours`
 
@@ -287,7 +287,7 @@ Retention cleanup policy. Number of hours to retain the tombstone markers of a c
 - Type: int
 - Default: `1`
 - MinValue: 1
-- MaxValue: 168
+- MaxValue: 2160
 
 ### Parameter: `roleAssignments`
 

@@ -62,6 +62,9 @@ module testDeployment '../../../main.bicep' = [
         'privatelink.api.azureml.ms'
         'privatelink.{regionCode}.backup.windowsazure.com'
       ]
+      additionalPrivateLinkPrivateDnsZonesToInclude: [
+        'privatelink.3.azurestaticapps.net'
+      ]
       virtualNetworkResourceIdsToLinkTo: [
         nestedDependencies.outputs.vnet1ResourceId
       ]

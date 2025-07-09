@@ -48,7 +48,7 @@ param firewallPolicyId string = ''
 param hubIPAddresses hubIPAddressesType?
 
 @description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
-param virtualHubId string = ''
+param virtualHubResourceId string = ''
 
 @allowed([
   'Alert'
@@ -57,6 +57,12 @@ param virtualHubId string = ''
 ])
 @description('Optional. The operation mode for Threat Intel.')
 param threatIntelMode string = 'Deny'
+
+@description('Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
+param autoscaleMaxCapacity int?
+
+@description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
+param autoscaleMinCapacity int?
 
 @description('Optional. Zone numbers e.g. 1,2,3.')
 param zones array = [
@@ -84,7 +90,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the Azure Firewall resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/azureFirewalls@2024-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -117,11 +123,13 @@ var ipConfigurations = concat(
     {
       name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.outputs.name
       properties: union(
-        {
-          subnet: {
-            id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
-          }
-        },
+        (azureSkuName == 'AZFW_VNet')
+          ? {
+              subnet: {
+                id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
+              }
+            }
+          : {},
         (!empty(publicIPResourceID) || !empty(publicIPAddressObject))
           ? {
               //Use existing Public IP, new Public IP created in this module, or none if neither
@@ -287,6 +295,10 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
         networkRuleCollections: networkRuleCollections ?? []
       }
     : {
+        autoscaleConfiguration: {
+          maxCapacity: autoscaleMaxCapacity
+          minCapacity: autoscaleMinCapacity
+        }
         firewallPolicy: !empty(firewallPolicyId)
           ? {
               id: firewallPolicyId
@@ -297,9 +309,9 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
           tier: azureSkuTier
         }
         hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-        virtualHub: !empty(virtualHubId)
+        virtualHub: !empty(virtualHubResourceId)
           ? {
-              id: virtualHubId
+              id: virtualHubResourceId
             }
           : null
       }

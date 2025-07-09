@@ -12,8 +12,8 @@ This module deploys a Network Security Perimeter Profile.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkSecurityPerimeters/profiles` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters/profiles) |
-| `Microsoft.Network/networkSecurityPerimeters/profiles/accessRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-08-01-preview/networkSecurityPerimeters/profiles/accessRules) |
+| `Microsoft.Network/networkSecurityPerimeters/profiles` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters/profiles) |
+| `Microsoft.Network/networkSecurityPerimeters/profiles/accessRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkSecurityPerimeters/profiles/accessRules) |
 
 ## Parameters
 

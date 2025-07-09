@@ -1,6 +1,73 @@
 metadata name = 'Virtual Network Gateways'
 metadata description = 'This module deploys a Virtual Network Gateway.'
 
+// ============= //
+// User Types    //
+// ============= //
+
+@export()
+@description('Configuration for Virtual Network Gateway autoscale bounds.')
+type autoScaleBoundsType = {
+  @description('Required. Maximum Scale Units for autoscale configuration.')
+  max: int
+
+  @description('Required. Minimum Scale Units for autoscale configuration.')
+  min: int
+}
+
+@export()
+@description('Configuration for Virtual Network Gateway autoscale.')
+type autoScaleConfigurationType = {
+  @description('Required. The bounds of the autoscale configuration.')
+  bounds: autoScaleBoundsType
+}
+
+@export()
+@description('Configuration for VPN client AAD authentication.')
+type vpnClientAadConfigurationType = {
+  @description('Required. The AAD tenant property for VPN client connection used for AAD authentication.')
+  aadTenant: string
+
+  @description('Required. The AAD audience property for VPN client connection used for AAD authentication.')
+  aadAudience: string
+
+  @description('Required. The AAD issuer property for VPN client connection used for AAD authentication.')
+  aadIssuer: string
+
+  @description('Required. VPN authentication types for the virtual network gateway.')
+  vpnAuthenticationTypes: ('Certificate' | 'Radius' | 'AAD')[]
+
+  @description('Required. VPN client protocols for Virtual network gateway.')
+  vpnClientProtocols: ('IkeV2' | 'SSTP' | 'OpenVPN')[]
+}
+
+@export()
+@description('Configuration for IPAM Pool Prefix Allocation.')
+type ipamPoolPrefixAllocationType = {
+  @description('Optional. Number of IP addresses to allocate.')
+  numberOfIpAddresses: string?
+
+  @description('Required. Pool configuration for IPAM.')
+  pool: {
+    @description('Required. Resource id of the associated Azure IpamPool resource.')
+    id: string
+  }
+}
+
+@export()
+@description('Configuration for custom routes address space.')
+type customRoutesType = {
+  @description('Optional. A list of address blocks reserved for this virtual network in CIDR notation.')
+  addressPrefixes: string[]?
+
+  @description('Optional. A list of IPAM Pools allocating IP address prefixes.')
+  ipamPoolPrefixAllocations: ipamPoolPrefixAllocationType[]?
+}
+
+// ============= //
+// Parameters    //
+// ============= //
+
 @description('Required. Specifies the Virtual Network Gateway name.')
 param name string
 
@@ -60,6 +127,7 @@ param vpnGatewayGeneration string = 'None'
   'ErGw1AZ'
   'ErGw2AZ'
   'ErGw3AZ'
+  'ErGwScale'
 ])
 param skuName string = (gatewayType == 'Vpn') ? 'VpnGw1AZ' : 'ErGw1AZ'
 
@@ -124,14 +192,38 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualNetworkGateways@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
-param vpnClientAadConfiguration object?
+param vpnClientAadConfiguration vpnClientAadConfigurationType?
+
+@description('Optional. The managed identity definition for this resource. Supports system-assigned and user-assigned identities.')
+param managedIdentity managedIdentityAllType?
+
+@description('Optional. Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet. Only applicable for ExpressRoute gateways.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param adminState string = 'Enabled'
+
+@description('Optional. Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways.')
+@allowed([
+  'SingleHomed'
+  'MultiHomed'
+])
+param resiliencyModel string = 'SingleHomed'
+
+@description('Optional. Autoscale configuration for virtual network gateway. Only applicable for certain SKUs.')
+param autoScaleConfiguration autoScaleConfigurationType?
+
+@description('Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients.')
+param customRoutes customRoutesType?
 
 // ================//
 // Variables       //
@@ -424,7 +516,7 @@ var isAzSku = contains(skuName, 'AZ')
 var publicIpZonesToApply = isAzSku ? publicIpZones : []
 
 @batchSize(1)
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = [
   for (virtualGatewayPublicIpName, index) in arrayPipNameVar: {
     name: virtualGatewayPublicIpName
     params: {
@@ -441,7 +533,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
         domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
           : virtualGatewayPublicIpName
-        domainNameLabelScope: ''
+        domainNameLabelScope: 'TenantReuse'
       }
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -450,10 +542,28 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
 
 // VNET Gateway
 // ============
-resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04-01' = {
+resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05-01' = {
   name: name
   location: location
   tags: tags
+  identity: managedIdentity != null
+    ? {
+        type: (managedIdentity.?systemAssigned ?? false) && (managedIdentity.?userAssignedResourceIds ?? []) != []
+          ? 'SystemAssigned, UserAssigned'
+          : (managedIdentity.?systemAssigned ?? false)
+            ? 'SystemAssigned'
+            : (managedIdentity.?userAssignedResourceIds ?? []) != []
+              ? 'UserAssigned'
+              : 'None'
+        userAssignedIdentities: (managedIdentity.?userAssignedResourceIds ?? []) != []
+          ? reduce(
+              map((managedIdentity.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+              {},
+              (cur, next) => union(cur, next)
+            )
+          : null
+      }
+    : null
   properties: {
     ipConfigurations: ipConfiguration
     activeActive: isActiveActive
@@ -478,6 +588,10 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     vpnType: !isExpressRoute ? vpnType : 'PolicyBased'
     vpnClientConfiguration: !empty(vpnClientAddressPoolPrefix) ? vpnClientConfiguration : null
     vpnGatewayGeneration: gatewayType == 'Vpn' ? vpnGatewayGeneration : 'None'
+    customRoutes: customRoutes
+    adminState: isExpressRoute ? adminState : null
+    resiliencyModel: isExpressRoute ? resiliencyModel : null
+    autoScaleConfiguration: autoScaleConfiguration
   }
   dependsOn: [
     publicIPAddress

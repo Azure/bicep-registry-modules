@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "14383983573401363041"
+    },
+    "name": "Machine Learning Services Workspaces Datastores",
+    "description": "This module creates a datastore in a Machine Learning Services workspace."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the datastore to create."
+      }
+    },
+    "machineLearningWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent Machine Learning Workspace."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01#properties/properties"
+        },
+        "description": "Required. The properties of the datastore."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+      "apiVersion": "2024-10-01",
+      "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
+      "properties": "[parameters('properties')]"
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the datastore."
+      },
+      "value": "[resourceId('Microsoft.MachineLearningServices/workspaces/datastores', parameters('machineLearningWorkspaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the datastore."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the datastore was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
