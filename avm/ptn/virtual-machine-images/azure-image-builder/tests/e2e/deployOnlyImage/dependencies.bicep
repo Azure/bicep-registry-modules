@@ -61,10 +61,6 @@ resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleD
   name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
   scope: tenant()
 }
-resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
-  scope: tenant()
-}
 
 // Resource Groups
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
@@ -107,7 +103,7 @@ module imageMSI_build_rg_rbac 'br/public:avm/res/authorization/role-assignment/r
   name: '${deployment().name}-image-msi-rbac'
   params: {
     principalId: imageMSI.outputs.principalId
-    roleDefinitionIdOrName: contributorRole.id
+    roleDefinitionIdOrName: 'Contributor' // Required to build the image in the build-rg
     principalType: 'ServicePrincipal'
   }
 }

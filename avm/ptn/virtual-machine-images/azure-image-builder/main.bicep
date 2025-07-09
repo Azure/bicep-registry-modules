@@ -153,6 +153,12 @@ resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = if (deploymentsToP
   location: location
 }
 
+// Optional Image Staging RG
+resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2025-04-01' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
+  name: imageTemplateResourceGroupName
+  location: location
+}
+
 // User Assigned Identity (MSI)
 module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-msi'
@@ -175,38 +181,17 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1
 }
 
 // MSI RG contributor assignment
-resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
-  scope: tenant()
-}
-module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  scope: rg
-  name: '${deployment().name}-image-msi-rbac-main-rg'
+module imageMSI_build_rg_rbac 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+  scope: imageTemplateRg
+  name: '${deployment().name}-image-msi-rbac-build-rg'
   params: {
     // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
-    msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI!.outputs.resourceId
+    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+      ? imageMSI!.outputs.principalId
       : ''
-    roleDefinitionId: contributorRole.id
-  }
-}
-
-// Optional Image Staging RG
-module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.1' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
-  name: '${deployment().name}-image-rg'
-  params: {
-    name: imageTemplateResourceGroupName
-    location: location
+    roleDefinitionIdOrName: 'Contributor' // Required to build the image in the build-rg
+    principalType: 'ServicePrincipal'
     enableTelemetry: enableTelemetry
-    roleAssignments: [
-      {
-        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-          ? imageMSI!.outputs.principalId
-          : ''
-        roleDefinitionIdOrName: contributorRole.id
-        principalType: 'ServicePrincipal'
-      }
-    ]
   }
 }
 
@@ -219,6 +204,13 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = if (deplo
     images: computeGalleryImageDefinitions
     location: location
     enableTelemetry: enableTelemetry
+    roleAssignments: [
+      {
+        principalId: imageMSI!.outputs.principalId
+        roleDefinitionIdOrName: 'Contributor' // Required to publish images to the Azure Compute Gallery (ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#allow-vm-image-builder-to-distribute-images)
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
@@ -262,6 +254,13 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (deploymentsT
     ]
     location: location
     enableTelemetry: enableTelemetry
+    roleAssignments: [
+      {
+        principalId: imageMSI!.outputs.principalId
+        roleDefinitionIdOrName: 'Network Contributor' // Required to use private networking (ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#permission-to-customize-images-on-your-virtual-networks)
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
@@ -322,12 +321,6 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
   }
 }
 
-// Role required for deployment script to be able to use a storage account via private networking
-resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
-  scope: tenant()
-}
-
 // Deployment scripts & their storage account
 module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
@@ -340,7 +333,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if 
       {
         // Allow MSI to leverage the storage account for private networking of container instance
         // ref: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep#access-private-virtual-network
-        roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Privileged Contributor
+        roleDefinitionIdOrName: 'Storage File Data Privileged Contributor'
         principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
           ? dsMsi!.outputs.principalId
           : '' // Requires condition als Bicep will otherwise try to resolve the null reference
@@ -515,8 +508,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   }
   dependsOn: [
     storageAccount_upload
-    imageMSI_rg_rbac
-    // rg
+    imageMSI_build_rg_rbac
     imageMSI
     azureComputeGallery
     vnet
