@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "15717079781166146551"
+      "templateHash": "4538381746020372287"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -227,7 +227,7 @@
         "description": "The type of the secrets exported to the provided Key Vault."
       }
     },
-    "disconnectedContainerCommitmentPlanType": {
+    "commitmentPlanType": {
       "type": "object",
       "properties": {
         "autoRenew": {
@@ -259,7 +259,7 @@
         "hostingModel": {
           "type": "string",
           "metadata": {
-            "description": "Required. The hosting model for the commitment plan. For disconnected containers, this must be \"DisconnectedContainer\"."
+            "description": "Required. The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web)."
           }
         },
         "planType": {
@@ -1134,60 +1134,14 @@
         "description": "Optional. Enable/Disable project management feature for AI Foundry."
       }
     },
-    "isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS": {
-      "type": "bool",
-      "defaultValue": false,
+    "commitmentPlans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/commitmentPlanType"
+      },
+      "defaultValue": [],
       "metadata": {
-        "description": "Optional. Enable commitment plan for disconnected container for Neural TTS"
-      }
-    },
-    "commitmentPlanForDisconnectedContainerForNeuralTTS": {
-      "$ref": "#/definitions/disconnectedContainerCommitmentPlanType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Commitment plan properties for disconnected container for Neural TTS"
-      }
-    },
-    "isCommitmentPlanForDisconnectedContainerEnabledForSTT": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable commitment plan for disconnected container for STT"
-      }
-    },
-    "commitmentPlanForDisconnectedContainerForSTT": {
-      "$ref": "#/definitions/disconnectedContainerCommitmentPlanType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Commitment plan properties for disconnected container for STT"
-      }
-    },
-    "isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable commitment plan for disconnected container for Custom STT"
-      }
-    },
-    "commitmentPlanForDisconnectedContainerForCustomSTT": {
-      "$ref": "#/definitions/disconnectedContainerCommitmentPlanType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Commitment plan properties for disconnected container for Custom STT"
-      }
-    },
-    "isCommitmentPlanForDisconnectedContainerEnabledForAddOn": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable commitment plan for disconnected container for Add-On"
-      }
-    },
-    "commitmentPlanForDisconnectedContainerForAddOn": {
-      "$ref": "#/definitions/disconnectedContainerCommitmentPlanType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Commitment plan properties for disconnected container for Add-On"
+        "description": "Optional. Commitment plans to deploy for the cognitive services account."
       }
     }
   },
@@ -1233,29 +1187,7 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    },
-    "disconnectedCommitmentPlans": [
-      {
-        "name": "DisconnectedContainer-NeuralTTS",
-        "enabled": "[parameters('isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS')]",
-        "properties": "[parameters('commitmentPlanForDisconnectedContainerForNeuralTTS')]"
-      },
-      {
-        "name": "DisconnectedContainer-STT",
-        "enabled": "[parameters('isCommitmentPlanForDisconnectedContainerEnabledForSTT')]",
-        "properties": "[parameters('commitmentPlanForDisconnectedContainerForSTT')]"
-      },
-      {
-        "name": "DisconnectedContainer-CustomSTT",
-        "enabled": "[parameters('isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT')]",
-        "properties": "[parameters('commitmentPlanForDisconnectedContainerForCustomSTT')]"
-      },
-      {
-        "name": "DisconnectedContainer-AddOn",
-        "enabled": "[parameters('isCommitmentPlanForDisconnectedContainerEnabledForAddOn')]",
-        "properties": "[parameters('commitmentPlanForDisconnectedContainerForAddOn')]"
-      }
-    ]
+    }
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -1371,16 +1303,15 @@
         "cognitiveService"
       ]
     },
-    "disconnectedCommitmentPlansRes": {
+    "commitmentPlansRes": {
       "copy": {
-        "name": "disconnectedCommitmentPlansRes",
-        "count": "[length(variables('disconnectedCommitmentPlans'))]"
+        "name": "commitmentPlansRes",
+        "count": "[length(parameters('commitmentPlans'))]"
       },
-      "condition": "[and(variables('disconnectedCommitmentPlans')[copyIndex()].enabled, not(empty(variables('disconnectedCommitmentPlans')[copyIndex()].properties)))]",
       "type": "Microsoft.CognitiveServices/accounts/commitmentPlans",
       "apiVersion": "2025-04-01-preview",
-      "name": "[format('{0}/{1}', parameters('name'), variables('disconnectedCommitmentPlans')[copyIndex()].name)]",
-      "properties": "[variables('disconnectedCommitmentPlans')[copyIndex()].properties]",
+      "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}', parameters('commitmentPlans')[copyIndex()].hostingModel, parameters('commitmentPlans')[copyIndex()].planType))]",
+      "properties": "[parameters('commitmentPlans')[copyIndex()]]",
       "dependsOn": [
         "cognitiveService"
       ]

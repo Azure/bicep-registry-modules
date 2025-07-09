@@ -350,7 +350,7 @@ metadata description = 'This instance deploys SpeechServices with DC0 and Discon
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
+param resourceGroupName string = 'ttsaas-dev-gb-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -377,17 +377,17 @@ module speechDeployment '../../../main.bicep' = {
 
     publicNetworkAccess: 'Enabled'
 
-    isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS: true
-    commitmentPlanForDisconnectedContainerForNeuralTTS: {
-      autoRenew: false
-      hostingModel: 'DisconnectedContainer'
-      planType: 'NTTS'
-      current: {
-        count: 1
-        tier: 'T1'
+    commitmentPlans: [
+      {
+        autoRenew: false
+        hostingModel: 'DisconnectedContainer'
+        planType: 'NTTS'
+        current: {
+          count: 1
+          tier: 'T1'
+        }
       }
-    }
-
+    ]
     tags: {
       Environment: 'Test'
       Deployment: 'DC0Disconnected'
@@ -1803,20 +1803,13 @@ param tags = {
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
 | [`allowProjectManagement`](#parameter-allowprojectmanagement) | bool | Enable/Disable project management feature for AI Foundry. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
-| [`commitmentPlanForDisconnectedContainerForAddOn`](#parameter-commitmentplanfordisconnectedcontainerforaddon) | object | Commitment plan properties for disconnected container for Add-On |
-| [`commitmentPlanForDisconnectedContainerForCustomSTT`](#parameter-commitmentplanfordisconnectedcontainerforcustomstt) | object | Commitment plan properties for disconnected container for Custom STT |
-| [`commitmentPlanForDisconnectedContainerForNeuralTTS`](#parameter-commitmentplanfordisconnectedcontainerforneuraltts) | object | Commitment plan properties for disconnected container for Neural TTS |
-| [`commitmentPlanForDisconnectedContainerForSTT`](#parameter-commitmentplanfordisconnectedcontainerforstt) | object | Commitment plan properties for disconnected container for STT |
+| [`commitmentPlans`](#parameter-commitmentplans) | array | Commitment plans to deploy for the cognitive services account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`isCommitmentPlanForDisconnectedContainerEnabledForAddOn`](#parameter-iscommitmentplanfordisconnectedcontainerenabledforaddon) | bool | Enable commitment plan for disconnected container for Add-On |
-| [`isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT`](#parameter-iscommitmentplanfordisconnectedcontainerenabledforcustomstt) | bool | Enable commitment plan for disconnected container for Custom STT |
-| [`isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS`](#parameter-iscommitmentplanfordisconnectedcontainerenabledforneuraltts) | bool | Enable commitment plan for disconnected container for Neural TTS |
-| [`isCommitmentPlanForDisconnectedContainerEnabledForSTT`](#parameter-iscommitmentplanfordisconnectedcontainerenabledforstt) | bool | Enable commitment plan for disconnected container for STT |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -1903,37 +1896,38 @@ The API properties for special APIs.
 - Required: No
 - Type: object
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn`
+### Parameter: `commitmentPlans`
 
-Commitment plan properties for disconnected container for Add-On
+Commitment plans to deploy for the cognitive services account.
 
 - Required: No
-- Type: object
+- Type: array
+- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoRenew`](#parameter-commitmentplanfordisconnectedcontainerforaddonautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
-| [`current`](#parameter-commitmentplanfordisconnectedcontainerforaddoncurrent) | object | The current commitment configuration. |
-| [`hostingModel`](#parameter-commitmentplanfordisconnectedcontainerforaddonhostingmodel) | string | The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer". |
-| [`planType`](#parameter-commitmentplanfordisconnectedcontainerforaddonplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
+| [`autoRenew`](#parameter-commitmentplansautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
+| [`current`](#parameter-commitmentplanscurrent) | object | The current commitment configuration. |
+| [`hostingModel`](#parameter-commitmentplanshostingmodel) | string | The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web). |
+| [`planType`](#parameter-commitmentplansplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`commitmentPlanGuid`](#parameter-commitmentplanfordisconnectedcontainerforaddoncommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
-| [`next`](#parameter-commitmentplanfordisconnectedcontainerforaddonnext) | object | The configuration of the next commitment period, if scheduled. |
+| [`commitmentPlanGuid`](#parameter-commitmentplanscommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
+| [`next`](#parameter-commitmentplansnext) | object | The configuration of the next commitment period, if scheduled. |
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.autoRenew`
+### Parameter: `commitmentPlans.autoRenew`
 
 Whether the plan should auto-renew at the end of the current commitment period.
 
 - Required: Yes
 - Type: bool
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.current`
+### Parameter: `commitmentPlans.current`
 
 The current commitment configuration.
 
@@ -1944,45 +1938,45 @@ The current commitment configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforaddoncurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforaddoncurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
+| [`count`](#parameter-commitmentplanscurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
+| [`tier`](#parameter-commitmentplanscurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.current.count`
+### Parameter: `commitmentPlans.current.count`
 
 The number of committed instances (e.g., number of containers or cores).
 
 - Required: Yes
 - Type: int
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.current.tier`
+### Parameter: `commitmentPlans.current.tier`
 
 The tier of the commitment plan (e.g., T1, T2).
 
 - Required: Yes
 - Type: string
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.hostingModel`
+### Parameter: `commitmentPlans.hostingModel`
 
-The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer".
+The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web).
 
 - Required: Yes
 - Type: string
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.planType`
+### Parameter: `commitmentPlans.planType`
 
 The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).
 
 - Required: Yes
 - Type: string
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.commitmentPlanGuid`
+### Parameter: `commitmentPlans.commitmentPlanGuid`
 
 The unique identifier of an existing commitment plan to update. Set to null to create a new plan.
 
 - Required: No
 - Type: string
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.next`
+### Parameter: `commitmentPlans.next`
 
 The configuration of the next commitment period, if scheduled.
 
@@ -1993,338 +1987,17 @@ The configuration of the next commitment period, if scheduled.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforaddonnextcount) | int | The number of committed instances for the next period. |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforaddonnexttier) | string | The tier for the next commitment period. |
+| [`count`](#parameter-commitmentplansnextcount) | int | The number of committed instances for the next period. |
+| [`tier`](#parameter-commitmentplansnexttier) | string | The tier for the next commitment period. |
 
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.next.count`
-
-The number of committed instances for the next period.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `commitmentPlanForDisconnectedContainerForAddOn.next.tier`
-
-The tier for the next commitment period.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT`
-
-Commitment plan properties for disconnected container for Custom STT
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoRenew`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
-| [`current`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttcurrent) | object | The current commitment configuration. |
-| [`hostingModel`](#parameter-commitmentplanfordisconnectedcontainerforcustomstthostingmodel) | string | The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer". |
-| [`planType`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`commitmentPlanGuid`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttcommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
-| [`next`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttnext) | object | The configuration of the next commitment period, if scheduled. |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.autoRenew`
-
-Whether the plan should auto-renew at the end of the current commitment period.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.current`
-
-The current commitment configuration.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttcurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttcurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.current.count`
-
-The number of committed instances (e.g., number of containers or cores).
-
-- Required: Yes
-- Type: int
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.current.tier`
-
-The tier of the commitment plan (e.g., T1, T2).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.hostingModel`
-
-The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.planType`
-
-The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.commitmentPlanGuid`
-
-The unique identifier of an existing commitment plan to update. Set to null to create a new plan.
-
-- Required: No
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.next`
-
-The configuration of the next commitment period, if scheduled.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttnextcount) | int | The number of committed instances for the next period. |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforcustomsttnexttier) | string | The tier for the next commitment period. |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.next.count`
+### Parameter: `commitmentPlans.next.count`
 
 The number of committed instances for the next period.
 
 - Required: Yes
 - Type: int
 
-### Parameter: `commitmentPlanForDisconnectedContainerForCustomSTT.next.tier`
-
-The tier for the next commitment period.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS`
-
-Commitment plan properties for disconnected container for Neural TTS
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoRenew`](#parameter-commitmentplanfordisconnectedcontainerforneuralttsautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
-| [`current`](#parameter-commitmentplanfordisconnectedcontainerforneuralttscurrent) | object | The current commitment configuration. |
-| [`hostingModel`](#parameter-commitmentplanfordisconnectedcontainerforneuralttshostingmodel) | string | The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer". |
-| [`planType`](#parameter-commitmentplanfordisconnectedcontainerforneuralttsplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`commitmentPlanGuid`](#parameter-commitmentplanfordisconnectedcontainerforneuralttscommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
-| [`next`](#parameter-commitmentplanfordisconnectedcontainerforneuralttsnext) | object | The configuration of the next commitment period, if scheduled. |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.autoRenew`
-
-Whether the plan should auto-renew at the end of the current commitment period.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.current`
-
-The current commitment configuration.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforneuralttscurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforneuralttscurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.current.count`
-
-The number of committed instances (e.g., number of containers or cores).
-
-- Required: Yes
-- Type: int
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.current.tier`
-
-The tier of the commitment plan (e.g., T1, T2).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.hostingModel`
-
-The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.planType`
-
-The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.commitmentPlanGuid`
-
-The unique identifier of an existing commitment plan to update. Set to null to create a new plan.
-
-- Required: No
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.next`
-
-The configuration of the next commitment period, if scheduled.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforneuralttsnextcount) | int | The number of committed instances for the next period. |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforneuralttsnexttier) | string | The tier for the next commitment period. |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.next.count`
-
-The number of committed instances for the next period.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `commitmentPlanForDisconnectedContainerForNeuralTTS.next.tier`
-
-The tier for the next commitment period.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT`
-
-Commitment plan properties for disconnected container for STT
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoRenew`](#parameter-commitmentplanfordisconnectedcontainerforsttautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
-| [`current`](#parameter-commitmentplanfordisconnectedcontainerforsttcurrent) | object | The current commitment configuration. |
-| [`hostingModel`](#parameter-commitmentplanfordisconnectedcontainerforstthostingmodel) | string | The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer". |
-| [`planType`](#parameter-commitmentplanfordisconnectedcontainerforsttplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`commitmentPlanGuid`](#parameter-commitmentplanfordisconnectedcontainerforsttcommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
-| [`next`](#parameter-commitmentplanfordisconnectedcontainerforsttnext) | object | The configuration of the next commitment period, if scheduled. |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.autoRenew`
-
-Whether the plan should auto-renew at the end of the current commitment period.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.current`
-
-The current commitment configuration.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforsttcurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforsttcurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.current.count`
-
-The number of committed instances (e.g., number of containers or cores).
-
-- Required: Yes
-- Type: int
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.current.tier`
-
-The tier of the commitment plan (e.g., T1, T2).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.hostingModel`
-
-The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.planType`
-
-The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.commitmentPlanGuid`
-
-The unique identifier of an existing commitment plan to update. Set to null to create a new plan.
-
-- Required: No
-- Type: string
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.next`
-
-The configuration of the next commitment period, if scheduled.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`count`](#parameter-commitmentplanfordisconnectedcontainerforsttnextcount) | int | The number of committed instances for the next period. |
-| [`tier`](#parameter-commitmentplanfordisconnectedcontainerforsttnexttier) | string | The tier for the next commitment period. |
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.next.count`
-
-The number of committed instances for the next period.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `commitmentPlanForDisconnectedContainerForSTT.next.tier`
+### Parameter: `commitmentPlans.next.tier`
 
 The tier for the next commitment period.
 
@@ -2685,38 +2358,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `isCommitmentPlanForDisconnectedContainerEnabledForAddOn`
-
-Enable commitment plan for disconnected container for Add-On
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT`
-
-Enable commitment plan for disconnected container for Custom STT
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS`
-
-Enable commitment plan for disconnected container for Neural TTS
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `isCommitmentPlanForDisconnectedContainerEnabledForSTT`
-
-Enable commitment plan for disconnected container for STT
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `location`
 

@@ -136,29 +136,8 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. Enable/Disable project management feature for AI Foundry.')
 param allowProjectManagement bool?
 
-@description('Optional. Enable commitment plan for disconnected container for Neural TTS')
-param isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS bool = false
-
-@description('Optional. Commitment plan properties for disconnected container for Neural TTS')
-param commitmentPlanForDisconnectedContainerForNeuralTTS disconnectedContainerCommitmentPlanType?
-
-@description('Optional. Enable commitment plan for disconnected container for STT')
-param isCommitmentPlanForDisconnectedContainerEnabledForSTT bool = false
-
-@description('Optional. Commitment plan properties for disconnected container for STT')
-param commitmentPlanForDisconnectedContainerForSTT disconnectedContainerCommitmentPlanType?
-
-@description('Optional. Enable commitment plan for disconnected container for Custom STT')
-param isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT bool = false
-
-@description('Optional. Commitment plan properties for disconnected container for Custom STT')
-param commitmentPlanForDisconnectedContainerForCustomSTT disconnectedContainerCommitmentPlanType?
-
-@description('Optional. Enable commitment plan for disconnected container for Add-On')
-param isCommitmentPlanForDisconnectedContainerEnabledForAddOn bool = false
-
-@description('Optional. Commitment plan properties for disconnected container for Add-On')
-param commitmentPlanForDisconnectedContainerForAddOn disconnectedContainerCommitmentPlanType?
+@description('Optional. Commitment plans to deploy for the cognitive services account.')
+param commitmentPlans commitmentPlanType[] = []
 
 var enableReferencedModulesTelemetry = false
 
@@ -419,34 +398,11 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: cognitiveService
 }
 
-var disconnectedCommitmentPlans = [
-  {
-    name: 'DisconnectedContainer-NeuralTTS'
-    enabled: isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS
-    properties: commitmentPlanForDisconnectedContainerForNeuralTTS
-  }
-  {
-    name: 'DisconnectedContainer-STT'
-    enabled: isCommitmentPlanForDisconnectedContainerEnabledForSTT
-    properties: commitmentPlanForDisconnectedContainerForSTT
-  }
-  {
-    name: 'DisconnectedContainer-CustomSTT'
-    enabled: isCommitmentPlanForDisconnectedContainerEnabledForCustomSTT
-    properties: commitmentPlanForDisconnectedContainerForCustomSTT
-  }
-  {
-    name: 'DisconnectedContainer-AddOn'
-    enabled: isCommitmentPlanForDisconnectedContainerEnabledForAddOn
-    properties: commitmentPlanForDisconnectedContainerForAddOn
-  }
-]
-
-resource disconnectedCommitmentPlansRes 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-04-01-preview' = [
-  for plan in disconnectedCommitmentPlans: if (plan.enabled && !empty(plan.properties)) {
+resource commitmentPlansRes 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-04-01-preview' = [
+  for plan in commitmentPlans: {
     parent: cognitiveService
-    name: plan.name
-    properties: plan.properties
+    name: '${plan.hostingModel}-${plan.planType}'
+    properties: plan
   }
 ]
 
@@ -714,7 +670,7 @@ type secretsExportConfigurationType = {
 
 @export()
 @description('The type for a disconnected container commitment plan.')
-type disconnectedContainerCommitmentPlanType = {
+type commitmentPlanType = {
   @description('Required. Whether the plan should auto-renew at the end of the current commitment period.')
   autoRenew: bool
 
@@ -727,7 +683,7 @@ type disconnectedContainerCommitmentPlanType = {
     tier: string
   }
 
-  @description('Required. The hosting model for the commitment plan. For disconnected containers, this must be "DisconnectedContainer".')
+  @description('Required. The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web).')
   hostingModel: string
 
   @description('Required. The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).')

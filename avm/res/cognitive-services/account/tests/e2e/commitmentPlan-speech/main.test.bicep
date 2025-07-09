@@ -5,7 +5,7 @@ metadata description = 'This instance deploys SpeechServices with DC0 and Discon
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
+param resourceGroupName string = 'ttsaas-dev-gb-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -32,17 +32,17 @@ module speechDeployment '../../../main.bicep' = {
 
     publicNetworkAccess: 'Enabled'
 
-    isCommitmentPlanForDisconnectedContainerEnabledForNeuralTTS: true
-    commitmentPlanForDisconnectedContainerForNeuralTTS: {
-      autoRenew: false
-      hostingModel: 'DisconnectedContainer'
-      planType: 'NTTS'
-      current: {
-        count: 1
-        tier: 'T1'
+    commitmentPlans: [
+      {
+        autoRenew: false
+        hostingModel: 'DisconnectedContainer'
+        planType: 'NTTS'
+        current: {
+          count: 1
+          tier: 'T1'
+        }
       }
-    }
-
+    ]
     tags: {
       Environment: 'Test'
       Deployment: 'DC0Disconnected'
