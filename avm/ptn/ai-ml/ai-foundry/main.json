@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16977679211406676704"
+      "templateHash": "14685917615888551558"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14373,6 +14373,9 @@
           },
           "contentSafetyEnabled": {
             "value": "[parameters('contentSafetyEnabled')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "tags": {
             "value": "[variables('allTags')]"
@@ -51594,7 +51597,7 @@
           "aiServicesName": {
             "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
           },
-          "nameFormatted": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
+          "aiSearchName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
           "projUploadsContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('value', ''))]",
           "sysDataContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.sysDataContainerName.value), createObject('value', ''))]"
         },
@@ -51605,7 +51608,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10240992884802986658"
+              "templateHash": "11656342596774918643"
             }
           },
           "parameters": {
@@ -51652,7 +51655,7 @@
                 "description": "Foundry Account Name"
               }
             },
-            "nameFormatted": {
+            "aiSearchName": {
               "type": "string",
               "metadata": {
                 "description": "Azure Search Service Name"
@@ -51691,7 +51694,7 @@
           "resources": [
             {
               "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('defaultProjectName'))]",
               "location": "[parameters('location')]",
               "identity": {
@@ -51705,7 +51708,7 @@
             {
               "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
               "properties": {
                 "category": "AzureBlob",
@@ -51726,7 +51729,7 @@
             {
               "condition": "[and(and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
               "properties": {
                 "category": "AzureBlob",
@@ -51745,19 +51748,19 @@
               ]
             },
             {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('nameFormatted'))))]",
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('aiSearchName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('aiSearchName'))]",
               "properties": {
                 "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', parameters('nameFormatted'))]",
+                "target": "[format('https://{0}.search.windows.net/', parameters('aiSearchName'))]",
                 "authType": "AAD",
                 "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('nameFormatted'))]",
-                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('nameFormatted')), '2023-11-01', 'full').location]"
+                  "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('aiSearchName'))]",
+                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('aiSearchName')), '2023-11-01', 'full').location]"
                 }
               },
               "dependsOn": [
@@ -51767,7 +51770,7 @@
             {
               "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('cosmosDBName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
               "properties": {
                 "category": "CosmosDB",
@@ -51786,7 +51789,7 @@
             {
               "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
               "properties": {
                 "capabilityHostKind": "Agents"
@@ -51795,12 +51798,12 @@
             {
               "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
               "properties": {
                 "capabilityHostKind": "Agents",
                 "vectorStoreConnections": [
-                  "[parameters('nameFormatted')]"
+                  "[parameters('aiSearchName')]"
                 ],
                 "storageConnections": [
                   "[parameters('storageName')]"
@@ -51814,7 +51817,7 @@
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('aiSearchName'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
               ]
             }
@@ -51842,7 +51845,7 @@
             },
             "aiSearchConnection": {
               "type": "string",
-              "value": "[parameters('nameFormatted')]"
+              "value": "[parameters('aiSearchName')]"
             }
           }
         }
