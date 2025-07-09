@@ -128,7 +128,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
     roleAssignments: [
       {
         principalId: imageMSI.outputs.principalId
-        roleDefinitionIdOrName: 'Contributor'
+        roleDefinitionIdOrName: 'Contributor' // Required to publish images to the Azure Compute Gallery
         principalType: 'ServicePrincipal'
       }
     ]
@@ -171,6 +171,13 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
       }
     ]
     location: location
+    roleAssignments: [
+      {
+        principalId: imageMSI.outputs.principalId
+        roleDefinitionIdOrName: 'Network Contributor' // Required to use private networking (ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#permission-to-customize-images-on-your-virtual-networks)
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
