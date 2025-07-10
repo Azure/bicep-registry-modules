@@ -171,7 +171,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (!basicDeploymen
 }
 
 module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
-  name: '${name}-cognitive-services-deployment'
+  name: take('${name}-cognitive-services-deployment', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
@@ -293,7 +293,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (!basicDeployment) {
 }
 
 module project 'modules/aifoundryproject.bicep' = {
-  name: take('${name}-project-deployment', 64)
+  name: take('${name}-foundry-project-deployment', 64)
   dependsOn: !basicDeployment
     ? [
         storageAccount

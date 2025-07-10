@@ -1,7 +1,7 @@
 @description('Name of the Storage Account.')
 param name string
 
-@description('Specifies the location for all the Azure resources.')
+@description('Specifies the location for the Storage Account.')
 param location string
 
 @description('Optional. Tags to be applied to the resources.')
