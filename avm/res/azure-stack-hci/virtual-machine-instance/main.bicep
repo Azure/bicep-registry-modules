@@ -89,6 +89,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry bool = false
+
 module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
   name: '${arcMachineResourceName}-deployment'
   scope: resourceGroup()
@@ -96,11 +98,7 @@ module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
     name: arcMachineResourceName
     location: location
     kind: 'HCI'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
