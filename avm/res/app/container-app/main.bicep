@@ -337,13 +337,6 @@ resource containerApp_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
           timeGrain: null
         }
       ]
-      logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
-          categoryGroup: group.?categoryGroup
-          category: group.?category
-          enabled: group.?enabled ?? true
-        }
-      ]
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
