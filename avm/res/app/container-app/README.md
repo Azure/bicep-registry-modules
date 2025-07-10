@@ -877,6 +877,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: []
+        metricCategories: [
+          {
+            category: 'allMetrics'
+          }
+        ]
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -950,6 +956,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [],
+          "metricCategories": [
+            {
+              "category": "allMetrics"
+            }
+          ],
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -1023,6 +1035,12 @@ param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: []
+    metricCategories: [
+      {
+        category: 'allMetrics'
+      }
+    ]
     storageAccountResourceId: '<storageAccountResourceId>'
     workspaceResourceId: '<workspaceResourceId>'
   }
