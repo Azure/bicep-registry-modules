@@ -57,12 +57,14 @@ var computeGalleryImageDefinitionsVar = [
 var assetsStorageAccountContainerName = 'aibscripts'
 
 // Role required for deployment script to be able to use a storage account via private networking
+#disable-next-line use-recent-module-versions
 resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
   scope: tenant()
 }
 
 // Resource Groups
+#disable-next-line use-recent-module-versions
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: location

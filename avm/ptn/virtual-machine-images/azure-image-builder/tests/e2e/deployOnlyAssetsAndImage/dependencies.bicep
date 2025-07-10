@@ -61,11 +61,13 @@ resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleD
 }
 
 // Resource Groups
+#disable-next-line use-recent-module-versions
 resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: location
 }
 
+#disable-next-line use-recent-module-versions
 resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: imageTemplateResourceGroupName
   location: location
