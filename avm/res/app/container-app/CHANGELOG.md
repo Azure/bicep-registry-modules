@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Initial version
 
+### Breaking Changes
+
+- None
+
 ## 0.18.0
 
 ### Changes
