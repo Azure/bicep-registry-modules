@@ -89,8 +89,26 @@ var formattedRoleAssignments = [
   })
 ]
 
+module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
+  name: '${arcMachineResourceName}-deployment'
+  scope: resourceGroup()
+  params: {
+    name: arcMachineResourceName
+    location: location
+    kind: 'HCI'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+
 resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
   name: arcMachineResourceName
+  dependsOn: [
+    hybridCompute
+  ]
 }
 
 resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview' = {

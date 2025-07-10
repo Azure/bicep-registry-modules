@@ -211,21 +211,6 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
   }
 }
 
-module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-hybridCompute-${serviceShort}'
-  scope: resourceGroup
-  params: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-vm-${serviceShort}'
-    location: enforcedLocation
-    kind: 'HCI'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -237,7 +222,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}vm'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
-    arcMachineResourceName: hybridCompute.outputs.name
+    arcMachineResourceName: '${uniqueString(deployment().name, enforcedLocation)}-hc-${serviceShort}'
     hardwareProfile: {
       memoryMB: 4096
       processors: 2
