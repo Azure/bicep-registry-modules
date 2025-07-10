@@ -130,6 +130,11 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     roleAssignments: [
       {
         name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -201,6 +206,13 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
         "name": "myCustomLockName"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "roleAssignments": {
       "value": [
         {
@@ -255,6 +267,11 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {
@@ -363,9 +380,10 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 | [`billingType`](#parameter-billingtype) | string | Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encapsulation`](#parameter-encapsulation) | string | Encapsulation method on physical ports. |
-| [`links`](#parameter-links) | array | Properties of the ExpressRouteLink. |
+| [`links`](#parameter-links) | array | The set of physical links of the ExpressRoutePort resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -430,7 +448,7 @@ Encapsulation method on physical ports.
 
 ### Parameter: `links`
 
-Properties of the ExpressRouteLink.
+The set of physical links of the ExpressRoutePort resource.
 
 - Required: No
 - Type: array
@@ -592,6 +610,26 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -718,6 +756,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

@@ -45,10 +45,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnminlogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
-    // Non-required parameters
-    routeName: 'default'
-    vlanId: '<vlanId>'
+    vmSwitchName: '<vmSwitchName>'
   }
 }
 ```
@@ -73,14 +70,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnminlogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
-    },
-    // Non-required parameters
-    "routeName": {
-      "value": "default"
-    },
-    "vlanId": {
-      "value": "<vlanId>"
+      "value": "<vmSwitchName>"
     }
   }
 }
@@ -99,10 +89,7 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnminlogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
-// Non-required parameters
-param routeName = 'default'
-param vlanId = '<vlanId>'
+param vmSwitchName = '<vmSwitchName>'
 ```
 
 </details>
@@ -124,17 +111,17 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnwaflogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
+    vmSwitchName: '<vmSwitchName>'
     // Non-required parameters
-    addressPrefix: '172.20.0.1/24'
-    defaultGateway: '172.20.0.1'
+    addressPrefix: '192.168.1.0/24'
+    defaultGateway: '192.168.1.1'
     dnsServers: [
-      '172.20.0.1'
+      '192.168.1.254'
     ]
-    endingAddress: '172.20.0.190'
+    endingAddress: '192.168.1.190'
     ipAllocationMethod: 'Static'
     routeName: 'default'
-    startingAddress: '172.20.0.171'
+    startingAddress: '192.168.1.171'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -165,22 +152,22 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnwaflogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
+      "value": "<vmSwitchName>"
     },
     // Non-required parameters
     "addressPrefix": {
-      "value": "172.20.0.1/24"
+      "value": "192.168.1.0/24"
     },
     "defaultGateway": {
-      "value": "172.20.0.1"
+      "value": "192.168.1.1"
     },
     "dnsServers": {
       "value": [
-        "172.20.0.1"
+        "192.168.1.254"
       ]
     },
     "endingAddress": {
-      "value": "172.20.0.190"
+      "value": "192.168.1.190"
     },
     "ipAllocationMethod": {
       "value": "Static"
@@ -189,7 +176,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "default"
     },
     "startingAddress": {
-      "value": "172.20.0.171"
+      "value": "192.168.1.171"
     },
     "tags": {
       "value": {
@@ -218,17 +205,17 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnwaflogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
+param vmSwitchName = '<vmSwitchName>'
 // Non-required parameters
-param addressPrefix = '172.20.0.1/24'
-param defaultGateway = '172.20.0.1'
+param addressPrefix = '192.168.1.0/24'
+param defaultGateway = '192.168.1.1'
 param dnsServers = [
-  '172.20.0.1'
+  '192.168.1.254'
 ]
-param endingAddress = '172.20.0.190'
+param endingAddress = '192.168.1.190'
 param ipAllocationMethod = 'Static'
 param routeName = 'default'
-param startingAddress = '172.20.0.171'
+param startingAddress = '192.168.1.171'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'

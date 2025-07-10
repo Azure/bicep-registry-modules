@@ -1,5 +1,10 @@
 # Event Hub Namespaces `[Microsoft.EventHub/namespaces]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Event Hub Namespace.
 
 ## Navigation
@@ -20,14 +25,14 @@ This module deploys an Event Hub Namespace.
 | `Microsoft.EventHub/namespaces` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces) |
 | `Microsoft.EventHub/namespaces/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/authorizationRules) |
 | `Microsoft.EventHub/namespaces/disasterRecoveryConfigs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/disasterRecoveryConfigs) |
-| `Microsoft.EventHub/namespaces/eventhubs` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2022-10-01-preview/namespaces/eventhubs) |
+| `Microsoft.EventHub/namespaces/eventhubs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs) |
 | `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 | `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -56,10 +61,7 @@ This instance deploys the module with the minimum set of required parameters.
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   name: 'namespaceDeployment'
   params: {
-    // Required parameters
     name: 'ehnmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -76,13 +78,8 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "ehnmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -98,10 +95,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
-// Required parameters
 param name = 'ehnmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -128,7 +122,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -164,9 +157,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -204,7 +194,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -234,7 +223,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     // Required parameters
     name: 'ehnkv001'
     // Non-required parameters
-    location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       rootPrimaryConnectionStringName: 'primaryConnectionString-name'
@@ -263,9 +251,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       "value": "ehnkv001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
@@ -292,7 +277,6 @@ using 'br/public:avm/res/event-hub/namespace:<version>'
 // Required parameters
 param name = 'ehnkv001'
 // Non-required parameters
-param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   rootPrimaryConnectionStringName: 'primaryConnectionString-name'
@@ -355,6 +339,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     disableLocalAuth: true
     eventhubs: [
       {
+        messageRetentionInDays: 3
         name: 'az-evh-x-001'
         roleAssignments: [
           {
@@ -397,10 +382,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
             userMetadata: 'customMetadata'
           }
         ]
-        messageRetentionInDays: 1
         name: 'az-evh-x-002'
         partitionCount: 2
         retentionDescriptionCleanupPolicy: 'Delete'
+        retentionDescriptionEnabled: true
         retentionDescriptionRetentionTimeInHours: 3
         roleAssignments: [
           {
@@ -414,6 +399,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       {
         name: 'az-evh-x-003'
         retentionDescriptionCleanupPolicy: 'Compact'
+        retentionDescriptionEnabled: true
         retentionDescriptionTombstoneRetentionTimeInHours: 24
       }
     ]
@@ -557,6 +543,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "eventhubs": {
       "value": [
         {
+          "messageRetentionInDays": 3,
           "name": "az-evh-x-001",
           "roleAssignments": [
             {
@@ -599,10 +586,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
               "userMetadata": "customMetadata"
             }
           ],
-          "messageRetentionInDays": 1,
           "name": "az-evh-x-002",
           "partitionCount": 2,
           "retentionDescriptionCleanupPolicy": "Delete",
+          "retentionDescriptionEnabled": true,
           "retentionDescriptionRetentionTimeInHours": 3,
           "roleAssignments": [
             {
@@ -616,6 +603,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         {
           "name": "az-evh-x-003",
           "retentionDescriptionCleanupPolicy": "Compact",
+          "retentionDescriptionEnabled": true,
           "retentionDescriptionTombstoneRetentionTimeInHours": 24
         }
       ]
@@ -779,6 +767,7 @@ param diagnosticSettings = [
 param disableLocalAuth = true
 param eventhubs = [
   {
+    messageRetentionInDays: 3
     name: 'az-evh-x-001'
     roleAssignments: [
       {
@@ -821,10 +810,10 @@ param eventhubs = [
         userMetadata: 'customMetadata'
       }
     ]
-    messageRetentionInDays: 1
     name: 'az-evh-x-002'
     partitionCount: 2
     retentionDescriptionCleanupPolicy: 'Delete'
+    retentionDescriptionEnabled: true
     retentionDescriptionRetentionTimeInHours: 3
     roleAssignments: [
       {
@@ -838,6 +827,7 @@ param eventhubs = [
   {
     name: 'az-evh-x-003'
     retentionDescriptionCleanupPolicy: 'Compact'
+    retentionDescriptionEnabled: true
     retentionDescriptionTombstoneRetentionTimeInHours: 24
   }
 ]
@@ -1024,7 +1014,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     ]
     isAutoInflateEnabled: true
     kafkaEnabled: true
-    location: '<location>'
     maximumThroughputUnits: 4
     minimumTlsVersion: '1.2'
     networkRuleSets: {
@@ -1184,9 +1173,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "kafkaEnabled": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     },
     "maximumThroughputUnits": {
       "value": 4
@@ -1348,7 +1334,6 @@ param eventhubs = [
 ]
 param isAutoInflateEnabled = true
 param kafkaEnabled = true
-param location = '<location>'
 param maximumThroughputUnits = 4
 param minimumTlsVersion = '1.2'
 param networkRuleSets = {
@@ -1429,7 +1414,7 @@ param tags = {
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuCapacity`](#parameter-skucapacity) | int | The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
+| [`skuCapacity`](#parameter-skucapacity) | int | The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
 | [`skuName`](#parameter-skuname) | string | event hub plan SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Switch to make the Event Hub Namespace zone redundant. |
@@ -1834,8 +1819,6 @@ The minimum TLS version for the cluster to support.
     '1.2'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `networkRuleSets`
 
@@ -1844,8 +1827,6 @@ Configure networking options. This object contains IPs/Subnets to allow or restr
 - Required: No
 - Type: object
 - Default: `{}`
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints`
 
@@ -1853,8 +1834,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -1889,8 +1868,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1898,8 +1875,6 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -1907,8 +1882,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -1928,8 +1901,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -1937,8 +1908,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1946,8 +1915,6 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -1955,8 +1922,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -1964,8 +1929,6 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -1980,8 +1943,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -1989,8 +1950,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -2006,8 +1965,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2015,8 +1972,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2024,8 +1979,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -2033,8 +1986,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2042,8 +1993,6 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -2051,8 +2000,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 20
 
 **Optional parameters**
 
@@ -2075,8 +2022,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -2084,8 +2029,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -2093,8 +2036,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2102,8 +2043,6 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -2111,8 +2050,6 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -2132,8 +2069,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -2153,8 +2088,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2162,8 +2095,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2171,8 +2102,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2180,8 +2109,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.resourceGroupResourceId`
 
@@ -2189,8 +2116,6 @@ The resource ID of the Resource Group the Private Endpoint will be created in. I
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2198,8 +2123,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2236,8 +2159,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2245,8 +2166,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2254,8 +2173,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2269,8 +2186,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2278,8 +2193,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2287,8 +2200,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2296,8 +2207,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2315,8 +2224,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.service`
 
@@ -2324,8 +2231,6 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2333,8 +2238,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2352,8 +2255,6 @@ Whether or not public network access is allowed for this resource. For security 
     'SecuredByPerimeter'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `requireInfrastructureEncryption`
 
@@ -2362,8 +2263,6 @@ Enable infrastructure encryption (double encryption). Note, this setting require
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments`
 
@@ -2371,8 +2270,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 20
 - Roles configurable by name:
   - `'Azure Event Hubs Data Owner'`
   - `'Azure Event Hubs Data Receiver'`
@@ -2407,8 +2304,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2416,8 +2311,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2425,8 +2318,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2440,8 +2331,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2449,8 +2338,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.description`
 
@@ -2458,8 +2345,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.name`
 
@@ -2467,8 +2352,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2486,8 +2369,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `secretsExportConfiguration`
 
@@ -2495,8 +2376,6 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 20
 
 **Required parameters**
 
@@ -2519,8 +2398,6 @@ The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `secretsExportConfiguration.rootPrimaryConnectionStringName`
 
@@ -2528,8 +2405,6 @@ The rootPrimaryConnectionStringName secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `secretsExportConfiguration.rootPrimaryKeyName`
 
@@ -2537,8 +2412,6 @@ The rootPrimaryKeyName secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `secretsExportConfiguration.rootSecondaryConnectionStringName`
 
@@ -2546,8 +2419,6 @@ The rootSecondaryConnectionStringName secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `secretsExportConfiguration.rootSecondaryKeyName`
 
@@ -2555,12 +2426,10 @@ The rootSecondaryKeyName secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `skuCapacity`
 
-The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
+The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
 
 - Required: No
 - Type: int
@@ -2583,8 +2452,6 @@ event hub plan SKU name.
     'Standard'
   ]
   ```
-- MinValue: 1
-- MaxValue: 20
 
 ### Parameter: `tags`
 
@@ -2592,8 +2459,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 20
 
 ### Parameter: `zoneRedundant`
 
@@ -2602,8 +2467,6 @@ Switch to make the Event Hub Namespace zone redundant.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
-- MaxValue: 20
 
 ## Outputs
 
@@ -2613,9 +2476,13 @@ Switch to make the Event Hub Namespace zone redundant.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the eventspace. |
+| `primaryConnectionString` | securestring | The namespace's primary connection string. |
+| `primaryKey` | securestring | The namespace's primary key. |
 | `privateEndpoints` | array | The private endpoints of the eventspace. |
 | `resourceGroupName` | string | The resource group where the namespace is deployed. |
 | `resourceId` | string | The resource ID of the eventspace. |
+| `secondaryConnectionString` | securestring | The namespace's secondary connection string. |
+| `secondaryKey` | securestring | The namespace's secondary key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -2624,7 +2491,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

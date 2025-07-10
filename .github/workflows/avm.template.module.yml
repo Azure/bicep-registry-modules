@@ -178,6 +178,7 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
+          e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
@@ -191,11 +192,12 @@ jobs:
     name: "Publishing"
     runs-on: ubuntu-latest
     # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
-    if: github.ref == 'refs/heads/main' &&
-      github.repository	 == 'Azure/bicep-registry-modules' &&
+    if: |
       always() &&
       needs.job_module_static_validation.result == 'success' &&
-      needs.job_module_deploy_validation.result == 'success'
+      needs.job_module_deploy_validation.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository	 == 'Azure/bicep-registry-modules'
     needs:
       - job_module_static_validation
       - job_module_deploy_validation

@@ -7,6 +7,9 @@ param virtualNetworkName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Optional. Name of the storage account to create for Event Grid Domain Event Subscription.')
+param storageAccountName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -50,6 +53,25 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+
+  resource queueService 'queueServices@2023-01-01' = {
+    name: 'default'
+
+    resource queue 'queues@2023-01-01' = {
+      name: 'eventgridtestqueue'
+    }
+  }
+}
+
+// --- OUTPUTS ---
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -58,3 +80,12 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Storage Account for Event Grid testing.')
+output storageAccountResourceId string = storageAccount.id
+
+@description('The name of the created Storage Account.')
+output storageAccountName string = storageAccount.name
+
+@description('The name of the created Storage Queue for Event Grid testing.')
+output storageQueueName string = storageAccount::queueService::queue.name

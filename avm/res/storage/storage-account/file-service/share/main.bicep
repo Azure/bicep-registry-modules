@@ -38,7 +38,7 @@ param enabledProtocols string = 'SMB'
 @description('Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.')
 param rootSquash string = 'NoRootSquash'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -95,15 +95,15 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 
-  resource fileService 'fileServices@2023-04-01' existing = {
+  resource fileService 'fileServices@2024-01-01' existing = {
     name: fileServicesName
   }
 }
 
-resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
   name: name
   parent: storageAccount::fileService
   properties: {

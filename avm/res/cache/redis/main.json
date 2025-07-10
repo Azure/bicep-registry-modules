@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16983762500120206359"
+      "version": "0.34.44.8038",
+      "templateHash": "5664914029485680979"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -95,6 +95,13 @@
     "accessPolicyAssignmentType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Access Policy Assignment."
+          }
+        },
         "objectId": {
           "type": "string",
           "metadata": {
@@ -1057,39 +1064,6 @@
       },
       "zones": "[variables('availabilityZones')]"
     },
-    "redis_accessPolicies": {
-      "copy": {
-        "name": "redis_accessPolicies",
-        "count": "[length(parameters('accessPolicies'))]"
-      },
-      "type": "Microsoft.Cache/redis/accessPolicies",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('accessPolicies')[copyIndex()].name)]",
-      "properties": {
-        "permissions": "[parameters('accessPolicies')[copyIndex()].permissions]"
-      },
-      "dependsOn": [
-        "redis"
-      ]
-    },
-    "redis_accessPolicyAssignments": {
-      "copy": {
-        "name": "redis_accessPolicyAssignments",
-        "count": "[length(parameters('accessPolicyAssignments'))]"
-      },
-      "type": "Microsoft.Cache/redis/accessPolicyAssignments",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('accessPolicyAssignments')[copyIndex()].objectId)]",
-      "properties": {
-        "objectId": "[parameters('accessPolicyAssignments')[copyIndex()].objectId]",
-        "objectIdAlias": "[parameters('accessPolicyAssignments')[copyIndex()].objectIdAlias]",
-        "accessPolicyName": "[parameters('accessPolicyAssignments')[copyIndex()].accessPolicyName]"
-      },
-      "dependsOn": [
-        "redis",
-        "redis_accessPolicies"
-      ]
-    },
     "redis_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
@@ -1165,6 +1139,218 @@
       },
       "dependsOn": [
         "redis"
+      ]
+    },
+    "redis_accessPolicies": {
+      "copy": {
+        "name": "redis_accessPolicies",
+        "count": "[length(parameters('accessPolicies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-AccessPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('accessPolicies')[copyIndex()].name]"
+          },
+          "permissions": {
+            "value": "[parameters('accessPolicies')[copyIndex()].permissions]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "3748357335525726872"
+            },
+            "name": "Redis Cache Access Policy",
+            "description": "This module deploys an access policy for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis cache."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the access policy."
+              }
+            },
+            "permissions": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Permissions associated with the access policy."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/accessPolicies",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "permissions": "[parameters('permissions')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/accessPolicies', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the access policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
+    },
+    "redis_policyAssignments": {
+      "copy": {
+        "name": "redis_policyAssignments",
+        "count": "[length(parameters('accessPolicyAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-PolicyAssignment-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(parameters('accessPolicyAssignments')[copyIndex()], 'name')]"
+          },
+          "objectId": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].objectId]"
+          },
+          "objectIdAlias": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].objectIdAlias]"
+          },
+          "accessPolicyName": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].accessPolicyName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "9900728480246932111"
+            },
+            "name": "Redis Cache Access Policy Assignment",
+            "description": "This module deploys an access policy assignment for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis cache."
+              }
+            },
+            "objectId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Object ID to which the access policy will be assigned."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[parameters('objectId')]",
+              "metadata": {
+                "description": "Optional. The name of the assignment. By default uses the Object ID to which the access policy will be assigned."
+              }
+            },
+            "objectIdAlias": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Alias for the target object ID."
+              }
+            },
+            "accessPolicyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the access policy to be assigned."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/accessPolicyAssignments",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "objectId": "[parameters('objectId')]",
+                "objectIdAlias": "[parameters('objectIdAlias')]",
+                "accessPolicyName": "[parameters('accessPolicyName')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy assignment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy assignment."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/accessPolicyAssignments', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the access policy assignment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis",
+        "redis_accessPolicies"
       ]
     },
     "redis_privateEndpoints": {
@@ -1957,8 +2143,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12788301977890543452"
+              "version": "0.34.44.8038",
+              "templateHash": "2981769507448863297"
             },
             "name": "Redis Cache Firewall Rules",
             "description": "This module creates a firewall rule for Redis Cache."
@@ -2060,8 +2246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "322534394383651316"
+              "version": "0.34.44.8038",
+              "templateHash": "3093024614234635140"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2186,8 +2372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8063348652715653257"
+              "version": "0.34.44.8038",
+              "templateHash": "12919538841236982879"
             }
           },
           "definitions": {

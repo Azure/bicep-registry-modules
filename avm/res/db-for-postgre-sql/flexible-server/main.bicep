@@ -31,14 +31,31 @@ param skuName string
 @description('Required. The tier of the particular SKU. Tier must align with the \'skuName\' property. Example, tier cannot be \'Burstable\' if skuName is \'Standard_D4s_v3\'.')
 param tier string
 
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  ''
-  '1'
-  '2'
-  '3'
+  -1
+  1
+  2
+  3
 ])
-@description('Optional. Availability zone information of the server. Default will have no preference set.')
-param availabilityZone string = ''
+param availabilityZone int
+
+@description('Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set.')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param highAvailabilityZone int = -1
+
+@allowed([
+  'Disabled'
+  'SameZone'
+  'ZoneRedundant'
+])
+@description('Optional. The mode for high availability.')
+param highAvailability string = 'ZoneRedundant'
 
 @minValue(7)
 @maxValue(35)
@@ -81,17 +98,10 @@ param autoGrow string?
   '14'
   '15'
   '16'
+  '17'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '16'
-
-@allowed([
-  'Disabled'
-  'SameZone'
-  'ZoneRedundant'
-])
-@description('Optional. The mode for high availability.')
-param highAvailability string = 'ZoneRedundant'
+param version string = '17'
 
 @allowed([
   'Create'
@@ -120,7 +130,7 @@ import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types
 param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow object = {
+param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.properties.maintenanceWindow = {
   customWindow: 'Enabled'
   dayOfWeek: 0
   startHour: 1
@@ -134,7 +144,7 @@ param pointInTimeUTC string = ''
 param sourceServerResourceId string = ''
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \'Private Access\' - virtual network integration.')
-param delegatedSubnetResourceId string = ''
+param delegatedSubnetResourceId string?
 
 @description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be linked to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
 param privateDnsZoneArmResourceId string = ''
@@ -170,7 +180,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -184,6 +194,12 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 var enableReferencedModulesTelemetry = false
+
+var standByAvailabilityZone = {
+  Disabled: null
+  SameZone: availabilityZone
+  ZoneRedundant: highAvailabilityZone
+}[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -273,13 +289,18 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
   identity: identity
   properties: {
     administratorLogin: administratorLogin
+    #disable-next-line use-secure-value-for-secure-inputs // Is defined as secure(). False-positive
     administratorLoginPassword: administratorLoginPassword
     authConfig: {
       activeDirectoryAuth: !empty(administrators) ? 'enabled' : 'disabled'
       passwordAuth: !empty(administratorLogin) && !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
       tenantId: tenantId
     }
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
+    highAvailability: {
+      mode: highAvailability
+      standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
+    }
     backup: {
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
@@ -287,17 +308,13 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
     createMode: createMode
     dataEncryption: !empty(customerManagedKey)
       ? {
-          primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion!}'
             : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
       : null
-    highAvailability: {
-      mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
-    }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
           customWindow: maintenanceWindow.customWindow
@@ -412,7 +429,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
-module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = if (enableAdvancedThreatProtection) {
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection-setting/main.bicep' = if (enableAdvancedThreatProtection) {
   name: '${uniqueString(deployment().name, location)}-PostgreSQL-Threat'
   params: {
     serverThreatProtection: serverThreatProtection
@@ -563,14 +580,12 @@ type privateEndpointOutputType = {
 
 @export()
 type replicaType = {
-  @description('''Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'
-'switchover'. Required if enabling replication.''')
+  @description('Conditional. Sets the promote mode for a replica server. This is a write only property. Required if enabling replication.')
   promoteMode: ('standalone' | 'switchover')
 
-  @description('''Conditional. Sets the promote options for a replica server. This is a write only property.	'forced'
-'planned'. Required if enabling replication.''')
+  @description('Conditional. Sets the promote options for a replica server. This is a write only property. Required if enabling replication.')
   promoteOption: ('forced' | 'planned')
 
-  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.''')
+  @description('Conditional. Used to indicate role of the server in replication set. Required if enabling replication.')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
 }

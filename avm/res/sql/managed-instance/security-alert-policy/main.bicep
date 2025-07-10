@@ -17,11 +17,11 @@ param state string = 'Disabled'
 @description('Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators.')
 param emailAccountAdmins bool = false
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource securityAlertPolicy 'Microsoft.Sql/managedInstances/securityAlertPolicies@2023-08-01-preview' = {
+resource securityAlertPolicy 'Microsoft.Sql/managedInstances/securityAlertPolicies@2024-05-01-preview' = {
   name: name
   parent: managedInstance
   properties: {

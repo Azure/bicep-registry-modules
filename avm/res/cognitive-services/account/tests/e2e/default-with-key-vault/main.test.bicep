@@ -35,7 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
         accessKey1Name: '${namePrefix}${serviceShort}001-accessKey1'
         accessKey2Name: '${namePrefix}${serviceShort}001-accessKey2'
       }
+      disableLocalAuth: false
     }
   }
 ]

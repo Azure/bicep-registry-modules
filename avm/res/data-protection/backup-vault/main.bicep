@@ -73,6 +73,9 @@ param azureMonitorAlertSettingsAlertsForAllJobFailures string = 'Enabled'
 @description('Optional. List of all backup policies.')
 param backupPolicies array?
 
+@description('Optional. List of all backup instances.')
+param backupInstances backupInstanceType[]?
+
 @description('Optional. Feature settings for the backup vault.')
 param featureSettings object?
 
@@ -89,7 +92,9 @@ var identity = !empty(managedIdentities)
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : null
+  : {
+      type: 'None'
+    }
 
 var builtInRoleNames = {
   'Backup Contributor': subscriptionResourceId(
@@ -228,6 +233,23 @@ module backupVault_backupPolicies 'backup-policy/main.bicep' = [
   }
 ]
 
+@batchSize(1)
+module backupVault_backupInstances 'backup-instance/main.bicep' = [
+  for (backupInstance, index) in (backupInstances ?? []): {
+    name: '${uniqueString(deployment().name, location)}-BV-BackupInstance-${index}'
+    params: {
+      backupVaultName: backupVault.name
+      name: backupInstance.name
+      friendlyName: backupInstance.?friendlyName
+      dataSourceInfo: backupInstance.dataSourceInfo
+      policyInfo: backupInstance.policyInfo
+    }
+    dependsOn: [
+      backupVault_backupPolicies
+    ]
+  }
+]
+
 resource backupVault_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -282,4 +304,21 @@ type softDeleteSettingType = {
 
   @description('Required. The soft delete state.')
   state: ('AlwaysON' | 'On' | 'Off')
+}
+
+import { dataSourceInfoType, policyInfoType } from 'backup-instance/main.bicep'
+@export()
+@description('The type for a backup instance.')
+type backupInstanceType = {
+  @description('Required. The name of the backup instance.')
+  name: string
+
+  @description('Optional. The friendly name of the backup instance.')
+  friendlyName: string?
+
+  @description('Required. The data source info for the backup instance.')
+  dataSourceInfo: dataSourceInfoType
+
+  @description('Required. The policy info for the backup instance.')
+  policyInfo: policyInfoType
 }

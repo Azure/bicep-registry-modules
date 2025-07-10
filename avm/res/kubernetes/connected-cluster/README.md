@@ -99,10 +99,16 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     // Required parameters
     name: 'kccmax001'
     // Non-required parameters
-    enableAzureRBAC: true
+    aadProfile: {
+      adminGroupObjectIDs: []
+      enableAzureRBAC: true
+      tenantID: '<tenantID>'
+    }
     enableTelemetry: true
     location: '<location>'
-    oidcIssuerEnabled: true
+    oidcIssuerProfile: {
+      enabled: true
+    }
     roleAssignments: [
       {
         name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
@@ -122,13 +128,16 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    securityProfile: {
+      workloadIdentity: {
+        enabled: true
+      }
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    tenantId: '<tenantId>'
-    workloadIdentityEnabled: true
   }
 }
 ```
@@ -150,8 +159,12 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
       "value": "kccmax001"
     },
     // Non-required parameters
-    "enableAzureRBAC": {
-      "value": true
+    "aadProfile": {
+      "value": {
+        "adminGroupObjectIDs": [],
+        "enableAzureRBAC": true,
+        "tenantID": "<tenantID>"
+      }
     },
     "enableTelemetry": {
       "value": true
@@ -159,8 +172,10 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     "location": {
       "value": "<location>"
     },
-    "oidcIssuerEnabled": {
-      "value": true
+    "oidcIssuerProfile": {
+      "value": {
+        "enabled": true
+      }
     },
     "roleAssignments": {
       "value": [
@@ -183,18 +198,19 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
         }
       ]
     },
+    "securityProfile": {
+      "value": {
+        "workloadIdentity": {
+          "enabled": true
+        }
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "tenantId": {
-      "value": "<tenantId>"
-    },
-    "workloadIdentityEnabled": {
-      "value": true
     }
   }
 }
@@ -213,10 +229,16 @@ using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
 // Required parameters
 param name = 'kccmax001'
 // Non-required parameters
-param enableAzureRBAC = true
+param aadProfile = {
+  adminGroupObjectIDs: []
+  enableAzureRBAC: true
+  tenantID: '<tenantID>'
+}
 param enableTelemetry = true
 param location = '<location>'
-param oidcIssuerEnabled = true
+param oidcIssuerProfile = {
+  enabled: true
+}
 param roleAssignments = [
   {
     name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
@@ -236,13 +258,16 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param securityProfile = {
+  workloadIdentity: {
+    enabled: true
+  }
+}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param tenantId = '<tenantId>'
-param workloadIdentityEnabled = true
 ```
 
 </details>
@@ -264,16 +289,25 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     // Required parameters
     name: 'kccwaf001'
     // Non-required parameters
-    enableAzureRBAC: true
+    aadProfile: {
+      adminGroupObjectIDs: []
+      enableAzureRBAC: true
+      tenantID: '<tenantID>'
+    }
     location: '<location>'
-    oidcIssuerEnabled: true
+    oidcIssuerProfile: {
+      enabled: true
+    }
+    securityProfile: {
+      workloadIdentity: {
+        enabled: true
+      }
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    tenantId: '<tenantId>'
-    workloadIdentityEnabled: true
   }
 }
 ```
@@ -295,14 +329,27 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
       "value": "kccwaf001"
     },
     // Non-required parameters
-    "enableAzureRBAC": {
-      "value": true
+    "aadProfile": {
+      "value": {
+        "adminGroupObjectIDs": [],
+        "enableAzureRBAC": true,
+        "tenantID": "<tenantID>"
+      }
     },
     "location": {
       "value": "<location>"
     },
-    "oidcIssuerEnabled": {
-      "value": true
+    "oidcIssuerProfile": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "securityProfile": {
+      "value": {
+        "workloadIdentity": {
+          "enabled": true
+        }
+      }
     },
     "tags": {
       "value": {
@@ -310,12 +357,6 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "tenantId": {
-      "value": "<tenantId>"
-    },
-    "workloadIdentityEnabled": {
-      "value": true
     }
   }
 }
@@ -334,16 +375,25 @@ using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
 // Required parameters
 param name = 'kccwaf001'
 // Non-required parameters
-param enableAzureRBAC = true
+param aadProfile = {
+  adminGroupObjectIDs: []
+  enableAzureRBAC: true
+  tenantID: '<tenantID>'
+}
 param location = '<location>'
-param oidcIssuerEnabled = true
+param oidcIssuerProfile = {
+  enabled: true
+}
+param securityProfile = {
+  workloadIdentity: {
+    enabled: true
+  }
+}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param tenantId = '<tenantId>'
-param workloadIdentityEnabled = true
 ```
 
 </details>
@@ -361,16 +411,14 @@ param workloadIdentityEnabled = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
-| [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
-| [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
+| [`aadProfile`](#parameter-aadprofile) | object | AAD profile for the connected cluster. |
+| [`arcAgentProfile`](#parameter-arcagentprofile) | object | Arc agentry configuration for the provisioned cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
+| [`oidcIssuerProfile`](#parameter-oidcissuerprofile) | object | Open ID Connect (OIDC) Issuer Profile for the connected cluster. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`securityProfile`](#parameter-securityprofile) | object | Security profile for the connected cluster. |
 | [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
-| [`tenantId`](#parameter-tenantid) | string | The Azure AD tenant ID. |
-| [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
 ### Parameter: `name`
 
@@ -379,20 +427,75 @@ The name of the Azure Arc connected cluster.
 - Required: Yes
 - Type: string
 
-### Parameter: `aadAdminGroupObjectIds`
+### Parameter: `aadProfile`
 
-The Azure AD admin group object IDs.
+AAD profile for the connected cluster.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adminGroupObjectIDs`](#parameter-aadprofileadmingroupobjectids) | array | The list of AAD group object IDs that will have admin role of the cluster. |
+| [`enableAzureRBAC`](#parameter-aadprofileenableazurerbac) | bool | Whether to enable Azure RBAC for Kubernetes authorization. |
+| [`tenantID`](#parameter-aadprofiletenantid) | string | The AAD tenant ID. |
+
+### Parameter: `aadProfile.adminGroupObjectIDs`
+
+The list of AAD group object IDs that will have admin role of the cluster.
+
+- Required: Yes
 - Type: array
 
-### Parameter: `agentAutoUpgrade`
+### Parameter: `aadProfile.enableAzureRBAC`
 
-Enable automatic agent upgrades.
+Whether to enable Azure RBAC for Kubernetes authorization.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.tenantID`
+
+The AAD tenant ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `arcAgentProfile`
+
+Arc agentry configuration for the provisioned cluster.
 
 - Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      agentAutoUpgrade: 'Enabled'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentAutoUpgrade`](#parameter-arcagentprofileagentautoupgrade) | string | Indicates whether the Arc agents on the be upgraded automatically to the latest version. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentErrors`](#parameter-arcagentprofileagenterrors) | array | The errors encountered by the Arc agent. |
+| [`desiredAgentVersion`](#parameter-arcagentprofiledesiredagentversion) | string | The desired version of the Arc agent. |
+| [`systemComponents`](#parameter-arcagentprofilesystemcomponents) | array | List of system extensions that are installed on the cluster resource. |
+
+### Parameter: `arcAgentProfile.agentAutoUpgrade`
+
+Indicates whether the Arc agents on the be upgraded automatically to the latest version.
+
+- Required: Yes
 - Type: string
-- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
@@ -401,13 +504,55 @@ Enable automatic agent upgrades.
   ]
   ```
 
-### Parameter: `enableAzureRBAC`
+### Parameter: `arcAgentProfile.agentErrors`
 
-Enable Azure RBAC.
+The errors encountered by the Arc agent.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: array
+
+### Parameter: `arcAgentProfile.desiredAgentVersion`
+
+The desired version of the Arc agent.
+
+- Required: No
+- Type: string
+
+### Parameter: `arcAgentProfile.systemComponents`
+
+List of system extensions that are installed on the cluster resource.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`majorVersion`](#parameter-arcagentprofilesystemcomponentsmajorversion) | int | The major version of the system component. |
+| [`type`](#parameter-arcagentprofilesystemcomponentstype) | string | The type of the system component. |
+| [`userSpecifiedVersion`](#parameter-arcagentprofilesystemcomponentsuserspecifiedversion) | string | The user specified version of the system component. |
+
+### Parameter: `arcAgentProfile.systemComponents.majorVersion`
+
+The major version of the system component.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `arcAgentProfile.systemComponents.type`
+
+The type of the system component.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `arcAgentProfile.systemComponents.userSpecifiedVersion`
+
+The user specified version of the system component.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -425,13 +570,44 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `oidcIssuerEnabled`
+### Parameter: `oidcIssuerProfile`
 
-Enable OIDC issuer.
+Open ID Connect (OIDC) Issuer Profile for the connected cluster.
 
 - Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-oidcissuerprofileenabled) | bool | Whether the OIDC issuer is enabled. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`selfHostedIssuerUrl`](#parameter-oidcissuerprofileselfhostedissuerurl) | string | The URL of the self-hosted OIDC issuer. |
+
+### Parameter: `oidcIssuerProfile.enabled`
+
+Whether the OIDC issuer is enabled.
+
+- Required: Yes
 - Type: bool
-- Default: `False`
+
+### Parameter: `oidcIssuerProfile.selfHostedIssuerUrl`
+
+The URL of the self-hosted OIDC issuer.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -536,27 +712,53 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `securityProfile`
+
+Security profile for the connected cluster.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      workloadIdentity: {
+        enabled: false
+      }
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`workloadIdentity`](#parameter-securityprofileworkloadidentity) | object | The workload identity configuration. |
+
+### Parameter: `securityProfile.workloadIdentity`
+
+The workload identity configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-securityprofileworkloadidentityenabled) | bool | Whether workload identity is enabled. |
+
+### Parameter: `securityProfile.workloadIdentity.enabled`
+
+Whether workload identity is enabled.
+
+- Required: Yes
+- Type: bool
+
 ### Parameter: `tags`
 
 Tags for the cluster resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `tenantId`
-
-The Azure AD tenant ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `workloadIdentityEnabled`
-
-Enable workload identity.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ## Outputs
 

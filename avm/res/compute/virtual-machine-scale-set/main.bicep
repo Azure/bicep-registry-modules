@@ -45,8 +45,9 @@ param adminPassword string
 @description('Optional. Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format.')
 param customData string = ''
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Fault Domain count for each placement group.')
 param scaleSetFaultDomain int = 1
@@ -149,11 +150,13 @@ param bootDiagnosticStorageAccountName string = ''
 @description('Optional. Enable boot diagnostics to use default managed or secure storage. Defaults set to false.')
 param bootDiagnosticEnabled bool = false
 
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Specifies the mode of an upgrade to virtual machines in the scale set.\' Manual - You control the application of updates to virtual machines in the scale set. You do this by using the manualUpgrade action. ; Automatic - All virtual machines in the scale set are automatically updated at the same time. - Automatic, Manual, Rolling.')
 @allowed([
@@ -316,13 +319,30 @@ param baseTime string = utcNow('u')
 @description('Optional. SAS token validity length to use to download files from storage accounts. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.')
 param sasTokenValidityLength string = 'PT8H'
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 var publicKeysFormatted = [
   for publicKey in publicKeys: {
     path: publicKey.path
     keyData: publicKey.keyData
+  }
+]
+
+var networkInterfaceConfigurations = [
+  for (nicConfiguration, index) in nicConfigurations: {
+    name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
+    properties: {
+      primary: (index == 0) ? true : any(null)
+      enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
+      networkSecurityGroup: contains(nicConfiguration, 'nsgId')
+        ? {
+            id: nicConfiguration.nsgId
+          }
+        : null
+      ipConfigurations: nicConfiguration.ipConfigurations
+    }
   }
 ]
 
@@ -581,24 +601,10 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
           }
         ]
       }
-      networkProfile: {
-        networkApiVersion: (orchestrationMode == 'Flexible') ? '2020-11-01' : null
-        networkInterfaceConfigurations: [
-          for (nicConfiguration, index) in nicConfigurations: {
-            name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
-            properties: {
-              primary: (index == 0) ? true : any(null)
-              enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
-              networkSecurityGroup: contains(nicConfiguration, 'nsgId')
-                ? {
-                    id: nicConfiguration.nsgId
-                  }
-                : null
-              ipConfigurations: nicConfiguration.ipConfigurations
-            }
-          }
-        ]
-      }
+      networkProfile: union(
+        orchestrationMode == 'Flexible' ? { networkApiVersion: '2020-11-01' } : {},
+        { networkInterfaceConfigurations: networkInterfaceConfigurations }
+      )
       diagnosticsProfile: {
         bootDiagnostics: {
           enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnosticEnabled
@@ -615,12 +621,17 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
                 properties: {
                   publisher: 'Microsoft.ManagedServices'
                   type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
-                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '1.0'
+                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '2.0'
                   autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
                   settings: {
                     protocol: extensionHealthConfig.?protocol ?? 'http'
                     port: extensionHealthConfig.?port ?? 80
-                    requestPath: extensionHealthConfig.?requestPath ?? '/'
+                    requestPath: extensionHealthConfig.?requestPath ?? ((contains(extensionHealthConfig, 'protocol') && extensionHealthConfig.protocol != 'tcp')
+                      ? '/'
+                      : '')
+                    intervalInSeconds: extensionHealthConfig.?intervalInSeconds ?? 5
+                    numberOfProbes: extensionHealthConfig.?numberOfProbes ?? 1
+                    gracePeriod: extensionHealthConfig.?gracePeriod ?? 5
                   }
                 }
               }
@@ -878,81 +889,3 @@ output systemAssignedMIPrincipalId string? = vmss.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vmss.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?

@@ -225,27 +225,31 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
   zones: availabilityZones
 }
 
-resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-11-01' = [
-  for policy in accessPolicies: {
-    name: policy.name
-    parent: redis
-    properties: {
+// Deploy access policies
+module redis_accessPolicies 'access-policy/main.bicep' = [
+  for (policy, index) in accessPolicies: {
+    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
+    params: {
+      redisCacheName: redis.name
+      name: policy.name
       permissions: policy.permissions
     }
   }
 ]
 
-resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-11-01' = [
-  for assignment in accessPolicyAssignments: {
-    name: assignment.objectId
-    parent: redis
-    properties: {
+// Deploy access policy assignments
+module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
+  for (assignment, index) in accessPolicyAssignments: {
+    name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
+    params: {
+      redisCacheName: redis.name
+      name: assignment.?name
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
     }
     dependsOn: [
-      redis_accessPolicies
+      redis_accessPolicies // Ensure policies exist before assigning them
     ]
   }
 ]
@@ -523,6 +527,8 @@ type accessPolicyType = {
 }
 
 type accessPolicyAssignmentType = {
+  @description('Optional. The name of the Access Policy Assignment.')
+  name: string?
   @description('Required. Object id to which the access policy will be assigned.')
   objectId: string
   @description('Required. Alias for the target object id.')

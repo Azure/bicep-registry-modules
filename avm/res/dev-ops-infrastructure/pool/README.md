@@ -18,7 +18,7 @@ This module deploys the Managed DevOps Pool resource.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DevOpsInfrastructure/pools` | [2024-10-19](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2024-10-19/pools) |
+| `Microsoft.DevOpsInfrastructure/pools` | [2025-01-21](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2025-01-21/pools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -29,11 +29,170 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/dev-ops-infrastructure/pool:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [All Week Schema](#example-1-all-week-schema)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _All Week Schema_
+
+This instance deploys the module using an All-Week Scheme for the manual scaling prediction configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
+  name: 'poolDeployment'
+  params: {
+    // Required parameters
+    agentProfile: {
+      kind: 'Stateless'
+      resourcePredictions: {
+        daysData: {
+          allWeekScheme: {
+            provisioningCount: 3
+          }
+        }
+        timeZone: 'UTC'
+      }
+      resourcePredictionsProfile: {
+        kind: 'Manual'
+      }
+    }
+    concurrency: 1
+    devCenterProjectResourceId: '<devCenterProjectResourceId>'
+    fabricProfileSkuName: 'Standard_DS2_v2'
+    images: [
+      {
+        wellKnownImageName: 'windows-2022/latest'
+      }
+    ]
+    name: 'mdpwk001'
+    organizationProfile: {
+      kind: 'AzureDevOps'
+      organizations: [
+        {
+          url: '<url>'
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "agentProfile": {
+      "value": {
+        "kind": "Stateless",
+        "resourcePredictions": {
+          "daysData": {
+            "allWeekScheme": {
+              "provisioningCount": 3
+            }
+          },
+          "timeZone": "UTC"
+        },
+        "resourcePredictionsProfile": {
+          "kind": "Manual"
+        }
+      }
+    },
+    "concurrency": {
+      "value": 1
+    },
+    "devCenterProjectResourceId": {
+      "value": "<devCenterProjectResourceId>"
+    },
+    "fabricProfileSkuName": {
+      "value": "Standard_DS2_v2"
+    },
+    "images": {
+      "value": [
+        {
+          "wellKnownImageName": "windows-2022/latest"
+        }
+      ]
+    },
+    "name": {
+      "value": "mdpwk001"
+    },
+    "organizationProfile": {
+      "value": {
+        "kind": "AzureDevOps",
+        "organizations": [
+          {
+            "url": "<url>"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictions: {
+    daysData: {
+      allWeekScheme: {
+        provisioningCount: 3
+      }
+    }
+    timeZone: 'UTC'
+  }
+  resourcePredictionsProfile: {
+    kind: 'Manual'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_DS2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpwk001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      url: '<url>'
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -67,8 +226,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         }
       ]
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -119,10 +276,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           }
         ]
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -159,14 +312,12 @@ param organizationProfile = {
     }
   ]
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -212,6 +363,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           'windows-2022'
         ]
         buffer: '*'
+        ephemeralType: 'Automatic'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -220,6 +372,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -232,10 +385,30 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     }
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -329,6 +502,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
             "windows-2022"
           ],
           "buffer": "*",
+          "ephemeralType": "Automatic",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -341,6 +515,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -354,6 +529,22 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -361,6 +552,14 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -452,6 +651,7 @@ param images = [
       'windows-2022'
     ]
     buffer: '*'
+    ephemeralType: 'Automatic'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -460,6 +660,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -472,10 +673,30 @@ param organizationProfile = {
   }
 }
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {
@@ -516,7 +737,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -542,6 +763,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     fabricProfileSkuName: 'Standard_D2_v2'
     images: [
       {
+        ephemeralType: 'CacheDisk'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -550,6 +772,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -602,6 +825,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     "images": {
       "value": [
         {
+          "ephemeralType": "CacheDisk",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -614,6 +838,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -660,6 +885,7 @@ param devCenterProjectResourceId = '<devCenterProjectResourceId>'
 param fabricProfileSkuName = 'Standard_D2_v2'
 param images = [
   {
+    ephemeralType: 'CacheDisk'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -668,6 +894,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -722,6 +949,1002 @@ Defines how the machine will be handled once it executed a job.
 
 - Required: Yes
 - Type: object
+- Discriminator: `kind`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Stateful`](#variant-agentprofilekind-stateful) | The type of a stateful agent profile. |
+| [`Stateless`](#variant-agentprofilekind-stateless) | The type of a stateless agent profile. |
+
+### Variant: `agentProfile.kind-Stateful`
+The type of a stateful agent profile.
+
+To use this variant, set the property `kind` to `Stateful`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`gracePeriodTimeSpan`](#parameter-agentprofilekind-statefulgraceperiodtimespan) | string | How long should the machine be kept around after it ran a workload when there are no stand-by agents. The maximum is one week. |
+| [`kind`](#parameter-agentprofilekind-statefulkind) | string | Stateful profile meaning that the machines will be returned to the pool after running a job. |
+| [`maxAgentLifetime`](#parameter-agentprofilekind-statefulmaxagentlifetime) | string | How long should stateful machines be kept around. The maximum is one week. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourcePredictions`](#parameter-agentprofilekind-statefulresourcepredictions) | object | Defines pool buffer/stand-by agents. |
+| [`resourcePredictionsProfile`](#parameter-agentprofilekind-statefulresourcepredictionsprofile) | object | Determines how the stand-by scheme should be provided. |
+
+### Parameter: `agentProfile.kind-Stateful.gracePeriodTimeSpan`
+
+How long should the machine be kept around after it ran a workload when there are no stand-by agents. The maximum is one week.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.kind`
+
+Stateful profile meaning that the machines will be returned to the pool after running a job.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Stateful'
+  ]
+  ```
+
+### Parameter: `agentProfile.kind-Stateful.maxAgentLifetime`
+
+How long should stateful machines be kept around. The maximum is one week.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions`
+
+Defines pool buffer/stand-by agents.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`timeZone`](#parameter-agentprofilekind-statefulresourcepredictionstimezone) | string | The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`daysData`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdata) | object | The number of agents needed at a specific time. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.timeZone`
+
+The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData`
+
+The number of agents needed at a specific time.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allWeekScheme`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataallweekscheme) | object | A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations. |
+| [`friday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatafriday) | object | The number of agents needed at a specific time for Friday. |
+| [`monday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatamonday) | object | The number of agents needed at a specific time for Monday. |
+| [`saturday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasaturday) | object | The number of agents needed at a specific time for Saturday. |
+| [`sunday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasunday) | object | The number of agents needed at a specific time for Sunday. |
+| [`thursday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
+| [`tuesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
+| [`wednesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.allWeekScheme`
+
+A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`provisioningCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataallweekschemeprovisioningcount) | int | The agent count to provision throughout the week. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.allWeekScheme.provisioningCount`
+
+The agent count to provision throughout the week.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.friday`
+
+The number of agents needed at a specific time for Friday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatafridayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatafridayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatafridaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatafridaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.friday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.friday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.friday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.friday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.monday`
+
+The number of agents needed at a specific time for Monday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatamondayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatamondayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatamondaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatamondaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.monday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.monday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.monday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.monday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.saturday`
+
+The number of agents needed at a specific time for Saturday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasaturdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasaturdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasaturdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasaturdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.saturday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.saturday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.saturday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.saturday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.sunday`
+
+The number of agents needed at a specific time for Sunday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasundayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasundayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasundaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasundaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.sunday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.sunday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.sunday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.sunday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.thursday`
+
+The number of agents needed at a specific time for Thursday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.thursday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.thursday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.thursday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.thursday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.tuesday`
+
+The number of agents needed at a specific time for Tuesday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.tuesday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.tuesday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.tuesday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.tuesday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.wednesday`
+
+The number of agents needed at a specific time for Wednesday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.wednesday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.wednesday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.wednesday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.wednesday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictionsProfile`
+
+Determines how the stand-by scheme should be provided.
+
+- Required: No
+- Type: object
+- Discriminator: `kind`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Automatic`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-automatic) | The type of an automatic stand-by prediction profile. |
+| [`Manual`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-manual) | The type of a manual stand-by prediction profile. |
+
+### Variant: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Automatic`
+The type of an automatic stand-by prediction profile.
+
+To use this variant, set the property `kind` to `Automatic`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-agentprofilekind-statefulresourcepredictionsprofilekind-automatickind) | string | The stand-by agent scheme is determined based on historical demand. |
+| [`predictionPreference`](#parameter-agentprofilekind-statefulresourcepredictionsprofilekind-automaticpredictionpreference) | string | Determines the balance between cost and performance. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Automatic.kind`
+
+The stand-by agent scheme is determined based on historical demand.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+  ]
+  ```
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Automatic.predictionPreference`
+
+Determines the balance between cost and performance.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Balanced'
+    'BestPerformance'
+    'MoreCostEffective'
+    'MorePerformance'
+    'MostCostEffective'
+  ]
+  ```
+
+### Variant: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Manual`
+The type of a manual stand-by prediction profile.
+
+To use this variant, set the property `kind` to `Manual`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-agentprofilekind-statefulresourcepredictionsprofilekind-manualkind) | string | Customer provides the stand-by agent scheme. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Manual.kind`
+
+Customer provides the stand-by agent scheme.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Manual'
+  ]
+  ```
+
+### Variant: `agentProfile.kind-Stateless`
+The type of a stateless agent profile.
+
+To use this variant, set the property `kind` to `Stateless`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-agentprofilekind-statelesskind) | string | Stateless profile meaning that the machines will be cleaned up after running a job. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourcePredictions`](#parameter-agentprofilekind-statelessresourcepredictions) | object | Defines pool buffer/stand-by agents. |
+| [`resourcePredictionsProfile`](#parameter-agentprofilekind-statelessresourcepredictionsprofile) | object | Determines how the stand-by scheme should be provided. |
+
+### Parameter: `agentProfile.kind-Stateless.kind`
+
+Stateless profile meaning that the machines will be cleaned up after running a job.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Stateless'
+  ]
+  ```
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions`
+
+Defines pool buffer/stand-by agents.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`timeZone`](#parameter-agentprofilekind-statelessresourcepredictionstimezone) | string | The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`daysData`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdata) | object | The number of agents needed at a specific time. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.timeZone`
+
+The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData`
+
+The number of agents needed at a specific time.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allWeekScheme`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataallweekscheme) | object | A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations. |
+| [`friday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatafriday) | object | The number of agents needed at a specific time for Friday. |
+| [`monday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatamonday) | object | The number of agents needed at a specific time for Monday. |
+| [`saturday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasaturday) | object | The number of agents needed at a specific time for Saturday. |
+| [`sunday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasunday) | object | The number of agents needed at a specific time for Sunday. |
+| [`thursday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
+| [`tuesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
+| [`wednesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.allWeekScheme`
+
+A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`provisioningCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataallweekschemeprovisioningcount) | int | The agent count to provision throughout the week. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.allWeekScheme.provisioningCount`
+
+The agent count to provision throughout the week.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.friday`
+
+The number of agents needed at a specific time for Friday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatafridayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatafridayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatafridaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatafridaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.friday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.friday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.friday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.friday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.monday`
+
+The number of agents needed at a specific time for Monday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatamondayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatamondayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatamondaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatamondaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.monday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.monday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.monday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.monday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.saturday`
+
+The number of agents needed at a specific time for Saturday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasaturdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasaturdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasaturdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasaturdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.saturday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.saturday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.saturday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.saturday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.sunday`
+
+The number of agents needed at a specific time for Sunday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasundayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasundayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasundaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasundaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.sunday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.sunday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.sunday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.sunday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.thursday`
+
+The number of agents needed at a specific time for Thursday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.thursday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.thursday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.thursday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.thursday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.tuesday`
+
+The number of agents needed at a specific time for Tuesday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.tuesday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.tuesday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.tuesday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.tuesday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.wednesday`
+
+The number of agents needed at a specific time for Wednesday.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesdayendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesdayendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesdaystartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesdaystarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.wednesday.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.wednesday.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.wednesday.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.wednesday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictionsProfile`
+
+Determines how the stand-by scheme should be provided.
+
+- Required: No
+- Type: object
+- Discriminator: `kind`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Automatic`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-automatic) | The type of an automatic stand-by prediction profile. |
+| [`Manual`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-manual) | The type of a manual stand-by prediction profile. |
+
+### Variant: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Automatic`
+The type of an automatic stand-by prediction profile.
+
+To use this variant, set the property `kind` to `Automatic`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-agentprofilekind-statelessresourcepredictionsprofilekind-automatickind) | string | The stand-by agent scheme is determined based on historical demand. |
+| [`predictionPreference`](#parameter-agentprofilekind-statelessresourcepredictionsprofilekind-automaticpredictionpreference) | string | Determines the balance between cost and performance. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Automatic.kind`
+
+The stand-by agent scheme is determined based on historical demand.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+  ]
+  ```
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Automatic.predictionPreference`
+
+Determines the balance between cost and performance.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Balanced'
+    'BestPerformance'
+    'MoreCostEffective'
+    'MorePerformance'
+    'MostCostEffective'
+  ]
+  ```
+
+### Variant: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Manual`
+The type of a manual stand-by prediction profile.
+
+To use this variant, set the property `kind` to `Manual`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-agentprofilekind-statelessresourcepredictionsprofilekind-manualkind) | string | Customer provides the stand-by agent scheme. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Manual.kind`
+
+Customer provides the stand-by agent scheme.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Manual'
+  ]
+  ```
 
 ### Parameter: `concurrency`
 
@@ -738,8 +1961,6 @@ The resource id of the DevCenter Project the pool belongs to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `fabricProfileSkuName`
 
@@ -747,8 +1968,6 @@ The Azure SKU name of the machines in the pool.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `images`
 
@@ -756,8 +1975,6 @@ The VM images of the machines in the pool.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 **Conditional parameters**
 
@@ -772,6 +1989,7 @@ The VM images of the machines in the pool.
 | :-- | :-- | :-- |
 | [`aliases`](#parameter-imagesaliases) | array | List of aliases to reference the image by. |
 | [`buffer`](#parameter-imagesbuffer) | string | The percentage of the buffer to be allocated to this image. |
+| [`ephemeralType`](#parameter-imagesephemeraltype) | string | The ephemeral type of the image. |
 
 ### Parameter: `images.resourceId`
 
@@ -779,8 +1997,6 @@ The specific resource id of the marketplace or compute gallery image. Required i
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `images.wellKnownImageName`
 
@@ -788,8 +2004,6 @@ The image to use from a well-known set of images made available to customers. Re
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `images.aliases`
 
@@ -797,8 +2011,6 @@ List of aliases to reference the image by.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `images.buffer`
 
@@ -806,8 +2018,21 @@ The percentage of the buffer to be allocated to this image.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
+
+### Parameter: `images.ephemeralType`
+
+The ephemeral type of the image.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'CacheDisk'
+    'ResourceDisk'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -815,8 +2040,6 @@ Name of the pool. It needs to be globally unique.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `organizationProfile`
 
@@ -824,142 +2047,6 @@ Defines the organization in which the pool will be used.
 
 - Required: Yes
 - Type: object
-- MinValue: 1
-- MaxValue: 10000
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-organizationprofilekind) | string | Azure DevOps organization profile. |
-| [`organizations`](#parameter-organizationprofileorganizations) | array | The list of Azure DevOps organizations the pool should be present in.. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`permissionProfile`](#parameter-organizationprofilepermissionprofile) | object | The type of permission which determines which accounts are admins on the Azure DevOps pool. |
-
-### Parameter: `organizationProfile.kind`
-
-Azure DevOps organization profile.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDevOps'
-  ]
-  ```
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.organizations`
-
-The list of Azure DevOps organizations the pool should be present in..
-
-- Required: Yes
-- Type: array
-- MinValue: 1
-- MaxValue: 10000
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`url`](#parameter-organizationprofileorganizationsurl) | string | The Azure DevOps organization URL in which the pool should be created. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`parallelism`](#parameter-organizationprofileorganizationsparallelism) | int | How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool. |
-| [`projects`](#parameter-organizationprofileorganizationsprojects) | array | List of projects in which the pool should be created. |
-
-### Parameter: `organizationProfile.organizations.url`
-
-The Azure DevOps organization URL in which the pool should be created.
-
-- Required: Yes
-- Type: string
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.organizations.parallelism`
-
-How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool.
-
-- Required: No
-- Type: int
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.organizations.projects`
-
-List of projects in which the pool should be created.
-
-- Required: No
-- Type: array
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.permissionProfile`
-
-The type of permission which determines which accounts are admins on the Azure DevOps pool.
-
-- Required: No
-- Type: object
-- MinValue: 1
-- MaxValue: 10000
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-organizationprofilepermissionprofilekind) | string | Determines who has admin permissions to the Azure DevOps pool. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groups`](#parameter-organizationprofilepermissionprofilegroups) | array | Group email addresses. |
-| [`users`](#parameter-organizationprofilepermissionprofileusers) | array | User email addresses. |
-
-### Parameter: `organizationProfile.permissionProfile.kind`
-
-Determines who has admin permissions to the Azure DevOps pool.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CreatorOnly'
-    'Inherit'
-    'SpecificAccounts'
-  ]
-  ```
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.permissionProfile.groups`
-
-Group email addresses.
-
-- Required: No
-- Type: array
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.permissionProfile.users`
-
-User email addresses.
-
-- Required: No
-- Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings`
 
@@ -967,8 +2054,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 **Optional parameters**
 
@@ -990,8 +2075,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -999,8 +2082,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1015,8 +2096,6 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -1024,8 +2103,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1041,8 +2118,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1050,8 +2125,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1059,8 +2132,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1068,8 +2139,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1077,8 +2146,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 **Required parameters**
 
@@ -1098,8 +2165,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1107,8 +2172,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1116,8 +2179,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1125,8 +2186,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1134,8 +2193,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `enableTelemetry`
 
@@ -1144,8 +2201,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `location`
 
@@ -1154,8 +2209,6 @@ The geo-location where the resource lives.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `lock`
 
@@ -1163,8 +2216,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1187,8 +2238,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `lock.name`
 
@@ -1196,8 +2245,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `managedIdentities`
 
@@ -1205,8 +2252,6 @@ The managed service identities assigned to this resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10000
 - Example:
   ```Bicep
   {
@@ -1233,8 +2278,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1242,8 +2285,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `osProfile`
 
@@ -1261,8 +2302,6 @@ The OS profile of the agents in the pool.
       }
   }
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 **Required parameters**
 
@@ -1289,8 +2328,6 @@ The logon type of the machine.
     'Service'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `osProfile.secretsManagementSettings`
 
@@ -1298,8 +2335,6 @@ The secret management settings of the machines in the pool.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10000
 
 **Required parameters**
 
@@ -1313,6 +2348,7 @@ The secret management settings of the machines in the pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateStoreLocation`](#parameter-osprofilesecretsmanagementsettingscertificatestorelocation) | string | Where to store certificates on the machine. |
+| [`certificateStoreName`](#parameter-osprofilesecretsmanagementsettingscertificatestorename) | string | Name of the certificate store to use on the machine. |
 
 ### Parameter: `osProfile.secretsManagementSettings.keyExportable`
 
@@ -1320,8 +2356,6 @@ The secret management settings of the machines in the pool.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `osProfile.secretsManagementSettings.observedCertificates`
 
@@ -1329,8 +2363,6 @@ The list of certificates to install on all machines in the pool.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `osProfile.secretsManagementSettings.certificateStoreLocation`
 
@@ -1338,8 +2370,20 @@ Where to store certificates on the machine.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
+
+### Parameter: `osProfile.secretsManagementSettings.certificateStoreName`
+
+Name of the certificate store to use on the machine.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'My'
+    'Root'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1347,13 +2391,11 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
@@ -1380,8 +2422,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1389,8 +2429,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1398,8 +2436,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1413,8 +2449,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1422,8 +2456,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.description`
 
@@ -1431,8 +2463,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.name`
 
@@ -1440,8 +2470,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1459,8 +2487,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `storageProfile`
 
@@ -1468,8 +2494,6 @@ The storage profile of the machines in the pool.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1484,8 +2508,6 @@ A list of empty data disks to attach.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10000
 
 **Optional parameters**
 
@@ -1510,8 +2532,6 @@ The type of caching to be enabled for the data disks. The default value for cach
     'ReadWrite'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `storageProfile.dataDisks.diskSizeGiB`
 
@@ -1519,8 +2539,6 @@ The initial disk size in gigabytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `storageProfile.dataDisks.driveLetter`
 
@@ -1528,8 +2546,6 @@ The drive letter for the empty data disk. If not specified, it will be the first
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `storageProfile.dataDisks.storageAccountType`
 
@@ -1547,8 +2563,6 @@ The storage Account type to be used for the data disk. If omitted, the default i
     'StandardSSD_ZRS'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `storageProfile.osDiskStorageAccountType`
 
@@ -1564,8 +2578,6 @@ The Azure SKU name of the machines in the pool.
     'StandardSSD'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `subnetResourceId`
 
@@ -1573,8 +2585,6 @@ The subnet id on which to put all machines created in the pool.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10000
 
 ### Parameter: `tags`
 
@@ -1582,8 +2592,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10000
 
 ## Outputs
 

@@ -652,8 +652,6 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 65536
 
 **Required parameters**
 
@@ -667,8 +665,6 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 65536
 
 ## Outputs
 

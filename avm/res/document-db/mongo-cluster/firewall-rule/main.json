@@ -4,43 +4,43 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1544899685990336416"
+      "version": "0.35.1.17967",
+      "templateHash": "16764717011313154043"
     },
-    "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
-    "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
+    "name": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
+    "description": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster."
   },
   "parameters": {
     "mongoClusterName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the firewall rule."
+        "description": "Required. The name of the firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`."
       }
     },
     "startIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "Required. The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
+        "description": "Required. The start IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format."
       }
     },
     "endIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "Required. The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
+        "description": "Required. The end IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format."
       }
     }
   },
   "resources": [
     {
       "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
-      "apiVersion": "2024-02-15-preview",
-      "name": "[format('{0}/{1}', parameters('mongoClusterName'), parameters('name'))]",
+      "apiVersion": "2024-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]",
       "properties": {
         "startIpAddress": "[parameters('startIpAddress')]",
         "endIpAddress": "[parameters('endIpAddress')]"
@@ -51,7 +51,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the Azure Cosmos DB MongoDB vCore cluster was created in."
+        "description": "The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in."
       },
       "value": "[resourceGroup().name]"
     },
@@ -60,14 +60,14 @@
       "metadata": {
         "description": "The name of the firewall rule."
       },
-      "value": "[parameters('name')]"
+      "value": "[if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the firewall rule."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]"
     }
   }
 }

@@ -53,6 +53,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Standard_D2ds_v4'
       tier: 'GeneralPurpose'
       storageAutoGrow: 'Enabled'
+      availabilityZone: -1
     }
   }
 ]

@@ -5,43 +5,45 @@ metadata description = 'This module deploys a Private DNS zone.'
 param name string
 
 @description('Optional. Array of A records.')
-param a aType
+param a aType[]?
 
 @description('Optional. Array of AAAA records.')
-param aaaa aaaaType
+param aaaa aaaaType[]?
 
 @description('Optional. Array of CNAME records.')
-param cname cnameType
+param cname cnameType[]?
 
 @description('Optional. Array of MX records.')
-param mx mxType
+param mx mxType[]?
 
 @description('Optional. Array of PTR records.')
-param ptr ptrType
+param ptr ptrType[]?
 
 @description('Optional. Array of SOA records.')
-param soa soaType
+param soa soaType[]?
 
 @description('Optional. Array of SRV records.')
-param srv srvType
+param srv srvType[]?
 
 @description('Optional. Array of TXT records.')
-param txt txtType
+param txt txtType[]?
 
 @description('Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties \'virtualNetworkResourceId\' and \'registrationEnabled\'. The \'vnetResourceId\' is a resource ID of a vNet to link, \'registrationEnabled\' (bool) enables automatic DNS registration in the zone for the linked vNet.')
-param virtualNetworkLinks virtualNetworkLinkType
+param virtualNetworkLinks virtualNetworkLinkType[]?
 
 @description('Optional. The location of the PrivateDNSZone. Should be global.')
 param location string = 'global'
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@sys.description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. The lock settings of the service.')
-param lock lockType
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@sys.description('Optional. The lock settings of the service.')
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -214,7 +216,7 @@ module privateDnsZone_TXT 'txt/main.bicep' = [
 
 module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
   for (virtualNetworkLink, index) in (virtualNetworkLinks ?? []): {
-    name: '${uniqueString(deployment().name, location)}-PrivateDnsZone-VirtualNetworkLink-${index}'
+    name: '${uniqueString(deployment().name, location)}-PrivateDnsZone-VNetLink-${index}'
     params: {
       privateDnsZoneName: privateDnsZone.name
       name: virtualNetworkLink.?name ?? '${last(split(virtualNetworkLink.virtualNetworkResourceId, '/'))}-vnetlink'
@@ -270,40 +272,8 @@ output location string = privateDnsZone.location
 // Definitions      //
 // ================ //
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
+@export()
+@description('The type for the A record.')
 type aType = {
   @description('Required. The name of the record.')
   name: string
@@ -315,15 +285,17 @@ type aType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of A records in the record set.')
   aRecords: {
     @description('Required. The IPv4 address of this A record.')
     ipv4Address: string
   }[]?
-}[]?
+}
 
+@export()
+@description('The type for the AAAA record.')
 type aaaaType = {
   @description('Required. The name of the record.')
   name: string
@@ -335,15 +307,17 @@ type aaaaType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of AAAA records in the record set.')
   aaaaRecords: {
     @description('Required. The IPv6 address of this AAAA record.')
     ipv6Address: string
   }[]?
-}[]?
+}
 
+@export()
+@description('The type for the CNAME record.')
 type cnameType = {
   @description('Required. The name of the record.')
   name: string
@@ -355,15 +329,17 @@ type cnameType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The CNAME record in the record set.')
   cnameRecord: {
     @description('Required. The canonical name of the CNAME record.')
     cname: string
   }?
-}[]?
+}
 
+@export()
+@description('The type for the MX record.')
 type mxType = {
   @description('Required. The name of the record.')
   name: string
@@ -375,7 +351,7 @@ type mxType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of MX records in the record set.')
   mxRecords: {
@@ -385,8 +361,10 @@ type mxType = {
     @description('Required. The preference value for this MX record.')
     preference: int
   }[]?
-}[]?
+}
 
+@export()
+@description('The type for the PTR record.')
 type ptrType = {
   @description('Required. The name of the record.')
   name: string
@@ -398,15 +376,17 @@ type ptrType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of PTR records in the record set.')
   ptrRecords: {
     @description('Required. The PTR target domain name for this PTR record.')
     ptrdname: string
   }[]?
-}[]?
+}
 
+@export()
+@description('The type for the SOA record.')
 type soaType = {
   @description('Required. The name of the record.')
   name: string
@@ -418,7 +398,7 @@ type soaType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The SOA record in the record set.')
   soaRecord: {
@@ -443,8 +423,10 @@ type soaType = {
     @description('Required. The serial number for this SOA record.')
     serialNumber: int
   }?
-}[]?
+}
 
+@export()
+@description('The type for the SRV record.')
 type srvType = {
   @description('Required. The name of the record.')
   name: string
@@ -456,7 +438,7 @@ type srvType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of SRV records in the record set.')
   srvRecords: {
@@ -472,8 +454,10 @@ type srvType = {
     @description('Required. The target domain name for this SRV record.')
     target: string
   }[]?
-}[]?
+}
 
+@export()
+@description('The type for the TXT record.')
 type txtType = {
   @description('Required. The name of the record.')
   name: string
@@ -485,15 +469,17 @@ type txtType = {
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of TXT records in the record set.')
   txtRecords: {
     @description('Required. The text value of this TXT record.')
     value: string[]
   }[]?
-}[]?
+}
 
+@export()
+@description('The type for the virtual network link.')
 type virtualNetworkLinkType = {
   @description('Optional. The resource name.')
   @minLength(1)
@@ -514,4 +500,4 @@ type virtualNetworkLinkType = {
 
   @description('Optional. The resolution type of the private-dns-zone fallback machanism.')
   resolutionPolicy: ('Default' | 'NxDomainRedirect')?
-}[]?
+}

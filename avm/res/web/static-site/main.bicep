@@ -63,7 +63,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'sku\' to be \'Standard\'.')
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'sku\' to be \'Standard\'. Supplying the `privateDnsZoneGroup` configuration will allow the private endpoint to point to an already existing zone group. If not provided and `createPrivateDnsZone` being enabled, it will create and use the newly created zone group.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Tags of the resource.')
@@ -96,6 +96,16 @@ param customDomains array = []
 ])
 param publicNetworkAccess string = ''
 
+@description('Optional. Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private DNS Zone will only be created following if a `privateEndpoint` configuration is supplied.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param createPrivateDnsZone string = 'Enabled'
+
+@description('Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied.')
+param virtualNetworkResourceId string = ''
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -108,7 +118,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -257,6 +267,19 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
   }
 ]
 
+module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
+  name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
+  params: {
+    name: 'privatelink.${staticSite.properties.defaultHostname}.azurestaticapps.net'
+    enableTelemetry: enableReferencedModulesTelemetry
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetworkResourceId
+      }
+    ]
+  }
+}
+
 module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
@@ -301,7 +324,13 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup ?? {
+        privateDnsZoneGroupConfigs: [
+          {
+            privateDnsZoneResourceId: staticSite_privateDnsZone.outputs.resourceId
+          }
+        ]
+      }
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs

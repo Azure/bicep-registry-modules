@@ -1608,6 +1608,249 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`FQDN`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-fqdn) | The type for a FQDN outbound rule. |
+| [`PrivateEndpoint`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpoint) | The type for a private endpoint outbound rule. |
+| [`ServiceTag`](#variant-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetag) | The type for an service tag outbound rule. |
+
+### Variant: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-FQDN`
+The type for a FQDN outbound rule.
+
+To use this variant, set the property `type` to `FQDN`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-fqdndestination) | string | Fully Qualified Domain Name to allow for outbound traffic. |
+| [`type`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-fqdntype) | string | Type of a managed network Outbound Rule of the  workspace hub. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-fqdncategory) | string | Category of a managed network Outbound Rule of the workspace hub. |
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-FQDN.destination`
+
+Fully Qualified Domain Name to allow for outbound traffic.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-FQDN.type`
+
+Type of a managed network Outbound Rule of the  workspace hub. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FQDN'
+  ]
+  ```
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-FQDN.category`
+
+Category of a managed network Outbound Rule of the workspace hub.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
+
+### Variant: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint`
+The type for a private endpoint outbound rule.
+
+To use this variant, set the property `type` to `PrivateEndpoint`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpointdestination) | object | Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub. |
+| [`type`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpointtype) | string | Type of a managed network Outbound Rule of the workspace hub. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpointcategory) | string | Category of a managed network Outbound Rule of the workspace hub. |
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint.destination`
+
+Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceResourceId`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpointdestinationserviceresourceid) | string | The resource ID of the target resource for the private endpoint. |
+| [`subresourceTarget`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpointdestinationsubresourcetarget) | string | The sub resource to connect for the private endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sparkEnabled`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-privateendpointdestinationsparkenabled) | bool | Whether the private endpoint can be used by jobs running on Spark. |
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint.destination.serviceResourceId`
+
+The resource ID of the target resource for the private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint.destination.subresourceTarget`
+
+The sub resource to connect for the private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint.destination.sparkEnabled`
+
+Whether the private endpoint can be used by jobs running on Spark.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint.type`
+
+Type of a managed network Outbound Rule of the workspace hub.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PrivateEndpoint'
+  ]
+  ```
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-PrivateEndpoint.category`
+
+Category of a managed network Outbound Rule of the workspace hub.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
+
+### Variant: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag`
+The type for an service tag outbound rule.
+
+To use this variant, set the property `type` to `ServiceTag`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetagdestination) | object | Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub. |
+| [`type`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetagtype) | string | Type of a managed network Outbound Rule of the workspace hub. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetagcategory) | string | Category of a managed network Outbound Rule of the workspace hub. |
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag.destination`
+
+Service Tag destination for a Service Tag Outbound Rule for the managed network of the workspace hub.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRanges`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetagdestinationportranges) | string | The name of the service tag to allow. |
+| [`protocol`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetagdestinationprotocol) | string | The protocol to allow. Provide an asterisk(*) to allow any protocol. |
+| [`serviceTag`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<type-servicetagdestinationservicetag) | string | Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port. |
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag.destination.portRanges`
+
+The name of the service tag to allow.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag.destination.protocol`
+
+The protocol to allow. Provide an asterisk(*) to allow any protocol.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag.destination.serviceTag`
+
+Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag.type`
+
+Type of a managed network Outbound Rule of the workspace hub. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServiceTag'
+  ]
+  ```
+
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<.type-ServiceTag.category`
+
+Category of a managed network Outbound Rule of the workspace hub.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
 
 ### Parameter: `workspaceConfiguration.projectName`
 

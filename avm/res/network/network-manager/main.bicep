@@ -25,25 +25,25 @@ param tags object?
 param description string = ''
 
 @sys.description('Optional. Scope Access (Also known as features). String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, then this parameter does not need to be specified, which then only enables features like "IPAM" and "Virtual Network Verifier".')
-param networkManagerScopeAccesses networkManagerScopeAccessType
+param networkManagerScopeAccesses ('Connectivity' | 'SecurityAdmin' | 'Routing')[]?
 
 @sys.description('Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription.')
-param networkManagerScopes networkManagerScopesType
+param networkManagerScopes networkManagerScopeType
 
 @sys.description('Conditional. Network Groups and static members to create for the network manager. Required if using "connectivityConfigurations" or "securityAdminConfigurations" parameters. A network group is global container that includes a set of virtual network resources from any region. Then, configurations are applied to target the network group, which applies the configuration to all members of the group. The two types are group memberships are static and dynamic memberships. Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks, and is available as a child module, while dynamic membership is defined through Azure policy. See [How Azure Policy works with Network Groups](https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-azure-policy-integration) for more details.')
-param networkGroups networkGroupType
+param networkGroups networkGroupType[]?
 
 @sys.description('Optional. Connectivity Configurations to create for the network manager. Network manager must contain at least one network group in order to define connectivity configurations.')
-param connectivityConfigurations connectivityConfigurationsType
+param connectivityConfigurations connectivityConfigurationType[]?
 
 @sys.description('Optional. Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant.')
-param scopeConnections scopeConnectionType
+param scopeConnections scopeConnectionType[]?
 
 @sys.description('Optional. Security Admin Configurations requires enabling the "SecurityAdmin" feature on Network Manager. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to.')
-param securityAdminConfigurations securityAdminConfigurationsType
+param securityAdminConfigurations securityAdminConfigurationType[]?
 
 @sys.description('Optional. Routing Configurations requires enabling the "Routing" feature on Network Manager. A routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.')
-param routingConfigurations routingConfigurationsType
+param routingConfigurations routingConfigurationType[]?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -134,7 +134,7 @@ module networkManager_networkGroups 'network-group/main.bicep' = [
 
 module networkManager_connectivityConfigurations 'connectivity-configuration/main.bicep' = [
   for (connectivityConfiguration, index) in connectivityConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnectivityConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnConfig-${index}'
     params: {
       name: connectivityConfiguration.name
       networkManagerName: networkManager.name
@@ -151,7 +151,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
 
 module networkManager_scopeConnections 'scope-connection/main.bicep' = [
   for (scopeConnection, index) in scopeConnections ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConnections-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConn-${index}'
     params: {
       name: scopeConnection.name
       networkManagerName: networkManager.name
@@ -164,7 +164,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [
 
 module networkManager_securityAdminConfigurations 'security-admin-configuration/main.bicep' = [
   for (securityAdminConfiguration, index) in securityAdminConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-SecurityAdminConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-SecAdmConfig-${index}'
     params: {
       name: securityAdminConfiguration.name
       networkManagerName: networkManager.name
@@ -178,7 +178,7 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
 
 module networkManager_routingConfigurations 'routing-configuration/main.bicep' = [
   for (routingConfiguration, index) in routingConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfig-${index}'
     params: {
       name: routingConfiguration.name
       networkManagerName: networkManager.name
@@ -232,7 +232,9 @@ output location string = networkManager.location
 //   Definitions   //
 // =============== //
 
-import { staticMembersType } from 'network-group/main.bicep'
+import { staticMemberType } from 'network-group/main.bicep'
+@export()
+@sys.description('The type of a network group.')
 type networkGroupType = {
   @sys.description('Required. The name of the network group.')
   name: string
@@ -244,12 +246,12 @@ type networkGroupType = {
   memberType: ('Subnet' | 'VirtualNetwork')?
 
   @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
-  staticMembers: staticMembersType?
-}[]?
+  staticMembers: staticMemberType[]?
+}
 
-type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin' | 'Routing')[]?
-
-type networkManagerScopesType = {
+@export()
+@sys.description('The type of a network manager scope.')
+type networkManagerScopeType = {
   @sys.description('Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: \'/providers/Microsoft.Management/managementGroups/{managementGroupId}\'.')
   managementGroups: string[]?
 
@@ -257,6 +259,8 @@ type networkManagerScopesType = {
   subscriptions: string[]?
 }
 
+@export()
+@sys.description('The type of a scope connection.')
 type scopeConnectionType = {
   @sys.description('Required. The name of the scope connection.')
   name: string
@@ -269,10 +273,12 @@ type scopeConnectionType = {
 
   @sys.description('Required. Tenant ID of the subscription or management group that you want to manage.')
   tenantId: string
-}[]?
+}
 
-import { appliesToGroupsType, hubsType } from 'connectivity-configuration/main.bicep'
-type connectivityConfigurationsType = {
+import { appliesToGroupType, hubType } from 'connectivity-configuration/main.bicep'
+@export()
+@sys.description('The type of a connectivity configuration.')
+type connectivityConfigurationType = {
   @sys.description('Required. The name of the connectivity configuration.')
   name: string
 
@@ -280,23 +286,25 @@ type connectivityConfigurationsType = {
   description: string?
 
   @sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
-  appliesToGroups: appliesToGroupsType
+  appliesToGroups: appliesToGroupType[]
 
   @sys.description('Required. The connectivity topology to apply the configuration to.')
   connectivityTopology: ('HubAndSpoke' | 'Mesh')
 
   @sys.description('Optional. The hubs to apply the configuration to.')
-  hubs: hubsType?
+  hubs: hubType[]?
 
   @sys.description('Optional. Delete existing peering connections.')
   deleteExistingPeering: bool?
 
   @sys.description('Optional. Is global configuration.')
   isGlobal: bool?
-}[]?
+}
 
 import { applyOnNetworkIntentPolicyBasedServicesType, securityAdminConfigurationRuleCollectionType } from 'security-admin-configuration/main.bicep'
-type securityAdminConfigurationsType = {
+@export()
+@sys.description('The type of a security admin configuration.')
+type securityAdminConfigurationType = {
   @sys.description('Required. The name of the security admin configuration.')
   name: string
 
@@ -304,14 +312,16 @@ type securityAdminConfigurationsType = {
   description: string?
 
   @sys.description('Required. Apply on network intent policy based services.')
-  applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServicesType
+  applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServicesType[]
 
   @sys.description('Optional. Rule collections to create for the security admin configuration.')
-  ruleCollections: securityAdminConfigurationRuleCollectionType?
-}[]?
+  ruleCollections: securityAdminConfigurationRuleCollectionType[]?
+}
 
 import { routingConfigurationRuleCollectionType } from 'routing-configuration/main.bicep'
-type routingConfigurationsType = {
+@export()
+@sys.description('The type of a routing configuration.')
+type routingConfigurationType = {
   @sys.description('Required. The name of the routing configuration.')
   name: string
 
@@ -319,5 +329,5 @@ type routingConfigurationsType = {
   description: string?
 
   @sys.description('Optional. Rule collections to create for the routing configuration.')
-  ruleCollections: routingConfigurationRuleCollectionType?
-}[]?
+  ruleCollections: routingConfigurationRuleCollectionType[]?
+}

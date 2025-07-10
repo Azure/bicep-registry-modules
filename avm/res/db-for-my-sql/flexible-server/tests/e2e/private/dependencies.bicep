@@ -7,6 +7,9 @@ param virtualNetworkName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Network Security Group to create.')
+param networkSecurityGroupName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -23,6 +26,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          networkSecurityGroup: {
+            id: nsg.id
+          }
           delegations: [
             {
               name: 'Microsoft.DBforMySQL.flexibleServers'
@@ -50,6 +56,41 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
       }
       registrationEnabled: false
     }
+  }
+}
+
+resource nsg 'Microsoft.Network/networkSecurityGroups@2024-01-01' = {
+  name: networkSecurityGroupName
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowMySQL'
+        properties: {
+          priority: 1000
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '3306'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+        }
+      }
+      {
+        name: 'AllowHealthChecks'
+        properties: {
+          priority: 1001
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
   }
 }
 

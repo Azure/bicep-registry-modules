@@ -8,7 +8,7 @@ param applicationGroupName string
 param name string
 
 @sys.description('Optional. Description of the Application.')
-param description string = ''
+param description string?
 
 @sys.description('Required. Friendly name of the Application.')
 param friendlyName string
@@ -25,22 +25,35 @@ param filePath string
 param commandLineSetting string = 'DoNotAllow'
 
 @sys.description('Optional. Command-Line Arguments for the Application.')
-param commandLineArguments string = ''
+param commandLineArguments string?
 
 @sys.description('Optional. Specifies whether to show the RemoteApp program in the RD Web Access server.')
 param showInPortal bool = false
 
 @sys.description('Optional. Path to icon.')
-param iconPath string = ''
+param iconPath string?
 
 @sys.description('Optional. Index of the icon.')
 param iconIndex int = 0
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' existing = {
+@sys.description('Optional. Resource Type of Application.')
+@allowed([
+  'InBuilt'
+  'MsixApplication'
+])
+param applicationType string?
+
+@sys.description('Optional. Specifies the package application Id for MSIX applications.')
+param msixPackageApplicationId string?
+
+@sys.description('Optional. Specifies the package family name for MSIX applications.')
+param msixPackageFamilyName string?
+
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' existing = {
   name: applicationGroupName
 }
 
-resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2023-09-05' = {
+resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2024-04-03' = {
   name: name
   parent: appGroup
   properties: {
@@ -52,6 +65,9 @@ resource application 'Microsoft.DesktopVirtualization/applicationGroups/applicat
     showInPortal: showInPortal
     iconPath: iconPath
     iconIndex: iconIndex
+    applicationType: applicationType
+    msixPackageApplicationId: msixPackageApplicationId
+    msixPackageFamilyName: msixPackageFamilyName
   }
 }
 

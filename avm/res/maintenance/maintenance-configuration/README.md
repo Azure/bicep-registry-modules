@@ -8,6 +8,7 @@ This module deploys a Maintenance Configuration.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -796,6 +797,14 @@ Gets or sets the visibility of the configuration. The default value is 'Custom'.
 | `name` | string | The name of the Maintenance Configuration. |
 | `resourceGroupName` | string | The name of the resource group the Maintenance Configuration was created in. |
 | `resourceId` | string | The resource ID of the Maintenance Configuration. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

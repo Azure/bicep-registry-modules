@@ -109,7 +109,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = {
   name: name
   location: location
   tags: tags

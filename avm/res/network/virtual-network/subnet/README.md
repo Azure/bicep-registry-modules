@@ -9,13 +9,14 @@ This module deploys a Virtual Network Subnet.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 
 ## Parameters
 
@@ -31,6 +32,7 @@ This module deploys a Virtual Network Subnet.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the parent virtual network. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
@@ -40,6 +42,7 @@ This module deploys a Virtual Network Subnet.
 | [`applicationGatewayIPConfigurations`](#parameter-applicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
 | [`defaultOutboundAccess`](#parameter-defaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-delegation) | string | The delegation to enable on the subnet. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`natGatewayResourceId`](#parameter-natgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroupResourceId`](#parameter-networksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-privateendpointnetworkpolicies) | string | Enable or disable apply network policies on private endpoint in the subnet. |
@@ -48,7 +51,7 @@ This module deploys a Virtual Network Subnet.
 | [`routeTableResourceId`](#parameter-routetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
 | [`serviceEndpointPolicies`](#parameter-serviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-serviceendpoints) | array | The service endpoints to enable on the subnet. |
-| [`sharingScope`](#parameter-sharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
+| [`sharingScope`](#parameter-sharingscope) | string | Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty. |
 
 ### Parameter: `name`
 
@@ -67,6 +70,13 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 ### Parameter: `addressPrefixes`
 
 List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `ipamPoolPrefixAllocations`
+
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.
 
 - Required: No
 - Type: array
@@ -99,6 +109,14 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `natGatewayResourceId`
 
@@ -273,7 +291,7 @@ The service endpoints to enable on the subnet.
 
 ### Parameter: `sharingScope`
 
-Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.
+Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty.
 
 - Required: No
 - Type: string
@@ -291,6 +309,7 @@ Set this property to Tenant to allow sharing subnet with other subscriptions in 
 | :-- | :-- | :-- |
 | `addressPrefix` | string | The address prefix for the subnet. |
 | `addressPrefixes` | array | List of address prefixes for the subnet. |
+| `ipamPoolPrefixAllocations` | array | The IPAM pool prefix allocations for the subnet. |
 | `name` | string | The name of the virtual network peering. |
 | `resourceGroupName` | string | The resource group the virtual network peering was deployed into. |
 | `resourceId` | string | The resource ID of the virtual network peering. |
@@ -306,3 +325,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 ## Notes
 
 The `privateEndpointNetworkPolicies` property must be set to disabled for subnets that contain private endpoints. It confirms that NSGs rules will not apply to private endpoints (currently not supported, [reference](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview#limitations)). Default Value when not specified is "Enabled".
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

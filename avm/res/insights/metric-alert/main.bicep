@@ -66,6 +66,10 @@ param actions array = []
 @description('Required. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
 param criteria alertType
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -140,18 +144,27 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: windowSize
     targetResourceType: targetResourceType
     targetResourceRegion: targetResourceRegion
-    criteria: union(
-      {
-        'odata.type': criteria['odata.type']
-      },
-      (contains(criteria, 'allof') ? { allof: criteria.allof } : {}),
-      (contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {}),
-      (contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {}),
-      (contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
-    )
+    criteria: {
+      'odata.type': criteria['odata.type']
+      ...(contains(criteria, 'allof') ? { allof: criteria.allof } : {})
+      ...(contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {})
+      ...(contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {})
+      ...(contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
+    }
     autoMitigate: autoMitigate
     actions: actionGroups
   }
+}
+
+resource metricAlert_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: metricAlert
 }
 
 resource metricAlert_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -186,19 +199,39 @@ output location string = metricAlert.location
 //   Definitions   //
 // =============== //
 
+@export()
 @discriminator('odata.type')
 type alertType = alertWebtestType | alertResourceType | alertMultiResourceType
+
+@description('The alert type for a single resource scenario.')
 type alertResourceType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-  allof: array
+
+  @description('Required. The list of metric criteria for this \'all of\' operation.')
+  allof: object[]
 }
+
+@description('The alert type for multiple resources scenario.')
 type alertMultiResourceType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-  allof: array
+
+  @description('Required. The list of multiple metric criteria for this \'all of\' operation.')
+  allof: object[]
 }
+
+@description('The alert type for a web test scenario.')
 type alertWebtestType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+
+  @description('Required. The Application Insights resource ID.')
   componentResourceId: string
+
+  @description('Required. The number of failed locations.')
   failedLocationCount: int
+
+  @description('Required. The Application Insights web test resource ID.')
   webTestResourceId: string
 }

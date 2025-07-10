@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "17664075417177294260"
+      "version": "0.35.1.17967",
+      "templateHash": "369463873785242820"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."

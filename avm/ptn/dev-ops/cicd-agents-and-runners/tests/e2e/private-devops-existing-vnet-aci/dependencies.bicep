@@ -12,7 +12,7 @@ param natGatewayName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -49,7 +49,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
+resource natGateway 'Microsoft.Network/natGateways@2024-05-01' = {
   name: natGatewayName
   location: location
   sku: {
@@ -64,12 +64,12 @@ resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
   }
 }
 
-resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.azurecr.io'
   location: 'global'
 }
 
-resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
   name: '${acrPrivateDNSZone.name}-link'
   location: 'global'
   parent: acrPrivateDNSZone
@@ -81,7 +81,7 @@ resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   name: publicIPName
   location: location
   sku: {

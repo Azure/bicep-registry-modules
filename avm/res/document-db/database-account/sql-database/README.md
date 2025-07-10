@@ -65,7 +65,6 @@ Array of containers to deploy in the SQL database.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 

@@ -15,6 +15,9 @@ param location string = resourceGroup().location
 ])
 param applicationGroupType string
 
+@sys.description('Optional. Boolean representing whether the applicationGroup is show in the feed.')
+param showInFeed bool = true
+
 @sys.description('Required. Name of the Host Pool to be linked to this Application Group.')
 param hostpoolName string
 
@@ -22,25 +25,28 @@ param hostpoolName string
 param friendlyName string = name
 
 @sys.description('Optional. Description of the application group.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. List of applications to be created in the Application Group.')
-param applications array = []
+param applications applicationType[]?
 
 @sys.description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03'>.tags?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 var builtInRoleNames = {
   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
@@ -97,36 +103,40 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
+resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
   name: hostpoolName
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' = {
   name: name
   location: location
   tags: tags
   properties: {
-    hostPoolArmPath: appGroup_hostpool.id
+    hostPoolArmPath: hostpool.id
     friendlyName: friendlyName
     description: description
     applicationGroupType: applicationGroupType
+    showInFeed: showInFeed
   }
 }
 
 module appGroup_applications 'application/main.bicep' = [
-  for (application, index) in applications: {
+  for (application, index) in applications ?? []: {
     name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
     params: {
       name: application.name
       applicationGroupName: appGroup.name
-      description: contains(application, 'description') ? application.description : ''
-      friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
+      description: application.?description
+      friendlyName: application.?friendlyName ?? appGroup.name
       filePath: application.filePath
-      commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
-      commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
-      showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
-      iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
-      iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
+      commandLineSetting: application.?commandLineSetting
+      commandLineArguments: application.?commandLineArguments
+      showInPortal: application.?showInPortal
+      iconPath: application.?iconPath ?? application.filePath
+      iconIndex: application.?iconIndex
+      applicationType: application.?applicationType
+      msixPackageApplicationId: application.?msixPackageApplicationId
+      msixPackageFamilyName: application.?msixPackageFamilyName
     }
   }
 ]
@@ -192,75 +202,46 @@ output name string = appGroup.name
 @sys.description('The location of the scaling plan.')
 output location string = appGroup.location
 
-// ================ //
-// Definitions      //
-// ================ //
+// =============== //
+//   Definitions   //
+// =============== //
 
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
+@export()
+@sys.description('The type of an application.')
+type applicationType = {
+  @sys.description('Required. Name of the Application to be created in the Application Group.')
+  name: string
 
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
+  @sys.description('Optional. Description of the Application.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @sys.description('Required. Friendly name of the Application.')
+  friendlyName: string
 
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @sys.description('Required. Specifies a path for the executable file for the Application.')
+  filePath: string
 
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @sys.description('Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.')
+  commandLineSetting: ('Allow' | 'DoNotAllow' | 'Require')?
 
-type diagnosticSettingType = {
-  @sys.description('Optional. The name of diagnostic setting.')
-  name: string?
+  @sys.description('Optional. Command-Line Arguments for the Application.')
+  commandLineArguments: string?
 
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
+  @sys.description('Optional. Specifies whether to show the RemoteApp program in the RD Web Access server.')
+  showInPortal: bool?
 
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.')
-    categoryGroup: string?
+  @sys.description('Optional. Path to icon.')
+  iconPath: string?
 
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
+  @sys.description('Optional. Index of the icon.')
+  iconIndex: int?
 
-  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
+  @sys.description('Optional. Resource Type of Application.')
+  applicationType: ('InBuilt' | 'MsixApplication')?
 
-  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
+  @sys.description('Optional. Specifies the package application Id for MSIX applications.')
+  msixPackageApplicationId: string?
 
-  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+  @sys.description('Optional. Specifies the package family name for MSIX applications.')
+  msixPackageFamilyName: string?
+}

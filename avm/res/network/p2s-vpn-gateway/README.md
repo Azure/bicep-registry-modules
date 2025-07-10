@@ -8,6 +8,7 @@ This module deploys a Virtual Hub P2S Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -292,7 +293,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     associatedRouteTableName: 'defaultRouteTable'
     enableInternetSecurity: true
     isRoutingPreferenceInternet: false
-    location: '<location>'
     p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     tags: {
       Environment: 'Non-Prod'
@@ -335,9 +335,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "isRoutingPreferenceInternet": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "p2SConnectionConfigurationsName": {
       "value": "p2sConnectionConfig1"
     },
@@ -376,7 +373,6 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 param associatedRouteTableName = 'defaultRouteTable'
 param enableInternetSecurity = true
 param isRoutingPreferenceInternet = false
-param location = '<location>'
 p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param tags = {
   Environment: 'Non-Prod'
@@ -673,6 +669,14 @@ The resource ID of the VPN Server Configuration.
 | `name` | string | The name of the user VPN configuration. |
 | `resourceGroupName` | string | The name of the resource group the user VPN configuration was deployed into. |
 | `resourceId` | string | The resource ID of the user VPN configuration. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

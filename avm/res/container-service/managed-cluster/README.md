@@ -377,6 +377,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
+    allocatedOutboundPorts: 1024
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
@@ -472,6 +473,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         resourceId: '<resourceId>'
       }
     }
+    idleTimeoutInMinutes: 15
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -520,9 +522,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPluginMode: 'overlay'
     omsAgentEnabled: true
     openServiceMeshEnabled: true
+    outboundPublicIPResourceIds: '<outboundPublicIPResourceIds>'
     roleAssignments: [
       {
-        name: 'ac915208-669e-4665-9792-7e2dc861f569'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -641,6 +644,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
+    },
+    "allocatedOutboundPorts": {
+      "value": 1024
     },
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "Unmanaged"
@@ -769,6 +775,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       }
     },
+    "idleTimeoutInMinutes": {
+      "value": 15
+    },
     "location": {
       "value": "<location>"
     },
@@ -837,10 +846,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "openServiceMeshEnabled": {
       "value": true
     },
+    "outboundPublicIPResourceIds": {
+      "value": "<outboundPublicIPResourceIds>"
+    },
     "roleAssignments": {
       "value": [
         {
-          "name": "ac915208-669e-4665-9792-7e2dc861f569",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -953,6 +965,7 @@ param agentPools = [
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
+param allocatedOutboundPorts = 1024
 param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
 param diagnosticSettings = [
@@ -1048,6 +1061,7 @@ param identityProfile = {
     resourceId: '<resourceId>'
   }
 }
+param idleTimeoutInMinutes = 15
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1096,9 +1110,10 @@ param networkPlugin = 'azure'
 param networkPluginMode = 'overlay'
 param omsAgentEnabled = true
 param openServiceMeshEnabled = true
+param outboundPublicIPResourceIds = '<outboundPublicIPResourceIds>'
 param roleAssignments = [
   {
-    name: 'ac915208-669e-4665-9792-7e2dc861f569'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1275,7 +1290,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     istioServiceMeshEnabled: true
     istioServiceMeshInternalIngressGatewayEnabled: true
     istioServiceMeshRevisions: [
-      'asm-1-22'
+      'asm-1-24'
     ]
     location: '<location>'
     managedIdentities: {
@@ -1341,7 +1356,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "istioServiceMeshRevisions": {
       "value": [
-        "asm-1-22"
+        "asm-1-24"
       ]
     },
     "location": {
@@ -1393,7 +1408,7 @@ param istioServiceMeshCertificateAuthority = {
 param istioServiceMeshEnabled = true
 param istioServiceMeshInternalIngressGatewayEnabled = true
 param istioServiceMeshRevisions = [
-  'asm-1-22'
+  'asm-1-24'
 ]
 param location = '<location>'
 param managedIdentities = {
@@ -1489,7 +1504,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPlugin: 'kubenet'
     roleAssignments: [
       {
-        name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1614,7 +1629,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "roleAssignments": {
       "value": [
         {
-          "name": "6acf186b-abbd-491b-8bd7-39fa199da81e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1725,7 +1740,7 @@ param managedIdentities = {
 param networkPlugin = 'kubenet'
 param roleAssignments = [
   {
-    name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2702,6 +2717,7 @@ param tags = {
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
+| [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
 | [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
@@ -2758,6 +2774,7 @@ param tags = {
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
+| [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | Desired outbound flow idle timeout in minutes. |
 | [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. The maximum value is three months. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
 | [`istioServiceMeshCertificateAuthority`](#parameter-istioservicemeshcertificateauthority) | object | The Istio Certificate Authority definition. |
@@ -2787,6 +2804,8 @@ param tags = {
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`omsAgentUseAADAuth`](#parameter-omsagentuseaadauth) | bool | Specifies whether the OMS agent is using managed identity authentication. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
+| [`outboundPublicIPPrefixResourceIds`](#parameter-outboundpublicipprefixresourceids) | array | A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules. |
+| [`outboundPublicIPResourceIds`](#parameter-outboundpublicipresourceids) | array | A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
 | [`podIdentityProfileAllowNetworkPluginKubenet`](#parameter-podidentityprofileallownetworkpluginkubenet) | bool | Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing. |
@@ -3680,6 +3699,14 @@ The workload runtime of the agent pool.
 - Required: No
 - Type: string
 
+### Parameter: `allocatedOutboundPorts`
+
+The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports.
+
+- Required: No
+- Type: int
+- Default: `0`
+
 ### Parameter: `authorizedIPRanges`
 
 IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.
@@ -4384,6 +4411,14 @@ Identities associated with the cluster.
 - Required: No
 - Type: object
 
+### Parameter: `idleTimeoutInMinutes`
+
+Desired outbound flow idle timeout in minutes.
+
+- Required: No
+- Type: int
+- Default: `30`
+
 ### Parameter: `imageCleanerIntervalHours`
 
 The interval in hours Image Cleaner will run. The maximum value is three months.
@@ -4400,7 +4435,6 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority`
 
@@ -4408,7 +4442,6 @@ The Istio Certificate Authority definition.
 
 - Required: No
 - Type: object
-- MinValue: 24
 
 **Required parameters**
 
@@ -4426,7 +4459,6 @@ The Certificate chain object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.certObjectName`
 
@@ -4434,7 +4466,6 @@ The Intermediate certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyObjectName`
 
@@ -4442,7 +4473,6 @@ The Intermediate certificate private key object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyVaultResourceId`
 
@@ -4450,7 +4480,6 @@ The resource ID of a key vault to reference a Certificate Authority from.
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.rootCertObjectName`
 
@@ -4458,7 +4487,6 @@ Root certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshEnabled`
 
@@ -4467,7 +4495,6 @@ Specifies whether the Istio ServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
 
@@ -4476,7 +4503,6 @@ Specifies whether the External Istio Ingress Gateway is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
 
@@ -4485,7 +4511,6 @@ Specifies whether the Internal Istio Ingress Gateway is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `istioServiceMeshRevisions`
 
@@ -4493,7 +4518,6 @@ The list of revisions of the Istio control plane. When an upgrade is not in prog
 
 - Required: No
 - Type: array
-- MinValue: 24
 
 ### Parameter: `kedaAddon`
 
@@ -4502,7 +4526,6 @@ Enables Kubernetes Event-driven Autoscaling (KEDA).
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `kubeDashboardEnabled`
 
@@ -4511,7 +4534,6 @@ Specifies whether the kubeDashboard add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `kubernetesVersion`
 
@@ -4519,7 +4541,6 @@ Version of Kubernetes specified when creating the managed cluster.
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `loadBalancerSku`
 
@@ -4535,7 +4556,6 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
     'standard'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `location`
 
@@ -4544,7 +4564,6 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 24
 
 ### Parameter: `lock`
 
@@ -4552,7 +4571,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 24
 
 **Optional parameters**
 
@@ -4575,7 +4593,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `lock.name`
 
@@ -4583,7 +4600,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations`
 
@@ -4591,7 +4607,6 @@ Whether or not to use AKS Automatic mode.
 
 - Required: No
 - Type: array
-- MinValue: 24
 
 **Required parameters**
 
@@ -4606,7 +4621,6 @@ Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
-- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations.name`
 
@@ -4621,7 +4635,6 @@ Name of maintenance window.
     'aksManagedNodeOSUpgradeSchedule'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `managedIdentities`
 
@@ -4629,7 +4642,6 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
-- MinValue: 24
 
 **Optional parameters**
 
@@ -4644,7 +4656,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- MinValue: 24
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -4652,7 +4663,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- MinValue: 24
 
 ### Parameter: `managedOutboundIPCount`
 
@@ -4661,7 +4671,6 @@ Outbound IP Count for the Load balancer.
 - Required: No
 - Type: int
 - Default: `0`
-- MinValue: 24
 
 ### Parameter: `metricAnnotationsAllowList`
 
@@ -4670,7 +4679,6 @@ A comma-separated list of Kubernetes cluster metrics annotations.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 24
 
 ### Parameter: `metricLabelsAllowlist`
 
@@ -4679,7 +4687,6 @@ A comma-separated list of kubernetes cluster metrics labels.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 24
 
 ### Parameter: `monitoringWorkspaceResourceId`
 
@@ -4687,7 +4694,6 @@ Resource ID of the monitoring log analytics workspace.
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `networkDataplane`
 
@@ -4702,7 +4708,6 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
     'cilium'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `networkPlugin`
 
@@ -4717,7 +4722,6 @@ Specifies the network plugin used for building Kubernetes network.
     'kubenet'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `networkPluginMode`
 
@@ -4731,7 +4735,6 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
     'overlay'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `networkPolicy`
 
@@ -4747,7 +4750,6 @@ Specifies the network policy used for building Kubernetes network. - calico or a
     'cilium'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `nodeProvisioningProfileMode`
 
@@ -4762,7 +4764,6 @@ Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAM
     'Manual'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `nodeResourceGroup`
 
@@ -4771,7 +4772,6 @@ Name of the resource group containing agent pool nodes.
 - Required: No
 - Type: string
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
-- MinValue: 24
 
 ### Parameter: `nodeResourceGroupProfile`
 
@@ -4779,7 +4779,6 @@ The node resource group configuration profile.
 
 - Required: No
 - Type: object
-- MinValue: 24
 
 ### Parameter: `omsAgentEnabled`
 
@@ -4788,7 +4787,6 @@ Specifies whether the OMS agent is enabled.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 24
 
 ### Parameter: `omsAgentUseAADAuth`
 
@@ -4797,7 +4795,6 @@ Specifies whether the OMS agent is using managed identity authentication.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `openServiceMeshEnabled`
 
@@ -4806,7 +4803,20 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
+
+### Parameter: `outboundPublicIPPrefixResourceIds`
+
+A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `outboundPublicIPResourceIds`
+
+A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `outboundType`
 
@@ -4824,7 +4834,6 @@ Specifies outbound (egress) routing method.
     'userDefinedRouting'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `podCidr`
 
@@ -4832,7 +4841,6 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `podIdentityProfileAllowNetworkPluginKubenet`
 
@@ -4841,7 +4849,6 @@ Running in Kubenet is disabled by default due to the security related nature of 
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `podIdentityProfileEnable`
 
@@ -4850,7 +4857,6 @@ Whether the pod identity addon is enabled.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentities`
 
@@ -4858,7 +4864,6 @@ The pod identities to use in the cluster.
 
 - Required: No
 - Type: array
-- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentityExceptions`
 
@@ -4866,7 +4871,6 @@ The pod identity exceptions to allow.
 
 - Required: No
 - Type: array
-- MinValue: 24
 
 ### Parameter: `privateDNSZone`
 
@@ -4874,7 +4878,6 @@ Private DNS Zone configuration. Set to 'system' and AKS will create a private DN
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `publicNetworkAccess`
 
@@ -4891,7 +4894,6 @@ Allow or deny public network access for AKS.
     'SecuredByPerimeter'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `roleAssignments`
 
@@ -4899,7 +4901,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 24
 - Roles configurable by name:
   - `'Azure Kubernetes Fleet Manager Contributor Role'`
   - `'Azure Kubernetes Fleet Manager RBAC Admin'`
@@ -4918,7 +4919,7 @@ Array of role assignments to create.
   - `'Kubernetes Agentless Operator'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
@@ -4945,7 +4946,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4953,7 +4953,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 24
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4961,7 +4960,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4975,7 +4973,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4983,7 +4980,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `roleAssignments.description`
 
@@ -4991,7 +4987,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `roleAssignments.name`
 
@@ -4999,7 +4994,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -5017,7 +5011,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `serviceCidr`
 
@@ -5025,7 +5018,6 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `skuName`
 
@@ -5041,7 +5033,6 @@ Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A P
     'Base'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `skuTier`
 
@@ -5058,7 +5049,6 @@ Tier of a managed cluster SKU.
     'Standard'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `sshPublicKey`
 
@@ -5066,7 +5056,6 @@ Specifies the SSH RSA public key string for the Linux nodes.
 
 - Required: No
 - Type: string
-- MinValue: 24
 
 ### Parameter: `supportPlan`
 
@@ -5082,7 +5071,6 @@ The support plan for the Managed Cluster.
     'KubernetesOfficial'
   ]
   ```
-- MinValue: 24
 
 ### Parameter: `syslogPort`
 
@@ -5091,7 +5079,6 @@ The syslog host port. If not specified, the default port is 28330.
 - Required: No
 - Type: int
 - Default: `28330`
-- MinValue: 24
 
 ### Parameter: `tags`
 
@@ -5099,7 +5086,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 24
 
 ### Parameter: `vpaAddon`
 
@@ -5108,7 +5094,6 @@ Whether to enable VPA add-on in cluster. Default value is false.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ### Parameter: `webApplicationRoutingEnabled`
 
@@ -5117,7 +5102,6 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 24
 
 ## Outputs
 

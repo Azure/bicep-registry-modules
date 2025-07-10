@@ -482,8 +482,6 @@ The Azure Search connection name.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `tags`
 
@@ -491,8 +489,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 12
 - Example:
   ```Bicep
   {
@@ -507,8 +503,6 @@ The User Assigned Identity resource name.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `searchServiceName`
 
@@ -517,8 +511,6 @@ The Azure Search resource name. Required if the parameter searchServiceName is n
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 12
 
 ## Outputs
 

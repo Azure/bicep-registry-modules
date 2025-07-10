@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16622551566318541504"
+      "templateHash": "2050971629530076530"
     },
     "name": "Power BI Dedicated Capacities",
     "description": "This module deploys a Power BI Dedicated Capacity."
   },
   "definitions": {
-    "skuTpe": {
+    "skuType": {
       "type": "object",
       "properties": {
         "name": {
@@ -48,6 +48,10 @@
             "description": "Optional. The tier of the SKU."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the capacity SKU."
       }
     },
     "lockType": {
@@ -185,7 +189,7 @@
       }
     },
     "sku": {
-      "$ref": "#/definitions/skuTpe",
+      "$ref": "#/definitions/skuType",
       "metadata": {
         "description": "Required. Sku configuration of the resource."
       }

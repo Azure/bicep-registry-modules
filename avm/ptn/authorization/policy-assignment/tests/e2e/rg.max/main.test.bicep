@@ -42,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kvlt-${serviceShort}'
     location: resourceLocation
   }
   dependsOn: [
@@ -60,6 +60,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     //Configure Azure Defender for SQL agents on virtual machines
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+    definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the resource group scope'
     displayName: '[Display Name] Policy Assignment at the resource group scope'
     enforcementMode: 'DoNotEnforce'

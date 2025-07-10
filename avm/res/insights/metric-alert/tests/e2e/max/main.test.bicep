@@ -70,6 +70,10 @@ module testDeployment '../../../main.bicep' = [
       actions: [
         nestedDependencies.outputs.actionGroupResourceId
       ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
       roleAssignments: [
         {
           name: '3ab52119-85d9-4374-a454-2410b84f19f9'

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "9438694500506305843"
+      "version": "0.35.1.17967",
+      "templateHash": "13090076068489784265"
     },
     "name": "DBforPostgreSQL Flexible Server Administrators",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."

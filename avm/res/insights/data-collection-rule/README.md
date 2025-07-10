@@ -32,10 +32,11 @@ The following section provides usage examples for the module, which were used to
 - [Collecting custom text logs](#example-3-collecting-custom-text-logs)
 - [Collecting IIS logs](#example-4-collecting-iis-logs)
 - [Using only defaults](#example-5-using-only-defaults)
-- [Collecting Linux-specific information](#example-6-collecting-linux-specific-information)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [WAF-aligned](#example-8-waf-aligned)
-- [Collecting Windows-specific information](#example-9-collecting-windows-specific-information)
+- [Send data to Azure Monitor Logs with Logs ingestion API](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
+- [Collecting Linux-specific information](#example-7-collecting-linux-specific-information)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [WAF-aligned](#example-9-waf-aligned)
+- [Collecting Windows-specific information](#example-10-collecting-windows-specific-information)
 
 ### Example 1: _Agent Settings_
 
@@ -1104,7 +1105,219 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Collecting Linux-specific information_
+### Example 6: _Send data to Azure Monitor Logs with Logs ingestion API_
+
+This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+      dataFlows: [
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          outputStream: 'Custom-ApacheAccess_CL'
+          streams: [
+            'Custom-ApacheAccess_CL'
+          ]
+          transformKql: 'source\n| extend TimeGenerated = todatetime(Time)\n| parse RawData with \nClientIP:string\n\' \' *\n\' \' *\n\' [\' * \'] \'\' RequestType:string\n\' \' Resource:string\n\' \' *\n\'\' \' ResponseCode:int\n\' \' *\n| project-away Time, RawData\n| where ResponseCode != 200\n'
+        }
+      ]
+      description: 'Send data to Azure Monitor Logs with Logs ingestion API. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Direct'
+      streamDeclarations: {
+        'Custom-ApacheAccess_CL': {
+          columns: [
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+            {
+              name: 'Time'
+              type: 'datetime'
+            }
+            {
+              name: 'Application'
+              type: 'string'
+            }
+          ]
+        }
+      }
+    }
+    name: 'idcrdir001'
+    // Non-required parameters
+    location: '<location>'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      kind: 'Direct'
+      resourceType: 'Data Collection Rules'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
+        "dataFlows": [
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "outputStream": "Custom-ApacheAccess_CL",
+            "streams": [
+              "Custom-ApacheAccess_CL"
+            ],
+            "transformKql": "source\n| extend TimeGenerated = todatetime(Time)\n| parse RawData with \nClientIP:string\n\" \" *\n\" \" *\n\" [\" * \"] \"\" RequestType:string\n\" \" Resource:string\n\" \" *\n\"\" \" ResponseCode:int\n\" \" *\n| project-away Time, RawData\n| where ResponseCode != 200\n"
+          }
+        ],
+        "description": "Send data to Azure Monitor Logs with Logs ingestion API. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Direct",
+        "streamDeclarations": {
+          "Custom-ApacheAccess_CL": {
+            "columns": [
+              {
+                "name": "RawData",
+                "type": "string"
+              },
+              {
+                "name": "Time",
+                "type": "datetime"
+              },
+              {
+                "name": "Application",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "name": {
+      "value": "idcrdir001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "kind": "Direct",
+        "resourceType": "Data Collection Rules"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      outputStream: 'Custom-ApacheAccess_CL'
+      streams: [
+        'Custom-ApacheAccess_CL'
+      ]
+      transformKql: 'source\n| extend TimeGenerated = todatetime(Time)\n| parse RawData with \nClientIP:string\n\' \' *\n\' \' *\n\' [\' * \'] \'\' RequestType:string\n\' \' Resource:string\n\' \' *\n\'\' \' ResponseCode:int\n\' \' *\n| project-away Time, RawData\n| where ResponseCode != 200\n'
+    }
+  ]
+  description: 'Send data to Azure Monitor Logs with Logs ingestion API. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Direct'
+  streamDeclarations: {
+    'Custom-ApacheAccess_CL': {
+      columns: [
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+        {
+          name: 'Time'
+          type: 'datetime'
+        }
+        {
+          name: 'Application'
+          type: 'string'
+        }
+      ]
+    }
+  }
+}
+param name = 'idcrdir001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Direct'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Collecting Linux-specific information_
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
@@ -1640,7 +1853,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1993,7 +2206,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2391,7 +2604,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Collecting Windows-specific information_
+### Example 10: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
@@ -2815,6 +3028,403 @@ The kind of data collection rule.
 
 - Required: Yes
 - Type: object
+- Discriminator: `kind`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Linux`](#variant-datacollectionrulepropertieskind-linux) | The type for the properties of the 'Linux' data collection rule. |
+| [`Windows`](#variant-datacollectionrulepropertieskind-windows) | The type for the properties of the 'Windows' data collection rule. |
+| [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
+| [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
+| [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+
+### Variant: `dataCollectionRuleProperties.kind-Linux`
+The type for the properties of the 'Linux' data collection rule.
+
+To use this variant, set the property `kind` to `Linux`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-linuxdataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-linuxdatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-linuxdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-linuxkind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#parameter-datacollectionrulepropertieskind-linuxdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#parameter-datacollectionrulepropertieskind-linuxdescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-linuxstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-Linux.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: No
+- Type: object
+
+### Variant: `dataCollectionRuleProperties.kind-Windows`
+The type for the properties of the 'Windows' data collection rule.
+
+To use this variant, set the property `kind` to `Windows`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-windowsdataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-windowsdatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-windowsdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-windowskind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#parameter-datacollectionrulepropertieskind-windowsdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#parameter-datacollectionrulepropertieskind-windowsdescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-windowsstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Windows'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-Windows.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: No
+- Type: object
+
+### Variant: `dataCollectionRuleProperties.kind-All`
+The type for the properties of the data collection rule of the kind 'All'.
+
+To use this variant, set the property `kind` to `All`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-alldataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-alldatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-alldestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-allkind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#parameter-datacollectionrulepropertieskind-alldatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#parameter-datacollectionrulepropertieskind-alldescription) | string | Description of the data collection rule. |
+| [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-allstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-All.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-All.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-All.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-All.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'All'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-All.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-All.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-All.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: No
+- Type: object
+
+### Variant: `dataCollectionRuleProperties.kind-AgentSettings`
+The type for the properties of the 'AgentSettings' data collection rule.
+
+To use this variant, set the property `kind` to `AgentSettings`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentSettings`](#parameter-datacollectionrulepropertieskind-agentsettingsagentsettings) | object | Agent settings used to modify agent behavior on a given host. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentsettingskind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-agentsettingsdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings`
+
+Agent settings used to modify agent behavior on a given host.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logs`](#parameter-datacollectionrulepropertieskind-agentsettingsagentsettingslogs) | array | All the settings that are applicable to the logs agent (AMA). |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings.logs`
+
+All the settings that are applicable to the logs agent (AMA).
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-datacollectionrulepropertieskind-agentsettingsagentsettingslogsname) | string | The name of the agent setting. |
+| [`value`](#parameter-datacollectionrulepropertieskind-agentsettingsagentsettingslogsvalue) | string | The value of the agent setting. |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings.logs.name`
+
+The name of the agent setting.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'MaxDiskQuotaInMB'
+    'UseTimeReceivedForForwardedEvents'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.agentSettings.logs.value`
+
+The value of the agent setting.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AgentSettings'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-Direct`
+The type for the properties of the 'Direct' data collection rule.
+
+To use this variant, set the property `kind` to `Direct`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-directdataflows) | array | The specification of data flows. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-directdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-directkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-directstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#parameter-datacollectionrulepropertieskind-directdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#parameter-datacollectionrulepropertieskind-directdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Direct'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
 
 ### Parameter: `name`
 
@@ -3029,7 +3639,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

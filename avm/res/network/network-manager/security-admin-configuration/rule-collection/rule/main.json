@@ -5,87 +5,61 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3195100427454268317"
+      "version": "0.34.44.8038",
+      "templateHash": "9580534553660704472"
     },
     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
   },
   "definitions": {
-    "destinationPortRangesType": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "nullable": true,
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "destinationsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "addressPrefixType": {
-            "type": "string",
-            "allowedValues": [
-              "IPPrefix",
-              "ServiceTag"
-            ],
-            "metadata": {
-              "description": "Required. Address prefix type."
-            }
-          },
-          "addressPrefix": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Address prefix."
-            }
+    "destinationType": {
+      "type": "object",
+      "properties": {
+        "addressPrefixType": {
+          "type": "string",
+          "allowedValues": [
+            "IPPrefix",
+            "ServiceTag"
+          ],
+          "metadata": {
+            "description": "Required. Address prefix type."
+          }
+        },
+        "addressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address prefix."
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a destination."
       }
     },
-    "sourcePortRangesType": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "nullable": true,
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "sourcesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "addressPrefixType": {
-            "type": "string",
-            "allowedValues": [
-              "IPPrefix",
-              "ServiceTag"
-            ],
-            "metadata": {
-              "description": "Required. Address prefix type."
-            }
-          },
-          "addressPrefix": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Address prefix."
-            }
+    "sourceType": {
+      "type": "object",
+      "properties": {
+        "addressPrefixType": {
+          "type": "string",
+          "allowedValues": [
+            "IPPrefix",
+            "ServiceTag"
+          ],
+          "metadata": {
+            "description": "Required. Address prefix type."
+          }
+        },
+        "addressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address prefix."
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a source."
       }
     }
   },
@@ -145,7 +119,11 @@
       }
     },
     "destinations": {
-      "$ref": "#/definitions/destinationsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/destinationType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
       }
@@ -193,7 +171,11 @@
       }
     },
     "sources": {
-      "$ref": "#/definitions/sourcesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sourceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
       }

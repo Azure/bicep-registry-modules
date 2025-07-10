@@ -58,6 +58,7 @@ module nestedDependencies 'dependencies.bicep' = {
     backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    preCreatedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
   }
 }
 
@@ -113,6 +114,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIPAddressResourceId: nestedDependencies.outputs.publicIPAddressResourceId
+                diagnosticSettings: [
+                  {
+                    workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+                  }
+                ]
                 roleAssignments: [
                   {
                     name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
@@ -231,6 +237,12 @@ module testDeployment '../../../main.bicep' = [
             storageAccountType: 'Premium_LRS'
           }
         }
+        {
+          lun: 2
+          managedDisk: {
+            id: nestedDependencies.outputs.preCreatedDataDiskResourceId
+          }
+        }
       ]
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
@@ -240,13 +252,16 @@ module testDeployment '../../../main.bicep' = [
         status: 'Enabled'
         dailyRecurrenceTime: '19:00'
         timeZone: 'UTC'
-        notificationStatus: 'Enabled'
-        notificationEmail: 'test@contoso.com'
-        notificationLocale: 'en'
-        notificationTimeInMinutes: 30
+        notificationSettings: {
+          status: 'Enabled'
+          emailRecipient: 'test@contoso.com'
+          notificationLocale: 'en'
+          timeInMinutes: 30
+        }
       }
       extensionAntiMalwareConfig: {
         enabled: true
+        name: 'myMicrosoftAntiMalware'
         settings: {
           AntimalwareEnabled: 'true'
           Exclusions: {
@@ -270,6 +285,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionCustomScriptConfig: {
         enabled: true
+        name: 'myCustomScript'
         fileData: [
           {
             storageAccountId: nestedDependencies.outputs.storageAccountResourceId
@@ -287,6 +303,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionDependencyAgentConfig: {
         enabled: true
+        name: 'myDependencyAgent'
         enableAMA: true
         tags: {
           'hidden-title': 'This is visible in the resource name'
@@ -296,6 +313,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionAzureDiskEncryptionConfig: {
         enabled: true
+        name: 'myAzureDiskEncryption'
         settings: {
           EncryptionOperation: 'EnableEncryption'
           KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
@@ -314,6 +332,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionAadJoinConfig: {
         enabled: true
+        name: 'myAADLogin'
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -322,6 +341,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionDSCConfig: {
         enabled: true
+        name: 'myDesiredStateConfiguration'
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -330,6 +350,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionMonitoringAgentConfig: {
         enabled: true
+        name: 'myMonitoringAgent'
         dataCollectionRuleAssociations: [
           {
             name: 'SendMetricsToLAW'
@@ -344,12 +365,19 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionNetworkWatcherAgentConfig: {
         enabled: true
+        name: 'myNetworkWatcherAgent'
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
       }
+      additionalUnattendContent: [
+        {
+          settingName: 'FirstLogonCommands'
+          content: '<FirstLogonCommands><SynchronousCommand><CommandLine>cmd /c echo First logon command example > %temp%\\FirstLogonCommandOutput.txt</CommandLine><Description>Example FirstLogonCommand</Description><Order>1</Order></SynchronousCommand></FirstLogonCommands>'
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

@@ -5,13 +5,132 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "12728818246906272603"
+      "version": "0.36.1.42791",
+      "templateHash": "13939702786676880377"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
   },
   "definitions": {
+    "containerProbeType": {
+      "type": "object",
+      "properties": {
+        "exec": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. The commands to execute within the container."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The execution command to probe."
+          }
+        },
+        "failureThreshold": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The failure threshold."
+          }
+        },
+        "httpGet": {
+          "type": "object",
+          "properties": {
+            "httpHeaders": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the header."
+                    }
+                  },
+                  "value": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The value of the header."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The HTTP headers."
+              }
+            },
+            "path": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The path to probe."
+              }
+            },
+            "port": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The port number to probe."
+              }
+            },
+            "scheme": {
+              "type": "string",
+              "allowedValues": [
+                "HTTP",
+                "HTTPS"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The scheme."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The HTTP request to perform."
+          }
+        },
+        "initialDelaySeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The initial delay seconds."
+          }
+        },
+        "periodSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The period seconds."
+          }
+        },
+        "successThreshold": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The success threshold."
+          }
+        },
+        "timeoutSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timeout seconds."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a container probe."
+      }
+    },
     "containerType": {
       "type": "object",
       "properties": {
@@ -31,11 +150,17 @@
               }
             },
             "livenessProbe": {
-              "type": "object",
-              "properties": {},
+              "$ref": "#/definitions/containerProbeType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The liveness probe."
+              }
+            },
+            "readinessProbe": {
+              "$ref": "#/definitions/containerProbeType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The readiness probe."
               }
             },
             "ports": {
@@ -83,9 +208,8 @@
                     },
                     "memoryInGB": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
-                        "description": "Optional. The memory request in GB of this container instance."
+                        "description": "Required. The memory request in GB of this container instance."
                       }
                     }
                   },
@@ -121,83 +245,83 @@
                   "metadata": {
                     "description": "Optional. The resource limits of this container instance."
                   }
+                }
+              },
+              "metadata": {
+                "description": "Required. The resource requirements of the container instance."
+              }
+            },
+            "securityContext": {
+              "type": "object",
+              "properties": {
+                "allowPrivilegeEscalation": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether privilege escalation is allowed for the container."
+                  }
                 },
-                "securityContext": {
+                "capabilities": {
                   "type": "object",
                   "properties": {
-                    "allowPrivilegeEscalation": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Whether privilege escalation is allowed for the container."
-                      }
-                    },
-                    "capabilities": {
-                      "type": "object",
-                      "properties": {
-                        "add": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The list of capabilities to add."
-                          }
-                        },
-                        "drop": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The list of capabilities to drop."
-                          }
-                        }
+                    "add": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
                       },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The capabilities to add or drop for the container."
+                        "description": "Optional. The list of capabilities to add."
                       }
                     },
-                    "privileged": {
-                      "type": "bool",
+                    "drop": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. Whether the container is run in privileged mode."
-                      }
-                    },
-                    "runAsGroup": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The GID to run the container as."
-                      }
-                    },
-                    "runAsUser": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The UID to run the container as."
-                      }
-                    },
-                    "seccompProfile": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The seccomp profile to use for the container."
+                        "description": "Optional. The list of capabilities to drop."
                       }
                     }
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The security context of the container instance."
+                    "description": "Optional. The capabilities to add or drop for the container."
+                  }
+                },
+                "privileged": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the container is run in privileged mode."
+                  }
+                },
+                "runAsGroup": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The GID to run the container as."
+                  }
+                },
+                "runAsUser": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The UID to run the container as."
+                  }
+                },
+                "seccompProfile": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The seccomp profile to use for the container."
                   }
                 }
               },
+              "nullable": true,
               "metadata": {
-                "description": "Required. The resource requirements of the container instance."
+                "description": "Optional. The security context of the container instance."
               }
             },
             "volumeMounts": {
@@ -280,7 +404,43 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a container."
+      }
+    },
+    "logAnalyticsType": {
+      "type": "object",
+      "properties": {
+        "logType": {
+          "type": "string",
+          "allowedValues": [
+            "ContainerInsights",
+            "ContainerInstanceLogs"
+          ],
+          "metadata": {
+            "description": "Required. The log type to be used."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The workspace resource ID for log analytics."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/diagnostics/properties/logAnalytics/properties/metadata"
+            },
+            "description": "Optional. Metadata for log analytics."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for log analytics diagnostics."
       }
     },
     "imageRegistryCredentialType": {
@@ -322,7 +482,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an image registry credential."
       }
     },
     "ipAddressPortsType": {
@@ -342,7 +503,119 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an IP address port."
+      }
+    },
+    "ipAddressType": {
+      "type": "object",
+      "properties": {
+        "autoGeneratedDomainNameLabelScope": {
+          "type": "string",
+          "allowedValues": [
+            "Noreuse",
+            "ResourceGroupReuse",
+            "SubscriptionReuse",
+            "TenantReuse",
+            "Unsecure"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The value representing the security enum."
+          }
+        },
+        "dnsNameLabel": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Dns name label for the IP."
+          }
+        },
+        "ip": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The IP exposed to the public internet."
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ipAddressPortsType"
+          },
+          "metadata": {
+            "description": "Required. The list of ports exposed on the container group."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Private",
+            "Public"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies if the IP is exposed to the public internet or private VNET."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an IP address."
+      }
+    },
+    "containerGroupSubnetIdType": {
+      "type": "object",
+      "properties": {
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of virtual network and subnet."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Friendly name for the subnet."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a container group subnet."
+      }
+    },
+    "dnsConfigType": {
+      "type": "object",
+      "properties": {
+        "nameServers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. \tThe DNS servers for the container group."
+          }
+        },
+        "options": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The DNS options for the container group."
+          }
+        },
+        "searchDomains": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The DNS search domains for hostname lookup in the container group."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a DNS configuration."
       }
     },
     "containerGpuType": {
@@ -367,7 +640,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a container GPU."
       }
     },
     "customerManagedKeyWithAutoRotateType": {
@@ -410,7 +684,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -489,14 +763,11 @@
         "description": "Required. The containers and their respective config within the container group."
       }
     },
-    "ipAddressPorts": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ipAddressPortsType"
-      },
+    "ipAddress": {
+      "$ref": "#/definitions/ipAddressType",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`."
+        "description": "Optional. The IP address type of the container group."
       }
     },
     "osType": {
@@ -518,17 +789,6 @@
         "description": "Optional. Restart policy for all containers within the container group. - Always: Always restart. OnFailure: Restart on failure. Never: Never restart. - Always, OnFailure, Never."
       }
     },
-    "ipAddressType": {
-      "type": "string",
-      "defaultValue": "Public",
-      "allowedValues": [
-        "Public",
-        "Private"
-      ],
-      "metadata": {
-        "description": "Optional. Specifies if the IP is exposed to the public internet or private VNET. - Public or Private."
-      }
-    },
     "imageRegistryCredentials": {
       "type": "array",
       "items": {
@@ -546,64 +806,49 @@
         "description": "Optional. Location for all Resources."
       }
     },
-    "autoGeneratedDomainNameLabelScope": {
-      "type": "string",
-      "defaultValue": "TenantReuse",
-      "allowedValues": [
-        "Noreuse",
-        "ResourceGroupReuse",
-        "SubscriptionReuse",
-        "TenantReuse",
-        "Unsecure"
-      ],
-      "metadata": {
-        "description": "Optional. Specify level of protection of the domain name label."
-      }
-    },
-    "dnsNameLabel": {
-      "type": "string",
+    "logAnalytics": {
+      "$ref": "#/definitions/logAnalyticsType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The Dns name label for the resource."
+        "description": "Optional. The log analytics diagnostic information for a container group."
       }
     },
-    "dnsNameServers": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
+    "dnsConfig": {
+      "$ref": "#/definitions/dnsConfigType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of dns servers used by the containers for lookups."
-      }
-    },
-    "dnsSearchDomains": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. DNS search domain which will be appended to each DNS lookup."
+        "description": "Optional. The DNS config information for a container group."
       }
     },
     "initContainers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/initContainers"
+        },
         "description": "Optional. A list of container definitions which will be executed before the application container starts."
-      }
+      },
+      "nullable": true
     },
-    "subnetResourceId": {
-      "type": "string",
+    "subnets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/containerGroupSubnetIdType"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Resource ID of the subnet. Only specify when ipAddressType is Private."
+        "description": "Optional. The subnets to use by the container group."
       }
     },
     "volumes": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/volumes"
+        },
         "description": "Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -621,10 +866,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -650,6 +898,29 @@
       "metadata": {
         "description": "Optional. The customer managed key definition."
       }
+    },
+    "availabilityZone": {
+      "type": "int",
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
+      }
+    },
+    "priority": {
+      "type": "string",
+      "allowedValues": [
+        "Regular",
+        "Spot"
+      ],
+      "defaultValue": "Regular",
+      "metadata": {
+        "description": "Optional. The priority of the container group."
+      }
     }
   },
   "variables": {
@@ -661,10 +932,19 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
+    "law": {
+      "condition": "[not(empty(parameters('logAnalytics')))]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2025-02-01",
+      "subscriptionId": "[split(parameters('logAnalytics').workspaceResourceId, '/')[2]]",
+      "resourceGroup": "[split(parameters('logAnalytics').workspaceResourceId, '/')[4]]",
+      "name": "[last(split(parameters('logAnalytics').workspaceResourceId, '/'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -690,7 +970,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -699,7 +979,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -711,10 +991,59 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "properties": "[union(createObject('containers', parameters('containers'), 'encryptionProperties', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null()), 'imageRegistryCredentials', parameters('imageRegistryCredentials'), 'initContainers', parameters('initContainers'), 'restartPolicy', parameters('restartPolicy'), 'osType', parameters('osType'), 'ipAddress', createObject('type', parameters('ipAddressType'), 'autoGeneratedDomainNameLabelScope', if(not(empty(parameters('dnsNameServers'))), parameters('autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', parameters('dnsNameLabel'), 'ports', parameters('ipAddressPorts')), 'sku', parameters('sku'), 'subnetIds', if(not(empty(parameters('subnetResourceId'))), createArray(createObject('id', parameters('subnetResourceId'))), null()), 'volumes', parameters('volumes')), if(not(empty(parameters('dnsNameServers'))), createObject('dnsConfig', createObject('nameServers', parameters('dnsNameServers'), 'searchDomains', parameters('dnsSearchDomains'))), createObject()))]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]",
+      "properties": {
+        "copy": [
+          {
+            "name": "containers",
+            "count": "[length(parameters('containers'))]",
+            "input": {
+              "name": "[parameters('containers')[copyIndex('containers')].name]",
+              "properties": {
+                "command": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'command')]",
+                "environmentVariables": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'environmentVariables')]",
+                "image": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'image')]",
+                "livenessProbe": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'livenessProbe')]",
+                "ports": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'ports')]",
+                "readinessProbe": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'readinessProbe')]",
+                "resources": {
+                  "requests": {
+                    "cpu": "[parameters('containers')[copyIndex('containers')].properties.resources.requests.cpu]",
+                    "gpu": "[tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'gpu')]",
+                    "memoryInGB": "[json(tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'memoryInGB'))]"
+                  },
+                  "limits": "[if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'))), createObject('cpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'cpu'), 'gpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'gpu'), 'memoryInGB', if(not(empty(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB'))), json(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB')), null())), null())]"
+                },
+                "securityContext": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'securityContext')]",
+                "volumeMounts": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'volumeMounts')]"
+              }
+            }
+          },
+          {
+            "name": "subnetIds",
+            "count": "[length(coalesce(parameters('subnets'), createArray()))]",
+            "input": {
+              "id": "[coalesce(parameters('subnets'), createArray())[copyIndex('subnetIds')].subnetResourceId]",
+              "name": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnetIds')], 'name')]"
+            }
+          }
+        ],
+        "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', reference('law').customerId, 'workspaceKey', listKeys('law', '2025-02-01').primarySharedKey, 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
+        "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())]",
+        "imageRegistryCredentials": "[parameters('imageRegistryCredentials')]",
+        "initContainers": "[parameters('initContainers')]",
+        "restartPolicy": "[parameters('restartPolicy')]",
+        "osType": "[parameters('osType')]",
+        "ipAddress": "[if(not(empty(parameters('ipAddress'))), createObject('autoGeneratedDomainNameLabelScope', if(not(empty(tryGet(parameters('dnsConfig'), 'nameServers'))), tryGet(parameters('ipAddress'), 'autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', tryGet(parameters('ipAddress'), 'dnsNameLabel'), 'ip', tryGet(parameters('ipAddress'), 'ip'), 'ports', coalesce(tryGet(parameters('ipAddress'), 'ports'), createArray()), 'type', coalesce(tryGet(parameters('ipAddress'), 'type'), 'Public')), null())]",
+        "sku": "[parameters('sku')]",
+        "volumes": "[parameters('volumes')]",
+        "dnsConfig": "[parameters('dnsConfig')]",
+        "priority": "[parameters('priority')]"
+      },
       "dependsOn": [
+        "cMKKeyVault",
         "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "law"
       ]
     },
     "containergroup_lock": {

@@ -17,27 +17,23 @@ param enableTelemetry bool = true
 @description('Optional. Tags for the cluster resource.')
 param tags object?
 
-@description('Optional. The Azure AD tenant ID.')
-param tenantId string?
+@description('Optional. AAD profile for the connected cluster.')
+param aadProfile aadProfileType?
 
-@description('Optional. The Azure AD admin group object IDs.')
-param aadAdminGroupObjectIds array?
+@description('Optional. Arc agentry configuration for the provisioned cluster.')
+param arcAgentProfile arcAgentProfileType = {
+  agentAutoUpgrade: 'Enabled'
+}
 
-@description('Optional. Enable Azure RBAC.')
-param enableAzureRBAC bool = false
+@description('Optional. Open ID Connect (OIDC) Issuer Profile for the connected cluster.')
+param oidcIssuerProfile oidcIssuerProfileType = { enabled: false }
 
-@description('Optional. Enable automatic agent upgrades.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param agentAutoUpgrade string = 'Enabled'
-
-@description('Optional. Enable OIDC issuer.')
-param oidcIssuerEnabled bool = false
-
-@description('Optional. Enable workload identity.')
-param workloadIdentityEnabled bool = false
+@description('Optional. Security profile for the connected cluster.')
+param securityProfile securityProfileType = {
+  workloadIdentity: {
+    enabled: false
+  }
+}
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -102,27 +98,13 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
   }
   tags: tags
   properties: {
-    aadProfile: enableAzureRBAC
-      ? {
-          tenantID: !empty(tenantId) ? tenantId : tenant().tenantId
-          adminGroupObjectIDs: aadAdminGroupObjectIds ?? []
-          enableAzureRBAC: enableAzureRBAC
-        }
-      : null
+    aadProfile: aadProfile
     agentPublicKeyCertificate: ''
-    arcAgentProfile: {
-      agentAutoUpgrade: agentAutoUpgrade
-    }
+    arcAgentProfile: arcAgentProfile
     distribution: null
     infrastructure: null
-    oidcIssuerProfile: {
-      enabled: oidcIssuerEnabled
-    }
-    securityProfile: {
-      workloadIdentity: {
-        enabled: workloadIdentityEnabled
-      }
-    }
+    oidcIssuerProfile: oidcIssuerProfile
+    securityProfile: securityProfile
     azureHybridBenefit: null
   }
 }
@@ -143,6 +125,10 @@ resource connectedCluster_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
+// ============ //
+// Outputs      //
+// ============ //
+
 @description('The name of the connected cluster.')
 output name string = connectedCluster.name
 
@@ -157,3 +143,61 @@ output location string = connectedCluster.location
 
 @description('The principalId of the connected cluster identity.')
 output systemAssignedMIPrincipalId string? = connectedCluster.identity.principalId
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+@description('The type for AAD profile configuration.')
+type aadProfileType = {
+  @description('Required. The list of AAD group object IDs that will have admin role of the cluster.')
+  adminGroupObjectIDs: string[]
+  @description('Required. Whether to enable Azure RBAC for Kubernetes authorization.')
+  enableAzureRBAC: bool
+  @description('Required. The AAD tenant ID.')
+  tenantID: string
+}
+
+@export()
+@description('The type for system component configuration.')
+type systemComponentType = {
+  @description('Required. The major version of the system component.')
+  majorVersion: int
+  @description('Required. The type of the system component.')
+  type: string
+  @description('Required. The user specified version of the system component.')
+  userSpecifiedVersion: string
+}
+
+@export()
+@description('The type for Arc agent profile configuration.')
+type arcAgentProfileType = {
+  @description('Required. Indicates whether the Arc agents on the be upgraded automatically to the latest version.')
+  agentAutoUpgrade: 'Enabled' | 'Disabled'
+  @description('Optional. The errors encountered by the Arc agent.')
+  agentErrors: array?
+  @description('Optional. The desired version of the Arc agent.')
+  desiredAgentVersion: string?
+  @description('Optional. List of system extensions that are installed on the cluster resource.')
+  systemComponents: systemComponentType[]?
+}
+
+@export()
+@description('The type for OIDC issuer profile configuration.')
+type oidcIssuerProfileType = {
+  @description('Required. Whether the OIDC issuer is enabled.')
+  enabled: bool
+  @description('Optional. The URL of the self-hosted OIDC issuer.')
+  selfHostedIssuerUrl: string?
+}
+
+@export()
+@description('The type for security profile configuration.')
+type securityProfileType = {
+  @description('Required. The workload identity configuration.')
+  workloadIdentity: {
+    @description('Required. Whether workload identity is enabled.')
+    enabled: bool
+  }
+}

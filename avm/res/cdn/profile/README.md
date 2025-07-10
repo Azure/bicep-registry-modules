@@ -17,18 +17,18 @@ This module deploys a CDN Profile.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cdn/profiles` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles) |
-| `Microsoft.Cdn/profiles/afdEndpoints` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/afdEndpoints) |
-| `Microsoft.Cdn/profiles/afdEndpoints/routes` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/afdEndpoints/routes) |
-| `Microsoft.Cdn/profiles/customDomains` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/customDomains) |
-| `Microsoft.Cdn/profiles/endpoints` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2021-06-01/profiles/endpoints) |
-| `Microsoft.Cdn/profiles/endpoints/origins` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2021-06-01/profiles/endpoints/origins) |
-| `Microsoft.Cdn/profiles/originGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/originGroups) |
-| `Microsoft.Cdn/profiles/originGroups/origins` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/originGroups/origins) |
-| `Microsoft.Cdn/profiles/ruleSets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets) |
-| `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
-| `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
-| `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2024-02-01/profiles/securityPolicies) |
+| `Microsoft.Cdn/profiles` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles) |
+| `Microsoft.Cdn/profiles/afdEndpoints` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints) |
+| `Microsoft.Cdn/profiles/afdEndpoints/routes` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints/routes) |
+| `Microsoft.Cdn/profiles/customDomains` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/customDomains) |
+| `Microsoft.Cdn/profiles/endpoints` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints) |
+| `Microsoft.Cdn/profiles/endpoints/origins` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints/origins) |
+| `Microsoft.Cdn/profiles/originGroups` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups) |
+| `Microsoft.Cdn/profiles/originGroups/origins` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups/origins) |
+| `Microsoft.Cdn/profiles/ruleSets` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/ruleSets) |
+| `Microsoft.Cdn/profiles/ruleSets/rules` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/ruleSets/rules) |
+| `Microsoft.Cdn/profiles/secrets` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/secrets) |
+| `Microsoft.Cdn/profiles/securityPolicies` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/securityPolicies) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -422,8 +422,25 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
       {
         certificateType: 'ManagedCertificate'
+        cipherSuiteSetType: 'TLS12_2022'
         hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
         name: 'dep-test2-cdnpafd-custom-domain'
+      }
+      {
+        certificateType: 'ManagedCertificate'
+        cipherSuiteSetType: 'Customized'
+        customizedCipherSuiteSet: {
+          cipherSuiteSetForTls12: [
+            'DHE_RSA_AES128_GCM_SHA256'
+            'DHE_RSA_AES256_GCM_SHA384'
+          ]
+          cipherSuiteSetForTls13: [
+            'TLS_AES_128_GCM_SHA256'
+            'TLS_AES_256_GCM_SHA384'
+          ]
+        }
+        hostName: 'dep-test3-cdnpafd-custom-domain.azurewebsites.net'
+        name: 'dep-test3-cdnpafd-custom-domain'
       }
     ]
     location: 'global'
@@ -524,8 +541,25 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         },
         {
           "certificateType": "ManagedCertificate",
+          "cipherSuiteSetType": "TLS12_2022",
           "hostName": "dep-test2-cdnpafd-custom-domain.azurewebsites.net",
           "name": "dep-test2-cdnpafd-custom-domain"
+        },
+        {
+          "certificateType": "ManagedCertificate",
+          "cipherSuiteSetType": "Customized",
+          "customizedCipherSuiteSet": {
+            "cipherSuiteSetForTls12": [
+              "DHE_RSA_AES128_GCM_SHA256",
+              "DHE_RSA_AES256_GCM_SHA384"
+            ],
+            "cipherSuiteSetForTls13": [
+              "TLS_AES_128_GCM_SHA256",
+              "TLS_AES_256_GCM_SHA384"
+            ]
+          },
+          "hostName": "dep-test3-cdnpafd-custom-domain.azurewebsites.net",
+          "name": "dep-test3-cdnpafd-custom-domain"
         }
       ]
     },
@@ -628,8 +662,25 @@ param customDomains = [
   }
   {
     certificateType: 'ManagedCertificate'
+    cipherSuiteSetType: 'TLS12_2022'
     hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
     name: 'dep-test2-cdnpafd-custom-domain'
+  }
+  {
+    certificateType: 'ManagedCertificate'
+    cipherSuiteSetType: 'Customized'
+    customizedCipherSuiteSet: {
+      cipherSuiteSetForTls12: [
+        'DHE_RSA_AES128_GCM_SHA256'
+        'DHE_RSA_AES256_GCM_SHA384'
+      ]
+      cipherSuiteSetForTls13: [
+        'TLS_AES_128_GCM_SHA256'
+        'TLS_AES_256_GCM_SHA384'
+      ]
+    }
+    hostName: 'dep-test3-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'dep-test3-cdnpafd-custom-domain'
   }
 ]
 param location = 'global'
@@ -1670,7 +1721,7 @@ Compression settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`iscontentTypeToCompressAll`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscontenttypetocompressall) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
+| [`isCompressionEnabled`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscompressionenabled) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
 
@@ -1679,7 +1730,7 @@ List of content types on which compression applies. The value should be a valid 
 - Required: Yes
 - Type: array
 
-### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.iscontentTypeToCompressAll`
+### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.isCompressionEnabled`
 
 Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
 
@@ -1829,6 +1880,8 @@ Array of custom domain objects.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureDnsZoneResourceId`](#parameter-customdomainsazurednszoneresourceid) | string | The resource ID of the Azure DNS zone. |
+| [`cipherSuiteSetType`](#parameter-customdomainsciphersuitesettype) | string | The cipher suite set type that will be used for Https. |
+| [`customizedCipherSuiteSet`](#parameter-customdomainscustomizedciphersuiteset) | object | The customized cipher suite set that will be used for Https. |
 | [`extendedProperties`](#parameter-customdomainsextendedproperties) | object | Extended properties. |
 | [`minimumTlsVersion`](#parameter-customdomainsminimumtlsversion) | string | The minimum TLS version. |
 | [`preValidatedCustomDomainResourceId`](#parameter-customdomainsprevalidatedcustomdomainresourceid) | string | The resource ID of the pre-validated custom domain. |
@@ -1869,6 +1922,20 @@ The resource ID of the Azure DNS zone.
 
 - Required: No
 - Type: string
+
+### Parameter: `customDomains.cipherSuiteSetType`
+
+The cipher suite set type that will be used for Https.
+
+- Required: No
+- Type: string
+
+### Parameter: `customDomains.customizedCipherSuiteSet`
+
+The customized cipher suite set that will be used for Https.
+
+- Required: No
+- Type: object
 
 ### Parameter: `customDomains.extendedProperties`
 
@@ -2129,7 +2196,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2140,7 +2207,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -2459,7 +2526,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

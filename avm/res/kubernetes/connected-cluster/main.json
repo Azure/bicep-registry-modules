@@ -5,13 +5,158 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "15165343222003869723"
+      "version": "0.33.93.31351",
+      "templateHash": "8467394370323395591"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
   },
   "definitions": {
+    "aadProfileType": {
+      "type": "object",
+      "properties": {
+        "adminGroupObjectIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The list of AAD group object IDs that will have admin role of the cluster."
+          }
+        },
+        "enableAzureRBAC": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to enable Azure RBAC for Kubernetes authorization."
+          }
+        },
+        "tenantID": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD tenant ID."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for AAD profile configuration."
+      }
+    },
+    "systemComponentType": {
+      "type": "object",
+      "properties": {
+        "majorVersion": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The major version of the system component."
+          }
+        },
+        "type": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The type of the system component."
+          }
+        },
+        "userSpecifiedVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The user specified version of the system component."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for system component configuration."
+      }
+    },
+    "arcAgentProfileType": {
+      "type": "object",
+      "properties": {
+        "agentAutoUpgrade": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Indicates whether the Arc agents on the be upgraded automatically to the latest version."
+          }
+        },
+        "agentErrors": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The errors encountered by the Arc agent."
+          }
+        },
+        "desiredAgentVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The desired version of the Arc agent."
+          }
+        },
+        "systemComponents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/systemComponentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of system extensions that are installed on the cluster resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for Arc agent profile configuration."
+      }
+    },
+    "oidcIssuerProfileType": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether the OIDC issuer is enabled."
+          }
+        },
+        "selfHostedIssuerUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The URL of the self-hosted OIDC issuer."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for OIDC issuer profile configuration."
+      }
+    },
+    "securityProfileType": {
+      "type": "object",
+      "properties": {
+        "workloadIdentity": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether workload identity is enabled."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The workload identity configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for security profile configuration."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -116,50 +261,40 @@
         "description": "Optional. Tags for the cluster resource."
       }
     },
-    "tenantId": {
-      "type": "string",
+    "aadProfile": {
+      "$ref": "#/definitions/aadProfileType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The Azure AD tenant ID."
+        "description": "Optional. AAD profile for the connected cluster."
       }
     },
-    "aadAdminGroupObjectIds": {
-      "type": "array",
-      "nullable": true,
+    "arcAgentProfile": {
+      "$ref": "#/definitions/arcAgentProfileType",
+      "defaultValue": {
+        "agentAutoUpgrade": "Enabled"
+      },
       "metadata": {
-        "description": "Optional. The Azure AD admin group object IDs."
+        "description": "Optional. Arc agentry configuration for the provisioned cluster."
       }
     },
-    "enableAzureRBAC": {
-      "type": "bool",
-      "defaultValue": false,
+    "oidcIssuerProfile": {
+      "$ref": "#/definitions/oidcIssuerProfileType",
+      "defaultValue": {
+        "enabled": false
+      },
       "metadata": {
-        "description": "Optional. Enable Azure RBAC."
+        "description": "Optional. Open ID Connect (OIDC) Issuer Profile for the connected cluster."
       }
     },
-    "agentAutoUpgrade": {
-      "type": "string",
-      "defaultValue": "Enabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
+    "securityProfile": {
+      "$ref": "#/definitions/securityProfileType",
+      "defaultValue": {
+        "workloadIdentity": {
+          "enabled": false
+        }
+      },
       "metadata": {
-        "description": "Optional. Enable automatic agent upgrades."
-      }
-    },
-    "oidcIssuerEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable OIDC issuer."
-      }
-    },
-    "workloadIdentityEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable workload identity."
+        "description": "Optional. Security profile for the connected cluster."
       }
     },
     "roleAssignments": {
@@ -221,21 +356,13 @@
       },
       "tags": "[parameters('tags')]",
       "properties": {
-        "aadProfile": "[if(parameters('enableAzureRBAC'), createObject('tenantID', if(not(empty(parameters('tenantId'))), parameters('tenantId'), tenant().tenantId), 'adminGroupObjectIDs', coalesce(parameters('aadAdminGroupObjectIds'), createArray()), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
+        "aadProfile": "[parameters('aadProfile')]",
         "agentPublicKeyCertificate": "",
-        "arcAgentProfile": {
-          "agentAutoUpgrade": "[parameters('agentAutoUpgrade')]"
-        },
+        "arcAgentProfile": "[parameters('arcAgentProfile')]",
         "distribution": null,
         "infrastructure": null,
-        "oidcIssuerProfile": {
-          "enabled": "[parameters('oidcIssuerEnabled')]"
-        },
-        "securityProfile": {
-          "workloadIdentity": {
-            "enabled": "[parameters('workloadIdentityEnabled')]"
-          }
-        },
+        "oidcIssuerProfile": "[parameters('oidcIssuerProfile')]",
+        "securityProfile": "[parameters('securityProfile')]",
         "azureHybridBenefit": null
       }
     },

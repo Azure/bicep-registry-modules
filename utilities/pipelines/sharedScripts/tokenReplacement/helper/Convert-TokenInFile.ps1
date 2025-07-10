@@ -84,6 +84,7 @@ function Convert-TokenInFile {
             $Path = Join-Path $OutputDirectory $FileName
         }
         # Set Content
-        $File | Set-Content -Path $Path
+        $fileContent = ($File -join "`n") + "`n" # need to replace CRLF with LF to have consistent line endings for main.json generation across platforms
+        $fileContent | Set-Content -NoNewline -Path $Path
     }
 }

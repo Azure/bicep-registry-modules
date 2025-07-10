@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying with a sql role definision and assignment'
-metadata description = 'This instance deploys the module with sql role definision and assignment'
+metadata name = 'Deploying with a sql role definition and assignment'
+metadata description = 'This instance deploys the module with sql role definition and assignment'
 
 // ========== //
 // Parameters //
@@ -18,6 +18,7 @@ param serviceShort string = 'dddarole'
 param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
+// This workaround also specifies the region for the dependency resources.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'spaincentral'
 
@@ -47,13 +48,31 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-role-${serviceShort}'
   params: {
-    location: enforcedLocation
     name: '${namePrefix}-role-ref'
-    sqlRoleAssignmentsPrincipalIds: [
-      nestedDependencies.outputs.identityPrincipalId
+    dataPlaneRoleDefinitions: [
+      {
+        roleName: 'cosmos-sql-role-test'
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        assignableScopes: [
+          '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
+        ]
+        assignments: [
+          {
+            principalId: nestedDependencies.outputs.identityPrincipalId
+          }
+        ]
+      }
     ]
-    sqlRoleDefinitions: [
-      { name: 'cosmos-sql-role-test' }
+    dataPlaneRoleAssignments: [
+      {
+        principalId: nestedDependencies.outputs.identityPrincipalId
+        roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
+      }
     ]
+    zoneRedundant: false
   }
 }

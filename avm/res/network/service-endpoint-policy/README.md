@@ -8,6 +8,7 @@ This module deploys a Service Endpoint Policy.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -43,10 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
   name: 'serviceEndpointPolicyDeployment'
   params: {
-    // Required parameters
     name: 'nsepmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -63,13 +61,8 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nsepmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -85,10 +78,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 ```bicep-params
 using 'br/public:avm/res/network/service-endpoint-policy:<version>'
 
-// Required parameters
 param name = 'nsepmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -264,7 +254,6 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
     // Required parameters
     name: 'nsepwaf001'
     // Non-required parameters
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -291,9 +280,6 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
       "value": "nsepwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -318,7 +304,6 @@ using 'br/public:avm/res/network/service-endpoint-policy:<version>'
 // Required parameters
 param name = 'nsepwaf001'
 // Non-required parameters
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -549,6 +534,14 @@ Tags of the resource.
 | `name` | string | The name of the Service Endpoint Policy. |
 | `resourceGroupName` | string | The resource group the Service Endpoint Policy was deployed into. |
 | `resourceId` | string | The resource ID of the Service Endpoint Policy. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

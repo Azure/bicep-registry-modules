@@ -177,19 +177,21 @@ type requestTypeType =
   | 'SelfRenew'
 
 @export()
+@description('The type for a ticket info.')
 type ticketInfoType = {
   @sys.description('Optional. The ticket number for the role eligibility assignment.')
   ticketNumber: string?
 
   @sys.description('Optional. The ticket system name for the role eligibility assignment.')
   ticketSystem: string?
-}?
+}
 
 @export()
 @discriminator('roleAssignmentType')
-@description('Optional. The type of the PIM role assignment whether its active or eligible.')
+@description('The type of the PIM role assignment whether its active or eligible.')
 type pimRoleAssignmentTypeType = pimActiveRoleAssignmentType | pimEligibleRoleAssignmentType
 
+@description('The type for an active PIM role assignment.')
 type pimActiveRoleAssignmentType = {
   @description('Required. The type of the role assignment.')
   roleAssignmentType: 'Active'
@@ -207,6 +209,7 @@ type pimActiveRoleAssignmentType = {
   scheduleInfo: roleAssignmentScheduleType
 }
 
+@description('The type for a PIM-eligible role assignment.')
 type pimEligibleRoleAssignmentType = {
   @description('Required. The type of the role assignment.')
   roleAssignmentType: 'Eligible'
@@ -222,17 +225,19 @@ type pimEligibleRoleAssignmentType = {
 }
 
 @discriminator('durationType')
-@description('Optional. The schedule information for the role assignment.')
+@description('The schedule information for the role assignment.')
 type roleAssignmentScheduleType =
   | permenantRoleAssignmentScheduleType
   | timeBoundDurationRoleAssignmentScheduleType
   | timeBoundDateTimeRoleAssignmentScheduleType
 
+@description('The type for a permanent role assignment schedule.')
 type permenantRoleAssignmentScheduleType = {
   @description('Required. The type of the duration.')
   durationType: 'NoExpiration'
 }
 
+@description('The type for a time-bound role assignment schedule.')
 type timeBoundDurationRoleAssignmentScheduleType = {
   @description('Required. The type of the duration.')
   durationType: 'AfterDuration'
@@ -244,6 +249,7 @@ type timeBoundDurationRoleAssignmentScheduleType = {
   startTime: string
 }
 
+@description('The type for a date-bound role assignment schedule.')
 type timeBoundDateTimeRoleAssignmentScheduleType = {
   @description('Required. The type of the duration.')
   durationType: 'AfterDateTime'

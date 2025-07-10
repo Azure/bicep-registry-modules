@@ -17,12 +17,12 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
+| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -65,10 +65,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '0613'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4'
+        name: 'gpt-4o'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -124,10 +124,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4",
-            "version": "0613"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -181,10 +181,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4'
-      version: '0613'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4'
+    name: 'gpt-4o'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -235,10 +235,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '0613'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4'
+        name: 'gpt-4o'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -278,10 +278,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4",
-            "version": "0613"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -315,10 +315,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4'
-      version: '0613'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4'
+    name: 'gpt-4o'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -348,6 +348,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csakv001'
     // Non-required parameters
+    disableLocalAuth: false
     location: '<location>'
     secretsExportConfiguration: {
       accessKey1Name: 'csakv001-accessKey1'
@@ -378,6 +379,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csakv001"
     },
     // Non-required parameters
+    "disableLocalAuth": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
     },
@@ -406,6 +410,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'SpeechServices'
 param name = 'csakv001'
 // Non-required parameters
+param disableLocalAuth = false
 param location = '<location>'
 param secretsExportConfiguration = {
   accessKey1Name: 'csakv001-accessKey1'
@@ -951,10 +956,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '0613'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4'
+        name: 'gpt-4o'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1007,10 +1012,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4",
-            "version": "0613"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1061,10 +1066,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4'
-      version: '0613'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4'
+    name: 'gpt-4o'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -1706,6 +1711,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
+| [`allowProjectManagement`](#parameter-allowprojectmanagement) | bool | Enable/Disable project management feature for AI Foundry. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
@@ -1784,6 +1790,13 @@ List of allowed FQDN.
 
 - Required: No
 - Type: array
+
+### Parameter: `allowProjectManagement`
+
+Enable/Disable project management feature for AI Foundry.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `apiProperties`
 
@@ -2262,7 +2275,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -2515,9 +2528,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2705,6 +2718,7 @@ Array of role assignments to create.
   - `'Cognitive Services Speech Contributor'`
   - `'Cognitive Services Speech User'`
   - `'Cognitive Services User'`
+  - `'Azure AI Developer'`
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
@@ -2906,8 +2920,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

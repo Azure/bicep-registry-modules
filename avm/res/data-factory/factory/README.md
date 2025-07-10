@@ -626,10 +626,26 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     // Required parameters
     name: 'dffwaf001'
     // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'waf-aligned-diagnostics'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -637,15 +653,44 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     gitConfigureLater: true
     integrationRuntimes: [
       {
-        name: 'TestRuntime'
+        integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
+        name: 'WafAlignedRuntime'
         type: 'SelfHosted'
       }
     ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'dataFactory'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
     tags: {
+      'Backup-Required': 'No'
+      'Compliance-Required': 'Yes'
+      'Cost-Center': 'IT-DataPlatform'
+      'Data-Classification': 'Internal'
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+      'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
     }
   }
 }
@@ -668,11 +713,29 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       "value": "dffwaf001"
     },
     // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "waf-aligned-diagnostics",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -684,7 +747,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "integrationRuntimes": {
       "value": [
         {
-          "name": "TestRuntime",
+          "integrationRuntimeCustomDescription": "WAF-aligned self-hosted integration runtime with enhanced security",
+          "name": "WafAlignedRuntime",
           "type": "SelfHosted"
         }
       ]
@@ -692,11 +756,45 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "dataFactory",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "tags": {
       "value": {
+        "Backup-Required": "No",
+        "Compliance-Required": "Yes",
+        "Cost-Center": "IT-DataPlatform",
+        "Data-Classification": "Internal",
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "Role": "DeploymentValidation",
+        "WAF-Pillar": "Security-Reliability-Cost-OperationalExcellence"
       }
     }
   }
@@ -716,10 +814,26 @@ using 'br/public:avm/res/data-factory/factory:<version>'
 // Required parameters
 param name = 'dffwaf001'
 // Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'waf-aligned-diagnostics'
     storageAccountResourceId: '<storageAccountResourceId>'
     workspaceResourceId: '<workspaceResourceId>'
   }
@@ -727,15 +841,44 @@ param diagnosticSettings = [
 param gitConfigureLater = true
 param integrationRuntimes = [
   {
-    name: 'TestRuntime'
+    integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
+    name: 'WafAlignedRuntime'
     type: 'SelfHosted'
   }
 ]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'dataFactory'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Disabled'
 param tags = {
+  'Backup-Required': 'No'
+  'Compliance-Required': 'Yes'
+  'Cost-Center': 'IT-DataPlatform'
+  'Data-Classification': 'Internal'
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
+  'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
 }
 ```
 
@@ -1386,7 +1529,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1645,9 +1788,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1911,8 +2054,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

@@ -8,6 +8,7 @@ This module deploys an Alert Processing Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -231,6 +232,11 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    schedule: {
+      effectiveFrom: '2026-01-01T00:00:00'
+      effectiveUntil: '2027-12-31T23:59:59'
+      timeZone: 'Eastern Standard Time'
+    }
     scopes: [
       '<id>'
     ]
@@ -395,6 +401,13 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         }
       ]
     },
+    "schedule": {
+      "value": {
+        "effectiveFrom": "2026-01-01T00:00:00",
+        "effectiveUntil": "2027-12-31T23:59:59",
+        "timeZone": "Eastern Standard Time"
+      }
+    },
     "scopes": {
       "value": [
         "<id>"
@@ -545,6 +558,11 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param schedule = {
+  effectiveFrom: '2026-01-01T00:00:00'
+  effectiveUntil: '2027-12-31T23:59:59'
+  timeZone: 'Eastern Standard Time'
+}
 param scopes = [
   '<id>'
 ]
@@ -923,6 +941,14 @@ Resource tags.
 | `name` | string | The name of the Alert Processing Rule. |
 | `resourceGroupName` | string | The resource group the action group was deployed into. |
 | `resourceId` | string | The resource ID of the Alert Processing Rule. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

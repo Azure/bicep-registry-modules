@@ -9,12 +9,12 @@ param location string = resourceGroup().location
 @maxLength(24)
 param keyVaultName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -32,7 +32,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2024-11-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'

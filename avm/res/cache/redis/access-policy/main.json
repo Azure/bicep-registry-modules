@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "3748357335525726872"
+    },
+    "name": "Redis Cache Access Policy",
+    "description": "This module deploys an access policy for Redis Cache."
+  },
+  "parameters": {
+    "redisCacheName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Redis cache."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the access policy."
+      }
+    },
+    "permissions": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Permissions associated with the access policy."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Cache/redis/accessPolicies",
+      "apiVersion": "2024-11-01",
+      "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+      "properties": {
+        "permissions": "[parameters('permissions')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the access policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the access policy."
+      },
+      "value": "[resourceId('Microsoft.Cache/redis/accessPolicies', parameters('redisCacheName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the access policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -12,7 +12,7 @@ This module deploys a DBforMySQL Flexible Server Administrator.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/administrators) |
+| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/administrators) |
 
 ## Parameters
 

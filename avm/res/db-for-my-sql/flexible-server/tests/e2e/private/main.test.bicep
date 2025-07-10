@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -62,6 +63,7 @@ module testDeployment '../../../main.bicep' = [
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
       tier: 'GeneralPurpose'
+      availabilityZone: -1
       delegatedSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
       firewallRules: [
@@ -105,8 +107,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

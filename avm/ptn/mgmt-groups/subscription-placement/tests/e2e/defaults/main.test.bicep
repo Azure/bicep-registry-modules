@@ -42,7 +42,16 @@ module testDeployment '../../../main.bicep' = {
         managementGroupId: dependencies.outputs.managementGroupName
         subscriptionIds: [
           dependencies.outputs.subVendingSubscriptionId
+          ''
         ]
+        disableSubscriptionPlacement: false
+      }
+      {
+        managementGroupId: dependencies.outputs.managementGroupName2
+        subscriptionIds: [
+          dependencies.outputs.subVendingSubscriptionId
+        ]
+        disableSubscriptionPlacement: true
       }
     ]
   }

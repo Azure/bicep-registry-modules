@@ -8,6 +8,7 @@ This module deploys a DDoS Protection Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,7 +17,7 @@ This module deploys a DDoS Protection Plan.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/ddosProtectionPlans` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/ddosProtectionPlans) |
+| `Microsoft.Network/ddosProtectionPlans` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/ddosProtectionPlans) |
 
 ## Usage examples
 
@@ -538,6 +539,14 @@ Tags of the resource.
 | `name` | string | The name of the DDOS protection plan. |
 | `resourceGroupName` | string | The resource group the DDOS protection plan was deployed into. |
 | `resourceId` | string | The resource ID of the DDOS protection plan. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

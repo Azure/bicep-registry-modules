@@ -33,12 +33,13 @@ The following section provides usage examples for the module, which were used to
 - [Basic SKU](#example-2-basic-sku)
 - [Custom-PIP](#example-3-custom-pip)
 - [Using only defaults](#example-4-using-only-defaults)
-- [Hub-commom](#example-5-hub-commom)
-- [Hub-min](#example-6-hub-min)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [Public-IP-Prefix](#example-8-public-ip-prefix)
-- [Forced tunneling](#example-9-forced-tunneling)
-- [WAF-aligned](#example-10-waf-aligned)
+- [Hub-byoip](#example-5-hub-byoip)
+- [Hub-commom](#example-6-hub-commom)
+- [Hub-min](#example-7-hub-min)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [Public-IP-Prefix](#example-9-public-ip-prefix)
+- [Forced tunneling](#example-10-forced-tunneling)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _Add-PIP_
 
@@ -474,7 +475,93 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 </details>
 <p>
 
-### Example 5: _Hub-commom_
+### Example 5: _Hub-byoip_
+
+This instance deploys the module a vWAN with an existing IP.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  name: 'azureFirewallDeployment'
+  params: {
+    // Required parameters
+    name: 'nafhubbyoip001'
+    // Non-required parameters
+    hubIPAddresses: {
+      publicIPs: {
+        count: 1
+      }
+    }
+    publicIPResourceID: '<publicIPResourceID>'
+    virtualHubResourceId: '<virtualHubResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nafhubbyoip001"
+    },
+    // Non-required parameters
+    "hubIPAddresses": {
+      "value": {
+        "publicIPs": {
+          "count": 1
+        }
+      }
+    },
+    "publicIPResourceID": {
+      "value": "<publicIPResourceID>"
+    },
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafhubbyoip001'
+// Non-required parameters
+param hubIPAddresses = {
+  publicIPs: {
+    count: 1
+  }
+}
+param publicIPResourceID = '<publicIPResourceID>'
+param virtualHubResourceId = '<virtualHubResourceId>'
+```
+
+</details>
+<p>
+
+### Example 6: _Hub-commom_
 
 This instance deploys the module a vWAN in a typical hub setting.
 
@@ -497,7 +584,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     }
     location: '<location>'
-    virtualHubId: '<virtualHubId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
 ```
@@ -532,8 +619,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualHubId": {
-      "value": "<virtualHubId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     }
   }
 }
@@ -559,13 +646,13 @@ param hubIPAddresses = {
   }
 }
 param location = '<location>'
-param virtualHubId = '<virtualHubId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
 <p>
 
-### Example 6: _Hub-min_
+### Example 7: _Hub-min_
 
 This instance deploys the module a vWAN minimum hub setting.
 
@@ -587,7 +674,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     }
     location: '<location>'
-    virtualHubId: '<virtualHubId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
 ```
@@ -619,8 +706,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualHubId": {
-      "value": "<virtualHubId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     }
   }
 }
@@ -645,13 +732,13 @@ param hubIPAddresses = {
   }
 }
 param location = '<location>'
-param virtualHubId = '<virtualHubId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1171,7 +1258,7 @@ param zones = [
 </details>
 <p>
 
-### Example 8: _Public-IP-Prefix_
+### Example 9: _Public-IP-Prefix_
 
 This instance deploys the module and will use a public IP prefix.
 
@@ -1296,7 +1383,7 @@ param zones = []
 </details>
 <p>
 
-### Example 9: _Forced tunneling_
+### Example 10: _Forced tunneling_
 
 This instance deploys the module and sets up forced tunneling.
 
@@ -1406,7 +1493,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1818,7 +1905,7 @@ param zones = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`hubIPAddresses`](#parameter-hubipaddresses) | object | IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied. |
-| [`virtualHubId`](#parameter-virtualhubid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
+| [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty. |
 
 **Optional parameters**
@@ -1827,6 +1914,8 @@ param zones = [
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurations`](#parameter-additionalpublicipconfigurations) | array | This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration. |
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
+| [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
+| [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableForcedTunneling`](#parameter-enableforcedtunneling) | bool | Enable/Disable forced tunneling. |
@@ -1901,7 +1990,7 @@ Public IP address count.
 - Required: No
 - Type: int
 
-### Parameter: `virtualHubId`
+### Parameter: `virtualHubResourceId`
 
 The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.
 
@@ -2003,8 +2092,6 @@ Collection of rules used by a application rule collection.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2029,8 +2116,6 @@ Name of the application rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.protocols`
 
@@ -2038,8 +2123,6 @@ Array of ApplicationRuleProtocols.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2067,8 +2150,6 @@ Protocol type.
     'Mssql'
   ]
   ```
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.protocols.port`
 
@@ -2076,7 +2157,6 @@ Port number for the protocol.
 
 - Required: No
 - Type: int
-- MinValue: 100
 - MaxValue: 64000
 
 ### Parameter: `applicationRuleCollections.properties.rules.description`
@@ -2085,8 +2165,6 @@ Description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.fqdnTags`
 
@@ -2094,8 +2172,6 @@ List of FQDN Tags for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.sourceAddresses`
 
@@ -2103,8 +2179,6 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2112,8 +2186,6 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.targetFqdns`
 
@@ -2121,8 +2193,20 @@ List of FQDNs for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
+
+### Parameter: `autoscaleMaxCapacity`
+
+The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default.
+
+- Required: No
+- Type: int
+
+### Parameter: `autoscaleMinCapacity`
+
+The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.
+
+- Required: No
+- Type: int
 
 ### Parameter: `azureSkuTier`
 
@@ -2157,7 +2241,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -2267,7 +2351,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -2448,8 +2532,6 @@ Collection of rules used by a NAT rule collection.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2477,8 +2559,6 @@ Name of the NAT rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.protocols`
 
@@ -2495,8 +2575,6 @@ Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
     'UDP'
   ]
   ```
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.description`
 
@@ -2504,8 +2582,6 @@ Description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
 
@@ -2513,8 +2589,6 @@ List of destination IP addresses for this rule. Supports IP ranges, prefixes, an
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.destinationPorts`
 
@@ -2522,8 +2596,6 @@ List of destination ports.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.sourceAddresses`
 
@@ -2531,8 +2603,6 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2540,8 +2610,6 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedAddress`
 
@@ -2549,8 +2617,6 @@ The translated address for this NAT rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedFqdn`
 
@@ -2558,8 +2624,6 @@ The translated FQDN for this NAT rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedPort`
 
@@ -2567,8 +2631,6 @@ The translated port for this NAT rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections`
 
@@ -2648,8 +2710,6 @@ Collection of rules used by a network rule collection.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2676,8 +2736,6 @@ Name of the network rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.protocols`
 
@@ -2694,8 +2752,6 @@ Array of AzureFirewallNetworkRuleProtocols.
     'UDP'
   ]
   ```
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.description`
 
@@ -2703,8 +2759,6 @@ Description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationAddresses`
 
@@ -2712,8 +2766,6 @@ List of destination IP addresses.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationFqdns`
 
@@ -2721,8 +2773,6 @@ List of destination FQDNs.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationIpGroups`
 
@@ -2730,8 +2780,6 @@ List of destination IP groups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationPorts`
 
@@ -2739,8 +2787,6 @@ List of destination ports.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.sourceAddresses`
 
@@ -2748,8 +2794,6 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2757,8 +2801,6 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `publicIPAddressObject`
 
@@ -2943,6 +2985,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

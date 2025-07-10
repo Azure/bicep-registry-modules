@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -53,11 +53,32 @@ module testDeployment '../../../main.bicep' = [
           name: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
           hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
+          // The default value for minimumTlsVersion is 'TLS12_2022'.
         }
         {
           name: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain'
           hostName: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
+          // If you set cipherSuiteSetType to a predefined value (like "TLS12_2022"), you must not provide customizedCipherSuiteSet.
+          cipherSuiteSetType: 'TLS12_2022'
+        }
+        {
+          name: 'dep-${namePrefix}-test3-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test3-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
+          // If you set cipherSuiteSetType to "Customized", you must provide a valid customizedCipherSuiteSet object.
+          // The below setup with a customized cipher suite effectively deploys the resources
+          cipherSuiteSetType: 'Customized'
+          customizedCipherSuiteSet: {
+            cipherSuiteSetForTls12: [
+              'DHE_RSA_AES128_GCM_SHA256'
+              'DHE_RSA_AES256_GCM_SHA384'
+            ]
+            cipherSuiteSetForTls13: [
+              'TLS_AES_128_GCM_SHA256'
+              'TLS_AES_256_GCM_SHA384'
+            ]
+          }
         }
       ]
       originGroups: [

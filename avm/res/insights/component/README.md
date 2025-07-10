@@ -952,8 +952,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 100
 
 ## Outputs
 

@@ -47,10 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: 'galleryDeployment'
   params: {
-    // Required parameters
     name: 'cgmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -67,13 +64,8 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "cgmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -89,10 +81,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/compute/gallery:<version>'
 
-// Required parameters
 param name = 'cgmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -838,7 +827,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         osType: 'Windows'
       }
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -887,9 +875,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -932,7 +917,6 @@ param images = [
     osType: 'Windows'
   }
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1807,7 +1791,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

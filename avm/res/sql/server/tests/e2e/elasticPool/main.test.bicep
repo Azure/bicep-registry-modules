@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: '${namePrefix}-${serviceShort}-ep-001'
           zoneRedundant: false
+          availabilityZone: -1
         }
         // more complex elastic pool with non-default SKU and per database settings
         {
@@ -68,6 +69,7 @@ module testDeployment '../../../main.bicep' = [
             maxCapacity: '4'
           }
           zoneRedundant: false
+          availabilityZone: -1
         }
       ]
     }
