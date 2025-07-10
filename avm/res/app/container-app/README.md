@@ -875,14 +875,10 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     diagnosticSettings: [
       {
-        metricCategories: [
-          {
-            category: 'allMetrics'
-            enabled: true
-          }
-        ]
-        name: 'test-diagnostic-setting'
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
         storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
       }
     ]
     ingressAllowInsecure: false
@@ -952,14 +948,10 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "diagnosticSettings": {
       "value": [
         {
-          "metricCategories": [
-            {
-              "category": "allMetrics",
-              "enabled": true
-            }
-          ],
-          "name": "test-diagnostic-setting",
-          "storageAccountResourceId": "<storageAccountResourceId>"
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
     },
@@ -1029,14 +1021,10 @@ param name = 'acawaf001'
 // Non-required parameters
 param diagnosticSettings = [
   {
-    metricCategories: [
-      {
-        category: 'allMetrics'
-        enabled: true
-      }
-    ]
-    name: 'test-diagnostic-setting'
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
     storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
   }
 ]
 param ingressAllowInsecure = false

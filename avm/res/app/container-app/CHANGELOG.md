@@ -8,6 +8,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Initial version
 
+## 0.18.0
+
+### Changes
+
+- Added support for diagnostic settings with Event Hub, Storage Account, and Log Analytics Workspace.
+
 ### Breaking Changes
 
 - None

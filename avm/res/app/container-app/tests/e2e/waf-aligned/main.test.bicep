@@ -38,7 +38,18 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: toLower('dep${uniqueString(namePrefix, serviceShort)}sa')}
+  }}
+
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    location: resourceLocation
+  }
 }
 
 // ============== //
@@ -54,16 +65,12 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       ingressExternal: false
       ingressAllowInsecure: false
-      diagnosticSettings:[
+      diagnosticSettings: [
         {
-          name: 'test-diagnostic-setting'
-          metricCategories: [
-            {
-              category: 'allMetrics'
-              enabled: true
-            }
-          ]
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
       tags: {
