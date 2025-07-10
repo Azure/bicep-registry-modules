@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12884126553726681456"
+      "templateHash": "7763611767091478755"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -294,14 +294,22 @@
       "minLength": 3,
       "maxLength": 12,
       "metadata": {
-        "description": "Required. Name of the resource to create."
+        "description": "Required. A friendly application/environment name for all resources in this deployment."
+      }
+    },
+    "uniqueNameText": {
+      "type": "string",
+      "defaultValue": "[substring(uniqueString(subscription().id, resourceGroup().name, parameters('name')), 0, 5)]",
+      "maxLength": 5,
+      "metadata": {
+        "description": "Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name."
       }
     },
     "projectName": {
       "type": "string",
-      "defaultValue": "[format('{0}proj', parameters('name'))]",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Name of the AI Foundry project."
+        "description": "Optional. Name of the AI Foundry project.."
       }
     },
     "location": {
@@ -428,8 +436,8 @@
   "variables": {
     "networkIsolation": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]",
     "basicDeployment": "[equals(toLower(parameters('aiFoundryType')), 'basic')]",
-    "resourceToken": "[substring(uniqueString(subscription().id, parameters('location'), parameters('name')), 0, 5)]",
     "servicesUsername": "[take(replace(parameters('vmAdminUsername'), '.', ''), 20)]",
+    "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('name'), parameters('uniqueNameText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "shouldDeployVM": "[and(variables('networkIsolation'), greaterOrEquals(length(parameters('vmAdminPasswordOrKey')), 4))]"
   },
   "resources": {
@@ -465,19 +473,19 @@
         "mode": "Incremental",
         "parameters": {
           "virtualNetworkName": {
-            "value": "[toLower(format('vnet-{0}', parameters('name')))]"
+            "value": "[toLower(format('vnet-{0}', variables('resourcesName')))]"
           },
           "virtualNetworkAddressPrefixes": {
             "value": "10.0.0.0/8"
           },
           "vmSubnetName": {
-            "value": "[toLower(format('snet-{0}-vm', parameters('name')))]"
+            "value": "[toLower(format('snet-{0}-vm', variables('resourcesName')))]"
           },
           "vmSubnetAddressPrefix": {
             "value": "10.3.1.0/24"
           },
           "vmSubnetNsgName": {
-            "value": "[toLower(format('nsg-snet-{0}-vm', parameters('name')))]"
+            "value": "[toLower(format('nsg-snet-{0}-vm', variables('resourcesName')))]"
           },
           "bastionHostEnabled": {
             "value": true
@@ -489,7 +497,7 @@
             "value": "nsg-AzureBastionSubnet"
           },
           "bastionHostName": {
-            "value": "[toLower(format('bas-{0}', parameters('name')))]"
+            "value": "[toLower(format('bas-{0}', variables('resourcesName')))]"
           },
           "bastionHostDisableCopyPaste": {
             "value": false
@@ -507,13 +515,13 @@
             "value": true
           },
           "bastionPublicIpAddressName": {
-            "value": "[toLower(format('pip-bas-{0}', parameters('name')))]"
+            "value": "[toLower(format('pip-bas-{0}', variables('resourcesName')))]"
           },
           "bastionHostSkuName": {
             "value": "Standard"
           },
           "natGatewayName": {
-            "value": "[toLower(format('nat-{0}', parameters('name')))]"
+            "value": "[toLower(format('nat-{0}', variables('resourcesName')))]"
           },
           "natGatewayPublicIps": {
             "value": 1
@@ -1341,7 +1349,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('kv{0}{1}', parameters('name'), variables('resourceToken'))]"
+            "value": "[format('kv{0}', variables('resourcesName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -8062,7 +8070,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('cr{0}{1}', parameters('name'), variables('resourceToken'))]"
+            "value": "[format('cr{0}', variables('resourcesName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -14410,7 +14418,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('name')]"
+            "value": "[variables('resourcesName')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -26559,7 +26567,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('srch{0}{1}', parameters('name'), variables('resourceToken'))]"
+            "value": "[format('srch{0}', variables('resourcesName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -32140,8 +32148,8 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "storageName": {
-            "value": "[format('st{0}{1}', parameters('name'), variables('resourceToken'))]"
+          "name": {
+            "value": "[format('st{0}', variables('resourcesName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -32169,7 +32177,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "18358436785079698743"
+              "templateHash": "1948884792721790752"
             }
           },
           "definitions": {
@@ -32250,7 +32258,7 @@
             }
           },
           "parameters": {
-            "storageName": {
+            "name": {
               "type": "string",
               "metadata": {
                 "description": "Name of the Storage Account."
@@ -32314,9 +32322,8 @@
             }
           },
           "variables": {
-            "nameFormatted": "[take(toLower(parameters('storageName')), 12)]",
-            "projUploadsContainerName": "[format('{0}proj-uploads', variables('nameFormatted'))]",
-            "sysDataContainerName": "[format('{0}sys-data', variables('nameFormatted'))]"
+            "projUploadsContainerName": "[format('{0}proj-uploads', parameters('name'))]",
+            "sysDataContainerName": "[format('{0}sys-data', parameters('name'))]"
           },
           "resources": {
             "blobPrivateDnsZone": {
@@ -38650,7 +38657,7 @@
             "storageAccount": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-storage-account-deployment', variables('nameFormatted')), 64)]",
+              "name": "[take(format('{0}-storage-account-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -38658,7 +38665,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[variables('nameFormatted')]"
+                    "value": "[take(parameters('name'), 24)]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -44524,7 +44531,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('cos{0}{1}', parameters('name'), variables('resourceToken'))]"
+            "value": "[format('cos{0}', variables('resourcesName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -51891,9 +51898,7 @@
             "value": "[variables('basicDeployment')]"
           },
           "cosmosDBName": "[if(not(variables('basicDeployment')), createObject('value', reference('cosmosDb').outputs.cosmosDBname.value), createObject('value', ''))]",
-          "name": {
-            "value": "[parameters('projectName')]"
-          },
+          "name": "[if(empty(parameters('projectName')), createObject('value', format('proj-{0}', variables('resourcesName'))), createObject('value', parameters('projectName')))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -52168,16 +52173,16 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "vmName": {
-            "value": "[toLower(format('vm-{0}-jump', parameters('name')))]"
+          "name": {
+            "value": "[format('vm-{0}-jump', variables('resourcesName'))]"
           },
-          "vmNicName": {
-            "value": "[toLower(format('nic-vm-{0}-jump', parameters('name')))]"
+          "nicName": {
+            "value": "[format('nic-vm-{0}-jump', variables('resourcesName'))]"
           },
-          "vmSize": {
+          "size": {
             "value": "[parameters('vmSize')]"
           },
-          "vmSubnetResourceId": {
+          "subnetResourceId": {
             "value": "[reference('network').outputs.vmSubnetResourceId.value]"
           },
           "storageAccountName": {
@@ -52198,10 +52203,10 @@
           "authenticationType": {
             "value": "password"
           },
-          "vmAdminUsername": {
+          "adminUsername": {
             "value": "[variables('servicesUsername')]"
           },
-          "vmAdminPasswordOrKey": {
+          "adminPasswordOrKey": {
             "value": "[parameters('vmAdminPasswordOrKey')]"
           },
           "diskStorageAccountType": {
@@ -52245,25 +52250,25 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "4943905376396384439"
+              "templateHash": "440784852076224320"
             }
           },
           "parameters": {
-            "vmName": {
+            "name": {
               "type": "string",
               "defaultValue": "TestVm",
               "metadata": {
                 "description": "Specifies the name of the virtual machine."
               }
             },
-            "vmSize": {
+            "size": {
               "type": "string",
               "defaultValue": "Standard_DS4_v2",
               "metadata": {
                 "description": "Specifies the size of the virtual machine."
               }
             },
-            "vmSubnetResourceId": {
+            "subnetResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Specifies the resource id of the subnet hosting the virtual machine."
@@ -52313,13 +52318,13 @@
                 "description": "Specifies the type of authentication when accessing the Virtual Machine. SSH key is recommended."
               }
             },
-            "vmAdminUsername": {
+            "adminUsername": {
               "type": "string",
               "metadata": {
                 "description": "Specifies the name of the administrator account of the virtual machine."
               }
             },
-            "vmAdminPasswordOrKey": {
+            "adminPasswordOrKey": {
               "type": "securestring",
               "metadata": {
                 "description": "Specifies the SSH Key or password for the virtual machine. SSH key is recommended."
@@ -52382,7 +52387,7 @@
                 "description": "Specifies whether enabling accelerated networking on the virtual machine."
               }
             },
-            "vmNicName": {
+            "nicName": {
               "type": "string",
               "metadata": {
                 "description": "Specifies the name of the network interface of the virtual machine."
@@ -52418,14 +52423,14 @@
           },
           "variables": {
             "shouldEnableMonitoring": "[and(parameters('enableMonitoring'), not(empty(parameters('logAnalyticsWorkspaceResourceId'))))]",
-            "randomString": "[uniqueString(resourceGroup().id, parameters('vmName'), parameters('vmAdminPasswordOrKey'))]",
-            "adminPassword": "[if(less(length(parameters('vmAdminPasswordOrKey')), 8), format('{0}{1}', parameters('vmAdminPasswordOrKey'), take(variables('randomString'), 12)), parameters('vmAdminPasswordOrKey'))]",
+            "randomString": "[uniqueString(resourceGroup().id, parameters('name'), parameters('adminPasswordOrKey'))]",
+            "adminPassword": "[if(less(length(parameters('adminPasswordOrKey')), 8), format('{0}{1}', parameters('adminPasswordOrKey'), take(variables('randomString'), 12)), parameters('adminPasswordOrKey'))]",
             "linuxConfiguration": {
               "disablePasswordAuthentication": true,
               "ssh": {
                 "publicKeys": [
                   {
-                    "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))]",
+                    "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
                     "keyData": "[variables('adminPassword')]"
                   }
                 ]
@@ -52437,7 +52442,7 @@
             {
               "type": "Microsoft.Maintenance/maintenanceConfigurations",
               "apiVersion": "2023-10-01-preview",
-              "name": "[format('{0}-maintenance-config', parameters('vmName'))]",
+              "name": "[format('{0}-maintenance-config', parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -52466,7 +52471,7 @@
             {
               "type": "Microsoft.Network/networkInterfaces",
               "apiVersion": "2024-07-01",
-              "name": "[parameters('vmNicName')]",
+              "name": "[parameters('nicName')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -52477,7 +52482,7 @@
                     "properties": {
                       "privateIPAllocationMethod": "Dynamic",
                       "subnet": {
-                        "id": "[parameters('vmSubnetResourceId')]"
+                        "id": "[parameters('subnetResourceId')]"
                       }
                     }
                   }
@@ -52487,16 +52492,16 @@
             {
               "type": "Microsoft.Compute/virtualMachines",
               "apiVersion": "2024-07-01",
-              "name": "[parameters('vmName')]",
+              "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "hardwareProfile": {
-                  "vmSize": "[parameters('vmSize')]"
+                  "vmSize": "[parameters('size')]"
                 },
                 "osProfile": {
-                  "computerName": "[take(parameters('vmName'), 15)]",
-                  "adminUsername": "[parameters('vmAdminUsername')]",
+                  "computerName": "[take(parameters('name'), 15)]",
+                  "adminUsername": "[parameters('adminUsername')]",
                   "adminPassword": "[variables('adminPassword')]",
                   "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]",
                   "windowsConfiguration": "[if(equals(parameters('authenticationType'), 'password'), createObject('patchSettings', createObject('patchMode', 'AutomaticByPlatform', 'automaticByPlatformSettings', createObject('rebootSetting', 'IfRequired', 'bypassPlatformSafetyChecksOnUserSchedule', true())), 'enableAutomaticUpdates', true()), null())]"
@@ -52510,7 +52515,7 @@
                         "caching": "[parameters('dataDiskCaching')]",
                         "diskSizeGB": "[parameters('dataDiskSize')]",
                         "lun": "[range(0, parameters('numDataDisks'))[copyIndex('dataDisks')]]",
-                        "name": "[format('{0}-DataDisk{1}', parameters('vmName'), range(0, parameters('numDataDisks'))[copyIndex('dataDisks')])]",
+                        "name": "[format('{0}-DataDisk{1}', parameters('name'), range(0, parameters('numDataDisks'))[copyIndex('dataDisks')])]",
                         "createOption": "Empty",
                         "managedDisk": {
                           "storageAccountType": "[parameters('diskStorageAccountType')]"
@@ -52525,7 +52530,7 @@
                     "version": "latest"
                   },
                   "osDisk": {
-                    "name": "[format('{0}_OSDisk', parameters('vmName'))]",
+                    "name": "[format('{0}_OSDisk', parameters('name'))]",
                     "caching": "ReadWrite",
                     "createOption": "FromImage",
                     "diskSizeGB": "[parameters('osDiskSize')]",
@@ -52537,7 +52542,7 @@
                 "networkProfile": {
                   "networkInterfaces": [
                     {
-                      "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
                     }
                   ]
                 },
@@ -52549,28 +52554,28 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
               ]
             },
             {
               "type": "Microsoft.Maintenance/configurationAssignments",
               "apiVersion": "2023-04-01",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "[format('{0}-maintenance-assignment', parameters('vmName'))]",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+              "name": "[format('{0}-maintenance-assignment', parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
-                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]"
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('name')))]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('name')))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
               ]
             },
             {
               "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentWindows')]",
+              "name": "[format('{0}/{1}', parameters('name'), 'DependencyAgentWindows')]",
               "location": "[parameters('location')]",
               "properties": {
                 "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
@@ -52580,14 +52585,14 @@
                 "enableAutomaticUpgrade": true
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
               ]
             },
             {
               "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
+              "name": "[format('{0}/{1}', parameters('name'), 'AzureMonitorWindowsAgent')]",
               "location": "[parameters('location')]",
               "properties": {
                 "publisher": "Microsoft.Azure.Monitor",
@@ -52597,15 +52602,15 @@
                 "enableAutomaticUpgrade": true
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'DependencyAgentWindows')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('name'), 'DependencyAgentWindows')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
               ]
             },
             {
               "condition": "[parameters('enableMicrosoftEntraIdAuth')]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'AADLoginForWindows')]",
+              "name": "[format('{0}/{1}', parameters('name'), 'AADLoginForWindows')]",
               "location": "[parameters('location')]",
               "properties": {
                 "publisher": "Microsoft.Azure.ActiveDirectory",
@@ -52615,8 +52620,8 @@
                 "enableAutomaticUpgrade": false
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('name'), 'AzureMonitorWindowsAgent')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
               ]
             },
             {
@@ -52663,7 +52668,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AADLoginForWindows')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('name'), 'AADLoginForWindows')]"
               ]
             },
             {
@@ -52754,14 +52759,14 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AADLoginForWindows')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('name'), 'AADLoginForWindows')]"
               ]
             },
             {
               "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
               "apiVersion": "2023-03-11",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
               "name": "DCRA-VMSS-WEL-LAW",
               "properties": {
                 "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
@@ -52769,14 +52774,14 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Event-Logs-to-LAW')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
               ]
             },
             {
               "condition": "[variables('shouldEnableMonitoring')]",
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
               "apiVersion": "2023-03-11",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
               "name": "DCRA-VM-PC-LAW",
               "properties": {
                 "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
@@ -52784,18 +52789,18 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Perf-to-LAW')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
               ]
             }
           ],
           "outputs": {
             "name": {
               "type": "string",
-              "value": "[parameters('vmName')]"
+              "value": "[parameters('name')]"
             },
             "id": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
             }
           }
         }
@@ -52814,84 +52819,84 @@
       },
       "value": "[resourceGroup().name]"
     },
-    "azureKeyVaultName": {
+    "keyVaultName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Key Vault."
       },
       "value": "[if(not(variables('basicDeployment')), reference('keyvault').outputs.name.value, '')]"
     },
-    "azureAiServicesName": {
+    "aiServicesName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure AI Services account."
       },
       "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
     },
-    "azureAiSearchName": {
+    "aiSearchName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure AI Search service."
       },
       "value": "[if(not(variables('basicDeployment')), reference('aiSearch').outputs.searchName.value, '')]"
     },
-    "azureAiProjectName": {
+    "aiProjectName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure AI Project."
       },
       "value": "[reference('project').outputs.projectName.value]"
     },
-    "azureBastionName": {
+    "bastionName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Bastion host."
       },
       "value": "[if(variables('networkIsolation'), reference('network').outputs.bastionName.value, '')]"
     },
-    "azureVmResourceId": {
+    "vmResourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource ID of the deployed Azure VM."
       },
       "value": "[if(variables('shouldDeployVM'), reference('virtualMachine').outputs.id.value, '')]"
     },
-    "azureVmUsername": {
+    "vmUsername": {
       "type": "string",
       "metadata": {
         "description": "Username for the deployed Azure VM."
       },
       "value": "[if(not(variables('basicDeployment')), variables('servicesUsername'), '')]"
     },
-    "azureContainerRegistryName": {
+    "containerRegistryName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Container Registry."
       },
       "value": "[if(not(variables('basicDeployment')), coalesce(tryGet(if(not(variables('basicDeployment')), reference('containerRegistry'), null()), 'outputs', 'name', 'value'), ''), '')]"
     },
-    "azureStorageAccountName": {
+    "storageAccountName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Storage Account."
       },
       "value": "[if(not(variables('basicDeployment')), coalesce(tryGet(if(not(variables('basicDeployment')), reference('storageAccount'), null()), 'outputs', 'storageName', 'value'), ''), '')]"
     },
-    "azureVirtualNetworkName": {
+    "virtualNetworkName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Virtual Network."
       },
       "value": "[if(variables('networkIsolation'), reference('network').outputs.virtualNetworkName.value, '')]"
     },
-    "azureVirtualNetworkSubnetName": {
+    "virtualNetworkSubnetName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Virtual Network Subnet."
       },
       "value": "[if(variables('networkIsolation'), reference('network').outputs.vmSubnetName.value, '')]"
     },
-    "azureCosmosAccountName": {
+    "cosmosAccountName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Cosmos DB account."

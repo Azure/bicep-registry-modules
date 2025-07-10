@@ -20,8 +20,9 @@ param serviceShort string = 'fndrywaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Used to generate unique names for resources to avoid soft-delete conflicts.')
-param utcValue string = utcNow()
+@description('Optional. The password used for VM authentication.')
+@secure()
+param vmAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -44,10 +45,10 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'stdprv${substring(uniqueString(subscription().id, enforcedLocation, utcValue), 0, 2)}' // Use time-based uniqueness to avoid soft-delete conflicts
-      aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
-      contentSafetyEnabled: true // Set to true or false as required
-      vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
+      name: '${namePrefix}${serviceShort}001'
+      aiFoundryType: 'StandardPrivate'
+      contentSafetyEnabled: true
+      vmAdminPasswordOrKey: vmAdminPassword
       vmSize: 'Standard_DS4_v2'
       aiModelDeployments: [] // Simplified: no AI model deployments for testing to avoid conflicts
     }

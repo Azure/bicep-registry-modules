@@ -1,5 +1,5 @@
 @description('Name of the Storage Account.')
-param storageName string
+param name string
 
 @description('Specifies the location for all the Azure resources.')
 param location string
@@ -53,14 +53,13 @@ module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = i
   }
 }
 
-var nameFormatted = take(toLower(storageName), 12)
-var projUploadsContainerName = '${nameFormatted}proj-uploads'
-var sysDataContainerName = '${nameFormatted}sys-data'
+var projUploadsContainerName = '${name}proj-uploads'
+var sysDataContainerName = '${name}sys-data'
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
-  name: take('${nameFormatted}-storage-account-deployment', 64)
+  name: take('${name}-storage-account-deployment', 64)
   params: {
-    name: nameFormatted
+    name: take(name, 24)
     location: location
     tags: tags
     enableTelemetry: enableTelemetry

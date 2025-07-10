@@ -115,7 +115,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Required parameters
     aiFoundryType: 'Basic'
     contentSafetyEnabled: false
-    name: '<name>'
+    name: 'fndrymin001'
   }
 }
 ```
@@ -140,7 +140,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": false
     },
     "name": {
-      "value": "<name>"
+      "value": "fndrymin001"
     }
   }
 }
@@ -159,7 +159,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 // Required parameters
 param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
-param name = '<name>'
+param name = 'fndrymin001'
 ```
 
 </details>
@@ -181,10 +181,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Required parameters
     aiFoundryType: 'StandardPrivate'
     contentSafetyEnabled: true
-    name: '<name>'
+    name: 'fndrywaf001'
     // Non-required parameters
     aiModelDeployments: []
-    vmAdminPasswordOrKey: '$tart12345'
+    vmAdminPasswordOrKey: '<vmAdminPasswordOrKey>'
     vmSize: 'Standard_DS4_v2'
   }
 }
@@ -210,14 +210,14 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": true
     },
     "name": {
-      "value": "<name>"
+      "value": "fndrywaf001"
     },
     // Non-required parameters
     "aiModelDeployments": {
       "value": []
     },
     "vmAdminPasswordOrKey": {
-      "value": "$tart12345"
+      "value": "<vmAdminPasswordOrKey>"
     },
     "vmSize": {
       "value": "Standard_DS4_v2"
@@ -239,10 +239,10 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 // Required parameters
 param aiFoundryType = 'StandardPrivate'
 param contentSafetyEnabled = true
-param name = '<name>'
+param name = 'fndrywaf001'
 // Non-required parameters
 param aiModelDeployments = []
-param vmAdminPasswordOrKey = '$tart12345'
+param vmAdminPasswordOrKey = '<vmAdminPasswordOrKey>'
 param vmSize = 'Standard_DS4_v2'
 ```
 
@@ -257,7 +257,7 @@ param vmSize = 'Standard_DS4_v2'
 | :-- | :-- | :-- |
 | [`aiFoundryType`](#parameter-aifoundrytype) | string | Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate. |
 | [`contentSafetyEnabled`](#parameter-contentsafetyenabled) | bool | Whether to include Azure AI Content Safety in the deployment. |
-| [`name`](#parameter-name) | string | Name of the resource to create. |
+| [`name`](#parameter-name) | string | A friendly application/environment name for all resources in this deployment. |
 
 **Optional parameters**
 
@@ -272,8 +272,9 @@ param vmSize = 'Standard_DS4_v2'
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
-| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
+| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project.. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
+| [`uniqueNameText`](#parameter-uniquenametext) | string | A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name. |
 | [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | string | Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size of the jump-box Virtual Machine. |
@@ -302,7 +303,7 @@ Whether to include Azure AI Content Safety in the deployment.
 
 ### Parameter: `name`
 
-Name of the resource to create.
+A friendly application/environment name for all resources in this deployment.
 
 - Required: Yes
 - Type: string
@@ -726,11 +727,10 @@ A collection of rules governing the accessibility from specific network location
 
 ### Parameter: `projectName`
 
-Name of the AI Foundry project.
+Name of the AI Foundry project..
 
 - Required: No
 - Type: string
-- Default: `[format('{0}proj', parameters('name'))]`
 
 ### Parameter: `tags`
 
@@ -739,6 +739,14 @@ Specifies the resource tags for all the resources. Tag "azd-env-name" is automat
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `uniqueNameText`
+
+A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name.
+
+- Required: No
+- Type: string
+- Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('name')), 0, 5)]`
 
 ### Parameter: `vmAdminPasswordOrKey`
 
@@ -768,19 +776,19 @@ Specifies the size of the jump-box Virtual Machine.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `azureAiProjectName` | string | Name of the deployed Azure AI Project. |
-| `azureAiSearchName` | string | Name of the deployed Azure AI Search service. |
-| `azureAiServicesName` | string | Name of the deployed Azure AI Services account. |
-| `azureBastionName` | string | Name of the deployed Azure Bastion host. |
-| `azureContainerRegistryName` | string | Name of the deployed Azure Container Registry. |
-| `azureCosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
-| `azureKeyVaultName` | string | Name of the deployed Azure Key Vault. |
-| `azureStorageAccountName` | string | Name of the deployed Azure Storage Account. |
-| `azureVirtualNetworkName` | string | Name of the deployed Azure Virtual Network. |
-| `azureVirtualNetworkSubnetName` | string | Name of the deployed Azure Virtual Network Subnet. |
-| `azureVmResourceId` | string | Resource ID of the deployed Azure VM. |
-| `azureVmUsername` | string | Username for the deployed Azure VM. |
+| `aiProjectName` | string | Name of the deployed Azure AI Project. |
+| `aiSearchName` | string | Name of the deployed Azure AI Search service. |
+| `aiServicesName` | string | Name of the deployed Azure AI Services account. |
+| `bastionName` | string | Name of the deployed Azure Bastion host. |
+| `containerRegistryName` | string | Name of the deployed Azure Container Registry. |
+| `cosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
+| `keyVaultName` | string | Name of the deployed Azure Key Vault. |
 | `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
+| `storageAccountName` | string | Name of the deployed Azure Storage Account. |
+| `virtualNetworkName` | string | Name of the deployed Azure Virtual Network. |
+| `virtualNetworkSubnetName` | string | Name of the deployed Azure Virtual Network Subnet. |
+| `vmResourceId` | string | Resource ID of the deployed Azure VM. |
+| `vmUsername` | string | Username for the deployed Azure VM. |
 
 ## Cross-referenced modules
 

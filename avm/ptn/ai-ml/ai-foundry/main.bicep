@@ -3,11 +3,15 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 
 @minLength(3)
 @maxLength(12)
-@description('Required. Name of the resource to create.')
+@description('Required. A friendly application/environment name for all resources in this deployment.')
 param name string
 
-@description('Optional. Name of the AI Foundry project.')
-param projectName string = '${name}proj'
+@maxLength(5)
+@description('Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name.')
+param uniqueNameText string = substring(uniqueString(subscription().id, resourceGroup().name, name), 0, 5)
+
+@description('Optional. Name of the AI Foundry project..')
+param projectName string?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -70,8 +74,13 @@ param networkAcls object = {
 
 var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
 var basicDeployment = toLower(aiFoundryType) == 'basic'
-var resourceToken = substring(uniqueString(subscription().id, location, name), 0, 5)
 var servicesUsername = take(replace(vmAdminUsername, '.', ''), 20)
+
+var resourcesName = toLower(trim(replace(
+  replace(replace(replace(replace(replace('${name}${uniqueNameText}', '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''),
+  '*',
+  ''
+)))
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -95,23 +104,23 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
   name: take('${name}-network-deployment', 64)
   params: {
-    virtualNetworkName: toLower('vnet-${name}')
+    virtualNetworkName: toLower('vnet-${resourcesName}')
     virtualNetworkAddressPrefixes: '10.0.0.0/8'
-    vmSubnetName: toLower('snet-${name}-vm')
+    vmSubnetName: toLower('snet-${resourcesName}-vm')
     vmSubnetAddressPrefix: '10.3.1.0/24'
-    vmSubnetNsgName: toLower('nsg-snet-${name}-vm')
+    vmSubnetNsgName: toLower('nsg-snet-${resourcesName}-vm')
     bastionHostEnabled: true
     bastionSubnetAddressPrefix: '10.3.2.0/24'
     bastionSubnetNsgName: 'nsg-AzureBastionSubnet'
-    bastionHostName: toLower('bas-${name}')
+    bastionHostName: toLower('bas-${resourcesName}')
     bastionHostDisableCopyPaste: false
     bastionHostEnableFileCopy: true
     bastionHostEnableIpConnect: true
     bastionHostEnableShareableLink: true
     bastionHostEnableTunneling: true
-    bastionPublicIpAddressName: toLower('pip-bas-${name}')
+    bastionPublicIpAddressName: toLower('pip-bas-${resourcesName}')
     bastionHostSkuName: 'Standard'
-    natGatewayName: toLower('nat-${name}')
+    natGatewayName: toLower('nat-${resourcesName}')
     natGatewayPublicIps: 1
     natGatewayIdleTimeoutMins: 30
     allowedIpAddress: allowedIpAddress
@@ -125,7 +134,7 @@ module keyvault 'modules/keyvault.bicep' = if (!basicDeployment) {
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    name: 'kv${name}${resourceToken}'
+    name: 'kv${resourcesName}'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -150,7 +159,8 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (!basicDeploymen
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    name: 'cr${name}${resourceToken}'
+    #disable-next-line BCP334
+    name: 'cr${resourcesName}'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -165,7 +175,7 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    name: name
+    name: resourcesName
     location: location
     networkIsolation: networkIsolation
     networkAcls: networkAcls
@@ -202,7 +212,7 @@ module aiSearch 'modules/aisearch.bicep' = if (!basicDeployment) {
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    name: 'srch${name}${resourceToken}'
+    name: 'srch${resourcesName}'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -231,7 +241,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (!basicDeployment) {
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    storageName: 'st${name}${resourceToken}'
+    name: 'st${resourcesName}'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -271,7 +281,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (!basicDeployment) {
   #disable-next-line no-unnecessary-dependson
   dependsOn: [network]
   params: {
-    name: 'cos${name}${resourceToken}'
+    name: 'cos${resourcesName}'
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
@@ -294,7 +304,7 @@ module project 'modules/aifoundryproject.bicep' = {
   params: {
     basicDeploymentOnly: basicDeployment
     cosmosDBName: !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''
-    name: projectName
+    name: empty(projectName) ? 'proj-${resourcesName}' : projectName!
     location: location
     storageName: !basicDeployment ? storageAccount!.outputs.storageName : ''
     aiServicesName: cognitiveServices.outputs.aiServicesName
@@ -310,18 +320,18 @@ var shouldDeployVM = networkIsolation && (length(vmAdminPasswordOrKey) >= 4)
 module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
   name: take('${name}-virtual-machine-deployment', 64)
   params: {
-    vmName: toLower('vm-${name}-jump')
-    vmNicName: toLower('nic-vm-${name}-jump')
-    vmSize: vmSize
-    vmSubnetResourceId: network!.outputs.vmSubnetResourceId
+    name: 'vm-${resourcesName}-jump'
+    nicName: 'nic-vm-${resourcesName}-jump'
+    size: vmSize
+    subnetResourceId: network!.outputs.vmSubnetResourceId
     storageAccountName: storageAccount!.outputs.storageName
     storageAccountResourceGroup: resourceGroup().name
     imagePublisher: 'MicrosoftWindowsServer'
     imageOffer: 'WindowsServer'
     imageSku: '2022-datacenter-azure-edition'
     authenticationType: 'password'
-    vmAdminUsername: servicesUsername
-    vmAdminPasswordOrKey: vmAdminPasswordOrKey
+    adminUsername: servicesUsername
+    adminPasswordOrKey: vmAdminPasswordOrKey
     diskStorageAccountType: 'Premium_LRS'
     numDataDisks: 1
     osDiskSize: 128
@@ -340,37 +350,37 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output azureKeyVaultName string = !basicDeployment ? keyvault!.outputs.name : ''
+output keyVaultName string = !basicDeployment ? keyvault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
-output azureAiServicesName string = cognitiveServices.outputs.aiServicesName
+output aiServicesName string = cognitiveServices.outputs.aiServicesName
 
 @description('Name of the deployed Azure AI Search service.')
-output azureAiSearchName string = !basicDeployment ? aiSearch!.outputs.searchName : ''
+output aiSearchName string = !basicDeployment ? aiSearch!.outputs.searchName : ''
 
 @description('Name of the deployed Azure AI Project.')
-output azureAiProjectName string = project.outputs.projectName
+output aiProjectName string = project.outputs.projectName
 
 @description('Name of the deployed Azure Bastion host.')
-output azureBastionName string = networkIsolation ? network!.outputs.bastionName : ''
+output bastionName string = networkIsolation ? network!.outputs.bastionName : ''
 
 @description('Resource ID of the deployed Azure VM.')
-output azureVmResourceId string = shouldDeployVM ? virtualMachine!.outputs.id : ''
+output vmResourceId string = shouldDeployVM ? virtualMachine!.outputs.id : ''
 
 @description('Username for the deployed Azure VM.')
-output azureVmUsername string = !basicDeployment ? servicesUsername : ''
+output vmUsername string = !basicDeployment ? servicesUsername : ''
 
 @description('Name of the deployed Azure Container Registry.')
-output azureContainerRegistryName string = !basicDeployment ? containerRegistry.?outputs.name ?? '' : ''
+output containerRegistryName string = !basicDeployment ? containerRegistry.?outputs.name ?? '' : ''
 
 @description('Name of the deployed Azure Storage Account.')
-output azureStorageAccountName string = !basicDeployment ? storageAccount.?outputs.storageName ?? '' : ''
+output storageAccountName string = !basicDeployment ? storageAccount.?outputs.storageName ?? '' : ''
 
 @description('Name of the deployed Azure Virtual Network.')
-output azureVirtualNetworkName string = networkIsolation ? network!.outputs.virtualNetworkName : ''
+output virtualNetworkName string = networkIsolation ? network!.outputs.virtualNetworkName : ''
 
 @description('Name of the deployed Azure Virtual Network Subnet.')
-output azureVirtualNetworkSubnetName string = networkIsolation ? network!.outputs.vmSubnetName : ''
+output virtualNetworkSubnetName string = networkIsolation ? network!.outputs.vmSubnetName : ''
 
 @description('Name of the deployed Azure Cosmos DB account.')
-output azureCosmosAccountName string = !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''
+output cosmosAccountName string = !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''

@@ -20,9 +20,6 @@ param serviceShort string = 'fndrymin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Used to generate unique names for resources to avoid soft-delete conflicts.')
-param utcValue string = utcNow()
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -44,9 +41,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'basic${substring(uniqueString(subscription().id, enforcedLocation, utcValue), 0, 3)}' // Use time-based uniqueness to avoid soft-delete conflicts
+      name: '${namePrefix}${serviceShort}001'
       aiFoundryType: 'Basic' // Basic deployment - minimal resources only
-      contentSafetyEnabled: false // Set to true or false as required
+      contentSafetyEnabled: false
       // Note: vmAdminPasswordOrKey not needed for Basic deployment (no VM deployed)
     }
   }

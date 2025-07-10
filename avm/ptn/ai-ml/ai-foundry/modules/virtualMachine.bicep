@@ -1,12 +1,12 @@
 // Parameters
 @description('Specifies the name of the virtual machine.')
-param vmName string = 'TestVm'
+param name string = 'TestVm'
 
 @description('Specifies the size of the virtual machine.')
-param vmSize string = 'Standard_DS4_v2'
+param size string = 'Standard_DS4_v2'
 
 @description('Specifies the resource id of the subnet hosting the virtual machine.')
-param vmSubnetResourceId string
+param subnetResourceId string
 
 @description('Specifies the name of the storage account where the bootstrap diagnostic logs of the virtual machine are stored.')
 param storageAccountName string
@@ -31,11 +31,11 @@ param imageSku string = '2022-datacenter-azure-edition'
 param authenticationType string = 'password'
 
 @description('Specifies the name of the administrator account of the virtual machine.')
-param vmAdminUsername string
+param adminUsername string
 
 @description('Specifies the SSH Key or password for the virtual machine. SSH key is recommended.')
 @secure()
-param vmAdminPasswordOrKey string
+param adminPasswordOrKey string
 
 @description('Specifies the storage account type for OS and data disk.')
 @allowed([
@@ -67,7 +67,7 @@ param enableMicrosoftEntraIdAuth bool = true
 param enableAcceleratedNetworking bool = true
 
 @description('Specifies the name of the network interface of the virtual machine.')
-param vmNicName string
+param nicName string
 
 @description('Specifies the location.')
 param location string = resourceGroup().location
@@ -84,11 +84,11 @@ param enableMonitoring bool = false
 // Monitoring should only be enabled if we have a valid Log Analytics workspace ID
 var shouldEnableMonitoring = enableMonitoring && !empty(logAnalyticsWorkspaceResourceId)
 
-var randomString = uniqueString(resourceGroup().id, vmName, vmAdminPasswordOrKey)
+var randomString = uniqueString(resourceGroup().id, name, adminPasswordOrKey)
 
-var adminPassword = (length(vmAdminPasswordOrKey) < 8)
-  ? '${vmAdminPasswordOrKey}${take(randomString, 12)}'
-  : vmAdminPasswordOrKey
+var adminPassword = (length(adminPasswordOrKey) < 8)
+  ? '${adminPasswordOrKey}${take(randomString, 12)}'
+  : adminPasswordOrKey
 
 // Variables
 var linuxConfiguration = {
@@ -96,7 +96,7 @@ var linuxConfiguration = {
   ssh: {
     publicKeys: [
       {
-        path: '/home/${vmAdminUsername}/.ssh/authorized_keys'
+        path: '/home/${adminUsername}/.ssh/authorized_keys'
         keyData: adminPassword
       }
     ]
@@ -108,7 +108,7 @@ var linuxConfiguration = {
 
 // Maintenance Configuration for VM patching compliance (only for StandardPrivate)
 resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
-  name: '${vmName}-maintenance-config'
+  name: '${name}-maintenance-config'
   location: location
   tags: tags
   properties: {
@@ -136,7 +136,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
 }
 
 resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
-  name: vmNicName
+  name: nicName
   location: location
   tags: tags
   properties: {
@@ -147,7 +147,7 @@ resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
-            id: vmSubnetResourceId
+            id: subnetResourceId
           }
         }
       }
@@ -161,16 +161,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing 
 }
 
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
-  name: vmName
+  name: name
   location: location
   tags: tags
   properties: {
     hardwareProfile: {
-      vmSize: vmSize
+      vmSize: size
     }
     osProfile: {
-      computerName: take(vmName, 15)
-      adminUsername: vmAdminUsername
+      computerName: take(name, 15)
+      adminUsername: adminUsername
       adminPassword: adminPassword
       linuxConfiguration: (authenticationType == 'password') ? null : linuxConfiguration
       windowsConfiguration: (authenticationType == 'password')
@@ -194,7 +194,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         version: 'latest'
       }
       osDisk: {
-        name: '${vmName}_OSDisk'
+        name: '${name}_OSDisk'
         caching: 'ReadWrite'
         createOption: 'FromImage'
         diskSizeGB: osDiskSize
@@ -207,7 +207,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           caching: dataDiskCaching
           diskSizeGB: dataDiskSize
           lun: j
-          name: '${vmName}-DataDisk${j}'
+          name: '${name}-DataDisk${j}'
           createOption: 'Empty'
           managedDisk: {
             storageAccountType: diskStorageAccountType
