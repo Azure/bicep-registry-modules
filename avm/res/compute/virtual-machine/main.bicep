@@ -955,7 +955,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
   ]
 }
 
-module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.?enabled ?? false) {
+module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.?enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
     virtualMachineName: vm.name
