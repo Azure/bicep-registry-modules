@@ -875,9 +875,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     diagnosticSettings: [
       {
-        logCategoriesAndGroups: [
+        metricCategories: [
           {
-            category: 'allLogs'
+            category: 'allMetrics'
             enabled: true
           }
         ]
@@ -952,9 +952,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "diagnosticSettings": {
       "value": [
         {
-          "logCategoriesAndGroups": [
+          "metricCategories": [
             {
-              "category": "allLogs",
+              "category": "allMetrics",
               "enabled": true
             }
           ],
@@ -1029,9 +1029,9 @@ param name = 'acawaf001'
 // Non-required parameters
 param diagnosticSettings = [
   {
-    logCategoriesAndGroups: [
+    metricCategories: [
       {
-        category: 'allLogs'
+        category: 'allMetrics'
         enabled: true
       }
     ]

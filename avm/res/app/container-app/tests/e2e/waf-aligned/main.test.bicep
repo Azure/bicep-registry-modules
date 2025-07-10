@@ -57,9 +57,9 @@ module testDeployment '../../../main.bicep' = [
       diagnosticSettings:[
         {
           name: 'test-diagnostic-setting'
-          logCategoriesAndGroups: [
+          metricCategories: [
             {
-              category: 'allLogs'
+              category: 'allMetrics'
               enabled: true
             }
           ]
