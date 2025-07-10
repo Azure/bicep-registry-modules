@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
+    storageAccountName: toLower('dep${uniqueString(namePrefix, serviceShort)}sa')}
 }
 
 // ============== //
@@ -54,6 +54,18 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       ingressExternal: false
       ingressAllowInsecure: false
+      diagnosticSettings:[
+        {
+          name: 'test-diagnostic-setting'
+          logCategoriesAndGroups: [
+            {
+              category: 'All'
+              enabled: true
+            }
+          ]
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'

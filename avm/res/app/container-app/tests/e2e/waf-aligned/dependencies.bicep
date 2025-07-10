@@ -7,6 +7,19 @@ param managedEnvironmentName string
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Storage Account to create.')
+@maxLength(24)
+param storageAccountName string
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}
+
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   name: managedEnvironmentName
   location: location
@@ -23,3 +36,6 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Managed Environment.')
 output managedEnvironmentResourceId string = managedEnvironment.id
+
+@description('The resource ID of the created Storage Account.')
+output storageAccountResourceId string = storageAccount.id
