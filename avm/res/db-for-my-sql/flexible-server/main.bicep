@@ -195,13 +195,11 @@ param enableTelemetry bool = true
 
 var enableReferencedModulesTelemetry = false
 
-var standByAvailabilityZoneTable = {
-  Disabled: null
+var standByAvailabilityZone = {
+  Disabled: -1
   SameZone: availabilityZone
   ZoneRedundant: highAvailabilityZone
-}
-
-var standByAvailabilityZone = standByAvailabilityZoneTable[?highAvailability]
+}[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -264,19 +262,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -284,19 +282,19 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId)) {
+resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId)) {
   name: last(split(customerManagedKeyGeo.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[2],
     split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
     name: customerManagedKeyGeo.?keyName!
   }
 }
 
-resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)) {
+resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[2],
@@ -315,7 +313,6 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview
   identity: identity
   properties: {
     administratorLogin: administratorLogin
-    #disable-next-line use-secure-value-for-secure-inputs // Has a @secure() annotation
     administratorLoginPassword: administratorLoginPassword
     availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
     backup: {
@@ -328,13 +325,13 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview
           type: 'AzureKeyVault'
           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
             ? (!empty(customerManagedKeyGeo.?keyVersion ?? '')
-                ? '${cMKGeoKeyVault::cMKKey.properties.keyUri}/${customerManagedKeyGeo!.?keyVersion!}'
-                : cMKGeoKeyVault::cMKKey.properties.keyUriWithVersion)
+                ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.?keyVersion!}'
+                : cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion)
             : null
           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion!}'
-            : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion!}'
+            : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
         }
       : null
@@ -542,11 +539,11 @@ output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 @description('The private endpoints of the MySQL Flexible server.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
-    name: flexibleServer_privateEndpoints[index].outputs.name
-    resourceId: flexibleServer_privateEndpoints[index].outputs.resourceId
-    groupId: flexibleServer_privateEndpoints[index].outputs.?groupId!
-    customDnsConfigs: flexibleServer_privateEndpoints[index].outputs.customDnsConfigs
-    networkInterfaceResourceIds: flexibleServer_privateEndpoints[index].outputs.networkInterfaceResourceIds
+    name: flexibleServer_privateEndpoints[index]!.outputs.name
+    resourceId: flexibleServer_privateEndpoints[index]!.outputs.resourceId
+    groupId: flexibleServer_privateEndpoints[index]!.outputs.?groupId!
+    customDnsConfigs: flexibleServer_privateEndpoints[index]!.outputs.customDnsConfigs
+    networkInterfaceResourceIds: flexibleServer_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
   }
 ]
 
