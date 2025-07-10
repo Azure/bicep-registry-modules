@@ -211,9 +211,8 @@ param extensionNvidiaGpuDriverWindows object = {
 }
 
 @description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
-param extensionHostPoolRegistration object = {
-  enabled: false
-}
+@secure()
+param extensionHostPoolRegistration object = {}
 
 @description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
 param extensionGuestConfigurationExtension object = {
@@ -956,7 +955,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
   ]
 }
 
-module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.enabled) {
+module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.?enabled ?? false) {
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
     virtualMachineName: vm.name
@@ -972,10 +971,14 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
       configurationFunction: extensionHostPoolRegistration.configurationFunction
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
-        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
         aadJoin: true
       }
       supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
+    }
+    protectedSettings: {
+      properties: {
+        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
+      }
     }
     tags: extensionHostPoolRegistration.?tags ?? tags
   }
