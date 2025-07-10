@@ -877,7 +877,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       {
         logCategoriesAndGroups: [
           {
-            category: 'All'
+            category: 'allLogs'
             enabled: true
           }
         ]
@@ -954,7 +954,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "logCategoriesAndGroups": [
             {
-              "category": "All",
+              "category": "allLogs",
               "enabled": true
             }
           ],
@@ -1031,7 +1031,7 @@ param diagnosticSettings = [
   {
     logCategoriesAndGroups: [
       {
-        category: 'All'
+        category: 'allLogs'
         enabled: true
       }
     ]
