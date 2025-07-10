@@ -67,6 +67,12 @@ module testDeployment '../../../main.bicep' = [
       ingressAllowInsecure: false
       diagnosticSettings: [
         {
+          metricCategories:[
+            {
+              category: 'allMetrics'
+            }
+          ]
+          logCategoriesAndGroups: []
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
