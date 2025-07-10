@@ -31,8 +31,8 @@ on:
       - ".github/workflows/avm.res.azure-stack-hci.virtual-machine-instance.yml"
       - "avm/res/azure-stack-hci/virtual-machine-instance/**"
       - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
-      - "!*/**/README.md"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
 
 env:
   modulePath: "avm/res/azure-stack-hci/virtual-machine-instance"

@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. Resource ID of the associated custom location.')
-param customLocation string
+param customLocationResourceId string
 
 @description('Required. Existing Arc Machine resource name.')
 param arcMachineResourceName string
@@ -17,22 +17,28 @@ param arcMachineResourceName string
 param enableTelemetry bool = true
 
 @description('Required. Hardware profile configuration.')
-param hardwareProfile hardwareProfileType
+param hardwareProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.hardwareProfile
 
 @description('Optional. HTTP proxy configuration.')
-param httpProxyConfig httpProxyConfigType = {}
+param httpProxyConfig resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.httpProxyConfig = {}
 
 @description('Required. Network profile configuration.')
-param networkProfile networkProfileType
+param networkProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.networkProfile
 
 @description('Required. OS profile configuration.')
-param osProfile osProfileType
+param osProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.osProfile
 
 @description('Optional. Security profile configuration.')
-param securityProfile securityProfileType = { uefiSettings: { secureBootEnabled: true } }
+param securityProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.securityProfile = {
+  uefiSettings: { secureBootEnabled: true }
+}
 
 @description('Required. Storage profile configuration.')
-param storageProfile storageProfileType
+param storageProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.storageProfile
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
 // ============== //
 // Resources      //
@@ -57,15 +63,41 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+var builtInRoleNames = {
+  // Add other relevant built-in roles here for your resource as per BCPNFR5
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+}
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
   name: arcMachineResourceName
 }
 
-resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-08-01-preview' = {
+resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview' = {
   name: name
   extendedLocation: {
     type: 'CustomLocation'
-    name: customLocation
+    name: customLocationResourceId
   }
   identity: {
     type: 'SystemAssigned'
@@ -86,6 +118,26 @@ resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances
   scope: existingMachine
 }
 
+resource virtualMachine_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      virtualMachineInstance.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: virtualMachineInstance
+  }
+]
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -98,197 +150,3 @@ output resourceId string = virtualMachineInstance.id
 
 @description('The resource group of the virtual machine instance.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@export()
-@description('Type definition for dynamic memory configuration.')
-type dynamicMemoryConfigType = {
-  @description('Required. Maximum memory in MB.')
-  maximumMemoryMB: int
-
-  @description('Required. Minimum memory in MB.')
-  minimumMemoryMB: int
-
-  @description('Required. Target memory buffer percentage.')
-  targetMemoryBuffer: int
-}
-
-@export()
-@description('Type definition for hardware profile.')
-type hardwareProfileType = {
-  @description('Optional. Dynamic memory configuration.')
-  dynamicMemoryConfig: dynamicMemoryConfigType?
-
-  @description('Required. Memory in MB.')
-  memoryMB: int
-
-  @description('Required. Number of processors.')
-  processors: int
-
-  @description('Optional. Size of the virtual machine.')
-  vmSize: string?
-}
-
-@export()
-@description('Type definition for HTTP proxy configuration.')
-type httpProxyConfigType = {
-  @description('Optional. HTTP proxy URL.')
-  httpProxy: string?
-
-  @description('Optional. HTTPS proxy URL.')
-  httpsProxy: string?
-
-  @description('Optional. List of addresses that should bypass the proxy.')
-  noProxy: string[]?
-
-  @description('Optional. Trusted CA certificate.')
-  trustedCa: string?
-}
-
-@export()
-@description('Type definition for network interface.')
-type networkInterfaceType = {
-  @description('Required. ID of the network interface.')
-  id: string
-}
-
-@export()
-@description('Type definition for network profile.')
-type networkProfileType = {
-  @description('Required. List of network interfaces.')
-  networkInterfaces: networkInterfaceType[]
-}
-
-@export()
-@description('Type definition for SSH public key.')
-type sshPublicKeyType = {
-  @description('Required. SSH public key data.')
-  keyData: string
-
-  @description('Required. Path for the SSH public key.')
-  path: string
-}
-
-@export()
-@description('Type definition for SSH configuration.')
-type sshConfigType = {
-  @description('Required. List of SSH public keys.')
-  publicKeys: sshPublicKeyType[]
-}
-
-@export()
-@description('Type definition for Linux configuration.')
-type linuxConfigurationType = {
-  @description('Optional. Whether to disable password authentication.')
-  disablePasswordAuthentication: bool?
-
-  @description('Optional. Whether to provision VM agent.')
-  provisionVMAgent: bool?
-
-  @description('Optional. Whether to provision VM config agent.')
-  provisionVMConfigAgent: bool?
-
-  @description('Optional. SSH configuration.')
-  ssh: sshConfigType?
-}
-
-@export()
-@description('Type definition for Windows configuration.')
-type windowsConfigurationType = {
-  @description('Optional. Whether to enable automatic updates.')
-  enableAutomaticUpdates: bool?
-
-  @description('Required. Whether to provision VM agent.')
-  provisionVMAgent: bool
-
-  @description('Required. Whether to provision VM config agent.')
-  provisionVMConfigAgent: bool
-
-  @description('Optional. SSH configuration.')
-  ssh: sshConfigType?
-
-  @description('Optional. Time zone.')
-  timeZone: string?
-}
-
-@export()
-@description('Type definition for OS profile.')
-type osProfileType = {
-  @description('Required. Admin password.')
-  adminPassword: string
-
-  @description('Required. Admin username.')
-  adminUsername: string
-
-  @description('Required. Computer name.')
-  computerName: string
-
-  @description('Required. Linux configuration.')
-  linuxConfiguration: linuxConfigurationType
-
-  @description('Required. Windows configuration.')
-  windowsConfiguration: windowsConfigurationType
-}
-
-@export()
-@description('Type definition for UEFI settings.')
-type uefiSettingsType = {
-  @description('Required. Whether secure boot is enabled.')
-  secureBootEnabled: bool
-}
-
-@export()
-@description('Type definition for security profile.')
-type securityProfileType = {
-  @description('Optional. Whether TPM is enabled.')
-  enableTPM: bool?
-
-  @description('Optional. Security type.')
-  securityType: string?
-
-  @description('Required. UEFI settings.')
-  uefiSettings: uefiSettingsType
-}
-
-@export()
-@description('Type definition for data disk.')
-type dataDiskType = {
-  @description('Required. ID of the data disk.')
-  id: string
-}
-
-@export()
-@description('Type definition for image reference.')
-type imageReferenceType = {
-  @description('Required. ID of the image.')
-  id: string
-}
-
-@export()
-@description('Type definition for OS disk.')
-type osDiskType = {
-  @description('Optional. ID of the OS disk.')
-  id: string?
-
-  @description('Required. OS type.')
-  osType: string
-}
-
-@export()
-@description('Type definition for storage profile.')
-type storageProfileType = {
-  @description('Optional. List of data disks.')
-  dataDisks: dataDiskType[]?
-
-  @description('Required. Image reference.')
-  imageReference: imageReferenceType
-
-  @description('Required. OS disk.')
-  osDisk: osDiskType
-
-  @description('Optional. VM config storage path ID.')
-  vmConfigStoragePathId: string?
-}

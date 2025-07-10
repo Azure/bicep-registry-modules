@@ -8,13 +8,15 @@ This module deploys an Azure Stack HCI virtual machine.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.AzureStackHCI/virtualMachineInstances` | [2024-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-08-01-preview/virtualMachineInstances) |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.AzureStackHCI/virtualMachineInstances` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-04-01-preview/virtualMachineInstances) |
 
 ## Usage examples
 
@@ -42,7 +44,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
   params: {
     // Required parameters
     arcMachineResourceName: '<arcMachineResourceName>'
-    customLocation: '<customLocation>'
+    customLocationResourceId: '<customLocationResourceId>'
     hardwareProfile: {
       memoryMB: 4096
       processors: 2
@@ -89,8 +91,8 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     "arcMachineResourceName": {
       "value": "<arcMachineResourceName>"
     },
-    "customLocation": {
-      "value": "<customLocation>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "hardwareProfile": {
       "value": {
@@ -146,7 +148,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>'
 
 // Required parameters
 param arcMachineResourceName = '<arcMachineResourceName>'
-param customLocation = '<customLocation>'
+param customLocationResourceId = '<customLocationResourceId>'
 param hardwareProfile = {
   memoryMB: 4096
   processors: 2
@@ -193,7 +195,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
   params: {
     // Required parameters
     arcMachineResourceName: '<arcMachineResourceName>'
-    customLocation: '<customLocation>'
+    customLocationResourceId: '<customLocationResourceId>'
     hardwareProfile: {
       dynamicMemoryConfig: {
         maximumMemoryMB: 8192
@@ -250,8 +252,8 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     "arcMachineResourceName": {
       "value": "<arcMachineResourceName>"
     },
-    "customLocation": {
-      "value": "<customLocation>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "hardwareProfile": {
       "value": {
@@ -317,7 +319,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>'
 
 // Required parameters
 param arcMachineResourceName = '<arcMachineResourceName>'
-param customLocation = '<customLocation>'
+param customLocationResourceId = '<customLocationResourceId>'
 param hardwareProfile = {
   dynamicMemoryConfig: {
     maximumMemoryMB: 8192
@@ -366,7 +368,7 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`arcMachineResourceName`](#parameter-arcmachineresourcename) | string | Existing Arc Machine resource name. |
-| [`customLocation`](#parameter-customlocation) | string | Resource ID of the associated custom location. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
 | [`hardwareProfile`](#parameter-hardwareprofile) | object | Hardware profile configuration. |
 | [`name`](#parameter-name) | string | Name of the virtual machine instance. |
 | [`networkProfile`](#parameter-networkprofile) | object | Network profile configuration. |
@@ -380,6 +382,7 @@ param location = '<location>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | HTTP proxy configuration. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile configuration. |
 
 ### Parameter: `arcMachineResourceName`
@@ -389,7 +392,7 @@ Existing Arc Machine resource name.
 - Required: Yes
 - Type: string
 
-### Parameter: `customLocation`
+### Parameter: `customLocationResourceId`
 
 Resource ID of the associated custom location.
 
@@ -402,77 +405,6 @@ Hardware profile configuration.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`memoryMB`](#parameter-hardwareprofilememorymb) | int | Memory in MB. |
-| [`processors`](#parameter-hardwareprofileprocessors) | int | Number of processors. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dynamicMemoryConfig`](#parameter-hardwareprofiledynamicmemoryconfig) | object | Dynamic memory configuration. |
-| [`vmSize`](#parameter-hardwareprofilevmsize) | string | Size of the virtual machine. |
-
-### Parameter: `hardwareProfile.memoryMB`
-
-Memory in MB.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hardwareProfile.processors`
-
-Number of processors.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hardwareProfile.dynamicMemoryConfig`
-
-Dynamic memory configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maximumMemoryMB`](#parameter-hardwareprofiledynamicmemoryconfigmaximummemorymb) | int | Maximum memory in MB. |
-| [`minimumMemoryMB`](#parameter-hardwareprofiledynamicmemoryconfigminimummemorymb) | int | Minimum memory in MB. |
-| [`targetMemoryBuffer`](#parameter-hardwareprofiledynamicmemoryconfigtargetmemorybuffer) | int | Target memory buffer percentage. |
-
-### Parameter: `hardwareProfile.dynamicMemoryConfig.maximumMemoryMB`
-
-Maximum memory in MB.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hardwareProfile.dynamicMemoryConfig.minimumMemoryMB`
-
-Minimum memory in MB.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hardwareProfile.dynamicMemoryConfig.targetMemoryBuffer`
-
-Target memory buffer percentage.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hardwareProfile.vmSize`
-
-Size of the virtual machine.
-
-- Required: No
-- Type: string
 
 ### Parameter: `name`
 
@@ -488,32 +420,6 @@ Network profile configuration.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`networkInterfaces`](#parameter-networkprofilenetworkinterfaces) | array | List of network interfaces. |
-
-### Parameter: `networkProfile.networkInterfaces`
-
-List of network interfaces.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-networkprofilenetworkinterfacesid) | string | ID of the network interface. |
-
-### Parameter: `networkProfile.networkInterfaces.id`
-
-ID of the network interface.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `osProfile`
 
 OS profile configuration.
@@ -521,306 +427,12 @@ OS profile configuration.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`adminPassword`](#parameter-osprofileadminpassword) | string | Admin password. |
-| [`adminUsername`](#parameter-osprofileadminusername) | string | Admin username. |
-| [`computerName`](#parameter-osprofilecomputername) | string | Computer name. |
-| [`linuxConfiguration`](#parameter-osprofilelinuxconfiguration) | object | Linux configuration. |
-| [`windowsConfiguration`](#parameter-osprofilewindowsconfiguration) | object | Windows configuration. |
-
-### Parameter: `osProfile.adminPassword`
-
-Admin password.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.adminUsername`
-
-Admin username.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.computerName`
-
-Computer name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.linuxConfiguration`
-
-Linux configuration.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`disablePasswordAuthentication`](#parameter-osprofilelinuxconfigurationdisablepasswordauthentication) | bool | Whether to disable password authentication. |
-| [`provisionVMAgent`](#parameter-osprofilelinuxconfigurationprovisionvmagent) | bool | Whether to provision VM agent. |
-| [`provisionVMConfigAgent`](#parameter-osprofilelinuxconfigurationprovisionvmconfigagent) | bool | Whether to provision VM config agent. |
-| [`ssh`](#parameter-osprofilelinuxconfigurationssh) | object | SSH configuration. |
-
-### Parameter: `osProfile.linuxConfiguration.disablePasswordAuthentication`
-
-Whether to disable password authentication.
-
-- Required: No
-- Type: bool
-
-### Parameter: `osProfile.linuxConfiguration.provisionVMAgent`
-
-Whether to provision VM agent.
-
-- Required: No
-- Type: bool
-
-### Parameter: `osProfile.linuxConfiguration.provisionVMConfigAgent`
-
-Whether to provision VM config agent.
-
-- Required: No
-- Type: bool
-
-### Parameter: `osProfile.linuxConfiguration.ssh`
-
-SSH configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`publicKeys`](#parameter-osprofilelinuxconfigurationsshpublickeys) | array | List of SSH public keys. |
-
-### Parameter: `osProfile.linuxConfiguration.ssh.publicKeys`
-
-List of SSH public keys.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyData`](#parameter-osprofilelinuxconfigurationsshpublickeyskeydata) | string | SSH public key data. |
-| [`path`](#parameter-osprofilelinuxconfigurationsshpublickeyspath) | string | Path for the SSH public key. |
-
-### Parameter: `osProfile.linuxConfiguration.ssh.publicKeys.keyData`
-
-SSH public key data.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.linuxConfiguration.ssh.publicKeys.path`
-
-Path for the SSH public key.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.windowsConfiguration`
-
-Windows configuration.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`provisionVMAgent`](#parameter-osprofilewindowsconfigurationprovisionvmagent) | bool | Whether to provision VM agent. |
-| [`provisionVMConfigAgent`](#parameter-osprofilewindowsconfigurationprovisionvmconfigagent) | bool | Whether to provision VM config agent. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableAutomaticUpdates`](#parameter-osprofilewindowsconfigurationenableautomaticupdates) | bool | Whether to enable automatic updates. |
-| [`ssh`](#parameter-osprofilewindowsconfigurationssh) | object | SSH configuration. |
-| [`timeZone`](#parameter-osprofilewindowsconfigurationtimezone) | string | Time zone. |
-
-### Parameter: `osProfile.windowsConfiguration.provisionVMAgent`
-
-Whether to provision VM agent.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `osProfile.windowsConfiguration.provisionVMConfigAgent`
-
-Whether to provision VM config agent.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `osProfile.windowsConfiguration.enableAutomaticUpdates`
-
-Whether to enable automatic updates.
-
-- Required: No
-- Type: bool
-
-### Parameter: `osProfile.windowsConfiguration.ssh`
-
-SSH configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`publicKeys`](#parameter-osprofilewindowsconfigurationsshpublickeys) | array | List of SSH public keys. |
-
-### Parameter: `osProfile.windowsConfiguration.ssh.publicKeys`
-
-List of SSH public keys.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyData`](#parameter-osprofilewindowsconfigurationsshpublickeyskeydata) | string | SSH public key data. |
-| [`path`](#parameter-osprofilewindowsconfigurationsshpublickeyspath) | string | Path for the SSH public key. |
-
-### Parameter: `osProfile.windowsConfiguration.ssh.publicKeys.keyData`
-
-SSH public key data.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.windowsConfiguration.ssh.publicKeys.path`
-
-Path for the SSH public key.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `osProfile.windowsConfiguration.timeZone`
-
-Time zone.
-
-- Required: No
-- Type: string
-
 ### Parameter: `storageProfile`
 
 Storage profile configuration.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`imageReference`](#parameter-storageprofileimagereference) | object | Image reference. |
-| [`osDisk`](#parameter-storageprofileosdisk) | object | OS disk. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dataDisks`](#parameter-storageprofiledatadisks) | array | List of data disks. |
-| [`vmConfigStoragePathId`](#parameter-storageprofilevmconfigstoragepathid) | string | VM config storage path ID. |
-
-### Parameter: `storageProfile.imageReference`
-
-Image reference.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-storageprofileimagereferenceid) | string | ID of the image. |
-
-### Parameter: `storageProfile.imageReference.id`
-
-ID of the image.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `storageProfile.osDisk`
-
-OS disk.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`osType`](#parameter-storageprofileosdiskostype) | string | OS type. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-storageprofileosdiskid) | string | ID of the OS disk. |
-
-### Parameter: `storageProfile.osDisk.osType`
-
-OS type.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `storageProfile.osDisk.id`
-
-ID of the OS disk.
-
-- Required: No
-- Type: string
-
-### Parameter: `storageProfile.dataDisks`
-
-List of data disks.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-storageprofiledatadisksid) | string | ID of the data disk. |
-
-### Parameter: `storageProfile.dataDisks.id`
-
-ID of the data disk.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `storageProfile.vmConfigStoragePathId`
-
-VM config storage path ID.
-
-- Required: No
-- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -838,43 +450,6 @@ HTTP proxy configuration.
 - Type: object
 - Default: `{}`
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`httpProxy`](#parameter-httpproxyconfighttpproxy) | string | HTTP proxy URL. |
-| [`httpsProxy`](#parameter-httpproxyconfighttpsproxy) | string | HTTPS proxy URL. |
-| [`noProxy`](#parameter-httpproxyconfignoproxy) | array | List of addresses that should bypass the proxy. |
-| [`trustedCa`](#parameter-httpproxyconfigtrustedca) | string | Trusted CA certificate. |
-
-### Parameter: `httpProxyConfig.httpProxy`
-
-HTTP proxy URL.
-
-- Required: No
-- Type: string
-
-### Parameter: `httpProxyConfig.httpsProxy`
-
-HTTPS proxy URL.
-
-- Required: No
-- Type: string
-
-### Parameter: `httpProxyConfig.noProxy`
-
-List of addresses that should bypass the proxy.
-
-- Required: No
-- Type: array
-
-### Parameter: `httpProxyConfig.trustedCa`
-
-Trusted CA certificate.
-
-- Required: No
-- Type: string
-
 ### Parameter: `location`
 
 Location for all Resources.
@@ -882,6 +457,109 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'User Access Administrator'`
+  - `'Role Based Access Control Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `securityProfile`
 
@@ -898,53 +576,6 @@ Security profile configuration.
   }
   ```
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`uefiSettings`](#parameter-securityprofileuefisettings) | object | UEFI settings. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableTPM`](#parameter-securityprofileenabletpm) | bool | Whether TPM is enabled. |
-| [`securityType`](#parameter-securityprofilesecuritytype) | string | Security type. |
-
-### Parameter: `securityProfile.uefiSettings`
-
-UEFI settings.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`secureBootEnabled`](#parameter-securityprofileuefisettingssecurebootenabled) | bool | Whether secure boot is enabled. |
-
-### Parameter: `securityProfile.uefiSettings.secureBootEnabled`
-
-Whether secure boot is enabled.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `securityProfile.enableTPM`
-
-Whether TPM is enabled.
-
-- Required: No
-- Type: bool
-
-### Parameter: `securityProfile.securityType`
-
-Security type.
-
-- Required: No
-- Type: string
-
 ## Outputs
 
 | Output | Type | Description |
@@ -952,6 +583,14 @@ Security type.
 | `name` | string | The name of the virtual machine instance. |
 | `resourceGroupName` | string | The resource group of the virtual machine instance. |
 | `resourceId` | string | The resource ID of the virtual machine instance. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

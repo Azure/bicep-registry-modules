@@ -5,437 +5,86 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "8580380500147953641"
+      "version": "0.36.177.2456",
+      "templateHash": "3600698554395531277"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
   },
   "definitions": {
-    "dynamicMemoryConfigType": {
+    "roleAssignmentType": {
       "type": "object",
       "properties": {
-        "maximumMemoryMB": {
-          "type": "int",
+        "name": {
+          "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Maximum memory in MB."
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
           }
         },
-        "minimumMemoryMB": {
-          "type": "int",
+        "roleDefinitionIdOrName": {
+          "type": "string",
           "metadata": {
-            "description": "Required. Minimum memory in MB."
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
           }
         },
-        "targetMemoryBuffer": {
-          "type": "int",
+        "principalId": {
+          "type": "string",
           "metadata": {
-            "description": "Required. Target memory buffer percentage."
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for dynamic memory configuration."
-      }
-    },
-    "hardwareProfileType": {
-      "type": "object",
-      "properties": {
-        "dynamicMemoryConfig": {
-          "$ref": "#/definitions/dynamicMemoryConfigType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Dynamic memory configuration."
-          }
-        },
-        "memoryMB": {
-          "type": "int",
-          "metadata": {
-            "description": "Required. Memory in MB."
-          }
-        },
-        "processors": {
-          "type": "int",
-          "metadata": {
-            "description": "Required. Number of processors."
-          }
-        },
-        "vmSize": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Size of the virtual machine."
-          }
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for hardware profile."
-      }
-    },
-    "httpProxyConfigType": {
-      "type": "object",
-      "properties": {
-        "httpProxy": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. HTTP proxy URL."
-          }
-        },
-        "httpsProxy": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. HTTPS proxy URL."
-          }
-        },
-        "noProxy": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of addresses that should bypass the proxy."
-          }
-        },
-        "trustedCa": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Trusted CA certificate."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for HTTP proxy configuration."
-      }
-    },
-    "networkInterfaceType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. ID of the network interface."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for network interface."
-      }
-    },
-    "networkProfileType": {
-      "type": "object",
-      "properties": {
-        "networkInterfaces": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/networkInterfaceType"
-          },
-          "metadata": {
-            "description": "Required. List of network interfaces."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for network profile."
-      }
-    },
-    "sshPublicKeyType": {
-      "type": "object",
-      "properties": {
-        "keyData": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. SSH public key data."
-          }
-        },
-        "path": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Path for the SSH public key."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for SSH public key."
-      }
-    },
-    "sshConfigType": {
-      "type": "object",
-      "properties": {
-        "publicKeys": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/sshPublicKeyType"
-          },
-          "metadata": {
-            "description": "Required. List of SSH public keys."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for SSH configuration."
-      }
-    },
-    "linuxConfigurationType": {
-      "type": "object",
-      "properties": {
-        "disablePasswordAuthentication": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to disable password authentication."
-          }
-        },
-        "provisionVMAgent": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to provision VM agent."
-          }
-        },
-        "provisionVMConfigAgent": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to provision VM config agent."
-          }
-        },
-        "ssh": {
-          "$ref": "#/definitions/sshConfigType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. SSH configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for Linux configuration."
-      }
-    },
-    "windowsConfigurationType": {
-      "type": "object",
-      "properties": {
-        "enableAutomaticUpdates": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to enable automatic updates."
-          }
-        },
-        "provisionVMAgent": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether to provision VM agent."
-          }
-        },
-        "provisionVMConfigAgent": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether to provision VM config agent."
-          }
-        },
-        "ssh": {
-          "$ref": "#/definitions/sshConfigType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. SSH configuration."
-          }
-        },
-        "timeZone": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Time zone."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for Windows configuration."
-      }
-    },
-    "osProfileType": {
-      "type": "object",
-      "properties": {
-        "adminPassword": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Admin password."
-          }
-        },
-        "adminUsername": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Admin username."
-          }
-        },
-        "computerName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Computer name."
-          }
-        },
-        "linuxConfiguration": {
-          "$ref": "#/definitions/linuxConfigurationType",
-          "metadata": {
-            "description": "Required. Linux configuration."
-          }
-        },
-        "windowsConfiguration": {
-          "$ref": "#/definitions/windowsConfigurationType",
-          "metadata": {
-            "description": "Required. Windows configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for OS profile."
-      }
-    },
-    "uefiSettingsType": {
-      "type": "object",
-      "properties": {
-        "secureBootEnabled": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether secure boot is enabled."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for UEFI settings."
-      }
-    },
-    "securityProfileType": {
-      "type": "object",
-      "properties": {
-        "enableTPM": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether TPM is enabled."
-          }
-        },
-        "securityType": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Security type."
-          }
-        },
-        "uefiSettings": {
-          "$ref": "#/definitions/uefiSettingsType",
-          "metadata": {
-            "description": "Required. UEFI settings."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for security profile."
-      }
-    },
-    "dataDiskType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. ID of the data disk."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for data disk."
-      }
-    },
-    "imageReferenceType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. ID of the image."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for image reference."
-      }
-    },
-    "osDiskType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. ID of the OS disk."
-          }
-        },
-        "osType": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. OS type."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for OS disk."
-      }
-    },
-    "storageProfileType": {
-      "type": "object",
-      "properties": {
-        "dataDisks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dataDiskType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of data disks."
-          }
-        },
-        "imageReference": {
-          "$ref": "#/definitions/imageReferenceType",
-          "metadata": {
-            "description": "Required. Image reference."
-          }
-        },
-        "osDisk": {
-          "$ref": "#/definitions/osDiskType",
-          "metadata": {
-            "description": "Required. OS disk."
-          }
-        },
-        "vmConfigStoragePathId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. VM config storage path ID."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type definition for storage profile."
       }
     }
   },
@@ -453,7 +102,7 @@
         "description": "Optional. Location for all Resources."
       }
     },
-    "customLocation": {
+    "customLocationResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the associated custom location."
@@ -473,46 +122,90 @@
       }
     },
     "hardwareProfile": {
-      "$ref": "#/definitions/hardwareProfileType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/hardwareProfile"
+        },
         "description": "Required. Hardware profile configuration."
       }
     },
     "httpProxyConfig": {
-      "$ref": "#/definitions/httpProxyConfigType",
-      "defaultValue": {},
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/httpProxyConfig"
+        },
         "description": "Optional. HTTP proxy configuration."
-      }
+      },
+      "defaultValue": {}
     },
     "networkProfile": {
-      "$ref": "#/definitions/networkProfileType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/networkProfile"
+        },
         "description": "Required. Network profile configuration."
       }
     },
     "osProfile": {
-      "$ref": "#/definitions/osProfileType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/osProfile"
+        },
         "description": "Required. OS profile configuration."
       }
     },
     "securityProfile": {
-      "$ref": "#/definitions/securityProfileType",
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/securityProfile"
+        },
+        "description": "Optional. Security profile configuration."
+      },
       "defaultValue": {
         "uefiSettings": {
           "secureBootEnabled": true
         }
-      },
-      "metadata": {
-        "description": "Optional. Security profile configuration."
       }
     },
     "storageProfile": {
-      "$ref": "#/definitions/storageProfileType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/storageProfile"
+        },
         "description": "Required. Storage profile configuration."
       }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
     }
   },
   "resources": {
@@ -544,12 +237,12 @@
     },
     "virtualMachineInstance": {
       "type": "Microsoft.AzureStackHCI/virtualMachineInstances",
-      "apiVersion": "2024-08-01-preview",
+      "apiVersion": "2025-04-01-preview",
       "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('arcMachineResourceName'))]",
       "name": "[parameters('name')]",
       "extendedLocation": {
         "type": "CustomLocation",
-        "name": "[parameters('customLocation')]"
+        "name": "[parameters('customLocationResourceId')]"
       },
       "identity": {
         "type": "SystemAssigned"
@@ -567,6 +260,28 @@
         "securityProfile": "[if(empty(parameters('securityProfile')), null(), parameters('securityProfile'))]",
         "storageProfile": "[parameters('storageProfile')]"
       }
+    },
+    "virtualMachine_roleAssignments": {
+      "copy": {
+        "name": "virtualMachine_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[extensionResourceId(format('Microsoft.HybridCompute/machines/{0}', parameters('arcMachineResourceName')), 'Microsoft.AzureStackHCI/virtualMachineInstances', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(extensionResourceId(resourceId('Microsoft.HybridCompute/machines', parameters('arcMachineResourceName')), 'Microsoft.AzureStackHCI/virtualMachineInstances', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "virtualMachineInstance"
+      ]
     }
   },
   "outputs": {
