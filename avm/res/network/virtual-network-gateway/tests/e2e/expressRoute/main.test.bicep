@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
         '${namePrefix}-dm-${serviceShort}'
       ]
       primaryPublicIPName: '${namePrefix}-pip-${serviceShort}'
-      publicIpZones: [
+      publicIpAvailabilityZones: [
         1
         2
         3
