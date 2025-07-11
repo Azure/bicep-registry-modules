@@ -5,7 +5,7 @@ metadata description = 'This instance deploys SpeechServices with DC0 and Discon
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'ttsaas-dev-gb-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -21,7 +21,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: resourceLocation
 }
 
-module speechDeployment '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   scope: rg
   params: {
