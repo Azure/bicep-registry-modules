@@ -95,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Linux'
       skuName: 'Standard_B12ms'
       availabilityZones: [
-        '2'
+        2
       ]
       bootDiagnosticEnabled: true
       bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
