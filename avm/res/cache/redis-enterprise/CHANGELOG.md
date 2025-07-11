@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Renamed zones parameter to availabilityZones
+- Renamed `zones` parameter to `availabilityZones`
 
 ## 0.2.0
 
