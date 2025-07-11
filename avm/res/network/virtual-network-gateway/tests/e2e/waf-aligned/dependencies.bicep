@@ -48,6 +48,7 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2024-07-01'
 resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
   name: MaintenanceConfigurationName
   properties: {
+    maintenanceScope: 'Resource'
     maintenanceWindow: {
       startDateTime: '2020-04-30 08:00'
       expirationDateTime: '9999-12-31 00:00'
