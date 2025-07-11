@@ -348,7 +348,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csaspeech001'
+    name: 'test001'
     // Non-required parameters
     allowedFqdnList: []
     allowProjectManagement: false
@@ -410,7 +410,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csaspeech001"
+      "value": "test001"
     },
     // Non-required parameters
     "allowedFqdnList": {
@@ -508,7 +508,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
 param kind = 'SpeechServices'
-param name = 'csaspeech001'
+param name = 'test001'
 // Non-required parameters
 param allowedFqdnList = []
 param allowProjectManagement = false
