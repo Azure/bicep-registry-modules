@@ -96,7 +96,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Standard'
       skuTier: 'Regional'
       publicIPAddressVersion: 'IPv4'
-      zones: [
+      availabilityZones: [
         1
         2
         3

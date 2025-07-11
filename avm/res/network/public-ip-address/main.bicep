@@ -20,7 +20,7 @@ param publicIPAllocationMethod string = 'Static'
   2
   3
 ])
-param zones int[] = [
+param availabilityZones int[] = [
   1
   2
   3
@@ -152,7 +152,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
     name: skuName
     tier: skuTier
   }
-  zones: map(zones, zone => string(zone))
+  zones: map(availabilityZones, zone => string(zone))
   properties: {
     ddosSettings: ddosSettings
     dnsSettings: dnsSettings
