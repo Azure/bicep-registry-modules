@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -51,7 +50,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -144,48 +142,15 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
         {
-          // Contributor
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          // Reader
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
             'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-
-        {
-          roleDefinitionIdOrName: 'Role Based Access Control Administrator'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'User Access Administrator'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'Elastic SAN Network Admin'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'Elastic SAN Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'Elastic SAN Reader'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'Elastic SAN Volume Group Owner'
+          ) // Reader
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }

@@ -308,36 +308,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Role Based Access Control Administrator'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'User Access Administrator'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Elastic SAN Network Admin'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Elastic SAN Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Elastic SAN Reader'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Elastic SAN Volume Group Owner'
-      }
     ]
     sku: 'Premium_LRS'
     tags: {
@@ -466,36 +436,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Role Based Access Control Administrator"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "User Access Administrator"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Elastic SAN Network Admin"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Elastic SAN Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Elastic SAN Reader"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Elastic SAN Volume Group Owner"
         }
       ]
     },
@@ -618,36 +558,6 @@ param roleAssignments = [
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Role Based Access Control Administrator'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'User Access Administrator'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Elastic SAN Network Admin'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Elastic SAN Owner'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Elastic SAN Reader'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Elastic SAN Volume Group Owner'
-  }
 ]
 param sku = 'Premium_LRS'
 param tags = {
@@ -734,10 +644,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     name: 'esanpe001'
     // Non-required parameters
     sku: 'Premium_LRS'
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
-    }
     volumeGroups: [
       {
         name: 'vol-grp-01'
@@ -790,12 +696,6 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     "sku": {
       "value": "Premium_LRS"
     },
-    "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
-    },
     "volumeGroups": {
       "value": [
         {
@@ -842,10 +742,6 @@ param availabilityZone = -1
 param name = 'esanpe001'
 // Non-required parameters
 param sku = 'Premium_LRS'
-param tags = {
-  CostCenter: '123-456-789'
-  Owner: 'Contoso'
-}
 param volumeGroups = [
   {
     name: 'vol-grp-01'
