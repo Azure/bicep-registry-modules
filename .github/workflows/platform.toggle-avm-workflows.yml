@@ -2,6 +2,9 @@ name: .Platform - Toggle AVM workflows
 
 on:
   workflow_dispatch:
+    push:
+      branches:
+        - patelhardik/disconnectedContainerFeature
     inputs:
       targetState:
         type: choice
