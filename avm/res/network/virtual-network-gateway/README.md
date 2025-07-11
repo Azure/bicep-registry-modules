@@ -43,7 +43,7 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set](#example-11-using-large-parameter-set)
 - [Using SKU without Availability Zones](#example-12-using-sku-without-availability-zones)
 - [VPN](#example-13-vpn)
-- [Waf-Aligned](#example-14-waf-aligned)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _VPN Active Active with BGP settings_
 
@@ -2125,7 +2125,10 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 14: _Waf-Aligned_
+### Example 14: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -2208,7 +2211,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         type: 'Static'
       }
     ]
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -2334,7 +2337,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         }
       ]
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -2444,7 +2447,7 @@ param natRules = [
     type: 'Static'
   }
 ]
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
