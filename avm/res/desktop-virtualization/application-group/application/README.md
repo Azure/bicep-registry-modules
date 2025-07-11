@@ -12,7 +12,7 @@ This module deploys an Azure Virtual Desktop Application Group Application.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/applicationGroups/applications) |
+| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2024-04-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2024-04-03/applicationGroups/applications) |
 
 ## Parameters
 
@@ -34,11 +34,14 @@ This module deploys an Azure Virtual Desktop Application Group Application.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`applicationType`](#parameter-applicationtype) | string | Resource Type of Application. |
 | [`commandLineArguments`](#parameter-commandlinearguments) | string | Command-Line Arguments for the Application. |
 | [`commandLineSetting`](#parameter-commandlinesetting) | string | Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all. |
 | [`description`](#parameter-description) | string | Description of the Application. |
 | [`iconIndex`](#parameter-iconindex) | int | Index of the icon. |
 | [`iconPath`](#parameter-iconpath) | string | Path to icon. |
+| [`msixPackageApplicationId`](#parameter-msixpackageapplicationid) | string | Specifies the package application Id for MSIX applications. |
+| [`msixPackageFamilyName`](#parameter-msixpackagefamilyname) | string | Specifies the package family name for MSIX applications. |
 | [`showInPortal`](#parameter-showinportal) | bool | Specifies whether to show the RemoteApp program in the RD Web Access server. |
 
 ### Parameter: `filePath`
@@ -68,6 +71,20 @@ The name of the parent Application Group to create the application(s) in. Requir
 
 - Required: Yes
 - Type: string
+
+### Parameter: `applicationType`
+
+Resource Type of Application.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'InBuilt'
+    'MsixApplication'
+  ]
+  ```
 
 ### Parameter: `commandLineArguments`
 
@@ -110,6 +127,20 @@ Index of the icon.
 ### Parameter: `iconPath`
 
 Path to icon.
+
+- Required: No
+- Type: string
+
+### Parameter: `msixPackageApplicationId`
+
+Specifies the package application Id for MSIX applications.
+
+- Required: No
+- Type: string
+
+### Parameter: `msixPackageFamilyName`
+
+Specifies the package family name for MSIX applications.
 
 - Required: No
 - Type: string

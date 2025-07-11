@@ -16,7 +16,7 @@ param natRules natRuleType[] = []
 @description('Required. The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gateway must be deployed into the same location.')
 param virtualHubResourceId string
 
-@description('Optional. BGP settings details.')
+@description('Optional. BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously.')
 param bgpSettings bgpSettingsType?
 
 @description('Optional. Enable BGP routes translation for NAT on this VPN gateway.')
@@ -41,6 +41,22 @@ import { vpnNatRuleMappingType } from 'nat-rule/main.bicep'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+// ================//
+// Variables       //
+// ================//
+
+// If both are provided, bgpPeeringAddresses takes precedence and bgpPeeringAddress is ignored
+var finalBgpSettings = bgpSettings != null ? {
+  asn: bgpSettings!.asn
+  peerWeight: bgpSettings!.?peerWeight
+  bgpPeeringAddress: bgpSettings!.?bgpPeeringAddresses == null ? bgpSettings!.?bgpPeeringAddress : null
+  bgpPeeringAddresses: bgpSettings!.?bgpPeeringAddress == null ? bgpSettings!.?bgpPeeringAddresses : null
+} : null
+  
+// ================//
+// Deployments     //
+// ================//
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -69,7 +85,7 @@ resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' = {
   location: location
   tags: tags
   properties: {
-    bgpSettings: bgpSettings
+    bgpSettings: finalBgpSettings
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     isRoutingPreferenceInternet: isRoutingPreferenceInternet
     vpnGatewayScaleUnit: vpnGatewayScaleUnit
@@ -171,12 +187,15 @@ type bgpSettingsType = {
   @maxValue(100)
   peerWeight: int?
 
-  @description('Optional. BGP peering addresses for this VPN Gateway.')
+  @description('Optional. The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses.')
+  bgpPeeringAddress: string?
+
+  @description('Optional. BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress.')
   bgpPeeringAddresses: {
     @description('Optional. The IP configuration ID.')
     ipconfigurationId: string?
     
-    @description('Optional. The custom BGP peering addresses.')
+    @description('Optional. The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*).')
     customBgpIpAddresses: string[]?
   }[]?
 }

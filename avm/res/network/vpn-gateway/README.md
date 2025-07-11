@@ -820,7 +820,7 @@ param vpnConnections = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. |
+| [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | Enable BGP routes translation for NAT on this VPN gateway. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isRoutingPreferenceInternet`](#parameter-isroutingpreferenceinternet) | bool | Enable routing preference property for the public IP interface of the VPN gateway. |
@@ -847,7 +847,7 @@ The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gatewa
 
 ### Parameter: `bgpSettings`
 
-BGP settings details.
+BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously.
 
 - Required: No
 - Type: object
@@ -862,7 +862,8 @@ BGP settings details.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. |
+| [`bgpPeeringAddress`](#parameter-bgpsettingsbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses. |
+| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress. |
 | [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
 
 ### Parameter: `bgpSettings.asn`
@@ -874,9 +875,16 @@ The BGP speaker's ASN (Autonomous System Number).
 - MinValue: 0
 - MaxValue: 4294967295
 
+### Parameter: `bgpSettings.bgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses.
+
+- Required: No
+- Type: string
+
 ### Parameter: `bgpSettings.bgpPeeringAddresses`
 
-BGP peering addresses for this VPN Gateway.
+BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress.
 
 - Required: No
 - Type: array
@@ -885,12 +893,12 @@ BGP peering addresses for this VPN Gateway.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customBgpIpAddresses`](#parameter-bgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses. |
+| [`customBgpIpAddresses`](#parameter-bgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*). |
 | [`ipconfigurationId`](#parameter-bgpsettingsbgppeeringaddressesipconfigurationid) | string | The IP configuration ID. |
 
 ### Parameter: `bgpSettings.bgpPeeringAddresses.customBgpIpAddresses`
 
-The custom BGP peering addresses.
+The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*).
 
 - Required: No
 - Type: array

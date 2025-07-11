@@ -46,6 +46,10 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     dnsZoneName: 'dep-${namePrefix}-dns-${serviceShort}.com'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    publicIPNames: [
+      'dep-${namePrefix}-pip-${serviceShort}-01'
+      'dep-${namePrefix}-pip-${serviceShort}-02'
+    ]
     location: resourceLocation
   }
 }
@@ -57,11 +61,14 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-lawdiag-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }
 
 // ============== //
@@ -186,6 +193,10 @@ module testDeployment '../../../main.bicep' = [
       networkPlugin: 'azure'
       networkDataplane: 'azure'
       networkPluginMode: 'overlay'
+      allocatedOutboundPorts: 1024
+      idleTimeoutInMinutes: 15
+      outboundPublicIPResourceIds: nestedDependencies.outputs.publicIPResourceIds
+
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -228,7 +239,7 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'ac915208-669e-4665-9792-7e2dc861f569'
+          name: guid('Owner assignment ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

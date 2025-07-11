@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "8900848350284880182"
+      "version": "0.36.177.2456",
+      "templateHash": "7746364141016651743"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -257,10 +257,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Sql/servers/databases@2023-08-01#properties/tags"
+            },
             "description": "Optional. Tags of the resource."
-          }
+          },
+          "nullable": true
         },
         "lock": {
           "$ref": "#/definitions/lockType",
@@ -949,13 +952,13 @@
             "description": "Required. List of databases in the failover group."
           }
         },
-        "partnerServers": {
+        "partnerServerResourceIds": {
           "type": "array",
           "items": {
             "type": "string"
           },
           "metadata": {
-            "description": "Required. List of the partner servers for the failover group."
+            "description": "Required. List of the partner server Resource Id for the failover group."
           }
         },
         "readOnlyEndpoint": {
@@ -1952,10 +1955,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Sql/servers@2023-08-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -2184,7 +2190,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -2193,7 +2199,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -2231,7 +2237,7 @@
         "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "isIPv6Enabled": "[parameters('isIPv6Enabled')]",
-        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), null())]",
+        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUri'), tryGet(parameters('customerManagedKey'), 'keyVersion')), tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUriWithVersion')), null())]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
         "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityResourceId')]",
@@ -2437,8 +2443,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13916745959726876819"
+              "version": "0.36.177.2456",
+              "templateHash": "12896402749829057992"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3053,10 +3059,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Sql/servers/database@2023-08-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "location": {
               "type": "string",
@@ -3120,7 +3129,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -3135,7 +3144,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -3155,7 +3164,7 @@
                 "collation": "[parameters('collation')]",
                 "createMode": "[parameters('createMode')]",
                 "elasticPoolId": "[parameters('elasticPoolResourceId')]",
-                "encryptionProtector": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), null())]",
+                "encryptionProtector": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUri'), tryGet(parameters('customerManagedKey'), 'keyVersion')), tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUriWithVersion')), null())]",
                 "encryptionProtectorAutoRotation": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]",
                 "federatedClientId": "[parameters('federatedClientId')]",
                 "freeLimitExhaustionBehavior": "[parameters('freeLimitExhaustionBehavior')]",
@@ -3272,8 +3281,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "9948442514033354219"
+                      "version": "0.36.177.2456",
+                      "templateHash": "15971526819734030405"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3383,8 +3392,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "10140872033464442933"
+                      "version": "0.36.177.2456",
+                      "templateHash": "4683357092417411572"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3593,8 +3602,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13597336529535443631"
+              "version": "0.36.177.2456",
+              "templateHash": "17717615088622599892"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -3806,10 +3815,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Sql/servers/elasticPools@2023-08-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "location": {
               "type": "string",
@@ -4849,8 +4861,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4373974379110057634"
+              "version": "0.36.177.2456",
+              "templateHash": "1978120530795786079"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4956,8 +4968,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4329943834463874399"
+              "version": "0.36.177.2456",
+              "templateHash": "3011136361984958720"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -5078,8 +5090,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "15348652978067640813"
+              "version": "0.36.177.2456",
+              "templateHash": "5044173542671495897"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5253,8 +5265,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "2856119284131810417"
+              "version": "0.36.177.2456",
+              "templateHash": "9146279544254115816"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5381,8 +5393,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "16708437053172304191"
+                      "version": "0.36.177.2456",
+                      "templateHash": "17896260506837363606"
                     }
                   },
                   "parameters": {
@@ -5477,8 +5489,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11129867292095349286"
+              "version": "0.36.177.2456",
+              "templateHash": "18390282185252943853"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5581,12 +5593,12 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))]"
+            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(coalesce(tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUriWithVersion'), ''), '/'))))]"
           },
           "serverKeyType": {
             "value": "AzureKeyVault"
           },
-          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion))]"
+          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', format('{0}/{1}', tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUri'), tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUriWithVersion')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5595,8 +5607,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11129867292095349286"
+              "version": "0.36.177.2456",
+              "templateHash": "18390282185252943853"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5700,7 +5712,7 @@
             "value": "[parameters('name')]"
           },
           "serverKeyName": {
-            "value": "[reference('cmk_key').outputs.name.value]"
+            "value": "[coalesce(tryGet(if(not(equals(parameters('customerManagedKey'), null())), reference('cmk_key'), null()), 'outputs', 'name', 'value'), '')]"
           },
           "serverKeyType": {
             "value": "AzureKeyVault"
@@ -5715,8 +5727,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "17490849737310265082"
+              "version": "0.36.177.2456",
+              "templateHash": "10711068673745163019"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5847,8 +5859,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "10207867872798857173"
+              "version": "0.36.177.2456",
+              "templateHash": "15087235755598672202"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5990,8 +6002,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "16469435463567159258"
+                      "version": "0.36.177.2456",
+                      "templateHash": "9789204838235653449"
                     }
                   },
                   "parameters": {
@@ -6078,8 +6090,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "18255389690016246128"
+              "version": "0.36.177.2456",
+              "templateHash": "15876875108926400759"
             }
           },
           "definitions": {
@@ -6224,8 +6236,8 @@
           "databases": {
             "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].databases]"
           },
-          "partnerServers": {
-            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].partnerServers]"
+          "partnerServerResourceIds": {
+            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].partnerServerResourceIds]"
           },
           "readOnlyEndpoint": {
             "value": "[tryGet(coalesce(parameters('failoverGroups'), createArray())[copyIndex()], 'readOnlyEndpoint')]"
@@ -6244,8 +6256,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "7002329445517579297"
+              "version": "0.36.177.2456",
+              "templateHash": "3984300491863960452"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
@@ -6325,13 +6337,13 @@
                 "description": "Required. List of databases in the failover group."
               }
             },
-            "partnerServers": {
+            "partnerServerResourceIds": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "metadata": {
-                "description": "Required. List of the partner servers for the failover group."
+                "description": "Required. List of the partner server Resource Ids for the failover group."
               }
             },
             "readOnlyEndpoint": {
@@ -6359,10 +6371,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Sql/servers/failoverGroups@2023-08-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -6386,9 +6401,9 @@
                   },
                   {
                     "name": "partnerServers",
-                    "count": "[length(parameters('partnerServers'))]",
+                    "count": "[length(parameters('partnerServerResourceIds'))]",
                     "input": {
-                      "id": "[resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('partnerServers')[copyIndex('partnerServers')])]"
+                      "id": "[parameters('partnerServerResourceIds')[copyIndex('partnerServers')]]"
                     }
                   }
                 ],
@@ -6478,7 +6493,7 @@
       "metadata": {
         "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
       },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(coalesce(tryGet(tryGet(tryGet(if(not(equals(parameters('secretsExportConfiguration'), null())), reference('secretsExport'), null()), 'outputs'), 'secretsSet'), 'value'), createArray()), lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     },
     "privateEndpoints": {
       "type": "array",
