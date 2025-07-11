@@ -219,7 +219,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-vm-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: '${namePrefix}${serviceShort}vm'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
     arcMachineResourceName: '${uniqueString(deployment().name, enforcedLocation)}-hc-${serviceShort}'
@@ -227,9 +226,9 @@ module testDeployment '../../../main.bicep' = {
       memoryMB: 4096
       processors: 2
     }
-    networkProfile: { networkInterfaces: [] }
+    networkProfile: {}
     osProfile: {
-      computerName: '${uniqueString(deployment().name, enforcedLocation)}-vm-${serviceShort}'
+      computerName: '${namePrefix}${serviceShort}vm'
       linuxConfiguration: {}
       windowsConfiguration: {
         provisionVMAgent: true

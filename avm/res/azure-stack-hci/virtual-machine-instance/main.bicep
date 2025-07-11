@@ -1,16 +1,13 @@
 metadata name = 'Azure Stack HCI Virtual Machine Instance'
 metadata description = 'This module deploys an Azure Stack HCI virtual machine.'
 
-@description('Required. Name of the virtual machine instance.')
-param name string
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
 @description('Required. Resource ID of the associated custom location.')
 param customLocationResourceId string
 
-@description('Required. Existing Arc Machine resource name.')
+@description('Required. The Arc Machine resource name.')
 param arcMachineResourceName string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -66,7 +63,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 var builtInRoleNames = {
   // Add other relevant built-in roles here for your resource as per BCPNFR5
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
   'User Access Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -89,28 +85,37 @@ var formattedRoleAssignments = [
   })
 ]
 
-var enableReferencedModulesTelemetry bool = false
+// var enableReferencedModulesTelemetry bool = false
 
-module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
-  name: '${arcMachineResourceName}-deployment'
-  scope: resourceGroup()
-  params: {
-    name: arcMachineResourceName
-    location: location
-    kind: 'HCI'
-    enableTelemetry: enableReferencedModulesTelemetry
-  }
-}
+// module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
+//   name: '${arcMachineResourceName}-deployment'
+//   scope: resourceGroup()
+//   params: {
+//     name: arcMachineResourceName
+//     location: location
+//     kind: 'HCI'
+//     enableTelemetry: enableReferencedModulesTelemetry
+//   }
+// }
 
-resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
+// resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
+//   name: arcMachineResourceName
+//   dependsOn: [
+//     hybridCompute
+//   ]
+// }
+
+resource machine 'Microsoft.HybridCompute/machines@2024-07-10' = {
   name: arcMachineResourceName
-  dependsOn: [
-    hybridCompute
-  ]
+  location: 'southeastasia'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  kind: 'HCI'
 }
 
 resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview' = {
-  name: name
+  name: 'default'
   extendedLocation: {
     type: 'CustomLocation'
     name: customLocationResourceId
@@ -131,7 +136,7 @@ resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances
     securityProfile: empty(securityProfile) ? null : securityProfile
     storageProfile: storageProfile
   }
-  scope: existingMachine
+  scope: machine
 }
 
 resource virtualMachine_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

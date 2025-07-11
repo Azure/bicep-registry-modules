@@ -15,10 +15,8 @@ This module deploys an Azure Stack HCI virtual machine.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/virtualMachineInstances` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-04-01-preview/virtualMachineInstances) |
-| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.HybridCompute/machines` | [2024-07-10](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines) |
 
 ## Usage examples
@@ -52,14 +50,11 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       memoryMB: 4096
       processors: 2
     }
-    name: 'ashvmiminvm'
-    networkProfile: {
-      networkInterfaces: []
-    }
+    networkProfile: {}
     osProfile: {
       adminPassword: '<adminPassword>'
       adminUsername: 'Administator'
-      computerName: '<computerName>'
+      computerName: 'ashvmiminvm'
       linuxConfiguration: {}
       windowsConfiguration: {
         provisionVMAgent: true
@@ -103,19 +98,14 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
         "processors": 2
       }
     },
-    "name": {
-      "value": "ashvmiminvm"
-    },
     "networkProfile": {
-      "value": {
-        "networkInterfaces": []
-      }
+      "value": {}
     },
     "osProfile": {
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "Administator",
-        "computerName": "<computerName>",
+        "computerName": "ashvmiminvm",
         "linuxConfiguration": {},
         "windowsConfiguration": {
           "provisionVMAgent": true,
@@ -156,14 +146,11 @@ param hardwareProfile = {
   memoryMB: 4096
   processors: 2
 }
-param name = 'ashvmiminvm'
-param networkProfile = {
-  networkInterfaces: []
-}
+param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
   adminUsername: 'Administator'
-  computerName: '<computerName>'
+  computerName: 'ashvmiminvm'
   linuxConfiguration: {}
   windowsConfiguration: {
     provisionVMAgent: true
@@ -209,14 +196,11 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       processors: 2
       vmSize: 'Custom'
     }
-    name: 'ashvmiwafvm'
-    networkProfile: {
-      networkInterfaces: []
-    }
+    networkProfile: {}
     osProfile: {
       adminPassword: '<adminPassword>'
       adminUsername: 'Administator'
-      computerName: '<computerName>'
+      computerName: 'ashvmiwafvm'
       linuxConfiguration: {}
       windowsConfiguration: {
         enableAutomaticUpdates: true
@@ -270,19 +254,14 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
         "vmSize": "Custom"
       }
     },
-    "name": {
-      "value": "ashvmiwafvm"
-    },
     "networkProfile": {
-      "value": {
-        "networkInterfaces": []
-      }
+      "value": {}
     },
     "osProfile": {
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "Administator",
-        "computerName": "<computerName>",
+        "computerName": "ashvmiwafvm",
         "linuxConfiguration": {},
         "windowsConfiguration": {
           "enableAutomaticUpdates": true,
@@ -333,14 +312,11 @@ param hardwareProfile = {
   processors: 2
   vmSize: 'Custom'
 }
-param name = 'ashvmiwafvm'
-param networkProfile = {
-  networkInterfaces: []
-}
+param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
   adminUsername: 'Administator'
-  computerName: '<computerName>'
+  computerName: 'ashvmiwafvm'
   linuxConfiguration: {}
   windowsConfiguration: {
     enableAutomaticUpdates: true
@@ -370,10 +346,9 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`arcMachineResourceName`](#parameter-arcmachineresourcename) | string | Existing Arc Machine resource name. |
+| [`arcMachineResourceName`](#parameter-arcmachineresourcename) | string | The Arc Machine resource name. |
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
 | [`hardwareProfile`](#parameter-hardwareprofile) | object | Hardware profile configuration. |
-| [`name`](#parameter-name) | string | Name of the virtual machine instance. |
 | [`networkProfile`](#parameter-networkprofile) | object | Network profile configuration. |
 | [`osProfile`](#parameter-osprofile) | object | OS profile configuration. |
 | [`storageProfile`](#parameter-storageprofile) | object | Storage profile configuration. |
@@ -390,7 +365,7 @@ param location = '<location>'
 
 ### Parameter: `arcMachineResourceName`
 
-Existing Arc Machine resource name.
+The Arc Machine resource name.
 
 - Required: Yes
 - Type: string
@@ -408,13 +383,6 @@ Hardware profile configuration.
 
 - Required: Yes
 - Type: object
-
-### Parameter: `name`
-
-Name of the virtual machine instance.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `networkProfile`
 
@@ -469,7 +437,6 @@ Array of role assignments to create.
 - Type: array
 - Roles configurable by name:
   - `'Contributor'`
-  - `'Owner'`
   - `'Reader'`
   - `'User Access Administrator'`
   - `'Role Based Access Control Administrator'`
@@ -593,7 +560,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/hybrid-compute/machine:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
