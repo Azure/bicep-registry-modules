@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1837206327927302660"
+      "version": "0.36.177.2456",
+      "templateHash": "8755931358914857266"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix."
@@ -224,7 +224,7 @@
         "description": "Optional. The list of tags associated with the public IP prefix."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
       "items": {
         "type": "int"
@@ -299,7 +299,7 @@
         "name": "Standard",
         "tier": "[parameters('tier')]"
       },
-      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
+      "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
         "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",

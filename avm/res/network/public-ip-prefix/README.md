@@ -192,6 +192,10 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     name: 'npipmax001'
     prefixLength: 28
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+    ]
     ipTags: [
       {
         ipTagType: 'RoutingPreference'
@@ -227,10 +231,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-    ]
   }
 }
 ```
@@ -255,6 +255,12 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       "value": 28
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2
+      ]
+    },
     "ipTags": {
       "value": [
         {
@@ -299,12 +305,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2
-      ]
     }
   }
 }
@@ -324,6 +324,10 @@ using 'br/public:avm/res/network/public-ip-prefix:<version>'
 param name = 'npipmax001'
 param prefixLength = 28
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+]
 param ipTags = [
   {
     ipTagType: 'RoutingPreference'
@@ -359,10 +363,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  1
-  2
-]
 ```
 
 </details>
@@ -467,6 +467,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-availabilityzones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes. |
 | [`customIPPrefix`](#parameter-customipprefix) | object | The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipTags`](#parameter-iptags) | array | The list of tags associated with the public IP prefix. |
@@ -476,7 +477,6 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tier`](#parameter-tier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes. |
 
 ### Parameter: `name`
 
@@ -493,6 +493,29 @@ Length of the Public IP Prefix.
 - Type: int
 - MinValue: 21
 - MaxValue: 127
+
+### Parameter: `availabilityZones`
+
+A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `customIPPrefix`
 
@@ -720,29 +743,6 @@ Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be
   [
     'Global'
     'Regional'
-  ]
-  ```
-
-### Parameter: `zones`
-
-A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
   ]
   ```
 
