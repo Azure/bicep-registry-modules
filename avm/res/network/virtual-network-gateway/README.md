@@ -42,7 +42,7 @@ The following section provides usage examples for the module, which were used to
 - [ExpressRoute](#example-10-expressroute)
 - [Using large parameter set](#example-11-using-large-parameter-set)
 - [Using SKU without Availability Zones](#example-12-using-sku-without-availability-zones)
-- [Vpn](#example-13-vpn)
+- [VPN](#example-13-vpn)
 - [Waf-Aligned](#example-14-waf-aligned)
 
 ### Example 1: _VPN Active Active with BGP settings_
@@ -1977,7 +1977,10 @@ param skuName = 'VpnGw1'
 </details>
 <p>
 
-### Example 13: _Vpn_
+### Example 13: _VPN_
+
+This instance deploys the module with the VPN set of required parameters.
+
 
 <details>
 
@@ -2003,7 +2006,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -2063,7 +2066,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -2109,7 +2112,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
