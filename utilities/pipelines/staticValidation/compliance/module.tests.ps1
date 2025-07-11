@@ -3,7 +3,7 @@
 param (
     [Parameter(Mandatory = $false)]
     [array] $moduleFolderPaths = ((Get-ChildItem $repoRootPath -Recurse -Directory -Force).FullName | Where-Object {
-        (Get-ChildItem $_ -File -Depth 0 -Include @('main.bicep') -Force).Count -gt 0
+            (Get-ChildItem $_ -File -Depth 0 -Include @('main.bicep') -Force).Count -gt 0
         }),
 
     [Parameter(Mandatory = $false)]
@@ -82,6 +82,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     moduleType                         = $moduleType
                     moduleFolderName                   = $resourceTypeIdentifier
                     moduleFolderPath                   = $moduleFolderPath
+                    moduleVersionExists                = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                     isTopLevelModule                   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
@@ -123,7 +124,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # (Pilot for child module publishing) Only a subset of child modules is allowed to have a version.json file
-        It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
+        It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -not $_.isTopLevelModule }) {
 
             param (
                 [string] $moduleFolderPath,
@@ -138,6 +139,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
+        # Changelogs are required for all (child-)modules that are published (having a version.json file)
+        It '[<moduleFolderName>] Module must contain a [` CHANGELOG.md `] file.' -Tag 'Changelog' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+
+            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')
+            $pathExisting | Should -Be $true
+        }
+
         It '[<moduleFolderName>] Resource module (folder) name must be singular, use ''-'' instead of camel-case and be lower-case (e.g., ''the-cake-is-a-lie'').' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
@@ -145,7 +157,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             )
 
             $folderName = Split-Path $moduleFolderPath -Leaf
-            $expectedFolderName = ($folderName -cReplace '([A-Z])', '-$1').ToLower()
+            $expectedFolderName = ($folderName -creplace '([A-Z])', '-$1').ToLower()
 
             # Remove singular/plural indicators to not give the wrong impression of what is expected
             $reducedCurrentFolderName = Get-ReducedWordString $folderName
@@ -308,7 +320,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
                 'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
                 'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                Default {}
+                default {}
             }
 
             # Fetch CSV
@@ -439,7 +451,6 @@ Describe 'Module tests' -Tag 'Module' {
             .  (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
             # load cross-references
             $crossReferencedModuleList = Get-CrossReferencedModuleList
-
         }
 
         It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
@@ -593,11 +604,11 @@ Describe 'Module tests' -Tag 'Module' {
                 $SchemaArray = @()
                 if ($Schemaverion -eq $RgDeploymentSchema) {
                     $SchemaOutput = $true
-                } elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
+                } elseif ($Schemaverion -eq $SubscriptionDeploymentSchema) {
                     $SchemaOutput = $true
-                } elseIf ($Schemaverion -eq $MgDeploymentSchema) {
+                } elseif ($Schemaverion -eq $MgDeploymentSchema) {
                     $SchemaOutput = $true
-                } elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
+                } elseif ($Schemaverion -eq $TenantDeploymentSchema) {
                     $SchemaOutput = $true
                 } else {
                     $SchemaOutput = $false
@@ -1120,7 +1131,7 @@ Describe 'Module tests' -Tag 'Module' {
                     'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
                     'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
                     'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                    Default {}
+                    default {}
                 }
 
                 # Fetch CSV
@@ -1470,6 +1481,328 @@ Describe 'Module tests' -Tag 'Module' {
         }
     }
 
+    Context 'Changelog tests' -Tag 'Changelog' {
+
+        BeforeDiscovery {
+            $moduleFolderTestCases = [System.Collections.ArrayList] @()
+            foreach ($moduleFolderPath in $moduleFolderPaths) {
+                $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
+                $moduleFolderTestCases += @{
+                    moduleFolderName    = $resourceTypeIdentifier
+                    moduleFolderPath    = $moduleFolderPath
+                    isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    moduleType          = $moduleType
+                    moduleVersionExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                    changelogContent    = ((Test-Path (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')) ? (Get-Content (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')) : @())
+                }
+            }
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` must not be empty.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            # the changelog should not be empty
+            if ($changelogContent.Count -eq 0) {
+                $changelogContent | Should -Not -BeNullOrEmpty -Because 'the CHANGELOG.md file must exist and not be empty.'
+            }
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` must start with `#Changelog` header, followed by an empty line and a link to the latest version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string] $moduleType,
+                [string] $moduleFolderName,
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            # need at least 4 lines to pass the test
+            $changelogContent.Count | Should -BeGreaterThan 4 -Because "the CHANGELOG.md file's header is either missing or incorrect. You can find an example of the header [here](https://azure.github.io/Azure-Verified-Modules/spec/BCPNRF22/#example-content-of-the-changelogmd)."
+
+            # the changelog should start with '# Changelog'
+            $changelogContent[0] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`'
+            $changelogContent[1] | Should -BeNullOrEmpty -Because "the changelog's second line should be empty"
+
+            # The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
+            $linkToLatestVersionChangelog = 'The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/{0}/{1}/Changelog.md).' -f $moduleType, $moduleFolderName
+            $changelogContent[2] | Should -Be $linkToLatestVersionChangelog -Because ('the changelog must contain a link to the latest version {0}' -f $linkToLatestVersionChangelog)
+            $changelogContent[3] | Should -BeNullOrEmpty -Because "the changelog's forth line should be empty"
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain a section for the module version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string] $moduleFolderPath,
+                [string] $moduleType,
+                [string] $moduleFolderName,
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            # the second condition is for local testing only, as, after committing to GitHub, the first condition picks up the version
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
+                # The module will be published
+                $expectedModuleVersion = $moduleTargetVersion
+            } else {
+                # Since the module is not being published, we can stop here. The version in the changelog is checked in another test.
+                Set-ItResult -Skipped -Because 'the module is not going to be published and the version number remains unchanged.'
+                return
+            }
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
+
+            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
+            # check for the presence of the `## $expectedModuleVersion` section
+            # $changelogSection | Should -BeIn $sections -Because "the `## $expectedModuleVersion` section must be in the changelog"
+            if ($changelogSection -notin $sections) {
+                $warningMessage = "The `## $expectedModuleVersion` section must be in the changelog"
+                Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
+            }
+
+            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
+            # only one version section should be present
+            # $changelogSection.Count | Should -BeExactly 1 -Because "the `## $expectedModuleVersion` section should be in the changelog only once"
+            if ($changelogSection.Count -ne 1) {
+                $warningMessage = "The `## $expectedModuleVersion` section should be in the changelog only once"
+                Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
+            }
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` file''s sections must be sorted in a decending order.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            # check for the order of the versions
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s([0-9]+\.[0-9]+\.[0-9]+)\s*' } | ForEach-Object { [version]$matches[1] }
+            $sections | Should -BeExactly ($sections | Sort-Object -Descending) 'the versions in the changelog should appear in descending order'
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain exactly one valid `Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for the presence of the `### Changes` sections
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $invalidChanges = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
+                if ((Select-String -InputObject $versionContent -Pattern '\n### Changes\n' -AllMatches).Matches.Count -ne 1) {
+                    $invalidChanges += $key
+                }
+            }
+
+            $invalidChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Changes` section. Found invalid versions: [{0}].' -f ($invalidChanges -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain exactly one valid `Breaking Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for the presence of the `### Breaking Changes` sections
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $invalidBreakingChanges = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
+                if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
+                    $invalidBreakingChanges += $key
+                }
+            }
+
+            $invalidBreakingChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($invalidBreakingChanges -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` sections `Changes` and `Breaking Changes` must not be empty.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for non-empty content
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $emptySections = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
+                if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
+                    if (($versionContent -split "`n")[-1] -eq '### Breaking Changes') {
+                        # the last line of the changelog section needs special treatment, as it is not followed by a new section or line
+                        $emptySections += $key
+                    }
+                }
+                # the $newModuleVersion section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
+                if (($sectionContents[$key] | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes|# Changelog|## 0.1.0)$' }).Count -eq 0) {
+                    $emptySections += $key
+                }
+            }
+
+            $emptySections | Should -BeNullOrEmpty -Because ('all versions should contain actual content and not just headers or empty lines. Found invalid versions: [{0}].' -f ($emptySections -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain the `Changes` section before the `Breaking Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for the presence of the `### Changes` and `### Breaking Changes` sections
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $wrongOrder = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
+                if (-not ($versionContent.IndexOf('### Changes') -lt $versionContent.IndexOf('### Breaking Changes'))) {
+                    $wrongOrder += $key
+                }
+            }
+
+            $wrongOrder | Should -BeNullOrEmpty -Because ('all versions should contain the `### Changes` section before the `### Breaking Changes` section. Found invalid versions: [{0}]. Please note that the casing **must** match.' -f ($wrongOrder -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` must contain only versions, that are published.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+
+            param(
+                [string] $moduleFolderPath,
+                [string] $moduleType,
+                [string] $moduleFolderName,
+                [string[]] $changelogContent
+            )
+
+            if ($changelogContent.Count -eq 0) {
+                Set-ItResult -Skipped -Because 'the CHANGELOG.md file not found or empty.'
+                return
+            }
+
+            # all versions, that are mentioned in the changelog
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # the initial version is not published yet
+            if ($sections.Count -eq 1 -and $sections -match '##\s0.1.0') {
+                Set-ItResult -Skipped -Because 'the initial version is not published yet.'
+                return
+            }
+
+            # get all tags for a module
+            $publishedTags = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName $moduleFolderName
+            # the next version to be published
+            $nextPublishedModuleVersion = '## {0}' -f (Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath)
+
+            $incorrectVersions = [System.Collections.ArrayList]@()
+            $regex = '##\s(\d+\.\d+\.\d+)'
+            foreach ($section in $sections) {
+                if ($section -match $regex) {
+                    $version = $matches[1]
+                    if ($publishedTags -notcontains $version -and $section -ne $nextPublishedModuleVersion) {
+                        $incorrectVersions += $version
+                    }
+                }
+            }
+
+            $incorrectVersions | Should -BeNullOrEmpty -Because ('all versions should exist as published version in https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list' -f $ModuleType, $moduleFolderName)
+        }
+    }
+
     Context 'Version tests' -Tag 'Versioning' {
 
         BeforeDiscovery {
@@ -1522,7 +1855,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
-        It '[<moduleFolderName>] parent module versions should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule -and $_.versionFileExists }) {
+        It '[<moduleFolderName>] parent module versions should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -not $_.isTopLevelModule -and $_.versionFileExists }) {
 
             param (
                 [string] $moduleFolderPath,
@@ -1866,7 +2199,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    Default {
+                    default {
                         $ProviderNamespace, $rest = $resource.Type.Split('/')
                         $testCases += @{
                             moduleName                     = $moduleFolderName
@@ -1945,7 +2278,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             # 2017-07-14
             # 2016-05-16
 
-            if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
+            if ($indexOfVersion -gt ($approvedApiVersions.Count - 2) -and $approvedApiVersions.Count -ne 1) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
                 $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
