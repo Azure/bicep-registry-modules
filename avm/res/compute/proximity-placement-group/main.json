@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4166602537893111543"
+      "version": "0.36.177.2456",
+      "templateHash": "9164094872946704611"
     },
     "name": "Proximity Placement Groups",
     "description": "This module deploys a Proximity Placement Group."
@@ -167,9 +167,21 @@
         "description": "Optional. Tags of the proximity placement group resource."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
-      "nullable": true,
+      "items": {
+        "type": "int"
+      },
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created."
       }
@@ -239,7 +251,7 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "zones": "[parameters('zones')]",
+      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
       "properties": {
         "proximityPlacementGroupType": "[parameters('type')]",
         "colocationStatus": "[parameters('colocationStatus')]",

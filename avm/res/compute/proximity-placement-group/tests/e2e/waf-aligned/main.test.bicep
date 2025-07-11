@@ -43,8 +43,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      zones: [
-        '1'
+      availabilityZones: [
+        1
       ]
       type: 'Standard'
       tags: {

@@ -78,8 +78,8 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      zones: [
-        '1'
+      availabilityZones: [
+        1
       ]
       type: 'Standard'
       tags: {

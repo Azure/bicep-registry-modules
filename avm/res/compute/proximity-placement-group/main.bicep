@@ -26,7 +26,12 @@ param roleAssignments roleAssignmentType[]?
 param tags object?
 
 @description('Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.')
-param zones array?
+@allowed([
+  1
+  2
+  3
+])
+param availabilityZones int[] = [1, 2, 3]
 
 @description('Optional. Describes colocation status of the Proximity Placement Group.')
 param colocationStatus object?
@@ -85,7 +90,7 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   name: name
   location: location
   tags: tags
-  zones: zones
+  zones: map(availabilityZones, zone => '${zone}')
   properties: {
     proximityPlacementGroupType: type
     colocationStatus: colocationStatus

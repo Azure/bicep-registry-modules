@@ -111,6 +111,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     // Required parameters
     name: 'cppgmax001'
     // Non-required parameters
+    availabilityZones: [
+      1
+    ]
     colocationStatus: {
       code: 'ColocationStatus/Aligned'
       displayStatus: 'Aligned'
@@ -153,9 +156,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       TagB: 'Tags for sale'
     }
     type: 'Standard'
-    zones: [
-      '1'
-    ]
   }
 }
 ```
@@ -177,6 +177,11 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       "value": "cppgmax001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1
+      ]
+    },
     "colocationStatus": {
       "value": {
         "code": "ColocationStatus/Aligned",
@@ -232,11 +237,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     },
     "type": {
       "value": "Standard"
-    },
-    "zones": {
-      "value": [
-        "1"
-      ]
     }
   }
 }
@@ -255,6 +255,9 @@ using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 // Required parameters
 param name = 'cppgmax001'
 // Non-required parameters
+param availabilityZones = [
+  1
+]
 param colocationStatus = {
   code: 'ColocationStatus/Aligned'
   displayStatus: 'Aligned'
@@ -297,9 +300,6 @@ param tags = {
   TagB: 'Tags for sale'
 }
 param type = 'Standard'
-param zones = [
-  '1'
-]
 ```
 
 </details>
@@ -321,6 +321,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     // Required parameters
     name: 'cppgwaf001'
     // Non-required parameters
+    availabilityZones: [
+      1
+    ]
     colocationStatus: {
       code: 'ColocationStatus/Aligned'
       displayStatus: 'Aligned'
@@ -340,9 +343,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       TagB: 'Tags for sale'
     }
     type: 'Standard'
-    zones: [
-      '1'
-    ]
   }
 }
 ```
@@ -364,6 +364,11 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       "value": "cppgwaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1
+      ]
+    },
     "colocationStatus": {
       "value": {
         "code": "ColocationStatus/Aligned",
@@ -392,11 +397,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     },
     "type": {
       "value": "Standard"
-    },
-    "zones": {
-      "value": [
-        "1"
-      ]
     }
   }
 }
@@ -415,6 +415,9 @@ using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 // Required parameters
 param name = 'cppgwaf001'
 // Non-required parameters
+param availabilityZones = [
+  1
+]
 param colocationStatus = {
   code: 'ColocationStatus/Aligned'
   displayStatus: 'Aligned'
@@ -434,9 +437,6 @@ param tags = {
   TagB: 'Tags for sale'
 }
 param type = 'Standard'
-param zones = [
-  '1'
-]
 ```
 
 </details>
@@ -454,6 +454,7 @@ param zones = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-availabilityzones) | array | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. |
 | [`colocationStatus`](#parameter-colocationstatus) | object | Describes colocation status of the Proximity Placement Group. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`intent`](#parameter-intent) | object | Specifies the user intent of the proximity placement group. |
@@ -462,7 +463,6 @@ param zones = [
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the proximity placement group resource. |
 | [`type`](#parameter-type) | string | Specifies the type of the proximity placement group. |
-| [`zones`](#parameter-zones) | array | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. |
 
 ### Parameter: `name`
 
@@ -470,6 +470,29 @@ The name of the proximity placement group that is being created.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `availabilityZones`
+
+Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `colocationStatus`
 
@@ -661,13 +684,6 @@ Specifies the type of the proximity placement group.
     'Ultra'
   ]
   ```
-
-### Parameter: `zones`
-
-Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.
-
-- Required: No
-- Type: array
 
 ## Outputs
 
