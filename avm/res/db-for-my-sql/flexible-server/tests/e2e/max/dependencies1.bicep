@@ -7,6 +7,7 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
+#disable-next-line use-recent-api-versions
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: managedIdentityName
   location: location
@@ -24,6 +25,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: pairedRegionScriptName
   location: location

@@ -61,7 +61,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    location: '<location>'
     storageAutoGrow: 'Enabled'
   }
 }
@@ -99,9 +98,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
-    "location": {
-      "value": "<location>"
-    },
     "storageAutoGrow": {
       "value": "Enabled"
     }
@@ -127,7 +123,6 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param location = '<location>'
 param storageAutoGrow = 'Enabled'
 ```
 
@@ -209,7 +204,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     geoRedundantBackup: 'Enabled'
-    highAvailability: 'ZoneRedundant'
+    highAvailability: 'Disabled'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -358,7 +353,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Enabled"
     },
     "highAvailability": {
-      "value": "ZoneRedundant"
+      "value": "Disabled"
     },
     "location": {
       "value": "<location>"
@@ -499,7 +494,7 @@ param firewallRules = [
   }
 ]
 param geoRedundantBackup = 'Enabled'
-param highAvailability = 'ZoneRedundant'
+param highAvailability = 'Disabled'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -599,7 +594,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     highAvailability: 'SameZone'
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -690,9 +684,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailability": {
       "value": "SameZone"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -769,7 +760,6 @@ param firewallRules = [
   }
 ]
 param highAvailability = 'SameZone'
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -820,7 +810,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     highAvailability: 'SameZone'
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -906,9 +895,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailability": {
       "value": "SameZone"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -986,7 +972,6 @@ param databases = [
   }
 ]
 param highAvailability = 'SameZone'
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1042,11 +1027,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLoginPassword: '<administratorLoginPassword>'
     highAvailability: 'ZoneRedundant'
     highAvailabilityZone: 2
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     storageAutoGrow: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
@@ -1095,15 +1075,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailabilityZone": {
       "value": 2
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "storageAutoGrow": {
       "value": "Enabled"
     },
@@ -1138,11 +1109,6 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param highAvailability = 'ZoneRedundant'
 param highAvailabilityZone = 2
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param storageAutoGrow = 'Enabled'
 param tags = {
   Environment: 'Non-Prod'
