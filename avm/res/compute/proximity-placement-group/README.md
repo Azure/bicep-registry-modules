@@ -45,6 +45,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   name: 'proximityPlacementGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'cppgmin001'
     // Non-required parameters
     location: '<location>'
@@ -65,6 +66,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "cppgmin001"
     },
@@ -87,6 +91,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'cppgmin001'
 // Non-required parameters
 param location = '<location>'
@@ -109,11 +114,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   name: 'proximityPlacementGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'cppgmax001'
     // Non-required parameters
-    availabilityZones: [
-      1
-    ]
     colocationStatus: {
       code: 'ColocationStatus/Aligned'
       displayStatus: 'Aligned'
@@ -173,15 +176,13 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "cppgmax001"
     },
     // Non-required parameters
-    "availabilityZones": {
-      "value": [
-        1
-      ]
-    },
     "colocationStatus": {
       "value": {
         "code": "ColocationStatus/Aligned",
@@ -253,11 +254,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'cppgmax001'
 // Non-required parameters
-param availabilityZones = [
-  1
-]
 param colocationStatus = {
   code: 'ColocationStatus/Aligned'
   displayStatus: 'Aligned'
@@ -319,11 +318,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   name: 'proximityPlacementGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'cppgwaf001'
     // Non-required parameters
-    availabilityZones: [
-      1
-    ]
     colocationStatus: {
       code: 'ColocationStatus/Aligned'
       displayStatus: 'Aligned'
@@ -360,15 +357,13 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "cppgwaf001"
     },
     // Non-required parameters
-    "availabilityZones": {
-      "value": [
-        1
-      ]
-    },
     "colocationStatus": {
       "value": {
         "code": "ColocationStatus/Aligned",
@@ -413,11 +408,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'cppgwaf001'
 // Non-required parameters
-param availabilityZones = [
-  1
-]
 param colocationStatus = {
   code: 'ColocationStatus/Aligned'
   displayStatus: 'Aligned'
@@ -448,13 +441,13 @@ param type = 'Standard'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the proximity placement group that is being created. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZones`](#parameter-availabilityzones) | array | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. |
 | [`colocationStatus`](#parameter-colocationstatus) | object | Describes colocation status of the Proximity Placement Group. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`intent`](#parameter-intent) | object | Specifies the user intent of the proximity placement group. |
@@ -464,35 +457,28 @@ param type = 'Standard'
 | [`tags`](#parameter-tags) | object | Tags of the proximity placement group resource. |
 | [`type`](#parameter-type) | string | Specifies the type of the proximity placement group. |
 
+### Parameter: `availabilityZone`
+
+Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `name`
 
 The name of the proximity placement group that is being created.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `availabilityZones`
-
-Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `colocationStatus`
 

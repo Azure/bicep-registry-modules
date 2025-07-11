@@ -10,8 +10,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Renamed `zones` parameter to `availabilityZones`
-- Added allowed set `[1,2,3]` to `availabilityZones` parameter. I.e., zones **must** be provided as integers, not strings
+- Renamed `zones` parameter to singular `availabilityZone`
+- Changed type of `availabilityZone` to singular integer without a default as the resource is zone-redundant, not zonal. As a result, users **must** define a zone upon deployment, but can opt out by providing a value of -1
+- Added allowed set `[-1,1,2,3]` to `availabilityZone` parameter
 
 ## 0.3.2
 
