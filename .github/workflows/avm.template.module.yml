@@ -51,7 +51,7 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_must: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Required [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}]"
+    name: "Required [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] PSRule"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -79,7 +79,7 @@ jobs:
           softFailure: false
 
   job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Optional [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}]"
+    name: "Optional [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] PSRule"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
