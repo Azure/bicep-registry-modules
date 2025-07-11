@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4538381746020372287"
+      "templateHash": "18186059946026433728"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1306,12 +1306,12 @@
     "commitmentPlansRes": {
       "copy": {
         "name": "commitmentPlansRes",
-        "count": "[length(parameters('commitmentPlans'))]"
+        "count": "[length(coalesce(parameters('commitmentPlans'), createArray()))]"
       },
       "type": "Microsoft.CognitiveServices/accounts/commitmentPlans",
       "apiVersion": "2025-04-01-preview",
-      "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}', parameters('commitmentPlans')[copyIndex()].hostingModel, parameters('commitmentPlans')[copyIndex()].planType))]",
-      "properties": "[parameters('commitmentPlans')[copyIndex()]]",
+      "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}', coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].hostingModel, coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].planType))]",
+      "properties": "[coalesce(parameters('commitmentPlans'), createArray())[copyIndex()]]",
       "dependsOn": [
         "cognitiveService"
       ]

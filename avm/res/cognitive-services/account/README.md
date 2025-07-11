@@ -343,79 +343,212 @@ This instance deploys SpeechServices with DC0 and Disconnected Container plan fo
 <summary>via Bicep module</summary>
 
 ```bicep
-targetScope = 'subscription'
-
-metadata name = 'Disconnected Speech Test'
-metadata description = 'This instance deploys SpeechServices with DC0 and Disconnected Container plan for Neural TTS.'
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'ttsaas-dev-gb-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csaspeech'
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
-module speechDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  scope: rg
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
   params: {
-    name: '${namePrefix}-${serviceShort}001'
+    // Required parameters
     kind: 'SpeechServices'
-    sku: 'DC0'
-    location: resourceLocation
-
-    publicNetworkAccess: 'Enabled'
-
+    name: 'csaspeech001'
+    // Non-required parameters
+    allowedFqdnList: []
+    allowProjectManagement: false
+    apiProperties: {}
     commitmentPlans: [
       {
         autoRenew: false
-        hostingModel: 'DisconnectedContainer'
-        planType: 'NTTS'
         current: {
           count: 1
           tier: 'T1'
         }
+        hostingModel: 'DisconnectedContainer'
+        planType: 'NTTS'
       }
     ]
-    tags: {
-      Environment: 'Test'
-      Deployment: 'DC0Disconnected'
-    }
-
-    diagnosticSettings: []
-    privateEndpoints: []
-    roleAssignments: []
-    allowedFqdnList: []
-    apiProperties: {}
-    userOwnedStorage: []
+    customerManagedKey: '<customerManagedKey>'
     deployments: []
+    diagnosticSettings: []
+    disableLocalAuth: false
+    location: '<location>'
     lock: {
       kind: 'None'
     }
+    managedIdentities: '<managedIdentities>'
     migrationToken: ''
-    allowProjectManagement: false
-    customerManagedKey: null
-    managedIdentities: null
-    secretsExportConfiguration: null
-    disableLocalAuth: false
     networkAcls: {
       defaultAction: 'Allow'
       ipRules: []
       virtualNetworkRules: []
     }
+    privateEndpoints: []
+    publicNetworkAccess: 'Enabled'
+    roleAssignments: []
+    secretsExportConfiguration: '<secretsExportConfiguration>'
+    sku: 'DC0'
+    tags: {
+      Deployment: 'DC0Disconnected'
+      Environment: 'Test'
+    }
+    userOwnedStorage: []
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csaspeech001"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": []
+    },
+    "allowProjectManagement": {
+      "value": false
+    },
+    "apiProperties": {
+      "value": {}
+    },
+    "commitmentPlans": {
+      "value": [
+        {
+          "autoRenew": false,
+          "current": {
+            "count": 1,
+            "tier": "T1"
+          },
+          "hostingModel": "DisconnectedContainer",
+          "planType": "NTTS"
+        }
+      ]
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
+    },
+    "deployments": {
+      "value": []
+    },
+    "diagnosticSettings": {
+      "value": []
+    },
+    "disableLocalAuth": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "None"
+      }
+    },
+    "managedIdentities": {
+      "value": "<managedIdentities>"
+    },
+    "migrationToken": {
+      "value": ""
+    },
+    "networkAcls": {
+      "value": {
+        "defaultAction": "Allow",
+        "ipRules": [],
+        "virtualNetworkRules": []
+      }
+    },
+    "privateEndpoints": {
+      "value": []
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "roleAssignments": {
+      "value": []
+    },
+    "secretsExportConfiguration": {
+      "value": "<secretsExportConfiguration>"
+    },
+    "sku": {
+      "value": "DC0"
+    },
+    "tags": {
+      "value": {
+        "Deployment": "DC0Disconnected",
+        "Environment": "Test"
+      }
+    },
+    "userOwnedStorage": {
+      "value": []
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csaspeech001'
+// Non-required parameters
+param allowedFqdnList = []
+param allowProjectManagement = false
+param apiProperties = {}
+param commitmentPlans = [
+  {
+    autoRenew: false
+    current: {
+      count: 1
+      tier: 'T1'
+    }
+    hostingModel: 'DisconnectedContainer'
+    planType: 'NTTS'
+  }
+]
+param customerManagedKey = '<customerManagedKey>'
+param deployments = []
+param diagnosticSettings = []
+param disableLocalAuth = false
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param managedIdentities = '<managedIdentities>'
+param migrationToken = ''
+param networkAcls = {
+  defaultAction: 'Allow'
+  ipRules: []
+  virtualNetworkRules: []
+}
+param privateEndpoints = []
+param publicNetworkAccess = 'Enabled'
+param roleAssignments = []
+param secretsExportConfiguration = '<secretsExportConfiguration>'
+param sku = 'DC0'
+param tags = {
+  Deployment: 'DC0Disconnected'
+  Environment: 'Test'
+}
+param userOwnedStorage = []
 ```
 
 </details>
