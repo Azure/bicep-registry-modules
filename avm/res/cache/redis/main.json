@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5664914029485680979"
+      "version": "0.36.177.2456",
+      "templateHash": "1027617271512363446"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -911,12 +911,17 @@
         "description": "Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
       "items": {
         "type": "int"
       },
       "defaultValue": [
+        1,
+        2,
+        3
+      ],
+      "allowedValues": [
         1,
         2,
         3
@@ -1003,7 +1008,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
-    "availabilityZones": "[if(equals(parameters('skuName'), 'Premium'), if(parameters('zoneRedundant'), if(not(empty(parameters('zones'))), parameters('zones'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 3)), createArray()), createArray())]",
+    "zones": "[if(equals(parameters('skuName'), 'Premium'), if(parameters('zoneRedundant'), if(not(empty(parameters('availabilityZones'))), parameters('availabilityZones'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 3)), createArray()), createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1062,7 +1067,7 @@
         "subnetId": "[if(not(empty(parameters('subnetResourceId'))), parameters('subnetResourceId'), null())]",
         "tenantSettings": "[parameters('tenantSettings')]"
       },
-      "zones": "[variables('availabilityZones')]"
+      "zones": "[variables('zones')]"
     },
     "redis_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1171,8 +1176,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3748357335525726872"
+              "version": "0.36.177.2456",
+              "templateHash": "18365093303814967998"
             },
             "name": "Redis Cache Access Policy",
             "description": "This module deploys an access policy for Redis Cache."
@@ -1272,8 +1277,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "9900728480246932111"
+              "version": "0.36.177.2456",
+              "templateHash": "10082088536827762989"
             },
             "name": "Redis Cache Access Policy Assignment",
             "description": "This module deploys an access policy assignment for Redis Cache."
@@ -2143,8 +2148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2981769507448863297"
+              "version": "0.36.177.2456",
+              "templateHash": "1446936391553152650"
             },
             "name": "Redis Cache Firewall Rules",
             "description": "This module creates a firewall rule for Redis Cache."
@@ -2246,8 +2251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3093024614234635140"
+              "version": "0.36.177.2456",
+              "templateHash": "13435626421395447274"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2362,7 +2367,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys('redis', '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys('redis', '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys('redis', '2024-11-01').primaryKey))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys('redis', '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys('redis', '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys('redis', '2024-11-01').secondaryKey))), createArray()))]"
           }
         },
         "template": {
@@ -2372,8 +2377,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "12919538841236982879"
+              "version": "0.36.177.2456",
+              "templateHash": "10496574214424824153"
             }
           },
           "definitions": {

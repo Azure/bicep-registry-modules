@@ -426,6 +426,10 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crmax001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+    ]
     capacity: 2
     diagnosticSettings: [
       {
@@ -543,10 +547,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       resourceType: 'Redis Cache'
     }
     zoneRedundant: true
-    zones: [
-      1
-      2
-    ]
   }
 }
 ```
@@ -568,6 +568,12 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crmax001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2
+      ]
+    },
     "capacity": {
       "value": 2
     },
@@ -714,12 +720,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "zoneRedundant": {
       "value": true
-    },
-    "zones": {
-      "value": [
-        1,
-        2
-      ]
     }
   }
 }
@@ -738,6 +738,10 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crmax001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+]
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -855,10 +859,6 @@ param tags = {
   resourceType: 'Redis Cache'
 }
 param zoneRedundant = true
-param zones = [
-  1
-  2
-]
 ```
 
 </details>
@@ -1193,6 +1193,11 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crwaf001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     capacity: 2
     diagnosticSettings: [
       {
@@ -1244,11 +1249,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       resourceType: 'Redis Cache'
     }
     zoneRedundant: true
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -1270,6 +1270,13 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crwaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "capacity": {
       "value": 2
     },
@@ -1348,13 +1355,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "zoneRedundant": {
       "value": true
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -1373,6 +1373,11 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crwaf001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -1424,11 +1429,6 @@ param tags = {
   resourceType: 'Redis Cache'
 }
 param zoneRedundant = true
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -1448,6 +1448,7 @@ param zones = [
 | :-- | :-- | :-- |
 | [`accessPolicies`](#parameter-accesspolicies) | array | Array of access policies to create. |
 | [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Array of access policy assignments. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 | [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableAccessKeyAuthentication`](#parameter-disableaccesskeyauthentication) | bool | Disable authentication via access keys. |
@@ -1474,7 +1475,6 @@ param zones = [
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
-| [`zones`](#parameter-zones) | array | If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 
 ### Parameter: `name`
 
@@ -1561,6 +1561,29 @@ The name of the Access Policy Assignment.
 
 - Required: No
 - Type: string
+
+### Parameter: `availabilityZones`
+
+If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacity`
 
@@ -2563,21 +2586,6 @@ When true, replicas will be provisioned in availability zones specified in the z
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `zones`
-
-If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 
