@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- None
+- Added support for the Maintenance Configuration extension via the `maintenanceConfiguration` parameter. Recommended for WAF-reliability alignment
 
 ### Breaking Changes
 

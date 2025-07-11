@@ -18,6 +18,7 @@ This module deploys a Virtual Network Gateway.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 | `Microsoft.Network/virtualNetworkGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways) |
 | `Microsoft.Network/virtualNetworkGateways/natRules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways/natRules) |
@@ -2177,6 +2178,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
+    maintenanceConfiguration: {
+      assignmentName: 'myAssignment'
+      maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    }
     natRules: [
       {
         externalMappings: [
@@ -2301,6 +2306,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
+    "maintenanceConfiguration": {
+      "value": {
+        "assignmentName": "myAssignment",
+        "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>"
+      }
+    },
     "natRules": {
       "value": [
         {
@@ -2413,6 +2424,10 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
+param maintenanceConfiguration = {
+  assignmentName: 'myAssignment'
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+}
 param natRules = [
   {
     externalMappings: [
@@ -2498,6 +2513,7 @@ param vpnType = 'RouteBased'
 | [`gatewayDefaultSiteLocalNetworkGatewayResourceId`](#parameter-gatewaydefaultsitelocalnetworkgatewayresourceid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | The maintenance configuration to assign to the Virtual Network Gateway. |
 | [`managedIdentity`](#parameter-managedidentity) | object | The managed identity definition for this resource. Supports system-assigned and user-assigned identities. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
 | [`primaryPublicIPName`](#parameter-primarypublicipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
@@ -3168,6 +3184,34 @@ Specify the type of lock.
 Specify the name of lock.
 
 - Required: No
+- Type: string
+
+### Parameter: `maintenanceConfiguration`
+
+The maintenance configuration to assign to the Virtual Network Gateway.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignmentName`](#parameter-maintenanceconfigurationassignmentname) | string | The name of the maintenance configuration assignment. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationmaintenanceconfigurationresourceid) | string | The resource ID of the maintenance configuration to assign to the Virtual Network Gateway. |
+
+### Parameter: `maintenanceConfiguration.assignmentName`
+
+The name of the maintenance configuration assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maintenanceConfiguration.maintenanceConfigurationResourceId`
+
+The resource ID of the maintenance configuration to assign to the Virtual Network Gateway.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `managedIdentity`

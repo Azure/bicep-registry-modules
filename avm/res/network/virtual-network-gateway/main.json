@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16790100581682820981"
+      "templateHash": "17973519096655922373"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -400,6 +400,27 @@
       },
       "metadata": {
         "description": "The type for an active-active BGP cluster configuration."
+      }
+    },
+    "maintenanceConfigurationType": {
+      "type": "object",
+      "properties": {
+        "assignmentName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the maintenance configuration assignment."
+          }
+        },
+        "maintenanceConfigurationResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the maintenance configuration to assign to the Virtual Network Gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a maintenance configuration."
       }
     },
     "diagnosticSettingFullType": {
@@ -998,6 +1019,13 @@
       "metadata": {
         "description": "Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients."
       }
+    },
+    "maintenanceConfiguration": {
+      "$ref": "#/definitions/maintenanceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The maintenance configuration to assign to the Virtual Network Gateway."
+      }
     }
   },
   "variables": {
@@ -1111,6 +1139,20 @@
       },
       "dependsOn": [
         "publicIPAddress"
+      ]
+    },
+    "config": {
+      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+      "type": "Microsoft.Maintenance/configurationAssignments",
+      "apiVersion": "2023-04-01",
+      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "name": "[parameters('maintenanceConfiguration').assignmentName]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "maintenanceConfigurationId": "[parameters('maintenanceConfiguration').maintenanceConfigurationResourceId]"
+      },
+      "dependsOn": [
+        "virtualNetworkGateway"
       ]
     },
     "virtualNetworkGateway_lock": {

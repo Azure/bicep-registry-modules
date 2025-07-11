@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
+    MaintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
   }
 }
 
@@ -142,6 +143,10 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       enableBgpRouteTranslationForNat: true
+      maintenanceConfiguration: {
+        assignmentName: 'myAssignment'
+        maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      }
     }
   }
 ]

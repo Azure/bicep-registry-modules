@@ -230,6 +230,9 @@ param autoScaleConfiguration autoScaleConfigurationType?
 @description('Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients.')
 param customRoutes customRoutesType?
 
+@description('Optional. The maintenance configuration to assign to the Virtual Network Gateway.')
+param maintenanceConfiguration maintenanceConfigurationType?
+
 // ================//
 // Variables       //
 // ================//
@@ -596,6 +599,15 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
   ]
 }
 
+resource config 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfiguration)) {
+  name: maintenanceConfiguration.assignmentName
+  location: location
+  scope: virtualNetworkGateway
+  properties: {
+    maintenanceConfigurationId: maintenanceConfiguration.maintenanceConfigurationResourceId
+  }
+}
+
 module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
   for (natRule, index) in (natRules ?? []): {
     name: '${deployment().name}-NATRule-${index}'
@@ -831,4 +843,14 @@ type activeActiveBgpType = {
 
   @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   secondCustomBgpIpAddresses: string[]?
+}
+
+@export()
+@description('The type of a maintenance configuration.')
+type maintenanceConfigurationType = {
+  @description('Required. The name of the maintenance configuration assignment.')
+  assignmentName: string
+
+  @description('Required. The resource ID of the maintenance configuration to assign to the Virtual Network Gateway.')
+  maintenanceConfigurationResourceId: string
 }
