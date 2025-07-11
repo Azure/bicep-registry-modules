@@ -223,7 +223,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.isMultiScopeParentModule }) {
 
             param(
                 [string] $moduleFolderPath
@@ -231,6 +231,29 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned'
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
+        }
+
+        It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*waf-aligned `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+            $wafAlignedFolders = (Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned').Name
+
+            $multiScopeModuleFolders = (Get-ChildItem -Path $moduleFolderPath -Filter '*-scope' -Directory).Name
+            $expectedFolders = $multiScopeModuleFolders | ForEach-Object { "$_*.waf-aligned" }
+
+            $missingFolders = @()
+            foreach ($expectedFolder in $expectedFolders) {
+                $matchingFolderExists = $wafAlignedFolders | Where-Object {
+                    $_ -like $expectedFolder
+                }
+                if (-not $matchingFolderExists) {
+                    $missingFolders += $expectedFolder
+                }
+            }
+
+            $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*waf-aligned] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
         }
 
         It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
@@ -247,6 +270,29 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
             $defaultsFolder | Should -Not -BeNullOrEmpty
+        }
+
+        It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*defaults `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+            $wafAlignedFolders = (Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults').Name
+
+            $multiScopeModuleFolders = (Get-ChildItem -Path $moduleFolderPath -Filter '*-scope' -Directory).Name
+            $expectedFolders = $multiScopeModuleFolders | ForEach-Object { "$_*.defaults" }
+
+            $missingFolders = @()
+            foreach ($expectedFolder in $expectedFolders) {
+                $matchingFolderExists = $wafAlignedFolders | Where-Object {
+                    $_ -like $expectedFolder
+                }
+                if (-not $matchingFolderExists) {
+                    $missingFolders += $expectedFolder
+                }
+            }
+
+            $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*defaults] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
         }
 
         It '[<moduleFolderName>] Top-level module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
