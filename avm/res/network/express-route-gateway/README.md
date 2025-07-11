@@ -612,7 +612,6 @@ Tags of the Firewall policy resource.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ## Outputs
 

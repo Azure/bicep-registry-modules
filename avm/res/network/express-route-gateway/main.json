@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7583199529591916803"
+      "templateHash": "3314478573253003022"
     },
     "name": "Express Route Gateways",
     "description": "This module deploys an Express Route Gateway."
@@ -147,7 +147,7 @@
         },
         "description": "Optional. Tags of the Firewall policy resource."
       },
-      "defaultValue": {}
+      "nullable": true
     },
     "allowNonVirtualWanTraffic": {
       "type": "bool",
