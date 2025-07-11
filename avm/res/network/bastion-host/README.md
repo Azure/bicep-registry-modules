@@ -381,6 +381,11 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     name: 'nbhmax001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     bastionSubnetPublicIpResourceId: '<bastionSubnetPublicIpResourceId>'
     diagnosticSettings: [
       {
@@ -426,11 +431,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -455,6 +455,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "bastionSubnetPublicIpResourceId": {
       "value": "<bastionSubnetPublicIpResourceId>"
     },
@@ -523,13 +530,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -549,6 +549,11 @@ using 'br/public:avm/res/network/bastion-host:<version>'
 param name = 'nbhmax001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param bastionSubnetPublicIpResourceId = '<bastionSubnetPublicIpResourceId>'
 param diagnosticSettings = [
   {
@@ -594,11 +599,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -851,6 +851,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. |
 | [`bastionSubnetPublicIpResourceId`](#parameter-bastionsubnetpublicipresourceid) | string | The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableCopyPaste`](#parameter-disablecopypaste) | bool | Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled. |
@@ -868,7 +869,6 @@ param tags = {
 | [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units. |
 | [`skuName`](#parameter-skuname) | string | The SKU of this Bastion Host. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU. |
 
 ### Parameter: `name`
 
@@ -883,6 +883,29 @@ Shared services Virtual Network resource Id.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `availabilityZones`
+
+The list of Availability zones to use for the zone-redundant resources.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `bastionSubnetPublicIpResourceId`
 
@@ -1259,22 +1282,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `zones`
-
-A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU.
-
-- Required: No
-- Type: array
-- Default: `[]`
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 
