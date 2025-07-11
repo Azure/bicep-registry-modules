@@ -10,6 +10,9 @@ param localNetworkGatewayName string
 @description('Required. The name of the Maintenance Configuration to create.')
 param MaintenanceConfigurationName string
 
+@description('Optional. The base time for the deployment, used for generating unique names.')
+param baseTime string = utcNow('u')
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
@@ -50,9 +53,12 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   location: location
   properties: {
     maintenanceScope: 'Resource'
+    extensionProperties: {
+      maintenanceSubScope: 'NetworkGatewayMaintenance'
+    }
     maintenanceWindow: {
-      startDateTime: '2020-04-30 08:00'
-      expirationDateTime: '9999-12-31 00:00'
+      startDateTime: dateTimeAdd(baseTime, 'P2D', 'yyyy-MM-dd HH:mm')
+      expirationDateTime: null
       duration: '05:00'
       timeZone: 'Pacific Standard Time'
       recurEvery: 'Day'
