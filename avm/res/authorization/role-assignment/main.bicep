@@ -102,21 +102,21 @@ module roleAssignment_rg 'rg-scope/main.bicep' = if (!empty(resourceGroupName) &
 
 @sys.description('The GUID of the Role Assignment.')
 output name string = empty(subscriptionId) && empty(resourceGroupName)
-  ? roleAssignment_mg.outputs.name
+  ? roleAssignment_mg!.outputs.name
   : (!empty(subscriptionId) && empty(resourceGroupName)
-      ? roleAssignment_sub.outputs.name
-      : roleAssignment_rg.outputs.name)
+      ? roleAssignment_sub!.outputs.name
+      : roleAssignment_rg!.outputs.name)
 
 @sys.description('The resource ID of the Role Assignment.')
 output resourceId string = empty(subscriptionId) && empty(resourceGroupName)
-  ? roleAssignment_mg.outputs.resourceId
+  ? roleAssignment_mg!.outputs.resourceId
   : (!empty(subscriptionId) && empty(resourceGroupName)
-      ? roleAssignment_sub.outputs.resourceId
-      : roleAssignment_rg.outputs.resourceId)
+      ? roleAssignment_sub!.outputs.resourceId
+      : roleAssignment_rg!.outputs.resourceId)
 
 @sys.description('The scope this Role Assignment applies to.')
 output scope string = empty(subscriptionId) && empty(resourceGroupName)
-  ? roleAssignment_mg.outputs.scope
+  ? roleAssignment_mg!.outputs.scope
   : (!empty(subscriptionId) && empty(resourceGroupName)
-      ? roleAssignment_sub.outputs.scope
-      : roleAssignment_rg.outputs.scope)
+      ? roleAssignment_sub!.outputs.scope
+      : roleAssignment_rg!.outputs.scope)

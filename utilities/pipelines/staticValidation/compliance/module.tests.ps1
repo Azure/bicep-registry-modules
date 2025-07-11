@@ -181,8 +181,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                         moduleType               = $moduleType
                         isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         versionFileExists        = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                        isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
-
+                        isMultiScopeChildModule  = $moduleFolderPath -match '[\/|\\](rg|sub|mg)\-scope$'
                     }
                 }
             }

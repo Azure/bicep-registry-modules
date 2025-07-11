@@ -21,7 +21,10 @@ This module deploys a Role Assignment at a Management Group, Subscription or Res
 
 ## Usage examples
 
-**Note**: This is a multi-scoped module. This means, you will find the usage examples in the ReadMEs of the correspondingly scoped child module.
+**Note**: This is a multi-scoped module. This means, you will find the 'Usage Examples' in the documentation of the correspondingly scoped child modules:
+- `/mg-scope/README.md`
+- `/rg-scope/README.md`
+- `/sub-scope/README.md`
 
 ## Parameters
 

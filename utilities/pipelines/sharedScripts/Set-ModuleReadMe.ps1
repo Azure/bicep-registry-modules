@@ -1532,8 +1532,12 @@ function Set-UsageExamplesSection {
 
     if ($IsMultiScopeParentModule) {
         $SectionContent = @(
-            '**Note**: This is a multi-scoped module. This means, you will find the usage examples in the ReadMEs of the correspondingly scoped child module.'
+            "**Note**: This is a multi-scoped module. This means, you will find the 'Usage Examples' in the documentation of the correspondingly scoped child modules:"
         )
+        $multiScopeChildModules = (Get-ChildItem -Path $ModuleRoot -Filter '*-scope' -Directory).Name
+        $multiScopeChildModules | ForEach-Object {
+            $SectionContent += ('- `/{0}/README.md`' -f $_)
+        }
         if ($PSCmdlet.ShouldProcess('Original file with new template references content', 'Merge')) {
             return Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -ContentType 'nextH2'
         }
