@@ -171,12 +171,13 @@ param trustedRootCertificates array = []
 @description('Optional. URL path map of the application gateway resource.')
 param urlPathMaps array = []
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = [
+@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
+@allowed([
   1
   2
   3
-]
+])
+param availabilityZones int[] = [1, 2, 3]
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -335,7 +336,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' =
         }
       : {})
   )
-  zones: zones
+  zones: map(availabilityZones, zone => '${zone}')
 }
 
 resource applicationGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
