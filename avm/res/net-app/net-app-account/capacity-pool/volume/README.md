@@ -22,12 +22,12 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`encryptionKeySource`](#parameter-encryptionkeysource) | string | The source of the encryption key. |
 | [`name`](#parameter-name) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-usagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
-| [`zone`](#parameter-zone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Conditional parameters**
 
@@ -59,6 +59,22 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`throughputMibps`](#parameter-throughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`unixPermissions`](#parameter-unixpermissions) | string | Unix Permissions for NFS volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `coolAccess`
 
@@ -94,22 +110,6 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
-
-### Parameter: `zone`
-
-The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
-
-- Required: Yes
-- Type: int
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `capacityPoolName`
 

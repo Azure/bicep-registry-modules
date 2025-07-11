@@ -31,14 +31,14 @@ param keyVaultPrivateEndpointResourceId string?
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
-@description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  0
+  -1
   1
   2
   3
 ])
-param zone int
+param availabilityZone int
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -276,7 +276,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-0
         }
       : {})
   }
-  zones: zone != 0 ? [string(zone)] : null
+  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

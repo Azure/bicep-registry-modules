@@ -148,6 +148,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 1
         volumes: [
           {
+            availabilityZone: 1
             dataProtection: {
               backup: {
                 backupPolicyName: 'myBackupPolicy'
@@ -191,9 +192,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -224,7 +225,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             smbNonBrowsable: 'Disabled'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
         ]
       }
@@ -342,6 +342,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 1,
           "volumes": [
             {
+              "availabilityZone": 1,
               "dataProtection": {
                 "backup": {
                   "backupPolicyName": "myBackupPolicy",
@@ -384,10 +385,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             },
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -417,8 +418,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "smbEncryption": false,
               "smbNonBrowsable": "Disabled",
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -538,6 +538,7 @@ param capacityPools = [
     size: 1
     volumes: [
       {
+        availabilityZone: 1
         dataProtection: {
           backup: {
             backupPolicyName: 'myBackupPolicy'
@@ -581,9 +582,9 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -614,7 +615,6 @@ param capacityPools = [
         smbNonBrowsable: 'Disabled'
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
     ]
   }
@@ -711,6 +711,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 1
         volumes: [
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -744,9 +745,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
@@ -755,7 +756,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
         ]
       }
@@ -840,6 +840,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 1,
           "volumes": [
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -872,10 +873,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             },
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
@@ -883,8 +884,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -973,6 +973,7 @@ param capacityPools = [
     size: 1
     volumes: [
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -1006,9 +1007,9 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         name: 'nanaanfs3-vol-002'
         networkFeatures: 'Standard'
@@ -1017,7 +1018,6 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
     ]
   }
@@ -1589,10 +1589,10 @@ List of volumes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-capacitypoolsvolumesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-capacitypoolsvolumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-capacitypoolsvolumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-capacitypoolsvolumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
-| [`zone`](#parameter-capacitypoolsvolumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -1618,6 +1618,13 @@ List of volumes to create in the capacity pool.
 | [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
+### Parameter: `capacityPools.volumes.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `capacityPools.volumes.name`
 
 The name of the pool volume.
@@ -1635,13 +1642,6 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 ### Parameter: `capacityPools.volumes.usageThreshold`
 
 Maximum storage quota allowed for a file system in bytes.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `capacityPools.volumes.zone`
-
-The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
 
 - Required: Yes
 - Type: int
