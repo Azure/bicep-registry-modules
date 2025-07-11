@@ -64,12 +64,13 @@ param autoscaleMaxCapacity int?
 @description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
 param autoscaleMinCapacity int?
 
-@description('Optional. Zone numbers e.g. 1,2,3.')
-param zones array = [
+@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
+@allowed([
   1
   2
   3
-]
+])
+param availabilityZones int[] = [1, 2, 3]
 
 @description('Optional. Enable/Disable forced tunneling.')
 param enableForcedTunneling bool = false
@@ -232,7 +233,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if 
     location: location
     lock: lock
     tags: publicIPAddressObject.?tags ?? tags
-    zones: zones
+    zones: availabilityZones
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
@@ -266,7 +267,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' =
     diagnosticSettings: managementIPAddressObject.?diagnosticSettings
     location: location
     tags: managementIPAddressObject.?tags ?? tags
-    zones: zones
+    zones: availabilityZones
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
@@ -274,7 +275,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' =
 resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
   name: name
   location: location
-  zones: length(zones) == 0 ? null : zones
+  zones: map(availabilityZones, zone => '${zone}')
   tags: tags
   properties: azureSkuName == 'AZFW_VNet'
     ? {
