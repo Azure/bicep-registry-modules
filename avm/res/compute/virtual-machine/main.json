@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "17675001299145418136"
+      "version": "0.36.177.2456",
+      "templateHash": "4089843043248436881"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -1935,16 +1935,16 @@
         "description": "Optional. Specifies the gallery applications that should be made available to the VM/VMSS."
       }
     },
-    "zone": {
+    "availabilityZone": {
       "type": "int",
       "allowedValues": [
-        0,
+        -1,
         1,
         2,
         3
       ],
       "metadata": {
-        "description": "Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "nicConfigurations": {
@@ -2417,7 +2417,7 @@
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
       },
-      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('zone'))), null())]",
+      "zones": "[if(and(not(equals(parameters('availabilityZone'), -1)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('availabilityZone'))), null())]",
       "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
     },
     "vm": {
@@ -2427,7 +2427,7 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]",
       "plan": "[parameters('plan')]",
       "properties": {
         "hardwareProfile": {
@@ -2446,11 +2446,11 @@
               "input": {
                 "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
                 "name": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), last(split(coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.id, ''), '/')), coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
-                "createOption": "[if(or(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')))), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
+                "createOption": "[if(or(not(equals(if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()), null())), not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')))), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
                 "deleteOption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'Detach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete'))]",
                 "caching": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'None', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly'))]",
                 "managedDisk": {
-                  "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))))]",
+                  "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'), if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()))]",
                   "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSet.id), null())]"
                 }
               }
@@ -2699,8 +2699,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "8672724576831743385"
+              "version": "0.36.177.2456",
+              "templateHash": "2776867808756314911"
             }
           },
           "definitions": {
@@ -5610,8 +5610,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5814,8 +5814,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6021,8 +6021,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6223,8 +6223,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6430,8 +6430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6632,8 +6632,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6842,8 +6842,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7056,8 +7056,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7264,8 +7264,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7468,8 +7468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7681,8 +7681,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7890,8 +7890,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11010105954455348"
+              "version": "0.36.177.2456",
+              "templateHash": "3746146591166938391"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8085,8 +8085,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1854213848782186224"
+              "version": "0.36.177.2456",
+              "templateHash": "4883720476465660475"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."

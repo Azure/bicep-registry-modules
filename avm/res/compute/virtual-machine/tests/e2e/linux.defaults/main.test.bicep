@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '22_04-lts-gen2'
         version: 'latest'
       }
-      zone: 0
+      availabilityZone: -1
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -97,8 +97,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies // Required to leverage `existing` SSH key reference
-    ]
   }
 ]
