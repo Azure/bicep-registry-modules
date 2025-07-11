@@ -80,10 +80,10 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       enableTelemetry: enableTelemetry
       name: appGWName
-      zones: [
-        '1'
-        '2'
-        '3'
+      availabilityZones: [
+        1
+        2
+        3
       ]
       firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
       backendAddressPools: [
