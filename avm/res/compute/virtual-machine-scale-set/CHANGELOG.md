@@ -10,7 +10,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Added allowed set [1,2,3] to availabilityZones parameter. I.e., zones must be provided as integers, not strings
+- Changed type of `availabilityZones` parameter from `array` to `int[]`, i.e., zones must be provided as integers, not strings
+- Added allowed set [1,2,3] to availabilityZones parameter.
 
 ## 0.8.1
 
