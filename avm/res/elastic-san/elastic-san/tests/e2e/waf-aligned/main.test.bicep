@@ -74,6 +74,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_ZRS'
       publicNetworkAccess: 'Disabled'
+      availabilityZone: 1
       volumeGroups: [
         {
           name: 'vol-grp-01'

@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       sku: 'Premium_LRS'
-      availabilityZone: 1
+      availabilityZone: -1
       // publicNetworkAccess: 'Disabled' // Private Endpoints should enforce this to be 'Disbled'
       tags: {
         Owner: 'Contoso'
