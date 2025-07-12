@@ -1370,7 +1370,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activePassiveBgp'
     }
     gatewayType: 'ExpressRoute'
-    name: 'nvger001'
+    name: 'nvger002'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     domainNameLabel: [
@@ -1409,7 +1409,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "ExpressRoute"
     },
     "name": {
-      "value": "nvger001"
+      "value": "nvger002"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1452,7 +1452,7 @@ param clusterSettings = {
   clusterMode: 'activePassiveBgp'
 }
 param gatewayType = 'ExpressRoute'
-param name = 'nvger001'
+param name = 'nvger002'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param domainNameLabel = [
@@ -1497,7 +1497,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       secondPipName: 'nvgmax001-pip2'
     }
     gatewayType: 'Vpn'
-    name: 'nvgmax002'
+    name: 'nvgmax001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -1628,7 +1628,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgmax002"
+      "value": "nvgmax001"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1787,7 +1787,7 @@ param clusterSettings = {
   secondPipName: 'nvgmax001-pip2'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgmax002'
+param name = 'nvgmax001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
