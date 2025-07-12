@@ -353,17 +353,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     allowedFqdnList: []
     allowProjectManagement: false
     apiProperties: {}
-    commitmentPlans: [
-      {
-        autoRenew: false
-        current: {
-          count: 1
-          tier: 'T1'
-        }
-        hostingModel: 'DisconnectedContainer'
-        planType: 'NTTS'
-      }
-    ]
+    commitmentPlans: []
     customerManagedKey: '<customerManagedKey>'
     deployments: []
     diagnosticSettings: []
@@ -423,17 +413,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": {}
     },
     "commitmentPlans": {
-      "value": [
-        {
-          "autoRenew": false,
-          "current": {
-            "count": 1,
-            "tier": "T1"
-          },
-          "hostingModel": "DisconnectedContainer",
-          "planType": "NTTS"
-        }
-      ]
+      "value": []
     },
     "customerManagedKey": {
       "value": "<customerManagedKey>"
@@ -513,17 +493,7 @@ param name = 'test001'
 param allowedFqdnList = []
 param allowProjectManagement = false
 param apiProperties = {}
-param commitmentPlans = [
-  {
-    autoRenew: false
-    current: {
-      count: 1
-      tier: 'T1'
-    }
-    hostingModel: 'DisconnectedContainer'
-    planType: 'NTTS'
-  }
-]
+param commitmentPlans = []
 param customerManagedKey = '<customerManagedKey>'
 param deployments = []
 param diagnosticSettings = []

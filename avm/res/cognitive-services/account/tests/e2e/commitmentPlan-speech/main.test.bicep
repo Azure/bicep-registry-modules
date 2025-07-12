@@ -6,7 +6,7 @@ metadata description = 'This instance deploys SpeechServices with DC0 and Discon
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
-param resourceGroupName string = 'ttsaas-dev-gb-rg'
+param resourceGroupName string = 'dc-test-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -26,6 +26,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   scope: rg
   params: {
+    // name: '${namePrefix}-${serviceShort}001'
     name: 'test001'
     kind: 'SpeechServices'
     sku: 'DC0'
@@ -33,17 +34,19 @@ module testDeployment '../../../main.bicep' = {
 
     publicNetworkAccess: 'Enabled'
 
-    commitmentPlans: [
-      {
-        autoRenew: false
-        hostingModel: 'DisconnectedContainer'
-        planType: 'NTTS'
-        current: {
-          count: 1
-          tier: 'T1'
-        }
-      }
-    ]
+    commitmentPlans: []
+
+    // commitmentPlans: [
+    //   {
+    //     autoRenew: false
+    //     hostingModel: 'DisconnectedContainer'
+    //     planType: 'NTTS'
+    //     current: {
+    //       count: 1
+    //       tier: 'T1'
+    //     }
+    //   }
+    // ]
     tags: {
       Environment: 'Test'
       Deployment: 'DC0Disconnected'
