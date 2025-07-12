@@ -65,6 +65,12 @@ module testDeployment '../../../main.bicep' = [
           useCommonAlertSchema: true
         }
       ]
+      incidentReceivers: [
+        {
+          name: 'TestIncidentReceiver'
+          useCommonAlertSchema: true
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
