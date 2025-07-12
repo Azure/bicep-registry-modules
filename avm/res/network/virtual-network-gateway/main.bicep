@@ -600,11 +600,11 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
 }
 
 resource config 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfiguration)) {
-  name: maintenanceConfiguration.assignmentName
+  name: maintenanceConfiguration!.assignmentName
   location: location
   scope: virtualNetworkGateway
   properties: {
-    maintenanceConfigurationId: maintenanceConfiguration.maintenanceConfigurationResourceId
+    maintenanceConfigurationId: maintenanceConfiguration!.maintenanceConfigurationResourceId
   }
 }
 
@@ -709,7 +709,7 @@ output ipConfigurations object[]? = virtualNetworkGateway.properties.?ipConfigur
 
 @description('The primary public IP address of the virtual network gateway.')
 output primaryPublicIpAddress string = !empty(existingPrimaryPublicIPResourceId)
-  ? primaryPublicIP.properties.ipAddress
+  ? primaryPublicIP!.properties.ipAddress
   : publicIPAddress[0].outputs.ipAddress
 
 @description('The primary default Azure BGP peer IP address.')
@@ -727,7 +727,7 @@ output customBgpIpAddresses string? = join(
 @description('The secondary public IP address of the virtual network gateway (Active-Active mode).')
 output secondaryPublicIpAddress string? = isActiveActive
   ? (!empty(existingSecondaryPublicIPResourceIdVar)
-      ? secondaryPublicIP.properties.ipAddress
+      ? secondaryPublicIP!.properties.ipAddress
       : publicIPAddress[1].outputs.ipAddress)
   : null // 'Not applicable (Active-Passive mode)'
 
@@ -735,7 +735,7 @@ output secondaryPublicIpAddress string? = isActiveActive
 @description('The tertiary public IP address of the virtual network gateway (Active-Active with P2S mode).')
 output tertiaryPublicIpAddress string? = isActiveActive && !empty(vpnClientAddressPoolPrefix)
   ? (!empty(existingTertiaryPublicIPResourceIdVar)
-      ? tertiaryPublicIP.properties.ipAddress
+      ? tertiaryPublicIP!.properties.ipAddress
       : publicIPAddress[2].outputs.ipAddress)
   : null // 'Not applicable (Active-Passive mode) or no P2S'
 

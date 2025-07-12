@@ -1497,7 +1497,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       secondPipName: 'nvgmax001-pip2'
     }
     gatewayType: 'Vpn'
-    name: 'nvgmax001'
+    name: 'nvgmax002'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -1628,7 +1628,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgmax001"
+      "value": "nvgmax002"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1787,7 +1787,7 @@ param clusterSettings = {
   secondPipName: 'nvgmax001-pip2'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgmax001'
+param name = 'nvgmax002'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
