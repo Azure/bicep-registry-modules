@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       skuName: 'VpnGw1'
       gatewayType: 'Vpn'
-      publicIpZones: []
+      publicIpAvailabilityZones: []
       virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings: {
         clusterMode: 'activePassiveNoBgp'

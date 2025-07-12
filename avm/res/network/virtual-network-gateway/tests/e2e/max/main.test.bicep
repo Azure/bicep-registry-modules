@@ -99,7 +99,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      publicIpZones: [
+      publicIpAvailabilityZones: [
         1
         2
         3
