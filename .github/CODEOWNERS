@@ -62,6 +62,7 @@
 /avm/res/azure-stack-hci/marketplace-gallery-image/ @Azure/avm-res-azurestackhci-marketplacegalleryimage-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/network-interface/ @Azure/avm-res-azurestackhci-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/virtual-hard-disk/ @Azure/avm-res-azurestackhci-virtualharddisk-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/virtual-machine-instance/ @Azure/avm-res-azurestackhci-virtualmachineinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis-enterprise/ @Azure/avm-res-cache-redisenterprise-module-owners-bicep @Azure/avm-module-reviewers-bicep

@@ -97,6 +97,7 @@ body:
         - "avm/res/azure-stack-hci/marketplace-gallery-image"
         - "avm/res/azure-stack-hci/network-interface"
         - "avm/res/azure-stack-hci/virtual-hard-disk"
+        - "avm/res/azure-stack-hci/virtual-machine-instance"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
         - "avm/res/cache/redis-enterprise"
