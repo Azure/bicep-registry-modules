@@ -8,7 +8,7 @@ Describe 'Validate Deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
+        $expectedTags = @{} # PE test has no tags
         $groupIds = @( 'vol-grp-01' )
         $expectedVolumeGroupsCount = 1
 
