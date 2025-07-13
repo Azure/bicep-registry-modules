@@ -643,7 +643,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     availabilityZone: -1
     name: 'esanpe001'
     // Non-required parameters
-    sku: 'Premium_LRS'
+    sku: 'Premium_ZRS'
     volumeGroups: [
       {
         name: 'vol-grp-01'
@@ -694,7 +694,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     },
     // Non-required parameters
     "sku": {
-      "value": "Premium_LRS"
+      "value": "Premium_ZRS"
     },
     "volumeGroups": {
       "value": [
@@ -741,7 +741,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 param availabilityZone = -1
 param name = 'esanpe001'
 // Non-required parameters
-param sku = 'Premium_LRS'
+param sku = 'Premium_ZRS'
 param volumeGroups = [
   {
     name: 'vol-grp-01'
@@ -804,7 +804,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
-    sku: 'Premium_ZRS'
+    sku: 'Premium_LRS'
     tags: {
       CostCenter: '123-456-789'
       Owner: 'Contoso'
@@ -890,7 +890,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "Disabled"
     },
     "sku": {
-      "value": "Premium_ZRS"
+      "value": "Premium_LRS"
     },
     "tags": {
       "value": {
@@ -970,7 +970,7 @@ param diagnosticSettings = [
   }
 ]
 param publicNetworkAccess = 'Disabled'
-param sku = 'Premium_ZRS'
+param sku = 'Premium_LRS'
 param tags = {
   CostCenter: '123-456-789'
   Owner: 'Contoso'

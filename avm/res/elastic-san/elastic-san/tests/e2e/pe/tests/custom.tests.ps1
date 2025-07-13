@@ -52,7 +52,7 @@ Describe 'Validate Deployment' {
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess 'Disabled' `
-                -SkuName 'Premium_LRS' `
+                -SkuName 'Premium_ZRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
                 -GroupIds $groupIds `
                 -ExpectedRoleAssignments $null `

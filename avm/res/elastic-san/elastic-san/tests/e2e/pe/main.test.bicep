@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      sku: 'Premium_LRS'
+      sku: 'Premium_ZRS'
       availabilityZone: -1
       // publicNetworkAccess: 'Disabled' // Private Endpoints should enforce this to be 'Disbled'
       volumeGroups: [
