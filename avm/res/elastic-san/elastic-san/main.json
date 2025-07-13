@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17742229888583577200"
+      "templateHash": "15298115382331278762"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -1100,7 +1100,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "9385670055519933875"
+              "templateHash": "1726737125159753039"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1895,7 +1895,12 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('name'))]",
               "identity": "[variables('identity')]",
-              "properties": "[shallowMerge(createArray(createObject('encryption', if(not(empty(parameters('customerManagedKey'))), 'EncryptionAtRestWithCustomerManagedKey', 'EncryptionAtRestWithPlatformKey'), 'encryptionProperties', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())), if(not(empty(variables('networkRules'))), createObject('networkAcls', createObject('virtualNetworkRules', variables('networkRules'))), createObject()), createObject('protocolType', 'Iscsi')))]",
+              "properties": {
+                "encryption": "[if(not(empty(parameters('customerManagedKey'))), 'EncryptionAtRestWithCustomerManagedKey', 'EncryptionAtRestWithPlatformKey')]",
+                "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())]",
+                "networkAcls": "[if(not(empty(variables('networkRules'))), createObject('virtualNetworkRules', variables('networkRules')), null())]",
+                "protocolType": "Iscsi"
+              },
               "dependsOn": [
                 "cMKKeyVault",
                 "cMKKeyVault::cMKKey"

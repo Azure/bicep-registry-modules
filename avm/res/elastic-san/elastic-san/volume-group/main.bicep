@@ -126,13 +126,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' 
             : null
         }
       : null
-    ...(!empty(networkRules)
-      ? {
-          networkAcls: {
-            virtualNetworkRules: networkRules
-          }
-        }
-      : {})
+    networkAcls: !empty(networkRules) ? { virtualNetworkRules: networkRules } : null
     protocolType: 'Iscsi'
   }
 }
