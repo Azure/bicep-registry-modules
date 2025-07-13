@@ -76,23 +76,23 @@ var networkRules = [
 // Add your resources here
 //
 
-resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
+resource elasticSan 'Microsoft.ElasticSan/elasticSans@2024-05-01' existing = {
   name: elasticSanName
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -100,7 +100,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' = {
+resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' = {
   name: name
   parent: elasticSan
   identity: identity
@@ -118,21 +118,22 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
           keyVaultProperties: !empty(customerManagedKey)
             ? {
                 keyName: customerManagedKey!.keyName
-                keyVaultUri: cMKKeyVault.properties.vaultUri
+                keyVaultUri: cMKKeyVault!.properties.vaultUri
                 keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
                   ? customerManagedKey!.?keyVersion
-                  : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
               }
             : null
         }
       : null
-    ...(!empty(networkRules)
-      ? {
-          networkAcls: {
-            virtualNetworkRules: networkRules
-          }
+    networkAcls: {
+      virtualNetworkRules: [
+        for (virtualNetworkRule, i) in (virtualNetworkRules ?? []): {
+          action: 'Allow' // Deny is not allowed for Network Rule Action.
+          id: virtualNetworkRule.virtualNetworkSubnetResourceId
         }
-      : {})
+      ]
+    }
     protocolType: 'Iscsi'
   }
 }
@@ -151,7 +152,7 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
-module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
     scope: resourceGroup(
