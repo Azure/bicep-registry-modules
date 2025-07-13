@@ -68,12 +68,12 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 // Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
-var calculatedSku = (sku == 'Premium_LRS' && availabilityZone != -1) ? 'Premium_LRS' : 'Premium_ZRS'
+var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != -1 ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
 
 // For Premium_ZRS all zones are utilized - no need to specify the zone
 // For Premium_LRS only one zone is utilized - needs to be specified
 // ZRS is only available in France Central, North Europe, West Europe and West US 2.
-var calculatedZone = (sku == 'Premium_LRS' && availabilityZone != -1) ? array(string(availabilityZone)) : null
+var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != 1 ? ['${availabilityZone}'] : null) : null
 
 // Summarize the total number of virtual network rules across all volume groups.
 var totalVirtualNetworkRules = reduce(

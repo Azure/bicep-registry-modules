@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "14008237446479474041"
+      "templateHash": "14303104031397932347"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -938,8 +938,8 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "calculatedSku": "[if(and(equals(parameters('sku'), 'Premium_LRS'), not(equals(parameters('availabilityZone'), -1))), 'Premium_LRS', 'Premium_ZRS')]",
-    "calculatedZone": "[if(and(equals(parameters('sku'), 'Premium_LRS'), not(equals(parameters('availabilityZone'), -1))), array(string(parameters('availabilityZone'))), null())]",
+    "calculatedSku": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), -1)), 'Premium_LRS', 'Premium_ZRS'), 'Premium_ZRS')]",
+    "calculatedZone": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), 1)), createArray(format('{0}', parameters('availabilityZone'))), null()), null())]",
     "totalVirtualNetworkRules": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'virtualNetworkRules'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "totalPrivateEndpoints": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'privateEndpoints'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "calculatedPublicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(greater(variables('totalVirtualNetworkRules'), 0), 'Enabled', if(greater(variables('totalPrivateEndpoints'), 0), 'Disabled', null())))]",
