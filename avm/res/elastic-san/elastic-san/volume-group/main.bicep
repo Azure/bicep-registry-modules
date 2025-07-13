@@ -126,14 +126,13 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' 
             : null
         }
       : null
-    networkAcls: {
-      virtualNetworkRules: [
-        for (virtualNetworkRule, i) in (virtualNetworkRules ?? []): {
-          action: 'Allow' // Deny is not allowed for Network Rule Action.
-          id: virtualNetworkRule.virtualNetworkSubnetResourceId
+    ...(!empty(networkRules)
+      ? {
+          networkAcls: {
+            virtualNetworkRules: networkRules
+          }
         }
-      ]
-    }
+      : {})
     protocolType: 'Iscsi'
   }
 }
@@ -152,7 +151,7 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
-module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
     scope: resourceGroup(
