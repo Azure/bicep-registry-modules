@@ -73,7 +73,7 @@ var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != -1 ? 'Premium_LR
 // For Premium_ZRS all zones are utilized - no need to specify the zone
 // For Premium_LRS only one zone is utilized - needs to be specified
 // ZRS is only available in France Central, North Europe, West Europe and West US 2.
-var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != 1 ? array(string(availabilityZone)) : null) : null
+var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != -1 ? array(string(availabilityZone)) : null) : null
 
 // Summarize the total number of virtual network rules across all volume groups.
 var totalVirtualNetworkRules = reduce(
