@@ -55,8 +55,7 @@ Describe 'Validate Deployment' {
                 -GroupIds $null `
                 -ExpectedRoleAssignments $null `
                 -LogAnalyticsWorkspaceResourceId $null `
-                -Locks $false `
-                -EnforceDataIntegrityCheckForIscsi $false
+                -Locks $false
         }
     }
 }

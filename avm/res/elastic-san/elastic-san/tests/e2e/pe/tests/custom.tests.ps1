@@ -57,8 +57,7 @@ Describe 'Validate Deployment' {
                 -GroupIds $groupIds `
                 -ExpectedRoleAssignments $null `
                 -LogAnalyticsWorkspaceResourceId $null `
-                -Locks $true `
-                -EnforceDataIntegrityCheckForIscsi $false
+                -Locks $true
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
@@ -103,7 +102,8 @@ Describe 'Validate Deployment' {
                     -PrivateEndpointCounts $item.PrivateEndpointCounts `
                     -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints `
                     -Tags $expectedTags `
-                    -Locks $true
+                    -Locks $true `
+                    -EnforceDataIntegrityCheckForIscsi $false
             }
         }
     }
