@@ -27,7 +27,7 @@ Describe 'Validate Deployment' {
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                 -ResourceId $resourceId `
-                -Name $name `
+                -name $name `
                 -Location $location `
                 -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -Not -BeNullOrEmpty
@@ -44,7 +44,7 @@ Describe 'Validate Deployment' {
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -Name $name `
+                -name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone 2 `
@@ -75,7 +75,7 @@ Describe 'Validate Deployment' {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
-                    -Name $volumeGroups[$vgrpidx].name `
+                    -name $volumeGroups[$vgrpidx].name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Location $null # Location is NOT Supported on this resource
 
@@ -83,7 +83,7 @@ Describe 'Validate Deployment' {
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
-                    -Name $volumeGroups[$vgrpidx].name `
+                    -name $volumeGroups[$vgrpidx].name `
                     -ExpectedLocation $location `
                     -Location $volumeGroups[$vgrpidx].location `
                     -SystemAssignedMI $false `
@@ -102,7 +102,8 @@ Describe 'Validate Deployment' {
                     -PrivateEndpointCounts 0 `
                     -PrivateEndpoints $null `
                     -Tags $expectedTags `
-                    -Locks $false
+                    -Locks $false `
+                    -EnforceDataIntegrityCheckForIscsi $false
             }
         }
     }

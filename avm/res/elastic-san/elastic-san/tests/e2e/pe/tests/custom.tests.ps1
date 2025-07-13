@@ -57,7 +57,8 @@ Describe 'Validate Deployment' {
                 -GroupIds $groupIds `
                 -ExpectedRoleAssignments $null `
                 -LogAnalyticsWorkspaceResourceId $null `
-                -Locks $true
+                -Locks $true `
+                -EnforceDataIntegrityCheckForIscsi $false
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {

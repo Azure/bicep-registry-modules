@@ -26,7 +26,7 @@ Describe 'Validate Deployment' {
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                 -ResourceId $resourceId `
-                -Name $name `
+                -name $name `
                 -Location $location `
                 -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -BeNullOrEmpty
@@ -43,7 +43,7 @@ Describe 'Validate Deployment' {
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -Name $name `
+                -name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone $null `
@@ -55,7 +55,8 @@ Describe 'Validate Deployment' {
                 -GroupIds $null `
                 -ExpectedRoleAssignments $null `
                 -LogAnalyticsWorkspaceResourceId $null `
-                -Locks $false
+                -Locks $false `
+                -EnforceDataIntegrityCheckForIscsi $false
         }
     }
 }

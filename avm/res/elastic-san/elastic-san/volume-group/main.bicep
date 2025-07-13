@@ -15,6 +15,9 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. A boolean indicating whether or not Data Integrity Check is enabled.')
+param enforceDataIntegrityCheckForIscsi bool = false
+
 @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.')
 param volumes volumeType[]?
 
@@ -105,6 +108,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' 
   parent: elasticSan
   identity: identity
   properties: {
+    enforceDataIntegrityCheckForIscsi: enforceDataIntegrityCheckForIscsi
     encryption: !empty(customerManagedKey)
       ? 'EncryptionAtRestWithCustomerManagedKey'
       : 'EncryptionAtRestWithPlatformKey'
@@ -219,6 +223,8 @@ output resourceGroupName string = resourceGroup().name
 @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
 output systemAssignedMIPrincipalId string? = volumeGroup.?identity.?principalId
 
+@description('A boolean indicating whether or not Data Integrity Check is enabled or not.')
+output enforceDataIntegrityCheckForIscsi bool = volumeGroup.properties.enforceDataIntegrityCheckForIscsi
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [
   for (volume, i) in (volumes ?? []): {

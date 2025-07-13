@@ -198,6 +198,7 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       elasticSanName: elasticSan.name
       name: volumeGroup.name
       location: location
+      enforceDataIntegrityCheckForIscsi: volumeGroup.?enforceDataIntegrityCheckForIscsi
       volumes: volumeGroup.?volumes
       virtualNetworkRules: volumeGroup.?virtualNetworkRules
       managedIdentities: volumeGroup.?managedIdentities
@@ -269,6 +270,7 @@ output volumeGroups volumeGroupOutputType[] = [
     resourceId: elasticSan_volumeGroups[i].outputs.resourceId
     name: elasticSan_volumeGroups[i].outputs.name
     location: elasticSan_volumeGroups[i].outputs.location
+    enforceDataIntegrityCheckForIscsi: elasticSan_volumeGroups[i].outputs.enforceDataIntegrityCheckForIscsi
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
     systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.?systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
@@ -319,6 +321,9 @@ type volumeGroupOutputType = {
 
   @sys.description('The resource group of the deployed Elastic SAN Volume Group.')
   resourceGroupName: string
+
+  @sys.description('The configuration indicating whether the Data Integrity Check is enabled or not.')
+  enforceDataIntegrityCheckForIscsi: bool
 
   @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
   systemAssignedMIPrincipalId: string?
