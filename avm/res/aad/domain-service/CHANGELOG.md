@@ -13,7 +13,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - `Tags` property not an object anymore
 - Rebranding to Microsoft Entra
 
-## Breaking Changes
+### Breaking Changes
 
 - None
 

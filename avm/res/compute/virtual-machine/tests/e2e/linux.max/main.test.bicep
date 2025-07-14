@@ -206,7 +206,7 @@ module testDeployment '../../../main.bicep' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
-    zone: 1
+    availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -369,7 +369,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
 }
