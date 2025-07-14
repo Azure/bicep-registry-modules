@@ -128,15 +128,15 @@ param subnets subnetType[] = [
 
 // Subnet reference variables - determine whether to use new VNet outputs or existing subnet resource IDs
 var applicationSubnetResourceId = deployVirtualNetwork
-  ? virtualNetwork.outputs.subnetResourceIds[0]
+  ? virtualNetwork!.outputs.subnetResourceIds[0]
   : existingApplicationSubnetResourceId
 var privateEndpointSubnetResourceId = deployVirtualNetwork
-  ? virtualNetwork.outputs.subnetResourceIds[1]
+  ? virtualNetwork!.outputs.subnetResourceIds[1]
   : existingPrivateEndpointSubnetResourceId
 
 // Virtual network resource ID - for DNS zone links
 var virtualNetworkResourceId = deployVirtualNetwork
-  ? virtualNetwork.outputs.resourceId
+  ? virtualNetwork!.outputs.resourceId
   : existingVirtualNetworkResourceId
 
 // Parameter validation - ensure required parameters are provided when using existing VNet
@@ -453,22 +453,22 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (de
       {
         name: subnets[0].name
         addressPrefix: subnets[0].addressPrefix
-        networkSecurityGroupResourceId: applicationNsg.outputs.resourceId
+        networkSecurityGroupResourceId: applicationNsg!.outputs.resourceId
       }
       {
         name: subnets[1].name
         addressPrefix: subnets[1].addressPrefix
-        networkSecurityGroupResourceId: privateEndpointNsg.outputs.resourceId
+        networkSecurityGroupResourceId: privateEndpointNsg!.outputs.resourceId
       }
       {
         name: subnets[2].name
         addressPrefix: subnets[2].addressPrefix
-        networkSecurityGroupResourceId: bootDiagnosticsNsg.outputs.resourceId
+        networkSecurityGroupResourceId: bootDiagnosticsNsg!.outputs.resourceId
       }
       {
         name: subnets[3].name
         addressPrefix: subnets[3].addressPrefix
-        networkSecurityGroupResourceId: bastionNsg.outputs.resourceId
+        networkSecurityGroupResourceId: bastionNsg!.outputs.resourceId
       }
     ]
     enableTelemetry: enableTelemetry
@@ -502,15 +502,14 @@ var sshDeploymentScriptName = '${take(uniqueString(resourceGroup().name, locatio
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (empty(sshPublicKey)) {
   name: '${uniqueString(resourceGroup().id, location)}-${managedIdentityName}'
-  tags: tags
   location: location
 }
 
-resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, 'ssh-Contributor', managedIdentity.id)
+resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (empty(sshPublicKey)) {
+  name: guid(resourceGroup().id, 'ssh-Contributor', managedIdentity!.id)
   scope: resourceGroup()
   properties: {
-    principalId: managedIdentity.properties.principalId
+    principalId: managedIdentity!.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -524,11 +523,10 @@ module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1'
   params: {
     name: sshDeploymentScriptName
     location: location
-    tags: tags
     kind: 'AzurePowerShell'
     managedIdentities: {
       userAssignedResourceIds: [
-        managedIdentity.id
+        managedIdentity!.id
       ]
     }
     azPowerShellVersion: '9.0'
@@ -545,7 +543,6 @@ module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1'
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
   name: '${take(uniqueString(resourceGroup().name, location),4)}-${sshKeyName}'
   location: location
-  tags: tags
   properties: {
     publicKey: (!empty(sshPublicKey)) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
   }
@@ -629,7 +626,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.1' = {
     nicConfigurations: [
       for (nicConfig, index) in virtualMachineNicConfigurations: {
         name: nicConfig.name
-        tags: tags
         ipConfigurations: [
           {
             name: nicConfig.ipConfigurations[0].name

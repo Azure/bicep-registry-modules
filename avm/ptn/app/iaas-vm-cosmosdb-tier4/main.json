@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "8993692267069766419"
+      "templateHash": "11853088744963629067"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration."
@@ -506,10 +506,10 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
       "name": "[format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))]",
-      "tags": "[parameters('tags')]",
       "location": "[parameters('location')]"
     },
     "msiRGContrRoleAssignment": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))))]",
@@ -527,7 +527,6 @@
       "apiVersion": "2024-07-01",
       "name": "[format('{0}-{1}', take(uniqueString(resourceGroup().name, parameters('location')), 4), variables('sshKeyName'))]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
       "properties": {
         "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshDeploymentScript').outputs.outputs.value.publicKey)]"
       },
@@ -11428,9 +11427,6 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "tags": {
-            "value": "[parameters('tags')]"
-          },
           "kind": {
             "value": "AzurePowerShell"
           },
@@ -13078,7 +13074,7 @@
               {
                 "name": "value",
                 "count": "[length(parameters('virtualMachineNicConfigurations'))]",
-                "input": "[createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].name, 'tags', parameters('tags'), 'ipConfigurations', createArray(createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].ipConfigurations[0].name, 'subnetResourceId', if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], parameters('existingApplicationSubnetResourceId')))), 'deleteOption', parameters('virtualMachineNicConfigurations')[copyIndex('value')].deleteOption)]"
+                "input": "[createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].name, 'ipConfigurations', createArray(createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].ipConfigurations[0].name, 'subnetResourceId', if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], parameters('existingApplicationSubnetResourceId')))), 'deleteOption', parameters('virtualMachineNicConfigurations')[copyIndex('value')].deleteOption)]"
               }
             ]
           },
