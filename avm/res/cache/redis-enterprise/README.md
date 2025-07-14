@@ -478,6 +478,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'cremax001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     database: {
       clientProtocol: 'Plaintext'
       clusteringPolicy: 'EnterpriseCluster'
@@ -574,11 +579,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -600,6 +600,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "cremax001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "database": {
       "value": {
         "clientProtocol": "Plaintext",
@@ -717,13 +724,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -742,6 +742,11 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'cremax001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param database = {
   clientProtocol: 'Plaintext'
   clusteringPolicy: 'EnterpriseCluster'
@@ -838,11 +843,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -977,6 +977,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'crewaf001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     database: {
       diagnosticSettings: [
         {
@@ -1034,11 +1039,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -1060,6 +1060,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "crewaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "database": {
       "value": {
         "diagnosticSettings": [
@@ -1126,13 +1133,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -1151,6 +1151,11 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'crewaf001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param database = {
   diagnosticSettings: [
     {
@@ -1208,11 +1213,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -1236,6 +1236,7 @@ param zones = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs. |
 | [`capacity`](#parameter-capacity) | int | The size of the cluster. Only supported on Redis Enterprise SKUs: Enterprise, EnterpriseFlash. Valid values are (2, 4, 6, 8, 10) for Enterprise SKUs and (3, 9) for EnterpriseFlash SKUs. [Learn more](https://learn.microsoft.com/azure/azure-cache-for-redis/cache-best-practices-enterprise-tiers#sharding-and-cpu-utilization). |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`database`](#parameter-database) | object | Database configuration. |
@@ -1249,7 +1250,6 @@ param zones = [
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`zones`](#parameter-zones) | array | The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs. |
 
 ### Parameter: `name`
 
@@ -1277,6 +1277,29 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `availabilityZones`
+
+The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacity`
 
@@ -2683,29 +2706,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `zones`
-
-The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 
