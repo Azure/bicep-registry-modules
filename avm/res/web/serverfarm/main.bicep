@@ -28,7 +28,7 @@ param location string = resourceGroup().location
 @allowed([
   'app'
   'elastic'
-  'functionApp'
+  'functionapp'
   'windows'
   'linux'
 ])
@@ -136,7 +136,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' = {
   name: name
   kind: kind
   location: location

@@ -644,7 +644,7 @@ Kind of server OS.
   [
     'app'
     'elastic'
-    'functionApp'
+    'functionapp'
     'linux'
     'windows'
   ]
