@@ -42,6 +42,43 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/site:<version>`.
 
+### Configuring Access Restrictions
+
+Access restrictions for App Service can be configured using the `configs` parameter with `name: 'web'` and the `ipSecurityRestrictions` property. This allows you to control which sources can access your web application, including:
+
+- **Service Tags**: Azure service tags like `AzureFrontDoor.Backend`, `GatewayManager`, `ApiManagement`
+- **IP Addresses/Ranges**: Specific IP addresses or CIDR blocks (e.g., `203.0.113.0/24`)  
+- **Header-based Validation**: Additional validation using HTTP headers like `X-Azure-FDID` for Front Door
+- **Virtual Network Subnets**: Restrict access to specific VNet subnets using `vnetSubnetResourceId`
+
+Each restriction rule has a priority (lower numbers = higher priority) and an action (`Allow` or `Deny`). 
+
+**Quick Example for Front Door:**
+```bicep
+configs: [
+  {
+    name: 'web'
+    properties: {
+      ipSecurityRestrictions: [
+        {
+          action: 'Allow'
+          description: 'Allow Azure Front Door'
+          name: 'Front Door'
+          priority: 100
+          ipAddress: 'AzureFrontDoor.Backend'
+          tag: 'ServiceTag'
+        }
+      ]
+      ipSecurityRestrictionsDefaultAction: 'Deny'
+    }
+  }
+]
+```
+
+>**Note**: For Application Gateway scenarios, consider using VNet subnet restrictions instead of the `GatewayManager` service tag for better security isolation.
+
+For detailed examples, see Example 10 below.
+
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
 - [Linux Container Web App, using only defaults](#example-3-linux-container-web-app-using-only-defaults)

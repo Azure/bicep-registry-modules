@@ -74,7 +74,9 @@ module testDeployment '../../../main.bicep' = [
                 tag: 'ServiceTag'
               }
               {
-                // Allow access from Application Gateway service
+                // Allow access from Application Gateway service tag
+                // Note: For better security, consider using vnetSubnetResourceId instead 
+                // to restrict to specific Application Gateway subnet
                 action: 'Allow'
                 description: 'Allow access from Application Gateway'
                 name: 'Application Gateway'
