@@ -2,11 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/machine-learning-services/workspace/CHANGELOG.md).
 
-## 0.12.2
+## 0.13.0
 
 ### Changes
 
-- Regenerate main.json with latest bicep version 0.36.177.2456
+- Add support for datastores
 
 ### Breaking Changes
 
