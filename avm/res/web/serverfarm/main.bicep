@@ -147,7 +147,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' = {
     tier: skuName == 'FC1' ? 'FlexConsumption' : null
   }
   properties: {
-    workerTierName: workerTierName
+    workerTierName: skuName == 'FC1' ? '' : workerTierName
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId)
       ? {
           id: appServiceEnvironmentId

@@ -44,7 +44,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       kind: 'functionapp'
-      workerTierName: 'FlexConsumption'
       skuName: 'FC1'
       reserved: true
     }
