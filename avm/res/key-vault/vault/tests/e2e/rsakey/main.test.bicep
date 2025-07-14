@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
                   timeBeforeExpiry: 'P2M'
                 }
                 action: {
-                  type: 'Rotate'
+                  type: 'rotate'
                 }
               }
               {
@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
                   timeBeforeExpiry: 'P30D'
                 }
                 action: {
-                  type: 'Notify'
+                  type: 'notify'
                 }
               }
             ]

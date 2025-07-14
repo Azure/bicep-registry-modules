@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "18239098103515203256"
+      "version": "0.36.1.42791",
+      "templateHash": "5125179963375806993"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -119,10 +119,12 @@
     "privateLinkPrivateDnsZones": {
       "type": "array",
       "defaultValue": [
+        "privatelink.{regionName}.azurecontainerapps.io",
         "privatelink.api.azureml.ms",
         "privatelink.notebooks.azure.net",
         "privatelink.cognitiveservices.azure.com",
         "privatelink.openai.azure.com",
+        "privatelink.services.ai.azure.com",
         "privatelink.directline.botframework.com",
         "privatelink.token.botframework.com",
         "privatelink.servicebus.windows.net",
@@ -165,6 +167,7 @@
         "privatelink.dp.kubernetesconfiguration.azure.com",
         "privatelink.eventgrid.azure.net",
         "privatelink.azure-api.net",
+        "privatelink.azurehealthcareapis.com",
         "privatelink.workspace.azurehealthcareapis.com",
         "privatelink.fhir.azurehealthcareapis.com",
         "privatelink.dicom.azurehealthcareapis.com",
@@ -212,6 +215,16 @@
         "description": "Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` ."
       }
     },
+    "additionalPrivateLinkPrivateDnsZonesToInclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`."
+      }
+    },
     "virtualNetworkResourceIdsToLinkTo": {
       "type": "array",
       "defaultValue": [],
@@ -257,7 +270,8 @@
         }
       }
     ],
-    "privateLinkPrivateDnsZonesWithExclusions": "[filter(parameters('privateLinkPrivateDnsZones'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
+    "combinedPrivateLinkPrivateDnsZonesProvided": "[union(parameters('privateLinkPrivateDnsZones'), coalesce(parameters('additionalPrivateLinkPrivateDnsZonesToInclude'), createArray()))]",
+    "privateLinkPrivateDnsZonesWithExclusions": "[filter(variables('combinedPrivateLinkPrivateDnsZonesProvided'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
     "azureRegionGeoCodeShortNameAsKey": {
       "uaenorth": "uan",
       "northcentralus": "ncus",
@@ -431,7 +445,7 @@
       },
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
-      "apiVersion": "2016-09-01",
+      "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Network/privateDnsZones/{0}', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName)]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName))]",
       "properties": {
@@ -473,8 +487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "6420876829061947385"
+              "version": "0.36.1.42791",
+              "templateHash": "12110149055103431833"
             },
             "name": "Private DNS Zone Virtual Network Link Child Module",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."

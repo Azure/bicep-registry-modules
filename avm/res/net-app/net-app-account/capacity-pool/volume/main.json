@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "18265666096420894984"
+      "version": "0.35.1.17967",
+      "templateHash": "18208711298950274755"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."

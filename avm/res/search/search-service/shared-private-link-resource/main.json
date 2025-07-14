@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "17921821442902726660"
+      "version": "0.36.1.42791",
+      "templateHash": "8458710175416618801"
     },
     "name": "Search Services Private Link Resources",
     "description": "This module deploys a Search Service Private Link Resource."
@@ -54,7 +54,7 @@
     "searchService": {
       "existing": true,
       "type": "Microsoft.Search/searchServices",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2025-02-01-preview",
       "name": "[parameters('searchServiceName')]"
     },
     "sharedPrivateLinkResource": {

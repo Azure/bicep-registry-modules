@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6509557093509886693"
+      "version": "0.36.1.42791",
+      "templateHash": "16289812864199382767"
     },
-    "name": "Azure Active Directory Domain Services",
-    "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance."
+    "name": "Microsoft Entra Domain Services",
+    "description": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance."
   },
   "definitions": {
     "replicaSetType": {
@@ -269,14 +269,14 @@
       "minLength": 1,
       "maxLength": 19,
       "metadata": {
-        "description": "Optional. The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters."
+        "description": "Optional. The name of the Azure AD DS resource. Defaults to the domain name specific to the Azure AD DS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters."
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. The location to deploy the Azure ADDS Services. Uses the resource group location if not specified."
+        "description": "Optional. The location to deploy the Azure AD DS Services. Uses the resource group location if not specified."
       }
     },
     "enableTelemetry": {
@@ -290,20 +290,20 @@
       "type": "string",
       "metadata": {
         "example": "  - 'contoso.onmicrosoft.com'\n  - 'aaddscontoso.com'\n  ",
-        "description": "Required. The domain name specific to the Azure ADDS service."
+        "description": "Required. The domain name specific to the Azure AD DS service."
       },
       "minLength": 1
     },
     "sku": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Enterprise",
       "allowedValues": [
         "Standard",
         "Enterprise",
         "Premium"
       ],
       "metadata": {
-        "description": "Optional. The name of the SKU specific to Azure ADDS Services."
+        "description": "Optional. The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise."
       }
     },
     "replicaSets": {
@@ -456,7 +456,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. The value is to enable the Secure LDAP for external services of Azure ADDS Services."
+        "description": "Optional. The value is to enable the Secure LDAP for external services of Azure AD DS Services."
       }
     },
     "ldaps": {
@@ -468,6 +468,17 @@
       ],
       "metadata": {
         "description": "Optional. A flag to determine whether or not Secure LDAP is enabled or disabled."
+      }
+    },
+    "syncScope": {
+      "type": "string",
+      "defaultValue": "All",
+      "allowedValues": [
+        "All",
+        "CloudOnly"
+      ],
+      "metadata": {
+        "description": "Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All."
       }
     },
     "diagnosticSettings": {
@@ -482,11 +493,14 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AAD/domainServices@2022-12-01#properties/tags"
+        },
         "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -573,7 +587,8 @@
           "kerberosRc4Encryption": "[parameters('kerberosRc4Encryption')]",
           "kerberosArmoring": "[parameters('kerberosArmoring')]"
         },
-        "sku": "[parameters('sku')]"
+        "sku": "[parameters('sku')]",
+        "syncScope": "[parameters('syncScope')]"
       }
     },
     "domainservice_diagnosticSettings": {
@@ -658,21 +673,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The domain name of the Azure Active Directory Domain Services(Azure ADDS)."
+        "description": "The domain name of the Microsoft Entra Domain Services(Azure AD DS)."
       },
       "value": "[parameters('name')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in."
+        "description": "The name of the resource group the Microsoft Entra Domain Services(Azure AD DS) was created in."
       },
       "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Azure Active Directory Domain Services(Azure ADDS)."
+        "description": "The resource ID of the Microsoft Entra Domain Services(Azure AD DS)."
       },
       "value": "[resourceId('Microsoft.AAD/domainServices', parameters('name'))]"
     },

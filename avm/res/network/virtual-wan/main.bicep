@@ -15,13 +15,7 @@ param name string
 param type string = 'Standard'
 
 @description('Optional. True if branch to branch traffic is allowed.')
-param allowBranchToBranchTraffic bool = false
-
-@description('Optional. True if VNET to VNET traffic is allowed.')
-param allowVnetToVnetTraffic bool = false
-
-@description('Optional. VPN encryption to be disabled or not.')
-param disableVpnEncryption bool = false
+param allowBranchToBranchTraffic bool = true
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -67,7 +61,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-virtualwan.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -85,14 +79,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualWan 'Microsoft.Network/virtualWans@2023-04-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2024-07-01' = {
   name: name
   location: location
   tags: tags
   properties: {
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
-    allowVnetToVnetTraffic: allowVnetToVnetTraffic ? allowVnetToVnetTraffic : null
-    disableVpnEncryption: disableVpnEncryption
     type: type
   }
 }
