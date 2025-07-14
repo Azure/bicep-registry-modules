@@ -18,7 +18,7 @@ This module deploys an App Service Plan.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Web/serverfarms` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/serverfarms) |
+| `Microsoft.Web/serverfarms` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/serverfarms) |
 
 ## Usage examples
 
@@ -31,6 +31,7 @@ The following section provides usage examples for the module, which were used to
 - [Using default parameter set](#example-1-using-default-parameter-set)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [WAF-aligned](#example-3-waf-aligned)
+- [FlexConsumption Function App (FC1)](#example-4-flexconsumption-function-app-fc1)
 
 ### Example 1: _Using default parameter set_
 
@@ -443,6 +444,78 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param zoneRedundant = true
+```
+
+</details>
+<p>
+
+### Example 4: _FlexConsumption Function App (FC1)_
+
+This instance deploys an App Service Plan with FC1 SKU for Azure Function Apps using FlexConsumption tier.
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  name: 'serverfarmDeployment'
+  params: {
+    name: 'wsf-fc1-001'
+    location: 'East US'
+    kind: 'functionapp'
+    skuName: 'FC1'
+    reserved: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "wsf-fc1-001"
+    },
+    "location": {
+      "value": "East US"
+    },
+    "kind": {
+      "value": "functionapp"
+    },
+    "skuName": {
+      "value": "FC1"
+    },
+    "reserved": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+param name = 'wsf-fc1-001'
+param location = 'East US'
+param kind = 'functionapp'
+param skuName = 'FC1'
+param reserved = true
 ```
 
 </details>
