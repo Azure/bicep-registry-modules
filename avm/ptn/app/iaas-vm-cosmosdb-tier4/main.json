@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7345411343418725852"
+      "templateHash": "6714842910456771023"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration."
@@ -13063,7 +13063,7 @@
           "publicKeys": {
             "value": [
               {
-                "keyData": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKey').publicKey)]",
+                "keyData": "[reference('sshKey').publicKey]",
                 "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
               }
             ]

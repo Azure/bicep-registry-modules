@@ -547,7 +547,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
   location: location
   tags: tags ?? {}
   properties: {
-    publicKey: (!empty(sshPublicKey)) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
+    publicKey: !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
   }
 }
 
@@ -620,7 +620,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.1' = {
     encryptionAtHost: encryptionAtHost
     publicKeys: [
       {
-        keyData: (!empty(sshPublicKey)) ? sshPublicKey : sshKey.properties.publicKey
+        keyData: sshKey.properties.publicKey
         path: '/home/${adminUsername}/.ssh/authorized_keys'
       }
     ]
