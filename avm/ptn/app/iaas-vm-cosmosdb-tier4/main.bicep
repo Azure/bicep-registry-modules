@@ -503,6 +503,7 @@ var sshDeploymentScriptName = '${take(uniqueString(resourceGroup().name, locatio
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (empty(sshPublicKey)) {
   name: '${uniqueString(resourceGroup().id, location)}-${managedIdentityName}'
   location: location
+  tags: tags ?? {}
 }
 
 resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (empty(sshPublicKey)) {
@@ -523,6 +524,7 @@ module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1'
   params: {
     name: sshDeploymentScriptName
     location: location
+    tags: tags
     kind: 'AzurePowerShell'
     managedIdentities: {
       userAssignedResourceIds: [
@@ -543,6 +545,7 @@ module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1'
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
   name: '${take(uniqueString(resourceGroup().name, location),4)}-${sshKeyName}'
   location: location
+  tags: tags ?? {}
   properties: {
     publicKey: (!empty(sshPublicKey)) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
   }

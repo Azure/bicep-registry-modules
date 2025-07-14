@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11853088744963629067"
+      "templateHash": "7345411343418725852"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration."
@@ -506,7 +506,8 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
       "name": "[format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))]",
-      "location": "[parameters('location')]"
+      "location": "[parameters('location')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]"
     },
     "msiRGContrRoleAssignment": {
       "condition": "[empty(parameters('sshPublicKey'))]",
@@ -527,6 +528,7 @@
       "apiVersion": "2024-07-01",
       "name": "[format('{0}-{1}', take(uniqueString(resourceGroup().name, parameters('location')), 4), variables('sshKeyName'))]",
       "location": "[parameters('location')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
       "properties": {
         "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshDeploymentScript').outputs.outputs.value.publicKey)]"
       },
@@ -11426,6 +11428,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           },
           "kind": {
             "value": "AzurePowerShell"
