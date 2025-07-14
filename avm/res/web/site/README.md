@@ -44,14 +44,13 @@ The following section provides usage examples for the module, which were used to
 
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Containerized Function App, using only defaults](#example-3-containerized-function-app-using-only-defaults)
-- [Linux Container Web App, using only defaults](#example-4-linux-container-web-app-using-only-defaults)
-- [WAF-aligned](#example-5-waf-aligned)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
-- [Linux Web App, using only defaults](#example-8-linux-web-app-using-only-defaults)
-- [Linux Web App, using large parameter set](#example-9-linux-web-app-using-large-parameter-set)
-- [Windows Web App for Containers, using only defaults](#example-10-windows-web-app-for-containers-using-only-defaults)
+- [Linux Container Web App, using only defaults](#example-3-linux-container-web-app-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
+- [Web App, using only defaults](#example-5-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-6-web-app-using-large-parameter-set)
+- [Linux Web App, using only defaults](#example-7-linux-web-app-using-only-defaults)
+- [Linux Web App, using large parameter set](#example-8-linux-web-app-using-large-parameter-set)
+- [Windows Web App for Containers, using only defaults](#example-9-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -723,57 +722,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 3: _Containerized Function App, using only defaults_
-
-This instance deploys the module as Containerized Function App with Azure Container Apps without requiring a serverFarmResourceId.
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
-  params: {
-    // Required parameters
-    kind: 'functionapp,linux,container,azurecontainerapps'
-    name: '<name>'
-    // Optional parameters
-    managedEnvironmentId: '<managedEnvironmentId>'
-    // Note: serverFarmResourceId is not required for containerized function apps
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "kind": {
-      "value": "functionapp,linux,container,azurecontainerapps"
-    },
-    "name": {
-      "value": "<name>"
-    },
-    "managedEnvironmentId": {
-      "value": "<managedEnvironmentId>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Linux Container Web App, using only defaults_
+### Example 3: _Linux Container Web App, using only defaults_
 
 This instance deploys the module as Linux Container Web App with the minimum set of required parameters.
 
@@ -877,7 +826,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1072,7 +1021,7 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+### Example 5: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -1138,7 +1087,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+### Example 6: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -2041,7 +1990,7 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 8: _Linux Web App, using only defaults_
+### Example 7: _Linux Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -2107,7 +2056,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 9: _Linux Web App, using large parameter set_
+### Example 8: _Linux Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -2828,7 +2777,7 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 10: _Windows Web App for Containers, using only defaults_
+### Example 9: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
@@ -2940,6 +2889,7 @@ param siteConfig = {
 | :-- | :-- | :-- |
 | [`kind`](#parameter-kind) | string | Type of site to deploy. |
 | [`name`](#parameter-name) | string | Name of the site. |
+| [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the site. |
 
 **Optional parameters**
 
@@ -2977,7 +2927,6 @@ param siteConfig = {
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
-| [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the site. Not required for containerized function apps. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: '1.2', ftpsState: 'FtpsOnly'. |
 | [`slots`](#parameter-slots) | array | Configuration for deployment slots for an app. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
@@ -3020,9 +2969,9 @@ Name of the site.
 
 ### Parameter: `serverFarmResourceId`
 
-The resource ID of the app service plan to use for the site. Not required for containerized function apps.
+The resource ID of the app service plan to use for the site.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `appServiceEnvironmentResourceId`
