@@ -45,7 +45,7 @@ function Get-ModifiedFileList {
 
     $CurrentBranch = Get-GitBranchName
     if ($CurrentBranch -eq 'main') {
-        Write-Verbose 'Gathering modified files from the pull request' -Verbose
+        Write-Verbose 'Gathering modified files of main vs upstream main-1' -Verbose
         $Diff = git diff --name-only --diff-filter=AM 'origin/main^' 'main'
     } else {
         Write-Verbose 'Gathering modified files between current branch and upstream main' -Verbose
