@@ -1,13 +1,23 @@
 metadata name = 'IaaS VM with CosmosDB Tier 4'
 metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.'
 
+@export()
+@description('The type of a subnet.')
+type subnetType = {
+  @description('Required. The name of the subnet.')
+  name: string
+
+  @description('Required. The address prefix for the subnet.')
+  addressPrefix: string
+}
+
 @description('Required. Name of the solution which is used to generate unique resource names.')
 param name string
 
-@description('General. Location for all resources.')
+@description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('General. Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc.')
+@description('Optional. Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc.')
 @metadata({
   example: {
     Environment: 'Production'
@@ -16,14 +26,15 @@ param location string = resourceGroup().location
     Application: 'MyApp'
   }
 })
-param tags object?
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // Network security group parameters
-@description('Security. Network security group rules for the application subnet.')
-param applicationNsgRules array = [
+import { securityRuleType } from 'br/public:avm/res/network/network-security-group:0.5.1'
+@description('Optional. Network security group rules for the application subnet.')
+param applicationNsgRules securityRuleType[] = [
   {
     name: 'DenyManagementOutbound'
     properties: {
@@ -44,8 +55,8 @@ param applicationNsgRules array = [
   }
 ]
 
-@description('Security. Network security group rules for the VM.')
-param vmNsgRules array = [
+@description('Optional. Network security group rules for the VM.')
+param vmNsgRules securityRuleType[] = [
   {
     name: 'HTTP'
     properties: {
@@ -80,23 +91,23 @@ param vmNsgRules array = [
 ]
 
 // Virtual network parameters
-@description('Networking. Whether to deploy a new virtual network or use an existing one.')
+@description('Optional. Whether to deploy a new virtual network or use an existing one.')
 param deployVirtualNetwork bool = true
 
-@description('Networking. Existing virtual network resource ID. Required when deployVirtualNetwork is false.')
+@description('Optional. Existing virtual network resource ID. Required when deployVirtualNetwork is false.')
 param existingVirtualNetworkResourceId string = ''
 
-@description('Networking. Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.')
+@description('Optional. Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.')
 param existingApplicationSubnetResourceId string = ''
 
-@description('Networking. Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.')
+@description('Optional. Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.')
 param existingPrivateEndpointSubnetResourceId string = ''
 
-@description('Networking. Address prefix for the virtual network. Only used when deployVirtualNetwork is true.')
+@description('Optional. Address prefix for the virtual network. Only used when deployVirtualNetwork is true.')
 param vnetAddressPrefix string = '10.0.0.0/16'
 
-@description('Networking. Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.')
-param subnets array = [
+@description('Optional. Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.')
+param subnets subnetType[] = [
   {
     name: 'snet-application'
     addressPrefix: '10.0.0.0/24'
@@ -132,23 +143,23 @@ var virtualNetworkResourceId = deployVirtualNetwork
 // When deployVirtualNetwork is false, existingVirtualNetworkResourceId, existingApplicationSubnetResourceId, and existingPrivateEndpointSubnetResourceId must all be provided
 
 // Virtual machine parameters
-@description('Compute. Size of the virtual machine.')
+@description('Optional. Size of the virtual machine.')
 param vmSize string = 'Standard_D2s_v3'
 
-@description('Security. Admin username for the virtual machine.')
+@description('Optional. Admin username for the virtual machine.')
 param adminUsername string = 'azureuser'
 
-@description('Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated.')
+@description('Optional. SSH public key for the virtual machine. If empty, a new SSH key will be generated.')
 @secure()
 param sshPublicKey string = ''
 
-@description('Security. Enables encryption at host for the virtual machine.')
-param encryptionAtHost bool = true
+@description('Optional. Enables encryption at host for the virtual machine.')
+param encryptionAtHost bool = false
 
-@description('Compute. Virtual machine availability zone. Set to 0 for no zone.')
+@description('Optional. Virtual machine availability zone. Set to 0 for no zone.')
 param virtualMachineZone int = 1
 
-@description('Compute. Virtual machine image reference configuration.')
+@description('Optional. Virtual machine image reference configuration.')
 param virtualMachineImageReference object = {
   publisher: 'canonical'
   offer: 'ubuntu-24_04-lts'
@@ -156,7 +167,7 @@ param virtualMachineImageReference object = {
   version: 'latest'
 }
 
-@description('Storage. Virtual machine OS disk configuration.')
+@description('Optional. Virtual machine OS disk configuration.')
 param virtualMachineOsDisk object = {
   createOption: 'FromImage'
   diskSizeGB: 30
@@ -166,12 +177,12 @@ param virtualMachineOsDisk object = {
   }
 }
 
-@description('Identity. Virtual machine managed identity configuration.')
+@description('Optional. Virtual machine managed identity configuration.')
 param virtualMachineManagedIdentities object = {
   systemAssigned: true
 }
 
-@description('Networking. Virtual machine NIC configurations.')
+@description('Optional. Virtual machine NIC configurations.')
 param virtualMachineNicConfigurations array = [
   {
     name: 'primary-nic'
@@ -185,14 +196,14 @@ param virtualMachineNicConfigurations array = [
 ]
 
 // Storage account parameters
-@description('Storage. Storage account SKU configuration.')
+@description('Optional. Storage account SKU configuration.')
 param storageAccountConfiguration object = {
   name: 'Standard_GRS'
   tier: 'Standard'
 }
 
 // Load balancer parameters
-@description('Networking. Load balancer configuration.')
+@description('Optional. Load balancer configuration.')
 param loadBalancerConfiguration object = {
   frontendPort: 80
   backendPort: 80
@@ -223,7 +234,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
   params: {
     name: 'nsg-${name}-vm'
     location: location
-    tags: tags ?? {}
+    tags: tags
     securityRules: vmNsgRules
     enableTelemetry: enableTelemetry
   }
@@ -235,7 +246,7 @@ module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' =
   params: {
     name: 'nsg-${name}-application'
     location: location
-    tags: tags ?? {}
+    tags: tags
     securityRules: applicationNsgRules
     enableTelemetry: enableTelemetry
   }
@@ -246,7 +257,7 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.
   params: {
     name: 'nsg-${name}-privateendpoints'
     location: location
-    tags: tags ?? {}
+    tags: tags
     securityRules: [
       {
         name: 'DenyManagementOutbound'
@@ -276,7 +287,7 @@ module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.
   params: {
     name: 'nsg-${name}-bootdiagnostics'
     location: location
-    tags: tags ?? {}
+    tags: tags
     securityRules: [
       {
         name: 'DenyManagementOutbound'
@@ -306,7 +317,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if 
   params: {
     name: 'nsg-${name}-bastion'
     location: location
-    tags: tags ?? {}
+    tags: tags
     securityRules: [
       // Required Inbound Rules for Azure Bastion
       {
@@ -434,7 +445,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (de
   params: {
     name: 'vnet-${name}'
     location: location
-    tags: tags ?? {}
+    tags: tags
     addressPrefixes: [
       vnetAddressPrefix
     ]
@@ -465,12 +476,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (de
 }
 
 // Storage account for boot diagnostics
-module storageAccount 'br/public:avm/res/storage/storage-account:0.22.1' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     name: 'st${take(replace(replace(replace(replace(toLower(name), '-', ''), '_', ''), '#', ''), '.', ''), 6)}${take(uniqueString(resourceGroup().id), 10)}'
     location: location
-    tags: tags ?? {}
+    tags: tags
     skuName: storageAccountConfiguration.name
     allowBlobPublicAccess: false
     defaultToOAuthAuthentication: true
@@ -491,7 +502,7 @@ var sshDeploymentScriptName = '${take(uniqueString(resourceGroup().name, locatio
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (empty(sshPublicKey)) {
   name: '${uniqueString(resourceGroup().id, location)}-${managedIdentityName}'
-  tags: tags ?? {}
+  tags: tags
   location: location
 }
 
@@ -508,22 +519,23 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(sshPublicKey)) {
-  name: sshDeploymentScriptName
-  location: location
-  tags: tags ?? {}
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
+module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = if (empty(sshPublicKey)) {
+  name: '${uniqueString(deployment().name, location)}-ssh-script'
+  params: {
+    name: sshDeploymentScriptName
+    location: location
+    tags: tags
+    kind: 'AzurePowerShell'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        managedIdentity.id
+      ]
     }
-  }
-  properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
+    enableTelemetry: enableTelemetry
   }
   dependsOn: [
     msiRGContrRoleAssignment
@@ -533,9 +545,9 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' 
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
   name: '${take(uniqueString(resourceGroup().name, location),4)}-${sshKeyName}'
   location: location
-  tags: tags ?? {}
+  tags: tags
   properties: {
-    publicKey: (!empty(sshPublicKey)) ? sshPublicKey : sshDeploymentScript.properties.outputs.publicKey
+    publicKey: (!empty(sshPublicKey)) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
   }
 }
 
@@ -545,7 +557,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
   params: {
     name: 'lb-${name}'
     location: location
-    tags: tags ?? {}
+    tags: tags
     frontendIPConfigurations: [
       {
         name: '${name}-lb-frontendconfig01'
@@ -593,12 +605,12 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
 }
 
 // Virtual machine
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.1' = {
   name: '${uniqueString(deployment().name, location)}-vm'
   params: {
     name: 'vm-${name}'
     location: location
-    tags: tags ?? {}
+    tags: tags
     zone: virtualMachineZone
     managedIdentities: virtualMachineManagedIdentities
     osType: 'Linux'
@@ -617,7 +629,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     nicConfigurations: [
       for (nicConfig, index) in virtualMachineNicConfigurations: {
         name: nicConfig.name
-        tags: tags ?? {}
+        tags: tags
         ipConfigurations: [
           {
             name: nicConfig.ipConfigurations[0].name
@@ -634,12 +646,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
 }
 
 // Recovery Services Vault
-module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' = {
+module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.2' = {
   name: '${uniqueString(deployment().name, location)}-rsv'
   params: {
     name: 'rsv-${name}'
     location: location
-    tags: tags ?? {}
+    tags: tags
     publicNetworkAccess: 'Disabled'
     replicationAlertSettings: {
       customEmailAddresses: [
@@ -659,7 +671,7 @@ module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' =
   params: {
     name: 'cosmos-${toLower(name)}'
     location: location
-    tags: tags ?? {}
+    tags: tags
     defaultConsistencyLevel: 'Session'
 
     capabilitiesToAdd: [
@@ -704,7 +716,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   params: {
     name: 'privatelink.documents.azure.com'
     location: 'global'
-    tags: tags ?? {}
+    tags: tags
     virtualNetworkLinks: [
       {
         name: uniqueString(virtualNetworkResourceId)
@@ -722,7 +734,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
   params: {
     name: 'pep-${name}-cosmos'
     location: location
-    tags: tags ?? {}
+    tags: tags
     subnetResourceId: privateEndpointSubnetResourceId
     privateLinkServiceConnections: [
       {
@@ -753,7 +765,7 @@ module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' 
   params: {
     name: 'privatelink.blob.${environment().suffixes.storage}'
     location: 'global'
-    tags: tags ?? {}
+    tags: tags
     virtualNetworkLinks: [
       {
         name: uniqueString(virtualNetworkResourceId, 'storage')
@@ -771,7 +783,7 @@ module storagePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0
   params: {
     name: 'pep-${name}-storage'
     location: location
-    tags: tags ?? {}
+    tags: tags
     subnetResourceId: privateEndpointSubnetResourceId
     privateLinkServiceConnections: [
       {
@@ -818,11 +830,5 @@ output storagePrivateEndpointResourceId string = storagePrivateEndpoint.outputs.
 @description('Resource. The resource ID of the CosmosDB private endpoint.')
 output cosmosDbPrivateEndpointResourceId string = privateEndpoint.outputs.resourceId
 
-@description('Resource. The resource ID.')
-output resourceId string = virtualMachine.outputs.resourceId
-
-@description('Resource. Resource Group Name.')
+@description('Resource. The name of the resource group.')
 output resourceGroupName string = resourceGroup().name
-
-@description('Resource. The name of the virtual machine.')
-output name string = virtualMachine.outputs.name

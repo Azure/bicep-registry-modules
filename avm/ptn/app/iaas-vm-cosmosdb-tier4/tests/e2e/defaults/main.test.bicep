@@ -45,14 +45,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
-      location: resourceLocation
-      encryptionAtHost: false
-      tags: {
-        Environment: 'Test'
-        Owner: 'TeamName'
-        CostCenter: 'IT'
-        Application: 'IaaSVMCosmosDB'
-      }
     }
   }
 ]

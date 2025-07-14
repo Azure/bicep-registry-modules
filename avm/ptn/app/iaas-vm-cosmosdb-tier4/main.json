@@ -6,10 +6,195 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "410889998196215514"
+      "templateHash": "7042418501010356728"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration."
+  },
+  "definitions": {
+    "subnetType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the subnet."
+          }
+        },
+        "addressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The address prefix for the subnet."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a subnet."
+      }
+    },
+    "securityRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the security rule."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "access": {
+              "type": "string",
+              "allowedValues": [
+                "Allow",
+                "Deny"
+              ],
+              "metadata": {
+                "description": "Required. Whether network traffic is allowed or denied."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The description of the security rule."
+              }
+            },
+            "destinationAddressPrefix": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+              }
+            },
+            "destinationAddressPrefixes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+              }
+            },
+            "destinationApplicationSecurityGroupResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource IDs of the application security groups specified as destination."
+              }
+            },
+            "destinationPortRange": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+              }
+            },
+            "destinationPortRanges": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The destination port ranges."
+              }
+            },
+            "direction": {
+              "type": "string",
+              "allowedValues": [
+                "Inbound",
+                "Outbound"
+              ],
+              "metadata": {
+                "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+              }
+            },
+            "priority": {
+              "type": "int",
+              "minValue": 100,
+              "maxValue": 4096,
+              "metadata": {
+                "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+              }
+            },
+            "protocol": {
+              "type": "string",
+              "allowedValues": [
+                "*",
+                "Ah",
+                "Esp",
+                "Icmp",
+                "Tcp",
+                "Udp"
+              ],
+              "metadata": {
+                "description": "Required. Network protocol this rule applies to."
+              }
+            },
+            "sourceAddressPrefix": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+              }
+            },
+            "sourceAddressPrefixes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The CIDR or source IP ranges."
+              }
+            },
+            "sourceApplicationSecurityGroupResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource IDs of the application security groups specified as source."
+              }
+            },
+            "sourcePortRange": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+              }
+            },
+            "sourcePortRanges": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The source port ranges."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the security rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a security rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-security-group:0.5.1"
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -22,21 +207,24 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "General. Location for all resources."
+        "description": "Optional. Location for all resources."
       }
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+        },
         "example": {
           "Environment": "Production",
           "Owner": "TeamName",
           "CostCenter": "IT",
           "Application": "MyApp"
         },
-        "description": "General. Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc."
-      }
+        "description": "Optional. Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc."
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -47,6 +235,9 @@
     },
     "applicationNsgRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/securityRuleType"
+      },
       "defaultValue": [
         {
           "name": "DenyManagementOutbound",
@@ -68,11 +259,14 @@
         }
       ],
       "metadata": {
-        "description": "Security. Network security group rules for the application subnet."
+        "description": "Optional. Network security group rules for the application subnet."
       }
     },
     "vmNsgRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/securityRuleType"
+      },
       "defaultValue": [
         {
           "name": "HTTP",
@@ -107,46 +301,49 @@
         }
       ],
       "metadata": {
-        "description": "Security. Network security group rules for the VM."
+        "description": "Optional. Network security group rules for the VM."
       }
     },
     "deployVirtualNetwork": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Networking. Whether to deploy a new virtual network or use an existing one."
+        "description": "Optional. Whether to deploy a new virtual network or use an existing one."
       }
     },
     "existingVirtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Networking. Existing virtual network resource ID. Required when deployVirtualNetwork is false."
+        "description": "Optional. Existing virtual network resource ID. Required when deployVirtualNetwork is false."
       }
     },
     "existingApplicationSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Networking. Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false."
+        "description": "Optional. Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false."
       }
     },
     "existingPrivateEndpointSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Networking. Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false."
+        "description": "Optional. Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false."
       }
     },
     "vnetAddressPrefix": {
       "type": "string",
       "defaultValue": "10.0.0.0/16",
       "metadata": {
-        "description": "Networking. Address prefix for the virtual network. Only used when deployVirtualNetwork is true."
+        "description": "Optional. Address prefix for the virtual network. Only used when deployVirtualNetwork is true."
       }
     },
     "subnets": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/subnetType"
+      },
       "defaultValue": [
         {
           "name": "snet-application",
@@ -166,42 +363,42 @@
         }
       ],
       "metadata": {
-        "description": "Networking. Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true."
+        "description": "Optional. Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true."
       }
     },
     "vmSize": {
       "type": "string",
       "defaultValue": "Standard_D2s_v3",
       "metadata": {
-        "description": "Compute. Size of the virtual machine."
+        "description": "Optional. Size of the virtual machine."
       }
     },
     "adminUsername": {
       "type": "string",
       "defaultValue": "azureuser",
       "metadata": {
-        "description": "Security. Admin username for the virtual machine."
+        "description": "Optional. Admin username for the virtual machine."
       }
     },
     "sshPublicKey": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated."
+        "description": "Optional. SSH public key for the virtual machine. If empty, a new SSH key will be generated."
       }
     },
     "encryptionAtHost": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
-        "description": "Security. Enables encryption at host for the virtual machine."
+        "description": "Optional. Enables encryption at host for the virtual machine."
       }
     },
     "virtualMachineZone": {
       "type": "int",
       "defaultValue": 1,
       "metadata": {
-        "description": "Compute. Virtual machine availability zone. Set to 0 for no zone."
+        "description": "Optional. Virtual machine availability zone. Set to 0 for no zone."
       }
     },
     "virtualMachineImageReference": {
@@ -213,7 +410,7 @@
         "version": "latest"
       },
       "metadata": {
-        "description": "Compute. Virtual machine image reference configuration."
+        "description": "Optional. Virtual machine image reference configuration."
       }
     },
     "virtualMachineOsDisk": {
@@ -227,7 +424,7 @@
         }
       },
       "metadata": {
-        "description": "Storage. Virtual machine OS disk configuration."
+        "description": "Optional. Virtual machine OS disk configuration."
       }
     },
     "virtualMachineManagedIdentities": {
@@ -236,7 +433,7 @@
         "systemAssigned": true
       },
       "metadata": {
-        "description": "Identity. Virtual machine managed identity configuration."
+        "description": "Optional. Virtual machine managed identity configuration."
       }
     },
     "virtualMachineNicConfigurations": {
@@ -253,7 +450,7 @@
         }
       ],
       "metadata": {
-        "description": "Networking. Virtual machine NIC configurations."
+        "description": "Optional. Virtual machine NIC configurations."
       }
     },
     "storageAccountConfiguration": {
@@ -263,7 +460,7 @@
         "tier": "Standard"
       },
       "metadata": {
-        "description": "Storage. Storage account SKU configuration."
+        "description": "Optional. Storage account SKU configuration."
       }
     },
     "loadBalancerConfiguration": {
@@ -273,7 +470,7 @@
         "backendPort": 80
       },
       "metadata": {
-        "description": "Networking. Load balancer configuration."
+        "description": "Optional. Load balancer configuration."
       }
     }
   },
@@ -309,7 +506,7 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
       "name": "[format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))]",
-      "tags": "[coalesce(parameters('tags'), createObject())]",
+      "tags": "[parameters('tags')]",
       "location": "[parameters('location')]"
     },
     "msiRGContrRoleAssignment": {
@@ -325,39 +522,14 @@
         "managedIdentity"
       ]
     },
-    "sshDeploymentScript": {
-      "condition": "[empty(parameters('sshPublicKey'))]",
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2023-08-01",
-      "name": "[variables('sshDeploymentScriptName')]",
-      "location": "[parameters('location')]",
-      "tags": "[coalesce(parameters('tags'), createObject())]",
-      "kind": "AzurePowerShell",
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))))]": {}
-        }
-      },
-      "properties": {
-        "azPowerShellVersion": "9.0",
-        "retentionInterval": "P1D",
-        "arguments": "[format('-SSHKeyName \"{0}\" -ResourceGroupName \"{1}\"', variables('sshKeyName'), resourceGroup().name)]",
-        "scriptContent": "[variables('$fxv#0')]"
-      },
-      "dependsOn": [
-        "managedIdentity",
-        "msiRGContrRoleAssignment"
-      ]
-    },
     "sshKey": {
       "type": "Microsoft.Compute/sshPublicKeys",
       "apiVersion": "2024-07-01",
       "name": "[format('{0}-{1}', take(uniqueString(resourceGroup().name, parameters('location')), 4), variables('sshKeyName'))]",
       "location": "[parameters('location')]",
-      "tags": "[coalesce(parameters('tags'), createObject())]",
+      "tags": "[parameters('tags')]",
       "properties": {
-        "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshDeploymentScript').outputs.publicKey)]"
+        "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshDeploymentScript').outputs.outputs.value.publicKey)]"
       },
       "dependsOn": [
         "sshDeploymentScript"
@@ -381,7 +553,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "securityRules": {
             "value": "[parameters('vmNsgRules')]"
@@ -1034,7 +1206,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "securityRules": {
             "value": "[parameters('applicationNsgRules')]"
@@ -1687,7 +1859,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "securityRules": {
             "value": [
@@ -2359,7 +2531,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "securityRules": {
             "value": [
@@ -3031,7 +3203,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "securityRules": {
             "value": [
@@ -3798,7 +3970,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "addressPrefixes": {
             "value": [
@@ -5476,7 +5648,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "skuName": {
             "value": "[parameters('storageAccountConfiguration').name]"
@@ -5511,7 +5683,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9362101002862671096"
+              "templateHash": "11337232077129027386"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -6459,16 +6631,22 @@
               "defaultValue": "Standard_GRS",
               "allowedValues": [
                 "Standard_LRS",
-                "Standard_GRS",
-                "Standard_RAGRS",
                 "Standard_ZRS",
+                "Standard_GRS",
+                "Standard_GZRS",
+                "Standard_RAGRS",
+                "Standard_RAGZRS",
+                "StandardV2_LRS",
+                "StandardV2_ZRS",
+                "StandardV2_GRS",
+                "StandardV2_GZRS",
                 "Premium_LRS",
                 "Premium_ZRS",
-                "Standard_GZRS",
-                "Standard_RAGZRS"
+                "PremiumV2_LRS",
+                "PremiumV2_ZRS"
               ],
               "metadata": {
-                "description": "Optional. Storage Account Sku Name."
+                "description": "Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage."
               }
             },
             "accessTier": {
@@ -6629,7 +6807,7 @@
             },
             "enableHierarchicalNamespace": {
               "type": "bool",
-              "defaultValue": false,
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true."
               }
@@ -6826,7 +7004,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.22.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6871,7 +7049,7 @@
               },
               "identity": "[variables('identity')]",
               "tags": "[parameters('tags')]",
-              "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isHnsEnabled', parameters('enableHierarchicalNamespace'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject())))]",
+              "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject()), if(not(equals(parameters('enableHierarchicalNamespace'), null())), createObject('isHnsEnabled', parameters('enableHierarchicalNamespace')), createObject())))]",
               "dependsOn": [
                 "cMKKeyVault",
                 "cMKKeyVault::cMKKey"
@@ -8077,7 +8255,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "15541518653203894847"
+                      "templateHash": "2268741299785261985"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -8548,7 +8726,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "8060919573476762712"
+                              "templateHash": "16916608328363874370"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -8775,7 +8953,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -8837,7 +9015,7 @@
                               "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "[parameters('immutabilityPolicyName')]",
+                              "name": "[format('{0}-{1}', parameters('name'), parameters('immutabilityPolicyName'))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
                                   "scope": "inner"
@@ -11233,6 +11411,582 @@
         }
       }
     },
+    "sshDeploymentScript": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ssh-script', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('sshDeploymentScriptName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "kind": {
+            "value": "AzurePowerShell"
+          },
+          "managedIdentities": {
+            "value": {
+              "userAssignedResourceIds": [
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName')))]"
+              ]
+            }
+          },
+          "azPowerShellVersion": {
+            "value": "9.0"
+          },
+          "retentionInterval": {
+            "value": "P1D"
+          },
+          "arguments": {
+            "value": "[format('-SSHKeyName \"{0}\" -ResourceGroupName \"{1}\"', variables('sshKeyName'), resourceGroup().name)]"
+          },
+          "scriptContent": {
+            "value": "[variables('$fxv#0')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "8965217851411422458"
+            },
+            "name": "Deployment Scripts",
+            "description": "This module deploys Deployment Scripts.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "environmentVariableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the environment variable."
+                  }
+                },
+                "secureValue": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The value of the secure environment variable. Required if `value` is null."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The value of the environment variable. Required if `secureValue` is null."
+                  }
+                }
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
+            },
+            "managedIdentityOnlyUserAssignedType": {
+              "type": "object",
+              "properties": {
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 90,
+              "metadata": {
+                "description": "Required. Name of the Deployment Script."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "allowedValues": [
+                "AzureCLI",
+                "AzurePowerShell"
+              ],
+              "metadata": {
+                "description": "Required. Specifies the Kind of the Deployment Script."
+              }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource tags."
+              }
+            },
+            "azPowerShellVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list."
+              }
+            },
+            "azCliVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Azure CLI module version to be used. See a list of supported Azure CLI versions: https://mcr.microsoft.com/v2/azure-cli/tags/list."
+              }
+            },
+            "scriptContent": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead."
+              }
+            },
+            "primaryScriptUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead."
+              }
+            },
+            "environmentVariables": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/environmentVariableType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The environment variables to pass over to the script."
+              }
+            },
+            "supportingScriptUris": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
+              }
+            },
+            "subnetResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)."
+              }
+            },
+            "arguments": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Command-line arguments to pass to the script. Arguments are separated by spaces."
+              }
+            },
+            "retentionInterval": {
+              "type": "string",
+              "defaultValue": "P1D",
+              "metadata": {
+                "description": "Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week)."
+              }
+            },
+            "baseTime": {
+              "type": "string",
+              "defaultValue": "[utcNow('yyyy-MM-dd-HH-mm-ss')]",
+              "metadata": {
+                "description": "Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed."
+              }
+            },
+            "runOnce": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to false, script will run every time the template is deployed. When set to true, the script will only run once."
+              }
+            },
+            "cleanupPreference": {
+              "type": "string",
+              "defaultValue": "Always",
+              "allowedValues": [
+                "Always",
+                "OnSuccess",
+                "OnExpiration"
+              ],
+              "metadata": {
+                "description": "Optional. The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled)."
+              }
+            },
+            "containerGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed."
+              }
+            },
+            "storageAccountResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account."
+              }
+            },
+            "timeout": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              },
+              {
+                "name": "subnetIds",
+                "count": "[length(coalesce(parameters('subnetResourceIds'), createArray()))]",
+                "input": {
+                  "id": "[coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')]]"
+                }
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "containerSettings": {
+              "containerGroupName": "[parameters('containerGroupName')]",
+              "subnetIds": "[if(not(empty(coalesce(variables('subnetIds'), createArray()))), variables('subnetIds'), null())]"
+            },
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+          },
+          "resources": {
+            "storageAccount": {
+              "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-05-01",
+              "subscriptionId": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2]]",
+              "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
+              "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "deploymentScript": {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": "[variables('identity')]",
+              "kind": "[parameters('kind')]",
+              "properties": {
+                "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
+                "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
+                "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
+                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+                "arguments": "[parameters('arguments')]",
+                "environmentVariables": "[parameters('environmentVariables')]",
+                "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
+                "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
+                "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",
+                "cleanupPreference": "[parameters('cleanupPreference')]",
+                "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
+                "retentionInterval": "[parameters('retentionInterval')]",
+                "timeout": "[parameters('timeout')]"
+              }
+            },
+            "deploymentScript_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            },
+            "deploymentScript_roleAssignments": {
+              "copy": {
+                "name": "deploymentScript_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            },
+            "deploymentScriptLogs": {
+              "existing": true,
+              "type": "Microsoft.Resources/deploymentScripts/logs",
+              "apiVersion": "2023-08-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployment script."
+              },
+              "value": "[resourceId('Microsoft.Resources/deploymentScripts', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the deployment script was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployment script."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('deploymentScript', '2023-08-01', 'full').location]"
+            },
+            "outputs": {
+              "type": "object",
+              "metadata": {
+                "description": "The output of the deployment script."
+              },
+              "value": "[coalesce(tryGet(reference('deploymentScript'), 'outputs'), createObject())]"
+            },
+            "deploymentScriptLogs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The logs of the deployment script."
+              },
+              "value": "[split(reference('deploymentScriptLogs').log, '\n')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "managedIdentity",
+        "msiRGContrRoleAssignment"
+      ]
+    },
     "loadBalancer": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -11250,7 +12004,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "frontendIPConfigurations": {
             "value": [
@@ -12282,7 +13036,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "zone": {
             "value": "[parameters('virtualMachineZone')]"
@@ -12324,7 +13078,7 @@
               {
                 "name": "value",
                 "count": "[length(parameters('virtualMachineNicConfigurations'))]",
-                "input": "[createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].name, 'tags', coalesce(parameters('tags'), createObject()), 'ipConfigurations', createArray(createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].ipConfigurations[0].name, 'subnetResourceId', if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], parameters('existingApplicationSubnetResourceId')))), 'deleteOption', parameters('virtualMachineNicConfigurations')[copyIndex('value')].deleteOption)]"
+                "input": "[createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].name, 'tags', parameters('tags'), 'ipConfigurations', createArray(createObject('name', parameters('virtualMachineNicConfigurations')[copyIndex('value')].ipConfigurations[0].name, 'subnetResourceId', if(parameters('deployVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], parameters('existingApplicationSubnetResourceId')))), 'deleteOption', parameters('virtualMachineNicConfigurations')[copyIndex('value')].deleteOption)]"
               }
             ]
           },
@@ -12345,8 +13099,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "1057634180502804806"
+              "version": "0.36.1.42791",
+              "templateHash": "2656369421652316938"
             },
             "name": "Virtual Machines",
             "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -14720,7 +15474,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.15.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.15.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -15039,8 +15793,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "3333482934245501039"
+                      "version": "0.36.1.42791",
+                      "templateHash": "2958498370438766793"
                     }
                   },
                   "definitions": {
@@ -17950,8 +18704,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18154,8 +18908,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18361,8 +19115,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18563,8 +19317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18770,8 +19524,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18972,8 +19726,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19182,8 +19936,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19396,8 +20150,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19604,8 +20358,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19808,8 +20562,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20021,8 +20775,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20230,8 +20984,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8482591295619883067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "4125647230047670832"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20404,7 +21158,7 @@
                     "value": "[parameters('location')]"
                   },
                   "policyId": {
-                    "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
+                    "value": "[resourceId(parameters('backupVaultResourceGroup'), 'Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
                   },
                   "protectedItemType": {
                     "value": "Microsoft.Compute/virtualMachines"
@@ -20425,8 +21179,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "7743264001610407207"
+                      "version": "0.36.1.42791",
+                      "templateHash": "7803302576034373529"
                     },
                     "name": "Recovery Service Vaults Protection Container Protected Item",
                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -20611,7 +21365,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "publicNetworkAccess": {
             "value": "Disabled"
@@ -20639,8 +21393,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4612685439436121560"
+              "version": "0.36.1.42791",
+              "templateHash": "8678799328605433419"
             },
             "name": "Recovery Services Vaults",
             "description": "This module deploys a Recovery Services Vault."
@@ -22068,7 +22822,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.recoveryservices-vault.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.recoveryservices-vault.{0}.{1}', replace('0.9.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -22239,8 +22993,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "3521978883504239263"
+                      "version": "0.36.1.42791",
+                      "templateHash": "14727602762705827356"
                     },
                     "name": "Recovery Services Vault Replication Fabrics",
                     "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -22409,8 +23163,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "17757271388548981503"
+                              "version": "0.36.1.42791",
+                              "templateHash": "3259894388499820240"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                             "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -22572,8 +23326,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.93.31351",
-                                      "templateHash": "15162808708445236734"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "12333431015127185743"
                                     },
                                     "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                                     "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -22806,8 +23560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11177184067861792085"
+                      "version": "0.36.1.42791",
+                      "templateHash": "7666673451243578332"
                     },
                     "name": "Recovery Services Vault Replication Policies",
                     "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -22930,8 +23684,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "13863529138439550763"
+                      "version": "0.36.1.42791",
+                      "templateHash": "17856753122984742036"
                     },
                     "name": "Recovery Services Vault Backup Storage Config",
                     "description": "This module deploys a Recovery Service Vault Backup Storage Configuration."
@@ -22974,7 +23728,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.RecoveryServices/vaults/backupstorageconfig",
-                      "apiVersion": "2023-01-01",
+                      "apiVersion": "2024-04-01",
                       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
                       "properties": {
                         "storageModelType": "[parameters('storageModelType')]",
@@ -23053,8 +23807,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "10294897873641603439"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9913018108938434375"
                     },
                     "name": "Recovery Service Vaults Protection Container Protected Item",
                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -23189,8 +23943,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "13593639619492360097"
+                      "version": "0.36.1.42791",
+                      "templateHash": "1676823377842243099"
                     },
                     "name": "Recovery Services Vault Backup Policies",
                     "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -23297,8 +24051,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "9852518266265355905"
+                      "version": "0.36.1.42791",
+                      "templateHash": "2621563840870653402"
                     },
                     "name": "Recovery Services Vault Backup Config",
                     "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -23470,8 +24224,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "7655757666522414851"
+                      "version": "0.36.1.42791",
+                      "templateHash": "15499707479506504511"
                     },
                     "name": "Recovery Services Vault Replication Alert Settings",
                     "description": "This module deploys a Recovery Services Vault Replication Alert Settings."
@@ -24401,7 +25155,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "defaultConsistencyLevel": {
             "value": "Session"
@@ -28232,7 +28986,7 @@
             "value": "global"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "virtualNetworkLinks": {
             "value": [
@@ -31403,7 +32157,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "subnetResourceId": "[if(parameters('deployVirtualNetwork'), createObject('value', reference('virtualNetwork').outputs.subnetResourceIds.value[1]), createObject('value', parameters('existingPrivateEndpointSubnetResourceId')))]",
           "privateLinkServiceConnections": {
@@ -32154,7 +32908,7 @@
             "value": "global"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "virtualNetworkLinks": {
             "value": [
@@ -35325,7 +36079,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(parameters('tags'), createObject())]"
+            "value": "[parameters('tags')]"
           },
           "subnetResourceId": "[if(parameters('deployVirtualNetwork'), createObject('value', reference('virtualNetwork').outputs.subnetResourceIds.value[1]), createObject('value', parameters('existingPrivateEndpointSubnetResourceId')))]",
           "privateLinkServiceConnections": {
@@ -36110,26 +36864,12 @@
       },
       "value": "[reference('privateEndpoint').outputs.resourceId.value]"
     },
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource. The resource ID."
-      },
-      "value": "[reference('virtualMachine').outputs.resourceId.value]"
-    },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "Resource. Resource Group Name."
+        "description": "Resource. The name of the resource group."
       },
       "value": "[resourceGroup().name]"
-    },
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource. The name of the virtual machine."
-      },
-      "value": "[reference('virtualMachine').outputs.name.value]"
     }
   }
 }

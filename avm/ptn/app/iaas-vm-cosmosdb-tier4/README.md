@@ -9,6 +9,7 @@ Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -67,7 +68,7 @@ Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 | `Microsoft.RecoveryServices/vaults/backupPolicies` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupPolicies) |
-| `Microsoft.RecoveryServices/vaults/backupstorageconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupstorageconfig) |
+| `Microsoft.RecoveryServices/vaults/backupstorageconfig` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults/backupstorageconfig) |
 | `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationAlertSettings) |
 | `Microsoft.RecoveryServices/vaults/replicationFabrics` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics) |
 | `Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics/replicationProtectionContainers) |
@@ -110,17 +111,7 @@ This instance deploys the module with the minimum set of required parameters.
 module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>' = {
   name: 'iaasVmCosmosdbTier4Deployment'
   params: {
-    // Required parameters
     name: '<name>'
-    // Non-required parameters
-    encryptionAtHost: false
-    location: '<location>'
-    tags: {
-      Application: 'IaaSVMCosmosDB'
-      CostCenter: 'IT'
-      Environment: 'Test'
-      Owner: 'TeamName'
-    }
   }
 }
 ```
@@ -137,24 +128,8 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "<name>"
-    },
-    // Non-required parameters
-    "encryptionAtHost": {
-      "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Application": "IaaSVMCosmosDB",
-        "CostCenter": "IT",
-        "Environment": "Test",
-        "Owner": "TeamName"
-      }
     }
   }
 }
@@ -170,17 +145,7 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
 ```bicep-params
 using 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>'
 
-// Required parameters
 param name = '<name>'
-// Non-required parameters
-param encryptionAtHost = false
-param location = '<location>'
-param tags = {
-  Application: 'IaaSVMCosmosDB'
-  CostCenter: 'IT'
-  Environment: 'Test'
-  Owner: 'TeamName'
-}
 ```
 
 </details>
@@ -198,58 +163,28 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-
-**General parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Location for all resources. |
-| [`tags`](#parameter-tags) | object | Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc. |
-
-**Security parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | string | Admin username for the virtual machine. |
 | [`applicationNsgRules`](#parameter-applicationnsgrules) | array | Network security group rules for the application subnet. |
-| [`encryptionAtHost`](#parameter-encryptionathost) | bool | Enables encryption at host for the virtual machine. |
-| [`sshPublicKey`](#parameter-sshpublickey) | securestring | SSH public key for the virtual machine. If empty, a new SSH key will be generated. |
-| [`vmNsgRules`](#parameter-vmnsgrules) | array | Network security group rules for the VM. |
-
-**Networking parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`deployVirtualNetwork`](#parameter-deployvirtualnetwork) | bool | Whether to deploy a new virtual network or use an existing one. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`encryptionAtHost`](#parameter-encryptionathost) | bool | Enables encryption at host for the virtual machine. |
 | [`existingApplicationSubnetResourceId`](#parameter-existingapplicationsubnetresourceid) | string | Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false. |
 | [`existingPrivateEndpointSubnetResourceId`](#parameter-existingprivateendpointsubnetresourceid) | string | Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false. |
 | [`existingVirtualNetworkResourceId`](#parameter-existingvirtualnetworkresourceid) | string | Existing virtual network resource ID. Required when deployVirtualNetwork is false. |
 | [`loadBalancerConfiguration`](#parameter-loadbalancerconfiguration) | object | Load balancer configuration. |
-| [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true. |
-| [`virtualMachineNicConfigurations`](#parameter-virtualmachinenicconfigurations) | array | Virtual machine NIC configurations. |
-| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. Only used when deployVirtualNetwork is true. |
-
-**Compute parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`virtualMachineImageReference`](#parameter-virtualmachineimagereference) | object | Virtual machine image reference configuration. |
-| [`virtualMachineZone`](#parameter-virtualmachinezone) | int | Virtual machine availability zone. Set to 0 for no zone. |
-| [`vmSize`](#parameter-vmsize) | string | Size of the virtual machine. |
-
-**Storage parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | Location for all resources. |
+| [`sshPublicKey`](#parameter-sshpublickey) | securestring | SSH public key for the virtual machine. If empty, a new SSH key will be generated. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Storage account SKU configuration. |
-| [`virtualMachineOsDisk`](#parameter-virtualmachineosdisk) | object | Virtual machine OS disk configuration. |
-
-**Identity parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
+| [`subnets`](#parameter-subnets) | array | Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true. |
+| [`tags`](#parameter-tags) | object | Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc. |
+| [`virtualMachineImageReference`](#parameter-virtualmachineimagereference) | object | Virtual machine image reference configuration. |
 | [`virtualMachineManagedIdentities`](#parameter-virtualmachinemanagedidentities) | object | Virtual machine managed identity configuration. |
+| [`virtualMachineNicConfigurations`](#parameter-virtualmachinenicconfigurations) | array | Virtual machine NIC configurations. |
+| [`virtualMachineOsDisk`](#parameter-virtualmachineosdisk) | object | Virtual machine OS disk configuration. |
+| [`virtualMachineZone`](#parameter-virtualmachinezone) | int | Virtual machine availability zone. Set to 0 for no zone. |
+| [`vmNsgRules`](#parameter-vmnsgrules) | array | Network security group rules for the VM. |
+| [`vmSize`](#parameter-vmsize) | string | Size of the virtual machine. |
+| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for the virtual network. Only used when deployVirtualNetwork is true. |
 
 ### Parameter: `name`
 
@@ -257,30 +192,6 @@ Name of the solution which is used to generate unique resource names.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `location`
-
-Location for all resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
-### Parameter: `tags`
-
-Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc.
-
-- Required: No
-- Type: object
-- Example: `System.Management.Automation.OrderedHashtable`
 
 ### Parameter: `adminUsername`
 
@@ -320,13 +231,253 @@ Network security group rules for the application subnet.
   ]
   ```
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationnsgrulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-applicationnsgrulesproperties) | object | The properties of the security rule. |
+
+### Parameter: `applicationNsgRules.name`
+
+The name of the security rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applicationNsgRules.properties`
+
+The properties of the security rule.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-applicationnsgrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-applicationnsgrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-applicationnsgrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-applicationnsgrulespropertiesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-applicationnsgrulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-applicationnsgrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-applicationnsgrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-applicationnsgrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-applicationnsgrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-applicationnsgrulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-applicationnsgrulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-applicationnsgrulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-applicationnsgrulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-applicationnsgrulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-applicationnsgrulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `applicationNsgRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `applicationNsgRules.properties.direction`
+
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `applicationNsgRules.properties.priority`
+
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+- MinValue: 100
+- MaxValue: 4096
+
+### Parameter: `applicationNsgRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `applicationNsgRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `applicationNsgRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `applicationNsgRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationNsgRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationNsgRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `applicationNsgRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationNsgRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `applicationNsgRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationNsgRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationNsgRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `applicationNsgRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `deployVirtualNetwork`
+
+Whether to deploy a new virtual network or use an existing one.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `encryptionAtHost`
 
 Enables encryption at host for the virtual machine.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
+
+### Parameter: `existingApplicationSubnetResourceId`
+
+Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `existingPrivateEndpointSubnetResourceId`
+
+Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `existingVirtualNetworkResourceId`
+
+Existing virtual network resource ID. Required when deployVirtualNetwork is false.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `loadBalancerConfiguration`
+
+Load balancer configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      backendPort: 80
+      frontendPort: 80
+  }
+  ```
+
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `sshPublicKey`
 
@@ -335,6 +486,153 @@ SSH public key for the virtual machine. If empty, a new SSH key will be generate
 - Required: No
 - Type: securestring
 - Default: `''`
+
+### Parameter: `storageAccountConfiguration`
+
+Storage account SKU configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      name: 'Standard_GRS'
+      tier: 'Standard'
+  }
+  ```
+
+### Parameter: `subnets`
+
+Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    {
+      addressPrefix: '10.0.0.0/24'
+      name: 'snet-application'
+    }
+    {
+      addressPrefix: '10.0.1.0/24'
+      name: 'snet-privateendpoints'
+    }
+    {
+      addressPrefix: '10.0.2.0/24'
+      name: 'snet-bootdiagnostics'
+    }
+    {
+      addressPrefix: '10.0.3.0/26'
+      name: 'AzureBastionSubnet'
+    }
+  ]
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. |
+| [`name`](#parameter-subnetsname) | string | The name of the subnet. |
+
+### Parameter: `subnets.addressPrefix`
+
+The address prefix for the subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.name`
+
+The name of the subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tags`
+
+Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc.
+
+- Required: No
+- Type: object
+- Example: `System.Management.Automation.OrderedHashtable`
+
+### Parameter: `virtualMachineImageReference`
+
+Virtual machine image reference configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      version: 'latest'
+  }
+  ```
+
+### Parameter: `virtualMachineManagedIdentities`
+
+Virtual machine managed identity configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      systemAssigned: true
+  }
+  ```
+
+### Parameter: `virtualMachineNicConfigurations`
+
+Virtual machine NIC configurations.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    {
+      deleteOption: 'Delete'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+        }
+      ]
+      name: 'primary-nic'
+    }
+  ]
+  ```
+
+### Parameter: `virtualMachineOsDisk`
+
+Virtual machine OS disk configuration.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      caching: 'ReadWrite'
+      createOption: 'FromImage'
+      diskSizeGB: 30
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+  }
+  ```
+
+### Parameter: `virtualMachineZone`
+
+Virtual machine availability zone. Set to 0 for no zone.
+
+- Required: No
+- Type: int
+- Default: `1`
 
 ### Parameter: `vmNsgRules`
 
@@ -379,132 +677,183 @@ Network security group rules for the VM.
   ]
   ```
 
-### Parameter: `deployVirtualNetwork`
+**Required parameters**
 
-Whether to deploy a new virtual network or use an existing one.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-vmnsgrulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-vmnsgrulesproperties) | object | The properties of the security rule. |
 
-- Required: No
-- Type: bool
-- Default: `True`
+### Parameter: `vmNsgRules.name`
 
-### Parameter: `existingApplicationSubnetResourceId`
+The name of the security rule.
 
-Existing subnet resource ID for the application/VM. Required when deployVirtualNetwork is false.
-
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `''`
 
-### Parameter: `existingPrivateEndpointSubnetResourceId`
+### Parameter: `vmNsgRules.properties`
 
-Existing subnet resource ID for private endpoints. Required when deployVirtualNetwork is false.
+The properties of the security rule.
 
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `existingVirtualNetworkResourceId`
-
-Existing virtual network resource ID. Required when deployVirtualNetwork is false.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `loadBalancerConfiguration`
-
-Load balancer configuration.
-
-- Required: No
+- Required: Yes
 - Type: object
-- Default:
-  ```Bicep
-  {
-      backendPort: 80
-      frontendPort: 80
-  }
-  ```
 
-### Parameter: `subnets`
+**Required parameters**
 
-Subnet configuration for the virtual network. Only used when deployVirtualNetwork is true.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-vmnsgrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-vmnsgrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-vmnsgrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-vmnsgrulespropertiesprotocol) | string | Network protocol this rule applies to. |
 
-- Required: No
-- Type: array
-- Default:
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-vmnsgrulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-vmnsgrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-vmnsgrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-vmnsgrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-vmnsgrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-vmnsgrulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-vmnsgrulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-vmnsgrulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-vmnsgrulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-vmnsgrulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-vmnsgrulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `vmNsgRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
   ```Bicep
   [
-    {
-      addressPrefix: '10.0.0.0/24'
-      name: 'snet-application'
-    }
-    {
-      addressPrefix: '10.0.1.0/24'
-      name: 'snet-privateendpoints'
-    }
-    {
-      addressPrefix: '10.0.2.0/24'
-      name: 'snet-bootdiagnostics'
-    }
-    {
-      addressPrefix: '10.0.3.0/26'
-      name: 'AzureBastionSubnet'
-    }
+    'Allow'
+    'Deny'
   ]
   ```
 
-### Parameter: `virtualMachineNicConfigurations`
+### Parameter: `vmNsgRules.properties.direction`
 
-Virtual machine NIC configurations.
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
 
-- Required: No
-- Type: array
-- Default:
+- Required: Yes
+- Type: string
+- Allowed:
   ```Bicep
   [
-    {
-      deleteOption: 'Delete'
-      ipConfigurations: [
-        {
-          name: 'ipconfig1'
-        }
-      ]
-      name: 'primary-nic'
-    }
+    'Inbound'
+    'Outbound'
   ]
   ```
 
-### Parameter: `vnetAddressPrefix`
+### Parameter: `vmNsgRules.properties.priority`
 
-Address prefix for the virtual network. Only used when deployVirtualNetwork is true.
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
 
-- Required: No
-- Type: string
-- Default: `'10.0.0.0/16'`
-
-### Parameter: `virtualMachineImageReference`
-
-Virtual machine image reference configuration.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      offer: 'ubuntu-24_04-lts'
-      publisher: 'canonical'
-      sku: 'server'
-      version: 'latest'
-  }
-  ```
-
-### Parameter: `virtualMachineZone`
-
-Virtual machine availability zone. Set to 0 for no zone.
-
-- Required: No
+- Required: Yes
 - Type: int
-- Default: `1`
+- MinValue: 100
+- MaxValue: 4096
+
+### Parameter: `vmNsgRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `vmNsgRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `vmNsgRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `vmNsgRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `vmNsgRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `vmNsgRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `vmNsgRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `vmNsgRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `vmNsgRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `vmNsgRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `vmNsgRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `vmNsgRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
 
 ### Parameter: `vmSize`
 
@@ -514,50 +863,13 @@ Size of the virtual machine.
 - Type: string
 - Default: `'Standard_D2s_v3'`
 
-### Parameter: `storageAccountConfiguration`
+### Parameter: `vnetAddressPrefix`
 
-Storage account SKU configuration.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      name: 'Standard_GRS'
-      tier: 'Standard'
-  }
-  ```
-
-### Parameter: `virtualMachineOsDisk`
-
-Virtual machine OS disk configuration.
+Address prefix for the virtual network. Only used when deployVirtualNetwork is true.
 
 - Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      caching: 'ReadWrite'
-      createOption: 'FromImage'
-      diskSizeGB: 30
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-  }
-  ```
-
-### Parameter: `virtualMachineManagedIdentities`
-
-Virtual machine managed identity configuration.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      systemAssigned: true
-  }
-  ```
+- Type: string
+- Default: `'10.0.0.0/16'`
 
 ## Outputs
 
@@ -566,9 +878,7 @@ Virtual machine managed identity configuration.
 | `cosmosDbPrivateEndpointResourceId` | string | Resource. The resource ID of the CosmosDB private endpoint. |
 | `cosmosDbResourceId` | string | Resource. The resource ID of the CosmosDB MongoDB vCore cluster. |
 | `loadBalancerResourceId` | string | Resource. The resource ID of the load balancer. |
-| `name` | string | Resource. The name of the virtual machine. |
-| `resourceGroupName` | string | Resource. Resource Group Name. |
-| `resourceId` | string | Resource. The resource ID. |
+| `resourceGroupName` | string | Resource. The name of the resource group. |
 | `storageAccountResourceId` | string | Resource. The resource ID of the storage account. |
 | `storagePrivateEndpointResourceId` | string | Resource. The resource ID of the storage account private endpoint. |
 | `virtualMachineResourceId` | string | Resource. The resource ID of the virtual machine. |
@@ -580,15 +890,145 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/virtual-machine:0.15.0` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.15.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/network/load-balancer:0.4.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/recovery-services/vault:0.9.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.22.1` | Remote reference |
+| `br/public:avm/res/recovery-services/vault:0.9.2` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
+
+## Notes
+# Architecture Diagram
+
+This diagram shows the architecture of the IaaS VM with CosmosDB Tier 4 pattern module, including both new VNet deployment and existing VNet integration scenarios.
+
+```mermaid
+flowchart TB
+    %% Azure Subscription
+    subgraph Azure["🏢 Azure Subscription"]
+
+        %% Main Resource Group
+        subgraph MainRG["📦 rg-iaas-vm-cosmosdb"]
+            direction TB
+
+            %% Virtual Network
+            subgraph VNet["🌐 Virtual Network (vnet-main)"]
+                direction TB
+
+                %% Application Subnet
+                subgraph AppSubnet["📡 Application Subnet"]
+                    direction TB
+                    VM[🖥️ Virtual Machine]
+                    LB[⚖️ Load Balancer]
+                    AppNSG[🛡️ Application NSG]
+                end
+
+                %% Private Endpoint Subnet
+                subgraph PESubnet["🔒 Private Endpoint Subnet"]
+                    direction TB
+                    CosmosPE[🔗 Cosmos DB Private Endpoint]
+                    StoragePE[🔗 Storage Private Endpoint]
+                    PENSG[🛡️ PE NSG]
+                end
+
+                %% Bastion Subnet
+                subgraph BastionSubnet["🏰 Azure Bastion Subnet"]
+                    direction TB
+                    Bastion[🚪 Azure Bastion]
+                end
+
+                %% Boot Diagnostics Subnet
+                subgraph DiagSubnet["🔧 Boot Diagnostics Subnet"]
+                    direction TB
+                    DiagStorage[💾 Boot Diagnostics Storage]
+                end
+            end
+
+            %% Other Resources in Main RG
+            SSH[🔑 SSH Key]
+            MI[👤 Managed Identity]
+            RV[💼 Recovery Services Vault]
+
+        end
+
+        %% Data Resource Group
+        subgraph DataRG["📦 rg-data"]
+            direction TB
+            CosmosDB[🌍 Azure Cosmos DB]
+            StorageAccount[💾 Storage Account]
+            CosmosDNS[🌐 Cosmos Private DNS Zone]
+            StorageDNS[🌐 Storage Private DNS Zone]
+        end
+
+        %% Management Resource Group
+        subgraph MgmtRG["📦 rg-management"]
+            direction TB
+            LogAnalytics[📊 Log Analytics Workspace]
+            AppInsights[📈 Application Insights]
+            Dashboard[📋 Dashboard]
+            Alerts[🚨 Alerts]
+        end
+
+    end
+
+    %% External connections
+    subgraph External["🌍 External"]
+        Internet[Internet]
+    end
+
+    %% Connections
+    Internet --> Bastion
+    Bastion -.-> VM
+    LB --> VM
+
+    %% Private Endpoint Connections
+    CosmosPE --> CosmosDB
+    StoragePE --> StorageAccount
+    CosmosDNS -.-> CosmosPE
+    StorageDNS -.-> StoragePE
+
+    %% Application Connections
+    VM --> CosmosDB
+    VM --> StorageAccount
+    SSH -.-> VM
+    MI -.-> VM
+    RV -.-> VM
+
+    %% Security Connections
+    AppNSG -.-> AppSubnet
+    PENSG -.-> PESubnet
+
+    %% Monitoring Connections
+    VM --> LogAnalytics
+    VM --> AppInsights
+
+    %% Styling to match Azure architecture diagrams
+    classDef azureBlue fill:#0078d4,stroke:#005a9e,stroke-width:3px,color:#ffffff
+    classDef resourceGroup fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#1976d2
+    classDef vnet fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#2e7d32
+    classDef subnet fill:#fff8e1,stroke:#f57c00,stroke-width:2px,color:#ef6c00
+    classDef vm fill:#ffebee,stroke:#d32f2f,stroke-width:1px,color:#c62828
+    classDef storage fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1px,color:#6a1b9a
+    classDef network fill:#e0f2f1,stroke:#00695c,stroke-width:1px,color:#004d40
+    classDef security fill:#fce4ec,stroke:#c2185b,stroke-width:1px,color:#ad1457
+    classDef management fill:#e8eaf6,stroke:#3f51b5,stroke-width:1px,color:#303f9f
+    classDef external fill:#f5f5f5,stroke:#757575,stroke-width:2px,color:#424242
+
+    class Azure azureBlue
+    class MainRG,DataRG,MgmtRG resourceGroup
+    class VNet vnet
+    class AppSubnet,PESubnet,BastionSubnet,DiagSubnet subnet
+    class VM,LB vm
+    class CosmosDB,StorageAccount,DiagStorage storage
+    class AppNSG,PENSG,CosmosDNS,StorageDNS network
+    class SSH,MI,Bastion security
+    class RV,LogAnalytics,AppInsights,Dashboard,Alerts management
+    class External,Internet external
+```
 
 ## Data Collection
 
