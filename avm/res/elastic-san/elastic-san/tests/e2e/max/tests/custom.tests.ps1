@@ -27,7 +27,7 @@ Describe 'Validate Deployment' {
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                 -ResourceId $resourceId `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -Not -BeNullOrEmpty
@@ -56,7 +56,7 @@ Describe 'Validate Deployment' {
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone 3 `
@@ -92,7 +92,7 @@ Describe 'Validate Deployment' {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
-                    -name $volumeGroups[$vgrpidx].name `
+                    -Name $volumeGroups[$vgrpidx].name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Location $null # Location is NOT Supported on this resource
 
@@ -100,7 +100,7 @@ Describe 'Validate Deployment' {
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
-                    -name $volumeGroups[$vgrpidx].name `
+                    -Name $volumeGroups[$vgrpidx].name `
                     -ExpectedLocation $location `
                     -Location $volumeGroups[$vgrpidx].location `
                     -SystemAssignedMI $item.SystemAssignedMI `
@@ -149,7 +149,7 @@ Describe 'Validate Deployment' {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                    -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                    -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName`
                     -Location $null # Location is NOT Supported on this resource
 
@@ -158,7 +158,7 @@ Describe 'Validate Deployment' {
                     -ElasticSanName $name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                     -VolumeGroupName $volumeGroups[$vgrpidx].name `
-                    -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                    -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
                     -ExpectedLocation $location `
                     -Location $volumeGroups[$vgrpidx].volumes[$volidx].location `
                     -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
@@ -196,7 +196,7 @@ Describe 'Validate Deployment' {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
-                    -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
+                    -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
                     -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
                     -Location $null # Location is NOT Supported on this resource
 
@@ -206,7 +206,7 @@ Describe 'Validate Deployment' {
                     -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
                     -VolumeGroupName $volumeGroups[$vgrpidx].name `
                     -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                    -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
+                    -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
                     -ExpectedLocation $location `
                     -Location $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].location `
                     -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `

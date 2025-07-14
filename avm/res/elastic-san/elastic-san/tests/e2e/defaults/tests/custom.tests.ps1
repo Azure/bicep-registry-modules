@@ -26,7 +26,7 @@ Describe 'Validate Deployment' {
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                 -ResourceId $resourceId `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -BeNullOrEmpty
@@ -43,7 +43,7 @@ Describe 'Validate Deployment' {
             Test-VerifyElasticSAN `
                 -ResourceId $resourceId `
                 -ResourceGroupName $resourceGroupName `
-                -name $name `
+                -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
                 -AvailabilityZone $null `
