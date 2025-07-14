@@ -234,6 +234,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+// Validation: serverFarmResourceId is required for all app kinds except containerized function apps
+var isContainerizedFunctionApp = contains(kind, 'azurecontainerapps')
+var _ = isContainerizedFunctionApp ? null : (!empty(serverFarmResourceId) ? null : error('serverFarmResourceId is required for non-containerized function apps. For containerized function apps with Azure Container Apps, serverFarmResourceId can be omitted.'))
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
