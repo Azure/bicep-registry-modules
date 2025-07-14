@@ -35,7 +35,7 @@ function Get-ModuleVersionChange {
     )
 
     # The diff will be empty, if the version.json file was not updated
-    $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
+    $diff = git diff --diff-filter=AM 'origin/main^' 'main' $VersionFilePath | Out-String
 
     if ($diff -match '\-\s*"version":\s*"([0-9]{1})\.([0-9]{1})".*') {
         $oldVersion = (New-Object System.Version($matches[1], $matches[2]))
