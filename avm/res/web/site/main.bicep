@@ -24,8 +24,8 @@ param location string = resourceGroup().location
 ])
 param kind string
 
-@description('Required. The resource ID of the app service plan to use for the site.')
-param serverFarmResourceId string
+@description('Optional. The resource ID of the app service plan to use for the site. Not required for containerized function apps.')
+param serverFarmResourceId string?
 
 @description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
 param managedEnvironmentId string?
@@ -333,7 +333,7 @@ module app_slots 'slot/main.bicep' = [
       appName: app.name
       location: location
       kind: kind
-      serverFarmResourceId: serverFarmResourceId
+      serverFarmResourceId: slot.?serverFarmResourceId ?? serverFarmResourceId
       httpsOnly: slot.?httpsOnly ?? httpsOnly
       appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
       clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
