@@ -116,9 +116,10 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
+        logCategoriesAndGroups: [
           {
-            category: 'AllMetrics'
+            categoryGroup: 'allLogs'
+            enabled: true
           }
         ]
         name: 'customSetting'
@@ -181,9 +182,10 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
+          "logCategoriesAndGroups": [
             {
-              "category": "AllMetrics"
+              "categoryGroup": "allLogs",
+              "enabled": true
             }
           ],
           "name": "customSetting",
@@ -250,9 +252,10 @@ param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
-    metricCategories: [
+    logCategoriesAndGroups: [
       {
-        category: 'AllMetrics'
+        categoryGroup: 'allLogs'
+        enabled: true
       }
     ]
     name: 'customSetting'

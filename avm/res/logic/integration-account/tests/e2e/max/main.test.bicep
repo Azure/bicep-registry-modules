@@ -69,9 +69,10 @@ module testDeployment '../../../main.bicep' = [
       diagnosticSettings: [
         {
           name: 'customSetting'
-          metricCategories: [
+          logCategoriesAndGroups: [
             {
-              category: 'AllMetrics'
+              categoryGroup: 'allLogs'
+              enabled: true
             }
           ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
