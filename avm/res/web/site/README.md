@@ -2881,6 +2881,235 @@ param siteConfig = {
 </details>
 <p>
 
+### Example 10: _Web App with Access Restrictions_
+
+This instance deploys the module demonstrating access restrictions for Front Door and Application Gateway scenarios.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wsacr001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    configs: [
+      {
+        name: 'web'
+        properties: {
+          ipSecurityRestrictions: [
+            {
+              action: 'Allow'
+              description: 'Allow access from Azure Front Door'
+              ipAddress: 'AzureFrontDoor.Backend'
+              name: 'Azure Front Door'
+              priority: 100
+              tag: 'ServiceTag'
+            }
+            {
+              action: 'Allow'
+              description: 'Allow access from Application Gateway'
+              ipAddress: 'GatewayManager'
+              name: 'Application Gateway'
+              priority: 200
+              tag: 'ServiceTag'
+            }
+            {
+              action: 'Allow'
+              description: 'Allow access from office network'
+              ipAddress: '203.0.113.0/24'
+              name: 'Office Network'
+              priority: 300
+            }
+            {
+              action: 'Allow'
+              description: 'Allow specific Front Door instance with X-Azure-FDID header'
+              headers: {
+                'x-azure-fdid': [
+                  'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                ]
+              }
+              ipAddress: 'AzureFrontDoor.Backend'
+              name: 'Specific Front Door Instance'
+              priority: 400
+              tag: 'ServiceTag'
+            }
+          ]
+          ipSecurityRestrictionsDefaultAction: 'Allow'
+        }
+      }
+    ]
+    httpsOnly: true
+    siteConfig: {
+      alwaysOn: true
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wsacr001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    "configs": {
+      "value": [
+        {
+          "name": "web",
+          "properties": {
+            "ipSecurityRestrictions": [
+              {
+                "action": "Allow",
+                "description": "Allow access from Azure Front Door",
+                "ipAddress": "AzureFrontDoor.Backend",
+                "name": "Azure Front Door",
+                "priority": 100,
+                "tag": "ServiceTag"
+              },
+              {
+                "action": "Allow",
+                "description": "Allow access from Application Gateway",
+                "ipAddress": "GatewayManager",
+                "name": "Application Gateway",
+                "priority": 200,
+                "tag": "ServiceTag"
+              },
+              {
+                "action": "Allow",
+                "description": "Allow access from office network",
+                "ipAddress": "203.0.113.0/24",
+                "name": "Office Network",
+                "priority": 300
+              },
+              {
+                "action": "Allow",
+                "description": "Allow specific Front Door instance with X-Azure-FDID header",
+                "headers": {
+                  "x-azure-fdid": [
+                    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                  ]
+                },
+                "ipAddress": "AzureFrontDoor.Backend",
+                "name": "Specific Front Door Instance",
+                "priority": 400,
+                "tag": "ServiceTag"
+              }
+            ],
+            "ipSecurityRestrictionsDefaultAction": "Allow"
+          }
+        }
+      ]
+    },
+    "httpsOnly": {
+      "value": true
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "ftpsState": "FtpsOnly",
+        "minTlsVersion": "1.2"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wsacr001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param configs = [
+  {
+    name: 'web'
+    properties: {
+      ipSecurityRestrictions: [
+        {
+          action: 'Allow'
+          description: 'Allow access from Azure Front Door'
+          ipAddress: 'AzureFrontDoor.Backend'
+          name: 'Azure Front Door'
+          priority: 100
+          tag: 'ServiceTag'
+        }
+        {
+          action: 'Allow'
+          description: 'Allow access from Application Gateway'
+          ipAddress: 'GatewayManager'
+          name: 'Application Gateway'
+          priority: 200
+          tag: 'ServiceTag'
+        }
+        {
+          action: 'Allow'
+          description: 'Allow access from office network'
+          ipAddress: '203.0.113.0/24'
+          name: 'Office Network'
+          priority: 300
+        }
+        {
+          action: 'Allow'
+          description: 'Allow specific Front Door instance with X-Azure-FDID header'
+          headers: {
+            'x-azure-fdid': [
+              'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            ]
+          }
+          ipAddress: 'AzureFrontDoor.Backend'
+          name: 'Specific Front Door Instance'
+          priority: 400
+          tag: 'ServiceTag'
+        }
+      ]
+      ipSecurityRestrictionsDefaultAction: 'Allow'
+    }
+  }
+]
+param httpsOnly = true
+param siteConfig = {
+  alwaysOn: true
+  ftpsState: 'FtpsOnly'
+  minTlsVersion: '1.2'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
