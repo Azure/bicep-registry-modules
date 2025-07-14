@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2019-datacenter'
         version: 'latest'
       }
-      zone: 0
+      availabilityZone: -1
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -85,9 +85,7 @@ module testDeployment '../../../main.bicep' = [
         diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
-          diskEncryptionSet: {
-            id: nestedDependencies.outputs.diskEncryptionSetResourceId
-          }
+          diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       osType: 'Windows'
@@ -98,9 +96,7 @@ module testDeployment '../../../main.bicep' = [
           diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
-            diskEncryptionSet: {
-              id: nestedDependencies.outputs.diskEncryptionSetResourceId
-            }
+            diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
         }
       ]
