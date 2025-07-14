@@ -88,6 +88,7 @@ For detailed examples, see Example 10 below.
 - [Linux Web App, using only defaults](#example-7-linux-web-app-using-only-defaults)
 - [Linux Web App, using large parameter set](#example-8-linux-web-app-using-large-parameter-set)
 - [Windows Web App for Containers, using only defaults](#example-9-windows-web-app-for-containers-using-only-defaults)
+- [Web App with Access Restrictions](#example-10-web-app-with-access-restrictions)
 
 ### Example 1: _Function App, using only defaults_
 
