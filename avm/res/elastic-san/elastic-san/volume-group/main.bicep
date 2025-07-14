@@ -225,6 +225,7 @@ output systemAssignedMIPrincipalId string? = volumeGroup.?identity.?principalId
 
 @description('A boolean indicating whether or not Data Integrity Check is enabled or not.')
 output enforceDataIntegrityCheckForIscsi bool = volumeGroup.properties.enforceDataIntegrityCheckForIscsi
+
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [
   for (volume, i) in (volumes ?? []): {
