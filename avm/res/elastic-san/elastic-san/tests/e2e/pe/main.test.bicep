@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 @sys.description('Optional. The location to deploy resources to.')
 #disable-next-line no-hardcoded-location
-var enforcedLocation string = 'northeurope' // Features not supported in all locations - Microsoft.ElasticSan/EnableElasticSANTargetDeployment feature is not available in this region (Code:SubscriptionNotRegisteredWithFeatureFlag)
+var enforcedLocation string = 'northeurope' // Features not supported in all locations - Microsoft.ElasticSan/EnableElasticSANTargetDeployment
 
 // ============ //
 // Dependencies //
