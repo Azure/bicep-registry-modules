@@ -191,7 +191,7 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 # CASE : Module workflow
                 # ----------------------
-                $moduleIsOrphaned = $module.ModuleStatus -eq 'Orphaned :eyes:' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
+                $moduleIsOrphaned = $module.ModuleStatus -eq 'Orphaned' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
 
                 $ProjectNumber = $moduleIsOrphaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
@@ -226,7 +226,8 @@ function Set-AvmGitHubIssueForWorkflow {
                             $userCommentUrl = gh issue comment $issueUrl --body $ownerAssignmentFailedComment --repo $repo
                         }
                         Write-Verbose ('💬 Commented issue {0} ({1}) as the automation was unable to auto-assign the module owner. ({2})' -f $issueUrl, $issueName, $userCommentUrl) -Verbose
-                    } else {
+                    }
+                    else {
                         Write-Verbose ('👋 Assigned owner [@{0}] to issue {1} ({2})' -f $module.PrimaryModuleOwnerGHHandle, $issueUrl, $issueName) -Verbose
                     }
                 }
@@ -237,7 +238,8 @@ function Set-AvmGitHubIssueForWorkflow {
                 Write-Verbose ('💬 Commented issue {0} ({1}) as its module''s latest run in the main branch failed. ({2})' -f $issueUrl, $issueName, $commentUrl) -Verbose
 
                 $issuesCreated++
-            } else {
+            }
+            else {
                 # Handle existing issues for failed runs in main
                 # ----------------------------------------------
                 # If an issue does already exist, add a comment to it
@@ -279,7 +281,8 @@ function Set-AvmGitHubIssueForWorkflow {
                 Write-Verbose ('💬 Commented issue {0} ({1}) as its lastest run in the main branch failed. ({2})' -f $issueToComment.html_url, $issueToComment.title, ($WhatIfPreference ? '<WhatIf-Id>' : $commentUrl)) -Verbose
                 $issuesCommented++
             }
-        } else {
+        }
+        else {
             # Handle successful runs in main
             # ------------------------------
             # Fetch and close all issues that match the issue name and match the successful run

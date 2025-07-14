@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "5328221054932309931"
+      "version": "0.36.1.42791",
+      "templateHash": "4209715248189250565"
     },
     "name": "WCF Relay Authorization Rules",
     "description": "This module deploys a WCF Relay Authorization Rule."

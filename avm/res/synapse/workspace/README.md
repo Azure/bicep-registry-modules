@@ -1,10 +1,5 @@
 # Synapse Workspaces `[Microsoft.Synapse/workspaces]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Synapse Workspace.
 
 ## Navigation
@@ -24,13 +19,16 @@ This module deploys a Synapse Workspace.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Synapse/workspaces` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces) |
 | `Microsoft.Synapse/workspaces/administrators` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators) |
+| `Microsoft.Synapse/workspaces/bigDataPools` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/bigDataPools) |
 | `Microsoft.Synapse/workspaces/firewallRules` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/firewallRules) |
 | `Microsoft.Synapse/workspaces/integrationRuntimes` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/integrationRuntimes) |
 | `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
+| `Microsoft.Synapse/workspaces/sqlPools` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/sqlPools) |
+| `Microsoft.Synapse/workspaces/sqlPools/transparentDataEncryption` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/sqlPools/transparentDataEncryption) |
 
 ## Usage examples
 
@@ -40,15 +38,165 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/synapse/workspace:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using Big Data Pool](#example-1-using-big-data-pool)
+- [Using only defaults](#example-2-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using firewall rules](#example-4-using-firewall-rules)
-- [Using managed Vnet](#example-5-using-managed-vnet)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Using encryption with Customer-Managed-Key](#example-4-using-encryption-with-customer-managed-key)
+- [Using firewall rules](#example-5-using-firewall-rules)
+- [Using managed Vnet](#example-6-using-managed-vnet)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [Using SQL Pool](#example-8-using-sql-pool)
+- [WAF-aligned](#example-9-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using Big Data Pool_
+
+This instance deploys the module with the configuration of Big Data Pool.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swbdp001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    bigDataPools: [
+      {
+        autoPauseDelayInMinutes: 10
+        autoScale: {
+          maxNodeCount: 5
+          minNodeCount: 3
+        }
+        autotuneEnabled: true
+        cacheSize: 50
+        dynamicExecutorAllocation: {
+          maxExecutors: 4
+          minExecutors: 1
+        }
+        name: 'depbdp01'
+        nodeSize: 'Small'
+        nodeSizeFamily: 'MemoryOptimized'
+        sessionLevelPackagesEnabled: true
+      }
+      {
+        name: 'depbdp02'
+        nodeSize: 'Small'
+        nodeSizeFamily: 'MemoryOptimized'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swbdp001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "bigDataPools": {
+      "value": [
+        {
+          "autoPauseDelayInMinutes": 10,
+          "autoScale": {
+            "maxNodeCount": 5,
+            "minNodeCount": 3
+          },
+          "autotuneEnabled": true,
+          "cacheSize": 50,
+          "dynamicExecutorAllocation": {
+            "maxExecutors": 4,
+            "minExecutors": 1
+          },
+          "name": "depbdp01",
+          "nodeSize": "Small",
+          "nodeSizeFamily": "MemoryOptimized",
+          "sessionLevelPackagesEnabled": true
+        },
+        {
+          "name": "depbdp02",
+          "nodeSize": "Small",
+          "nodeSizeFamily": "MemoryOptimized"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swbdp001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param bigDataPools = [
+  {
+    autoPauseDelayInMinutes: 10
+    autoScale: {
+      maxNodeCount: 5
+      minNodeCount: 3
+    }
+    autotuneEnabled: true
+    cacheSize: 50
+    dynamicExecutorAllocation: {
+      maxExecutors: 4
+      minExecutors: 1
+    }
+    name: 'depbdp01'
+    nodeSize: 'Small'
+    nodeSizeFamily: 'MemoryOptimized'
+    sessionLevelPackagesEnabled: true
+  }
+  {
+    name: 'depbdp02'
+    nodeSize: 'Small'
+    nodeSizeFamily: 'MemoryOptimized'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -119,7 +267,7 @@ param sqlAdministratorLogin = 'synwsadmin'
 </details>
 <p>
 
-### Example 2: _Using encryption with Customer-Managed-Key_
+### Example 3: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -212,7 +360,7 @@ param encryptionActivateWorkspace = true
 </details>
 <p>
 
-### Example 3: _Using encryption with Customer-Managed-Key_
+### Example 4: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -303,7 +451,7 @@ param customerManagedKey = {
 </details>
 <p>
 
-### Example 4: _Using firewall rules_
+### Example 5: _Using firewall rules_
 
 This instance deploys the module with the configuration of firewall rules.
 
@@ -415,7 +563,7 @@ param firewallRules = [
 </details>
 <p>
 
-### Example 5: _Using managed Vnet_
+### Example 6: _Using managed Vnet_
 
 This instance deploys the module using a managed Vnet.
 
@@ -510,7 +658,7 @@ param preventDataExfiltration = true
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -534,6 +682,57 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       login: 'dep-msi-swmax'
       sid: '<sid>'
     }
+    bigDataPools: [
+      {
+        autoPauseDelayInMinutes: 5
+        autoScale: {
+          maxNodeCount: 10
+          minNodeCount: 3
+        }
+        autotuneEnabled: true
+        cacheSize: 50
+        defaultSparkLogFolder: '/logs'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        dynamicExecutorAllocation: {
+          maxExecutors: 9
+          minExecutors: 1
+        }
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
+        name: 'depbdp01'
+        nodeSize: 'Large'
+        nodeSizeFamily: 'MemoryOptimized'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        sessionLevelPackagesEnabled: true
+        sparkConfigProperties: {
+          configurationType: 'File'
+          content: '<content>'
+          filename: 'spark-defaults.conf'
+        }
+        sparkEventsFolder: '/events'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -645,6 +844,41 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    sqlPools: [
+      {
+        collation: 'SQL_Latin1_General_CP1_CS_AS'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
+        maxSizeBytes: 1099511627776
+        name: 'depsqlp01'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        sku: 'DW100c'
+        storageAccountType: 'GRS'
+        transparentDataEncryption: 'Enabled'
+      }
+    ]
   }
 }
 ```
@@ -681,6 +915,59 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "login": "dep-msi-swmax",
         "sid": "<sid>"
       }
+    },
+    "bigDataPools": {
+      "value": [
+        {
+          "autoPauseDelayInMinutes": 5,
+          "autoScale": {
+            "maxNodeCount": 10,
+            "minNodeCount": 3
+          },
+          "autotuneEnabled": true,
+          "cacheSize": 50,
+          "defaultSparkLogFolder": "/logs",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "dynamicExecutorAllocation": {
+            "maxExecutors": 9,
+            "minExecutors": 1
+          },
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
+          "name": "depbdp01",
+          "nodeSize": "Large",
+          "nodeSizeFamily": "MemoryOptimized",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "sessionLevelPackagesEnabled": true,
+          "sparkConfigProperties": {
+            "configurationType": "File",
+            "content": "<content>",
+            "filename": "spark-defaults.conf"
+          },
+          "sparkEventsFolder": "/events"
+        }
+      ]
     },
     "diagnosticSettings": {
       "value": [
@@ -808,6 +1095,43 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "sqlPools": {
+      "value": [
+        {
+          "collation": "SQL_Latin1_General_CP1_CS_AS",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
+          "maxSizeBytes": 1099511627776,
+          "name": "depsqlp01",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "sku": "DW100c",
+          "storageAccountType": "GRS",
+          "transparentDataEncryption": "Enabled"
+        }
+      ]
     }
   }
 }
@@ -834,6 +1158,57 @@ param administrator = {
   login: 'dep-msi-swmax'
   sid: '<sid>'
 }
+param bigDataPools = [
+  {
+    autoPauseDelayInMinutes: 5
+    autoScale: {
+      maxNodeCount: 10
+      minNodeCount: 3
+    }
+    autotuneEnabled: true
+    cacheSize: 50
+    defaultSparkLogFolder: '/logs'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dynamicExecutorAllocation: {
+      maxExecutors: 9
+      minExecutors: 1
+    }
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    name: 'depbdp01'
+    nodeSize: 'Large'
+    nodeSizeFamily: 'MemoryOptimized'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    sessionLevelPackagesEnabled: true
+    sparkConfigProperties: {
+      configurationType: 'File'
+      content: '<content>'
+      filename: 'spark-defaults.conf'
+    }
+    sparkEventsFolder: '/events'
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -945,12 +1320,162 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param sqlPools = [
+  {
+    collation: 'SQL_Latin1_General_CP1_CS_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    maxSizeBytes: 1099511627776
+    name: 'depsqlp01'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    sku: 'DW100c'
+    storageAccountType: 'GRS'
+    transparentDataEncryption: 'Enabled'
+  }
+]
 ```
 
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _Using SQL Pool_
+
+This instance deploys the module with the configuration of SQL Pool.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swsqlp001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    sqlPools: [
+      {
+        name: 'depsqlp01'
+      }
+      {
+        collation: 'SQL_Latin1_General_CP1_CI_AS'
+        maxSizeBytes: 1099511627776
+        name: 'depsqlp02'
+        sku: 'DW200c'
+        storageAccountType: 'LRS'
+        transparentDataEncryption: 'Enabled'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swsqlp001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "sqlPools": {
+      "value": [
+        {
+          "name": "depsqlp01"
+        },
+        {
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "maxSizeBytes": 1099511627776,
+          "name": "depsqlp02",
+          "sku": "DW200c",
+          "storageAccountType": "LRS",
+          "transparentDataEncryption": "Enabled"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swsqlp001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param sqlPools = [
+  {
+    name: 'depsqlp01'
+  }
+  {
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    maxSizeBytes: 1099511627776
+    name: 'depsqlp02'
+    sku: 'DW200c'
+    storageAccountType: 'LRS'
+    transparentDataEncryption: 'Enabled'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -966,7 +1491,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
-    name: 'swwaf001'
+    name: 'swwaf002'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
     diagnosticSettings: [
@@ -1040,7 +1565,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "<defaultDataLakeStorageFilesystem>"
     },
     "name": {
-      "value": "swwaf001"
+      "value": "swwaf002"
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
@@ -1120,7 +1645,7 @@ using 'br/public:avm/res/synapse/workspace:<version>'
 // Required parameters
 param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
-param name = 'swwaf001'
+param name = 'swwaf002'
 param sqlAdministratorLogin = 'synwsadmin'
 // Non-required parameters
 param diagnosticSettings = [
@@ -1194,6 +1719,7 @@ param tags = {
 | [`administrator`](#parameter-administrator) | object | The Entra ID administrator for the synapse workspace. |
 | [`allowedAadTenantIdsForLinking`](#parameter-allowedaadtenantidsforlinking) | array | Allowed AAD Tenant IDs For Linking. |
 | [`azureADOnlyAuthentication`](#parameter-azureadonlyauthentication) | bool | Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource. |
+| [`bigDataPools`](#parameter-bigdatapools) | array | List of Big Data Pools to be created in the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`defaultDataLakeStorageCreateManagedPrivateEndpoint`](#parameter-defaultdatalakestoragecreatemanagedprivateendpoint) | bool | Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace's primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1214,6 +1740,7 @@ param tags = {
 | [`purviewResourceID`](#parameter-purviewresourceid) | string | Purview Resource ID. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | securestring | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
+| [`sqlPools`](#parameter-sqlpools) | array | List of SQL Pools to be created in the workspace. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workspaceRepositoryConfiguration`](#parameter-workspacerepositoryconfiguration) | object | Git integration settings. |
 
@@ -1317,6 +1844,525 @@ Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `bigDataPools`
+
+List of Big Data Pools to be created in the workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-bigdatapoolsname) | string | The name of the Big Data Pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoPauseDelayInMinutes`](#parameter-bigdatapoolsautopausedelayinminutes) | int | Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided. |
+| [`autoScale`](#parameter-bigdatapoolsautoscale) | object | The auto scale configuration. |
+| [`autotuneEnabled`](#parameter-bigdatapoolsautotuneenabled) | bool | Enable or disable autotune. |
+| [`cacheSize`](#parameter-bigdatapoolscachesize) | int | The cache size of the pool. |
+| [`computeIsolationEnabled`](#parameter-bigdatapoolscomputeisolationenabled) | bool | Enable or disable compute isolation. |
+| [`defaultSparkLogFolder`](#parameter-bigdatapoolsdefaultsparklogfolder) | string | The default Spark log folder. |
+| [`diagnosticSettings`](#parameter-bigdatapoolsdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`dynamicExecutorAllocation`](#parameter-bigdatapoolsdynamicexecutorallocation) | object | The dynamic executor allocation configuration. |
+| [`lock`](#parameter-bigdatapoolslock) | object | The lock settings of the service. |
+| [`nodeCount`](#parameter-bigdatapoolsnodecount) | int | The number of nodes in the Big Data pool if Auto-scaling is disabled. |
+| [`nodeSize`](#parameter-bigdatapoolsnodesize) | string | The node size of the pool. |
+| [`nodeSizeFamily`](#parameter-bigdatapoolsnodesizefamily) | string | The node size family of the pool. |
+| [`roleAssignments`](#parameter-bigdatapoolsroleassignments) | array | Array of role assignments to create. |
+| [`sessionLevelPackagesEnabled`](#parameter-bigdatapoolssessionlevelpackagesenabled) | bool | Enable or disable session level packages. |
+| [`sparkConfigProperties`](#parameter-bigdatapoolssparkconfigproperties) | object | The Spark configuration properties. |
+| [`sparkEventsFolder`](#parameter-bigdatapoolssparkeventsfolder) | string | The Spark events folder. |
+| [`sparkVersion`](#parameter-bigdatapoolssparkversion) | string | The Spark version. |
+| [`tags`](#parameter-bigdatapoolstags) | object | Tags of the resource. |
+
+### Parameter: `bigDataPools.name`
+
+The name of the Big Data Pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.autoPauseDelayInMinutes`
+
+Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided.
+
+- Required: No
+- Type: int
+
+### Parameter: `bigDataPools.autoScale`
+
+The auto scale configuration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxNodeCount`](#parameter-bigdatapoolsautoscalemaxnodecount) | int | Synapse workspace Big Data Pools Auto-scaling maximum node count. |
+| [`minNodeCount`](#parameter-bigdatapoolsautoscaleminnodecount) | int | Synapse workspace Big Data Pools Auto-scaling minimum node count. |
+
+### Parameter: `bigDataPools.autoScale.maxNodeCount`
+
+Synapse workspace Big Data Pools Auto-scaling maximum node count.
+
+- Required: Yes
+- Type: int
+- MinValue: 3
+- MaxValue: 200
+
+### Parameter: `bigDataPools.autoScale.minNodeCount`
+
+Synapse workspace Big Data Pools Auto-scaling minimum node count.
+
+- Required: Yes
+- Type: int
+- MinValue: 3
+- MaxValue: 200
+
+### Parameter: `bigDataPools.autotuneEnabled`
+
+Enable or disable autotune.
+
+- Required: No
+- Type: bool
+
+### Parameter: `bigDataPools.cacheSize`
+
+The cache size of the pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `bigDataPools.computeIsolationEnabled`
+
+Enable or disable compute isolation.
+
+- Required: No
+- Type: bool
+
+### Parameter: `bigDataPools.defaultSparkLogFolder`
+
+The default Spark log folder.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-bigdatapoolsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-bigdatapoolsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-bigdatapoolsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-bigdatapoolsdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-bigdatapoolsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-bigdatapoolsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-bigdatapoolsdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-bigdatapoolsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-bigdatapoolsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `bigDataPools.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `bigDataPools.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-bigdatapoolsdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-bigdatapoolsdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-bigdatapoolsdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `bigDataPools.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `bigDataPools.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-bigdatapoolsdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-bigdatapoolsdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `bigDataPools.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `bigDataPools.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.dynamicExecutorAllocation`
+
+The dynamic executor allocation configuration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxExecutors`](#parameter-bigdatapoolsdynamicexecutorallocationmaxexecutors) | int | Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1). |
+| [`minExecutors`](#parameter-bigdatapoolsdynamicexecutorallocationminexecutors) | int | Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors. |
+
+### Parameter: `bigDataPools.dynamicExecutorAllocation.maxExecutors`
+
+Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1).
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 10
+
+### Parameter: `bigDataPools.dynamicExecutorAllocation.minExecutors`
+
+Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 10
+
+### Parameter: `bigDataPools.lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-bigdatapoolslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-bigdatapoolslockname) | string | Specify the name of lock. |
+
+### Parameter: `bigDataPools.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `bigDataPools.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.nodeCount`
+
+The number of nodes in the Big Data pool if Auto-scaling is disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `bigDataPools.nodeSize`
+
+The node size of the pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.nodeSizeFamily`
+
+The node size family of the pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-bigdatapoolsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-bigdatapoolsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-bigdatapoolsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-bigdatapoolsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-bigdatapoolsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-bigdatapoolsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-bigdatapoolsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-bigdatapoolsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `bigDataPools.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `bigDataPools.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `bigDataPools.sessionLevelPackagesEnabled`
+
+Enable or disable session level packages.
+
+- Required: No
+- Type: bool
+
+### Parameter: `bigDataPools.sparkConfigProperties`
+
+The Spark configuration properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`configurationType`](#parameter-bigdatapoolssparkconfigpropertiesconfigurationtype) | string | The configuration type. |
+| [`content`](#parameter-bigdatapoolssparkconfigpropertiescontent) | string | The configuration content. |
+| [`filename`](#parameter-bigdatapoolssparkconfigpropertiesfilename) | string | The configuration filename. |
+
+### Parameter: `bigDataPools.sparkConfigProperties.configurationType`
+
+The configuration type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Artifact'
+    'File'
+  ]
+  ```
+
+### Parameter: `bigDataPools.sparkConfigProperties.content`
+
+The configuration content.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.sparkConfigProperties.filename`
+
+The configuration filename.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.sparkEventsFolder`
+
+The Spark events folder.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.sparkVersion`
+
+The Spark version.
+
+- Required: No
+- Type: string
+
+### Parameter: `bigDataPools.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `customerManagedKey`
 
@@ -2197,6 +3243,419 @@ Password for administrator access to the workspace's SQL pools. If you don't pro
 - Type: securestring
 - Default: `''`
 
+### Parameter: `sqlPools`
+
+List of SQL Pools to be created in the workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlpoolsname) | string | The name of the SQL Pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`collation`](#parameter-sqlpoolscollation) | string | The collation of the SQL pool. |
+| [`diagnosticSettings`](#parameter-sqlpoolsdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`lock`](#parameter-sqlpoolslock) | object | The lock settings of the service. |
+| [`maxSizeBytes`](#parameter-sqlpoolsmaxsizebytes) | int | The max size of the SQL pool in bytes. |
+| [`recoverableDatabaseResourceId`](#parameter-sqlpoolsrecoverabledatabaseresourceid) | string | The recoverable database resource ID to restore from. |
+| [`restorePointInTime`](#parameter-sqlpoolsrestorepointintime) | string | The restore point in time to restore from (ISO8601 format). |
+| [`roleAssignments`](#parameter-sqlpoolsroleassignments) | array | Array of role assignments to create. |
+| [`sku`](#parameter-sqlpoolssku) | string | The performance level of the SQL pool. |
+| [`storageAccountType`](#parameter-sqlpoolsstorageaccounttype) | string | The storage account type to use for the SQL pool. |
+| [`tags`](#parameter-sqlpoolstags) | object | Tags of the resource. |
+| [`transparentDataEncryption`](#parameter-sqlpoolstransparentdataencryption) | string | Enable database transparent data encryption. |
+
+### Parameter: `sqlPools.name`
+
+The name of the SQL Pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlPools.collation`
+
+The collation of the SQL pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-sqlpoolsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-sqlpoolsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-sqlpoolsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-sqlpoolsdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-sqlpoolsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-sqlpoolsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-sqlpoolsdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-sqlpoolsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-sqlpoolsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `sqlPools.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `sqlPools.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-sqlpoolsdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-sqlpoolsdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-sqlpoolsdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `sqlPools.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `sqlPools.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-sqlpoolsdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-sqlpoolsdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `sqlPools.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `sqlPools.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-sqlpoolslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-sqlpoolslockname) | string | Specify the name of lock. |
+
+### Parameter: `sqlPools.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `sqlPools.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.maxSizeBytes`
+
+The max size of the SQL pool in bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlPools.recoverableDatabaseResourceId`
+
+The recoverable database resource ID to restore from.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.restorePointInTime`
+
+The restore point in time to restore from (ISO8601 format).
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-sqlpoolsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-sqlpoolsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-sqlpoolsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-sqlpoolsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-sqlpoolsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-sqlpoolsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-sqlpoolsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-sqlpoolsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `sqlPools.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `sqlPools.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlPools.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `sqlPools.sku`
+
+The performance level of the SQL pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DW10000c'
+    'DW1000c'
+    'DW100c'
+    'DW15000c'
+    'DW1500c'
+    'DW2000c'
+    'DW200c'
+    'DW2500c'
+    'DW30000c'
+    'DW3000c'
+    'DW300c'
+    'DW400c'
+    'DW5000c'
+    'DW500c'
+    'DW6000c'
+    'DW7500c'
+  ]
+  ```
+
+### Parameter: `sqlPools.storageAccountType`
+
+The storage account type to use for the SQL pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GRS'
+    'LRS'
+    'ZRS'
+  ]
+  ```
+
+### Parameter: `sqlPools.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `sqlPools.transparentDataEncryption`
+
+Enable database transparent data encryption.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -2229,7 +3688,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

@@ -173,6 +173,92 @@ module testDeployment '../../../main.bicep' = [
           name: 'shir01'
         }
       ]
+      bigDataPools: [
+        {
+          name: 'dep${namePrefix}bdp01'
+          nodeSizeFamily: 'MemoryOptimized'
+          nodeSize: 'Large'
+          autoScale: {
+            minNodeCount: 3
+            maxNodeCount: 10
+          }
+          dynamicExecutorAllocation: {
+            minExecutors: 1
+            maxExecutors: 9
+          }
+          autoPauseDelayInMinutes: 5
+          sessionLevelPackagesEnabled: true
+          cacheSize: 50
+          autotuneEnabled: true
+          sparkEventsFolder: '/events'
+          defaultSparkLogFolder: '/logs'
+          sparkConfigProperties: {
+            configurationType: 'File'
+            filename: 'spark-defaults.conf'
+            content: loadTextContent('./src/spark-defaults.conf')
+          }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
+        }
+      ]
+      sqlPools: [
+        {
+          name: 'dep${namePrefix}sqlp01'
+          collation: 'SQL_Latin1_General_CP1_CS_AS'
+          maxSizeBytes: 1099511627776 // 1 TB
+          sku: 'DW100c'
+          storageAccountType: 'GRS'
+          transparentDataEncryption: 'Enabled'
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'

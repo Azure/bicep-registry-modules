@@ -55,14 +55,46 @@ inputs:
   customLocation:
     description: "Custom location overwrite, if needed"
     required: false
+  e2eIgnore:
+    description: "If set to true, the test case deployment tasks will not be processed"
+    default: "false"
+    required: false
 
 runs:
   using: "composite"
   steps:
+    # [Deployment validation] task(s)
+    # -------------------------------
+    - name: "Validate Test Execution"
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        errorActionPreference: "SilentlyContinue"
+        inlineScript: |
+          # Resolve template file path
+          $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+
+          # Check if the deployment test should be bypassed
+          if ('${{ inputs.e2eIgnore }}' -eq 'true') {
+            Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFilePath"
+            Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
+
+            # Get the reason for skipping the deployment
+            $excludeReason = Get-Content Join-Path $moduleTestFilePath '.e2eignore'
+            excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
+
+            Write-Output "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
+            Write-Warning "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
+          } else {
+            Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFilePath" -Verbose
+            Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
+          }
+
     # [Azure login] task(s)
     # ------------------------------
     - name: "Set OIDC temporary exception"
       id: set-oidc-exception
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -97,7 +129,7 @@ runs:
     # Default: support both OIDC and service principal with secret
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
@@ -109,7 +141,7 @@ runs:
     # Exception: module requires login by using service principal with secret
     # Should only be leveraged by modules listed in $exceptionModulePaths above
     - name: "Azure Login - Exception"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
@@ -119,6 +151,7 @@ runs:
     # ---------------------------
     - name: "Get Resource Location"
       id: get-resource-location
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -153,6 +186,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -216,9 +250,8 @@ runs:
 
           Write-Output '::endgroup::'
 
-    # [Deployment validation] task(s)
-    # -------------------------------
     - name: "Validate template file"
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -298,6 +331,7 @@ runs:
     # [Deployment execution] task(s)
     # ------------------------------
     - name: "Deploy template file"
+      if: env.skip_deployment_ci == 'false'
       id: deploy_step
       uses: azure/powershell@v2
       with:
@@ -392,6 +426,7 @@ runs:
     # [Post-Deployment test] task(s)
     # ------------------------------
     - name: "Run post-deployment Pester tests"
+      if: env.skip_deployment_ci == 'false'
       id: pester_run_step
       shell: pwsh
       run: |
@@ -462,7 +497,7 @@ runs:
         }
 
     - name: "Output to GitHub job summaries"
-      if: steps.pester_run_step.outputs.formattedPesterResultsPath != ''
+      if: env.skip_deployment_ci == 'false' && steps.pester_run_step.outputs.formattedPesterResultsPath != ''
       shell: pwsh
       run: |
         # Grouping task logs
@@ -482,7 +517,7 @@ runs:
     # [Deployment removal] task(s)
     # ----------------------------
     - name: "Remove deployed resources"
-      if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
+      if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' && env.skip_deployment_ci == 'false' }}
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"

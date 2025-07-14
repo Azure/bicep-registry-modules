@@ -338,9 +338,9 @@ type storageType = {
 @description('The type for the App Logs Configuration.')
 type appLogsConfigurationType = {
   @description('Optional. The destination of the logs.')
-  destination: string?
+  destination: ('log-analytics' | 'azure-monitor' | 'none')?
 
-  @description('Optional. The configuration for Log Analytics.')
+  @description('Conditional. The Log Analytics configuration. Required if `destination` is `log-analytics`.')
   logAnalyticsConfiguration: {
     @description('Required. The Log Analytics Workspace ID.')
     customerId: string

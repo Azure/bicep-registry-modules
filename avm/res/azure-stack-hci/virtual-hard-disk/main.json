@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2087652594627682665"
+      "version": "0.35.1.17967",
+      "templateHash": "13278479909796100774"
     },
     "name": "Azure Stack HCI Virtual Hard Disk",
     "description": "This module deploys an Azure Stack HCI virtual hard disk."

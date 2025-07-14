@@ -25,12 +25,13 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/maintenance/configuration-assignment:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
-- [Multi resource group](#example-3-multi-resource-group)
+- [Using filter tags](#example-2-using-filter-tags)
+- [WAF-aligned](#example-3-waf-aligned)
+- [Multi resource group](#example-4-multi-resource-group)
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time. 
+This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.
 
 
 <details>
@@ -121,7 +122,133 @@ param filter = {
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using filter tags_
+
+This instance deploys the module using filters with tags to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
+  name: 'configurationAssignmentDeployment'
+  params: {
+    // Required parameters
+    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    name: 'mcatag001'
+    // Non-required parameters
+    filter: {
+      osTypes: [
+        'Linux'
+        'Windows'
+      ]
+      resourceTypes: [
+        'Virtual Machines'
+      ]
+      tagSettings: {
+        filterOperator: 'All'
+        tags: {
+          cake: [
+            'lie'
+          ]
+          foo: [
+            'bar'
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "maintenanceConfigurationResourceId": {
+      "value": "<maintenanceConfigurationResourceId>"
+    },
+    "name": {
+      "value": "mcatag001"
+    },
+    // Non-required parameters
+    "filter": {
+      "value": {
+        "osTypes": [
+          "Linux",
+          "Windows"
+        ],
+        "resourceTypes": [
+          "Virtual Machines"
+        ],
+        "tagSettings": {
+          "filterOperator": "All",
+          "tags": {
+            "cake": [
+              "lie"
+            ],
+            "foo": [
+              "bar"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
+
+// Required parameters
+param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
+param name = 'mcatag001'
+// Non-required parameters
+param filter = {
+  osTypes: [
+    'Linux'
+    'Windows'
+  ]
+  resourceTypes: [
+    'Virtual Machines'
+  ]
+  tagSettings: {
+    filterOperator: 'All'
+    tags: {
+      cake: [
+        'lie'
+      ]
+      foo: [
+        'bar'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. This instance assigns an existing Linux virtual machine to the input maintenance configuration.
 
@@ -190,7 +317,7 @@ param resourceId = '<resourceId>'
 </details>
 <p>
 
-### Example 3: _Multi resource group_
+### Example 4: _Multi resource group_
 
 This instance deploys the module leveraging virtual machine and maintenance configuration dependencies from two different resource groups. This instance assigns an existing Windows virtual machine to the input maintenance configuration.
 
@@ -387,14 +514,14 @@ Dictionary of tags with its list of values.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-filtertagsettingstags>any_other_property<) | string | A key-value pair. |
+| [`>Any_other_property<`](#parameter-filtertagsettingstags>any_other_property<) | array | A key-value pair. Note that although the value is an array, it must be a single value for each tag. |
 
 ### Parameter: `filter.tagSettings.tags.>Any_other_property<`
 
-A key-value pair.
+A key-value pair. Note that although the value is an array, it must be a single value for each tag.
 
 - Required: Yes
-- Type: string
+- Type: array
 
 ### Parameter: `resourceId`
 

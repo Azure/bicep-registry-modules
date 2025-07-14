@@ -12,7 +12,7 @@ This module deploys a VPN Gateway NAT Rule.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/vpnGateways/natRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/natRules) |
+| `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules) |
 
 ## Parameters
 
@@ -60,6 +60,32 @@ An address prefix range of destination IPs on the outside network that source IP
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-externalmappingsaddressspace) | string | Address space for VPN NAT rule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-externalmappingsportrange) | string | Port range for VPN NAT rule mapping. |
+
+### Parameter: `externalMappings.addressSpace`
+
+Address space for VPN NAT rule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `externalMappings.portRange`
+
+Port range for VPN NAT rule mapping.
+
+- Required: No
+- Type: string
+
 ### Parameter: `internalMappings`
 
 An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.
@@ -67,6 +93,32 @@ An address prefix range of source IPs on the inside network that will be mapped 
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-internalmappingsaddressspace) | string | Address space for VPN NAT rule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-internalmappingsportrange) | string | Port range for VPN NAT rule mapping. |
+
+### Parameter: `internalMappings.addressSpace`
+
+Address space for VPN NAT rule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `internalMappings.portRange`
+
+Port range for VPN NAT rule mapping.
+
+- Required: No
+- Type: string
 
 ### Parameter: `ipConfigurationId`
 

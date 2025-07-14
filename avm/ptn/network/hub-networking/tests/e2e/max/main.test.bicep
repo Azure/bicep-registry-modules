@@ -140,6 +140,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'AzureBastionSubnet'
               addressPrefix: cidrSubnet(addressPrefix, 26, 2)
             }
+            {
+              name: 'DNSResolver'
+              addressPrefix: cidrSubnet(addressPrefix, 26, 3)
+              delegation: 'Microsoft.Network/dnsResolvers'
+            }
           ]
           tags: {
             'hidden-title': 'This is visible in the resource name'

@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
@@ -103,10 +102,6 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           location: resourceLocation
-          lock: {
-            kind: 'CanNotDelete'
-            name: 'hub1Lock'
-          }
           routes: [
             {
               name: 'defaultRoute'

@@ -1,6 +1,6 @@
 # Redis database `[Microsoft.Cache/redisEnterprise/databases]`
 
-This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster.
+This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster.
 
 ## Navigation
 
@@ -13,8 +13,8 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Cache/redisEnterprise/databases` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases) |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
+| `Microsoft.Cache/redisEnterprise/databases` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases) |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 
@@ -24,36 +24,36 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`redisClusterName`](#parameter-redisclustername) | string | The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment. |
+| [`redisClusterName`](#parameter-redisclustername) | string | The name of the parent Redis Enterprise or Azure Managed Redis resource. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessKeysAuthentication`](#parameter-accesskeysauthentication) | string | Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION. |
-| [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION. |
+| [`accessKeysAuthentication`](#parameter-accesskeysauthentication) | string | Allow authentication via access keys. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
+| [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
 | [`clientProtocol`](#parameter-clientprotocol) | string | Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols. |
-| [`clusteringPolicy`](#parameter-clusteringpolicy) | string | Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering). |
+| [`clusteringPolicy`](#parameter-clusteringpolicy) | string | Redis clustering policy. [Learn more](https://learn.microsoft.com/azure/redis/architecture#cluster-policies). |
 | [`deferUpgrade`](#parameter-deferupgrade) | string | Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The database-level diagnostic settings of the service. |
 | [`evictionPolicy`](#parameter-evictionpolicy) | string | Specifies the eviction policy for the Redis resource. |
 | [`geoReplication`](#parameter-georeplication) | object | The active geo-replication settings of the service. All caches within a geo-replication group must have the same configuration. |
 | [`modules`](#parameter-modules) | array | Redis modules to enable. Restrictions may apply based on SKU and configuration. [Learn more](https://aka.ms/redis/enterprise/modules). |
 | [`name`](#parameter-name) | string | Name of the database. |
-| [`persistence`](#parameter-persistence) | object | The persistence settings of the service. |
+| [`persistence`](#parameter-persistence) | object | The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION. |
 | [`port`](#parameter-port) | int | TCP port of the database endpoint. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 
 ### Parameter: `redisClusterName`
 
-The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment.
+The name of the parent Redis Enterprise or Azure Managed Redis resource. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `accessKeysAuthentication`
 
-Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.
+Allow authentication via access keys. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.
 
 - Required: No
 - Type: string
@@ -68,7 +68,7 @@ Allow authentication via access keys. Only supported on Azure Managed Redis (Pre
 
 ### Parameter: `accessPolicyAssignments`
 
-Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.
+Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.
 
 - Required: No
 - Type: array
@@ -130,7 +130,7 @@ Specifies whether Redis clients can connect using TLS-encrypted or plaintext Red
 
 ### Parameter: `clusteringPolicy`
 
-Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering).
+Redis clustering policy. [Learn more](https://learn.microsoft.com/azure/redis/architecture#cluster-policies).
 
 - Required: No
 - Type: string
@@ -139,6 +139,7 @@ Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering
   ```Bicep
   [
     'EnterpriseCluster'
+    'NoCluster'
     'OSSCluster'
   ]
   ```
@@ -391,7 +392,7 @@ Name of the database.
 
 ### Parameter: `persistence`
 
-The persistence settings of the service.
+The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION.
 
 - Required: No
 - Type: object
@@ -602,6 +603,7 @@ The secondaryStackExchangeRedisConnectionString secret name to create.
 | :-- | :-- | :-- |
 | `endpoint` | string | The Redis endpoint. |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
+| `hostname` | string | The Redis host name. |
 | `name` | string | The name of the Redis database. |
 | `port` | int | The Redis database port. |
 | `resourceGroupName` | string | The name of the resource group the Redis resource was created in. |

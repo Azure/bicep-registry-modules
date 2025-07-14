@@ -95,7 +95,7 @@ param lock lockType?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Web/connections@2016-06-01'>.tags?
 
 @description('Optional. Links to test the API connection.')
 param testLinks object[]?

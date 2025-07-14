@@ -253,8 +253,7 @@ module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-// ***** Add support for versioning and assignment type *****
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.3.1' = [
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.4.0' = [
   for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
@@ -279,6 +278,7 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
       metadata: polAsi.?metadata
       overrides: polAsi.?overrides
       resourceSelectors: polAsi.?resourceSelectors
+      definitionVersion: polAsi.?definitionVersion
       notScopes: polAsi.?notScopes
       additionalManagementGroupsIDsToAssignRbacTo: polAsi.?additionalManagementGroupsIDsToAssignRbacTo
       additionalSubscriptionIDsToAssignRbacTo: polAsi.?additionalSubscriptionIDsToAssignRbacTo
@@ -296,7 +296,7 @@ module mgRoleDefinitionsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.0' = [
+module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.1' = [
   for (roleDef, index) in (managementGroupCustomRoleDefinitions ?? []): {
     scope: managementGroup(managementGroupName)
     name: take('${deploymentNames.mgRoleDefinitions}-${uniqueString(managementGroupName, roleDef.name)}', 64)
@@ -326,7 +326,7 @@ module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: take(
       '${deploymentNames.mgRoleAssignments}-${uniqueString(managementGroupName, roleAssignment.principalId, roleAssignment.roleDefinitionId)}',
@@ -436,6 +436,9 @@ type policyAssignmentType = {
 
   @description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
   resourceSelectors: policyAssignmentSelectorType[]?
+
+  @description('Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.')
+  definitionVersion: string?
 
   @description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
   additionalManagementGroupsIDsToAssignRbacTo: string[]?

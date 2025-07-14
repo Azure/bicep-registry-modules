@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9186378967323499549"
+      "version": "0.36.1.42791",
+      "templateHash": "11627117007380517574"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection."
@@ -212,11 +212,14 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/tags"
+        },
         "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "testLinks": {
       "type": "array",

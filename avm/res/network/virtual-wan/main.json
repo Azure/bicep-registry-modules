@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17894213695332592187"
+      "version": "0.36.1.42791",
+      "templateHash": "5670388860728626342"
     },
     "name": "Virtual WANs",
     "description": "This module deploys a Virtual WAN."
@@ -145,23 +145,9 @@
     },
     "allowBranchToBranchTraffic": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. True if branch to branch traffic is allowed."
-      }
-    },
-    "allowVnetToVnetTraffic": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. True if VNET to VNET traffic is allowed."
-      }
-    },
-    "disableVpnEncryption": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. VPN encryption to be disabled or not."
       }
     },
     "roleAssignments": {
@@ -217,7 +203,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-virtualwan.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -236,14 +222,12 @@
     },
     "virtualWan": {
       "type": "Microsoft.Network/virtualWans",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
         "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]",
-        "allowVnetToVnetTraffic": "[if(parameters('allowVnetToVnetTraffic'), parameters('allowVnetToVnetTraffic'), null())]",
-        "disableVpnEncryption": "[parameters('disableVpnEncryption')]",
         "type": "[parameters('type')]"
       }
     },
@@ -311,7 +295,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualWan', '2023-04-01', 'full').location]"
+      "value": "[reference('virtualWan', '2024-07-01', 'full').location]"
     }
   }
 }
