@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "15695044184710994854"
+      "version": "0.36.177.2456",
+      "templateHash": "5015588908133277778"
     },
     "name": "Communication Services",
     "description": "This module deploys a Communication Service"
@@ -520,7 +520,7 @@
       "metadata": {
         "description": "The endpoint (hostname) of the communication service."
       },
-      "value": "[reference('communicationService', '2023-04-01', 'full').properties.hostName]"
+      "value": "[reference('communicationService').hostName]"
     }
   }
 }
