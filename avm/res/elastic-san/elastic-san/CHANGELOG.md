@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - Changed implementation of `availabilityZone` parameter from an optional `nullable` to mandatory to force users to make a conscious decision. To opt out of setting an Availability Zone you can specify the value `-1`.
+- Added support for `enforceDataIntegrityCheckForIscsi` parameter to volume group as per its latest API version `2024-05-01`
 
 ## 0.3.1
 
