@@ -30,21 +30,7 @@ module testDeployment '../../../main.bicep' = {
     sku: 'DC0'
 
     publicNetworkAccess: 'Enabled'
-
     commitmentPlans: []
-
-    diagnosticSettings: []
-    privateEndpoints: []
-    roleAssignments: []
-    allowedFqdnList: []
-    apiProperties: {}
-    userOwnedStorage: []
-    deployments: []
-    migrationToken: ''
-    allowProjectManagement: false
-    customerManagedKey: null
-    managedIdentities: null
-    secretsExportConfiguration: null
     disableLocalAuth: false
     networkAcls: {
       defaultAction: 'Allow'

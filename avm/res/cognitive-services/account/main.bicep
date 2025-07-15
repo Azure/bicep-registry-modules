@@ -362,7 +362,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
     migrationToken: migrationToken
     restore: restore
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
-    userOwnedStorage: !empty(userOwnedStorage) ? userOwnedStorage : null
+    userOwnedStorage: !empty(userOwnedStorage) ? userOwnedStorage : null // Accounting for [ ] not being a supported value
     dynamicThrottlingEnabled: dynamicThrottlingEnabled
   }
 }

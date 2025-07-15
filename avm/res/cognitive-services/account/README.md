@@ -350,27 +350,15 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csaspeech001'
     // Non-required parameters
-    allowedFqdnList: []
-    allowProjectManagement: false
-    apiProperties: {}
     commitmentPlans: []
-    customerManagedKey: '<customerManagedKey>'
-    deployments: []
-    diagnosticSettings: []
     disableLocalAuth: false
-    managedIdentities: '<managedIdentities>'
-    migrationToken: ''
     networkAcls: {
       defaultAction: 'Allow'
       ipRules: []
       virtualNetworkRules: []
     }
-    privateEndpoints: []
     publicNetworkAccess: 'Enabled'
-    roleAssignments: []
-    secretsExportConfiguration: '<secretsExportConfiguration>'
     sku: 'DC0'
-    userOwnedStorage: []
   }
 }
 ```
@@ -395,35 +383,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csaspeech001"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": []
-    },
-    "allowProjectManagement": {
-      "value": false
-    },
-    "apiProperties": {
-      "value": {}
-    },
     "commitmentPlans": {
-      "value": []
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
-    "deployments": {
-      "value": []
-    },
-    "diagnosticSettings": {
       "value": []
     },
     "disableLocalAuth": {
       "value": false
-    },
-    "managedIdentities": {
-      "value": "<managedIdentities>"
-    },
-    "migrationToken": {
-      "value": ""
     },
     "networkAcls": {
       "value": {
@@ -432,23 +396,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "virtualNetworkRules": []
       }
     },
-    "privateEndpoints": {
-      "value": []
-    },
     "publicNetworkAccess": {
       "value": "Enabled"
     },
-    "roleAssignments": {
-      "value": []
-    },
-    "secretsExportConfiguration": {
-      "value": "<secretsExportConfiguration>"
-    },
     "sku": {
       "value": "DC0"
-    },
-    "userOwnedStorage": {
-      "value": []
     }
   }
 }
@@ -468,27 +420,15 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'SpeechServices'
 param name = 'csaspeech001'
 // Non-required parameters
-param allowedFqdnList = []
-param allowProjectManagement = false
-param apiProperties = {}
 param commitmentPlans = []
-param customerManagedKey = '<customerManagedKey>'
-param deployments = []
-param diagnosticSettings = []
 param disableLocalAuth = false
-param managedIdentities = '<managedIdentities>'
-param migrationToken = ''
 param networkAcls = {
   defaultAction: 'Allow'
   ipRules: []
   virtualNetworkRules: []
 }
-param privateEndpoints = []
 param publicNetworkAccess = 'Enabled'
-param roleAssignments = []
-param secretsExportConfiguration = '<secretsExportConfiguration>'
 param sku = 'DC0'
-param userOwnedStorage = []
 ```
 
 </details>
