@@ -27,7 +27,7 @@ module testDeployment '../../../main.bicep' = {
   scope: rg
   params: {
     // name: '${namePrefix}-${serviceShort}001'
-    name: 'test001'
+    name: 'test001_DC'
     kind: 'SpeechServices'
     sku: 'DC0'
     location: resourceLocation
