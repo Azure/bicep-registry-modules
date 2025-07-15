@@ -58,6 +58,5 @@ module testDeployment '../../../sub-scope/main.bicep' = {
     roleDefinitionIdOrName: 'Reader'
     description: 'Role Assignment (subscription scope)'
     principalType: 'ServicePrincipal'
-    location: resourceLocation
   }
 }

@@ -60,6 +60,5 @@ module testDeployment '../../../sub-scope/main.bicep' = {
       'acdd72a7-3385-48ef-bd42-f606fba81ae7'
     )
     principalType: 'ServicePrincipal'
-    location: resourceLocation
   }
 }

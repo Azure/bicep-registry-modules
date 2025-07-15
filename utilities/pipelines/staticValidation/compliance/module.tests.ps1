@@ -87,8 +87,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
                     versionFileExists                  = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule            = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
-                    isMultiScopeParentModule           = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                    isMultiScopeChildModule            = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeParentModule           = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                 }
             }
         }
@@ -2039,15 +2039,39 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                         $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
                         $deploymentTestFileTestCases += @{
-                            testName                = Split-Path (Split-Path $testFilePath) -Leaf
-                            testFilePath            = $testFilePath
-                            testFileContent         = $testFileContent
-                            compiledTestFileContent = $builtTestFileMap[$testFilePath]
-                            moduleFolderName        = $resourceTypeIdentifier
-                            moduleType              = $moduleType
+                            testName                 = Split-Path (Split-Path $testFilePath) -Leaf
+                            testFilePath             = $testFilePath
+                            testFileContent          = $testFileContent
+                            compiledTestFileContent  = $builtTestFileMap[$testFilePath]
+                            moduleFolderName         = $resourceTypeIdentifier
+                            moduleType               = $moduleType
+                            isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         }
                     }
                 }
+            }
+        }
+
+        It '[<moduleFolderName>] Multi-scope module test cases must directly reference the multi-scoped module they are validating.' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $testFilePath
+            )
+
+            $matchesRegex = $testFilePath -match '.+[\\|\/](mg\-scope|sub\-scope|rg\-scope).*'
+            if ($matchesRegex) {
+                $expectedScope = $matches[1]
+                $testFileContent = Get-Content -Path $testFilePath
+                $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = .*[\[|\{]$") | ForEach-Object { $_.LineNumber - 1 })[0]
+
+                if (-not $testIndex) {
+                    throw ('Unable to identify the test deployment (module testDeployment) in test file [{0}]' -f $testFilePath)
+                }
+
+                $testFileContent[$testIndex] | Should -Match ("^module testDeployment '\.\..*\/$($expectedScope -replace '-', '\-')\/.*main.bicep' = .*[\[|\{]$") -Because 'multi-scope test cases must directly reference the multi-scope module they are validating (e.g., "module testDeployment ''../../rg-scope/main.bicep''").'
+            } else {
+                throw "The test case was unable to identify the scope in path [$testFilePath]."
             }
         }
 
