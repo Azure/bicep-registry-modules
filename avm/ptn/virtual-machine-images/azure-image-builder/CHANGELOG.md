@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added disclaimer for `storageAccountFilesToUpload` parameter to **not** upload files containing emojis (🍪) as they may cause problems when loaded into the environment of the uploading deployment script.
+- Updated to latest Compute Gallery version `0.9.3` to incorporate a disclaimer for DevBox-tailored images
 
 ### Breaking Changes
 

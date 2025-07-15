@@ -34,7 +34,7 @@ param imageManagedIdentityName string = 'msi-aib'
 @description('Required. The name of the Azure Compute Gallery.')
 param computeGalleryName string
 
-import { imageType } from 'br/public:avm/res/compute/gallery:0.9.1'
+import { imageType } from 'br/public:avm/res/compute/gallery:0.9.3'
 @description('Required. The Image Definitions in the Azure Compute Gallery.')
 param computeGalleryImageDefinitions imageType[]
 
