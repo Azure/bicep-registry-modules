@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 metadata name = 'Using only defaults (Subscription scope)'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
@@ -30,13 +30,9 @@ param subscriptionId string = '#_subscriptionId_#'
 // General resources
 // =================
 
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
-  scope: subscription('${subscriptionId}')
-  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
-  params: {
-    name: resourceGroupName
-    location: resourceLocation
-  }
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -55,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../sub-scope/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
@@ -65,6 +61,5 @@ module testDeployment '../../../main.bicep' = {
     )
     principalType: 'ServicePrincipal'
     location: resourceLocation
-    subscriptionId: subscriptionId
   }
 }
