@@ -26,7 +26,7 @@ param location string = resourceGroup().location
     Application: 'MyApp'
   }
 })
-param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -150,6 +150,9 @@ param vmSize string = 'Standard_D2s_v3'
 param adminUsername string = 'azureuser'
 
 @description('Optional. SSH public key for the virtual machine. If empty, a new SSH key will be generated.')
+@metadata({
+  note: 'The SSH key generation is idempotent - the same key will be reused on subsequent deployments if no sshPublicKey is provided.'
+})
 @secure()
 param sshPublicKey string = ''
 
@@ -495,15 +498,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   }
 }
 
-// SSH Key Resource - generates or uses provided SSH key
+// SSH Key Resource - generates or uses provided SSH key (idempotent approach)
 var managedIdentityName = 'sshKeyGenIdentity'
 var sshKeyName = 'sshKey'
 var sshDeploymentScriptName = '${take(uniqueString(resourceGroup().name, location),4)}-sshDeploymentScript'
+// Consistent SSH key name for idempotency
+var consistentSshKeyName = '${take(uniqueString(resourceGroup().name, location),4)}-${sshKeyName}'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (empty(sshPublicKey)) {
   name: '${uniqueString(resourceGroup().id, location)}-${managedIdentityName}'
   location: location
-  tags: tags ?? {}
+  tags: tags
 }
 
 resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (empty(sshPublicKey)) {
@@ -519,23 +524,24 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = if (empty(sshPublicKey)) {
-  name: '${uniqueString(deployment().name, location)}-ssh-script'
-  params: {
-    name: sshDeploymentScriptName
-    location: location
-    tags: tags
-    kind: 'AzurePowerShell'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        managedIdentity!.id
-      ]
+// Deployment script - idempotent SSH key generation/retrieval
+// The PowerShell script checks for existing SSH key and reuses it
+resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(sshPublicKey)) {
+  name: sshDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity!.id}': {}
     }
+  }
+  properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
-    arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
+    arguments: '-SSHKeyName "${consistentSshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
-    enableTelemetry: enableTelemetry
+    cleanupPreference: 'OnExpiration'
   }
   dependsOn: [
     msiRGContrRoleAssignment
@@ -543,13 +549,16 @@ module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1'
 }
 
 resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
-  name: '${take(uniqueString(resourceGroup().name, location),4)}-${sshKeyName}'
+  name: consistentSshKeyName
   location: location
-  tags: tags ?? {}
+  tags: tags
   properties: {
-    publicKey: !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
+    publicKey: !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.properties.outputs.publicKey
   }
 }
+
+// Variable to ensure SSH key consistency
+var effectiveSshPublicKey = !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.properties.outputs.publicKey
 
 // Load balancer
 module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
@@ -620,7 +629,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.1' = {
     encryptionAtHost: encryptionAtHost
     publicKeys: [
       {
-        keyData: sshKey.properties.publicKey
+        keyData: effectiveSshPublicKey
         path: '/home/${adminUsername}/.ssh/authorized_keys'
       }
     ]
@@ -636,6 +645,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.1' = {
           }
         ]
         deleteOption: nicConfig.deleteOption
+        tags: tags
       }
     ]
     bootDiagnostics: true

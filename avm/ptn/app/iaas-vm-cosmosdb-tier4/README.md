@@ -556,6 +556,7 @@ Tags for all resources. Should include standard tags like Environment, Owner, Co
 
 - Required: No
 - Type: object
+- Default: `{}`
 - Example: `System.Management.Automation.OrderedHashtable`
 
 ### Parameter: `virtualMachineImageReference`
@@ -898,10 +899,25 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/recovery-services/vault:0.9.2` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
 
 ## Notes
+
+### SSH Key Configuration
+
+**✅ Idempotent SSH Key Generation:** This template uses an idempotent approach for SSH key management:
+
+1. **Provided SSH Key**: If you provide an SSH public key via the `sshPublicKey` parameter, it will be used consistently
+2. **Generated SSH Key**: If no SSH key is provided, the template will generate one and reuse the same key on subsequent deployments
+3. **No Changes on Re-deployment**: Running the same deployment multiple times will not change the SSH configuration
+
+**How it works:**
+- The PowerShell script checks if an SSH key resource already exists and reuses it
+- No `forceUpdateTag` is used, ensuring the deployment script doesn't run unnecessarily
+- Consistent naming ensures the same SSH key is found and reused
+
+**Best Practice:** Provide your own SSH public key via the `sshPublicKey` parameter for better security and key management.
+
 # Architecture Diagram
 
 This diagram shows the architecture of the IaaS VM with CosmosDB Tier 4 pattern module, including both new VNet deployment and existing VNet integration scenarios.
