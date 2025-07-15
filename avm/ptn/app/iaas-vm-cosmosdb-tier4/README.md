@@ -111,7 +111,15 @@ This instance deploys the module with the minimum set of required parameters.
 module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>' = {
   name: 'iaasVmCosmosdbTier4Deployment'
   params: {
+    // Required parameters
     name: '<name>'
+    // Non-required parameters
+    tags: {
+      Application: 'MyApp'
+      CostCenter: 'IT'
+      Environment: 'Production'
+      Owner: 'TeamName'
+    }
   }
 }
 ```
@@ -128,8 +136,18 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "<name>"
+    },
+    // Non-required parameters
+    "tags": {
+      "value": {
+        "Application": "MyApp",
+        "CostCenter": "IT",
+        "Environment": "Production",
+        "Owner": "TeamName"
+      }
     }
   }
 }
@@ -145,7 +163,15 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
 ```bicep-params
 using 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>'
 
+// Required parameters
 param name = '<name>'
+// Non-required parameters
+param tags = {
+  Application: 'MyApp'
+  CostCenter: 'IT'
+  Environment: 'Production'
+  Owner: 'TeamName'
+}
 ```
 
 </details>
@@ -899,6 +925,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/recovery-services/vault:0.9.2` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
 
 ## Notes

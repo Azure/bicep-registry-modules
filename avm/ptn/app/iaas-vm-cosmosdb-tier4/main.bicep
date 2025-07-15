@@ -524,24 +524,26 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-// Deployment script - idempotent SSH key generation/retrieval
-// The PowerShell script checks for existing SSH key and reuses it
-resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(sshPublicKey)) {
-  name: sshDeploymentScriptName
-  location: location
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity!.id}': {}
+// Option: Use AVM module with runOnce=true for idempotency
+module sshDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = if (empty(sshPublicKey)) {
+  name: '${uniqueString(deployment().name, location)}-ssh-script'
+  params: {
+    name: sshDeploymentScriptName
+    location: location
+    tags: tags
+    kind: 'AzurePowerShell'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        managedIdentity!.id
+      ]
     }
-  }
-  properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
+    runOnce: true // This is KEY for idempotency!
     arguments: '-SSHKeyName "${consistentSshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
     cleanupPreference: 'OnExpiration'
+    enableTelemetry: enableTelemetry
   }
   dependsOn: [
     msiRGContrRoleAssignment
@@ -553,12 +555,12 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
   location: location
   tags: tags
   properties: {
-    publicKey: !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.properties.outputs.publicKey
+    publicKey: !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
   }
 }
 
 // Variable to ensure SSH key consistency
-var effectiveSshPublicKey = !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.properties.outputs.publicKey
+var effectiveSshPublicKey = !empty(sshPublicKey) ? sshPublicKey : sshDeploymentScript!.outputs.outputs.publicKey
 
 // Load balancer
 module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
