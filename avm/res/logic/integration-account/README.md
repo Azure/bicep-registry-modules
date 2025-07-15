@@ -128,6 +128,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    integrationServiceEnvironmentId: '<integrationServiceEnvironmentId>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -195,6 +196,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "integrationServiceEnvironmentId": {
+      "value": "<integrationServiceEnvironmentId>"
     },
     "location": {
       "value": "<location>"
@@ -266,6 +270,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param integrationServiceEnvironmentId = '<integrationServiceEnvironmentId>'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -378,10 +383,12 @@ param location = '<location>'
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`integrationServiceEnvironmentId`](#parameter-integrationserviceenvironmentid) | string | The integration service environment ID. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | Integration account sku name. |
+| [`state`](#parameter-state) | string | The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -544,6 +551,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `integrationServiceEnvironmentId`
+
+The integration service environment ID.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
@@ -719,6 +734,25 @@ Integration account sku name.
     'Free'
     'NotSpecified'
     'Standard'
+  ]
+  ```
+
+### Parameter: `state`
+
+The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Completed'
+    'Deleted'
+    'Disabled'
+    'Enabled'
+    'NotSpecified'
+    'Suspended'
   ]
   ```
 

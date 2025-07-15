@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10115232966112822612"
+      "templateHash": "8533754872462549541"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -254,6 +254,13 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "integrationServiceEnvironmentId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The integration service environment ID."
+      }
+    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -279,6 +286,21 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "state": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Completed",
+        "Deleted",
+        "Disabled",
+        "Enabled",
+        "NotSpecified",
+        "Suspended"
+      ],
+      "metadata": {
+        "description": "Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended."
       }
     },
     "enableTelemetry": {
@@ -371,7 +393,12 @@
       "sku": {
         "name": "[parameters('sku')]"
       },
-      "properties": {}
+      "properties": {
+        "state": "[parameters('state')]",
+        "integrationServiceEnvironment": {
+          "id": "[parameters('integrationServiceEnvironmentId')]"
+        }
+      }
     },
     "integrationAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",

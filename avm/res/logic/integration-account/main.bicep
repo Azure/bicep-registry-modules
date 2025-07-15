@@ -7,6 +7,9 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. The integration service environment ID.')
+param integrationServiceEnvironmentId string = ''
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -18,6 +21,17 @@ param lock lockType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+@description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
+@allowed([
+  'Completed'
+  'Deleted'
+  'Disabled'
+  'Enabled'
+  'NotSpecified'
+  'Suspended'
+])
+param state string = 'Enabled'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -141,7 +155,12 @@ resource integrationAccount 'Microsoft.Logic/integrationAccounts@2019-05-01' = {
   sku: {
     name: sku
   }
-  properties: {}
+  properties: {
+    state: state
+    integrationServiceEnvironment: {
+      id: integrationServiceEnvironmentId
+    }
+  }
 }
 
 resource integrationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

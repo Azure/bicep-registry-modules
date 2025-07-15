@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    integrationServiceEnvironmentName: 'dep-${namePrefix}-ise-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -66,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      integrationServiceEnvironmentId: nestedDependencies.outputs.integrationServiceEnvironmentResourceId
       diagnosticSettings: [
         {
           name: 'customSetting'
