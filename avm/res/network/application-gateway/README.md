@@ -674,6 +674,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     // Required parameters
     name: '<name>'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     backendAddressPools: [
       {
         name: 'appServiceBackendPool'
@@ -1088,11 +1093,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -1114,6 +1114,13 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": "<name>"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "backendAddressPools": {
       "value": [
         {
@@ -1573,13 +1580,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -1598,6 +1598,11 @@ using 'br/public:avm/res/network/application-gateway:<version>'
 // Required parameters
 param name = '<name>'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param backendAddressPools = [
   {
     name: 'appServiceBackendPool'
@@ -2012,11 +2017,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  '1'
-  '2'
-  '3'
-]
 ```
 
 </details>
@@ -3978,6 +3978,7 @@ param tags = {
 | [`authenticationCertificates`](#parameter-authenticationcertificates) | array | Authentication certificates of the application gateway resource. |
 | [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | Upper bound on number of Application Gateway capacity. |
 | [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | Lower bound on number of Application Gateway capacity. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. |
 | [`backendAddressPools`](#parameter-backendaddresspools) | array | Backend address pool of the application gateway resource. |
 | [`backendHttpSettingsCollection`](#parameter-backendhttpsettingscollection) | array | Backend http settings of the application gateway resource. |
 | [`backendSettingsCollection`](#parameter-backendsettingscollection) | array | Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits). |
@@ -4017,7 +4018,6 @@ param tags = {
 | [`trustedClientCertificates`](#parameter-trustedclientcertificates) | array | Trusted client certificates of the application gateway resource. |
 | [`trustedRootCertificates`](#parameter-trustedrootcertificates) | array | Trusted Root certificates of the application gateway resource. |
 | [`urlPathMaps`](#parameter-urlpathmaps) | array | URL path map of the application gateway resource. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. |
 
 ### Parameter: `name`
 
@@ -4056,6 +4056,29 @@ Lower bound on number of Application Gateway capacity.
 - Required: No
 - Type: int
 - Default: `-1`
+
+### Parameter: `availabilityZones`
+
+The list of Availability zones to use for the zone-redundant resources.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `backendAddressPools`
 
@@ -5120,21 +5143,6 @@ URL path map of the application gateway resource.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `zones`
-
-A list of availability zones denoting where the resource needs to come from.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 

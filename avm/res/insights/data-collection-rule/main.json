@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "18163333757886088570"
+      "version": "0.36.177.2456",
+      "templateHash": "17290257983994746236"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -603,8 +603,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5528885836196228785"
+              "version": "0.36.177.2456",
+              "templateHash": "17062698556609624183"
             }
           },
           "definitions": {
@@ -836,7 +836,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(tryGet(reference('dataCollectionRuleAll', '2023-03-11', 'full'), 'identity'), 'principalId'), tryGet(tryGet(reference('dataCollectionRule', '2023-03-11', 'full'), 'identity'), 'principalId'))]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), null()), 'identity'), 'principalId'), tryGet(tryGet(if(not(equals(parameters('dataCollectionRuleProperties').kind, 'All')), reference('dataCollectionRule', '2023-03-11', 'full'), null()), 'identity'), 'principalId'))]"
     }
   }
 }
