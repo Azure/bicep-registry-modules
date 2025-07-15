@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12328659693701538576"
+      "templateHash": "16146349199796657175"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -455,7 +455,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The files to upload to the Assets Storage Account."
+        "description": "Optional. The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis (🍔) as they may cause problems when loaded into the environment of the uploading deployment script."
       }
     },
     "imageTemplateDeploymentScriptName": {

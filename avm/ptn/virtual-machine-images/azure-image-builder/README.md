@@ -1263,7 +1263,7 @@ param virtualNetworkName = '<virtualNetworkName>'
 | [`imageTemplateResourceGroupName`](#parameter-imagetemplateresourcegroupname) | string | The name of the Resource Group to deploy the Image Template resources into. |
 | [`location`](#parameter-location) | string | The location to deploy into. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The name of the Resource Group. |
-| [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | array | The files to upload to the Assets Storage Account. |
+| [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | array | The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis (🍔) as they may cause problems when loaded into the environment of the uploading deployment script. |
 | [`storageDeploymentScriptName`](#parameter-storagedeploymentscriptname) | string | The name of the Deployment Script to upload files to the assets storage account. |
 | [`virtualNetworkAddressPrefix`](#parameter-virtualnetworkaddressprefix) | string | The address space of the Virtual Network. |
 | [`virtualNetworkDeploymentScriptSubnetAddressPrefix`](#parameter-virtualnetworkdeploymentscriptsubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the deployment script. |
@@ -1771,7 +1771,7 @@ The name of the Resource Group.
 
 ### Parameter: `storageAccountFilesToUpload`
 
-The files to upload to the Assets Storage Account.
+The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis (🍔) as they may cause problems when loaded into the environment of the uploading deployment script.
 
 - Required: No
 - Type: array

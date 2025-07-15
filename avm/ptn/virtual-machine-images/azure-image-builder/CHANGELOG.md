@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/virtual-machine-images/azure-image-builder/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Added disclaimer for `storageAccountFilesToUpload` parameter to **not** upload files containing emojis (🍪) as they may cause problems when loaded into the environment of the uploading deployment script.
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
