@@ -122,6 +122,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             enabled: true
           }
         ]
+        metricCategories: []
         name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
@@ -188,6 +189,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               "enabled": true
             }
           ],
+          "metricCategories": [],
           "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
@@ -258,6 +260,7 @@ param diagnosticSettings = [
         enabled: true
       }
     ]
+    metricCategories: []
     name: 'customSetting'
     storageAccountResourceId: '<storageAccountResourceId>'
     workspaceResourceId: '<workspaceResourceId>'

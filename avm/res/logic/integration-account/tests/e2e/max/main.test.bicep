@@ -69,6 +69,7 @@ module testDeployment '../../../main.bicep' = [
       diagnosticSettings: [
         {
           name: 'customSetting'
+          metricCategories: []
           logCategoriesAndGroups: [
             {
               categoryGroup: 'allLogs'
