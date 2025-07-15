@@ -17,7 +17,7 @@ resource integrationServiceEnvironment 'Microsoft.Logic/integrationServiceEnviro
   location: location
   sku: {
     capacity: 2
-    name: 'Devloper'
+    name: 'Developer'
   }
   properties: {
     state: 'Enabled'
