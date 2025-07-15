@@ -1,6 +1,9 @@
 @maxLength(24)
-@description('Name of the Storage Account.')
+@description('Name of the Storage Account. This is ignored if existingResourceId is provided.')
 param name string
+
+@description('Optional. Resource Id of an existing Storage Account. If provided, the module will not create a new AI Search resource but will use the existing one.')
+param existingResourceId string?
 
 @description('Specifies the location for the Storage Account.')
 param location string
@@ -18,12 +21,26 @@ param privateNetworking storageAccountPrivateNetworkingType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+module parsedResourceId 'parseResourceId.bicep' = if (!empty(existingResourceId)) {
+  name: take('${name}-storage-account-parse-resource-id', 64)
+  params: {
+    resourceIdOrName: existingResourceId!
+  }
+}
+
+resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(existingResourceId)) {
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [parsedResourceId]
+  name: parsedResourceId!.outputs.name
+  scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
+}
+
 var projUploadsContainerName = 'ai-foundry-proj-uploads'
 var sysDataContainerName = 'ai-foundry-sys-data'
 
-var networkIsolation = privateNetworking != null && !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.blobPrivateDnsZoneId) && !empty(privateNetworking!.filePrivateDnsZoneId)
+var networkIsolation = !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.blobPrivateDnsZoneId) && !empty(privateNetworking!.filePrivateDnsZoneId)
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (empty(existingResourceId)) {
   name: take('${name}-storage-account-deployment', 64)
   params: {
     name: name
@@ -86,10 +103,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
 }
 
 @description('Name of the Storage Account.')
-output name string = storageAccount.outputs.name
+output name string = empty(existingResourceId) ? storageAccount!.outputs.name : existingStorageAccount.name
 
 @description('Resource ID of the Storage Account.')
-output resourceId string = storageAccount.outputs.resourceId
+output resourceId string = empty(existingResourceId) ? storageAccount!.outputs.resourceId : existingStorageAccount.id
 
 @description('Name of the project uploads container.')
 output projUploadsContainerName string = projUploadsContainerName

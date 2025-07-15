@@ -26,9 +26,6 @@ param aiModelDeployments deploymentType[] = []
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
 param tags object = {}
 
-@description('Optional. Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created.')
-param identityPrincipalId string?
-
 @description('Optional. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool = false
 
@@ -38,7 +35,19 @@ param includeAssociatedResources bool = false
 @description('Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used.')
 param networking networkConfigurationType?
 
-var enablePrivateNetworking = networking != null && !empty(networking) && !empty(networking!.privateEndpointSubnetId)
+@description('Optional. Custom configuration for the Key Vault.')
+param keyVaultConfiguration resourceConfigurationType?
+
+@description('Optional. Custom configuration for the AI Search resource.')
+param aiSearchConfiguration resourceConfigurationType?
+
+@description('Optional. Custom configuration for the Storage Account.')
+param storageAccountConfiguration resourceConfigurationType?
+
+@description('Optional. Custom configuration for the Cosmos DB Account.')
+param cosmosDbConfiguration resourceConfigurationType?
+
+var enablePrivateNetworking = !empty(networking) && !empty(networking!.privateEndpointSubnetId)
 
 var resourcesName = toLower(trim(replace(
   replace(replace(replace(replace(replace('${name}${uniqueNameText}', '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''),
@@ -68,7 +77,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
   name: take('${resourcesName}-keyvault-deployment', 64)
   params: {
-    name: take('kv${resourcesName}', 24)
+    name: take(
+      !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
+        ? keyVaultConfiguration!.name!
+        : 'kv${resourcesName}',
+      24
+    )
+    existingResourceId: keyVaultConfiguration.?existingResourceId
     location: location
     privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
       ? {
@@ -76,15 +91,7 @@ module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
           privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
         }
       : {}
-    roleAssignments: empty(identityPrincipalId)
-      ? []
-      : [
-          {
-            principalId: identityPrincipalId!
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Key Vault Secrets User'
-          }
-        ]
+    roleAssignments: keyVaultConfiguration.?roleAssignments
     enableTelemetry: enableTelemetry
     tags: tags
   }
@@ -104,25 +111,6 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
         }
       : {}
     aiModelDeployments: aiModelDeployments
-    roleAssignments: empty(identityPrincipalId)
-      ? []
-      : [
-          {
-            principalId: identityPrincipalId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-          }
-          {
-            principalId: identityPrincipalId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Cognitive Services Contributor'
-          }
-          {
-            principalId: identityPrincipalId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Cognitive Services User'
-          }
-        ]
     contentSafetyEnabled: contentSafetyEnabled
     enableTelemetry: enableTelemetry
     tags: tags
@@ -132,7 +120,13 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
 module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
   name: take('${resourcesName}-ai-search-deployment', 64)
   params: {
-    name: take('srch${resourcesName}', 60)
+    #disable-next-line BCP334
+    name: take(
+      !empty(aiSearchConfiguration) && !empty(aiSearchConfiguration.?name)
+        ? aiSearchConfiguration!.name!
+        : 'srch${resourcesName}',
+      60
+    )
     location: location
     privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
       ? {
@@ -140,20 +134,7 @@ module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
           privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
         }
       : {}
-    roleAssignments: empty(identityPrincipalId)
-      ? []
-      : [
-          {
-            principalId: identityPrincipalId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Search Index Data Contributor'
-          }
-          {
-            principalId: identityPrincipalId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Search Index Data Reader'
-          }
-        ]
+    roleAssignments: aiSearchConfiguration.?roleAssignments
     enableTelemetry: enableTelemetry
     tags: tags
   }
@@ -162,7 +143,13 @@ module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
 module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedResources) {
   name: take('${resourcesName}-storage-account-deployment', 64)
   params: {
-    name: take('st${resourcesName}', 24)
+    name: take(
+      !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?name)
+        ? storageAccountConfiguration!.name!
+        : 'st${resourcesName}',
+      24
+    )
+    existingResourceId: storageAccountConfiguration.?existingResourceId
     location: location
     privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
       ? {
@@ -173,15 +160,16 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
       : {}
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
-      empty(identityPrincipalId)
-        ? []
-        : [
-            {
-              principalId: identityPrincipalId
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-            }
-          ],
+      !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?roleAssignments)
+        ? storageAccountConfiguration!.roleAssignments!
+        : [],
+      [
+        {
+          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        }
+      ],
       [
         {
           principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
@@ -204,7 +192,13 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
 module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
   name: take('${resourcesName}-cosmosdb-deployment', 64)
   params: {
-    name: take('cos${resourcesName}', 44)
+    name: take(
+      !empty(cosmosDbConfiguration) && !empty(cosmosDbConfiguration.?name)
+        ? cosmosDbConfiguration!.name!
+        : 'cos${resourcesName}',
+      44
+    )
+    existingResourceId: cosmosDbConfiguration.?existingResourceId
     location: location
     privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
       ? {
@@ -213,6 +207,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
         }
       : {}
     enableTelemetry: enableTelemetry
+    roleAssignments: cosmosDbConfiguration.?roleAssignments
     tags: tags
   }
 }
@@ -299,4 +294,18 @@ type networkResourcesDnsZonesConfigurationType = {
 
   @description('Required. The Resource ID of the DNS zone "file" for the Azure Storage Account.')
   storageFilePrivateDnsZoneId: string
+}
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+
+@description('Custom configuration for a resource, including optional name, existing resource ID, and role assignments.')
+type resourceConfigurationType = {
+  @description('Optional. Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.')
+  existingResourceId: string?
+
+  @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
+  name: string?
+
+  @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
+  roleAssignments: roleAssignmentType[]?
 }

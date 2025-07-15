@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16668745947570704614"
+      "templateHash": "364130584523530250"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -94,6 +94,38 @@
       },
       "metadata": {
         "description": "Values for the associated resources DNS Zone resource IDs."
+      }
+    },
+    "resourceConfigurationType": {
+      "type": "object",
+      "properties": {
+        "existingResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Custom configuration for a resource, including optional name, existing resource ID, and role assignments."
       }
     },
     "deploymentType": {
@@ -196,6 +228,81 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
         }
       }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -253,13 +360,6 @@
         "description": "Optional. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
       }
     },
-    "identityPrincipalId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created."
-      }
-    },
     "contentSafetyEnabled": {
       "type": "bool",
       "defaultValue": false,
@@ -280,10 +380,38 @@
       "metadata": {
         "description": "Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used."
       }
+    },
+    "keyVaultConfiguration": {
+      "$ref": "#/definitions/resourceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom configuration for the Key Vault."
+      }
+    },
+    "aiSearchConfiguration": {
+      "$ref": "#/definitions/resourceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom configuration for the AI Search resource."
+      }
+    },
+    "storageAccountConfiguration": {
+      "$ref": "#/definitions/resourceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom configuration for the Storage Account."
+      }
+    },
+    "cosmosDbConfiguration": {
+      "$ref": "#/definitions/resourceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom configuration for the Cosmos DB Account."
+      }
     }
   },
   "variables": {
-    "enablePrivateNetworking": "[and(and(not(equals(parameters('networking'), null())), not(empty(parameters('networking')))), not(empty(parameters('networking').privateEndpointSubnetId)))]",
+    "enablePrivateNetworking": "[and(not(empty(parameters('networking'))), not(empty(parameters('networking').privateEndpointSubnetId)))]",
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('name'), parameters('uniqueNameText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]"
   },
   "resources": {
@@ -319,13 +447,18 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(format('kv{0}', variables('resourcesName')), 24)]"
+            "value": "[take(if(and(not(empty(parameters('keyVaultConfiguration'))), not(empty(tryGet(parameters('keyVaultConfiguration'), 'name')))), parameters('keyVaultConfiguration').name, format('kv{0}', variables('resourcesName'))), 24)]"
+          },
+          "existingResourceId": {
+            "value": "[tryGet(parameters('keyVaultConfiguration'), 'existingResourceId')]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'keyVaultPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.keyVaultPrivateDnsZoneId)), createObject('value', createObject()))]",
-          "roleAssignments": "[if(empty(parameters('identityPrincipalId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]",
+          "roleAssignments": {
+            "value": "[tryGet(parameters('keyVaultConfiguration'), 'roleAssignments')]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -341,7 +474,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "5613777063738320994"
+              "templateHash": "12404691128407404090"
             }
           },
           "definitions": {
@@ -364,7 +497,7 @@
               "metadata": {
                 "description": "Values to establish private networking for resources that support creating private endpoints.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "customTypes.bicep"
+                  "sourceTemplate": "localSharedTypes.bicep"
                 }
               }
             },
@@ -449,7 +582,14 @@
               "type": "string",
               "maxLength": 24,
               "metadata": {
-                "description": "Name of the Key Vault."
+                "description": "Required. Name of the Key Vault. This is ignored if existingResourceId is provided."
+              }
+            },
+            "existingResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource Id of an existing Key Vault. If provided, the module will not create a new Key Vault but will use the existing one."
               }
             },
             "location": {
@@ -491,10 +631,89 @@
             }
           },
           "variables": {
-            "networkIsolation": "[and(and(and(not(equals(parameters('privateNetworking'), null())), not(empty(parameters('privateNetworking')))), not(empty(parameters('privateNetworking').privateDnsZoneId))), not(empty(parameters('privateNetworking').privateEndpointSubnetId)))]"
+            "networkIsolation": "[and(and(not(empty(parameters('privateNetworking'))), not(empty(parameters('privateNetworking').privateDnsZoneId))), not(empty(parameters('privateNetworking').privateEndpointSubnetId)))]"
           },
           "resources": {
+            "existingKeyVault": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2024-11-01",
+              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
+              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
+              "name": "[reference('parsedResourceId').outputs.name.value]",
+              "dependsOn": [
+                "parsedResourceId"
+              ]
+            },
+            "parsedResourceId": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('{0}-keyvault-parse-resource-id', parameters('name')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceIdOrName": {
+                    "value": "[parameters('existingResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "4037985259053051656"
+                    }
+                  },
+                  "parameters": {
+                    "resourceIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID or name of an existing resource."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
+                    "name": "[if(not(empty(variables('resourceParts'))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
+                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
+                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
+                  },
+                  "resources": [],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the resource."
+                      },
+                      "value": "[variables('name')]"
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Subscription ID of the resource."
+                      },
+                      "value": "[variables('subscriptionId')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource Group Name of the resource."
+                      },
+                      "value": "[variables('resourceGroupName')]"
+                    }
+                  }
+                }
+              }
+            },
             "keyvault": {
+              "condition": "[empty(parameters('existingResourceId'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-keyvault-deployment', parameters('name')), 64)]",
@@ -3848,14 +4067,14 @@
               "metadata": {
                 "description": "Resource ID of the Key Vault."
               },
-              "value": "[reference('keyvault').outputs.resourceId.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('keyvault').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.KeyVault/vaults', reference('parsedResourceId').outputs.name.value))]"
             },
             "name": {
               "type": "string",
               "metadata": {
                 "description": "Name of the Key Vault."
               },
-              "value": "[reference('keyvault').outputs.name.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('keyvault').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
             }
           }
         }
@@ -3881,7 +4100,6 @@
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
           },
-          "roleAssignments": "[if(empty(parameters('identityPrincipalId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor'), createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services Contributor'), createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services User'))))]",
           "contentSafetyEnabled": {
             "value": "[parameters('contentSafetyEnabled')]"
           },
@@ -3900,7 +4118,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "11762692782676523207"
+              "templateHash": "16823348027200215694"
             }
           },
           "definitions": {
@@ -4176,7 +4394,7 @@
             }
           },
           "variables": {
-            "networkIsolation": "[and(and(and(and(and(not(equals(parameters('privateNetworking'), null())), not(empty(parameters('privateNetworking')))), not(empty(parameters('privateNetworking').privateEndpointSubnetId))), not(empty(parameters('privateNetworking').cogServicesPrivateDnsZoneId))), not(empty(parameters('privateNetworking').openAIPrivateDnsZoneId))), not(empty(parameters('privateNetworking').aiServicesPrivateDnsZoneId)))]"
+            "networkIsolation": "[and(and(and(and(not(empty(parameters('privateNetworking'))), not(empty(parameters('privateNetworking').privateEndpointSubnetId))), not(empty(parameters('privateNetworking').cogServicesPrivateDnsZoneId))), not(empty(parameters('privateNetworking').openAIPrivateDnsZoneId))), not(empty(parameters('privateNetworking').aiServicesPrivateDnsZoneId)))]"
           },
           "resources": {
             "aiServices": {
@@ -9669,13 +9887,15 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(format('srch{0}', variables('resourcesName')), 60)]"
+            "value": "[take(if(and(not(empty(parameters('aiSearchConfiguration'))), not(empty(tryGet(parameters('aiSearchConfiguration'), 'name')))), parameters('aiSearchConfiguration').name, format('srch{0}', variables('resourcesName'))), 60)]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'aiSearchPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.aiSearchPrivateDnsZoneId)), createObject('value', createObject()))]",
-          "roleAssignments": "[if(empty(parameters('identityPrincipalId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
+          "roleAssignments": {
+            "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -9691,7 +9911,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "14237284213911443972"
+              "templateHash": "4293926079432562250"
             }
           },
           "definitions": {
@@ -9714,7 +9934,7 @@
               "metadata": {
                 "description": "Values to establish private networking for resources that support creating private endpoints.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "customTypes.bicep"
+                  "sourceTemplate": "localSharedTypes.bicep"
                 }
               }
             },
@@ -9800,7 +10020,14 @@
               "minLength": 2,
               "maxLength": 60,
               "metadata": {
-                "description": "Name of the AI Search resource."
+                "description": "Name of the AI Search resource. This is ignored if existingResourceId is provided."
+              }
+            },
+            "existingResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource Id of an existing AI Search resource. If provided, the module will not create a new AI Search resource but will use the existing one."
               }
             },
             "location": {
@@ -9842,10 +10069,89 @@
             }
           },
           "variables": {
-            "networkIsolation": "[and(and(and(not(equals(parameters('privateNetworking'), null())), not(empty(parameters('privateNetworking')))), not(empty(parameters('privateNetworking').privateDnsZoneId))), not(empty(parameters('privateNetworking').privateEndpointSubnetId)))]"
+            "networkIsolation": "[and(and(not(empty(parameters('privateNetworking'))), not(empty(parameters('privateNetworking').privateDnsZoneId))), not(empty(parameters('privateNetworking').privateEndpointSubnetId)))]"
           },
           "resources": {
+            "existingAiSearch": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2025-05-01",
+              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
+              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
+              "name": "[reference('parsedResourceId').outputs.name.value]",
+              "dependsOn": [
+                "parsedResourceId"
+              ]
+            },
+            "parsedResourceId": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('{0}-search-parse-resource-id', parameters('name')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceIdOrName": {
+                    "value": "[parameters('existingResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "4037985259053051656"
+                    }
+                  },
+                  "parameters": {
+                    "resourceIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID or name of an existing resource."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
+                    "name": "[if(not(empty(variables('resourceParts'))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
+                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
+                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
+                  },
+                  "resources": [],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the resource."
+                      },
+                      "value": "[variables('name')]"
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Subscription ID of the resource."
+                      },
+                      "value": "[variables('subscriptionId')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource Group Name of the resource."
+                      },
+                      "value": "[variables('resourceGroupName')]"
+                    }
+                  }
+                }
+              }
+            },
             "aiSearch": {
+              "condition": "[empty(parameters('existingResourceId'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-search-services-deployment', parameters('name')), 64)]",
@@ -12067,21 +12373,21 @@
               "metadata": {
                 "description": "Resource ID of the AI Search resource."
               },
-              "value": "[reference('aiSearch').outputs.resourceId.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('aiSearch').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Search/searchServices', reference('parsedResourceId').outputs.name.value))]"
             },
             "name": {
               "type": "string",
               "metadata": {
                 "description": "Name of the AI Search resource."
               },
-              "value": "[reference('aiSearch').outputs.name.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('aiSearch').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
                 "description": "System Assigned Identity principal ID of the AI Search resource."
               },
-              "value": "[reference('aiSearch').outputs.systemAssignedMIPrincipalId.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('existingAiSearch', '2025-05-01', 'full').identity.principalId, reference('aiSearch').outputs.systemAssignedMIPrincipalId.value)]"
             }
           }
         }
@@ -12099,7 +12405,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(format('st{0}', variables('resourcesName')), 24)]"
+            "value": "[take(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'name')))), parameters('storageAccountConfiguration').name, format('st{0}', variables('resourcesName'))), 24)]"
+          },
+          "existingResourceId": {
+            "value": "[tryGet(parameters('storageAccountConfiguration'), 'existingResourceId')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -12109,7 +12418,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
-            "value": "[concat(if(empty(parameters('identityPrincipalId')), createArray(), createArray(createObject('principalId', parameters('identityPrincipalId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
+            "value": "[concat(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'roleAssignments')))), parameters('storageAccountConfiguration').roleAssignments, createArray()), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -12123,7 +12432,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "10762811729442383438"
+              "templateHash": "11996360733012203232"
             }
           },
           "definitions": {
@@ -12235,7 +12544,14 @@
               "type": "string",
               "maxLength": 24,
               "metadata": {
-                "description": "Name of the Storage Account."
+                "description": "Name of the Storage Account. This is ignored if existingResourceId is provided."
+              }
+            },
+            "existingResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource Id of an existing Storage Account. If provided, the module will not create a new AI Search resource but will use the existing one."
               }
             },
             "location": {
@@ -12279,10 +12595,89 @@
           "variables": {
             "projUploadsContainerName": "ai-foundry-proj-uploads",
             "sysDataContainerName": "ai-foundry-sys-data",
-            "networkIsolation": "[and(and(and(and(not(equals(parameters('privateNetworking'), null())), not(empty(parameters('privateNetworking')))), not(empty(parameters('privateNetworking').privateEndpointSubnetId))), not(empty(parameters('privateNetworking').blobPrivateDnsZoneId))), not(empty(parameters('privateNetworking').filePrivateDnsZoneId)))]"
+            "networkIsolation": "[and(and(and(not(empty(parameters('privateNetworking'))), not(empty(parameters('privateNetworking').privateEndpointSubnetId))), not(empty(parameters('privateNetworking').blobPrivateDnsZoneId))), not(empty(parameters('privateNetworking').filePrivateDnsZoneId)))]"
           },
           "resources": {
+            "existingStorageAccount": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2025-01-01",
+              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
+              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
+              "name": "[reference('parsedResourceId').outputs.name.value]",
+              "dependsOn": [
+                "parsedResourceId"
+              ]
+            },
+            "parsedResourceId": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('{0}-storage-account-parse-resource-id', parameters('name')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceIdOrName": {
+                    "value": "[parameters('existingResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "4037985259053051656"
+                    }
+                  },
+                  "parameters": {
+                    "resourceIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID or name of an existing resource."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
+                    "name": "[if(not(empty(variables('resourceParts'))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
+                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
+                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
+                  },
+                  "resources": [],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the resource."
+                      },
+                      "value": "[variables('name')]"
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Subscription ID of the resource."
+                      },
+                      "value": "[variables('subscriptionId')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource Group Name of the resource."
+                      },
+                      "value": "[variables('resourceGroupName')]"
+                    }
+                  }
+                }
+              }
+            },
             "storageAccount": {
+              "condition": "[empty(parameters('existingResourceId'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-storage-account-deployment', parameters('name')), 64)]",
@@ -18093,14 +18488,14 @@
               "metadata": {
                 "description": "Name of the Storage Account."
               },
-              "value": "[reference('storageAccount').outputs.name.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('storageAccount').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "Resource ID of the Storage Account."
               },
-              "value": "[reference('storageAccount').outputs.resourceId.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('storageAccount').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Storage/storageAccounts', reference('parsedResourceId').outputs.name.value))]"
             },
             "projUploadsContainerName": {
               "type": "string",
@@ -18136,7 +18531,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(format('cos{0}', variables('resourcesName')), 44)]"
+            "value": "[take(if(and(not(empty(parameters('cosmosDbConfiguration'))), not(empty(tryGet(parameters('cosmosDbConfiguration'), 'name')))), parameters('cosmosDbConfiguration').name, format('cos{0}', variables('resourcesName'))), 44)]"
+          },
+          "existingResourceId": {
+            "value": "[tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -18144,6 +18542,9 @@
           "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'cosmosDbPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.cosmosDbPrivateDnsZoneId)), createObject('value', createObject()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(parameters('cosmosDbConfiguration'), 'roleAssignments')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -18157,7 +18558,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "8405048279767934502"
+              "templateHash": "5864008373003996650"
             }
           },
           "definitions": {
@@ -18180,7 +18581,7 @@
               "metadata": {
                 "description": "Values to establish private networking for resources that support creating private endpoints.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "customTypes.bicep"
+                  "sourceTemplate": "localSharedTypes.bicep"
                 }
               }
             },
@@ -18265,7 +18666,14 @@
               "type": "string",
               "maxLength": 44,
               "metadata": {
-                "description": "Name of the Cosmos DB Account."
+                "description": "Name of the Cosmos DB Account. This is ignored if existingResourceId is provided."
+              }
+            },
+            "existingResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource Id of an existing Cosmos DB Account. If provided, the module will not create a new Cosmos DB Account but will use the existing one."
               }
             },
             "location": {
@@ -18307,10 +18715,89 @@
             }
           },
           "variables": {
-            "networkIsolation": "[and(and(and(not(equals(parameters('privateNetworking'), null())), not(empty(parameters('privateNetworking')))), not(empty(parameters('privateNetworking').privateDnsZoneId))), not(empty(parameters('privateNetworking').privateEndpointSubnetId)))]"
+            "networkIsolation": "[and(and(not(empty(parameters('privateNetworking'))), not(empty(parameters('privateNetworking').privateDnsZoneId))), not(empty(parameters('privateNetworking').privateEndpointSubnetId)))]"
           },
           "resources": {
+            "existingCosmosDb": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2025-04-15",
+              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
+              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
+              "name": "[reference('parsedResourceId').outputs.name.value]",
+              "dependsOn": [
+                "parsedResourceId"
+              ]
+            },
+            "parsedResourceId": {
+              "condition": "[not(empty(parameters('existingResourceId')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('{0}-cosmos-parse-resource-id', parameters('name')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceIdOrName": {
+                    "value": "[parameters('existingResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "4037985259053051656"
+                    }
+                  },
+                  "parameters": {
+                    "resourceIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID or name of an existing resource."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
+                    "name": "[if(not(empty(variables('resourceParts'))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
+                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
+                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
+                  },
+                  "resources": [],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the resource."
+                      },
+                      "value": "[variables('name')]"
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Subscription ID of the resource."
+                      },
+                      "value": "[variables('subscriptionId')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource Group Name of the resource."
+                      },
+                      "value": "[variables('resourceGroupName')]"
+                    }
+                  }
+                }
+              }
+            },
             "cosmosDb": {
+              "condition": "[empty(parameters('existingResourceId'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-cosmosdb-deployment', parameters('name')), 64)]",
@@ -22130,14 +22617,14 @@
               "metadata": {
                 "description": "Resource ID of the Cosmos DB Account."
               },
-              "value": "[reference('cosmosDb').outputs.resourceId.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('cosmosDb').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.DocumentDB/databaseAccounts', reference('parsedResourceId').outputs.name.value))]"
             },
             "name": {
               "type": "string",
               "metadata": {
                 "description": "Name of the Cosmos DB Account."
               },
-              "value": "[reference('cosmosDb').outputs.name.value]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('cosmosDb').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
             }
           }
         }

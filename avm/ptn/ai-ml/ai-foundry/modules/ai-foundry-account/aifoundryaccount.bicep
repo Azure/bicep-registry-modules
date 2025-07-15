@@ -24,7 +24,7 @@ param enableTelemetry bool = true
 @description('Optional. Configuration for private networking of AI Services. If not provided, public access will be enabled.')
 param privateNetworking aiServicesPrivateNetworkingType?
 
-var networkIsolation = privateNetworking != null && !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.cogServicesPrivateDnsZoneId) && !empty(privateNetworking!.openAIPrivateDnsZoneId) && !empty(privateNetworking!.aiServicesPrivateDnsZoneId)
+var networkIsolation = !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.cogServicesPrivateDnsZoneId) && !empty(privateNetworking!.openAIPrivateDnsZoneId) && !empty(privateNetworking!.aiServicesPrivateDnsZoneId)
 
 module aiServices 'service.bicep' = {
   name: take('${resourcesName}-ai-services', 64)

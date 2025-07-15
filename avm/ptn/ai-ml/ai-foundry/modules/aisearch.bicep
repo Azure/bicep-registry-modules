@@ -1,7 +1,10 @@
 @minLength(2)
 @maxLength(60)
-@description('Name of the AI Search resource.')
+@description('Name of the AI Search resource. This is ignored if existingResourceId is provided.')
 param name string
+
+@description('Optional. Resource Id of an existing AI Search resource. If provided, the module will not create a new AI Search resource but will use the existing one.')
+param existingResourceId string?
 
 @description('Specifies the location for all the Azure resources.')
 param location string
@@ -13,16 +16,30 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { resourcePrivateNetworkingType } from 'customTypes.bicep'
+import { resourcePrivateNetworkingType } from 'localSharedTypes.bicep'
 @description('Optional. Values to establish private networking for the AI Search resource. If not provided, public access will be enabled.')
 param privateNetworking resourcePrivateNetworkingType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var networkIsolation = privateNetworking != null && !empty(privateNetworking) && !empty(privateNetworking!.privateDnsZoneId) && !empty(privateNetworking!.privateEndpointSubnetId)
+module parsedResourceId 'parseResourceId.bicep' = if (!empty(existingResourceId)) {
+  name: take('${name}-search-parse-resource-id', 64)
+  params: {
+    resourceIdOrName: existingResourceId!
+  }
+}
 
-module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = {
+resource existingAiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = if (!empty(existingResourceId)) {
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [parsedResourceId]
+  name: parsedResourceId!.outputs.name
+  scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
+}
+
+var networkIsolation = !empty(privateNetworking) && !empty(privateNetworking!.privateDnsZoneId) && !empty(privateNetworking!.privateEndpointSubnetId)
+
+module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (empty(existingResourceId)) {
   name: take('${name}-search-services-deployment', 64)
   params: {
     name: name
@@ -57,10 +74,12 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = {
 }
 
 @description('Resource ID of the AI Search resource.')
-output resourceId string = aiSearch.outputs.resourceId
+output resourceId string = empty(existingResourceId) ? aiSearch!.outputs.resourceId : existingAiSearch.id
 
 @description('Name of the AI Search resource.')
-output name string = aiSearch.outputs.name
+output name string = empty(existingResourceId) ? aiSearch!.outputs.name : existingAiSearch.name
 
 @description('System Assigned Identity principal ID of the AI Search resource.')
-output systemAssignedMIPrincipalId string = aiSearch.outputs.systemAssignedMIPrincipalId!
+output systemAssignedMIPrincipalId string = empty(existingResourceId)
+  ? existingAiSearch!.identity.principalId
+  : aiSearch!.outputs.systemAssignedMIPrincipalId!
