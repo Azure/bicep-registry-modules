@@ -398,7 +398,7 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: cognitiveService
 }
 
-resource commitmentPlansRes 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-04-01-preview' = [
+resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-04-01-preview' = [
   for plan in (commitmentPlans ?? []): {
     parent: cognitiveService
     name: '${plan.hostingModel}-${plan.planType}'
