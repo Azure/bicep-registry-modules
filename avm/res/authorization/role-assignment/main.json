@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "1935873856783489487"
+      "templateHash": "1164811110987111538"
     },
-    "name": "Role Assignments (All scopes)",
-    "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'\n\n> NOTE: This multi-scope module won't be published as is and only its nested modules should be used.\n"
+    "name": "Role Assignments (Multi-Scope)",
+    "description": "This module's child-modules deploy a Role Assignment at a Management Group (mg-scope), Subscription (sub-scope) or Resource Group (rg-scope) scope.\n\n> While this template is **not** published, you can find the actual published modules in the subfolders\n> - `mg-scope`\n> - `sub-scope`\n> - `rg-scope`\n"
   },
   "resources": []
 }

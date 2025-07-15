@@ -1,8 +1,11 @@
-# Role Assignments (All scopes) `[Microsoft.Authorization/roleAssignments]`
+# Role Assignments (Multi-Scope) `[Microsoft.Authorization/roleAssignments]`
 
-This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'
+This module's child-modules deploy a Role Assignment at a Management Group (mg-scope), Subscription (sub-scope) or Resource Group (rg-scope) scope.
 
-> NOTE: This multi-scope module won't be published as is and only its nested modules should be used.
+> While this template is **not** published, you can find the actual published modules in the subfolders
+> - `mg-scope`
+> - `sub-scope`
+> - `rg-scope`
 
 
 ## Navigation
