@@ -38,7 +38,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags for all resources.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/galleries/applications@2024-03-03'>.tags?
 
 @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
 param customActions customActionType[]?
