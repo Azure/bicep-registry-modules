@@ -21,6 +21,15 @@ resource integrationServiceEnvironment 'Microsoft.Logic/integrationServiceEnviro
   }
   properties: {
     state: 'Enabled'
+    networkConfiguration: {
+      accessEndpoint: { type: 'Internal' }
+      subnets: [
+        {
+          id: resourceId('Microsoft.Network/virtualNetworks/subnets', integrationServiceEnvironmentName, 'default')
+        }
+      ]
+      virtualNetworkAddressSpace: '10.0.0.0/16'
+    }
   }
 }
 
