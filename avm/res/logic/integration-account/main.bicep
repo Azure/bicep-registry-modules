@@ -157,9 +157,7 @@ resource integrationAccount 'Microsoft.Logic/integrationAccounts@2019-05-01' = {
   }
   properties: {
     state: state
-    integrationServiceEnvironment: {
-      id: !empty(integrationServiceEnvironmentId) ? integrationServiceEnvironmentId : null // Must be null if not set
-    }
+    integrationServiceEnvironment: null
   }
 }
 
