@@ -7,9 +7,6 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The integration service environment ID.')
-param integrationServiceEnvironmentId string = ''
-
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -157,9 +154,6 @@ resource integrationAccount 'Microsoft.Logic/integrationAccounts@2019-05-01' = {
   }
   properties: {
     state: state
-    integrationServiceEnvironment: !empty(integrationServiceEnvironmentId)
-      ? { id: integrationServiceEnvironmentId }
-      : null
   }
 }
 

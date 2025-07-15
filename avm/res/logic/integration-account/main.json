@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17224865534038425135"
+      "templateHash": "15245934162402137719"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -254,13 +254,6 @@
         "description": "Optional. Location for all Resources."
       }
     },
-    "integrationServiceEnvironmentId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The integration service environment ID."
-      }
-    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -394,8 +387,7 @@
         "name": "[parameters('sku')]"
       },
       "properties": {
-        "state": "[parameters('state')]",
-        "integrationServiceEnvironment": "[if(not(empty(parameters('integrationServiceEnvironmentId'))), createObject('id', parameters('integrationServiceEnvironmentId')), null())]"
+        "state": "[parameters('state')]"
       }
     },
     "integrationAccount_lock": {

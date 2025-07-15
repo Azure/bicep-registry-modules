@@ -128,7 +128,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    integrationServiceEnvironmentId: '/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -196,9 +195,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "integrationServiceEnvironmentId": {
-      "value": "/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp"
     },
     "location": {
       "value": "<location>"
@@ -270,7 +266,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param integrationServiceEnvironmentId = '/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -383,7 +378,6 @@ param location = '<location>'
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`integrationServiceEnvironmentId`](#parameter-integrationserviceenvironmentid) | string | The integration service environment ID. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -551,14 +545,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `integrationServiceEnvironmentId`
-
-The integration service environment ID.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `location`
 

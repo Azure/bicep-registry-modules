@@ -66,7 +66,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      integrationServiceEnvironmentId: '/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp'
       diagnosticSettings: [
         {
           name: 'customSetting'
