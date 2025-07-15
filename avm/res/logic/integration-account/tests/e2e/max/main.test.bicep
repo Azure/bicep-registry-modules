@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    integrationServiceEnvironmentName: 'dep-${namePrefix}-ise-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -67,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      integrationServiceEnvironmentId: nestedDependencies.outputs.integrationServiceEnvironmentResourceId
+      integrationServiceEnvironmentId: '/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp'
       diagnosticSettings: [
         {
           name: 'customSetting'

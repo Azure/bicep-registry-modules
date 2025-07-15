@@ -128,7 +128,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    integrationServiceEnvironmentId: '<integrationServiceEnvironmentId>'
+    integrationServiceEnvironmentId: '/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -198,7 +198,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       ]
     },
     "integrationServiceEnvironmentId": {
-      "value": "<integrationServiceEnvironmentId>"
+      "value": "/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp"
     },
     "location": {
       "value": "<location>"
@@ -270,7 +270,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param integrationServiceEnvironmentId = '<integrationServiceEnvironmentId>'
+param integrationServiceEnvironmentId = '/subscriptions/2477fc83-42b3-4c35-91c2-4b49683ef27d/resourceGroups/testrg/providers/Microsoft.Web/sites/lbslgapp'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
