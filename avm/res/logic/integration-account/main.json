@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12958260095324624694"
+      "templateHash": "17224865534038425135"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -395,7 +395,7 @@
       },
       "properties": {
         "state": "[parameters('state')]",
-        "integrationServiceEnvironment": null
+        "integrationServiceEnvironment": "[if(not(empty(parameters('integrationServiceEnvironmentId'))), createObject('id', parameters('integrationServiceEnvironmentId')), null())]"
       }
     },
     "integrationAccount_lock": {
