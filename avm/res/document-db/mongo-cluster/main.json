@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "9868040144347773619"
+      "version": "0.36.177.2456",
+      "templateHash": "12281968743662330122"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -961,8 +961,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "16764717011313154043"
+              "version": "0.36.177.2456",
+              "templateHash": "5604823715912874222"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster."
@@ -1067,8 +1067,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "4651660997503960626"
+              "version": "0.36.177.2456",
+              "templateHash": "10063376243141070937"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
             "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
