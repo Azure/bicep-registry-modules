@@ -358,10 +358,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     deployments: []
     diagnosticSettings: []
     disableLocalAuth: false
-    location: '<location>'
-    lock: {
-      kind: 'None'
-    }
     managedIdentities: '<managedIdentities>'
     migrationToken: ''
     networkAcls: {
@@ -374,10 +370,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     roleAssignments: []
     secretsExportConfiguration: '<secretsExportConfiguration>'
     sku: 'DC0'
-    tags: {
-      Deployment: 'DC0Disconnected'
-      Environment: 'Test'
-    }
     userOwnedStorage: []
   }
 }
@@ -427,14 +419,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "disableLocalAuth": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "None"
-      }
-    },
     "managedIdentities": {
       "value": "<managedIdentities>"
     },
@@ -462,12 +446,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "sku": {
       "value": "DC0"
-    },
-    "tags": {
-      "value": {
-        "Deployment": "DC0Disconnected",
-        "Environment": "Test"
-      }
     },
     "userOwnedStorage": {
       "value": []
@@ -498,10 +476,6 @@ param customerManagedKey = '<customerManagedKey>'
 param deployments = []
 param diagnosticSettings = []
 param disableLocalAuth = false
-param location = '<location>'
-param lock = {
-  kind: 'None'
-}
 param managedIdentities = '<managedIdentities>'
 param migrationToken = ''
 param networkAcls = {
@@ -514,10 +488,6 @@ param publicNetworkAccess = 'Enabled'
 param roleAssignments = []
 param secretsExportConfiguration = '<secretsExportConfiguration>'
 param sku = 'DC0'
-param tags = {
-  Deployment: 'DC0Disconnected'
-  Environment: 'Test'
-}
 param userOwnedStorage = []
 ```
 

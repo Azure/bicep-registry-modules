@@ -28,16 +28,10 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}-${serviceShort}001'
     kind: 'SpeechServices'
     sku: 'DC0'
-    location: resourceLocation
 
     publicNetworkAccess: 'Enabled'
 
     commitmentPlans: []
-
-    tags: {
-      Environment: 'Test'
-      Deployment: 'DC0Disconnected'
-    }
 
     diagnosticSettings: []
     privateEndpoints: []
@@ -46,9 +40,6 @@ module testDeployment '../../../main.bicep' = {
     apiProperties: {}
     userOwnedStorage: []
     deployments: []
-    lock: {
-      kind: 'None'
-    }
     migrationToken: ''
     allowProjectManagement: false
     customerManagedKey: null
