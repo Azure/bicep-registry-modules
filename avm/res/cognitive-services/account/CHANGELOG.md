@@ -11,7 +11,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated main.bicep to provision Microsoft.CognitiveServices/accounts/commitmentPlans resources under the account.
 - Added support for the DC0 SKU, enabling Disconnected Container provisioning for Speech Services.
 
-
 ### Breaking Changes
 
 - None
