@@ -14,6 +14,9 @@ Required. The name of the Storage Account to upload to
 .PARAMETER TargetContainer
 Required. The container to upload the files to
 
+.PARAMETER SubscriptionId
+Optional. The subscription ID to set the context to before uploading the files. This can be useful if the principal used to run this script has access multiple subscriptions and you want to ensure the context is set to the correct subscription.
+
 .EXAMPLE
 . 'Set-StorageContainerContentByEnvVar.ps1' -StorageAccountName 'mystorage' -TargetContainer 'myContainer'
 
@@ -26,8 +29,16 @@ param(
     [string] $StorageAccountName,
 
     [Parameter(Mandatory = $true)]
-    [string] $TargetContainer
+    [string] $TargetContainer,
+
+    [Parameter(Mandatory = $false)]
+    [string] $SubscriptionId
 )
+
+if (-not [String]::IsNullOrEmpty($SubscriptionId)) {
+    Write-Verbose ('Setting subscription context to [{0}]' -f $SubscriptionId) -Verbose
+    $null = Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction 'Stop'
+}
 
 Write-Verbose 'Fetching & storing scripts' -Verbose
 $contentDirectoryName = 'scripts'

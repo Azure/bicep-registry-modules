@@ -377,6 +377,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
+    allocatedOutboundPorts: 1024
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
@@ -472,6 +473,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         resourceId: '<resourceId>'
       }
     }
+    idleTimeoutInMinutes: 15
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -520,9 +522,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPluginMode: 'overlay'
     omsAgentEnabled: true
     openServiceMeshEnabled: true
+    outboundPublicIPResourceIds: '<outboundPublicIPResourceIds>'
     roleAssignments: [
       {
-        name: 'ac915208-669e-4665-9792-7e2dc861f569'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -641,6 +644,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
+    },
+    "allocatedOutboundPorts": {
+      "value": 1024
     },
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "Unmanaged"
@@ -769,6 +775,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       }
     },
+    "idleTimeoutInMinutes": {
+      "value": 15
+    },
     "location": {
       "value": "<location>"
     },
@@ -837,10 +846,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "openServiceMeshEnabled": {
       "value": true
     },
+    "outboundPublicIPResourceIds": {
+      "value": "<outboundPublicIPResourceIds>"
+    },
     "roleAssignments": {
       "value": [
         {
-          "name": "ac915208-669e-4665-9792-7e2dc861f569",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -953,6 +965,7 @@ param agentPools = [
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
+param allocatedOutboundPorts = 1024
 param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
 param diagnosticSettings = [
@@ -1048,6 +1061,7 @@ param identityProfile = {
     resourceId: '<resourceId>'
   }
 }
+param idleTimeoutInMinutes = 15
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1096,9 +1110,10 @@ param networkPlugin = 'azure'
 param networkPluginMode = 'overlay'
 param omsAgentEnabled = true
 param openServiceMeshEnabled = true
+param outboundPublicIPResourceIds = '<outboundPublicIPResourceIds>'
 param roleAssignments = [
   {
-    name: 'ac915208-669e-4665-9792-7e2dc861f569'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1489,7 +1504,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPlugin: 'kubenet'
     roleAssignments: [
       {
-        name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1614,7 +1629,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "roleAssignments": {
       "value": [
         {
-          "name": "6acf186b-abbd-491b-8bd7-39fa199da81e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1725,7 +1740,7 @@ param managedIdentities = {
 param networkPlugin = 'kubenet'
 param roleAssignments = [
   {
-    name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2702,6 +2717,7 @@ param tags = {
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
+| [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
 | [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
@@ -2758,6 +2774,7 @@ param tags = {
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
+| [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | Desired outbound flow idle timeout in minutes. |
 | [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. The maximum value is three months. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
 | [`istioServiceMeshCertificateAuthority`](#parameter-istioservicemeshcertificateauthority) | object | The Istio Certificate Authority definition. |
@@ -2787,6 +2804,8 @@ param tags = {
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`omsAgentUseAADAuth`](#parameter-omsagentuseaadauth) | bool | Specifies whether the OMS agent is using managed identity authentication. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
+| [`outboundPublicIPPrefixResourceIds`](#parameter-outboundpublicipprefixresourceids) | array | A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules. |
+| [`outboundPublicIPResourceIds`](#parameter-outboundpublicipresourceids) | array | A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
 | [`podIdentityProfileAllowNetworkPluginKubenet`](#parameter-podidentityprofileallownetworkpluginkubenet) | bool | Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing. |
@@ -3680,6 +3699,14 @@ The workload runtime of the agent pool.
 - Required: No
 - Type: string
 
+### Parameter: `allocatedOutboundPorts`
+
+The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports.
+
+- Required: No
+- Type: int
+- Default: `0`
+
 ### Parameter: `authorizedIPRanges`
 
 IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.
@@ -4384,6 +4411,14 @@ Identities associated with the cluster.
 - Required: No
 - Type: object
 
+### Parameter: `idleTimeoutInMinutes`
+
+Desired outbound flow idle timeout in minutes.
+
+- Required: No
+- Type: int
+- Default: `30`
+
 ### Parameter: `imageCleanerIntervalHours`
 
 The interval in hours Image Cleaner will run. The maximum value is three months.
@@ -4768,6 +4803,20 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `outboundPublicIPPrefixResourceIds`
+
+A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `outboundPublicIPResourceIds`
+
+A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `outboundType`
 

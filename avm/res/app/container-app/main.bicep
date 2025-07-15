@@ -149,6 +149,10 @@ param workloadProfileName string = ''
 @description('Optional. The name of the Container App Auth configs.')
 param authConfig authConfigType?
 
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -316,6 +320,29 @@ module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfi
     platform: authConfig.?platform
   }
 }
+
+#disable-next-line use-recent-api-versions
+resource containerApp_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: containerApp
+  }
+]
 
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.id
