@@ -1,20 +1,11 @@
-@description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
-param name string
+@description('Required. Name used for Cognitivive Services resources.')
+param resourcesName string
 
 @description('Required. Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
 param location string
 
-@description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled.')
-param networkIsolation bool
-
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
-
-@description('Required. Resource ID of the virtual network to link the private DNS zones only required if networkIsolation is true.')
-param virtualNetworkResourceId string
-
-@description('Required. Resource ID of the subnet for the private endpoint only required if networkIsolation is true.')
-param virtualNetworkSubnetResourceId string
 
 import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.11.0'
 @description('Optional. Specifies the OpenAI deployments to create.')
@@ -23,9 +14,6 @@ param aiModelDeployments deploymentType[] = []
 @description('Required. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
-@description('Required. A collection of rules governing the accessibility from specific network locations.')
-param networkAcls object
-
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -33,56 +21,26 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module cognitiveServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
-  name: 'private-dns-cognitiveservices-deployment'
-  params: {
-    name: 'privatelink.cognitiveservices.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: virtualNetworkResourceId
-      }
-    ]
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
-}
+@description('Optional. Configuration for private networking of AI Services. If not provided, public access will be enabled.')
+param privateNetworking aiServicesPrivateNetworkingType?
 
-module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
-  name: 'private-dns-openai-deployment'
-  params: {
-    name: 'privatelink.openai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: virtualNetworkResourceId
-      }
-    ]
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
-}
+var networkIsolation = privateNetworking != null && !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.cogServicesPrivateDnsZoneId) && !empty(privateNetworking!.openAIPrivateDnsZoneId) && !empty(privateNetworking!.aiServicesPrivateDnsZoneId)
 
 module aiServices 'service.bicep' = {
-  name: take('${name}-ais', 12)
+  name: take('${resourcesName}-ai-services', 64)
   params: {
-    name: take('ai${name}', 12)
+    name: take('ai${resourcesName}', 12)
     location: location
     kind: 'AIServices'
     category: 'AIServices'
-    networkIsolation: networkIsolation
-    networkAcls: networkIsolation
-      ? networkAcls
-      : {
-          defaultAction: 'Allow'
-          bypass: 'AzureServices'
-        }
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
+    privateEndpointSubnetId: networkIsolation ? privateNetworking!.privateEndpointSubnetId : ''
+    privateDnsZonesIds: networkIsolation
       ? [
-          cognitiveServicesPrivateDnsZone!.outputs.resourceId
-          openAiPrivateDnsZone!.outputs.resourceId
+          privateNetworking!.cogServicesPrivateDnsZoneId
+          privateNetworking!.openAIPrivateDnsZoneId
+          privateNetworking!.aiServicesPrivateDnsZoneId
         ]
       : []
-
     aiModelDeployments: aiModelDeployments
     roleAssignments: roleAssignments
     tags: tags
@@ -91,17 +49,17 @@ module aiServices 'service.bicep' = {
 }
 
 module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
-  name: take('${name}-cnt', 12)
+  name: take('${resourcesName}-content-safety', 64)
   params: {
-    name: take('sf${name}', 12)
+    name: take('sf${resourcesName}', 12)
     location: location
     kind: 'ContentSafety'
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
+    privateEndpointSubnetId: networkIsolation ? privateNetworking!.privateEndpointSubnetId : ''
+    privateDnsZonesIds: networkIsolation
       ? [
-          cognitiveServicesPrivateDnsZone!.outputs.resourceId
+          privateNetworking!.cogServicesPrivateDnsZoneId
+          privateNetworking!.openAIPrivateDnsZoneId
+          privateNetworking!.aiServicesPrivateDnsZoneId
         ]
       : []
     tags: tags
@@ -109,12 +67,28 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
   }
 }
 
-output aiServicesResourceId string = aiServices.outputs.cognitiveResourceId
-output aiServicesName string = aiServices.outputs.cognitiveName
-output aiServicesEndpoint string = aiServices.outputs.cogntiveEndpoint
-output aiServicesSystemAssignedMIPrincipalId string = aiServices.outputs.?systemAssignedMIPrincipalId ?? ''
+output aiServicesResourceId string = aiServices.outputs.resourceId
+output aiServicesName string = aiServices.outputs.name
+output aiServicesEndpoint string = aiServices.outputs.endpoint
+output aiServicesSystemAssignedMIPrincipalId string = aiServices.outputs.systemAssignedMIPrincipalId!
 
 output connections array = union(
   [aiServices.outputs.foundryConnection],
   contentSafetyEnabled ? [contentSafety!.outputs.foundryConnection] : []
 )
+
+@export()
+@description('Values to establish private networking for resources that support creating private endpoints.')
+type aiServicesPrivateNetworkingType = {
+  @description('Required. The Resource ID of the subnet to establish the Private Endpoint(s).')
+  privateEndpointSubnetId: string
+
+  @description('Required. The Resource ID of an existing "cognitiveservices" Private DNS Zone Resource to link to the virtual network.')
+  cogServicesPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of an existing "openai" Private DNS Zone Resource to link to the virtual network.')
+  openAIPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of an existing "services.ai" Private DNS Zone Resource to link to the virtual network.')
+  aiServicesPrivateDnsZoneId: string
+}

@@ -1,3 +1,4 @@
+@maxLength(24)
 @description('Name of the Storage Account.')
 param name string
 
@@ -7,59 +8,25 @@ param location string
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
-@description('Resource ID of the virtual network to link the private DNS zones.')
-param virtualNetworkResourceId string
-
-@description('Resource ID of the subnet for the private endpoint.')
-param virtualNetworkSubnetResourceId string
-
-@description('Specifies whether network isolation is enabled. This will create a private endpoint for the Storage Account and link the private DNS zone.')
-param networkIsolation bool = true
-
-@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
-param userObjectId string = deployer().objectId
-
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Values to establish private networking for the Storage Account. If not provided, public access will be enabled.')
+param privateNetworking storageAccountPrivateNetworkingType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
-  name: 'private-dns-blob-deployment'
-  params: {
-    name: 'privatelink.blob.${environment().suffixes.storage}'
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: virtualNetworkResourceId
-      }
-    ]
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
-}
+var projUploadsContainerName = 'ai-foundry-proj-uploads'
+var sysDataContainerName = 'ai-foundry-sys-data'
 
-module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
-  name: 'private-dns-file-deployment'
-  params: {
-    name: 'privatelink.file.${environment().suffixes.storage}'
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: virtualNetworkResourceId
-      }
-    ]
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
-}
-
-var projUploadsContainerName = '${name}proj-uploads'
-var sysDataContainerName = '${name}sys-data'
+var networkIsolation = privateNetworking != null && !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.blobPrivateDnsZoneId) && !empty(privateNetworking!.filePrivateDnsZoneId)
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: take('${name}-storage-account-deployment', 64)
   params: {
-    name: take(name, 24)
+    name: name
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -76,39 +43,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
       containers: [
         {
           name: projUploadsContainerName
-          properties: {
-            publicAccess: 'None'
-            roleAssignments: [
-              {
-                principalId: userObjectId
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: 'Owner'
-              }
-              {
-                principalId: userObjectId
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              }
-            ]
-          }
         }
         {
           name: sysDataContainerName
-          properties: {
-            publicAccess: 'None'
-            roleAssignments: [
-              {
-                principalId: userObjectId
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: 'Owner'
-              }
-              {
-                principalId: userObjectId
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              }
-            ]
-          }
         }
       ]
     }
@@ -116,33 +53,31 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
     networkAcls: {
       defaultAction: networkIsolation ? 'Deny' : 'Allow'
       bypass: 'AzureServices'
-      // Optionally add ipRules or virtualNetworkRules here
     }
     supportsHttpsTrafficOnly: true
-    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [
           {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: blobPrivateDnsZone!.outputs.resourceId
+                  privateDnsZoneResourceId: privateNetworking!.blobPrivateDnsZoneId
                 }
               ]
             }
             service: 'blob'
-            subnetResourceId: virtualNetworkSubnetResourceId
+            subnetResourceId: privateNetworking!.privateEndpointSubnetId
           }
           {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: filePrivateDnsZone!.outputs.resourceId
+                  privateDnsZoneResourceId: privateNetworking!.filePrivateDnsZoneId
                 }
               ]
             }
             service: 'file'
-            subnetResourceId: virtualNetworkSubnetResourceId
+            subnetResourceId: privateNetworking!.privateEndpointSubnetId
           }
         ]
       : []
@@ -150,9 +85,27 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
   }
 }
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Name of the Storage Account.')
+output name string = storageAccount.outputs.name
 
-output storageName string = storageAccount.outputs.name
-output storageResourceId string = storageAccount.outputs.resourceId
+@description('Resource ID of the Storage Account.')
+output resourceId string = storageAccount.outputs.resourceId
+
+@description('Name of the project uploads container.')
 output projUploadsContainerName string = projUploadsContainerName
+
+@description('Name of the system data container.')
 output sysDataContainerName string = sysDataContainerName
+
+@export()
+@description('Values to establish private networking for resources that support creating private endpoints.')
+type storageAccountPrivateNetworkingType = {
+  @description('Required. The Resource ID of the subnet to establish the Private Endpoint(s).')
+  privateEndpointSubnetId: string
+
+  @description('Required. The Resource ID of an existing "file" Private DNS Zone Resource to link to the virtual network.')
+  filePrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of an existing "blob" Private DNS Zone Resource to link to the virtual network.')
+  blobPrivateDnsZoneId: string
+}

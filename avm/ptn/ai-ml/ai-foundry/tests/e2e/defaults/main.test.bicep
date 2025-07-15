@@ -42,9 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      aiFoundryType: 'Basic' // Basic deployment - minimal resources only
-      contentSafetyEnabled: false
-      // Note: vmAdminPasswordOrKey not needed for Basic deployment (no VM deployed)
     }
   }
 ]

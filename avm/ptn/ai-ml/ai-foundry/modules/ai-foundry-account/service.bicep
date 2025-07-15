@@ -52,14 +52,11 @@ param sku string = 'S0'
 @description('Category of the Cognitive Services account.')
 param category string = 'CognitiveService'
 
-@description('Specifies whether to enable network isolation. If true, the resource will be deployed in a private endpoint and public network access will be disabled.')
-param networkIsolation bool
+@description('Optional. Existing resource ID of the private DNS zone for the private endpoint.')
+param privateDnsZonesIds string[] = []
 
-@description('Existing resource ID of the private DNS zone for the private endpoint.')
-param privateDnsZonesResourceIds string[] = []
-
-@description('Resource ID of the subnet for the private endpoint.')
-param virtualNetworkSubnetResourceId string
+@description('Optional. Resource ID of the subnet for the private endpoints.')
+param privateEndpointSubnetId string?
 
 import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.11.0'
 @description('Optional. Specifies the OpenAI deployments to create.')
@@ -72,24 +69,21 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
-@description('Optional. A collection of rules governing the accessibility from specific network locations.')
-param networkAcls object
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var privateDnsZones = [
-  for id in privateDnsZonesResourceIds: {
+  for id in privateDnsZonesIds: {
     privateDnsZoneResourceId: id
   }
 ]
 
-var nameFormatted = take(toLower(name), 12)
+var networkIsolation = !empty(privateDnsZonesIds) && !empty(privateEndpointSubnetId)
 
 module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = {
   name: take('cog-${kind}-${name}-deployment', 64)
   params: {
-    name: nameFormatted
+    name: name
     location: location
     tags: tags
     sku: sku
@@ -99,18 +93,21 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
       systemAssigned: true
     }
     deployments: aiModelDeployments
-    customSubDomainName: nameFormatted
-    disableLocalAuth: networkIsolation // Only disable local auth for StandardPrivate (when networkIsolation is true)
+    customSubDomainName: name
+    disableLocalAuth: networkIsolation
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     roleAssignments: roleAssignments
-    networkAcls: networkAcls
+    networkAcls: {
+      defaultAction: networkIsolation ? 'Deny' : 'Allow'
+      bypass: 'AzureServices'
+    }
     privateEndpoints: networkIsolation
       ? [
           {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: privateDnsZones
             }
-            subnetResourceId: virtualNetworkSubnetResourceId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
@@ -118,10 +115,10 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
   }
 }
 
-output cognitiveResourceId string = cognitiveService.outputs.resourceId
-output cognitiveName string = cognitiveService.outputs.name
+output resourceId string = cognitiveService.outputs.resourceId
+output name string = cognitiveService.outputs.name
 output systemAssignedMIPrincipalId string? = cognitiveService.outputs.?systemAssignedMIPrincipalId
-output cogntiveEndpoint string = cognitiveService.outputs.endpoint
+output endpoint string = cognitiveService.outputs.endpoint
 
 output foundryConnection object = {
   name: cognitiveService.outputs.name

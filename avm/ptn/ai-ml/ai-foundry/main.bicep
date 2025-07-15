@@ -23,58 +23,22 @@ import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.1
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
-import { sqlDatabaseType } from 'br/public:avm/res/document-db/database-account:0.15.0'
-@description('Optional. List of Cosmos DB databases to create.')
-param cosmosDatabases sqlDatabaseType[] = []
-
-@description('Optional. Specifies the size of the jump-box Virtual Machine.')
-param vmSize string = 'Standard_DS4_v2'
-
-@minLength(3)
-@maxLength(20)
-@description('Optional. Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.')
-param vmAdminUsername string = take('${name}vmuser', 20)
-
-@maxLength(70)
-@description('Optional. Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters.')
-@secure()
-param vmAdminPasswordOrKey string = ''
-
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
 param tags object = {}
 
 @description('Optional. Specifies the princpal id of a Microsoft Entra ID managed identity (principalType: ServicePrincipal) that should be granted basic, appropriate, and applicable access to resources created.')
 param identityPrincipalId string?
 
-@description('Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')
-param allowedIpAddress string = ''
+@description('Optional. Whether to include Azure AI Content Safety in the deployment.')
+param contentSafetyEnabled bool = false
 
-@description('Optional. Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM.')
-param logAnalyticsWorkspaceResourceId string = ''
+@description('Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false.')
+param includeAssociatedResources bool = false
 
-@description('Optional. Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided.')
-param enableVmMonitoring bool = false
+@description('Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used.')
+param networking networkConfigurationType?
 
-@allowed([
-  'Basic'
-  'StandardPublic'
-  'StandardPrivate'
-])
-@description('Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
-param aiFoundryType string
-
-@description('Required. Whether to include Azure AI Content Safety in the deployment.')
-param contentSafetyEnabled bool
-
-@description('Optional. A collection of rules governing the accessibility from specific network locations.')
-param networkAcls object = {
-  defaultAction: 'Deny'
-  bypass: 'AzureServices' // ✅ Allows trusted Microsoft services
-}
-
-var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
-var basicDeployment = toLower(aiFoundryType) == 'basic'
-var servicesUsername = take(replace(vmAdminUsername, '.', ''), 20)
+var enablePrivateNetworking = networking != null && !empty(networking) && !empty(networking!.privateEndpointSubnetId)
 
 var resourcesName = toLower(trim(replace(
   replace(replace(replace(replace(replace('${name}${uniqueNameText}', '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''),
@@ -101,44 +65,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
-  name: take('${name}-network-deployment', 64)
+module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
+  name: take('${resourcesName}-keyvault-deployment', 64)
   params: {
-    virtualNetworkName: toLower('vnet-${resourcesName}')
-    virtualNetworkAddressPrefixes: '10.0.0.0/8'
-    vmSubnetName: toLower('snet-${resourcesName}-vm')
-    vmSubnetAddressPrefix: '10.3.1.0/24'
-    vmSubnetNsgName: toLower('nsg-snet-${resourcesName}-vm')
-    bastionHostEnabled: true
-    bastionSubnetAddressPrefix: '10.3.2.0/24'
-    bastionSubnetNsgName: 'nsg-AzureBastionSubnet'
-    bastionHostName: toLower('bas-${resourcesName}')
-    bastionHostDisableCopyPaste: false
-    bastionHostEnableFileCopy: true
-    bastionHostEnableIpConnect: true
-    bastionHostEnableShareableLink: true
-    bastionHostEnableTunneling: true
-    bastionPublicIpAddressName: toLower('pip-bas-${resourcesName}')
-    bastionHostSkuName: 'Standard'
-    natGatewayName: toLower('nat-${resourcesName}')
-    natGatewayPublicIps: 1
-    natGatewayIdleTimeoutMins: 30
-    allowedIpAddress: allowedIpAddress
+    name: take('kv${resourcesName}', 24)
     location: location
-    tags: tags
-  }
-}
-
-module keyvault 'modules/keyvault.bicep' = if (!basicDeployment) {
-  name: take('${name}-keyvault-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [network]
-  params: {
-    name: 'kv${resourcesName}'
-    location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
+    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
+      ? {
+          privateEndpointSubnetId: networking!.privateEndpointSubnetId
+          privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
+        }
+      : {}
     roleAssignments: empty(identityPrincipalId)
       ? []
       : [
@@ -148,39 +85,24 @@ module keyvault 'modules/keyvault.bicep' = if (!basicDeployment) {
             roleDefinitionIdOrName: 'Key Vault Secrets User'
           }
         ]
-    logAnalyticsWorkspaceResourceId: ''
-    enableTelemetry: enableTelemetry
-    tags: tags
-  }
-}
-
-module containerRegistry 'modules/containerRegistry.bicep' = if (!basicDeployment) {
-  name: take('${name}-container-registry-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [network]
-  params: {
-    #disable-next-line BCP334
-    name: 'cr${resourcesName}'
-    location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
     enableTelemetry: enableTelemetry
     tags: tags
   }
 }
 
 module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
-  name: take('${name}-cognitive-services-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [network]
+  name: take('${resourcesName}-cognitive-services-deployment', 64)
   params: {
-    name: resourcesName
+    resourcesName: resourcesName
     location: location
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
+    privateNetworking: enablePrivateNetworking
+      ? {
+          privateEndpointSubnetId: networking!.privateEndpointSubnetId
+          cogServicesPrivateDnsZoneId: networking!.cognitiveServicesPrivateDnsZoneId
+          openAIPrivateDnsZoneId: networking!.openAiPrivateDnsZoneId
+          aiServicesPrivateDnsZoneId: networking!.aiServicesPrivateDnsZoneId
+        }
+      : {}
     aiModelDeployments: aiModelDeployments
     roleAssignments: empty(identityPrincipalId)
       ? []
@@ -207,16 +129,17 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   }
 }
 
-module aiSearch 'modules/aisearch.bicep' = if (!basicDeployment) {
-  name: take('${name}-ai-search-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [network]
+module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
+  name: take('${resourcesName}-ai-search-deployment', 64)
   params: {
-    name: 'srch${resourcesName}'
+    name: take('srch${resourcesName}', 60)
     location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
+    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
+      ? {
+          privateEndpointSubnetId: networking!.privateEndpointSubnetId
+          privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
+        }
+      : {}
     roleAssignments: empty(identityPrincipalId)
       ? []
       : [
@@ -236,16 +159,18 @@ module aiSearch 'modules/aisearch.bicep' = if (!basicDeployment) {
   }
 }
 
-module storageAccount 'modules/storageAccount.bicep' = if (!basicDeployment) {
-  name: take('${name}-storage-account-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [network]
+module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedResources) {
+  name: take('${resourcesName}-storage-account-deployment', 64)
   params: {
-    name: 'st${resourcesName}'
+    name: take('st${resourcesName}', 24)
     location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
+    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
+      ? {
+          privateEndpointSubnetId: networking!.privateEndpointSubnetId
+          blobPrivateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.storageBlobPrivateDnsZoneId
+          filePrivateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.storageFilePrivateDnsZoneId
+        }
+      : {}
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
       empty(identityPrincipalId)
@@ -276,73 +201,42 @@ module storageAccount 'modules/storageAccount.bicep' = if (!basicDeployment) {
   }
 }
 
-module cosmosDb 'modules/cosmosDb.bicep' = if (!basicDeployment) {
-  name: take('${name}-cosmosdb-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [network]
+module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
+  name: take('${resourcesName}-cosmosdb-deployment', 64)
   params: {
-    name: 'cos${resourcesName}'
+    name: take('cos${resourcesName}', 44)
     location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network!.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network!.outputs.vmSubnetResourceId : ''
+    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
+      ? {
+          privateEndpointSubnetId: networking!.privateEndpointSubnetId
+          privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
+        }
+      : {}
     enableTelemetry: enableTelemetry
-    databases: cosmosDatabases
     tags: tags
   }
 }
 
 module project 'modules/aifoundryproject.bicep' = {
   name: take('${name}-foundry-project-deployment', 64)
-  dependsOn: !basicDeployment
+  dependsOn: includeAssociatedResources
     ? [
         storageAccount
         aiSearch
         cosmosDb
+        keyvault
       ]
     : []
   params: {
-    basicDeploymentOnly: basicDeployment
-    cosmosDBName: !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''
     name: empty(projectName) ? 'proj-${resourcesName}' : projectName!
     location: location
-    storageName: !basicDeployment ? storageAccount!.outputs.storageName : ''
+    includeAssociatedResources: includeAssociatedResources
+    cosmosDBName: includeAssociatedResources ? cosmosDb!.outputs.name : ''
+    storageName: includeAssociatedResources ? storageAccount!.outputs.name : ''
     aiServicesName: cognitiveServices.outputs.aiServicesName
-    aiSearchName: !basicDeployment ? aiSearch!.outputs.searchName : ''
-    projUploadsContainerName: !basicDeployment ? storageAccount!.outputs.projUploadsContainerName : ''
-    sysDataContainerName: !basicDeployment ? storageAccount!.outputs.sysDataContainerName : ''
-  }
-}
-
-// Only deploy the VM if we're doing a StandardPrivate deployment and have a valid password
-var shouldDeployVM = networkIsolation && (length(vmAdminPasswordOrKey) >= 4)
-
-module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
-  name: take('${name}-virtual-machine-deployment', 64)
-  params: {
-    name: 'vm-${resourcesName}-jump'
-    nicName: 'nic-vm-${resourcesName}-jump'
-    size: vmSize
-    subnetResourceId: network!.outputs.vmSubnetResourceId
-    storageAccountName: storageAccount!.outputs.storageName
-    storageAccountResourceGroup: resourceGroup().name
-    imagePublisher: 'MicrosoftWindowsServer'
-    imageOffer: 'WindowsServer'
-    imageSku: '2022-datacenter-azure-edition'
-    authenticationType: 'password'
-    adminUsername: servicesUsername
-    adminPasswordOrKey: vmAdminPasswordOrKey
-    diskStorageAccountType: 'Premium_LRS'
-    numDataDisks: 1
-    osDiskSize: 128
-    dataDiskSize: 50
-    dataDiskCaching: 'ReadOnly'
-    enableAcceleratedNetworking: true
-    enableMicrosoftEntraIdAuth: true
-    location: location
-    tags: tags
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    enableMonitoring: enableVmMonitoring
+    aiSearchName: includeAssociatedResources ? aiSearch!.outputs.name : ''
+    projUploadsContainerName: includeAssociatedResources ? storageAccount!.outputs.projUploadsContainerName : ''
+    sysDataContainerName: includeAssociatedResources ? storageAccount!.outputs.sysDataContainerName : ''
   }
 }
 
@@ -350,37 +244,59 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output keyVaultName string = !basicDeployment ? keyvault!.outputs.name : ''
+output keyVaultName string = includeAssociatedResources ? keyvault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
 output aiServicesName string = cognitiveServices.outputs.aiServicesName
 
 @description('Name of the deployed Azure AI Search service.')
-output aiSearchName string = !basicDeployment ? aiSearch!.outputs.searchName : ''
+output aiSearchName string = includeAssociatedResources ? aiSearch!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Project.')
-output aiProjectName string = project.outputs.projectName
-
-@description('Name of the deployed Azure Bastion host.')
-output bastionName string = networkIsolation ? network!.outputs.bastionName : ''
-
-@description('Resource ID of the deployed Azure VM.')
-output vmResourceId string = shouldDeployVM ? virtualMachine!.outputs.id : ''
-
-@description('Username for the deployed Azure VM.')
-output vmUsername string = !basicDeployment ? servicesUsername : ''
-
-@description('Name of the deployed Azure Container Registry.')
-output containerRegistryName string = !basicDeployment ? containerRegistry.?outputs.name ?? '' : ''
+output aiProjectName string = project.outputs.name
 
 @description('Name of the deployed Azure Storage Account.')
-output storageAccountName string = !basicDeployment ? storageAccount.?outputs.storageName ?? '' : ''
-
-@description('Name of the deployed Azure Virtual Network.')
-output virtualNetworkName string = networkIsolation ? network!.outputs.virtualNetworkName : ''
-
-@description('Name of the deployed Azure Virtual Network Subnet.')
-output virtualNetworkSubnetName string = networkIsolation ? network!.outputs.vmSubnetName : ''
+output storageAccountName string = includeAssociatedResources ? storageAccount!.outputs.name : ''
 
 @description('Name of the deployed Azure Cosmos DB account.')
-output cosmosAccountName string = !basicDeployment ? cosmosDb!.outputs.cosmosDBname : ''
+output cosmosAccountName string = includeAssociatedResources ? cosmosDb!.outputs.name : ''
+
+@export()
+@description('Values to establish private networking for resources that support creating private endpoints.')
+type networkConfigurationType = {
+  @description('Required. The Resource ID of the subnet to establish the Private Endpoint(s).')
+  privateEndpointSubnetId: string
+
+  @description('Required.  The Resource ID of the subnet for the Azure AI Services account.')
+  agentServiceSubnetId: string
+
+  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
+  cognitiveServicesPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the Private DNS Zone for the OpenAI account.')
+  openAiPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
+  aiServicesPrivateDnsZoneId: string
+
+  @description('Optional. Configuration for DNS zones for associated resources. This is only required if includeAssociatedResources is true.')
+  associatedResourcesPrivateDnsZones: networkResourcesDnsZonesConfigurationType?
+}
+
+@description('Values for the associated resources DNS Zone resource IDs.')
+type networkResourcesDnsZonesConfigurationType = {
+  @description('Required. The Resource ID of the DNS zone for the Azure AI Search service.')
+  aiSearchPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the DNS zone for the Azure Cosmos DB account.')
+  cosmosDbPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the DNS zone for the Azure Key Vault.')
+  keyVaultPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the DNS zone "blob" for the Azure Storage Account.')
+  storageBlobPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the DNS zone "file" for the Azure Storage Account.')
+  storageFilePrivateDnsZoneId: string
+}

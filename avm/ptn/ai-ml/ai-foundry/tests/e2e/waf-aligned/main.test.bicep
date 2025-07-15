@@ -20,10 +20,6 @@ param serviceShort string = 'fndrywaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password used for VM authentication.')
-@secure()
-param vmAdminPassword string = newGuid()
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -46,10 +42,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      aiFoundryType: 'StandardPrivate'
       contentSafetyEnabled: true
-      vmAdminPasswordOrKey: vmAdminPassword
-      vmSize: 'Standard_DS4_v2'
+      includeAssociatedResources: true
       aiModelDeployments: [] // Simplified: no AI model deployments for testing to avoid conflicts
     }
   }
