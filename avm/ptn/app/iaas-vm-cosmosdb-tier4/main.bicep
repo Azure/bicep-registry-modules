@@ -1,16 +1,6 @@
 metadata name = 'IaaS VM with CosmosDB Tier 4'
 metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.'
 
-@export()
-@description('The type of a subnet.')
-type subnetType = {
-  @description('Required. The name of the subnet.')
-  name: string
-
-  @description('Required. The address prefix for the subnet.')
-  addressPrefix: string
-}
-
 @description('Required. Name of the solution which is used to generate unique resource names.')
 param name string
 
@@ -843,3 +833,17 @@ output cosmosDbPrivateEndpointResourceId string = privateEndpoint.outputs.resour
 
 @description('Resource. The name of the resource group.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of a subnet.')
+type subnetType = {
+  @description('Required. The name of the subnet.')
+  name: string
+
+  @description('Required. The address prefix for the subnet.')
+  addressPrefix: string
+}
