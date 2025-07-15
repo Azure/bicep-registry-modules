@@ -46,11 +46,12 @@ The following section provides usage examples for the module, which were used to
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
 - [Linux Container Web App, using only defaults](#example-3-linux-container-web-app-using-only-defaults)
 - [WAF-aligned](#example-4-waf-aligned)
-- [Web App, using only defaults](#example-5-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-6-web-app-using-large-parameter-set)
-- [Linux Web App, using only defaults](#example-7-linux-web-app-using-only-defaults)
-- [Linux Web App, using large parameter set](#example-8-linux-web-app-using-large-parameter-set)
-- [Windows Web App for Containers, using only defaults](#example-9-windows-web-app-for-containers-using-only-defaults)
+- [Access Restrictions](#example-5-access-restrictions)
+- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
+- [Linux Web App, using only defaults](#example-8-linux-web-app-using-only-defaults)
+- [Linux Web App, using large parameter set](#example-9-linux-web-app-using-large-parameter-set)
+- [Windows Web App for Containers, using only defaults](#example-10-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -1021,7 +1022,238 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 5: _Web App, using only defaults_
+### Example 5: _Access Restrictions_
+
+This instance deploys the module demonstrating access restrictions for Front Door and Application Gateway scenarios.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wsacr001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    configs: [
+      {
+        name: 'web'
+        properties: {
+          ipSecurityRestrictions: [
+            {
+              action: 'Allow'
+              description: 'Allow access from Azure Front Door'
+              ipAddress: 'AzureFrontDoor.Backend'
+              name: 'Azure Front Door'
+              priority: 100
+              tag: 'ServiceTag'
+            }
+            {
+              action: 'Allow'
+              description: 'Allow access from Application Gateway'
+              ipAddress: 'GatewayManager'
+              name: 'Application Gateway'
+              priority: 200
+              tag: 'ServiceTag'
+            }
+            {
+              action: 'Allow'
+              description: 'Allow access from office network'
+              ipAddress: '203.0.113.0/24'
+              name: 'Office Network'
+              priority: 300
+            }
+            {
+              action: 'Allow'
+              description: 'Allow specific Front Door instance with X-Azure-FDID header'
+              headers: {
+                'x-azure-fdid': [
+                  'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                ]
+              }
+              ipAddress: 'AzureFrontDoor.Backend'
+              name: 'Specific Front Door Instance'
+              priority: 400
+              tag: 'ServiceTag'
+            }
+          ]
+          ipSecurityRestrictionsDefaultAction: 'Allow'
+        }
+      }
+    ]
+    httpsOnly: true
+    siteConfig: {
+      alwaysOn: true
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wsacr001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "configs": {
+      "value": [
+        {
+          "name": "web",
+          "properties": {
+            "ipSecurityRestrictions": [
+              {
+                "action": "Allow",
+                "description": "Allow access from Azure Front Door",
+                "ipAddress": "AzureFrontDoor.Backend",
+                "name": "Azure Front Door",
+                "priority": 100,
+                "tag": "ServiceTag"
+              },
+              {
+                "action": "Allow",
+                "description": "Allow access from Application Gateway",
+                "ipAddress": "GatewayManager",
+                "name": "Application Gateway",
+                "priority": 200,
+                "tag": "ServiceTag"
+              },
+              {
+                "action": "Allow",
+                "description": "Allow access from office network",
+                "ipAddress": "203.0.113.0/24",
+                "name": "Office Network",
+                "priority": 300
+              },
+              {
+                "action": "Allow",
+                "description": "Allow specific Front Door instance with X-Azure-FDID header",
+                "headers": {
+                  "x-azure-fdid": [
+                    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                  ]
+                },
+                "ipAddress": "AzureFrontDoor.Backend",
+                "name": "Specific Front Door Instance",
+                "priority": 400,
+                "tag": "ServiceTag"
+              }
+            ],
+            "ipSecurityRestrictionsDefaultAction": "Allow"
+          }
+        }
+      ]
+    },
+    "httpsOnly": {
+      "value": true
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "ftpsState": "FtpsOnly",
+        "minTlsVersion": "1.2"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wsacr001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param configs = [
+  {
+    name: 'web'
+    properties: {
+      ipSecurityRestrictions: [
+        {
+          action: 'Allow'
+          description: 'Allow access from Azure Front Door'
+          ipAddress: 'AzureFrontDoor.Backend'
+          name: 'Azure Front Door'
+          priority: 100
+          tag: 'ServiceTag'
+        }
+        {
+          action: 'Allow'
+          description: 'Allow access from Application Gateway'
+          ipAddress: 'GatewayManager'
+          name: 'Application Gateway'
+          priority: 200
+          tag: 'ServiceTag'
+        }
+        {
+          action: 'Allow'
+          description: 'Allow access from office network'
+          ipAddress: '203.0.113.0/24'
+          name: 'Office Network'
+          priority: 300
+        }
+        {
+          action: 'Allow'
+          description: 'Allow specific Front Door instance with X-Azure-FDID header'
+          headers: {
+            'x-azure-fdid': [
+              'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            ]
+          }
+          ipAddress: 'AzureFrontDoor.Backend'
+          name: 'Specific Front Door Instance'
+          priority: 400
+          tag: 'ServiceTag'
+        }
+      ]
+      ipSecurityRestrictionsDefaultAction: 'Allow'
+    }
+  }
+]
+param httpsOnly = true
+param siteConfig = {
+  alwaysOn: true
+  ftpsState: 'FtpsOnly'
+  minTlsVersion: '1.2'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -1087,7 +1319,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 6: _Web App, using large parameter set_
+### Example 7: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -1990,7 +2222,7 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 7: _Linux Web App, using only defaults_
+### Example 8: _Linux Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -2056,7 +2288,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 8: _Linux Web App, using large parameter set_
+### Example 9: _Linux Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -2777,7 +3009,7 @@ param vnetRouteAllEnabled = true
 </details>
 <p>
 
-### Example 9: _Windows Web App for Containers, using only defaults_
+### Example 10: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
