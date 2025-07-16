@@ -153,6 +153,18 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           tag2: 'value2'
         }
       }
+      {
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'partner2'
+        partnerType: 'NotSpecified'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
     ]
     roleAssignments: [
       {
@@ -245,6 +257,18 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "tag1": "value1",
             "tag2": "value2"
           }
+        },
+        {
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "partner2",
+          "partnerType": "NotSpecified",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
         }
       ]
     },
@@ -328,6 +352,18 @@ param partners = [
     }
     name: 'partner1'
     partnerType: 'B2B'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+  {
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'partner2'
+    partnerType: 'NotSpecified'
     tags: {
       tag1: 'value1'
       tag2: 'value2'

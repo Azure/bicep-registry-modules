@@ -85,6 +85,18 @@ module testDeployment '../../../main.bicep' = [
             tag2: 'value2'
           }
         }
+        {
+          name: 'partner2'
+          partnerType: 'NotSpecified'
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
       ]
       diagnosticSettings: [
         {
