@@ -111,15 +111,7 @@ This instance deploys the module with the minimum set of required parameters.
 module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>' = {
   name: 'iaasVmCosmosdbTier4Deployment'
   params: {
-    // Required parameters
     name: '<name>'
-    // Non-required parameters
-    tags: {
-      Application: 'MyApp'
-      CostCenter: 'IT'
-      Environment: 'Production'
-      Owner: 'TeamName'
-    }
   }
 }
 ```
@@ -136,18 +128,8 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "<name>"
-    },
-    // Non-required parameters
-    "tags": {
-      "value": {
-        "Application": "MyApp",
-        "CostCenter": "IT",
-        "Environment": "Production",
-        "Owner": "TeamName"
-      }
     }
   }
 }
@@ -163,15 +145,7 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
 ```bicep-params
 using 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>'
 
-// Required parameters
 param name = '<name>'
-// Non-required parameters
-param tags = {
-  Application: 'MyApp'
-  CostCenter: 'IT'
-  Environment: 'Production'
-  Owner: 'TeamName'
-}
 ```
 
 </details>
