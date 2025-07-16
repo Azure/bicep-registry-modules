@@ -805,16 +805,23 @@ All partners to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | array | An array of B2B partner content settings. |
 | [`name`](#parameter-partnersname) | string | The Name of the partner resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | array | An array of B2B partner content settings. |
 | [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
 | [`partnerType`](#parameter-partnerspartnertype) | string | The partner type. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
+
+### Parameter: `partners.name`
+
+The Name of the partner resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `partners.b2bPartnerContent`
 
@@ -840,13 +847,6 @@ The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
 ### Parameter: `partners.b2bPartnerContent.value`
 
 The user defined business identity value.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `partners.name`
-
-The Name of the partner resource.
 
 - Required: Yes
 - Type: string

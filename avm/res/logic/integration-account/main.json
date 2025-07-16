@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "1902007342303457884"
+      "templateHash": "14335051643708043336"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -39,7 +39,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Required. An array of B2B partner content settings."
+            "description": "Optional. An array of B2B partner content settings."
           }
         },
         "metadata": {
