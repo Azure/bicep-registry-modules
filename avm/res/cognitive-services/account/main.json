@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "9655178964283118758"
+      "version": "0.36.177.2456",
+      "templateHash": "10754218012543426377"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -225,6 +225,81 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of the secrets exported to the provided Key Vault."
+      }
+    },
+    "commitmentPlanType": {
+      "type": "object",
+      "properties": {
+        "autoRenew": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether the plan should auto-renew at the end of the current commitment period."
+          }
+        },
+        "current": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The number of committed instances (e.g., number of containers or cores)."
+              }
+            },
+            "tier": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tier of the commitment plan (e.g., T1, T2)."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The current commitment configuration."
+          }
+        },
+        "hostingModel": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web)."
+          }
+        },
+        "planType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON)."
+          }
+        },
+        "commitmentPlanGuid": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of an existing commitment plan to update. Set to null to create a new plan."
+          }
+        },
+        "next": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The number of committed instances for the next period."
+              }
+            },
+            "tier": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tier for the next commitment period."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The configuration of the next commitment period, if scheduled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a disconnected container commitment plan."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -875,7 +950,8 @@
         "S6",
         "S7",
         "S8",
-        "S9"
+        "S9",
+        "DC0"
       ],
       "metadata": {
         "description": "Optional. SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
@@ -1057,6 +1133,16 @@
       "metadata": {
         "description": "Optional. Enable/Disable project management feature for AI Foundry."
       }
+    },
+    "commitmentPlans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/commitmentPlanType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Commitment plans to deploy for the cognitive services account."
+      }
     }
   },
   "variables": {
@@ -1174,7 +1260,7 @@
         "migrationToken": "[parameters('migrationToken')]",
         "restore": "[parameters('restore')]",
         "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
-        "userOwnedStorage": "[parameters('userOwnedStorage')]",
+        "userOwnedStorage": "[if(not(empty(parameters('userOwnedStorage'))), parameters('userOwnedStorage'), null())]",
         "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
       },
       "dependsOn": [
@@ -1213,6 +1299,19 @@
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
+      "dependsOn": [
+        "cognitiveService"
+      ]
+    },
+    "cognitiveService_commitmentPlans": {
+      "copy": {
+        "name": "cognitiveService_commitmentPlans",
+        "count": "[length(coalesce(parameters('commitmentPlans'), createArray()))]"
+      },
+      "type": "Microsoft.CognitiveServices/accounts/commitmentPlans",
+      "apiVersion": "2025-04-01-preview",
+      "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}', coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].hostingModel, coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].planType))]",
+      "properties": "[coalesce(parameters('commitmentPlans'), createArray())[copyIndex()]]",
       "dependsOn": [
         "cognitiveService"
       ]
@@ -2064,8 +2163,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1200612323329026557"
+              "version": "0.36.177.2456",
+              "templateHash": "9150529619101779014"
             }
           },
           "definitions": {
