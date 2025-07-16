@@ -211,6 +211,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      purviewResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Purview/accounts/test-purview-account'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

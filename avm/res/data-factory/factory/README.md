@@ -235,6 +235,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    purviewResourceId: '<purviewResourceId>'
     roleAssignments: [
       {
         name: '12093237-f40a-4f36-868f-accbeebf540c'
@@ -420,6 +421,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       ]
     },
+    "purviewResourceId": {
+      "value": "<purviewResourceId>"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -581,6 +585,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param purviewResourceId = '<purviewResourceId>'
 param roleAssignments = [
   {
     name: '12093237-f40a-4f36-868f-accbeebf540c'
@@ -682,6 +687,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
+    purviewResourceId: '<purviewResourceId>'
     tags: {
       'Backup-Required': 'No'
       'Compliance-Required': 'Yes'
@@ -785,6 +791,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "publicNetworkAccess": {
       "value": "Disabled"
     },
+    "purviewResourceId": {
+      "value": "<purviewResourceId>"
+    },
     "tags": {
       "value": {
         "Backup-Required": "No",
@@ -870,6 +879,7 @@ param privateEndpoints = [
   }
 ]
 param publicNetworkAccess = 'Disabled'
+param purviewResourceId = '<purviewResourceId>'
 param tags = {
   'Backup-Required': 'No'
   'Compliance-Required': 'Yes'
@@ -921,6 +931,7 @@ param tags = {
 | [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`purviewResourceId`](#parameter-purviewresourceid) | string | Purview Account resource identifier. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1925,6 +1936,14 @@ Whether or not public network access is allowed for this resource. For security 
     'Enabled'
   ]
   ```
+
+### Parameter: `purviewResourceId`
+
+Purview Account resource identifier.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `roleAssignments`
 
