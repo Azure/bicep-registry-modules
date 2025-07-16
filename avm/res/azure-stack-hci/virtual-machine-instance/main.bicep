@@ -85,33 +85,24 @@ var formattedRoleAssignments = [
   })
 ]
 
-// var enableReferencedModulesTelemetry bool = false
+var enableReferencedModulesTelemetry bool = false
 
-// module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
-//   name: '${arcMachineResourceName}-deployment'
-//   scope: resourceGroup()
-//   params: {
-//     name: arcMachineResourceName
-//     location: location
-//     kind: 'HCI'
-//     enableTelemetry: enableReferencedModulesTelemetry
-//   }
-// }
-
-// resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
-//   name: arcMachineResourceName
-//   dependsOn: [
-//     hybridCompute
-//   ]
-// }
-
-resource machine 'Microsoft.HybridCompute/machines@2024-07-10' = {
-  name: arcMachineResourceName
-  location: 'southeastasia'
-  identity: {
-    type: 'SystemAssigned'
+module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
+  name: '${arcMachineResourceName}-deployment'
+  scope: resourceGroup()
+  params: {
+    name: arcMachineResourceName
+    location: location
+    kind: 'HCI'
+    enableTelemetry: enableReferencedModulesTelemetry
   }
-  kind: 'HCI'
+}
+
+resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
+  name: arcMachineResourceName
+  dependsOn: [
+    hybridCompute
+  ]
 }
 
 resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview' = {
@@ -119,9 +110,6 @@ resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances
   extendedLocation: {
     type: 'CustomLocation'
     name: customLocationResourceId
-  }
-  identity: {
-    type: 'SystemAssigned'
   }
   properties: {
     hardwareProfile: {
@@ -136,7 +124,7 @@ resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances
     securityProfile: empty(securityProfile) ? null : securityProfile
     storageProfile: storageProfile
   }
-  scope: machine
+  scope: existingMachine
 }
 
 resource virtualMachine_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
