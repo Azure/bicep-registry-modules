@@ -339,11 +339,5 @@ output cosmosDbResourceId string = cosmosdbAccount.outputs.resourceId
 @description('The resource ID of the Redis cache.')
 output redisCacheResourceId string = redis.outputs.resourceId
 
-// @description('The resource ID of the App Service Environment.')
-// output appServiceEnvironmentResourceId string = ase.outputs.resourceId
-
-// @description('The resource ID of the App Service Plan.')
-// output appServicePlanResourceId string = asp.outputs.resourceId
-
 @description('The resource group the PaaS ASE with CosmosDB Tier 4 was deployed into.')
 output resourceGroupName string = resourceGroup().name
