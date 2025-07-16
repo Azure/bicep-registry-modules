@@ -106,27 +106,6 @@ resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@20
   }
 }
 
-// @batchSize(1)
-// module projectResources 'project.bicep' = [
-//   for project in projects ?? []: {
-//     name: take('${name}-project-${project.name}', 64)
-//     dependsOn: [capabilityHost]
-//     params: {
-//       name: project.name
-//       accountName: cognitiveService.outputs.name
-//       displayName: project.displayName
-//       desc: project.desc
-//       location: location
-//       lock: lock
-//       tags: tags
-//       cosmosDbConnections: project.cosmosDbConnections
-//       aiSearchConnections: project.aiSearchConnections
-//       storageAccountConnections: project.storageAccountConnections
-//       aiServicesConnections: project.aiServicesConnections
-//     }
-//   }
-// ]
-
 @description('Resource ID of the Cognitive Services account.')
 output resourceId string = cognitiveService.outputs.resourceId
 
@@ -141,20 +120,6 @@ output endpoint string = cognitiveService.outputs.endpoint
 
 @description('The location of the Cognitive Services account.')
 output location string = cognitiveService.outputs.location
-
-// @description('Projects created in the Cognitive Services account.')
-// output projects projectOutputType[] = [
-//   for i in range(0, max(length(projects ?? []), 1) - 1): {
-//     name: projectResources[i].outputs.name
-//     resourceId: projectResources[i].outputs.resourceId
-//     displayName: projectResources[i].outputs.displayName
-//     desc: projectResources[i].outputs.desc
-//     aiServicesConnections: projectResources[i].outputs.aiServicesConnections
-//     cosmosDbConnections: projectResources[i].outputs.cosmosDbConnections
-//     aiSearchConnections: projectResources[i].outputs.aiSearchConnections
-//     storageAccountConnections: projectResources[i].outputs.storageAccountConnections
-//   }
-// ]
 
 @export()
 @description('Values to establish private networking for resources that support creating private endpoints.')
@@ -171,56 +136,3 @@ type aiServicesPrivateNetworkingType = {
   @description('Required. The Resource ID of an existing "services.ai" Private DNS Zone Resource to link to the virtual network.')
   aiServicesPrivateDnsZoneId: string
 }
-
-// import { azureConnectionType, storageAccountConnectionType, connectionOutputType } from 'project.bicep'
-
-// @export()
-// @description('Type representing an AI Foundry project details.')
-// type projectType = {
-//   @description('Required. The name of the AI Foundry project.')
-//   name: string
-
-//   @description('Optional. The display name of the AI Foundry project.')
-//   displayName: string?
-
-//   @description('Optional. The description of the AI Foundry project.')
-//   desc: string?
-
-//   @description('Optional. List of Azure AI Services connections for the project.')
-//   aiServicesConnections: azureConnectionType[]?
-
-//   @description('Optional. List of Azure Cosmos DB connections for the project.')
-//   cosmosDbConnections: azureConnectionType[]?
-
-//   @description('Optional. List of Azure Cognitive Search connections for the project.')
-//   aiSearchConnections: azureConnectionType[]?
-
-//   @description('Optional. List of Azure Storage Account connections for the project.')
-//   storageAccountConnections: storageAccountConnectionType[]?
-// }
-
-// type projectOutputType = {
-//   @description('Required. The name of the AI Foundry project.')
-//   name: string
-
-//   @description('Required. The resource ID of the AI Foundry project.')
-//   resourceId: string
-
-//   @description('Required. The display name of the AI Foundry project.')
-//   displayName: string
-
-//   @description('Required. The description of the AI Foundry project.')
-//   desc: string
-
-//   @description('Optional. List of Azure AI Services connections for the project.')
-//   aiServicesConnections: connectionOutputType[]
-
-//   @description('Optional. List of Azure Cosmos DB connections for the project.')
-//   cosmosDbConnections: connectionOutputType[]
-
-//   @description('Optional. List of Azure Cognitive Search connections for the project.')
-//   aiSearchConnections: connectionOutputType[]
-
-//   @description('Optional. List of Azure Storage Account connections for the project.')
-//   storageAccountConnections: connectionOutputType[]
-// }

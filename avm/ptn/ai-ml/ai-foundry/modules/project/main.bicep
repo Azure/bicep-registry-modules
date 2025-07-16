@@ -140,6 +140,7 @@ output displayName string = project.properties.displayName
 @description('Description of the Project.')
 output desc string = project.properties.description
 
+@description('AI Services Connections for the Project.')
 output aiServicesConnections connectionOutputType[] = [
   for i in range(0, max(length(aiServicesConnections ?? []), 1) - 1): {
     resourceId: aiServicesConns[i].outputs.resourceId
@@ -149,6 +150,7 @@ output aiServicesConnections connectionOutputType[] = [
   }
 ]
 
+@description('AI Search Connections for the Project.')
 output aiSearchConnections connectionOutputType[] = [
   for i in range(0, max(length(aiSearchConnections ?? []), 1) - 1): {
     resourceId: aiSearchConns[i].outputs.resourceId
@@ -158,6 +160,7 @@ output aiSearchConnections connectionOutputType[] = [
   }
 ]
 
+@description('Storage Account Connections for the Project.')
 output storageAccountConnections connectionOutputType[] = [
   for i in range(0, max(length(storageAccountConnections ?? []), 1) - 1): {
     resourceId: storageAccountConns[i].outputs.resourceId
@@ -167,6 +170,7 @@ output storageAccountConnections connectionOutputType[] = [
   }
 ]
 
+@description('Cosmos DB Connections for the Project.')
 output cosmosDbConnections connectionOutputType[] = [
   for i in range(0, max(length(cosmosDbConnections ?? []), 1) - 1): {
     resourceId: cosmosDbConns[i].outputs.resourceId

@@ -10,7 +10,7 @@ param name string
 @description('Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name.')
 param uniqueNameText string = substring(uniqueString(subscription().id, resourceGroup().name, name), 0, 5)
 
-@description('Optional. Name of the AI Foundry project..')
+@description('Optional. Name of the AI Foundry project.')
 param projectName string?
 
 @description('Optional. Location for all Resources. Defaults to the location of the resource group.')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3005215377875508522"
+      "templateHash": "7466685344629501614"
     }
   },
   "definitions": {
@@ -135,7 +135,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "Custom type definition for connection resource information as output"
+        "description": "Custom type definition for connection resource information as output."
       }
     },
     "lockType": {
@@ -1130,6 +1130,9 @@
       "items": {
         "$ref": "#/definitions/connectionOutputType"
       },
+      "metadata": {
+        "description": "AI Services Connections for the Project."
+      },
       "copy": {
         "count": "[length(range(0, sub(max(length(coalesce(parameters('aiServicesConnections'), createArray())), 1), 1)))]",
         "input": {
@@ -1144,6 +1147,9 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/connectionOutputType"
+      },
+      "metadata": {
+        "description": "AI Search Connections for the Project."
       },
       "copy": {
         "count": "[length(range(0, sub(max(length(coalesce(parameters('aiSearchConnections'), createArray())), 1), 1)))]",
@@ -1160,6 +1166,9 @@
       "items": {
         "$ref": "#/definitions/connectionOutputType"
       },
+      "metadata": {
+        "description": "Storage Account Connections for the Project."
+      },
       "copy": {
         "count": "[length(range(0, sub(max(length(coalesce(parameters('storageAccountConnections'), createArray())), 1), 1)))]",
         "input": {
@@ -1174,6 +1183,9 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/connectionOutputType"
+      },
+      "metadata": {
+        "description": "Cosmos DB Connections for the Project."
       },
       "copy": {
         "count": "[length(range(0, sub(max(length(coalesce(parameters('cosmosDbConnections'), createArray())), 1), 1)))]",

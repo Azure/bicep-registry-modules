@@ -307,7 +307,7 @@ param storageAccountConfiguration = {
 | [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networking`](#parameter-networking) | object | Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used. |
-| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project.. |
+| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
 | [`uniqueNameText`](#parameter-uniquenametext) | string | A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name. |
@@ -1006,7 +1006,7 @@ The Resource ID of the DNS zone "file" for the Azure Storage Account.
 
 ### Parameter: `projectName`
 
-Name of the AI Foundry project..
+Name of the AI Foundry project.
 
 - Required: No
 - Type: string

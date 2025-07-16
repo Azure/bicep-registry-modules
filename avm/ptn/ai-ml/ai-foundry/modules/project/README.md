@@ -263,14 +263,14 @@ Tags to be applied to the resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `aiSearchConnections` | array |  |
-| `aiServicesConnections` | array |  |
-| `cosmosDbConnections` | array |  |
+| `aiSearchConnections` | array | AI Search Connections for the Project. |
+| `aiServicesConnections` | array | AI Services Connections for the Project. |
+| `cosmosDbConnections` | array | Cosmos DB Connections for the Project. |
 | `desc` | string | Description of the Project. |
 | `displayName` | string | Display name of the Project. |
 | `name` | string | Name of the Project. |
 | `resourceId` | string | Resource ID of the Project. |
-| `storageAccountConnections` | array | Resource ID of the Project. |
+| `storageAccountConnections` | array | Storage Account Connections for the Project. |
 
 ## Cross-referenced modules
 
