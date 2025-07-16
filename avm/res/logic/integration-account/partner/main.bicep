@@ -17,7 +17,7 @@ param integrationAccountName string
 @description('Optional. The partner type.')
 param partnerType string = 'B2B'
 
-@description('Required. An array of B2B partner content settings.')
+@description('Optional. An array of B2B partner content settings.')
 param b2bPartnerContent b2bPartnerContentType[]?
 
 @description('Optional. The partner metadata.')

@@ -19,6 +19,7 @@ This module deploys a Logic App Integration Account.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Logic/integrationAccounts` | [2019-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts) |
+| `Microsoft.Logic/integrationAccounts/partners` | [2019-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/partners) |
 
 ## Usage examples
 
@@ -133,6 +134,26 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    partners: [
+      {
+        b2bPartnerContent: [
+          {
+            qualifier: 'ZZ'
+            value: '1234567890'
+          }
+        ]
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'partner1'
+        partnerType: 'B2B'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
     roleAssignments: [
       {
         name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
@@ -205,6 +226,28 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         "name": "myCustomLockName"
       }
     },
+    "partners": {
+      "value": [
+        {
+          "b2bPartnerContent": [
+            {
+              "qualifier": "ZZ",
+              "value": "1234567890"
+            }
+          ],
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "partner1",
+          "partnerType": "B2B",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
@@ -271,6 +314,26 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param partners = [
+  {
+    b2bPartnerContent: [
+      {
+        qualifier: 'ZZ'
+        value: '1234567890'
+      }
+    ]
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'partner1'
+    partnerType: 'B2B'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
 param roleAssignments = [
   {
     name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
@@ -520,6 +583,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`partners`](#parameter-partners) | array | All partners to create. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | Integration account sku name. |
 | [`state`](#parameter-state) | string | The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended. |
@@ -729,6 +793,91 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `partners`
+
+All partners to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | array | An array of B2B partner content settings. |
+| [`name`](#parameter-partnersname) | string | The Name of the partner resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
+| [`partnerType`](#parameter-partnerspartnertype) | string | The partner type. |
+| [`tags`](#parameter-partnerstags) | object | Resource tags. |
+
+### Parameter: `partners.b2bPartnerContent`
+
+An array of B2B partner content settings.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`qualifier`](#parameter-partnersb2bpartnercontentqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
+| [`value`](#parameter-partnersb2bpartnercontentvalue) | string | The user defined business identity value. |
+
+### Parameter: `partners.b2bPartnerContent.qualifier`
+
+The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.b2bPartnerContent.value`
+
+The user defined business identity value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.name`
+
+The Name of the partner resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.metadata`
+
+The partner metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `partners.partnerType`
+
+The partner type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'B2B'
+    'NotSpecified'
+  ]
+  ```
+
+### Parameter: `partners.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 

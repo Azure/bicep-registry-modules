@@ -1,0 +1,143 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.177.2456",
+      "templateHash": "255667031033953948"
+    },
+    "name": "Integration Account Partners",
+    "description": "This module deploys a Integration Account Partner."
+  },
+  "definitions": {
+    "b2bPartnerContentType": {
+      "type": "object",
+      "properties": {
+        "qualifier": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The user defined business identity value."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the B2B partner content."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The Name of the partner resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Resource location."
+      }
+    },
+    "integrationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "partnerType": {
+      "type": "string",
+      "defaultValue": "B2B",
+      "allowedValues": [
+        "B2B",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. The partner type."
+      }
+    },
+    "b2bPartnerContent": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/b2bPartnerContentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of B2B partner content settings."
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The partner metadata."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/tags"
+        },
+        "description": "Optional. Resource tags."
+      },
+      "nullable": true
+    }
+  },
+  "resources": {
+    "integrationAccount": {
+      "existing": true,
+      "type": "Microsoft.Logic/integrationAccounts",
+      "apiVersion": "2019-05-01",
+      "name": "[parameters('integrationAccountName')]"
+    },
+    "partner": {
+      "type": "Microsoft.Logic/integrationAccounts/partners",
+      "apiVersion": "2019-05-01",
+      "name": "[format('{0}/{1}', parameters('integrationAccountName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "partnerType": "[parameters('partnerType')]",
+        "metadata": "[parameters('metadata')]",
+        "content": {
+          "b2b": {
+            "businessIdentities": "[parameters('b2bPartnerContent')]"
+          }
+        }
+      },
+      "tags": "[parameters('tags')]"
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the integration account partner."
+      },
+      "value": "[resourceId('Microsoft.Logic/integrationAccounts/partners', parameters('integrationAccountName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the integration account partner."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the integration account partner was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
