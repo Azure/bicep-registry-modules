@@ -66,6 +66,26 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      partners: [
+        {
+          name: 'partner1'
+          partnerType: 'B2B'
+          b2bPartnerContent: [
+            {
+              qualifier: 'ZZ'
+              value: '1234567890'
+            }
+          ]
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'

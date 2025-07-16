@@ -19,6 +19,9 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@description('Optional. All partners to create.')
+param partners partnerType[]?
+
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
   'Completed'
@@ -197,6 +200,21 @@ resource integrationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSet
   }
 ]
 
+module integrationAccount_partners 'partner/main.bicep' = [
+  for (partner, index) in (partners ?? []): {
+    name: '${uniqueString(deployment().name, location)}-integrationAccount-Partner-${index}'
+    params: {
+      name: partner.name
+      location: location
+      integrationAccountName: integrationAccount.name
+      partnerType: partner.?partnerType
+      b2bPartnerContent: partner.?b2bPartnerContent
+      metadata: partner.?metadata
+      tags: partner.?tags ?? tags
+    }
+  }
+]
+
 resource integrationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
@@ -236,3 +254,23 @@ output resourceGroupName string = resourceGroup().name
 // ================ //
 // Definitions      //
 // ================ //
+
+import { b2bPartnerContentType } from 'partner/main.bicep'
+
+@description('The type for a partner.')
+type partnerType = {
+  @description('Required. The Name of the partner resource.')
+  name: string
+
+  @description('Optional. The partner type.')
+  partnerType: ('B2B' | 'NotSpecified')?
+
+  @description('Required. An array of B2B partner content settings.')
+  b2bPartnerContent: b2bPartnerContentType[]?
+
+  @description('Optional. The partner metadata.')
+  metadata: object?
+
+  @description('Optional. Resource tags.')
+  tags: object?
+}
