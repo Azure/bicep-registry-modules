@@ -147,7 +147,17 @@ module paasAseCosmosdbTier4 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<vers
     // Required parameters
     name: 'apactwaf001'
     // Non-required parameters
+    defaultSubnetAddressPrefix: '192.168.250.0/24'
+    enableTelemetry: true
     location: '<location>'
+    privateEndpointSubnetAddressPrefix: '192.168.251.0/24'
+    suffix: 'waf'
+    tags: {
+      Environment: 'Test'
+      Module: 'avm/ptn/app/paas-ase-cosmosdb-tier4'
+      Purpose: 'WAF-Aligned-Testing'
+    }
+    vNetAddressPrefix: '192.168.250.0/23'
   }
 }
 ```
@@ -169,8 +179,30 @@ module paasAseCosmosdbTier4 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<vers
       "value": "apactwaf001"
     },
     // Non-required parameters
+    "defaultSubnetAddressPrefix": {
+      "value": "192.168.250.0/24"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "privateEndpointSubnetAddressPrefix": {
+      "value": "192.168.251.0/24"
+    },
+    "suffix": {
+      "value": "waf"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Test",
+        "Module": "avm/ptn/app/paas-ase-cosmosdb-tier4",
+        "Purpose": "WAF-Aligned-Testing"
+      }
+    },
+    "vNetAddressPrefix": {
+      "value": "192.168.250.0/23"
     }
   }
 }
@@ -189,7 +221,17 @@ using 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<version>'
 // Required parameters
 param name = 'apactwaf001'
 // Non-required parameters
+param defaultSubnetAddressPrefix = '192.168.250.0/24'
+param enableTelemetry = true
 param location = '<location>'
+param privateEndpointSubnetAddressPrefix = '192.168.251.0/24'
+param suffix = 'waf'
+param tags = {
+  Environment: 'Test'
+  Module: 'avm/ptn/app/paas-ase-cosmosdb-tier4'
+  Purpose: 'WAF-Aligned-Testing'
+}
+param vNetAddressPrefix = '192.168.250.0/23'
 ```
 
 </details>
@@ -260,7 +302,6 @@ Suffix for all resources.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -268,7 +309,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `vNetAddressPrefix`
 
@@ -284,7 +324,7 @@ Virtual Network address space.
 | :-- | :-- | :-- |
 | `cosmosDbResourceId` | string | The resource ID of the CosmosDB account. |
 | `redisCacheResourceId` | string | The resource ID of the Redis cache. |
-| `resourceGroupName` | string | Resource. Resource Group Name. |
+| `resourceGroupName` | string | The resource group the PaaS ASE with CosmosDB Tier 4 was deployed into. |
 | `vnetResourceId` | string | The resource ID of the virtual network. |
 
 ## Cross-referenced modules

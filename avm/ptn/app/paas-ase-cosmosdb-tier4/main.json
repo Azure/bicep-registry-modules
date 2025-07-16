@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "4947589462238140408"
+      "templateHash": "524612181226857290"
     },
     "name": "PaaS ASE with CosmosDB Tier 4",
     "description": "Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration."
@@ -34,17 +34,20 @@
     },
     "suffix": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Suffix for all resources."
       }
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "vNetAddressPrefix": {
       "type": "string",
@@ -6257,7 +6260,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "oxlypsb573er6",
+                "name": "vnetlink",
                 "virtualNetworkResourceId": "[reference('vnet').outputs.resourceId.value]",
                 "registrationEnabled": false
               }
@@ -9428,7 +9431,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "oxlypsb573er6",
+                "name": "vnetlink",
                 "virtualNetworkResourceId": "[reference('vnet').outputs.resourceId.value]",
                 "registrationEnabled": false
               }
@@ -21160,7 +21163,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "Resource. Resource Group Name."
+        "description": "The resource group the PaaS ASE with CosmosDB Tier 4 was deployed into."
       },
       "value": "[resourceGroup().name]"
     }
