@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "12442957992373307822"
+      "version": "0.36.177.2456",
+      "templateHash": "6209014577422145979"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache.",
@@ -1275,7 +1275,7 @@
         "description": "Optional. The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
       "items": {
         "type": "int"
@@ -1340,7 +1340,7 @@
     "enableReferencedModulesTelemetry": false,
     "isAmr": "[or(or(or(startsWith(parameters('skuName'), 'Balanced'), startsWith(parameters('skuName'), 'ComputeOptimized')), startsWith(parameters('skuName'), 'FlashOptimized')), startsWith(parameters('skuName'), 'MemoryOptimized'))]",
     "isEnterprise": "[or(startsWith(parameters('skuName'), 'Enterprise'), startsWith(parameters('skuName'), 'EnterpriseFlash'))]",
-    "availabilityZones": "[if(variables('isEnterprise'), map(parameters('zones'), lambda('zone', string(lambdaVariables('zone')))), createArray())]",
+    "zones": "[if(variables('isEnterprise'), map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone')))), createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1416,7 +1416,7 @@
         "capacity": "[if(variables('isEnterprise'), parameters('capacity'), null())]",
         "name": "[parameters('skuName')]"
       },
-      "zones": "[if(not(empty(variables('availabilityZones'))), variables('availabilityZones'), null())]",
+      "zones": "[if(not(empty(variables('zones'))), variables('zones'), null())]",
       "dependsOn": [
         "cMKKeyVault::cMKKey"
       ]
@@ -1545,8 +1545,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "8755001605214707489"
+              "version": "0.36.177.2456",
+              "templateHash": "3369215399794178672"
             },
             "name": "Redis database",
             "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster."
@@ -2174,8 +2174,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1102691711402093786"
+                      "version": "0.36.177.2456",
+                      "templateHash": "5093843296262375716"
                     },
                     "name": "Azure Managed Redis Database Access Policy Assignment",
                     "description": "This module deploys an access policy assignment for an Azure Managed Redis database."
@@ -2305,8 +2305,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1586204151956272516"
+                      "version": "0.36.177.2456",
+                      "templateHash": "10496574214424824153"
                     }
                   },
                   "definitions": {

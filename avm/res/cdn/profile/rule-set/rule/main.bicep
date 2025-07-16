@@ -26,15 +26,15 @@ param conditions array?
 @description('Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.')
 param matchProcessingBehavior string = 'Continue'
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 
-  resource ruleSet 'ruleSets@2023-05-01' existing = {
+  resource ruleSet 'ruleSets@2025-04-15' existing = {
     name: ruleSetName
   }
 }
 
-resource rule 'Microsoft.Cdn/profiles/ruleSets/rules@2023-05-01' = {
+resource rule 'Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15' = {
   name: name
   parent: profile::ruleSet
   properties: {

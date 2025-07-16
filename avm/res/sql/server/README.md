@@ -721,8 +721,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           'ssfog-db1'
         ]
         name: 'ssfog-fg-geo'
-        partnerServers: [
-          '<secondaryServerName>'
+        partnerServerResourceIds: [
+          '<secondaryServerResourceId>'
         ]
         readWriteEndpoint: {
           failoverPolicy: 'Manual'
@@ -734,8 +734,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           'ssfog-db2'
         ]
         name: 'ssfog-fg-standby'
-        partnerServers: [
-          '<secondaryServerName>'
+        partnerServerResourceIds: [
+          '<secondaryServerResourceId>'
         ]
         readWriteEndpoint: {
           failoverPolicy: 'Automatic'
@@ -748,8 +748,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           'ssfog-db3'
         ]
         name: 'ssfog-fg-readonly'
-        partnerServers: [
-          '<secondaryServerName>'
+        partnerServerResourceIds: [
+          '<secondaryServerResourceId>'
         ]
         readOnlyEndpoint: {
           failoverPolicy: 'Enabled'
@@ -831,8 +831,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "ssfog-db1"
           ],
           "name": "ssfog-fg-geo",
-          "partnerServers": [
-            "<secondaryServerName>"
+          "partnerServerResourceIds": [
+            "<secondaryServerResourceId>"
           ],
           "readWriteEndpoint": {
             "failoverPolicy": "Manual"
@@ -844,8 +844,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "ssfog-db2"
           ],
           "name": "ssfog-fg-standby",
-          "partnerServers": [
-            "<secondaryServerName>"
+          "partnerServerResourceIds": [
+            "<secondaryServerResourceId>"
           ],
           "readWriteEndpoint": {
             "failoverPolicy": "Automatic",
@@ -858,8 +858,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "ssfog-db3"
           ],
           "name": "ssfog-fg-readonly",
-          "partnerServers": [
-            "<secondaryServerName>"
+          "partnerServerResourceIds": [
+            "<secondaryServerResourceId>"
           ],
           "readOnlyEndpoint": {
             "failoverPolicy": "Enabled",
@@ -933,8 +933,8 @@ param failoverGroups = [
       'ssfog-db1'
     ]
     name: 'ssfog-fg-geo'
-    partnerServers: [
-      '<secondaryServerName>'
+    partnerServerResourceIds: [
+      '<secondaryServerResourceId>'
     ]
     readWriteEndpoint: {
       failoverPolicy: 'Manual'
@@ -946,8 +946,8 @@ param failoverGroups = [
       'ssfog-db2'
     ]
     name: 'ssfog-fg-standby'
-    partnerServers: [
-      '<secondaryServerName>'
+    partnerServerResourceIds: [
+      '<secondaryServerResourceId>'
     ]
     readWriteEndpoint: {
       failoverPolicy: 'Automatic'
@@ -960,8 +960,8 @@ param failoverGroups = [
       'ssfog-db3'
     ]
     name: 'ssfog-fg-readonly'
-    partnerServers: [
-      '<secondaryServerName>'
+    partnerServerResourceIds: [
+      '<secondaryServerResourceId>'
     ]
     readOnlyEndpoint: {
       failoverPolicy: 'Enabled'
@@ -3941,7 +3941,7 @@ The failover groups configuration.
 | :-- | :-- | :-- |
 | [`databases`](#parameter-failovergroupsdatabases) | array | List of databases in the failover group. |
 | [`name`](#parameter-failovergroupsname) | string | The name of the failover group. |
-| [`partnerServers`](#parameter-failovergroupspartnerservers) | array | List of the partner servers for the failover group. |
+| [`partnerServerResourceIds`](#parameter-failovergroupspartnerserverresourceids) | array | List of the partner server Resource Id for the failover group. |
 | [`readWriteEndpoint`](#parameter-failovergroupsreadwriteendpoint) | object | Read-write endpoint of the failover group instance. |
 | [`secondaryType`](#parameter-failovergroupssecondarytype) | string | Databases secondary type on partner server. |
 
@@ -3966,9 +3966,9 @@ The name of the failover group.
 - Required: Yes
 - Type: string
 
-### Parameter: `failoverGroups.partnerServers`
+### Parameter: `failoverGroups.partnerServerResourceIds`
 
-List of the partner servers for the failover group.
+List of the partner server Resource Id for the failover group.
 
 - Required: Yes
 - Type: array

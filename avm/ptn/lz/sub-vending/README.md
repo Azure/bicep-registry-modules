@@ -2417,6 +2417,8 @@ A list of additional virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`alternativeHubVnetResourceId`](#parameter-additionalvirtualnetworksalternativehubvnetresourceid) | string | The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`. |
+| [`alternativeVwanHubResourceId`](#parameter-additionalvirtualnetworksalternativevwanhubresourceid) | string | The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`. |
 | [`ddosProtectionPlanResourceId`](#parameter-additionalvirtualnetworksddosprotectionplanresourceid) | string | The resource Id of the DDOS protection plan. |
 | [`deployBastion`](#parameter-additionalvirtualnetworksdeploybastion) | bool | The option to deploy Azure Bastion in the virtual network. |
 | [`deployNatGateway`](#parameter-additionalvirtualnetworksdeploynatgateway) | bool | Flag to deploy a NAT gateway. |
@@ -2454,6 +2456,20 @@ The name of the virtual network resource.
 The name of the virtual network resource group.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.alternativeHubVnetResourceId`
+
+The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.alternativeVwanHubResourceId`
+
+The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`.
+
+- Required: No
 - Type: string
 
 ### Parameter: `additionalVirtualNetworks.ddosProtectionPlanResourceId`

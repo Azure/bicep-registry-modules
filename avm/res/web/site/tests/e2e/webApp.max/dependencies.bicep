@@ -69,10 +69,10 @@ resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: serverFarmName
   location: location
   sku: {
-    name: 'S1'
-    tier: 'Standard'
-    size: 'S1'
-    family: 'S'
+    name: 'P1v2'
+    tier: 'PremiumV2'
+    size: 'P1v2'
+    family: 'Pv2'
     capacity: 1
   }
   properties: {}
