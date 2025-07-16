@@ -45,9 +45,7 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope
     principalId: '<principalId>'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
     // Non-required parameters
-    location: '<location>'
     principalType: 'ServicePrincipal'
-    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -72,14 +70,8 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope
       "value": "<roleDefinitionIdOrName>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
@@ -99,9 +91,7 @@ using 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>'
 param principalId = '<principalId>'
 param roleDefinitionIdOrName = '<roleDefinitionIdOrName>'
 // Non-required parameters
-param location = '<location>'
 param principalType = 'ServicePrincipal'
-param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -125,9 +115,7 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope
     roleDefinitionIdOrName: 'Reader'
     // Non-required parameters
     description: 'Role Assignment (subscription scope)'
-    location: '<location>'
     principalType: 'ServicePrincipal'
-    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -155,14 +143,8 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope
     "description": {
       "value": "Role Assignment (subscription scope)"
     },
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
@@ -183,9 +165,7 @@ param principalId = '<principalId>'
 param roleDefinitionIdOrName = 'Reader'
 // Non-required parameters
 param description = 'Role Assignment (subscription scope)'
-param location = '<location>'
 param principalType = 'ServicePrincipal'
-param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -208,9 +188,7 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope
     principalId: '<principalId>'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
     // Non-required parameters
-    location: '<location>'
     principalType: 'ServicePrincipal'
-    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -235,14 +213,8 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope
       "value": "<roleDefinitionIdOrName>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
@@ -262,9 +234,7 @@ using 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>'
 param principalId = '<principalId>'
 param roleDefinitionIdOrName = '<roleDefinitionIdOrName>'
 // Non-required parameters
-param location = '<location>'
 param principalType = 'ServicePrincipal'
-param subscriptionId = '<subscriptionId>'
 ```
 
 </details>

@@ -45,10 +45,7 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:
     principalId: '<principalId>'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     // Non-required parameters
-    location: '<location>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -73,17 +70,8 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:
       "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
@@ -103,10 +91,7 @@ using 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>'
 param principalId = '<principalId>'
 param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
 // Non-required parameters
-param location = '<location>'
 param principalType = 'ServicePrincipal'
-param resourceGroupName = '<resourceGroupName>'
-param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -130,10 +115,7 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:
     roleDefinitionIdOrName: 'Reader'
     // Non-required parameters
     description: 'Role Assignment (resource group scope)'
-    location: '<location>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -161,17 +143,8 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:
     "description": {
       "value": "Role Assignment (resource group scope)"
     },
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
@@ -192,10 +165,7 @@ param principalId = '<principalId>'
 param roleDefinitionIdOrName = 'Reader'
 // Non-required parameters
 param description = 'Role Assignment (resource group scope)'
-param location = '<location>'
 param principalType = 'ServicePrincipal'
-param resourceGroupName = '<resourceGroupName>'
-param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -218,10 +188,7 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:
     principalId: '<principalId>'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     // Non-required parameters
-    location: '<location>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -246,17 +213,8 @@ module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:
       "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
@@ -276,10 +234,7 @@ using 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>'
 param principalId = '<principalId>'
 param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
 // Non-required parameters
-param location = '<location>'
 param principalType = 'ServicePrincipal'
-param resourceGroupName = '<resourceGroupName>'
-param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
