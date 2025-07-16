@@ -26,6 +26,10 @@ param aiModelDeployments deploymentType[] = []
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
 param tags object = {}
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 @description('Optional. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool = false
 
@@ -102,6 +106,7 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   params: {
     resourcesName: resourcesName
     location: location
+    lock: lock
     privateNetworking: enablePrivateNetworking
       ? {
           privateEndpointSubnetId: networking!.privateEndpointSubnetId
@@ -225,6 +230,7 @@ module project 'modules/aifoundryproject.bicep' = {
   params: {
     name: empty(projectName) ? 'proj-${resourcesName}' : projectName!
     location: location
+    lock: lock
     includeAssociatedResources: includeAssociatedResources
     cosmosDBName: includeAssociatedResources ? cosmosDb!.outputs.name : ''
     storageName: includeAssociatedResources ? storageAccount!.outputs.name : ''

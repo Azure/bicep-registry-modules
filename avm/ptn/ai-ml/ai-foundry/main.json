@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "364130584523530250"
+      "templateHash": "9797388444888740401"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -229,6 +229,36 @@
         }
       }
     },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -358,6 +388,13 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
       }
     },
     "contentSafetyEnabled": {
@@ -4096,6 +4133,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
           "privateNetworking": "[if(variables('enablePrivateNetworking'), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'cogServicesPrivateDnsZoneId', parameters('networking').cognitiveServicesPrivateDnsZoneId, 'openAIPrivateDnsZoneId', parameters('networking').openAiPrivateDnsZoneId, 'aiServicesPrivateDnsZoneId', parameters('networking').aiServicesPrivateDnsZoneId)), createObject('value', createObject()))]",
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
@@ -4118,7 +4158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16823348027200215694"
+              "templateHash": "2574492224494566657"
             }
           },
           "definitions": {
@@ -4256,6 +4296,36 @@
                 }
               }
             },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -4362,6 +4432,13 @@
                 "description": "Optional. Specifies the OpenAI deployments to create."
               }
             },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
             "contentSafetyEnabled": {
               "type": "bool",
               "metadata": {
@@ -4413,6 +4490,9 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "kind": {
                     "value": "AIServices"
                   },
@@ -4442,7 +4522,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.177.2456",
-                      "templateHash": "5755996137847799330"
+                      "templateHash": "2076694077148908178"
                     }
                   },
                   "definitions": {
@@ -4544,6 +4624,36 @@
                         "description": "The type for a cognitive services account deployment.",
                         "__bicep_imported_from!": {
                           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
+                        }
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     },
@@ -4739,6 +4849,13 @@
                         "description": "Optional. Tags to be applied to the resources."
                       }
                     },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
                     "enableTelemetry": {
                       "type": "bool",
                       "defaultValue": true,
@@ -4784,6 +4901,9 @@
                           },
                           "kind": {
                             "value": "[parameters('kind')]"
+                          },
+                          "lock": {
+                            "value": "[parameters('lock')]"
                           },
                           "allowProjectManagement": {
                             "value": true
@@ -7144,6 +7264,9 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "kind": {
                     "value": "ContentSafety"
                   },
@@ -7164,7 +7287,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.177.2456",
-                      "templateHash": "5755996137847799330"
+                      "templateHash": "2076694077148908178"
                     }
                   },
                   "definitions": {
@@ -7266,6 +7389,36 @@
                         "description": "The type for a cognitive services account deployment.",
                         "__bicep_imported_from!": {
                           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
+                        }
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     },
@@ -7461,6 +7614,13 @@
                         "description": "Optional. Tags to be applied to the resources."
                       }
                     },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
                     "enableTelemetry": {
                       "type": "bool",
                       "defaultValue": true,
@@ -7506,6 +7666,9 @@
                           },
                           "kind": {
                             "value": "[parameters('kind')]"
+                          },
+                          "lock": {
+                            "value": "[parameters('lock')]"
                           },
                           "allowProjectManagement": {
                             "value": true
@@ -22644,6 +22807,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
           "includeAssociatedResources": {
             "value": "[parameters('includeAssociatedResources')]"
           },
@@ -22658,12 +22824,45 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "2780799726392705277"
+              "templateHash": "11252123135693473081"
+            }
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -22711,6 +22910,13 @@
                 "description": "Azure Search Service Name"
               }
             },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
             "projUploadsContainerName": {
               "type": "string",
               "defaultValue": "",
@@ -22741,8 +22947,35 @@
               "defaultValue": "This is the default project for AI Foundry."
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "foundryAccount": {
+              "existing": true,
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2025-06-01",
+              "name": "[parameters('aiServicesName')]"
+            },
+            "storageAccount": {
+              "condition": "[and(parameters('includeAssociatedResources'), not(empty(parameters('storageName'))))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('storageName')]"
+            },
+            "aiSearchService": {
+              "condition": "[and(parameters('includeAssociatedResources'), not(empty(parameters('aiSearchName'))))]",
+              "existing": true,
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2023-11-01",
+              "name": "[parameters('aiSearchName')]"
+            },
+            "cosmosDBAccount": {
+              "condition": "[and(parameters('includeAssociatedResources'), not(empty(parameters('cosmosDBName'))))]",
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('cosmosDBName')]"
+            },
+            "project": {
               "type": "Microsoft.CognitiveServices/accounts/projects",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('defaultProjectName'))]",
@@ -22755,49 +22988,51 @@
                 "description": "[parameters('defaultProjectDescription')]"
               }
             },
-            {
+            "project_connection_azure_storage": {
               "condition": "[and(parameters('includeAssociatedResources'), not(empty(parameters('storageName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
               "properties": {
                 "category": "AzureBlob",
-                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
+                "target": "[reference('storageAccount').primaryEndpoints.blob]",
                 "authType": "AAD",
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
-                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
+                  "location": "[reference('storageAccount', '2024-01-01', 'full').location]",
                   "accountName": "[parameters('storageName')]",
                   "containerName": "[parameters('projUploadsContainerName')]"
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+                "project",
+                "storageAccount"
               ]
             },
-            {
+            "project_connection_azure_storage_sysdata": {
               "condition": "[and(and(parameters('includeAssociatedResources'), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
               "properties": {
                 "category": "AzureBlob",
-                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
+                "target": "[reference('storageAccount').primaryEndpoints.blob]",
                 "authType": "AAD",
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
-                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
+                  "location": "[reference('storageAccount', '2024-01-01', 'full').location]",
                   "accountName": "[parameters('storageName')]",
                   "containerName": "[parameters('sysDataContainerName')]"
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+                "project",
+                "storageAccount"
               ]
             },
-            {
+            "project_connection_azureai_search": {
               "condition": "[and(parameters('includeAssociatedResources'), not(empty(parameters('aiSearchName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
@@ -22810,33 +23045,35 @@
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('aiSearchName'))]",
-                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('aiSearchName')), '2023-11-01', 'full').location]"
+                  "location": "[reference('aiSearchService', '2023-11-01', 'full').location]"
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+                "aiSearchService",
+                "project"
               ]
             },
-            {
+            "project_connection_cosmosdb": {
               "condition": "[and(parameters('includeAssociatedResources'), not(empty(parameters('cosmosDBName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
               "properties": {
                 "category": "CosmosDB",
-                "target": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2024-11-15').documentEndpoint]",
+                "target": "[reference('cosmosDBAccount').documentEndpoint]",
                 "authType": "AAD",
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName'))]",
-                  "location": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2024-11-15', 'full').location]"
+                  "location": "[reference('cosmosDBAccount', '2024-11-15', 'full').location]"
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+                "cosmosDBAccount",
+                "project"
               ]
             },
-            {
+            "accountCapabilityHost": {
               "condition": "[parameters('includeAssociatedResources')]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
               "apiVersion": "2025-06-01",
@@ -22845,7 +23082,7 @@
                 "capabilityHostKind": "Agents"
               }
             },
-            {
+            "projectCapabilityHost": {
               "condition": "[parameters('includeAssociatedResources')]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
               "apiVersion": "2025-06-01",
@@ -22863,15 +23100,29 @@
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('aiSearchName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
+                "accountCapabilityHost",
+                "project",
+                "project_connection_azure_storage",
+                "project_connection_azure_storage_sysdata",
+                "project_connection_azureai_search",
+                "project_connection_cosmosdb"
+              ]
+            },
+            "projectLock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}/projects/{1}', parameters('aiServicesName'), parameters('defaultProjectName'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "project"
               ]
             }
-          ],
+          },
           "outputs": {
             "projectCapHostName": {
               "type": "string",

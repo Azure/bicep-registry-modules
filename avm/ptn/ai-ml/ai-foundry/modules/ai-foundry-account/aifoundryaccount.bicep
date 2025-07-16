@@ -11,6 +11,10 @@ import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.1
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 @description('Required. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
@@ -31,6 +35,7 @@ module aiServices 'service.bicep' = {
   params: {
     name: take('ai${resourcesName}', 12)
     location: location
+    lock: lock
     kind: 'AIServices'
     category: 'AIServices'
     privateEndpointSubnetId: networkIsolation ? privateNetworking!.privateEndpointSubnetId : ''
@@ -53,6 +58,7 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
   params: {
     name: take('sf${resourcesName}', 12)
     location: location
+    lock: lock
     kind: 'ContentSafety'
     privateEndpointSubnetId: networkIsolation ? privateNetworking!.privateEndpointSubnetId : ''
     privateDnsZonesIds: networkIsolation

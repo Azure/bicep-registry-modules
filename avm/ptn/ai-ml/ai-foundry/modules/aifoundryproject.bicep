@@ -21,6 +21,10 @@ param aiServicesName string
 @description('Azure Search Service Name')
 param aiSearchName string
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 @description('Name of the container for project uploads')
 param projUploadsContainerName string = ''
 
@@ -159,6 +163,17 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
     project_connection_azure_storage_sysdata
     project_connection_cosmosdb
   ]
+}
+
+resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: project
 }
 
 @description('Name of the Project Capability Host.')

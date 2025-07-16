@@ -43,7 +43,36 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       contentSafetyEnabled: true
-      includeAssociatedResources: true
+      includeAssociatedResources: false
+      networking: {
+        agentServiceSubnetId: ''
+        privateEndpointSubnetId: ''
+        aiServicesPrivateDnsZoneId: ''
+        openAiPrivateDnsZoneId: ''
+        cognitiveServicesPrivateDnsZoneId: ''
+        associatedResourcesPrivateDnsZones: {
+          aiSearchPrivateDnsZoneId: ''
+          keyVaultPrivateDnsZoneId: ''
+          cosmosDbPrivateDnsZoneId: ''
+          storageBlobPrivateDnsZoneId: ''
+          storageFilePrivateDnsZoneId: ''
+        }
+      }
+      keyVaultConfiguration: {
+        existingResourceId: '<keyVaultResourceId>'
+      }
+      storageAccountConfiguration: {
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+            principalId: '00000000-0000-0000-0000-000000000000'
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      }
+      cosmosDbConfiguration: {
+        name: 'mycosmosdbacct'
+      }
       aiModelDeployments: [] // Simplified: no AI model deployments for testing to avoid conflicts
     }
   }

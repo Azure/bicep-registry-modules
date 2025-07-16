@@ -140,7 +140,36 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Non-required parameters
     aiModelDeployments: []
     contentSafetyEnabled: true
-    includeAssociatedResources: true
+    cosmosDbConfiguration: {
+      name: 'mycosmosdbacct'
+    }
+    includeAssociatedResources: false
+    keyVaultConfiguration: {
+      existingResourceId: '<keyVaultResourceId>'
+    }
+    networking: {
+      agentServiceSubnetId: ''
+      aiServicesPrivateDnsZoneId: ''
+      associatedResourcesPrivateDnsZones: {
+        aiSearchPrivateDnsZoneId: ''
+        cosmosDbPrivateDnsZoneId: ''
+        keyVaultPrivateDnsZoneId: ''
+        storageBlobPrivateDnsZoneId: ''
+        storageFilePrivateDnsZoneId: ''
+      }
+      cognitiveServicesPrivateDnsZoneId: ''
+      openAiPrivateDnsZoneId: ''
+      privateEndpointSubnetId: ''
+    }
+    storageAccountConfiguration: {
+      roleAssignments: [
+        {
+          principalId: '00000000-0000-0000-0000-000000000000'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        }
+      ]
+    }
   }
 }
 ```
@@ -168,8 +197,45 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "contentSafetyEnabled": {
       "value": true
     },
+    "cosmosDbConfiguration": {
+      "value": {
+        "name": "mycosmosdbacct"
+      }
+    },
     "includeAssociatedResources": {
-      "value": true
+      "value": false
+    },
+    "keyVaultConfiguration": {
+      "value": {
+        "existingResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "networking": {
+      "value": {
+        "agentServiceSubnetId": "",
+        "aiServicesPrivateDnsZoneId": "",
+        "associatedResourcesPrivateDnsZones": {
+          "aiSearchPrivateDnsZoneId": "",
+          "cosmosDbPrivateDnsZoneId": "",
+          "keyVaultPrivateDnsZoneId": "",
+          "storageBlobPrivateDnsZoneId": "",
+          "storageFilePrivateDnsZoneId": ""
+        },
+        "cognitiveServicesPrivateDnsZoneId": "",
+        "openAiPrivateDnsZoneId": "",
+        "privateEndpointSubnetId": ""
+      }
+    },
+    "storageAccountConfiguration": {
+      "value": {
+        "roleAssignments": [
+          {
+            "principalId": "00000000-0000-0000-0000-000000000000",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Storage Blob Data Contributor"
+          }
+        ]
+      }
     }
   }
 }
@@ -190,7 +256,36 @@ param name = 'fndrywaf001'
 // Non-required parameters
 param aiModelDeployments = []
 param contentSafetyEnabled = true
-param includeAssociatedResources = true
+param cosmosDbConfiguration = {
+  name: 'mycosmosdbacct'
+}
+param includeAssociatedResources = false
+param keyVaultConfiguration = {
+  existingResourceId: '<keyVaultResourceId>'
+}
+param networking = {
+  agentServiceSubnetId: ''
+  aiServicesPrivateDnsZoneId: ''
+  associatedResourcesPrivateDnsZones: {
+    aiSearchPrivateDnsZoneId: ''
+    cosmosDbPrivateDnsZoneId: ''
+    keyVaultPrivateDnsZoneId: ''
+    storageBlobPrivateDnsZoneId: ''
+    storageFilePrivateDnsZoneId: ''
+  }
+  cognitiveServicesPrivateDnsZoneId: ''
+  openAiPrivateDnsZoneId: ''
+  privateEndpointSubnetId: ''
+}
+param storageAccountConfiguration = {
+  roleAssignments: [
+    {
+      principalId: '00000000-0000-0000-0000-000000000000'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+    }
+  ]
+}
 ```
 
 </details>
@@ -216,6 +311,7 @@ param includeAssociatedResources = true
 | [`includeAssociatedResources`](#parameter-includeassociatedresources) | bool | Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false. |
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Custom configuration for the Key Vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networking`](#parameter-networking) | object | Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used. |
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project.. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
@@ -775,6 +871,42 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `networking`
 

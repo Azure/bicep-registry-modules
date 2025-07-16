@@ -69,6 +69,10 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -88,6 +92,7 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     tags: tags
     sku: sku
     kind: kind
+    lock: lock
     allowProjectManagement: true
     managedIdentities: {
       systemAssigned: true
