@@ -14,12 +14,12 @@ param location string = resourceGroup().location
 param name string
 
 @description('Optional. Suffix for all resources.')
-param suffix string = ''
+param suffix string?
 
 // Common Parameters
 
 @description('Optional. Tags of the resource.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags?
 
 // Network Parameters
 
@@ -137,7 +137,7 @@ module cosmosdbPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
     tags: tags
     virtualNetworkLinks: [
       {
-        name: 'oxlypsb573er6'
+        name: 'vnetlink'
         virtualNetworkResourceId: vnet.outputs.resourceId
         registrationEnabled: false
       }
@@ -154,7 +154,7 @@ module redisPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
     tags: tags
     virtualNetworkLinks: [
       {
-        name: 'oxlypsb573er6'
+        name: 'vnetlink'
         virtualNetworkResourceId: vnet.outputs.resourceId
         registrationEnabled: false
       }
