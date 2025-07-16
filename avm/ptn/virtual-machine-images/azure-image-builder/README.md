@@ -1320,7 +1320,8 @@ The Image Definitions in the Azure Compute Gallery.
 | [`privacyStatementUri`](#parameter-computegalleryimagedefinitionsprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-computegalleryimagedefinitionspurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-computegalleryimagedefinitionsreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
-| [`securityType`](#parameter-computegalleryimagedefinitionssecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
+| [`securityType`](#parameter-computegalleryimagedefinitionssecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required. |
+| [`tags`](#parameter-computegalleryimagedefinitionstags) | object | Tags for all the image. |
 | [`vCPUs`](#parameter-computegalleryimagedefinitionsvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
 
 ### Parameter: `computeGalleryImageDefinitions.identifier`
@@ -1567,7 +1568,7 @@ The release note uri. Has to be a valid URL.
 
 ### Parameter: `computeGalleryImageDefinitions.securityType`
 
-The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.
+The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required.
 
 - Required: No
 - Type: string
@@ -1582,6 +1583,13 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'TrustedLaunchSupported'
   ]
   ```
+
+### Parameter: `computeGalleryImageDefinitions.tags`
+
+Tags for all the image.
+
+- Required: No
+- Type: object
 
 ### Parameter: `computeGalleryImageDefinitions.vCPUs`
 
@@ -1893,8 +1901,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0` | Remote reference |
-| `br/public:avm/res/compute/gallery:0.9.1` | Remote reference |
-| `br/public:avm/res/compute/gallery:0.9.2` | Remote reference |
+| `br/public:avm/res/compute/gallery:0.9.3` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
