@@ -9,14 +9,12 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-app-paasasecosmosdbt4-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'apactwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
@@ -43,9 +41,23 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
+      // Required parameters
       name: '${namePrefix}${serviceShort}001'
+      
+      // Optional parameters with custom values for WAF-aligned testing
       location: resourceLocation
+      enableTelemetry: true
+      suffix: 'waf'
+      tags: {
+        Environment: 'Test'
+        Purpose: 'WAF-Aligned-Testing'
+        Module: 'avm/ptn/app/paas-ase-cosmosdb-tier4'
+      }
+      
+      // Network parameters (using defaults but can be customized)
+      vNetAddressPrefix: '192.168.250.0/23'
+      defaultSubnetAddressPrefix: '192.168.250.0/24'
+      privateEndpointSubnetAddressPrefix: '192.168.251.0/24'
     }
   }
 ]

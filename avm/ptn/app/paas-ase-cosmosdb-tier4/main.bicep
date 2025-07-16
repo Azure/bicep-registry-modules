@@ -4,8 +4,6 @@ metadata description = 'Creates a PaaS ASE with CosmosDB Tier 4 resiliency confi
 // ================ //
 // Parameters       //
 // ================ //
-// @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-// param enableDefaultTelemetry bool = true
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -36,20 +34,6 @@ param privateEndpointSubnetAddressPrefix string = '192.168.251.0/24'
 
 // Resources
 
-// // Telemetry - AVS (SFR1)
-// // Using placeholder telemetry GUID
-// var telemetryId = 'pid-00000000-0000-0000-0000-000000000000'
-// resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-//   name: '${telemetryId}-${uniqueString(deployment().name, location)}'
-//   properties: {
-//     mode: 'Incremental'
-//     template: {
-//       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-//       contentVersion: '1.0.0.0'
-//       resources: []
-//     }
-//   }
-// }
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -361,5 +345,5 @@ output redisCacheResourceId string = redis.outputs.resourceId
 // @description('The resource ID of the App Service Plan.')
 // output appServicePlanResourceId string = asp.outputs.resourceId
 
-@description('Resource. Resource Group Name.')
+@description('The resource group the PaaS ASE with CosmosDB Tier 4 was deployed into.')
 output resourceGroupName string = resourceGroup().name

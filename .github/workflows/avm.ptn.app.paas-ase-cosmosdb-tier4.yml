@@ -29,7 +29,7 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.app.paas-ase-cosmosdb-tier4.yml"
-      - "avm/ptn/app/iaas-vm-cosmosdb-tier4/**"
+      - "avm/ptn/app/paas-ase-cosmosdb-tier4/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
