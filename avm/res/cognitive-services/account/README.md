@@ -17,11 +17,11 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
-| `Microsoft.CognitiveServices/accounts/commitmentPlans` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/commitmentPlans) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
+| `Microsoft.CognitiveServices/accounts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts) |
+| `Microsoft.CognitiveServices/accounts/commitmentPlans` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -35,15 +35,14 @@ The following section provides usage examples for the module, which were used to
 
 - [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
 - [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
-- [Disconnected Speech Test](#example-3-disconnected-speech-test)
-- [Storing keys of service in key vault](#example-4-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-5-using-only-defaults)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-7-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-8-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-11-waf-aligned)
+- [Storing keys of service in key vault](#example-3-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-6-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-7-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
@@ -333,108 +332,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Disconnected Speech Test_
-
-This instance deploys SpeechServices with DC0 and Disconnected Container plan for Neural TTS.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
-  params: {
-    // Required parameters
-    kind: 'SpeechServices'
-    name: 'csaspeech001'
-    // Non-required parameters
-    commitmentPlans: []
-    disableLocalAuth: false
-    networkAcls: {
-      defaultAction: 'Allow'
-      ipRules: []
-      virtualNetworkRules: []
-    }
-    publicNetworkAccess: 'Enabled'
-    sku: 'DC0'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
-    "name": {
-      "value": "csaspeech001"
-    },
-    // Non-required parameters
-    "commitmentPlans": {
-      "value": []
-    },
-    "disableLocalAuth": {
-      "value": false
-    },
-    "networkAcls": {
-      "value": {
-        "defaultAction": "Allow",
-        "ipRules": [],
-        "virtualNetworkRules": []
-      }
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
-    },
-    "sku": {
-      "value": "DC0"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param kind = 'SpeechServices'
-param name = 'csaspeech001'
-// Non-required parameters
-param commitmentPlans = []
-param disableLocalAuth = false
-param networkAcls = {
-  defaultAction: 'Allow'
-  ipRules: []
-  virtualNetworkRules: []
-}
-param publicNetworkAccess = 'Enabled'
-param sku = 'DC0'
-```
-
-</details>
-<p>
-
-### Example 4: _Storing keys of service in key vault_
+### Example 3: _Storing keys of service in key vault_
 
 This instance deploys the module and stores its keys in a key vault.
 
@@ -525,7 +423,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 5: _Using only defaults_
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -594,7 +492,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1037,7 +935,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 6: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -1198,7 +1096,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 8: _As Speech Service_
+### Example 7: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -1367,7 +1265,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1476,7 +1374,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1594,7 +1492,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 11: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1915,7 +1813,6 @@ Commitment plans to deploy for the cognitive services account.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2393,6 +2290,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2412,6 +2310,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2637,6 +2542,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2656,6 +2562,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3135,6 +3048,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
