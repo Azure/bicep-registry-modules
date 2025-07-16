@@ -6,8 +6,8 @@ param name string
 @description('Optional. Resource Id of an existing AI Search resource. If provided, the module will not create a new AI Search resource but will use the existing one.')
 param existingResourceId string?
 
-@description('Specifies the location for all the Azure resources.')
-param location string
+@description('Optional. Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
+param location string = resourceGroup().location
 
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}

@@ -13,7 +13,7 @@ param uniqueNameText string = substring(uniqueString(subscription().id, resource
 @description('Optional. Name of the AI Foundry project..')
 param projectName string?
 
-@description('Optional. Location for all Resources.')
+@description('Optional. Location for all Resources. Defaults to the location of the resource group.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -29,9 +29,6 @@ param tags object = {}
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
-
-@description('Optional. Whether to include Azure AI Content Safety in the deployment.')
-param contentSafetyEnabled bool = false
 
 @description('Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false.')
 param includeAssociatedResources bool = false
@@ -78,6 +75,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+module foundryAccount 'modules/account.bicep' = {
+  name: take('${resourcesName}-foundry-account-deployment', 64)
+  params: {
+    name: take('ai${resourcesName}', 64)
+    location: location
+    includeCapabilityHost: true
+    lock: lock
+    privateNetworking: enablePrivateNetworking
+      ? {
+          privateEndpointSubnetId: networking!.privateEndpointSubnetId
+          cogServicesPrivateDnsZoneId: networking!.cognitiveServicesPrivateDnsZoneId
+          openAIPrivateDnsZoneId: networking!.openAiPrivateDnsZoneId
+          aiServicesPrivateDnsZoneId: networking!.aiServicesPrivateDnsZoneId
+        }
+      : {}
+    aiModelDeployments: aiModelDeployments
+    enableTelemetry: enableTelemetry
+    tags: tags
+  }
+}
+
 module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
   name: take('${resourcesName}-keyvault-deployment', 64)
   params: {
@@ -96,27 +114,6 @@ module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
         }
       : {}
     roleAssignments: keyVaultConfiguration.?roleAssignments
-    enableTelemetry: enableTelemetry
-    tags: tags
-  }
-}
-
-module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
-  name: take('${resourcesName}-cognitive-services-deployment', 64)
-  params: {
-    resourcesName: resourcesName
-    location: location
-    lock: lock
-    privateNetworking: enablePrivateNetworking
-      ? {
-          privateEndpointSubnetId: networking!.privateEndpointSubnetId
-          cogServicesPrivateDnsZoneId: networking!.cognitiveServicesPrivateDnsZoneId
-          openAIPrivateDnsZoneId: networking!.openAiPrivateDnsZoneId
-          aiServicesPrivateDnsZoneId: networking!.aiServicesPrivateDnsZoneId
-        }
-      : {}
-    aiModelDeployments: aiModelDeployments
-    contentSafetyEnabled: contentSafetyEnabled
     enableTelemetry: enableTelemetry
     tags: tags
   }
@@ -170,14 +167,14 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
         : [],
       [
         {
-          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
+          principalId: foundryAccount.outputs.systemAssignedMIPrincipalId
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
       ],
       [
         {
-          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
+          principalId: foundryAccount.outputs.systemAssignedMIPrincipalId
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
@@ -217,27 +214,30 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
   }
 }
 
-module project 'modules/aifoundryproject.bicep' = {
-  name: take('${name}-foundry-project-deployment', 64)
-  dependsOn: includeAssociatedResources
-    ? [
-        storageAccount
-        aiSearch
-        cosmosDb
-        keyvault
-      ]
-    : []
+module foundryProject 'modules/project/main.bicep' = {
+  name: take('${resourcesName}-foundry-project-deployment', 64)
+  dependsOn: includeAssociatedResources ? [storageAccount, aiSearch, cosmosDb, keyvault] : []
   params: {
     name: empty(projectName) ? 'proj-${resourcesName}' : projectName!
-    location: location
+    desc: 'This is the default project for AI Foundry.'
+    accountName: foundryAccount.outputs.name
+    location: foundryAccount.outputs.location
+    aiSearchConnections: includeAssociatedResources ? [{ resourceId: aiSearch!.outputs.resourceId }] : []
+    cosmosDbConnections: includeAssociatedResources ? [{ resourceId: cosmosDb!.outputs.resourceId }] : []
+    storageAccountConnections: includeAssociatedResources
+      ? [
+          {
+            resourceId: storageAccount!.outputs.resourceId
+            containerName: storageAccount!.outputs.projUploadsContainerName
+          }
+          {
+            resourceId: storageAccount!.outputs.resourceId
+            containerName: storageAccount!.outputs.sysDataContainerName
+          }
+        ]
+      : []
+    tags: tags
     lock: lock
-    includeAssociatedResources: includeAssociatedResources
-    cosmosDBName: includeAssociatedResources ? cosmosDb!.outputs.name : ''
-    storageName: includeAssociatedResources ? storageAccount!.outputs.name : ''
-    aiServicesName: cognitiveServices.outputs.aiServicesName
-    aiSearchName: includeAssociatedResources ? aiSearch!.outputs.name : ''
-    projUploadsContainerName: includeAssociatedResources ? storageAccount!.outputs.projUploadsContainerName : ''
-    sysDataContainerName: includeAssociatedResources ? storageAccount!.outputs.sysDataContainerName : ''
   }
 }
 
@@ -248,13 +248,13 @@ output resourceGroupName string = resourceGroup().name
 output keyVaultName string = includeAssociatedResources ? keyvault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
-output aiServicesName string = cognitiveServices.outputs.aiServicesName
+output aiServicesName string = foundryAccount.outputs.name
 
 @description('Name of the deployed Azure AI Search service.')
 output aiSearchName string = includeAssociatedResources ? aiSearch!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Project.')
-output aiProjectName string = project.outputs.name
+output aiProjectName string = foundryProject.outputs.name
 
 @description('Name of the deployed Azure Storage Account.')
 output storageAccountName string = includeAssociatedResources ? storageAccount!.outputs.name : ''

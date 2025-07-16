@@ -37,12 +37,12 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.KeyVault/vaults` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
 | `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
@@ -139,7 +139,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     name: 'fndrywaf001'
     // Non-required parameters
     aiModelDeployments: []
-    contentSafetyEnabled: true
     cosmosDbConfiguration: {
       name: 'mycosmosdbacct'
     }
@@ -193,9 +192,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Non-required parameters
     "aiModelDeployments": {
       "value": []
-    },
-    "contentSafetyEnabled": {
-      "value": true
     },
     "cosmosDbConfiguration": {
       "value": {
@@ -255,7 +251,6 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param name = 'fndrywaf001'
 // Non-required parameters
 param aiModelDeployments = []
-param contentSafetyEnabled = true
 param cosmosDbConfiguration = {
   name: 'mycosmosdbacct'
 }
@@ -305,12 +300,11 @@ param storageAccountConfiguration = {
 | :-- | :-- | :-- |
 | [`aiModelDeployments`](#parameter-aimodeldeployments) | array | Specifies the OpenAI deployments to create. |
 | [`aiSearchConfiguration`](#parameter-aisearchconfiguration) | object | Custom configuration for the AI Search resource. |
-| [`contentSafetyEnabled`](#parameter-contentsafetyenabled) | bool | Whether to include Azure AI Content Safety in the deployment. |
 | [`cosmosDbConfiguration`](#parameter-cosmosdbconfiguration) | object | Custom configuration for the Cosmos DB Account. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`includeAssociatedResources`](#parameter-includeassociatedresources) | bool | Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false. |
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Custom configuration for the Key Vault. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networking`](#parameter-networking) | object | Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used. |
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project.. |
@@ -588,14 +582,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `contentSafetyEnabled`
-
-Whether to include Azure AI Content Safety in the deployment.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `cosmosDbConfiguration`
 
 Custom configuration for the Cosmos DB Account.
@@ -866,7 +852,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all Resources. Defaults to the location of the resource group.
 
 - Required: No
 - Type: string

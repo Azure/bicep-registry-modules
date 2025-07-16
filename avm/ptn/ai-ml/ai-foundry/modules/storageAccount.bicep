@@ -5,8 +5,8 @@ param name string
 @description('Optional. Resource Id of an existing Storage Account. If provided, the module will not create a new AI Search resource but will use the existing one.')
 param existingResourceId string?
 
-@description('Specifies the location for the Storage Account.')
-param location string
+@description('Specifies the location for the Storage Account. Defaults to the location of the resource group.')
+param location string = resourceGroup().location
 
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
