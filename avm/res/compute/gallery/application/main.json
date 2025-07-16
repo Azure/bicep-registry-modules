@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "14256121951310131781"
+      "version": "0.36.177.2456",
+      "templateHash": "10342729687544373770"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application."
@@ -245,10 +245,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+        },
         "description": "Optional. Tags for all resources."
-      }
+      },
+      "nullable": true
     },
     "customActions": {
       "type": "array",
