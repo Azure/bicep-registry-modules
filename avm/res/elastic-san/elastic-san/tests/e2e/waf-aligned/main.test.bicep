@@ -72,8 +72,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      sku: 'Premium_ZRS'
+      sku: 'Premium_LRS'
       publicNetworkAccess: 'Disabled'
+      availabilityZone: 1
       volumeGroups: [
         {
           name: 'vol-grp-01'

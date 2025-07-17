@@ -8,8 +8,9 @@ Describe 'Validate Deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{}
-        $expectedVolumeGroupsCount = 2
+        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
+        $groupIds = @( 'vol-grp-01' )
+        $expectedVolumeGroupsCount = 1
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -47,15 +48,15 @@ Describe 'Validate Deployment' {
                 -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
-                -AvailabilityZone 2 `
+                -AvailabilityZone 1 `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
-                -PublicNetworkAccess $null `
+                -PublicNetworkAccess 'Disabled' `
                 -SkuName 'Premium_LRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
-                -GroupIds $null `
+                -GroupIds $groupIds `
                 -ExpectedRoleAssignments $null `
-                -LogAnalyticsWorkspaceResourceId $null `
+                -LogAnalyticsWorkspaceResourceId $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceResourceId.Value `
                 -Locks $false
         }
 
@@ -63,8 +64,7 @@ Describe 'Validate Deployment' {
 
             # Volume Groups
             $expectedData = @(
-                @{ CMK = $true }  # vol-grp-01
-                @{ CMK = $true }  # vol-grp-02
+                @{ PrivateEndpointCounts = 1; CMK = $true }  # vol-grp-01
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
@@ -98,11 +98,12 @@ Describe 'Validate Deployment' {
                     -CMKKeyVaultEncryptionKeyName $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyName.Value `
                     -CMKKeyVaultUrl $TestInputData.DeploymentOutputs.cmkKeyVaultUrl.Value `
                     -CMKKeyVaultEncryptionKeyVersion $TestInputData.DeploymentOutputs.cmkKeyVaultEncryptionKeyVersion.Value `
-                    -GroupIds $null `
-                    -PrivateEndpointCounts 0 `
-                    -PrivateEndpoints $null `
+                    -GroupIds $groupIds `
+                    -PrivateEndpointCounts $item.PrivateEndpointCounts `
+                    -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints `
                     -Tags $expectedTags `
-                    -Locks $false
+                    -Locks $false `
+                    -EnforceDataIntegrityCheckForIscsi $false
             }
         }
     }

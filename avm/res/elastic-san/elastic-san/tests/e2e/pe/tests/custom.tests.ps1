@@ -8,7 +8,7 @@ Describe 'Validate Deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
+        $expectedTags = @{} # PE test has no tags
         $groupIds = @( 'vol-grp-01' )
         $expectedVolumeGroupsCount = 1
 
@@ -48,11 +48,11 @@ Describe 'Validate Deployment' {
                 -Name $name `
                 -Location $location `
                 -Tags $expectedTags  `
-                -AvailabilityZone 1 `
+                -AvailabilityZone $null `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess 'Disabled' `
-                -SkuName 'Premium_LRS' `
+                -SkuName 'Premium_ZRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount `
                 -GroupIds $groupIds `
                 -ExpectedRoleAssignments $null `
@@ -102,7 +102,8 @@ Describe 'Validate Deployment' {
                     -PrivateEndpointCounts $item.PrivateEndpointCounts `
                     -PrivateEndpoints $volumeGroups[$vgrpidx].privateEndpoints `
                     -Tags $expectedTags `
-                    -Locks $true
+                    -Locks $true `
+                    -EnforceDataIntegrityCheckForIscsi $false
             }
         }
     }

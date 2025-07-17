@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "6221915549963366860"
+      "version": "0.36.177.2456",
+      "templateHash": "301107264744990959"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -868,15 +868,23 @@
         "description": "Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
+      "items": {
+        "type": "int"
+      },
       "defaultValue": [
         1,
         2,
         3
       ],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. Zone numbers e.g. 1,2,3."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
       }
     },
     "enableForcedTunneling": {
@@ -994,7 +1002,7 @@
       "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
+      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
       "tags": "[parameters('tags')]",
       "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value)))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
       "dependsOn": [
@@ -1111,7 +1119,7 @@
             "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[parameters('zones')]"
+            "value": "[parameters('availabilityZones')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -1817,7 +1825,7 @@
             "value": "[coalesce(tryGet(parameters('managementIPAddressObject'), 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[parameters('zones')]"
+            "value": "[parameters('availabilityZones')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
