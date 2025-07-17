@@ -3,15 +3,12 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 
 @minLength(3)
 @maxLength(12)
-@description('Required. A friendly application/environment name for all resources in this deployment.')
-param name string
+@description('Required. A friendly application/environment name to serve as the "base" when using the default naming for all resources in this deployment.')
+param baseName string
 
 @maxLength(5)
-@description('Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name.')
-param uniqueNameText string = substring(uniqueString(subscription().id, resourceGroup().name, name), 0, 5)
-
-@description('Optional. Name of the AI Foundry project.')
-param projectName string?
+@description('Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name.')
+param baseUniqueName string = substring(uniqueString(subscription().id, resourceGroup().name, baseName), 0, 5)
 
 @description('Optional. Location for all Resources. Defaults to the location of the resource group.')
 param location string = resourceGroup().location
@@ -27,7 +24,7 @@ param aiModelDeployments deploymentType[] = []
 param tags object = {}
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The lock settings of the service.')
+@description('Optional. The lock settings of the AI resources.')
 param lock lockType?
 
 @description('Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false.')
@@ -35,6 +32,9 @@ param includeAssociatedResources bool = false
 
 @description('Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used.')
 param networking networkConfigurationType?
+
+@description('Optional. Custom configuration for the AI Foundry.')
+param aiFoundryConfiguration foundryConfigurationType?
 
 @description('Optional. Custom configuration for the Key Vault.')
 param keyVaultConfiguration resourceConfigurationType?
@@ -51,7 +51,11 @@ param cosmosDbConfiguration resourceConfigurationType?
 var enablePrivateNetworking = !empty(networking) && !empty(networking!.privateEndpointSubnetId)
 
 var resourcesName = toLower(trim(replace(
-  replace(replace(replace(replace(replace('${name}${uniqueNameText}', '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''),
+  replace(
+    replace(replace(replace(replace('${baseName}${baseUniqueName}', '-', ''), '_', ''), '.', ''), '/', ''),
+    ' ',
+    ''
+  ),
   '*',
   ''
 )))
@@ -78,8 +82,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module foundryAccount 'modules/account.bicep' = {
   name: take('${resourcesName}-foundry-account-deployment', 64)
   params: {
-    name: take('ai${resourcesName}', 64)
-    location: location
+    name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
+    location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
     includeCapabilityHost: true
     lock: lock
     privateNetworking: enablePrivateNetworking
@@ -218,8 +222,15 @@ module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   dependsOn: includeAssociatedResources ? [storageAccount, aiSearch, cosmosDb, keyvault] : []
   params: {
-    name: empty(projectName) ? 'proj-${resourcesName}' : projectName!
-    desc: 'This is the default project for AI Foundry.'
+    name: !empty(aiFoundryConfiguration.?project.?name)
+      ? aiFoundryConfiguration!.project!.name!
+      : 'proj-${resourcesName}'
+    desc: !empty(aiFoundryConfiguration.?project.?desc)
+      ? aiFoundryConfiguration!.project!.desc!
+      : 'This is the default project for AI Foundry.'
+    displayName: !empty(aiFoundryConfiguration.?project.?displayName)
+      ? aiFoundryConfiguration!.project!.displayName!
+      : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     aiSearchConnections: includeAssociatedResources ? [{ resourceId: aiSearch!.outputs.resourceId }] : []
@@ -262,7 +273,6 @@ output storageAccountName string = includeAssociatedResources ? storageAccount!.
 @description('Name of the deployed Azure Cosmos DB account.')
 output cosmosAccountName string = includeAssociatedResources ? cosmosDb!.outputs.name : ''
 
-@export()
 @description('Values to establish private networking for resources that support creating private endpoints.')
 type networkConfigurationType = {
   @description('Required. The Resource ID of the subnet to establish the Private Endpoint(s).')
@@ -286,6 +296,7 @@ type networkConfigurationType = {
 
 @description('Values for the associated resources DNS Zone resource IDs.')
 type networkResourcesDnsZonesConfigurationType = {
+  @maxLength(20)
   @description('Required. The Resource ID of the DNS zone for the Azure AI Search service.')
   aiSearchPrivateDnsZoneId: string
 
@@ -314,4 +325,28 @@ type resourceConfigurationType = {
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?
+}
+
+@description('Custom configuration for a AI Foundry, including optional account name and project configuration.')
+type foundryConfigurationType = {
+  @description('Optional. The name of the AI Foundry account.')
+  accountName: string?
+
+  @description('Optional. The location of the AI Foundry account. Will default to the resource group location if not specified.')
+  location: string?
+
+  @description('Optional. AI Foundry default project.')
+  project: foundryProjectConfigurationType?
+}
+
+@description('Custom configuration for an AI Foundry project, including optional name, friendly name, and description.')
+type foundryProjectConfigurationType = {
+  @description('Optional. The name of the AI Foundry project.')
+  name: string?
+
+  @description('Optional. The friendly/display name of the AI Foundry project.')
+  displayName: string?
+
+  @description('Optional. The description of the AI Foundry project.')
+  desc: string?
 }

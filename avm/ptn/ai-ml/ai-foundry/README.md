@@ -82,7 +82,7 @@ Creates an AI Foundry account and project with Basic services.
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
-    name: 'fndrymin001'
+    baseName: 'fndrymin001'
   }
 }
 ```
@@ -99,7 +99,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "name": {
+    "baseName": {
       "value": "fndrymin001"
     }
   }
@@ -116,7 +116,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
-param name = 'fndrymin001'
+param baseName = 'fndrymin001'
 ```
 
 </details>
@@ -136,7 +136,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
     // Required parameters
-    name: 'fndrywaf001'
+    baseName: 'fndrywaf001'
     // Non-required parameters
     aiModelDeployments: []
     cosmosDbConfiguration: {
@@ -186,7 +186,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
+    "baseName": {
       "value": "fndrywaf001"
     },
     // Non-required parameters
@@ -248,7 +248,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
 // Required parameters
-param name = 'fndrywaf001'
+param baseName = 'fndrywaf001'
 // Non-required parameters
 param aiModelDeployments = []
 param cosmosDbConfiguration = {
@@ -292,31 +292,96 @@ param storageAccountConfiguration = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | A friendly application/environment name for all resources in this deployment. |
+| [`baseName`](#parameter-basename) | string | A friendly application/environment name to serve as the "base" when using the default naming for all resources in this deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aiFoundryConfiguration`](#parameter-aifoundryconfiguration) | object | Custom configuration for the AI Foundry. |
 | [`aiModelDeployments`](#parameter-aimodeldeployments) | array | Specifies the OpenAI deployments to create. |
 | [`aiSearchConfiguration`](#parameter-aisearchconfiguration) | object | Custom configuration for the AI Search resource. |
+| [`baseUniqueName`](#parameter-baseuniquename) | string | A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name. |
 | [`cosmosDbConfiguration`](#parameter-cosmosdbconfiguration) | object | Custom configuration for the Cosmos DB Account. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`includeAssociatedResources`](#parameter-includeassociatedresources) | bool | Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false. |
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Custom configuration for the Key Vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`lock`](#parameter-lock) | object | The lock settings of the AI resources. |
 | [`networking`](#parameter-networking) | object | Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used. |
-| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
-| [`uniqueNameText`](#parameter-uniquenametext) | string | A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name. |
 
-### Parameter: `name`
+### Parameter: `baseName`
 
-A friendly application/environment name for all resources in this deployment.
+A friendly application/environment name to serve as the "base" when using the default naming for all resources in this deployment.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration`
+
+Custom configuration for the AI Foundry.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accountName`](#parameter-aifoundryconfigurationaccountname) | string | The name of the AI Foundry account. |
+| [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
+| [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
+
+### Parameter: `aiFoundryConfiguration.accountName`
+
+The name of the AI Foundry account.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.location`
+
+The location of the AI Foundry account. Will default to the resource group location if not specified.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.project`
+
+AI Foundry default project.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`desc`](#parameter-aifoundryconfigurationprojectdesc) | string | The description of the AI Foundry project. |
+| [`displayName`](#parameter-aifoundryconfigurationprojectdisplayname) | string | The friendly/display name of the AI Foundry project. |
+| [`name`](#parameter-aifoundryconfigurationprojectname) | string | The name of the AI Foundry project. |
+
+### Parameter: `aiFoundryConfiguration.project.desc`
+
+The description of the AI Foundry project.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.project.displayName`
+
+The friendly/display name of the AI Foundry project.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.project.name`
+
+The name of the AI Foundry project.
+
+- Required: No
 - Type: string
 
 ### Parameter: `aiModelDeployments`
@@ -581,6 +646,14 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `baseUniqueName`
+
+A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name.
+
+- Required: No
+- Type: string
+- Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('baseName')), 0, 5)]`
 
 ### Parameter: `cosmosDbConfiguration`
 
@@ -860,7 +933,7 @@ Location for all Resources. Defaults to the location of the resource group.
 
 ### Parameter: `lock`
 
-The lock settings of the service.
+The lock settings of the AI resources.
 
 - Required: No
 - Type: object
@@ -1004,13 +1077,6 @@ The Resource ID of the DNS zone "file" for the Azure Storage Account.
 - Required: Yes
 - Type: string
 
-### Parameter: `projectName`
-
-Name of the AI Foundry project.
-
-- Required: No
-- Type: string
-
 ### Parameter: `storageAccountConfiguration`
 
 Custom configuration for the Storage Account.
@@ -1144,14 +1210,6 @@ Specifies the resource tags for all the resources. Tag "azd-env-name" is automat
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `uniqueNameText`
-
-A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name.
-
-- Required: No
-- Type: string
-- Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('name')), 0, 5)]`
 
 ## Outputs
 

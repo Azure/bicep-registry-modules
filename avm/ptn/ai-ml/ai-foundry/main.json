@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7576224882138360749"
+      "templateHash": "18416641696662934760"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -54,7 +54,6 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true,
         "description": "Values to establish private networking for resources that support creating private endpoints."
       }
     },
@@ -63,6 +62,7 @@
       "properties": {
         "aiSearchPrivateDnsZoneId": {
           "type": "string",
+          "maxLength": 20,
           "metadata": {
             "description": "Required. The Resource ID of the DNS zone for the Azure AI Search service."
           }
@@ -126,6 +126,64 @@
       },
       "metadata": {
         "description": "Custom configuration for a resource, including optional name, existing resource ID, and role assignments."
+      }
+    },
+    "foundryConfigurationType": {
+      "type": "object",
+      "properties": {
+        "accountName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the AI Foundry account."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location of the AI Foundry account. Will default to the resource group location if not specified."
+          }
+        },
+        "project": {
+          "$ref": "#/definitions/foundryProjectConfigurationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. AI Foundry default project."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Custom configuration for a AI Foundry, including optional account name and project configuration."
+      }
+    },
+    "foundryProjectConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the AI Foundry project."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The friendly/display name of the AI Foundry project."
+          }
+        },
+        "desc": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the AI Foundry project."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Custom configuration for an AI Foundry project, including optional name, friendly name, and description."
       }
     },
     "deploymentType": {
@@ -336,27 +394,20 @@
     }
   },
   "parameters": {
-    "name": {
+    "baseName": {
       "type": "string",
       "minLength": 3,
       "maxLength": 12,
       "metadata": {
-        "description": "Required. A friendly application/environment name for all resources in this deployment."
+        "description": "Required. A friendly application/environment name to serve as the \"base\" when using the default naming for all resources in this deployment."
       }
     },
-    "uniqueNameText": {
+    "baseUniqueName": {
       "type": "string",
-      "defaultValue": "[substring(uniqueString(subscription().id, resourceGroup().name, parameters('name')), 0, 5)]",
+      "defaultValue": "[substring(uniqueString(subscription().id, resourceGroup().name, parameters('baseName')), 0, 5)]",
       "maxLength": 5,
       "metadata": {
-        "description": "Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and name."
-      }
-    },
-    "projectName": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Name of the AI Foundry project."
+        "description": "Optional. A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name."
       }
     },
     "location": {
@@ -394,7 +445,7 @@
       "$ref": "#/definitions/lockType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The lock settings of the service."
+        "description": "Optional. The lock settings of the AI resources."
       }
     },
     "includeAssociatedResources": {
@@ -409,6 +460,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used."
+      }
+    },
+    "aiFoundryConfiguration": {
+      "$ref": "#/definitions/foundryConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom configuration for the AI Foundry."
       }
     },
     "keyVaultConfiguration": {
@@ -442,7 +500,7 @@
   },
   "variables": {
     "enablePrivateNetworking": "[and(not(empty(parameters('networking'))), not(empty(parameters('networking').privateEndpointSubnetId)))]",
-    "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('name'), parameters('uniqueNameText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]"
+    "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -475,12 +533,8 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[take(format('ai{0}', variables('resourcesName')), 64)]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
+          "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
+          "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
           "includeCapabilityHost": {
             "value": true
           },
@@ -19648,10 +19702,9 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(empty(parameters('projectName')), createObject('value', format('proj-{0}', variables('resourcesName'))), createObject('value', parameters('projectName')))]",
-          "desc": {
-            "value": "This is the default project for AI Foundry."
-          },
+          "name": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), createObject('value', parameters('aiFoundryConfiguration').project.name), createObject('value', format('proj-{0}', variables('resourcesName'))))]",
+          "desc": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'desc'))), createObject('value', parameters('aiFoundryConfiguration').project.desc), createObject('value', 'This is the default project for AI Foundry.'))]",
+          "displayName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'displayName'))), createObject('value', parameters('aiFoundryConfiguration').project.displayName), createObject('value', format('{0} Default Project', parameters('baseName'))))]",
           "accountName": {
             "value": "[reference('foundryAccount').outputs.name.value]"
           },
