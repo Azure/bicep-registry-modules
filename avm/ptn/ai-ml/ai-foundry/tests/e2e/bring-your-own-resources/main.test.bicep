@@ -1,6 +1,7 @@
 targetScope = 'subscription'
-metadata name = 'Using only defaults'
-metadata description = 'Creates an AI Foundry account and project with Basic services.'
+
+metadata name = 'Bring Your Own Resources'
+metadata description = 'Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.'
 
 // ========== //
 // Parameters //
@@ -15,14 +16,30 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 var enforcedLocation = 'eastus2'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fndrymin'
+param serviceShort string = 'fndrybyor'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+var workloadName = '${namePrefix}${serviceShort}001'
+
 // ============ //
 // Dependencies //
 // ============ //
+
+resource dependenciesResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: take('${workloadName}-dependencies-rg-deployment', 64)
+  location: enforcedLocation
+}
+
+module dependencies 'dependencies.bicep' = {
+  name: take('${workloadName}-dependencies-deployment', 64)
+  scope: dependenciesResourceGroup
+  params: {
+    workloadName: workloadName
+    location: enforcedLocation
+  }
+}
 
 // General resources
 // =================
@@ -41,7 +58,20 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      baseName: '${namePrefix}${serviceShort}001'
+      baseName: workloadName
+      includeAssociatedResources: true
+      keyVaultConfiguration: {
+        existingResourceId: dependencies.outputs.keyVaultResourceId
+      }
+      storageAccountConfiguration: {
+        existingResourceId: dependencies.outputs.storageAccountResourceId
+      }
+      cosmosDbConfiguration: {
+        existingResourceId: dependencies.outputs.cosmosDbAccountResourceId
+      }
+      aiSearchConfiguration: {
+        existingResourceId: dependencies.outputs.aiSearchResourceId
+      }
       aiModelDeployments: [
         {
           name: 'gpt-4.1'

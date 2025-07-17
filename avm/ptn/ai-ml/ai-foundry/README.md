@@ -66,12 +66,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Bring Your Own Resources](#example-1-bring-your-own-resources)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Bring Your Own Resources_
 
-Creates an AI Foundry account and project with Basic services.
+Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
 
 
 <details>
@@ -82,7 +84,36 @@ Creates an AI Foundry account and project with Basic services.
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
-    baseName: 'fndrymin001'
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    aiSearchConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+    cosmosDbConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+    includeAssociatedResources: true
+    keyVaultConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+    storageAccountConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
   }
 }
 ```
@@ -99,8 +130,49 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "baseName": {
-      "value": "fndrymin001"
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "aiSearchConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    },
+    "cosmosDbConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    },
+    "includeAssociatedResources": {
+      "value": true
+    },
+    "keyVaultConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    },
+    "storageAccountConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
     }
   }
 }
@@ -116,15 +188,44 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
-param baseName = 'fndrymin001'
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param aiSearchConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+param cosmosDbConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+param includeAssociatedResources = true
+param keyVaultConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+param storageAccountConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
 ```
 
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using only defaults_
 
-Creates an AI Foundry account and project with Standard Agent Services in a network.
+Creates an AI Foundry account and project with Basic services.
 
 
 <details>
@@ -136,34 +237,183 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
     // Required parameters
-    baseName: 'fndrywaf001'
+    baseName: 'fndrymin001'
     // Non-required parameters
-    aiModelDeployments: []
-    cosmosDbConfiguration: {
-      name: 'mycosmosdbacct'
-    }
-    includeAssociatedResources: false
-    keyVaultConfiguration: {
-      existingResourceId: '<keyVaultResourceId>'
-    }
-    networking: {
-      agentServiceSubnetId: ''
-      aiServicesPrivateDnsZoneId: ''
-      associatedResourcesPrivateDnsZones: {
-        aiSearchPrivateDnsZoneId: ''
-        cosmosDbPrivateDnsZoneId: ''
-        keyVaultPrivateDnsZoneId: ''
-        storageBlobPrivateDnsZoneId: ''
-        storageFilePrivateDnsZoneId: ''
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
       }
-      cognitiveServicesPrivateDnsZoneId: ''
-      openAiPrivateDnsZoneId: ''
-      privateEndpointSubnetId: ''
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "fndrymin001"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
     }
-    storageAccountConfiguration: {
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = 'fndrymin001'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiFoundryConfiguration: {
+      accountName: '<accountName>'
+      project: {
+        desc: 'This is a custom project for testing.'
+        displayName: '<displayName>'
+        name: '<name>'
+      }
+    }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    aiSearchConfiguration: {
+      name: '<name>'
       roleAssignments: [
         {
-          principalId: '00000000-0000-0000-0000-000000000000'
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Search Index Data Contributor'
+        }
+      ]
+    }
+    cosmosDbConfiguration: {
+      name: '<name>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Cosmos DB Account Reader Role'
+        }
+      ]
+    }
+    includeAssociatedResources: true
+    keyVaultConfiguration: {
+      name: '<name>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Key Vault Secrets User'
+        }
+      ]
+    }
+    networking: {
+      agentServiceSubnetId: '<agentServiceSubnetId>'
+      aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+      associatedResourcesPrivateDnsZones: {
+        aiSearchPrivateDnsZoneId: '<aiSearchPrivateDnsZoneId>'
+        cosmosDbPrivateDnsZoneId: '<cosmosDbPrivateDnsZoneId>'
+        keyVaultPrivateDnsZoneId: '<keyVaultPrivateDnsZoneId>'
+        storageBlobPrivateDnsZoneId: '<storageBlobPrivateDnsZoneId>'
+        storageFilePrivateDnsZoneId: '<storageFilePrivateDnsZoneId>'
+      }
+      cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+      openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+      privateEndpointSubnetId: '<privateEndpointSubnetId>'
+    }
+    storageAccountConfiguration: {
+      name: '<name>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
@@ -187,46 +437,96 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "parameters": {
     // Required parameters
     "baseName": {
-      "value": "fndrywaf001"
+      "value": "<baseName>"
     },
     // Non-required parameters
+    "aiFoundryConfiguration": {
+      "value": {
+        "accountName": "<accountName>",
+        "project": {
+          "desc": "This is a custom project for testing.",
+          "displayName": "<displayName>",
+          "name": "<name>"
+        }
+      }
+    },
     "aiModelDeployments": {
-      "value": []
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "aiSearchConfiguration": {
+      "value": {
+        "name": "<name>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Search Index Data Contributor"
+          }
+        ]
+      }
     },
     "cosmosDbConfiguration": {
       "value": {
-        "name": "mycosmosdbacct"
+        "name": "<name>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Cosmos DB Account Reader Role"
+          }
+        ]
       }
     },
     "includeAssociatedResources": {
-      "value": false
+      "value": true
     },
     "keyVaultConfiguration": {
       "value": {
-        "existingResourceId": "<keyVaultResourceId>"
+        "name": "<name>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Key Vault Secrets User"
+          }
+        ]
       }
     },
     "networking": {
       "value": {
-        "agentServiceSubnetId": "",
-        "aiServicesPrivateDnsZoneId": "",
+        "agentServiceSubnetId": "<agentServiceSubnetId>",
+        "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
         "associatedResourcesPrivateDnsZones": {
-          "aiSearchPrivateDnsZoneId": "",
-          "cosmosDbPrivateDnsZoneId": "",
-          "keyVaultPrivateDnsZoneId": "",
-          "storageBlobPrivateDnsZoneId": "",
-          "storageFilePrivateDnsZoneId": ""
+          "aiSearchPrivateDnsZoneId": "<aiSearchPrivateDnsZoneId>",
+          "cosmosDbPrivateDnsZoneId": "<cosmosDbPrivateDnsZoneId>",
+          "keyVaultPrivateDnsZoneId": "<keyVaultPrivateDnsZoneId>",
+          "storageBlobPrivateDnsZoneId": "<storageBlobPrivateDnsZoneId>",
+          "storageFilePrivateDnsZoneId": "<storageFilePrivateDnsZoneId>"
         },
-        "cognitiveServicesPrivateDnsZoneId": "",
-        "openAiPrivateDnsZoneId": "",
-        "privateEndpointSubnetId": ""
+        "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
+        "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>",
+        "privateEndpointSubnetId": "<privateEndpointSubnetId>"
       }
     },
     "storageAccountConfiguration": {
       "value": {
+        "name": "<name>",
         "roleAssignments": [
           {
-            "principalId": "00000000-0000-0000-0000-000000000000",
+            "principalId": "<principalId>",
             "principalType": "ServicePrincipal",
             "roleDefinitionIdOrName": "Storage Blob Data Contributor"
           }
@@ -248,38 +548,236 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
 // Required parameters
-param baseName = 'fndrywaf001'
+param baseName = '<baseName>'
 // Non-required parameters
-param aiModelDeployments = []
-param cosmosDbConfiguration = {
-  name: 'mycosmosdbacct'
-}
-param includeAssociatedResources = false
-param keyVaultConfiguration = {
-  existingResourceId: '<keyVaultResourceId>'
-}
-param networking = {
-  agentServiceSubnetId: ''
-  aiServicesPrivateDnsZoneId: ''
-  associatedResourcesPrivateDnsZones: {
-    aiSearchPrivateDnsZoneId: ''
-    cosmosDbPrivateDnsZoneId: ''
-    keyVaultPrivateDnsZoneId: ''
-    storageBlobPrivateDnsZoneId: ''
-    storageFilePrivateDnsZoneId: ''
+param aiFoundryConfiguration = {
+  accountName: '<accountName>'
+  project: {
+    desc: 'This is a custom project for testing.'
+    displayName: '<displayName>'
+    name: '<name>'
   }
-  cognitiveServicesPrivateDnsZoneId: ''
-  openAiPrivateDnsZoneId: ''
-  privateEndpointSubnetId: ''
 }
-param storageAccountConfiguration = {
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param aiSearchConfiguration = {
+  name: '<name>'
   roleAssignments: [
     {
-      principalId: '00000000-0000-0000-0000-000000000000'
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Search Index Data Contributor'
+    }
+  ]
+}
+param cosmosDbConfiguration = {
+  name: '<name>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Cosmos DB Account Reader Role'
+    }
+  ]
+}
+param includeAssociatedResources = true
+param keyVaultConfiguration = {
+  name: '<name>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Key Vault Secrets User'
+    }
+  ]
+}
+param networking = {
+  agentServiceSubnetId: '<agentServiceSubnetId>'
+  aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+  associatedResourcesPrivateDnsZones: {
+    aiSearchPrivateDnsZoneId: '<aiSearchPrivateDnsZoneId>'
+    cosmosDbPrivateDnsZoneId: '<cosmosDbPrivateDnsZoneId>'
+    keyVaultPrivateDnsZoneId: '<keyVaultPrivateDnsZoneId>'
+    storageBlobPrivateDnsZoneId: '<storageBlobPrivateDnsZoneId>'
+    storageFilePrivateDnsZoneId: '<storageFilePrivateDnsZoneId>'
+  }
+  cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+  openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+  privateEndpointSubnetId: '<privateEndpointSubnetId>'
+}
+param storageAccountConfiguration = {
+  name: '<name>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
       principalType: 'ServicePrincipal'
       roleDefinitionIdOrName: 'Storage Blob Data Contributor'
     }
   ]
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
+
+Creates an AI Foundry account and project with Standard Agent Services with private networking.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    includeAssociatedResources: true
+    networking: {
+      agentServiceSubnetId: '<agentServiceSubnetId>'
+      aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+      associatedResourcesPrivateDnsZones: {
+        aiSearchPrivateDnsZoneId: '<aiSearchPrivateDnsZoneId>'
+        cosmosDbPrivateDnsZoneId: '<cosmosDbPrivateDnsZoneId>'
+        keyVaultPrivateDnsZoneId: '<keyVaultPrivateDnsZoneId>'
+        storageBlobPrivateDnsZoneId: '<storageBlobPrivateDnsZoneId>'
+        storageFilePrivateDnsZoneId: '<storageFilePrivateDnsZoneId>'
+      }
+      cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+      openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+      privateEndpointSubnetId: '<privateEndpointSubnetId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "includeAssociatedResources": {
+      "value": true
+    },
+    "networking": {
+      "value": {
+        "agentServiceSubnetId": "<agentServiceSubnetId>",
+        "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
+        "associatedResourcesPrivateDnsZones": {
+          "aiSearchPrivateDnsZoneId": "<aiSearchPrivateDnsZoneId>",
+          "cosmosDbPrivateDnsZoneId": "<cosmosDbPrivateDnsZoneId>",
+          "keyVaultPrivateDnsZoneId": "<keyVaultPrivateDnsZoneId>",
+          "storageBlobPrivateDnsZoneId": "<storageBlobPrivateDnsZoneId>",
+          "storageFilePrivateDnsZoneId": "<storageFilePrivateDnsZoneId>"
+        },
+        "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
+        "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>",
+        "privateEndpointSubnetId": "<privateEndpointSubnetId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param includeAssociatedResources = true
+param networking = {
+  agentServiceSubnetId: '<agentServiceSubnetId>'
+  aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+  associatedResourcesPrivateDnsZones: {
+    aiSearchPrivateDnsZoneId: '<aiSearchPrivateDnsZoneId>'
+    cosmosDbPrivateDnsZoneId: '<cosmosDbPrivateDnsZoneId>'
+    keyVaultPrivateDnsZoneId: '<keyVaultPrivateDnsZoneId>'
+    storageBlobPrivateDnsZoneId: '<storageBlobPrivateDnsZoneId>'
+    storageFilePrivateDnsZoneId: '<storageFilePrivateDnsZoneId>'
+  }
+  cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+  openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+  privateEndpointSubnetId: '<privateEndpointSubnetId>'
 }
 ```
 
