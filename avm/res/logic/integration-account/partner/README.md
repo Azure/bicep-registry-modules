@@ -32,7 +32,7 @@ This module deploys a Integration Account Partner.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`b2bPartnerContent`](#parameter-b2bpartnercontent) | array | An array of B2B partner content settings. |
+| [`b2bPartnerContent`](#parameter-b2bpartnercontent) | object | B2B partner content settings. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) | object | The partner metadata. |
 | [`partnerType`](#parameter-partnertype) | string | The partner type. |
@@ -54,26 +54,39 @@ The name of the parent integration account. Required if the template is used in 
 
 ### Parameter: `b2bPartnerContent`
 
-An array of B2B partner content settings.
+B2B partner content settings.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`businessIdentities`](#parameter-b2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
+
+### Parameter: `b2bPartnerContent.businessIdentities`
+
+The list of partner business identities.
+
+- Required: Yes
 - Type: array
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`qualifier`](#parameter-b2bpartnercontentqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-b2bpartnercontentvalue) | string | The user defined business identity value. |
+| [`qualifier`](#parameter-b2bpartnercontentbusinessidentitiesqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
+| [`value`](#parameter-b2bpartnercontentbusinessidentitiesvalue) | string | The user defined business identity value. |
 
-### Parameter: `b2bPartnerContent.qualifier`
+### Parameter: `b2bPartnerContent.businessIdentities.qualifier`
 
 The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `b2bPartnerContent.value`
+### Parameter: `b2bPartnerContent.businessIdentities.value`
 
 The user defined business identity value.
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "14335051643708043336"
+      "templateHash": "16039182003827605061"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -33,13 +33,10 @@
           }
         },
         "b2bPartnerContent": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/b2bPartnerContentType"
-          },
+          "$ref": "#/definitions/b2bPartnerContentType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. An array of B2B partner content settings."
+            "description": "Optional. The B2B partner content settings."
           }
         },
         "metadata": {
@@ -61,7 +58,7 @@
         "description": "The type for a partner."
       }
     },
-    "b2bPartnerContentType": {
+    "_1.businessIdentityType": {
       "type": "object",
       "properties": {
         "qualifier": {
@@ -78,7 +75,27 @@
         }
       },
       "metadata": {
-        "description": "The type for the B2B partner content.",
+        "description": "The type for a business identity.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "partner/main.bicep"
+        }
+      }
+    },
+    "b2bPartnerContentType": {
+      "type": "object",
+      "properties": {
+        "businessIdentities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.businessIdentityType"
+          },
+          "metadata": {
+            "description": "Required. The list of partner business identities."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a B2B partner content.",
         "__bicep_imported_from!": {
           "sourceTemplate": "partner/main.bicep"
         }
@@ -593,13 +610,31 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "255667031033953948"
+              "templateHash": "7805449195507466760"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys a Integration Account Partner."
           },
           "definitions": {
             "b2bPartnerContentType": {
+              "type": "object",
+              "properties": {
+                "businessIdentities": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/businessIdentityType"
+                  },
+                  "metadata": {
+                    "description": "Required. The list of partner business identities."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a B2B partner content."
+              }
+            },
+            "businessIdentityType": {
               "type": "object",
               "properties": {
                 "qualifier": {
@@ -616,8 +651,7 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the B2B partner content."
+                "description": "The type for a business identity."
               }
             }
           },
@@ -653,13 +687,10 @@
               }
             },
             "b2bPartnerContent": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/b2bPartnerContentType"
-              },
+              "$ref": "#/definitions/b2bPartnerContentType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. An array of B2B partner content settings."
+                "description": "Optional. B2B partner content settings."
               }
             },
             "metadata": {
@@ -696,9 +727,7 @@
                 "partnerType": "[parameters('partnerType')]",
                 "metadata": "[parameters('metadata')]",
                 "content": {
-                  "b2b": {
-                    "businessIdentities": "[parameters('b2bPartnerContent')]"
-                  }
+                  "b2b": "[parameters('b2bPartnerContent')]"
                 }
               },
               "tags": "[parameters('tags')]"

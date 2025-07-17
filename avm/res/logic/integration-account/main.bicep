@@ -265,8 +265,8 @@ type partnerType = {
   @description('Optional. The partner type.')
   partnerType: ('B2B' | 'NotSpecified')?
 
-  @description('Optional. An array of B2B partner content settings.')
-  b2bPartnerContent: b2bPartnerContentType[]?
+  @description('Optional. The B2B partner content settings.')
+  b2bPartnerContent: b2bPartnerContentType?
 
   @description('Optional. The partner metadata.')
   metadata: object?

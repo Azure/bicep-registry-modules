@@ -70,12 +70,18 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'partner1'
           partnerType: 'B2B'
-          b2bPartnerContent: [
-            {
-              qualifier: 'ZZ'
-              value: '1234567890'
-            }
-          ]
+          b2bPartnerContent: {
+            businessIdentities: [
+              {
+                qualifier: 'ZZ'
+                value: '1234567890'
+              }
+              {
+                qualifier: 'ZZZ'
+                value: '0987654321'
+              }
+            ]
+          }
           metadata: {
             key1: 'value1'
             key2: 'value2'

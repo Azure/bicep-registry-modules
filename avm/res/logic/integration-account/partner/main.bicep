@@ -17,8 +17,8 @@ param integrationAccountName string
 @description('Optional. The partner type.')
 param partnerType string = 'B2B'
 
-@description('Optional. An array of B2B partner content settings.')
-param b2bPartnerContent b2bPartnerContentType[]?
+@description('Optional. B2B partner content settings.')
+param b2bPartnerContent b2bPartnerContentType?
 
 @description('Optional. The partner metadata.')
 param metadata object?
@@ -38,9 +38,7 @@ resource partner 'Microsoft.Logic/integrationAccounts/partners@2019-05-01' = {
     partnerType: partnerType
     metadata: metadata
     content: {
-      b2b: {
-        businessIdentities: b2bPartnerContent
-      }
+      b2b: b2bPartnerContent
     }
   }
   tags: tags
@@ -51,8 +49,14 @@ resource partner 'Microsoft.Logic/integrationAccounts/partners@2019-05-01' = {
 // =============== //
 
 @export()
-@description('The type for the B2B partner content.')
+@description('The type for a B2B partner content.')
 type b2bPartnerContentType = {
+  @description('Required. The list of partner business identities.')
+  businessIdentities: businessIdentityType[]
+}
+
+@description('The type for a business identity.')
+type businessIdentityType = {
   @description('Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.')
   qualifier: string
   @description('Required. The user defined business identity value.')

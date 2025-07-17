@@ -136,12 +136,18 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     }
     partners: [
       {
-        b2bPartnerContent: [
-          {
-            qualifier: 'ZZ'
-            value: '1234567890'
-          }
-        ]
+        b2bPartnerContent: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: '1234567890'
+            }
+            {
+              qualifier: 'ZZZ'
+              value: '0987654321'
+            }
+          ]
+        }
         metadata: {
           key1: 'value1'
           key2: 'value2'
@@ -240,12 +246,18 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "partners": {
       "value": [
         {
-          "b2bPartnerContent": [
-            {
-              "qualifier": "ZZ",
-              "value": "1234567890"
-            }
-          ],
+          "b2bPartnerContent": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "1234567890"
+              },
+              {
+                "qualifier": "ZZZ",
+                "value": "0987654321"
+              }
+            ]
+          },
           "metadata": {
             "key1": "value1",
             "key2": "value2"
@@ -338,12 +350,18 @@ param lock = {
 }
 param partners = [
   {
-    b2bPartnerContent: [
-      {
-        qualifier: 'ZZ'
-        value: '1234567890'
-      }
-    ]
+    b2bPartnerContent: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: '1234567890'
+        }
+        {
+          qualifier: 'ZZZ'
+          value: '0987654321'
+        }
+      ]
+    }
     metadata: {
       key1: 'value1'
       key2: 'value2'
@@ -844,7 +862,7 @@ All partners to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | array | An array of B2B partner content settings. |
+| [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | object | The B2B partner content settings. |
 | [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
 | [`partnerType`](#parameter-partnerspartnertype) | string | The partner type. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
@@ -858,26 +876,39 @@ The Name of the partner resource.
 
 ### Parameter: `partners.b2bPartnerContent`
 
-An array of B2B partner content settings.
+The B2B partner content settings.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`businessIdentities`](#parameter-partnersb2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
+
+### Parameter: `partners.b2bPartnerContent.businessIdentities`
+
+The list of partner business identities.
+
+- Required: Yes
 - Type: array
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`qualifier`](#parameter-partnersb2bpartnercontentqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-partnersb2bpartnercontentvalue) | string | The user defined business identity value. |
+| [`qualifier`](#parameter-partnersb2bpartnercontentbusinessidentitiesqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
+| [`value`](#parameter-partnersb2bpartnercontentbusinessidentitiesvalue) | string | The user defined business identity value. |
 
-### Parameter: `partners.b2bPartnerContent.qualifier`
+### Parameter: `partners.b2bPartnerContent.businessIdentities.qualifier`
 
 The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `partners.b2bPartnerContent.value`
+### Parameter: `partners.b2bPartnerContent.businessIdentities.value`
 
 The user defined business identity value.
 
