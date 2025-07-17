@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13362291387115869720"
+      "templateHash": "4885666916581576271"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19729,7 +19729,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7040183812787821361"
+              "templateHash": "12175057917598632812"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20018,18 +20018,18 @@
                 "copy": [
                   {
                     "name": "vectorStoreConnections",
-                    "count": "[length(range(0, length(coalesce(parameters('aiSearchConnections'), createArray()))))]",
-                    "input": "[reference(format('aiSearchConns[{0}]', range(0, length(coalesce(parameters('aiSearchConnections'), createArray())))[copyIndex('vectorStoreConnections')])).outputs.name.value]"
+                    "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
+                    "input": "[reference(format('aiSearchConns[{0}]', copyIndex('vectorStoreConnections'))).outputs.name.value]"
                   },
                   {
                     "name": "storageConnections",
-                    "count": "[length(range(0, length(coalesce(parameters('storageAccountConnections'), createArray()))))]",
-                    "input": "[reference(format('storageAccountConns[{0}]', range(0, length(coalesce(parameters('storageAccountConnections'), createArray())))[copyIndex('storageConnections')])).outputs.name.value]"
+                    "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
+                    "input": "[reference(format('storageAccountConns[{0}]', copyIndex('storageConnections'))).outputs.name.value]"
                   },
                   {
                     "name": "threadStorageConnections",
-                    "count": "[length(range(0, length(coalesce(parameters('cosmosDbConnections'), createArray()))))]",
-                    "input": "[reference(format('cosmosDbConns[{0}]', range(0, length(coalesce(parameters('cosmosDbConnections'), createArray())))[copyIndex('threadStorageConnections')])).outputs.name.value]"
+                    "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
+                    "input": "[reference(format('cosmosDbConns[{0}]', copyIndex('threadStorageConnections'))).outputs.name.value]"
                   }
                 ],
                 "capabilityHostKind": "Agents"
@@ -20867,12 +20867,12 @@
                 "description": "AI Services Connections for the Project."
               },
               "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('aiServicesConnections'), createArray()))))]",
+                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]",
                 "input": {
-                  "resourceId": "[reference(format('aiServicesConns[{0}]', range(0, length(coalesce(parameters('aiServicesConnections'), createArray())))[copyIndex()])).outputs.resourceId.value]",
-                  "name": "[reference(format('aiServicesConns[{0}]', range(0, length(coalesce(parameters('aiServicesConnections'), createArray())))[copyIndex()])).outputs.name.value]",
+                  "resourceId": "[reference(format('aiServicesConns[{0}]', copyIndex())).outputs.resourceId.value]",
+                  "name": "[reference(format('aiServicesConns[{0}]', copyIndex())).outputs.name.value]",
                   "category": "AIServices",
-                  "target": "[reference(format('aiServicesConns[{0}]', range(0, length(coalesce(parameters('aiServicesConnections'), createArray())))[copyIndex()])).outputs.target.value]"
+                  "target": "[reference(format('aiServicesConns[{0}]', copyIndex())).outputs.target.value]"
                 }
               }
             },
@@ -20885,12 +20885,12 @@
                 "description": "AI Search Connections for the Project."
               },
               "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('aiSearchConnections'), createArray()))))]",
+                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
                 "input": {
-                  "resourceId": "[reference(format('aiSearchConns[{0}]', range(0, length(coalesce(parameters('aiSearchConnections'), createArray())))[copyIndex()])).outputs.resourceId.value]",
-                  "name": "[reference(format('aiSearchConns[{0}]', range(0, length(coalesce(parameters('aiSearchConnections'), createArray())))[copyIndex()])).outputs.name.value]",
+                  "resourceId": "[reference(format('aiSearchConns[{0}]', copyIndex())).outputs.resourceId.value]",
+                  "name": "[reference(format('aiSearchConns[{0}]', copyIndex())).outputs.name.value]",
                   "category": "CognitiveSearch",
-                  "target": "[reference(format('aiSearchConns[{0}]', range(0, length(coalesce(parameters('aiSearchConnections'), createArray())))[copyIndex()])).outputs.target.value]"
+                  "target": "[reference(format('aiSearchConns[{0}]', copyIndex())).outputs.target.value]"
                 }
               }
             },
@@ -20903,12 +20903,12 @@
                 "description": "Storage Account Connections for the Project."
               },
               "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('storageAccountConnections'), createArray()))))]",
+                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
                 "input": {
-                  "resourceId": "[reference(format('storageAccountConns[{0}]', range(0, length(coalesce(parameters('storageAccountConnections'), createArray())))[copyIndex()])).outputs.resourceId.value]",
-                  "name": "[reference(format('storageAccountConns[{0}]', range(0, length(coalesce(parameters('storageAccountConnections'), createArray())))[copyIndex()])).outputs.name.value]",
+                  "resourceId": "[reference(format('storageAccountConns[{0}]', copyIndex())).outputs.resourceId.value]",
+                  "name": "[reference(format('storageAccountConns[{0}]', copyIndex())).outputs.name.value]",
                   "category": "AzureBlob",
-                  "target": "[reference(format('storageAccountConns[{0}]', range(0, length(coalesce(parameters('storageAccountConnections'), createArray())))[copyIndex()])).outputs.target.value]"
+                  "target": "[reference(format('storageAccountConns[{0}]', copyIndex())).outputs.target.value]"
                 }
               }
             },
@@ -20921,12 +20921,12 @@
                 "description": "Cosmos DB Connections for the Project."
               },
               "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('cosmosDbConnections'), createArray()))))]",
+                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
                 "input": {
-                  "resourceId": "[reference(format('cosmosDbConns[{0}]', range(0, length(coalesce(parameters('cosmosDbConnections'), createArray())))[copyIndex()])).outputs.resourceId.value]",
-                  "name": "[reference(format('cosmosDbConns[{0}]', range(0, length(coalesce(parameters('cosmosDbConnections'), createArray())))[copyIndex()])).outputs.name.value]",
+                  "resourceId": "[reference(format('cosmosDbConns[{0}]', copyIndex())).outputs.resourceId.value]",
+                  "name": "[reference(format('cosmosDbConns[{0}]', copyIndex())).outputs.name.value]",
                   "category": "CosmosDB",
-                  "target": "[reference(format('cosmosDbConns[{0}]', range(0, length(coalesce(parameters('cosmosDbConnections'), createArray())))[copyIndex()])).outputs.target.value]"
+                  "target": "[reference(format('cosmosDbConns[{0}]', copyIndex())).outputs.target.value]"
                 }
               }
             }

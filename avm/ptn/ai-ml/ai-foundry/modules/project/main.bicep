@@ -108,11 +108,9 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   dependsOn: [...aiServicesConns, ...cosmosDbConns, ...aiSearchConns, ...storageAccountConns]
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: [for i in range(0, length(aiSearchConnections ?? [])): aiSearchConns[i].outputs.name]
-    storageConnections: [
-      for i in range(0, length(storageAccountConnections ?? [])): storageAccountConns[i].outputs.name
-    ]
-    threadStorageConnections: [for i in range(0, length(cosmosDbConnections ?? [])): cosmosDbConns[i].outputs.name]
+    vectorStoreConnections: [for (conn, i) in aiSearchConnections ?? []: aiSearchConns[i].outputs.name]
+    storageConnections: [for (conn, i) in storageAccountConnections ?? []: storageAccountConns[i].outputs.name]
+    threadStorageConnections: [for (conn, i) in cosmosDbConnections ?? []: cosmosDbConns[i].outputs.name]
   }
 }
 
@@ -144,7 +142,7 @@ output desc string = project.properties.description
 
 @description('AI Services Connections for the Project.')
 output aiServicesConnections connectionOutputType[] = [
-  for i in range(0, length(aiServicesConnections ?? [])): {
+  for (conn, i) in aiServicesConnections ?? []: {
     resourceId: aiServicesConns[i].outputs.resourceId
     name: aiServicesConns[i].outputs.name
     category: 'AIServices'
@@ -154,7 +152,7 @@ output aiServicesConnections connectionOutputType[] = [
 
 @description('AI Search Connections for the Project.')
 output aiSearchConnections connectionOutputType[] = [
-  for i in range(0, length(aiSearchConnections ?? [])): {
+  for (conn, i) in aiSearchConnections ?? []: {
     resourceId: aiSearchConns[i].outputs.resourceId
     name: aiSearchConns[i].outputs.name
     category: 'CognitiveSearch'
@@ -164,7 +162,7 @@ output aiSearchConnections connectionOutputType[] = [
 
 @description('Storage Account Connections for the Project.')
 output storageAccountConnections connectionOutputType[] = [
-  for i in range(0, length(storageAccountConnections ?? [])): {
+  for (conn, i) in storageAccountConnections ?? []: {
     resourceId: storageAccountConns[i].outputs.resourceId
     name: storageAccountConns[i].outputs.name
     category: 'AzureBlob'
@@ -174,7 +172,7 @@ output storageAccountConnections connectionOutputType[] = [
 
 @description('Cosmos DB Connections for the Project.')
 output cosmosDbConnections connectionOutputType[] = [
-  for i in range(0, length(cosmosDbConnections ?? [])): {
+  for (conn, i) in cosmosDbConnections ?? []: {
     resourceId: cosmosDbConns[i].outputs.resourceId
     name: cosmosDbConns[i].outputs.name
     category: 'CosmosDB'
