@@ -66,12 +66,115 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
-- [Bring Your Own Resources](#example-1-bring-your-own-resources)
-- [Using only defaults](#example-2-using-only-defaults)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Bring Your Own Resources](#example-2-bring-your-own-resources)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Bring Your Own Resources_
+### Example 1: _Using only defaults_
+
+Creates an AI Foundry account and project with Basic services.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: 'fndrymin001'
+    // Non-required parameters
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "fndrymin001"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = 'fndrymin001'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Bring Your Own Resources_
 
 Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
 
@@ -218,109 +321,6 @@ param keyVaultConfiguration = {
 param storageAccountConfiguration = {
   existingResourceId: '<existingResourceId>'
 }
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
-
-Creates an AI Foundry account and project with Basic services.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
-  params: {
-    // Required parameters
-    baseName: 'fndrymin001'
-    // Non-required parameters
-    aiModelDeployments: [
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
-        }
-        name: 'gpt-4.1'
-        sku: {
-          capacity: 1
-          name: 'GlobalStandard'
-        }
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "baseName": {
-      "value": "fndrymin001"
-    },
-    // Non-required parameters
-    "aiModelDeployments": {
-      "value": [
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
-          },
-          "name": "gpt-4.1",
-          "sku": {
-            "capacity": 1,
-            "name": "GlobalStandard"
-          }
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
-
-// Required parameters
-param baseName = 'fndrymin001'
-// Non-required parameters
-param aiModelDeployments = [
-  {
-    model: {
-      format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
-    }
-    name: 'gpt-4.1'
-    sku: {
-      capacity: 1
-      name: 'GlobalStandard'
-    }
-  }
-]
 ```
 
 </details>
