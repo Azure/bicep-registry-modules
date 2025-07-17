@@ -59,7 +59,7 @@ param sku string = 'S0'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -76,15 +76,15 @@ param customSubDomainName string?
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -100,7 +100,7 @@ param apiProperties object?
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -118,9 +118,9 @@ param restore bool = false
 param restrictOutboundNetworkAccess bool = true
 
 @description('Optional. The storage accounts for this resource.')
-param userOwnedStorage array?
+param userOwnedStorage resourceInput<'Microsoft.CognitiveServices/accounts@2025-04-01-preview'>.properties.userOwnedStorage?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -137,7 +137,7 @@ param secretsExportConfiguration secretsExportConfigurationType?
 param allowProjectManagement bool?
 
 @description('Optional. Commitment plans to deploy for the cognitive services account.')
-param commitmentPlans commitmentPlanType[] = []
+param commitmentPlans commitmentPlanType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -299,14 +299,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -319,7 +319,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
   name: name
   kind: kind
   identity: identity
@@ -349,13 +349,13 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-              ? cMKUserAssignedIdentity.properties.clientId
+              ? cMKUserAssignedIdentity!.properties.clientId
               : null
-            keyVaultUri: cMKKeyVault.properties.vaultUri
+            keyVaultUri: cMKKeyVault!.properties.vaultUri
             keyName: customerManagedKey!.keyName
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.?keyVersion
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           }
         }
       : null
@@ -368,7 +368,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
 }
 
 @batchSize(1)
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-04-01-preview' = [
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-06-01' = [
   for (deployment, index) in (deployments ?? []): {
     parent: cognitiveService
     name: deployment.?name ?? '${name}-deployments'
@@ -391,14 +391,14 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: cognitiveService
 }
 
-resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-04-01-preview' = [
+resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/commitmentPlans@2025-06-01' = [
   for plan in (commitmentPlans ?? []): {
     parent: cognitiveService
     name: '${plan.hostingModel}-${plan.planType}'
@@ -557,10 +557,10 @@ output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?princip
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 @description('The private endpoints of the congitive services account.')
