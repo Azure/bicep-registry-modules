@@ -1,3 +1,6 @@
+metadata name = 'AI Foundry Project'
+metadata description = 'Creates an AI Foundry project and any associated Azure service connections.'
+
 @minLength(2)
 @maxLength(64)
 @description('Required. The name of the AI Foundry project.')
@@ -10,7 +13,7 @@ param displayName string?
 param desc string?
 
 @description('Required. Specifies the location for all the Azure resources.')
-param location string
+param location string = resourceGroup().location
 
 @description('Required. Name of the existing parent Foundry Account resource.')
 param accountName string
@@ -105,15 +108,11 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   dependsOn: [...aiServicesConns, ...cosmosDbConns, ...aiSearchConns, ...storageAccountConns]
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: [
-      for i in range(0, max(length(aiSearchConnections ?? []), 1) - 1): aiSearchConns[i].outputs.name
-    ]
+    vectorStoreConnections: [for i in range(0, length(aiSearchConnections ?? [])): aiSearchConns[i].outputs.name]
     storageConnections: [
-      for i in range(0, max(length(storageAccountConnections ?? []), 1) - 1): storageAccountConns[i].outputs.name
+      for i in range(0, length(storageAccountConnections ?? [])): storageAccountConns[i].outputs.name
     ]
-    threadStorageConnections: [
-      for i in range(0, max(length(cosmosDbConnections ?? []), 1) - 1): cosmosDbConns[i].outputs.name
-    ]
+    threadStorageConnections: [for i in range(0, length(cosmosDbConnections ?? [])): cosmosDbConns[i].outputs.name]
   }
 }
 
@@ -127,6 +126,9 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   }
   scope: project
 }
+
+@description('Name of the deployed Azure Resource Group.')
+output resourceGroupName string = resourceGroup().name
 
 @description('Resource ID of the Project.')
 output resourceId string = project.id
@@ -142,7 +144,7 @@ output desc string = project.properties.description
 
 @description('AI Services Connections for the Project.')
 output aiServicesConnections connectionOutputType[] = [
-  for i in range(0, max(length(aiServicesConnections ?? []), 1) - 1): {
+  for i in range(0, length(aiServicesConnections ?? [])): {
     resourceId: aiServicesConns[i].outputs.resourceId
     name: aiServicesConns[i].outputs.name
     category: 'AIServices'
@@ -152,7 +154,7 @@ output aiServicesConnections connectionOutputType[] = [
 
 @description('AI Search Connections for the Project.')
 output aiSearchConnections connectionOutputType[] = [
-  for i in range(0, max(length(aiSearchConnections ?? []), 1) - 1): {
+  for i in range(0, length(aiSearchConnections ?? [])): {
     resourceId: aiSearchConns[i].outputs.resourceId
     name: aiSearchConns[i].outputs.name
     category: 'CognitiveSearch'
@@ -162,7 +164,7 @@ output aiSearchConnections connectionOutputType[] = [
 
 @description('Storage Account Connections for the Project.')
 output storageAccountConnections connectionOutputType[] = [
-  for i in range(0, max(length(storageAccountConnections ?? []), 1) - 1): {
+  for i in range(0, length(storageAccountConnections ?? [])): {
     resourceId: storageAccountConns[i].outputs.resourceId
     name: storageAccountConns[i].outputs.name
     category: 'AzureBlob'
@@ -172,7 +174,7 @@ output storageAccountConnections connectionOutputType[] = [
 
 @description('Cosmos DB Connections for the Project.')
 output cosmosDbConnections connectionOutputType[] = [
-  for i in range(0, max(length(cosmosDbConnections ?? []), 1) - 1): {
+  for i in range(0, length(cosmosDbConnections ?? [])): {
     resourceId: cosmosDbConns[i].outputs.resourceId
     name: cosmosDbConns[i].outputs.name
     category: 'CosmosDB'

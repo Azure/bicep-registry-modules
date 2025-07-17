@@ -1,5 +1,6 @@
-#  `[AiMl/AiFoundryModulesProject]`
+# AI Foundry Project `[AiMl/AiFoundryModulesProject]`
 
+Creates an AI Foundry project and any associated Azure service connections.
 
 ## Navigation
 
@@ -51,8 +52,9 @@ Name of the existing parent Foundry Account resource.
 
 Specifies the location for all the Azure resources.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
@@ -269,6 +271,7 @@ Tags to be applied to the resources.
 | `desc` | string | Description of the Project. |
 | `displayName` | string | Display name of the Project. |
 | `name` | string | Name of the Project. |
+| `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
 | `resourceId` | string | Resource ID of the Project. |
 | `storageAccountConnections` | array | Storage Account Connections for the Project. |
 
