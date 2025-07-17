@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4885666916581576271"
+      "templateHash": "16157544462718423934"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19729,7 +19729,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12175057917598632812"
+              "templateHash": "16206545770885539382"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20071,7 +20071,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].name]"
+                    "value": "[tryGet(coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()], 'name')]"
                   },
                   "projectName": {
                     "value": "[parameters('name')]"
@@ -20260,7 +20260,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].name]"
+                    "value": "[tryGet(coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()], 'name')]"
                   },
                   "projectName": {
                     "value": "[parameters('name')]"
@@ -20448,7 +20448,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].name]"
+                    "value": "[tryGet(coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()], 'name')]"
                   },
                   "projectName": {
                     "value": "[parameters('name')]"
@@ -20637,7 +20637,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name]"
+                    "value": "[tryGet(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()], 'name')]"
                   },
                   "projectName": {
                     "value": "[parameters('name')]"

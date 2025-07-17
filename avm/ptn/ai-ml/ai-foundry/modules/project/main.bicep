@@ -59,7 +59,7 @@ module aiServicesConns 'connections/aiService.bicep' = [
   for connection in aiServicesConnections ?? []: {
     name: take('${name}-aiservices-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
     params: {
-      name: connection.name
+      name: connection.?name
       projectName: project.name
       resourceIdOrName: connection.resourceId
     }
@@ -70,7 +70,7 @@ module cosmosDbConns 'connections/cosmosDb.bicep' = [
   for connection in cosmosDbConnections ?? []: {
     name: take('${name}-cosmos-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
     params: {
-      name: connection.name
+      name: connection.?name
       projectName: project.name
       resourceIdOrName: connection.resourceId
     }
@@ -81,7 +81,7 @@ module aiSearchConns 'connections/aiSearch.bicep' = [
   for connection in aiSearchConnections ?? []: {
     name: take('${name}-search-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
     params: {
-      name: connection.name
+      name: connection.?name
       projectName: project.name
       resourceIdOrName: connection.resourceId
     }
@@ -92,7 +92,7 @@ module storageAccountConns 'connections/storageAccount.bicep' = [
   for connection in storageAccountConnections ?? []: {
     name: take('${name}-storage-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
     params: {
-      name: connection.name
+      name: connection.?name
       projectName: project.name
       resourceIdOrName: connection.resourceId
       containerName: connection.containerName
