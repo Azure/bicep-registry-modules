@@ -15,7 +15,7 @@ This module deploys an Elastic SAN Volume Group.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ElasticSan/elasticSans/volumegroups` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups) |
+| `Microsoft.ElasticSan/elasticSans/volumegroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2024-05-01/elasticSans/volumegroups) |
 | `Microsoft.ElasticSan/elasticSans/volumegroups/snapshots` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/snapshots) |
 | `Microsoft.ElasticSan/elasticSans/volumegroups/volumes` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/volumes) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -40,6 +40,7 @@ This module deploys an Elastic SAN Volume Group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both 'managedIdentities.userAssignedResourceIds' and 'customerManagedKey.userAssignedIdentityResourceId'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the 'Key Vault Crypto Service Encryption User' role access to both the key vault and the key itself. The key vault must also have purge protection enabled. |
+| [`enforceDataIntegrityCheckForIscsi`](#parameter-enforcedataintegritycheckforiscsi) | bool | A boolean indicating whether or not Data Integrity Check is enabled. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported. |
@@ -110,6 +111,14 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+
+### Parameter: `enforceDataIntegrityCheckForIscsi`
+
+A boolean indicating whether or not Data Integrity Check is enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `location`
 
@@ -670,6 +679,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `enforceDataIntegrityCheckForIscsi` | bool | A boolean indicating whether or not Data Integrity Check is enabled or not. |
 | `location` | string | The location of the deployed Elastic SAN Volume Group. |
 | `name` | string | The name of the deployed Elastic SAN Volume Group. |
 | `privateEndpoints` | array | The private endpoints of the Elastic SAN Volume Group. |
