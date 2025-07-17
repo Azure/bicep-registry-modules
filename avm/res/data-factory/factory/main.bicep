@@ -64,7 +64,7 @@ param gitTenantId string = ''
 param globalParameters object = {}
 
 @description('Optional. Purview Account resource identifier.')
-param purviewResourceId string = ''
+param purviewResourceId string?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')

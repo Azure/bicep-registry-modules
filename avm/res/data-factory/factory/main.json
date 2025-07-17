@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11733040685212957492"
+      "templateHash": "857270742122578887"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -903,7 +903,7 @@
     },
     "purviewResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Purview Account resource identifier."
       }

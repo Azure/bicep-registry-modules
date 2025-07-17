@@ -1933,7 +1933,6 @@ Purview Account resource identifier.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
