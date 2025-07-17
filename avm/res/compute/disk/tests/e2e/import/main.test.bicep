@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}-${serviceShort}001'
       location: resourceLocation
       sku: 'Standard_LRS'
-      availabilityZone: 0
+      availabilityZone: -1
       createOption: 'Import'
       sourceUri: nestedDependencies.outputs.vhdUri
       storageAccountId: nestedDependencies.outputs.storageAccountResourceId

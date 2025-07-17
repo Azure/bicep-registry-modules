@@ -806,6 +806,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         }
       }
     ]
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -896,11 +901,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       Role: 'DeploymentValidation'
     }
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -974,6 +974,13 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
             ]
           }
         }
+      ]
+    },
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
       ]
     },
     "diagnosticSettings": {
@@ -1081,13 +1088,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -1157,6 +1157,11 @@ param applicationRuleCollections = [
       ]
     }
   }
+]
+param availabilityZones = [
+  1
+  2
+  3
 ]
 param diagnosticSettings = [
   {
@@ -1248,11 +1253,6 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
-param zones = [
-  '1'
-  '2'
-  '3'
-]
 ```
 
 </details>
@@ -1274,6 +1274,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafpip001'
     // Non-required parameters
+    availabilityZones: []
     azureSkuTier: 'Basic'
     location: '<location>'
     managementIPAddressObject: {
@@ -1291,7 +1292,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       skuTier: 'Regional'
     }
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    zones: []
   }
 }
 ```
@@ -1313,6 +1313,9 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafpip001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": []
+    },
     "azureSkuTier": {
       "value": "Basic"
     },
@@ -1339,9 +1342,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
-    },
-    "zones": {
-      "value": []
     }
   }
 }
@@ -1360,6 +1360,7 @@ using 'br/public:avm/res/network/azure-firewall:<version>'
 // Required parameters
 param name = 'nafpip001'
 // Non-required parameters
+param availabilityZones = []
 param azureSkuTier = 'Basic'
 param location = '<location>'
 param managementIPAddressObject = {
@@ -1377,7 +1378,6 @@ param publicIPAddressObject = {
   skuTier: 'Regional'
 }
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
-param zones = []
 ```
 
 </details>
@@ -1561,6 +1561,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         }
       }
     ]
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1612,11 +1617,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       Role: 'DeploymentValidation'
     }
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -1692,6 +1692,13 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         }
       ]
     },
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1754,13 +1761,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -1831,6 +1831,11 @@ param applicationRuleCollections = [
     }
   }
 ]
+param availabilityZones = [
+  1
+  2
+  3
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1882,11 +1887,6 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
-param zones = [
-  '1'
-  '2'
-  '3'
-]
 ```
 
 </details>
@@ -1916,6 +1916,7 @@ param zones = [
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
 | [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
 | [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableForcedTunneling`](#parameter-enableforcedtunneling) | bool | Enable/Disable forced tunneling. |
@@ -1932,7 +1933,6 @@ param zones = [
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the Azure Firewall resource. |
 | [`threatIntelMode`](#parameter-threatintelmode) | string | The operation mode for Threat Intel. |
-| [`zones`](#parameter-zones) | array | Zone numbers e.g. 1,2,3. |
 
 ### Parameter: `name`
 
@@ -2207,6 +2207,29 @@ The minimum number of capacity units for this azure firewall. Use null to reset 
 
 - Required: No
 - Type: int
+
+### Parameter: `availabilityZones`
+
+The list of Availability zones to use for the zone-redundant resources.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `azureSkuTier`
 
@@ -2946,21 +2969,6 @@ The operation mode for Threat Intel.
     'Alert'
     'Deny'
     'Off'
-  ]
-  ```
-
-### Parameter: `zones`
-
-Zone numbers e.g. 1,2,3.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
   ]
   ```
 
