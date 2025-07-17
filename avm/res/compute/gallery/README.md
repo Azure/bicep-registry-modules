@@ -1307,7 +1307,8 @@ Images to create.
 | [`privacyStatementUri`](#parameter-imagesprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-imagespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-imagesreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
-| [`securityType`](#parameter-imagessecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
+| [`securityType`](#parameter-imagessecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required. |
+| [`tags`](#parameter-imagestags) | object | Tags for all the image. |
 | [`vCPUs`](#parameter-imagesvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
 
 ### Parameter: `images.identifier`
@@ -1554,7 +1555,7 @@ The release note uri. Has to be a valid URL.
 
 ### Parameter: `images.securityType`
 
-The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.
+The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required.
 
 - Required: No
 - Type: string
@@ -1569,6 +1570,13 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'TrustedLaunchSupported'
   ]
   ```
+
+### Parameter: `images.tags`
+
+Tags for all the image.
+
+- Required: No
+- Type: object
 
 ### Parameter: `images.vCPUs`
 

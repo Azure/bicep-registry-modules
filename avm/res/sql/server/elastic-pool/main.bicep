@@ -8,7 +8,7 @@ param name string
 param serverName string
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Sql/servers/elasticPools@2023-08-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location

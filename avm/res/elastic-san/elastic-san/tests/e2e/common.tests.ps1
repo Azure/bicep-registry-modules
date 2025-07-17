@@ -247,7 +247,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints, $Tags, $Lock) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $ExpectedLocation, $Location, $SystemAssignedMI, $UserAssignedMI, $TenantId, $UserAssignedMIResourceId, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRule, $CMK, $CMKUMIResourceId, $CMKKeyVaultKeyUrl, $CMKKeyVaultEncryptionKeyName, $CMKKeyVaultUrl, $CMKKeyVaultEncryptionKeyVersion, $GroupIds, $PrivateEndpointCounts, $PrivateEndpoints, $Tags, $Lock, $enforceDataIntegrityCheckForIscsi) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -265,7 +265,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     }
 
-    $vg.EnforceDataIntegrityCheckForIscsi | Should -BeNullOrEmpty
+    $vg.EnforceDataIntegrityCheckForIscsi | Should -Be $enforceDataIntegrityCheckForIscsi # Default value, can be changed in the test
     $vg.Id | Should -Be $ResourceId
 
     if ( $SystemAssignedMI -and $UserAssignedMI ) {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "15486962612296595461"
+      "version": "0.36.177.2456",
+      "templateHash": "6240862923935605681"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -97,6 +97,12 @@
           "type": "string",
           "metadata": {
             "description": "The resource group of the deployed Elastic SAN Volume Group."
+          }
+        },
+        "enforceDataIntegrityCheckForIscsi": {
+          "type": "bool",
+          "metadata": {
+            "description": "The configuration indicating whether the Data Integrity Check is enabled or not."
           }
         },
         "systemAssignedMIPrincipalId": {
@@ -849,14 +855,14 @@
     },
     "availabilityZone": {
       "type": "int",
-      "nullable": true,
       "allowedValues": [
+        -1,
         1,
         2,
         3
       ],
       "metadata": {
-        "description": "Conditional. Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
+        "description": "Conditional. Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "baseSizeTiB": {
@@ -938,8 +944,8 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "calculatedSku": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), null())), 'Premium_LRS', 'Premium_ZRS'), 'Premium_ZRS')]",
-    "calculatedZone": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), null())), createArray(format('{0}', parameters('availabilityZone'))), null()), null())]",
+    "calculatedSku": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), -1)), 'Premium_LRS', 'Premium_ZRS'), 'Premium_ZRS')]",
+    "calculatedZone": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null()), null())]",
     "totalVirtualNetworkRules": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'virtualNetworkRules'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "totalPrivateEndpoints": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'privateEndpoints'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "calculatedPublicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(greater(variables('totalVirtualNetworkRules'), 0), 'Enabled', if(greater(variables('totalPrivateEndpoints'), 0), 'Disabled', null())))]",
@@ -1070,6 +1076,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "enforceDataIntegrityCheckForIscsi": {
+            "value": "[tryGet(coalesce(parameters('volumeGroups'), createArray())[copyIndex()], 'enforceDataIntegrityCheckForIscsi')]"
+          },
           "volumes": {
             "value": "[tryGet(coalesce(parameters('volumeGroups'), createArray())[copyIndex()], 'volumes')]"
           },
@@ -1099,8 +1108,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8975197813336500895"
+              "version": "0.36.177.2456",
+              "templateHash": "10442907123062881922"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1782,6 +1791,13 @@
                 "description": "Optional. Location for all resources."
               }
             },
+            "enforceDataIntegrityCheckForIscsi": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. A boolean indicating whether or not Data Integrity Check is enabled."
+              }
+            },
             "volumes": {
               "type": "array",
               "items": {
@@ -1861,7 +1877,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1869,14 +1885,14 @@
             "elasticSan": {
               "existing": true,
               "type": "Microsoft.ElasticSan/elasticSans",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('elasticSanName')]"
             },
             "cMKKeyVault": {
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1885,25 +1901,26 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
               "existing": true,
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2023-01-31",
+              "apiVersion": "2024-11-30",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
             },
             "volumeGroup": {
               "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('name'))]",
               "identity": "[variables('identity')]",
               "properties": {
+                "enforceDataIntegrityCheckForIscsi": "[parameters('enforceDataIntegrityCheckForIscsi')]",
                 "encryption": "[if(not(empty(parameters('customerManagedKey'))), 'EncryptionAtRestWithCustomerManagedKey', 'EncryptionAtRestWithPlatformKey')]",
                 "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())]",
                 "networkAcls": "[if(not(empty(variables('networkRules'))), createObject('virtualNetworkRules', variables('networkRules')), null())]",
                 "protocolType": "Iscsi"
               },
               "dependsOn": [
-                "cMKKeyVault::cMKKey",
-                "cMKKeyVault"
+                "cMKKeyVault",
+                "cMKKeyVault::cMKKey"
               ]
             },
             "volumeGroup_volumes": {
@@ -1946,8 +1963,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11635704021988875359"
+                      "version": "0.36.177.2456",
+                      "templateHash": "5527919762019385119"
                     },
                     "name": "Elastic SAN Volumes",
                     "description": "This module deploys an Elastic SAN Volume."
@@ -2111,8 +2128,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6701978252436416407"
+                              "version": "0.36.177.2456",
+                              "templateHash": "5762557473950803851"
                             },
                             "name": "Elastic SAN Volume Snapshots",
                             "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -3083,7 +3100,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group."
               },
-              "value": "[tryGet(tryGet(reference('volumeGroup', '2023-01-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('volumeGroup', '2024-05-01', 'full'), 'identity'), 'principalId')]"
+            },
+            "enforceDataIntegrityCheckForIscsi": {
+              "type": "bool",
+              "metadata": {
+                "description": "A boolean indicating whether or not Data Integrity Check is enabled or not."
+              },
+              "value": "[reference('volumeGroup').enforceDataIntegrityCheckForIscsi]"
             },
             "volumes": {
               "type": "array",
@@ -3178,6 +3202,7 @@
           "resourceId": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.resourceId.value]",
           "name": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.name.value]",
           "location": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.location.value]",
+          "enforceDataIntegrityCheckForIscsi": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.enforceDataIntegrityCheckForIscsi.value]",
           "resourceGroupName": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.resourceGroupName.value]",
           "systemAssignedMIPrincipalId": "[tryGet(tryGet(reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs, 'systemAssignedMIPrincipalId'), 'value')]",
           "volumes": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.volumes.value]",
