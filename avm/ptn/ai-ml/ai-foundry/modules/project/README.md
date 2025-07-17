@@ -25,7 +25,6 @@ Creates an AI Foundry project and any associated Azure service connections.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-accountname) | string | Name of the existing parent Foundry Account resource. |
-| [`location`](#parameter-location) | string | Specifies the location for all the Azure resources. |
 | [`name`](#parameter-name) | string | The name of the AI Foundry project. |
 
 **Optional parameters**
@@ -37,6 +36,7 @@ Creates an AI Foundry project and any associated Azure service connections.
 | [`cosmosDbConnections`](#parameter-cosmosdbconnections) | array | List of Azure Cosmos DB connections for the project. |
 | [`desc`](#parameter-desc) | string | The description of the AI Foundry project. |
 | [`displayName`](#parameter-displayname) | string | The display name of the AI Foundry project. |
+| [`location`](#parameter-location) | string | Specifies the location for all the Azure resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`storageAccountConnections`](#parameter-storageaccountconnections) | array | List of Azure Storage Account connections for the project. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
@@ -47,14 +47,6 @@ Name of the existing parent Foundry Account resource.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `location`
-
-Specifies the location for all the Azure resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
@@ -175,6 +167,14 @@ The display name of the AI Foundry project.
 
 - Required: No
 - Type: string
+
+### Parameter: `location`
+
+Specifies the location for all the Azure resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
 

@@ -12,7 +12,7 @@ param displayName string?
 @description('Optional. The description of the AI Foundry project.')
 param desc string?
 
-@description('Required. Specifies the location for all the Azure resources.')
+@description('Optional. Specifies the location for all the Azure resources.')
 param location string = resourceGroup().location
 
 @description('Required. Name of the existing parent Foundry Account resource.')
