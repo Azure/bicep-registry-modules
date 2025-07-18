@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4089843043248436881"
+      "templateHash": "5112975888472543713"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2094,12 +2094,12 @@
       }
     },
     "extensionHostPoolRegistration": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "enabled": false
       },
       "metadata": {
-        "description": "Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identy."
+        "description": "Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identity."
       }
     },
     "extensionGuestConfigurationExtension": {
@@ -2108,7 +2108,7 @@
         "enabled": false
       },
       "metadata": {
-        "description": "Optional. The configuration for the [Guest Configuration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identy."
+        "description": "Optional. The configuration for the [Guest Configuration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identity."
       }
     },
     "guestConfiguration": {
@@ -2300,6 +2300,36 @@
       "metadata": {
         "description": "Optional. The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile."
       }
+    },
+    "capacityReservationGroupResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved."
+      }
+    },
+    "networkAccessPolicy": {
+      "type": "string",
+      "defaultValue": "DenyAll",
+      "allowedValues": [
+        "AllowAll",
+        "AllowPrivate",
+        "DenyAll"
+      ],
+      "metadata": {
+        "description": "Optional. Policy for accessing the disk via network."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Policy for controlling export on the disk."
+      }
     }
   },
   "variables": {
@@ -2415,7 +2445,9 @@
           "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createoption'), 'Empty')]"
         },
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
-        "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
+        "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "networkAccessPolicy": "[parameters('networkAccessPolicy')]"
       },
       "zones": "[if(and(not(equals(parameters('availabilityZone'), -1)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('availabilityZone'))), null())]",
       "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
@@ -2501,6 +2533,7 @@
             }
           ]
         },
+        "capacityReservation": "[if(not(empty(parameters('capacityReservationGroupResourceId'))), createObject('capacityReservationGroup', createObject('id', parameters('capacityReservationGroupResourceId'))), null())]",
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), true(), parameters('bootDiagnostics'))]",
