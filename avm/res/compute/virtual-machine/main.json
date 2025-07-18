@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16768625880883277083"
+      "templateHash": "5112975888472543713"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2301,7 +2301,7 @@
         "description": "Optional. The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile."
       }
     },
-    "capacityReservationGroupId": {
+    "capacityReservationGroupResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -2533,7 +2533,7 @@
             }
           ]
         },
-        "capacityReservation": "[if(not(empty(parameters('capacityReservationGroupId'))), createObject('capacityReservationGroup', createObject('id', parameters('capacityReservationGroupId'))), null())]",
+        "capacityReservation": "[if(not(empty(parameters('capacityReservationGroupResourceId'))), createObject('capacityReservationGroup', createObject('id', parameters('capacityReservationGroupResourceId'))), null())]",
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), true(), parameters('bootDiagnostics'))]",

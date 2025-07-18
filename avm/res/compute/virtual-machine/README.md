@@ -5082,7 +5082,7 @@ param location = '<location>'
 | [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Custom storage account used to store boot diagnostic information. Boot diagnostics will be enabled with a custom storage account if a value is provided. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
 | [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
-| [`capacityReservationGroupId`](#parameter-capacityreservationgroupid) | string | Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved. |
+| [`capacityReservationGroupResourceId`](#parameter-capacityreservationgroupresourceid) | string | Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved. |
 | [`certificatesToBeInstalled`](#parameter-certificatestobeinstalled) | array | Specifies set of certificates that should be installed onto the virtual machine. |
 | [`computerName`](#parameter-computername) | string | Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name. |
 | [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile. |
@@ -7162,7 +7162,7 @@ Enables customer to schedule patching without accidental upgrades.
 - Type: bool
 - Default: `True`
 
-### Parameter: `capacityReservationGroupId`
+### Parameter: `capacityReservationGroupResourceId`
 
 Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.
 
