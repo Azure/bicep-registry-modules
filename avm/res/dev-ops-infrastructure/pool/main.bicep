@@ -128,16 +128,21 @@ var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
             '00:00:00': agentProfile.resourcePredictions.daysData.allWeekScheme.provisioningCount
           }
         ]
-      : map(
-          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-          day =>
-            contains(agentProfile.resourcePredictions.daysData, day)
-              ? {
-                  '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
-                  '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
-                }
-              : {}
-        )
+      : contains(agentProfile.resourcePredictions.daysData, 'weekDaysScheme')
+          ? map(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], day => {
+              '${agentProfile.resourcePredictions.daysData.weekDaysScheme.startTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.startAgentCount
+              '${agentProfile.resourcePredictions.daysData.weekDaysScheme.endTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.endAgentCount
+            })
+          : map(
+              ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+              day =>
+                contains(agentProfile.resourcePredictions.daysData, day)
+                  ? {
+                      '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
+                      '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
+                    }
+                  : {}
+            )
   : null
 
 // ============== //
@@ -475,4 +480,7 @@ type daysDataType = {
     @description('Required. The agent count to provision throughout the week.')
     provisioningCount: int
   }?
+
+  @description('Optional. A schema to apply to weekdays (Monday to Friday).')
+  weekDaysScheme: standbyAgentsConfigType?
 }
