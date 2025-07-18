@@ -99,7 +99,8 @@ param tenantSettings object = {}
 param zoneRedundant bool = true
 
 @description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
-param zones int[] = [1, 2, 3]
+@allowed([1, 2, 3])
+param availabilityZones int[] = [1, 2, 3]
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -129,8 +130,10 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 var enableReferencedModulesTelemetry = false
 
-var availabilityZones = skuName == 'Premium'
-  ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
+var zones = skuName == 'Premium'
+  ? zoneRedundant
+      ? !empty(availabilityZones) ? availabilityZones : pickZones('Microsoft.Cache', 'redis', location, 3)
+      : []
   : []
 
 var formattedUserAssignedIdentities = reduce(
@@ -222,7 +225,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     subnetId: !empty(subnetResourceId) ? subnetResourceId : null
     tenantSettings: tenantSettings
   }
-  zones: availabilityZones
+  zones: zones
 }
 
 // Deploy access policies

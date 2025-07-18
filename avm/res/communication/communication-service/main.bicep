@@ -189,3 +189,6 @@ output location string = communicationService.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = communicationService.?identity.?principalId
+
+@description('The endpoint (hostname) of the communication service.')
+output endpoint string = communicationService.properties.hostName

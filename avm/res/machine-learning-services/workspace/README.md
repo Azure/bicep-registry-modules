@@ -1619,7 +1619,6 @@ Connections to create in the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2524,7 +2523,6 @@ Datastores to create in the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "8054022893657473307"
+      "version": "0.36.177.2456",
+      "templateHash": "2830755729519775074"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -1897,7 +1897,7 @@
       "items": {
         "$ref": "#/definitions/connectionType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Connections to create in the workspace."
       }
@@ -1907,7 +1907,7 @@
       "items": {
         "$ref": "#/definitions/datastoreType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Datastores to create in the workspace."
       }
@@ -2289,8 +2289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "8367876684793659506"
+              "version": "0.36.177.2456",
+              "templateHash": "4274081592342795983"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2486,7 +2486,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('compute', '2024-10-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(if(equals(parameters('deployCompute'), true()), reference('compute', '2024-10-01', 'full'), null()), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -2506,11 +2506,11 @@
     "workspace_connections": {
       "copy": {
         "name": "workspace_connections",
-        "count": "[length(parameters('connections'))]"
+        "count": "[length(coalesce(parameters('connections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-connection', parameters('name'), parameters('connections')[copyIndex()].name)]",
+      "name": "[format('{0}-{1}-connection', parameters('name'), coalesce(parameters('connections'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2521,31 +2521,31 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('connections')[copyIndex()].name]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].name]"
           },
           "category": {
-            "value": "[parameters('connections')[copyIndex()].category]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].category]"
           },
           "expiryTime": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'expiryTime')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'expiryTime')]"
           },
           "isSharedToAll": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'isSharedToAll')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'isSharedToAll')]"
           },
           "metadata": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'metadata')]"
           },
           "sharedUserList": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'sharedUserList')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'sharedUserList')]"
           },
           "target": {
-            "value": "[parameters('connections')[copyIndex()].target]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].target]"
           },
           "value": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'value')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'value')]"
           },
           "connectionProperties": {
-            "value": "[parameters('connections')[copyIndex()].connectionProperties]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].connectionProperties]"
           }
         },
         "template": {
@@ -2555,8 +2555,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "8692375174405115433"
+              "version": "0.36.177.2456",
+              "templateHash": "11050242102011513557"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3349,11 +3349,11 @@
     "workspace_datastores": {
       "copy": {
         "name": "workspace_datastores",
-        "count": "[length(parameters('datastores'))]"
+        "count": "[length(coalesce(parameters('datastores'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-datastore', parameters('name'), parameters('datastores')[copyIndex()].name)]",
+      "name": "[format('{0}-{1}-datastore', parameters('name'), coalesce(parameters('datastores'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3364,10 +3364,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('datastores')[copyIndex()].name]"
+            "value": "[coalesce(parameters('datastores'), createArray())[copyIndex()].name]"
           },
           "properties": {
-            "value": "[parameters('datastores')[copyIndex()].properties]"
+            "value": "[coalesce(parameters('datastores'), createArray())[copyIndex()].properties]"
           }
         },
         "template": {
@@ -3376,8 +3376,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "14383983573401363041"
+              "version": "0.36.177.2456",
+              "templateHash": "10767049507832713221"
             },
             "name": "Machine Learning Services Workspaces Datastores",
             "description": "This module creates a datastore in a Machine Learning Services workspace."

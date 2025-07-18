@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "11118459859179868367"
+      "version": "0.36.177.2456",
+      "templateHash": "16328824611121617710"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address."
@@ -358,7 +358,7 @@
         "description": "Optional. The public IP address allocation method."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
       "items": {
         "type": "int"
@@ -542,7 +542,7 @@
         "name": "[parameters('skuName')]",
         "tier": "[parameters('skuTier')]"
       },
-      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
+      "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "ddosSettings": "[parameters('ddosSettings')]",
         "dnsSettings": "[parameters('dnsSettings')]",
