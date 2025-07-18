@@ -35,7 +35,17 @@ function Get-ModuleVersionChange {
     )
 
     # The diff will be empty, if the version.json file was not updated
-    $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
+    # Note: Fetches the actual content of the change
+    $currentBranch = git branch --show-current
+    $inUpstream = (git remote get-url upstream 2>&1) -match '.*no such remote.*' # If in upstream the value would be "error: No such remote 'upstream'"
+
+    if ($inUpstream -and $currentBranch -eq 'main') {
+        Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
+        $diff = git diff --diff-filter=AM 'origin/main^' $VersionFilePath | Out-String
+    } else {
+        Write-Verbose 'Currently in a fork or a branch in upstream main. Fetching changes against upstream main' -Verbose
+        $diff = git diff --diff-filter=AM 'origin/main' $VersionFilePath | Out-String
+    }
 
     if ($diff -match '\-\s*"version":\s*"([0-9]{1})\.([0-9]{1})".*') {
         $oldVersion = (New-Object System.Version($matches[1], $matches[2]))
