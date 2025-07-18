@@ -15,11 +15,9 @@ This module deploys an Azure Stack HCI virtual machine.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/virtualMachineInstances` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-04-01-preview/virtualMachineInstances) |
-| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
-| `Microsoft.HybridCompute/machines` | [2024-07-10](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines) |
+| `Microsoft.AzureStackHCI/virtualMachineInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/virtualMachineInstances) |
+| `Microsoft.HybridCompute/machines` | [2023-10-03-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2023-10-03-preview/machines) |
 
 ## Usage examples
 
@@ -55,7 +53,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     networkProfile: {}
     osProfile: {
       adminPassword: '<adminPassword>'
-      adminUsername: 'Administator'
+      adminUsername: 'Administrator'
       computerName: 'ashvmiminvm'
       linuxConfiguration: {}
       windowsConfiguration: {
@@ -106,7 +104,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     "osProfile": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "Administator",
+        "adminUsername": "Administrator",
         "computerName": "ashvmiminvm",
         "linuxConfiguration": {},
         "windowsConfiguration": {
@@ -151,7 +149,7 @@ param hardwareProfile = {
 param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
-  adminUsername: 'Administator'
+  adminUsername: 'Administrator'
   computerName: 'ashvmiminvm'
   linuxConfiguration: {}
   windowsConfiguration: {
@@ -201,16 +199,13 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     networkProfile: {}
     osProfile: {
       adminPassword: '<adminPassword>'
-      adminUsername: 'Administator'
+      adminUsername: 'Administrator'
       computerName: 'ashvmiwafvm'
       linuxConfiguration: {}
       windowsConfiguration: {
         enableAutomaticUpdates: true
         provisionVMAgent: true
         provisionVMConfigAgent: true
-        ssh: {
-          publicKeys: []
-        }
       }
     }
     storageProfile: {
@@ -262,16 +257,13 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     "osProfile": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "Administator",
+        "adminUsername": "Administrator",
         "computerName": "ashvmiwafvm",
         "linuxConfiguration": {},
         "windowsConfiguration": {
           "enableAutomaticUpdates": true,
           "provisionVMAgent": true,
-          "provisionVMConfigAgent": true,
-          "ssh": {
-            "publicKeys": []
-          }
+          "provisionVMConfigAgent": true
         }
       }
     },
@@ -317,16 +309,13 @@ param hardwareProfile = {
 param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
-  adminUsername: 'Administator'
+  adminUsername: 'Administrator'
   computerName: 'ashvmiwafvm'
   linuxConfiguration: {}
   windowsConfiguration: {
     enableAutomaticUpdates: true
     provisionVMAgent: true
     provisionVMConfigAgent: true
-    ssh: {
-      publicKeys: []
-    }
   }
 }
 param storageProfile = {
@@ -562,7 +551,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/hybrid-compute/machine:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

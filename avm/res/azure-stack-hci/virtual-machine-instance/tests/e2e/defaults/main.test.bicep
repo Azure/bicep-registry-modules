@@ -234,7 +234,7 @@ module testDeployment '../../../main.bicep' = {
         provisionVMAgent: true
         provisionVMConfigAgent: true
       }
-      adminUsername: 'Administator'
+      adminUsername: 'Administrator'
       adminPassword: localAdminAndDeploymentUserPass
     }
     storageProfile: {

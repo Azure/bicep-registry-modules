@@ -85,27 +85,29 @@ var formattedRoleAssignments = [
   })
 ]
 
-var enableReferencedModulesTelemetry bool = false
+// var enableReferencedModulesTelemetry bool = false
 
-module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
-  name: '${arcMachineResourceName}-deployment'
-  scope: resourceGroup()
-  params: {
-    name: arcMachineResourceName
-    location: location
-    kind: 'HCI'
-    enableTelemetry: enableReferencedModulesTelemetry
-  }
-}
+// module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
+//   name: '${arcMachineResourceName}-deployment'
+//   scope: resourceGroup()
+//   params: {
+//     name: arcMachineResourceName
+//     location: location
+//     kind: 'HCI'
+//     enableTelemetry: enableReferencedModulesTelemetry
+//   }
+// }
 
-resource existingMachine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
+resource existingMachine 'Microsoft.HybridCompute/machines@2023-10-03-preview' = {
   name: arcMachineResourceName
-  dependsOn: [
-    hybridCompute
-  ]
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  kind: 'HCI'
 }
 
-resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview' = {
+resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-01-01' = {
   name: 'default'
   extendedLocation: {
     type: 'CustomLocation'

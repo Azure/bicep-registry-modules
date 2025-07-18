@@ -37,6 +37,9 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+@description('Optional. The password to use for the local and domain accounts in the test.')
+param localAdminAndDeploymentUserPass string = newGuid()
+
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
@@ -224,10 +227,9 @@ module testDeployment '../../../main.bicep' = {
         enableAutomaticUpdates: true
         provisionVMAgent: true
         provisionVMConfigAgent: true
-        ssh: { publicKeys: [] }
       }
-      adminUsername: 'Administator'
-      adminPassword: arbLocalAdminAndDeploymentUserPass
+      adminUsername: 'Administrator'
+      adminPassword: localAdminAndDeploymentUserPass
     }
     storageProfile: {
       imageReference: { id: hciImage.outputs.resourceId }
