@@ -21,6 +21,7 @@ This module deploys a Integration Account Partner.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The Name of the partner resource. |
+| [`partnerType`](#parameter-partnertype) | string | The partner type. |
 
 **Conditional parameters**
 
@@ -35,7 +36,6 @@ This module deploys a Integration Account Partner.
 | [`b2bPartnerContent`](#parameter-b2bpartnercontent) | object | B2B partner content settings. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) | object | The partner metadata. |
-| [`partnerType`](#parameter-partnertype) | string | The partner type. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -44,6 +44,20 @@ The Name of the partner resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `partnerType`
+
+The partner type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'B2B'
+    'NotSpecified'
+  ]
+  ```
 
 ### Parameter: `integrationAccountName`
 
@@ -107,20 +121,6 @@ The partner metadata.
 
 - Required: No
 - Type: object
-
-### Parameter: `partnerType`
-
-The partner type.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'B2B'
-    'NotSpecified'
-  ]
-  ```
 
 ### Parameter: `tags`
 
