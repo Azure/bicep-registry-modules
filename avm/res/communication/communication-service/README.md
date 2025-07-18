@@ -830,6 +830,7 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoint` | string | The endpoint (hostname) of the communication service. |
 | `location` | string | The location the communication service was deployed into. |
 | `name` | string | The name of the communication service. |
 | `resourceGroupName` | string | The resource group the communication service was deployed into. |

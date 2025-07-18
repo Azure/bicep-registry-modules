@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.10.4
+
+### Changes
+
+- Added support for Purview Account integration via `purviewResourceId` parameter
+- Enhanced Data Factory configuration to include Purview connectivity when specified
+
+### Breaking Changes
+
+- None
+
 ## 0.10.3
 
 ### Changes

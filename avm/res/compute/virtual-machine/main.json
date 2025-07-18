@@ -1935,16 +1935,16 @@
         "description": "Optional. Specifies the gallery applications that should be made available to the VM/VMSS."
       }
     },
-    "zone": {
+    "availabilityZone": {
       "type": "int",
       "allowedValues": [
-        0,
+        -1,
         1,
         2,
         3
       ],
       "metadata": {
-        "description": "Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "nicConfigurations": {
@@ -2449,7 +2449,7 @@
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "networkAccessPolicy": "[parameters('networkAccessPolicy')]"
       },
-      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('zone'))), null())]",
+      "zones": "[if(and(not(equals(parameters('availabilityZone'), -1)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('availabilityZone'))), null())]",
       "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
     },
     "vm": {
@@ -2459,7 +2459,7 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]",
       "plan": "[parameters('plan')]",
       "properties": {
         "hardwareProfile": {
