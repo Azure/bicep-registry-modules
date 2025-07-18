@@ -93,6 +93,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'partner2'
+          partnerType: 'NotSpecified'
           metadata: {
             key1: 'value1'
             key2: 'value2'
