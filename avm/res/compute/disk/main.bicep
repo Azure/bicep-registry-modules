@@ -15,7 +15,7 @@ param location string = resourceGroup().location
   'Premium_ZRS'
   'PremiumV2_LRS'
 ])
-@description('Required. The disks sku name.')
+@description('Required. The disks sku name. Can be .')
 param sku string
 
 @allowed([
