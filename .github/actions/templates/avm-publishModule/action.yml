@@ -59,7 +59,8 @@ runs:
 
           $functionInput = @{
             TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
-            PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+            # PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+            PublicRegistryServer = ConvertTo-SecureString 'dummy' -AsPlainText -Force
             RepoRoot             = $env:GITHUB_WORKSPACE
           }
 
