@@ -3,7 +3,7 @@
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
 
-## 0.16.1
+## 0.17.0
 
 ### Changes
 
