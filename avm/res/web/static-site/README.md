@@ -659,6 +659,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`stagingEnvironmentPolicy`](#parameter-stagingenvironmentpolicy) | string | State indicating whether staging environments are allowed or not allowed for a static web app. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`templateProperties`](#parameter-templateproperties) | object | Template Options for the static site. |
+| [`validationMethod`](#parameter-validationmethod) | string | Custom domain validation method. If not specified, automatically determined based on domain structure. |
 
 ### Parameter: `name`
 
@@ -1438,6 +1439,20 @@ Template Options for the static site.
 
 - Required: No
 - Type: object
+
+### Parameter: `validationMethod`
+
+Custom domain validation method. If not specified, automatically determined based on domain structure.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'cname-delegation'
+    'dns-txt-token'
+  ]
+  ```
 
 ## Outputs
 
