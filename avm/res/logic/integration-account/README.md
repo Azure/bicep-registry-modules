@@ -861,7 +861,6 @@ All partners to create.
 | :-- | :-- | :-- |
 | [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | object | The B2B partner content settings. |
 | [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
-| [`partnerType`](#parameter-partnerspartnertype) | string | The partner type. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
 
 ### Parameter: `partners.name`
@@ -918,20 +917,6 @@ The partner metadata.
 
 - Required: No
 - Type: object
-
-### Parameter: `partners.partnerType`
-
-The partner type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'B2B'
-    'NotSpecified'
-  ]
-  ```
 
 ### Parameter: `partners.tags`
 

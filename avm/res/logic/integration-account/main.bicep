@@ -261,9 +261,6 @@ type partnerType = {
   @description('Required. The Name of the partner resource.')
   name: string
 
-  @description('Optional. The partner type.')
-  partnerType: ('B2B' | 'NotSpecified')?
-
   @description('Optional. The B2B partner content settings.')
   b2bPartnerContent: b2bPartnerContentType?
 
