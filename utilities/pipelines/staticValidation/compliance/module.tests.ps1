@@ -1553,7 +1553,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
             # the second condition is for local testing only, as, after committing to GitHub, the first condition picks up the version
-            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath).Count -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
                 # The module will be published
                 $expectedModuleVersion = $moduleTargetVersion
             } else {
