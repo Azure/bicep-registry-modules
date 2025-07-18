@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7805449195507466760"
+      "templateHash": "6328373494181301853"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys a Integration Account Partner."
@@ -73,7 +73,6 @@
     },
     "partnerType": {
       "type": "string",
-      "defaultValue": "B2B",
       "allowedValues": [
         "B2B",
         "NotSpecified"

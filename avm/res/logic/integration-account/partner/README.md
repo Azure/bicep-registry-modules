@@ -112,9 +112,8 @@ The partner metadata.
 
 The partner type.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'B2B'`
 - Allowed:
   ```Bicep
   [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16039182003827605061"
+      "templateHash": "4619865462570544106"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -610,7 +610,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7805449195507466760"
+              "templateHash": "6328373494181301853"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys a Integration Account Partner."
@@ -677,7 +677,6 @@
             },
             "partnerType": {
               "type": "string",
-              "defaultValue": "B2B",
               "allowedValues": [
                 "B2B",
                 "NotSpecified"
