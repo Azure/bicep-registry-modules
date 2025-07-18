@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12328659693701538576"
+      "templateHash": "15699894418140933426"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -65,7 +65,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         },
         "description": "The type for an image identifier."
       }
@@ -94,7 +94,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         },
         "description": "The type for an image purchase plan."
       }
@@ -120,7 +120,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         },
         "description": "The type for a resource range."
       }
@@ -141,6 +141,16 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The description of this gallery image definition resource. This property is updatable."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+            },
+            "description": "Optional. Tags for all the image."
           }
         },
         "allowUpdateImage": {
@@ -213,7 +223,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
           }
         },
         "isAcceleratedNetworkSupported": {
@@ -302,7 +312,7 @@
       "metadata": {
         "description": "The type of an image.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         }
       }
     }
@@ -455,7 +465,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The files to upload to the Assets Storage Account."
+        "description": "Optional. The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis (🍔) as they may cause problems when loaded into the environment of the uploading deployment script."
       }
     },
     "imageTemplateDeploymentScriptName": {
@@ -1790,8 +1800,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1475705896315322321"
+              "version": "0.36.177.2456",
+              "templateHash": "9068139270997121520"
             },
             "name": "Azure Compute Galleries",
             "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -1814,6 +1824,16 @@
                   "metadata": {
                     "description": "Optional. The description of this gallery image definition resource. This property is updatable."
                   }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+                    },
+                    "description": "Optional. Tags for all the image."
+                  },
+                  "nullable": true
                 },
                 "allowUpdateImage": {
                   "type": "bool",
@@ -1885,7 +1905,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+                    "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
                   }
                 },
                 "isAcceleratedNetworkSupported": {
@@ -2054,10 +2074,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+                    },
                     "description": "Optional. Tags for all resources."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -2404,25 +2427,34 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries@2024-03-03#properties/tags"
+                },
                 "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
                 "description": "Optional. Tags for all resources."
-              }
+              },
+              "nullable": true
             },
             "sharingProfile": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/sharingProfile"
+                },
                 "description": "Optional. Profile for gallery sharing to subscription or tenant."
-              }
+              },
+              "nullable": true
             },
             "softDeletePolicy": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/softDeletePolicy"
+                },
                 "description": "Optional. Soft deletion policy of the gallery."
-              }
+              },
+              "nullable": true
             }
           },
           "variables": {
@@ -2447,7 +2479,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.compute-gallery.{0}.{1}', replace('0.9.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.compute-gallery.{0}.{1}', replace('0.9.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2569,8 +2601,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "14256121951310131781"
+                      "version": "0.36.177.2456",
+                      "templateHash": "10342729687544373770"
                     },
                     "name": "Compute Galleries Applications",
                     "description": "This module deploys an Azure Compute Gallery Application."
@@ -2809,10 +2841,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+                        },
                         "description": "Optional. Tags for all resources."
-                      }
+                      },
+                      "nullable": true
                     },
                     "customActions": {
                       "type": "array",
@@ -3020,8 +3055,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "9577580862088206504"
+                      "version": "0.36.177.2456",
+                      "templateHash": "11484064782357517234"
                     },
                     "name": "Compute Galleries Image Definitions",
                     "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -3301,7 +3336,7 @@
                       ],
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
+                        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
                       }
                     },
                     "isAcceleratedNetworkSupported": {
@@ -3399,11 +3434,14 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+                        },
                         "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                         "description": "Optional. Tags for all the image."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "variables": {
@@ -3529,6 +3567,9 @@
             },
             "imageResourceIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "metadata": {
                 "description": "The resource ids of the deployed images."
               },
