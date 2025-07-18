@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4166602537893111543"
+      "version": "0.36.177.2456",
+      "templateHash": "3940421282476160298"
     },
     "name": "Proximity Placement Groups",
     "description": "This module deploys a Proximity Placement Group."
@@ -167,11 +167,16 @@
         "description": "Optional. Tags of the proximity placement group resource."
       }
     },
-    "zones": {
-      "type": "array",
-      "nullable": true,
+    "availabilityZone": {
+      "type": "int",
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created."
+        "description": "Required. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "colocationStatus": {
@@ -239,7 +244,7 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "zones": "[parameters('zones')]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]",
       "properties": {
         "proximityPlacementGroupType": "[parameters('type')]",
         "colocationStatus": "[parameters('colocationStatus')]",

@@ -18,6 +18,7 @@ This module deploys a Virtual Network Gateway.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 | `Microsoft.Network/virtualNetworkGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways) |
 | `Microsoft.Network/virtualNetworkGateways/natRules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways/natRules) |
@@ -74,7 +75,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -134,7 +135,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -180,7 +181,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -230,7 +231,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -298,7 +299,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -352,7 +353,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -396,7 +397,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enablePrivateIpAddress: true
     existingPrimaryPublicIPResourceId: '<existingPrimaryPublicIPResourceId>'
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -460,7 +461,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -508,7 +509,7 @@ param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param existingPrimaryPublicIPResourceId = '<existingPrimaryPublicIPResourceId>'
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -550,7 +551,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -610,7 +611,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -656,7 +657,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -703,7 +704,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -768,7 +769,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -819,7 +820,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -867,7 +868,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enablePrivateIpAddress: true
     existingPrimaryPublicIPResourceId: '<existingPrimaryPublicIPResourceId>'
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -935,7 +936,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -987,7 +988,7 @@ param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param existingPrimaryPublicIPResourceId = '<existingPrimaryPublicIPResourceId>'
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1029,7 +1030,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -1089,7 +1090,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -1135,7 +1136,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1369,14 +1370,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activePassiveBgp'
     }
     gatewayType: 'ExpressRoute'
-    name: 'nvger001'
+    name: 'nvger002'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     domainNameLabel: [
       'dm-nvger'
     ]
     primaryPublicIPName: 'pip-nvger'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -1408,7 +1409,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "ExpressRoute"
     },
     "name": {
-      "value": "nvger001"
+      "value": "nvger002"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1422,7 +1423,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "primaryPublicIPName": {
       "value": "pip-nvger"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -1451,14 +1452,14 @@ param clusterSettings = {
   clusterMode: 'activePassiveBgp'
 }
 param gatewayType = 'ExpressRoute'
-param name = 'nvger001'
+param name = 'nvger002'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param domainNameLabel = [
   'dm-nvger'
 ]
 param primaryPublicIPName = 'pip-nvger'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1560,7 +1561,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         type: 'Static'
       }
     ]
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -1714,7 +1715,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         }
       ]
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -1850,7 +1851,7 @@ param natRules = [
     type: 'Static'
   }
 ]
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1908,7 +1909,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     name: 'nvgnaz001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    publicIpZones: []
+    publicIpAvailabilityZones: []
     skuName: 'VpnGw1'
   }
 }
@@ -1942,7 +1943,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": []
     },
     "skuName": {
@@ -1970,7 +1971,7 @@ param gatewayType = 'Vpn'
 param name = 'nvgnaz001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
-param publicIpZones = []
+param publicIpAvailabilityZones = []
 param skuName = 'VpnGw1'
 ```
 
@@ -2006,7 +2007,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -2066,7 +2067,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -2112,7 +2113,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -2177,6 +2178,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
+    maintenanceConfiguration: {
+      assignmentName: 'myAssignment'
+      maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    }
     natRules: [
       {
         externalMappings: [
@@ -2211,7 +2216,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         type: 'Static'
       }
     ]
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -2301,6 +2306,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
+    "maintenanceConfiguration": {
+      "value": {
+        "assignmentName": "myAssignment",
+        "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>"
+      }
+    },
     "natRules": {
       "value": [
         {
@@ -2337,7 +2348,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         }
       ]
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -2413,6 +2424,10 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
+param maintenanceConfiguration = {
+  assignmentName: 'myAssignment'
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+}
 param natRules = [
   {
     externalMappings: [
@@ -2447,7 +2462,7 @@ param natRules = [
     type: 'Static'
   }
 ]
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -2498,12 +2513,13 @@ param vpnType = 'RouteBased'
 | [`gatewayDefaultSiteLocalNetworkGatewayResourceId`](#parameter-gatewaydefaultsitelocalnetworkgatewayresourceid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | The maintenance configuration to assign to the Virtual Network Gateway. |
 | [`managedIdentity`](#parameter-managedidentity) | object | The managed identity definition for this resource. Supports system-assigned and user-assigned identities. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
 | [`primaryPublicIPName`](#parameter-primarypublicipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
+| [`publicIpAvailabilityZones`](#parameter-publicipavailabilityzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
 | [`publicIpDiagnosticSettings`](#parameter-publicipdiagnosticsettings) | array | The diagnostic settings of the Public IP. |
 | [`publicIPPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
-| [`publicIpZones`](#parameter-publicipzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
 | [`resiliencyModel`](#parameter-resiliencymodel) | string | Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
@@ -3170,6 +3186,34 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `maintenanceConfiguration`
+
+The maintenance configuration to assign to the Virtual Network Gateway.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignmentName`](#parameter-maintenanceconfigurationassignmentname) | string | The name of the maintenance configuration assignment. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationmaintenanceconfigurationresourceid) | string | The resource ID of the maintenance configuration to assign to the Virtual Network Gateway. |
+
+### Parameter: `maintenanceConfiguration.assignmentName`
+
+The name of the maintenance configuration assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maintenanceConfiguration.maintenanceConfigurationResourceId`
+
+The resource ID of the maintenance configuration to assign to the Virtual Network Gateway.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `managedIdentity`
 
 The managed identity definition for this resource. Supports system-assigned and user-assigned identities.
@@ -3337,6 +3381,29 @@ Specifies the name of the Public IP to be created for the Virtual Network Gatewa
 - Type: string
 - Default: `[format('{0}-pip1', parameters('name'))]`
 
+### Parameter: `publicIpAvailabilityZones`
+
+Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `publicIpDiagnosticSettings`
 
 The diagnostic settings of the Public IP.
@@ -3490,21 +3557,6 @@ Resource ID of the Public IP Prefix object. This is only needed if you want your
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `publicIpZones`
-
-Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `resiliencyModel`
 
