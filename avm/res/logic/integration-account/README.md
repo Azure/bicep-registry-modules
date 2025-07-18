@@ -165,7 +165,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           key2: 'value2'
         }
         name: 'partner2'
-        partnerType: 'NotSpecified'
         tags: {
           tag1: 'value1'
           tag2: 'value2'
@@ -276,7 +275,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "key2": "value2"
           },
           "name": "partner2",
-          "partnerType": "NotSpecified",
           "tags": {
             "tag1": "value1",
             "tag2": "value2"
@@ -381,7 +379,6 @@ param partners = [
       key2: 'value2'
     }
     name: 'partner2'
-    partnerType: 'NotSpecified'
     tags: {
       tag1: 'value1'
       tag2: 'value2'
