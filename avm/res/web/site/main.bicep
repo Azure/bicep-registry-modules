@@ -24,8 +24,8 @@ param location string = resourceGroup().location
 ])
 param kind string
 
-@description('Required. The resource ID of the app service plan to use for the site.')
-param serverFarmResourceId string
+@description('Optional. The resource ID of the app service plan to use for the site. Not required for containerized function apps.')
+param serverFarmResourceId string?
 
 @description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
 param managedEnvironmentId string?
@@ -234,6 +234,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+// Validation: serverFarmResourceId is required for all app kinds except containerized function apps
+var isContainerizedFunctionApp = contains(kind, 'azurecontainerapps')
+var _ = isContainerizedFunctionApp ? null : (!empty(serverFarmResourceId) ? null : fail('serverFarmResourceId is required for non-containerized function apps. For containerized function apps with Azure Container Apps, serverFarmResourceId can be omitted.'))
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -333,7 +337,7 @@ module app_slots 'slot/main.bicep' = [
       appName: app.name
       location: location
       kind: kind
-      serverFarmResourceId: serverFarmResourceId
+      serverFarmResourceId: slot.?serverFarmResourceId ?? serverFarmResourceId
       httpsOnly: slot.?httpsOnly ?? httpsOnly
       appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
       clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
