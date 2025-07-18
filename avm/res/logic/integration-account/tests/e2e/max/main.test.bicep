@@ -69,7 +69,6 @@ module testDeployment '../../../main.bicep' = [
       partners: [
         {
           name: 'partner1'
-          partnerType: 'B2B'
           b2bPartnerContent: {
             businessIdentities: [
               {

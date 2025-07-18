@@ -207,7 +207,6 @@ module integrationAccount_partners 'partner/main.bicep' = [
       name: partner.name
       location: location
       integrationAccountName: integrationAccount.name
-      partnerType: partner.?partnerType
       b2bPartnerContent: partner.?b2bPartnerContent
       metadata: partner.?metadata
       tags: partner.?tags ?? tags

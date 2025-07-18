@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16039182003827605061"
+      "templateHash": "9906944498678823759"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -589,9 +589,6 @@
           "integrationAccountName": {
             "value": "[parameters('name')]"
           },
-          "partnerType": {
-            "value": "[tryGet(coalesce(parameters('partners'), createArray())[copyIndex()], 'partnerType')]"
-          },
           "b2bPartnerContent": {
             "value": "[tryGet(coalesce(parameters('partners'), createArray())[copyIndex()], 'b2bPartnerContent')]"
           },
@@ -610,7 +607,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7805449195507466760"
+              "templateHash": "3357738835334398570"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys a Integration Account Partner."
@@ -675,17 +672,6 @@
                 "description": "Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment."
               }
             },
-            "partnerType": {
-              "type": "string",
-              "defaultValue": "B2B",
-              "allowedValues": [
-                "B2B",
-                "NotSpecified"
-              ],
-              "metadata": {
-                "description": "Optional. The partner type."
-              }
-            },
             "b2bPartnerContent": {
               "$ref": "#/definitions/b2bPartnerContentType",
               "nullable": true,
@@ -724,7 +710,7 @@
               "name": "[format('{0}/{1}', parameters('integrationAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
-                "partnerType": "[parameters('partnerType')]",
+                "partnerType": "B2B",
                 "metadata": "[parameters('metadata')]",
                 "content": {
                   "b2b": "[parameters('b2bPartnerContent')]"

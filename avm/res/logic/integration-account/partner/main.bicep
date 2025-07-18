@@ -10,13 +10,6 @@ param location string = resourceGroup().location
 @description('Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment.')
 param integrationAccountName string
 
-@allowed([
-  'B2B'
-  'NotSpecified'
-])
-@description('Optional. The partner type.')
-param partnerType string = 'B2B'
-
 @description('Optional. B2B partner content settings.')
 param b2bPartnerContent b2bPartnerContentType?
 
@@ -35,7 +28,7 @@ resource partner 'Microsoft.Logic/integrationAccounts/partners@2019-05-01' = {
   parent: integrationAccount
   location: location
   properties: {
-    partnerType: partnerType
+    partnerType: 'B2B'
     metadata: metadata
     content: {
       b2b: b2bPartnerContent

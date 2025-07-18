@@ -35,7 +35,6 @@ This module deploys a Integration Account Partner.
 | [`b2bPartnerContent`](#parameter-b2bpartnercontent) | object | B2B partner content settings. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) | object | The partner metadata. |
-| [`partnerType`](#parameter-partnertype) | string | The partner type. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -107,21 +106,6 @@ The partner metadata.
 
 - Required: No
 - Type: object
-
-### Parameter: `partnerType`
-
-The partner type.
-
-- Required: No
-- Type: string
-- Default: `'B2B'`
-- Allowed:
-  ```Bicep
-  [
-    'B2B'
-    'NotSpecified'
-  ]
-  ```
 
 ### Parameter: `tags`
 
