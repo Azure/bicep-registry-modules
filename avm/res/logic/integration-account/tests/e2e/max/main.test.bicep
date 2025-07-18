@@ -91,6 +91,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
+          b2bPartnerContent: {
+            businessIdentities: []
+          }
           name: 'partner2'
           metadata: {
             key1: 'value1'

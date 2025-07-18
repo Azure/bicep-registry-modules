@@ -159,6 +159,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       }
       {
+        b2bPartnerContent: {
+          businessIdentities: []
+        }
         metadata: {
           key1: 'value1'
           key2: 'value2'
@@ -268,6 +271,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           }
         },
         {
+          "b2bPartnerContent": {
+            "businessIdentities": []
+          },
           "metadata": {
             "key1": "value1",
             "key2": "value2"
@@ -371,6 +377,9 @@ param partners = [
     }
   }
   {
+    b2bPartnerContent: {
+      businessIdentities: []
+    }
     metadata: {
       key1: 'value1'
       key2: 'value2'
