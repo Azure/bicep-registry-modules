@@ -206,9 +206,9 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-vm-${serviceShort}'
   scope: resourceGroup
   params: {
+    name: '${uniqueString(deployment().name, enforcedLocation)}-hc-${serviceShort}'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
-    arcMachineResourceName: '${uniqueString(deployment().name, enforcedLocation)}-hc-${serviceShort}'
     hardwareProfile: {
       vmSize: 'Custom'
       memoryMB: 4096

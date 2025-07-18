@@ -15,9 +15,11 @@ This module deploys an Azure Stack HCI virtual machine.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/virtualMachineInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/virtualMachineInstances) |
-| `Microsoft.HybridCompute/machines` | [2023-10-03-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2023-10-03-preview/machines) |
+| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
+| `Microsoft.HybridCompute/machines` | [2024-07-10](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines) |
 
 ## Usage examples
 
@@ -44,12 +46,12 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
   name: 'virtualMachineInstanceDeployment'
   params: {
     // Required parameters
-    arcMachineResourceName: '<arcMachineResourceName>'
     customLocationResourceId: '<customLocationResourceId>'
     hardwareProfile: {
       memoryMB: 4096
       processors: 2
     }
+    name: '<name>'
     networkProfile: {}
     osProfile: {
       adminPassword: '<adminPassword>'
@@ -86,9 +88,6 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "arcMachineResourceName": {
-      "value": "<arcMachineResourceName>"
-    },
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
@@ -97,6 +96,9 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
         "memoryMB": 4096,
         "processors": 2
       }
+    },
+    "name": {
+      "value": "<name>"
     },
     "networkProfile": {
       "value": {}
@@ -140,12 +142,12 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
 using 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>'
 
 // Required parameters
-param arcMachineResourceName = '<arcMachineResourceName>'
 param customLocationResourceId = '<customLocationResourceId>'
 param hardwareProfile = {
   memoryMB: 4096
   processors: 2
 }
+param name = '<name>'
 param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
@@ -184,7 +186,6 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
   name: 'virtualMachineInstanceDeployment'
   params: {
     // Required parameters
-    arcMachineResourceName: '<arcMachineResourceName>'
     customLocationResourceId: '<customLocationResourceId>'
     hardwareProfile: {
       dynamicMemoryConfig: {
@@ -196,6 +197,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       processors: 2
       vmSize: 'Custom'
     }
+    name: '<name>'
     networkProfile: {}
     osProfile: {
       adminPassword: '<adminPassword>'
@@ -233,9 +235,6 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "arcMachineResourceName": {
-      "value": "<arcMachineResourceName>"
-    },
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
@@ -250,6 +249,9 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
         "processors": 2,
         "vmSize": "Custom"
       }
+    },
+    "name": {
+      "value": "<name>"
     },
     "networkProfile": {
       "value": {}
@@ -294,7 +296,6 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
 using 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>'
 
 // Required parameters
-param arcMachineResourceName = '<arcMachineResourceName>'
 param customLocationResourceId = '<customLocationResourceId>'
 param hardwareProfile = {
   dynamicMemoryConfig: {
@@ -306,6 +307,7 @@ param hardwareProfile = {
   processors: 2
   vmSize: 'Custom'
 }
+param name = '<name>'
 param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
@@ -337,9 +339,9 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`arcMachineResourceName`](#parameter-arcmachineresourcename) | string | The Arc Machine resource name. |
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
 | [`hardwareProfile`](#parameter-hardwareprofile) | object | Hardware profile configuration. |
+| [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`networkProfile`](#parameter-networkprofile) | object | Network profile configuration. |
 | [`osProfile`](#parameter-osprofile) | object | OS profile configuration. |
 | [`storageProfile`](#parameter-storageprofile) | object | Storage profile configuration. |
@@ -354,13 +356,6 @@ param location = '<location>'
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile configuration. |
 
-### Parameter: `arcMachineResourceName`
-
-The Arc Machine resource name.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `customLocationResourceId`
 
 Resource ID of the associated custom location.
@@ -374,6 +369,13 @@ Hardware profile configuration.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `name`
+
+Name of the resource to create.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `networkProfile`
 
@@ -551,6 +553,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/hybrid-compute/machine:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

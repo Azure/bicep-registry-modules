@@ -1,14 +1,14 @@
 metadata name = 'Azure Stack HCI Virtual Machine Instance'
 metadata description = 'This module deploys an Azure Stack HCI virtual machine.'
 
+@description('Required. Name of the resource to create.')
+param name string
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
 @description('Required. Resource ID of the associated custom location.')
 param customLocationResourceId string
-
-@description('Required. The Arc Machine resource name.')
-param arcMachineResourceName string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -85,26 +85,21 @@ var formattedRoleAssignments = [
   })
 ]
 
-// var enableReferencedModulesTelemetry bool = false
+var enableReferencedModulesTelemetry bool = false
 
-// module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
-//   name: '${arcMachineResourceName}-deployment'
-//   scope: resourceGroup()
-//   params: {
-//     name: arcMachineResourceName
-//     location: location
-//     kind: 'HCI'
-//     enableTelemetry: enableReferencedModulesTelemetry
-//   }
-// }
-
-resource existingMachine 'Microsoft.HybridCompute/machines@2023-10-03-preview' = {
-  name: arcMachineResourceName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
+module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
+  name: '${name}-deployment'
+  scope: resourceGroup()
+  params: {
+    name: name
+    location: location
+    kind: 'HCI'
+    enableTelemetry: enableReferencedModulesTelemetry
   }
-  kind: 'HCI'
+}
+
+resource existingMachine 'Microsoft.HybridCompute/machines@2023-10-03-preview' existing = {
+  name: name
 }
 
 resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-01-01' = {
