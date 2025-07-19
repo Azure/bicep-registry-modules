@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "1608121957992967877"
+      "templateHash": "11275965365560506019"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
@@ -227,7 +227,10 @@
       "existing": true,
       "type": "Microsoft.HybridCompute/machines",
       "apiVersion": "2023-10-03-preview",
-      "name": "[parameters('name')]"
+      "name": "[parameters('name')]",
+      "dependsOn": [
+        "hybridCompute"
+      ]
     },
     "virtualMachineInstance": {
       "type": "Microsoft.AzureStackHCI/virtualMachineInstances",
@@ -250,7 +253,10 @@
         "osProfile": "[parameters('osProfile')]",
         "securityProfile": "[if(empty(parameters('securityProfile')), null(), parameters('securityProfile'))]",
         "storageProfile": "[parameters('storageProfile')]"
-      }
+      },
+      "dependsOn": [
+        "hybridCompute"
+      ]
     },
     "virtualMachine_roleAssignments": {
       "copy": {

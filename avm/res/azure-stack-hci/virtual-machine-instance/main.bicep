@@ -100,6 +100,9 @@ module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
 
 resource existingMachine 'Microsoft.HybridCompute/machines@2023-10-03-preview' existing = {
   name: name
+  dependsOn: [
+    hybridCompute
+  ]
 }
 
 resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-01-01' = {
