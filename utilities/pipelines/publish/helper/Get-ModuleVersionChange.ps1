@@ -34,11 +34,14 @@ function Get-ModuleVersionChange {
         [string] $VersionFilePath
     )
 
-    # The diff will be empty, if the version.json file was not updated
-    # Note: Fetches the actual content of the change
+    # Refresh local git
+    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules'
+    git fetch 'upstream'
     $currentBranch = git branch --show-current
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
+    # Note: Fetches the actual content of the change
+    # The diff will be empty, if the version.json file was not updated
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
         $diff = git diff --diff-filter=AM 'origin/main^' $VersionFilePath | Out-String
