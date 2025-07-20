@@ -54,7 +54,8 @@ runs:
           # Grouping task logs
           Write-Output '::group::Publish module to public bicep registry'
 
-          git config --system --add safe.directory '*'
+          # git config --system --add safe.directory '*'
+          git fetch --all
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
