@@ -121,18 +121,15 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-// Validation variables to check for conflicting day schemes
 var daysData = agentProfile.?resourcePredictions.?daysData
 var hasAllWeekScheme = !empty(daysData) && contains(daysData, 'allWeekScheme')
 var hasWeekDaysScheme = !empty(daysData) && contains(daysData, 'weekDaysScheme')
 
-// Validation: allWeekScheme cannot be combined with any other scheme
 #disable-next-line no-unused-vars
 var allWeekSchemeConflict = hasAllWeekScheme && length(daysData) > 1
   ? fail('Configuration error: allWeekScheme cannot be combined with other day configurations. Please use either allWeekScheme for all 7 days or other individual day/scheme configurations.')
   : null
 
-// Validation: weekDaysScheme cannot be combined with other schemes
 #disable-next-line no-unused-vars
 var weekDaysSchemeConflict = hasWeekDaysScheme && length(daysData) > 1
   ? fail('Configuration error: weekDaysScheme cannot be combined with other day configurations. Please use either weekDaysScheme for weekdays or individual day configurations.')
