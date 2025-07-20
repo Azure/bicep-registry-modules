@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-dev-ops-infrastructure.pool-
 param serviceShort string = 'mdpwkd'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'mdpjlo'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Required. Name of the Azure DevOps organization. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsOrganizationName\'.')
 @secure()
