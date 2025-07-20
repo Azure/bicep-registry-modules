@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17011477329154694083"
+      "templateHash": "3887913638022997866"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk"
