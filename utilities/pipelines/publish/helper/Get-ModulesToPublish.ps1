@@ -17,15 +17,19 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    $CurrentBranch = Get-GitBranchName
-    if ($CurrentBranch -eq 'main') {
-        Write-Verbose 'Gathering modified files from the pull request' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
+    # Note: Fetches only the name of the modified files
+    $currentBranch = Get-GitBranchName
+    $inUpstream = (git remote get-url upstream 2>&1) -match '.*no such remote.*' # If in upstream the value would be "error: No such remote 'upstream'"
+
+    if ($inUpstream -and $currentBranch -eq 'main') {
+        Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
+        $diff = git diff --name-only --diff-filter=AM 'origin/main^'
     } else {
-        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'origin/main'
+        Write-Verbose 'Currently in a fork or a branch in upstream main. Fetching changes against upstream main' -Verbose
+        $diff = git diff --name-only --diff-filter=AM 'origin/main'
     }
-    $ModifiedFiles = $Diff | Get-Item -Force
+
+    $modifiedFiles = $diff | Get-Item -Force
 
     return $ModifiedFiles
 }

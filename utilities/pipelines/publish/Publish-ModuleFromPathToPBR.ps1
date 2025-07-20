@@ -72,6 +72,8 @@ function Publish-ModuleFromPathToPBR {
         # 4. Get Target Published Module Name
         $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $moduleBicepFilePath
 
+        return
+
         # 5.Create release tag
         $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
 
