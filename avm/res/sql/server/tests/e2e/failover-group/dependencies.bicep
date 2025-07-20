@@ -19,3 +19,6 @@ resource server 'Microsoft.Sql/servers@2023-08-01' = {
 
 @description('The name of the deployed secondary server.')
 output secondaryServerName string = server.name
+
+@description('The resource Id of the deployed secondary server.')
+output secondaryServerResourceId string = server.id

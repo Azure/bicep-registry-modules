@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "14259293299986478404"
+      "version": "0.36.177.2456",
+      "templateHash": "2566462571972383573"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1251,6 +1251,20 @@
             "description": "Optional. The option to peer the virtual network to the hub network."
           }
         },
+        "alternativeHubVnetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`."
+          }
+        },
+        "alternativeVwanHubResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`."
+          }
+        },
         "resourceGroupName": {
           "type": "string",
           "metadata": {
@@ -1870,8 +1884,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "6010913073634700255"
+              "version": "0.36.177.2456",
+              "templateHash": "12805422112803379676"
             }
           },
           "parameters": {
@@ -2120,8 +2134,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "15872653562775039637"
+              "version": "0.36.177.2456",
+              "templateHash": "3271616371178264641"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3010,6 +3024,20 @@
                     "description": "Optional. The option to peer the virtual network to the hub network."
                   }
                 },
+                "alternativeHubVnetResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`."
+                  }
+                },
+                "alternativeVwanHubResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`."
+                  }
+                },
                 "resourceGroupName": {
                   "type": "string",
                   "metadata": {
@@ -3616,7 +3644,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection."
+                "description": "The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via virtual network peering or a virtual hub connection."
               }
             },
             "virtualNetworkUseRemoteGateways": {
@@ -4016,8 +4044,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "9861038574475555548"
+                      "version": "0.36.177.2456",
+                      "templateHash": "16831425075990364151"
                     }
                   },
                   "parameters": {
@@ -4078,8 +4106,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "6180276993794162980"
+                      "version": "0.36.177.2456",
+                      "templateHash": "6659049978892343196"
                     }
                   },
                   "parameters": {
@@ -4138,8 +4166,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "6894979455771466634"
+                              "version": "0.36.177.2456",
+                              "templateHash": "160805168470039300"
                             }
                           },
                           "parameters": {
@@ -4194,8 +4222,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "4688384648395041170"
+                                      "version": "0.36.177.2456",
+                                      "templateHash": "88148186443948071"
                                     }
                                   },
                                   "parameters": {
@@ -4272,8 +4300,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "17763906922569597582"
+                              "version": "0.36.177.2456",
+                              "templateHash": "7560299310440904794"
                             }
                           },
                           "parameters": {
@@ -4327,8 +4355,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "13758055604542429333"
+                                      "version": "0.36.177.2456",
+                                      "templateHash": "8274128509069242714"
                                     }
                                   },
                                   "parameters": {
@@ -5434,8 +5462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "6180276993794162980"
+                      "version": "0.36.177.2456",
+                      "templateHash": "6659049978892343196"
                     }
                   },
                   "parameters": {
@@ -5494,8 +5522,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "6894979455771466634"
+                              "version": "0.36.177.2456",
+                              "templateHash": "160805168470039300"
                             }
                           },
                           "parameters": {
@@ -5550,8 +5578,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "4688384648395041170"
+                                      "version": "0.36.177.2456",
+                                      "templateHash": "88148186443948071"
                                     }
                                   },
                                   "parameters": {
@@ -5628,8 +5656,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "17763906922569597582"
+                              "version": "0.36.177.2456",
+                              "templateHash": "7560299310440904794"
                             }
                           },
                           "parameters": {
@@ -5683,8 +5711,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "13758055604542429333"
+                                      "version": "0.36.177.2456",
+                                      "templateHash": "8274128509069242714"
                                     }
                                   },
                                   "parameters": {
@@ -9943,7 +9971,7 @@
                 }
               },
               "dependsOn": [
-                "createResourceGroupForadditionalLzNetworking"
+                "createResourceGroupForAdditionalLzNetworking"
               ]
             },
             "createLzVirtualWanConnection": {
@@ -9979,8 +10007,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "16384719861931050900"
+                      "version": "0.36.177.2456",
+                      "templateHash": "18339309058131370516"
                     }
                   },
                   "parameters": {
@@ -39445,7 +39473,7 @@
                     "value": true
                   },
                   "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourcesIds', createArray(reference('createManagedIdentityForDeploymentScript').outputs.resourceId.value))), createObject('value', null()))]",
-                  "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsStorageAccount), '2022-09-01').resourceId), createObject('value', null()))]",
+                  "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createDsStorageAccount').outputs.resourceId.value), createObject('value', null()))]",
                   "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createArray(filter(reference('createDsVnet').outputs.subnetResourceIds.value, lambda('subnetResourceId', contains(lambdaVariables('subnetResourceId'), 'ds-subnet')))[0])), createObject('value', null()))]",
                   "arguments": {
                     "value": "[format('-resourceProviders ''{0}'' -resourceProvidersFeatures -subscriptionId {1}', variables('resourceProvidersFormatted'), parameters('subscriptionId'))]"
@@ -43034,7 +43062,7 @@
                 }
               },
               "dependsOn": [
-                "createResourceGroupForadditionalLzNetworking",
+                "createResourceGroupForAdditionalLzNetworking",
                 "registerResourceProviders"
               ]
             },
@@ -44850,15 +44878,15 @@
                 "createResourceGroupForIdentities"
               ]
             },
-            "createResourceGroupForadditionalLzNetworking": {
+            "createResourceGroupForAdditionalLzNetworking": {
               "copy": {
-                "name": "createResourceGroupForadditionalLzNetworking",
+                "name": "createResourceGroupForAdditionalLzNetworking",
                 "count": "[length(parameters('additionalVirtualNetworks'))]"
               },
               "condition": "[and(parameters('virtualNetworkEnabled'), not(empty(parameters('additionalVirtualNetworks'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('createResourceGroupForadditionalLzNetworking-{0}-{1}', copyIndex(), uniqueString('createResourceGroupForadditionalLzNetworking', deployment().name))]",
+              "name": "[format('createResourceGroupForAdditionalLzNetworking-{0}-{1}', copyIndex(), uniqueString('createResourceGroupForAdditionalLzNetworking', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
               "properties": {
@@ -45392,7 +45420,7 @@
                   "ddosProtectionPlanResourceId": {
                     "value": "[coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'ddosProtectionPlanResourceId'), null())]"
                   },
-                  "peerings": "[if(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'peerToHubNetwork'), false()), createObject('value', createArray(createObject('remoteVirtualNetworkResourceId', variables('hubVirtualNetworkResourceIdChecked'), 'allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'useRemoteGateways'), false()), 'remotePeeringEnabled', true(), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', null()))]",
+                  "peerings": "[if(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'peerToHubNetwork'), false()), createObject('value', createArray(createObject('remoteVirtualNetworkResourceId', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeHubVnetResourceId'), variables('hubVirtualNetworkResourceIdChecked')), 'allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'useRemoteGateways'), false()), 'remotePeeringEnabled', true(), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', null()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }
@@ -47021,7 +47049,126 @@
                 "[format('createAdditonalNatGateway[{0}]', copyIndex())]",
                 "createBastionNsg",
                 "createLzRouteTable",
-                "createResourceGroupForadditionalLzNetworking"
+                "createResourceGroupForAdditionalLzNetworking"
+              ]
+            },
+            "createAdditionalLzVirtualWanConnection": {
+              "copy": {
+                "name": "createAdditionalLzVirtualWanConnection",
+                "count": "[length(parameters('additionalVirtualNetworks'))]"
+              },
+              "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('additionalVirtualNetworks')))), or(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), ''))), not(empty(variables('virtualHubResourceIdChecked')))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('createAdditionalLzVirtualWanConnection-{0}-{1}', copyIndex(), uniqueString('createAdditionalLzVirtualWanConnection', deployment().name))]",
+              "subscriptionId": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[2]]",
+              "resourceGroup": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[4]]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[format('vhc-{0}-{1}', parameters('additionalVirtualNetworks')[copyIndex()].name, substring(guid(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked'))), 0, 5))]"
+                  },
+                  "virtualHubName": {
+                    "value": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[8]]"
+                  },
+                  "remoteVirtualNetworkId": {
+                    "value": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, parameters('additionalVirtualNetworks')[copyIndex()].name)]"
+                  },
+                  "enableInternetSecurity": {
+                    "value": "[parameters('virtualNetworkVwanEnableInternetSecurity')]"
+                  },
+                  "routingConfiguration": "[if(not(parameters('vHubRoutingIntentEnabled')), createObject('value', createObject('associatedRouteTable', createObject('id', variables('virtualWanHubConnectionAssociatedRouteTable')), 'propagatedRouteTables', createObject('ids', variables('virtualWanHubConnectionPropogatedRouteTables'), 'labels', variables('virtualWanHubConnectionPropogatedLabels')))), createObject('value', createObject()))]"
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "18339309058131370516"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The connection name."
+                      }
+                    },
+                    "virtualHubName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "enableInternetSecurity": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable internet security."
+                      }
+                    },
+                    "remoteVirtualNetworkId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the virtual network to link to."
+                      }
+                    },
+                    "routingConfiguration": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+                      "apiVersion": "2023-11-01",
+                      "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+                      "properties": {
+                        "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+                        "remoteVirtualNetwork": {
+                          "id": "[parameters('remoteVirtualNetworkId')]"
+                        },
+                        "routingConfiguration": "[if(not(empty(parameters('routingConfiguration'))), parameters('routingConfiguration'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the virtual hub connection was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the virtual hub connection."
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualHubs/hubVirtualNetworkConnections', parameters('virtualHubName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual hub connection."
+                      },
+                      "value": "[parameters('name')]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "createAdditionalVnets",
+                "createResourceGroupForAdditionalLzNetworking"
               ]
             },
             "meshPeerAdditionalVnets": {
@@ -47057,8 +47204,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "4693796059509131662"
+                      "version": "0.36.177.2456",
+                      "templateHash": "109949312866318067"
                     }
                   },
                   "parameters": {
@@ -47127,8 +47274,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "4693796059509131662"
+                      "version": "0.36.177.2456",
+                      "templateHash": "109949312866318067"
                     }
                   },
                   "parameters": {

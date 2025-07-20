@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12259520026866948342"
+      "version": "0.35.1.17967",
+      "templateHash": "9018246858317391662"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -25,9 +25,17 @@
     "clusterName": {
       "type": "string",
       "minLength": 4,
+      "maxLength": 40,
+      "metadata": {
+        "description": "Conditional. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment."
+      }
+    },
+    "clusterADName": {
+      "type": "string",
+      "minLength": 4,
       "maxLength": 15,
       "metadata": {
-        "description": "Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment."
       }
     },
     "deploymentMode": {
@@ -268,12 +276,6 @@
       "metadata": {
         "description": "Optional. The intended operation for a cluster."
       }
-    },
-    "hciResourceProviderObjectId": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription."
-      }
     }
   },
   "variables": {
@@ -294,9 +296,6 @@
         }
       }
     ],
-    "azureConnectedMachineResourceManagerRoleID": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f5819b54-e033-4d82-ac66-4fec3cbf3f4c')]",
-    "readerRoleID": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-    "azureStackHCIDeviceManagementRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '865ae368-6a45-4bd1-8fbf-0d5151f56fc1')]",
     "baseSecretNames": [
       "LocalAdminCredential",
       "AzureStackLCMUserCredential",
@@ -305,62 +304,6 @@
     "allSecretNames": "[if(parameters('needArbSecret'), concat(variables('baseSecretNames'), createArray('DefaultARBApplication')), variables('baseSecretNames'))]"
   },
   "resources": {
-    "SPConnectedMachineResourceManagerRolePermissions": {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'ConnectedMachineResourceManagerRolePermissions', resourceGroup().id)]",
-      "properties": {
-        "roleDefinitionId": "[variables('azureConnectedMachineResourceManagerRoleID')]",
-        "principalId": "[parameters('hciResourceProviderObjectId')]",
-        "principalType": "ServicePrincipal",
-        "description": "Created by Azure Stack HCI deployment template"
-      }
-    },
-    "NodeAzureConnectedMachineResourceManagerRolePermissions": {
-      "copy": {
-        "name": "NodeAzureConnectedMachineResourceManagerRolePermissions",
-        "count": "[length(variables('arcNodeResourceIds'))]"
-      },
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'azureConnectedMachineResourceManager', variables('arcNodeResourceIds')[copyIndex()], resourceGroup().id)]",
-      "properties": {
-        "roleDefinitionId": "[variables('azureConnectedMachineResourceManagerRoleID')]",
-        "principalId": "[reference(variables('arcNodeResourceIds')[copyIndex()], '2023-10-03-preview', 'Full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "description": "Created by Azure Stack HCI deployment template"
-      }
-    },
-    "NodeazureStackHCIDeviceManagementRole": {
-      "copy": {
-        "name": "NodeazureStackHCIDeviceManagementRole",
-        "count": "[length(variables('arcNodeResourceIds'))]"
-      },
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'azureStackHCIDeviceManagementRole', variables('arcNodeResourceIds')[copyIndex()], resourceGroup().id)]",
-      "properties": {
-        "roleDefinitionId": "[variables('azureStackHCIDeviceManagementRole')]",
-        "principalId": "[reference(variables('arcNodeResourceIds')[copyIndex()], '2023-10-03-preview', 'Full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "description": "Created by Azure Stack HCI deployment template"
-      }
-    },
-    "NodereaderRoleIDPermissions": {
-      "copy": {
-        "name": "NodereaderRoleIDPermissions",
-        "count": "[length(variables('arcNodeResourceIds'))]"
-      },
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'reader', variables('arcNodeResourceIds')[copyIndex()], resourceGroup().id)]",
-      "properties": {
-        "roleDefinitionId": "[variables('readerRoleID')]",
-        "principalId": "[reference(variables('arcNodeResourceIds')[copyIndex()], '2023-10-03-preview', 'Full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "description": "Created by Azure Stack HCI deployment template"
-      }
-    },
     "cluster": {
       "existing": true,
       "type": "Microsoft.AzureStackHCI/clusters",
@@ -405,7 +348,7 @@
                   "episodicDataUpload": "[parameters('episodicDataUpload')]"
                 },
                 "cluster": {
-                  "name": "[parameters('clusterName')]",
+                  "name": "[parameters('clusterADName')]",
                   "witnessType": "Cloud",
                   "witnessPath": "",
                   "cloudAccountName": "[parameters('clusterWitnessStorageAccountName')]",

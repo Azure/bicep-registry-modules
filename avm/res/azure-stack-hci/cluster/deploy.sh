@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLUSTER_AD_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -114,11 +114,11 @@ cat > "$PARAM_FILE" << EOF
     "useSharedKeyVault": {
       "value": $USE_SHARED_KEYVAULT_JSON
     },
-    "hciResourceProviderObjectId": {
-      "value": "$HCI_RESOURCE_PROVIDER_OBJECT_ID"
-    },
     "clusterName": {
       "value": "$CLUSTER_NAME"
+    },
+    "clusterADName": {
+      "value": "$CLUSTER_AD_NAME"
     },
     "operationType": {
       "value": "$OPERATION_TYPE"
@@ -163,14 +163,49 @@ echo "Checking resource: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
 if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; then
     echo "✅ Deployment-settings resource already exists. Checking status..."
 
-    # Get the provisioning state
+    # Get the provisioning state and deployment mode
     PROVISIONING_STATE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.provisioningState" --output tsv 2>/dev/null)
+    DEPLOYMENT_MODE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.deploymentMode" --output tsv 2>/dev/null)
 
-    # Check if provisioning state is Failed
-    if [ "$PROVISIONING_STATE" = "Failed" ]; then
-        echo "❌ Error: Deployment-settings resource exists but is in Failed state!"
-        echo "Resource ID: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
-        echo "Provisioning State: $PROVISIONING_STATE"
+    echo "Resource ID: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
+    echo "Provisioning State: $PROVISIONING_STATE"
+    echo "Deployment Mode: $DEPLOYMENT_MODE"
+
+    # First check deployment mode
+    if [ "$DEPLOYMENT_MODE" = "Validate" ]; then
+        echo "🗑️  Deployment mode is 'Validate'. Removing the validation resource..."
+
+        # Delete the resource
+        if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --verbose; then
+            echo "✅ Validation resource deleted successfully."
+            echo "📝 Proceeding with deployment..."
+        else
+            echo "❌ Failed to delete the validation resource. Please check permissions and try again."
+            exit 1
+        fi
+    elif [ "$DEPLOYMENT_MODE" = "Deploy" ]; then
+        # Check if deployment is successful
+        if [ "$PROVISIONING_STATE" = "Succeeded" ]; then
+            echo "✅ Deployment resource is in successful state. Skipping deployment."
+
+            # Show existing resource details
+            echo "Existing deployment-settings details:"
+            az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
+
+            exit 0
+        else
+            echo "❌ Deployment resource exists but is not in successful state!"
+            echo "Expected: Succeeded, Actual: $PROVISIONING_STATE"
+
+            # Show resource details for debugging
+            echo "Resource details:"
+            az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
+
+            exit 1
+        fi
+    else
+        echo "⚠️  Unknown deployment mode: $DEPLOYMENT_MODE"
+        echo "Expected 'Validate' or 'Deploy'"
 
         # Show resource details for debugging
         echo "Resource details:"
@@ -178,15 +213,6 @@ if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; th
 
         exit 1
     fi
-
-    echo "✅ Resource is in good state. Skipping deployment."
-    echo "Provisioning State: $PROVISIONING_STATE"
-
-    # Show existing resource details
-    echo "Existing deployment-settings details:"
-    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
-
-    exit 0
 else
     echo "📝 Deployment-settings resource does not exist. Proceeding with deployment..."
 fi

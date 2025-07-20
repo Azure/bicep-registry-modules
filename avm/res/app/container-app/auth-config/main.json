@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "9584101295479243648"
+      "version": "0.36.177.2456",
+      "templateHash": "9975390462196064744"
     },
     "name": "Container App Auth Configs",
     "description": "This module deploys Container App Auth Configs."

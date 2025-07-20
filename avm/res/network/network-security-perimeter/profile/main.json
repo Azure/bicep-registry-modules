@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12754329895696619344"
+      "version": "0.36.1.42791",
+      "templateHash": "18183393498532860472"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile."
@@ -135,12 +135,12 @@
     "networkSecurityPerimeter": {
       "existing": true,
       "type": "Microsoft.Network/networkSecurityPerimeters",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('networkPerimeterName')]"
     },
     "networkSecurityPerimeter_profile": {
       "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-07-01",
       "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('name'))]"
     },
     "nsp_accessRules": {
@@ -195,8 +195,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12994955439990027696"
+              "version": "0.36.1.42791",
+              "templateHash": "5803193043229403363"
             },
             "name": "Network Security Perimeter Access Rule",
             "description": "This module deploys a Network Security Perimeter Access Rule."
@@ -303,18 +303,18 @@
             "networkPerimeter::networkSecurityPerimeterProfile": {
               "existing": true,
               "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'))]"
             },
             "networkPerimeter": {
               "existing": true,
               "type": "Microsoft.Network/networkSecurityPerimeters",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-07-01",
               "name": "[parameters('networkPerimeterName')]"
             },
             "nsp_accessRule": {
               "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}/{2}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'), parameters('name'))]",
               "properties": {
                 "addressPrefixes": "[parameters('addressPrefixes')]",
