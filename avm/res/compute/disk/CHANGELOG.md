@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/disk/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes
