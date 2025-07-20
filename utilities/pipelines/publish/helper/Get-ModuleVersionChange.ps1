@@ -34,9 +34,8 @@ function Get-ModuleVersionChange {
         [string] $VersionFilePath
     )
 
-    # Refresh local git
-    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules'
-    git fetch 'upstream'
+    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
     $currentBranch = git branch --show-current
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
