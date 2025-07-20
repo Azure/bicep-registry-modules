@@ -195,7 +195,7 @@ var devOpsOrgURL = 'https://dev.azure.com/${selfHostedConfig.?devOpsOrganization
 // ================ //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.devops-cicdagentsandrunners.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -402,7 +402,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = if (c
   }
 }
 
-module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
+module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.9.0' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
   name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
@@ -750,7 +750,7 @@ module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zon
   }
 }
 
-module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.23.0' = if (contains(
+module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.25.0' = if (contains(
   computeTypes,
   'azure-container-app'
 ) && selfHostedConfig.selfHostedType == 'azuredevops' && privateNetworking) {
@@ -796,7 +796,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.23.0' = 
   }
 }
 
-module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.23.0' = if (privateNetworking) {
+module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.25.0' = if (privateNetworking) {
   name: 'deploymentScriptAcrStg-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'stgacr${uniqueString(resourceGroup().id, acr.outputs.name,location)}'
