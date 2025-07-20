@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3887913638022997866"
+      "templateHash": "18204160603102381854"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk"
@@ -143,7 +143,7 @@
         "PremiumV2_LRS"
       ],
       "metadata": {
-        "description": "Required. The disks sku name."
+        "description": "Required. The disks sku name. Can be ."
       }
     },
     "edgeZone": {
