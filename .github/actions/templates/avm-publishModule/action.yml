@@ -71,6 +71,9 @@ runs:
           Write-Verbose 'Test 3' -Verbose
           git config --list 2>&1 | Write-Verbose -Verbose
 
+          (git remote get-url origin) -match '\/Azure\/'
+          (git remote get-url origin 2>&1) -match '\/Azure\/'
+
           return
 
           # Load used functions
