@@ -1218,7 +1218,7 @@ The number of agents needed at a specific time.
 | [`thursday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
 | [`tuesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
 | [`wednesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
-| [`weekDaysScheme`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysscheme) | object | A schema to apply to weekdays (Monday to Friday). |
+| [`weekDaysScheme`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysscheme) | object | A schema to apply to weekdays (Monday to Friday). Overrules daily configurations. |
 
 ### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.allWeekScheme`
 
@@ -1550,7 +1550,7 @@ The time at which the agents are needed.
 
 ### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.weekDaysScheme`
 
-A schema to apply to weekdays (Monday to Friday).
+A schema to apply to weekdays (Monday to Friday). Overrules daily configurations.
 
 - Required: No
 - Type: object
@@ -1749,7 +1749,7 @@ The number of agents needed at a specific time.
 | [`thursday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
 | [`tuesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
 | [`wednesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
-| [`weekDaysScheme`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysscheme) | object | A schema to apply to weekdays (Monday to Friday). |
+| [`weekDaysScheme`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysscheme) | object | A schema to apply to weekdays (Monday to Friday). Overrules daily configurations. |
 
 ### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.allWeekScheme`
 
@@ -2081,7 +2081,7 @@ The time at which the agents are needed.
 
 ### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.weekDaysScheme`
 
-A schema to apply to weekdays (Monday to Friday).
+A schema to apply to weekdays (Monday to Friday). Overrules daily configurations.
 
 - Required: No
 - Type: object
