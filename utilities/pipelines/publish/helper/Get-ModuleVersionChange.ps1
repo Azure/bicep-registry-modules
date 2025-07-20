@@ -43,10 +43,10 @@ function Get-ModuleVersionChange {
     # The diff will be empty, if the version.json file was not updated
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
-        $diff = git diff --diff-filter=AM 'origin/main^' $VersionFilePath | Out-String
+        $diff = git diff --diff-filter=AM 'upstream/main^' $VersionFilePath | Out-String
     } else {
         Write-Verbose 'Currently in a fork or a branch in upstream main. Fetching changes against upstream main' -Verbose
-        $diff = git diff --diff-filter=AM 'origin/main' $VersionFilePath | Out-String
+        $diff = git diff --diff-filter=AM 'upstream/main' $VersionFilePath | Out-String
     }
 
     if ($diff -match '\-\s*"version":\s*"([0-9]{1})\.([0-9]{1})".*') {
