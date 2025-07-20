@@ -17,6 +17,11 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
+    Write-Verbose 'Setup' -Verbose
+    git config user.name 'GitHub Actions Bot'
+    git config user.email '<>'
+    git status
+
     # Note: Fetches only the name of the modified files
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url upstream 2>&1) -match '.*no such remote.*' # If in upstream the value would be "error: No such remote 'upstream'"
@@ -27,8 +32,7 @@ function Get-ModifiedFileList {
     git remote get-url origin
     Write-Verbose 'Test 3' -Verbose
     git config --list
-    Write-Verbose 'Test 4' -Verbose
-    git status
+
 
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
