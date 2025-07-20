@@ -57,6 +57,8 @@ runs:
           # git config --system --add safe.directory '*'
           git fetch --all
 
+          git brach --show-current
+
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
 
