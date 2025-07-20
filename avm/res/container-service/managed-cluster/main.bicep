@@ -61,6 +61,18 @@ param loadBalancerSku string = 'standard'
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
 
+@description('Optional. The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports.')
+param allocatedOutboundPorts int = 0
+
+@description('Optional. Desired outbound flow idle timeout in minutes.')
+param idleTimeoutInMinutes int = 30
+
+@description('Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules.')
+param outboundPublicIPResourceIds string[]?
+
+@description('Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules.')
+param outboundPublicIPPrefixResourceIds string[]?
+
 @description('Optional. The type of the managed inbound Load Balancer BackendPool.')
 @allowed([
   'NodeIP'
@@ -736,6 +748,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
       loadBalancerProfile: {
+        allocatedOutboundPorts: allocatedOutboundPorts
+        idleTimeoutInMinutes: idleTimeoutInMinutes
         managedOutboundIPs: managedOutboundIPCount != 0
           ? {
               count: managedOutboundIPCount
@@ -743,6 +757,21 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
           : null
         effectiveOutboundIPs: []
         backendPoolType: backendPoolType
+        outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
+          ? {
+              publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
+                id: id
+              })
+            }
+          : null
+
+        outboundIPs: !empty(outboundPublicIPResourceIds)
+          ? {
+              publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
+                id: id
+              })
+            }
+          : null
       }
     }
     publicNetworkAccess: publicNetworkAccess

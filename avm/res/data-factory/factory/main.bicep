@@ -63,6 +63,9 @@ param gitTenantId string = ''
 @description('Optional. List of Global Parameters for the factory.')
 param globalParameters object = {}
 
+@description('Optional. Purview Account resource identifier.')
+param purviewResourceId string?
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -223,6 +226,11 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
                 ? null
                 : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           vaultBaseUrl: cMKKeyVault.properties.vaultUri
+        }
+      : null
+    purviewConfiguration: !empty(purviewResourceId)
+      ? {
+          purviewResourceId: purviewResourceId
         }
       : null
   }

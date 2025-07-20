@@ -79,7 +79,7 @@ param virtualNetworkDeployBastion bool = false
 @sys.description('The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
 param virtualNetworkBastionConfiguration bastionType?
 
-@sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
+@sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via virtual network peering or a virtual hub connection.')
 param hubNetworkResourceId string = ''
 
 @sys.description('Enables the use of remote gateways in the specified hub virtual network. If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
@@ -857,7 +857,7 @@ module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-grou
   for (nsg, i) in nsgArrayFormatted: if (!empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, nsg.vnetResourceGroupName)
     dependsOn: [
-      createResourceGroupForadditionalLzNetworking
+      createResourceGroupForAdditionalLzNetworking
     ]
     params: {
       name: nsg.nsgName ?? 'nsg-${nsg.subnetName}-${substring(guid(nsg.vnetResourceGroupName, nsg.subnetName), 0, 5)}'
@@ -1569,7 +1569,7 @@ module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' =
   for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && (vnet.?deployNatGateway ?? false)) {
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
-      createResourceGroupForadditionalLzNetworking
+      createResourceGroupForAdditionalLzNetworking
       registerResourceProviders
     ]
     params: {
@@ -1655,7 +1655,7 @@ module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   }
 ]
 
-module createResourceGroupForadditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = [
+module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = [
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: subscription(subscriptionId)
     params: {
@@ -1676,7 +1676,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
-      createResourceGroupForadditionalLzNetworking
+      createResourceGroupForAdditionalLzNetworking
       createAdditionalVnetNsgs
       createLzRouteTable
     ]
@@ -1717,7 +1717,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
       peerings: vnet.?peerToHubNetwork ?? false
         ? [
             {
-              remoteVirtualNetworkResourceId: hubVirtualNetworkResourceIdChecked
+              remoteVirtualNetworkResourceId: vnet.?alternativeHubVnetResourceId ?? hubVirtualNetworkResourceIdChecked
               allowForwardedTraffic: true
               allowVirtualNetworkAccess: true
               allowGatewayTransit: false
@@ -1731,6 +1731,36 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
           ]
         : null
       enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createAdditionalLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = [
+  for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks) && (!empty(vnet.?alternativeVwanHubResourceId ?? '') || !empty(virtualHubResourceIdChecked))) {
+    dependsOn: [
+      createResourceGroupForAdditionalLzNetworking
+      createAdditionalVnets
+    ]
+    scope: resourceGroup(
+      split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[2],
+      split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[4]
+    )
+    params: {
+      name: 'vhc-${vnet.name}-${substring(guid(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked), 0, 5)}'
+      virtualHubName: split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[8]
+      remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${vnet.resourceGroupName}/providers/Microsoft.Network/virtualNetworks/${vnet.name}'
+      enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
+      routingConfiguration: !vHubRoutingIntentEnabled
+        ? {
+            associatedRouteTable: {
+              id: virtualWanHubConnectionAssociatedRouteTable
+            }
+            propagatedRouteTables: {
+              ids: virtualWanHubConnectionPropogatedRouteTables
+              labels: virtualWanHubConnectionPropogatedLabels
+            }
+          }
+        : {}
     }
   }
 ]
@@ -2165,6 +2195,12 @@ type virtualNetworkType = {
 
   @description('Optional. The option to peer the virtual network to the hub network.')
   peerToHubNetwork: bool?
+
+  @description('Optional. The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`.')
+  alternativeHubVnetResourceId: string?
+
+  @description('Optional. The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`.')
+  alternativeVwanHubResourceId: string?
 
   @description('Required. The name of the virtual network resource group.')
   resourceGroupName: string

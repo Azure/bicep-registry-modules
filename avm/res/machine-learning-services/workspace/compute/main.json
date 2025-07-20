@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "8367876684793659506"
+      "version": "0.36.177.2456",
+      "templateHash": "4274081592342795983"
     },
     "name": "Machine Learning Services Workspaces Computes",
     "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -202,7 +202,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('compute', '2024-10-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(if(equals(parameters('deployCompute'), true()), reference('compute', '2024-10-01', 'full'), null()), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

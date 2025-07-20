@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
-      publicIpZones: [
+      publicIpAvailabilityZones: [
         1
         2
         3

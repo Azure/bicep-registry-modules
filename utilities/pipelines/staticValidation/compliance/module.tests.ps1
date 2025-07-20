@@ -1602,8 +1602,8 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # check for the order of the versions
-            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
-            ($sections | Sort-Object -Descending) | Should -BeExactly $sections 'the versions in the changelog should appear in descending order'
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s([0-9]+\.[0-9]+\.[0-9]+)\s*' } | ForEach-Object { [version]$matches[1] }
+            $sections | Should -BeExactly ($sections | Sort-Object -Descending) 'the versions in the changelog should appear in descending order'
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` versions must contain exactly one valid `Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
@@ -2278,7 +2278,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             # 2017-07-14
             # 2016-05-16
 
-            if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
+            if ($indexOfVersion -gt ($approvedApiVersions.Count - 2) -and $approvedApiVersions.Count -ne 1) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
                 $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
