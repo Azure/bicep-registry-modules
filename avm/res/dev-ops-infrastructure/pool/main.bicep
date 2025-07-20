@@ -143,10 +143,17 @@ var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
           }
         ]
       : contains(agentProfile.resourcePredictions.daysData, 'weekDaysScheme')
-          ? map(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], day => {
-              '${agentProfile.resourcePredictions.daysData.weekDaysScheme.startTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.startAgentCount
-              '${agentProfile.resourcePredictions.daysData.weekDaysScheme.endTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.endAgentCount
-            })
+          ? map(
+              ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+              (day, index) =>
+                // Apply weekDaysScheme only to weekdays (Monday-Friday, indices 1-5)
+                index >= 1 && index <= 5
+                  ? {
+                      '${agentProfile.resourcePredictions.daysData.weekDaysScheme.startTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.startAgentCount
+                      '${agentProfile.resourcePredictions.daysData.weekDaysScheme.endTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.endAgentCount
+                    }
+                  : {}
+            )
           : map(
               ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
               day =>
