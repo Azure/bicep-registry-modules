@@ -17,15 +17,21 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    $CurrentBranch = Get-GitBranchName
-    if ($CurrentBranch -eq 'main') {
-        Write-Verbose 'Gathering modified files from the pull request' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
+    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
+    $currentBranch = Get-GitBranchName
+    $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
+
+    # Note: Fetches only the name of the modified files
+    if ($inUpstream -and $currentBranch -eq 'main') {
+        Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
+        $diff = git diff --name-only --diff-filter=AM 'upstream/main^'
     } else {
-        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'origin/main'
+        Write-Verbose 'Currently in a fork or a branch in upstream main. Fetching changes against upstream main' -Verbose
+        $diff = git diff --name-only --diff-filter=AM 'upstream/main'
     }
-    $ModifiedFiles = $Diff | Get-Item -Force
+
+    $modifiedFiles = $diff | Get-Item -Force
 
     return $ModifiedFiles
 }
