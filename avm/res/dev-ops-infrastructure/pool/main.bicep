@@ -81,6 +81,26 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param managedIdentities managedIdentityAllType?
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
+// ================ //
+// Input validation //
+// ================ //
+
+var daysData = agentProfile.?resourcePredictions.?daysData
+var hasAllWeekScheme = !empty(daysData) && contains(daysData, 'allWeekScheme')
+var hasWeekDaysScheme = !empty(daysData) && contains(daysData, 'weekDaysScheme')
+
+#disable-next-line no-unused-vars
+var allWeekSchemeConflict = hasAllWeekScheme && length(daysData) > 1
+  ? fail('Configuration error: allWeekScheme cannot be combined with other day configurations. Please use either allWeekScheme for all 7 days or other individual day/scheme configurations.')
+  : null
+
+#disable-next-line no-unused-vars
+var weekDaysSchemeConflict = hasWeekDaysScheme && length(daysData) > 1
+  ? fail('Configuration error: weekDaysScheme cannot be combined with other day configurations. Please use either weekDaysScheme for weekdays or individual day configurations.')
+  : null
+
+// ================ //
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -119,20 +139,6 @@ var identity = !empty(managedIdentities)
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : null
-
-var daysData = agentProfile.?resourcePredictions.?daysData
-var hasAllWeekScheme = !empty(daysData) && contains(daysData, 'allWeekScheme')
-var hasWeekDaysScheme = !empty(daysData) && contains(daysData, 'weekDaysScheme')
-
-#disable-next-line no-unused-vars
-var allWeekSchemeConflict = hasAllWeekScheme && length(daysData) > 1
-  ? fail('Configuration error: allWeekScheme cannot be combined with other day configurations. Please use either allWeekScheme for all 7 days or other individual day/scheme configurations.')
-  : null
-
-#disable-next-line no-unused-vars
-var weekDaysSchemeConflict = hasWeekDaysScheme && length(daysData) > 1
-  ? fail('Configuration error: weekDaysScheme cannot be combined with other day configurations. Please use either weekDaysScheme for weekdays or individual day configurations.')
   : null
 
 var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
@@ -503,6 +509,6 @@ type daysDataType = {
     provisioningCount: int
   }?
 
-  @description('Optional. A schema to apply to weekdays (Monday to Friday).')
+  @description('Optional. A schema to apply to weekdays (Monday to Friday). Overrules daily configurations.')
   weekDaysScheme: standbyAgentsConfigType?
 }
