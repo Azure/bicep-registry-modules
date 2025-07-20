@@ -17,10 +17,11 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    # Note: Fetches only the name of the modified files
+    git fetch # Refresh
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
+    # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
         $diff = git diff --name-only --diff-filter=AM 'origin/main^'
