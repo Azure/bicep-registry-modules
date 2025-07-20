@@ -26,7 +26,9 @@ function Get-ModifiedFileList {
     Write-Verbose 'Test 2' -Verbose
     git remote get-url origin
     Write-Verbose 'Test 3' -Verbose
-    (git config --list)
+    git config --list
+    Write-Verbose 'Test 4' -Verbose
+    git status
 
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in a Upstream main. Fetching changes against main^-1 ' -Verbose
