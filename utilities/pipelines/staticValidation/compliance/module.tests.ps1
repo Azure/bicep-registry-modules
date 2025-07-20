@@ -414,87 +414,87 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
 
 Describe 'Module tests' -Tag 'Module' {
 
-    # Context 'Readme content tests' -Tag 'Readme' {
+    Context 'Readme content tests' -Tag 'Readme' {
 
-    #     BeforeDiscovery {
-    #         $readmeFileTestCases = [System.Collections.ArrayList] @()
+        BeforeDiscovery {
+            $readmeFileTestCases = [System.Collections.ArrayList] @()
 
-    #         foreach ($moduleFolderPath in $moduleFolderPaths) {
+            foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-    #             $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-    #             $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+                $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+                $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
-    #             $readmeFileTestCases += @{
-    #                 moduleFolderName    = $resourceTypeIdentifier
-    #                 templateFileContent = $builtTestFileMap[$templateFilePath]
-    #                 templateFilePath    = $templateFilePath
-    #                 readMeFilePath      = Join-Path -Path $moduleFolderPath 'README.md'
-    #             }
-    #         }
-    #     }
+                $readmeFileTestCases += @{
+                    moduleFolderName    = $resourceTypeIdentifier
+                    templateFileContent = $builtTestFileMap[$templateFilePath]
+                    templateFilePath    = $templateFilePath
+                    readMeFilePath      = Join-Path -Path $moduleFolderPath 'README.md'
+                }
+            }
+        }
 
-    #     BeforeAll {
-    #         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
-    #         try {
-    #             $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
-    #             if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
-    #                 $telemetryFileContent = $rawResponse.Content -split '\n'
-    #             } else {
-    #                 Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
-    #                 $telemetryFileContent = $null
-    #             }
-    #         } catch {
-    #             Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
-    #             $telemetryFileContent = $null
-    #         }
+        BeforeAll {
+            $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+            try {
+                $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+                if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
+                    $telemetryFileContent = $rawResponse.Content -split '\n'
+                } else {
+                    Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
+                    $telemetryFileContent = $null
+                }
+            } catch {
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
+                $telemetryFileContent = $null
+            }
 
-    #         .  (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
-    #         # load cross-references
-    #         $crossReferencedModuleList = Get-CrossReferencedModuleList
-    #     }
+            .  (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
+            # load cross-references
+            $crossReferencedModuleList = Get-CrossReferencedModuleList
+        }
 
-    #     It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
+        It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
 
-    #         param(
-    #             [string] $templateFilePath,
-    #             [hashtable] $templateFileContent,
-    #             [string] $readMeFilePath
-    #         )
+            param(
+                [string] $templateFilePath,
+                [hashtable] $templateFileContent,
+                [string] $readMeFilePath
+            )
 
-    #         # Get current hash
-    #         $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
+            # Get current hash
+            $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
 
-    #         # Load function
-    #         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+            # Load function
+            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
-    #         # Apply update with already compiled template content
-    #         try {
-    #             Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
-    #                 TemplateFileContent       = $templateFileContent
-    #                 CrossReferencedModuleList = $crossReferencedModuleList
-    #                 TelemetryFileContent      = $telemetryFileContent
-    #             } -ErrorAction 'Stop' -ErrorVariable 'InvocationError'
-    #         } catch {
-    #             $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
-    #         }
+            # Apply update with already compiled template content
+            try {
+                Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
+                    TemplateFileContent       = $templateFileContent
+                    CrossReferencedModuleList = $crossReferencedModuleList
+                    TelemetryFileContent      = $telemetryFileContent
+                } -ErrorAction 'Stop' -ErrorVariable 'InvocationError'
+            } catch {
+                $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
+            }
 
-    #         # Get hash after 'update'
-    #         $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
+            # Get hash after 'update'
+            $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
 
-    #         # Compare
-    #         $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
-    #         if (-not $filesAreTheSame) {
-    #             $diffResponse = git diff $readMeFilePath
-    #             Write-Warning ($diffResponse | Out-String) -Verbose
+            # Compare
+            $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+            if (-not $filesAreTheSame) {
+                $diffResponse = git diff $readMeFilePath
+                Write-Warning ($diffResponse | Out-String) -Verbose
 
-    #             # Reset readme file to original state
-    #             git checkout HEAD -- $readMeFilePath
-    #         }
+                # Reset readme file to original state
+                git checkout HEAD -- $readMeFilePath
+            }
 
-    #         $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
-    #         $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
-    #     }
-    # }
+            $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
+            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+        }
+    }
 
     Context 'Compiled ARM template tests' -Tag 'ARM' {
 
@@ -1564,30 +1564,12 @@ Describe 'Module tests' -Tag 'Module' {
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
 
-            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
             # check for the presence of the `## $expectedModuleVersion` section
             "## $expectedModuleVersion" | Should -BeIn $sections -Because "the `## $expectedModuleVersion` section must be in the changelog"
-            # if ($changelogSection -notin $sections) {
-            #     $warningMessage = "The `## $expectedModuleVersion` section must be in the changelog"
-            #     Write-Warning $warningMessage
 
-            #     Write-Output @{
-            #         Warning = $warningMessage
-            #     }
-            # }
-
-            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
-            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
             # only one version section should be present
+            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
             $changelogSection.Count | Should -BeExactly 1 -Because "the `## $expectedModuleVersion` section should be in the changelog only once"
-            # if ($changelogSection.Count -ne 1) {
-            #     $warningMessage = "The `## $expectedModuleVersion` section should be in the changelog only once"
-            #     Write-Warning $warningMessage
-
-            #     Write-Output @{
-            #         Warning = $warningMessage
-            #     }
-            # }
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` file''s sections must be sorted in a decending order.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
