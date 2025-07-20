@@ -54,28 +54,6 @@ runs:
           # Grouping task logs
           Write-Output '::group::Publish module to public bicep registry'
 
-          # git config --system --add safe.directory '*'
-          git fetch --all
-
-          git branch --show-current
-
-          Write-Verbose 'Setup' -Verbose
-          # git config user.name 'GitHub Actions Bot'
-          # git config user.email '<>'
-          git status
-
-          Write-Verbose 'Test' -Verbose
-          git remote get-url upstream 2>&1 | Write-Verbose -Verbose
-          Write-Verbose 'Test 2' -Verbose
-          git remote get-url origin 2>&1 | Write-Verbose -Verbose
-          Write-Verbose 'Test 3' -Verbose
-          git config --list 2>&1 | Write-Verbose -Verbose
-
-          (git remote get-url origin) -match '\/Azure\/'
-          (git remote get-url origin 2>&1) -match '\/Azure\/'
-
-          return
-
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
 
