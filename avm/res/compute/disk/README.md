@@ -622,7 +622,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
-| [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
+| [`sku`](#parameter-sku) | string | The disks sku name. |
 
 **Conditional parameters**
 
@@ -686,7 +686,7 @@ The name of the disk that is being created.
 
 ### Parameter: `sku`
 
-The disks sku name. Can be .
+The disks sku name.
 
 - Required: Yes
 - Type: string
