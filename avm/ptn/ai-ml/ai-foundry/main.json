@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "8933691985256994674"
+      "templateHash": "485532086708804154"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -539,7 +539,7 @@
           "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
           "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
           "includeCapabilityHost": {
-            "value": true
+            "value": false
           },
           "lock": {
             "value": "[parameters('lock')]"
@@ -19913,6 +19913,9 @@
           "location": {
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
+          "includeCapabilityHost": {
+            "value": false
+          },
           "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('aiSearch').outputs.name.value, 'target', reference('aiSearch').outputs.endpoint.value, 'location', reference('aiSearch').outputs.location.value, 'resourceId', reference('aiSearch').outputs.resourceId.value))), createObject('value', createArray()))]",
           "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('cosmosDb').outputs.name.value, 'target', reference('cosmosDb').outputs.endpoint.value, 'location', reference('cosmosDb').outputs.location.value, 'resourceId', reference('cosmosDb').outputs.resourceId.value))), createObject('value', createArray()))]",
           "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
@@ -19931,7 +19934,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7022345757284953452"
+              "templateHash": "16809391513570929902"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20160,6 +20163,12 @@
                 "description": "Required. Name of the existing parent Foundry Account resource."
               }
             },
+            "includeCapabilityHost": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Include the capability host for the Foundry project."
+              }
+            },
             "aiServicesConnections": {
               "type": "array",
               "items": {
@@ -20219,7 +20228,7 @@
             }
           },
           "variables": {
-            "createCapabilityHost": "[and(and(not(empty(parameters('cosmosDbConnections'))), not(empty(parameters('aiSearchConnections')))), not(empty(parameters('storageAccountConnections'))))]"
+            "createCapabilityHost": "[and(and(and(parameters('includeCapabilityHost'), not(empty(parameters('cosmosDbConnections')))), not(empty(parameters('aiSearchConnections')))), not(empty(parameters('storageAccountConnections'))))]"
           },
           "resources": {
             "foundryAccount": {

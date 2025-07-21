@@ -18,6 +18,9 @@ param location string = resourceGroup().location
 @description('Required. Name of the existing parent Foundry Account resource.')
 param accountName string
 
+@description('Required. Include the capability host for the Foundry project.')
+param includeCapabilityHost bool
+
 @description('Optional. List of Azure AI Services connections for the project.')
 param aiServicesConnections azureConnectionType[]?
 
@@ -129,7 +132,7 @@ resource cosmosDbConnResources 'Microsoft.CognitiveServices/accounts/projects/co
   }
 ]
 
-var createCapabilityHost = !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
+var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
 
 resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
   name: '${name}-cap-host'
