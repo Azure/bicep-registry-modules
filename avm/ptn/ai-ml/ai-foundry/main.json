@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7422898332209791848"
+      "templateHash": "14902854502023921134"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19844,7 +19844,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), createObject('value', parameters('aiFoundryConfiguration').project.name), createObject('value', format('proj-{0}', variables('resourcesName'))))]",
+          "name": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), createObject('value', parameters('aiFoundryConfiguration').project.name), createObject('value', format('{0}/proj-{1}', reference('foundryAccount').outputs.name.value, variables('resourcesName'))))]",
           "desc": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'desc'))), createObject('value', parameters('aiFoundryConfiguration').project.desc), createObject('value', 'This is the default project for AI Foundry.'))]",
           "displayName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'displayName'))), createObject('value', parameters('aiFoundryConfiguration').project.displayName), createObject('value', format('{0} Default Project', parameters('baseName'))))]",
           "accountName": {
