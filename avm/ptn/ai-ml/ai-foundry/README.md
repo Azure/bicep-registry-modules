@@ -178,10 +178,6 @@ param aiModelDeployments = [
 
 Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Skipping this test temporarily to focus on other tests.
-```
 
 <details>
 
@@ -334,10 +330,6 @@ param storageAccountConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Skipping this test temporarily to focus on other tests.
-```
 
 <details>
 
@@ -644,10 +636,6 @@ param storageAccountConfiguration = {
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Skipping this test temporarily to focus on other tests.
-```
 
 <details>
 
