@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16206545770885539382"
+      "templateHash": "16694886600263366284"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -336,7 +336,9 @@
     "aiServicesConns": {
       "copy": {
         "name": "aiServicesConns",
-        "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]"
+        "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -525,7 +527,9 @@
     "cosmosDbConns": {
       "copy": {
         "name": "cosmosDbConns",
-        "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]"
+        "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -713,7 +717,9 @@
     "aiSearchConns": {
       "copy": {
         "name": "aiSearchConns",
-        "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]"
+        "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -902,7 +908,9 @@
     "storageAccountConns": {
       "copy": {
         "name": "storageAccountConns",
-        "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]"
+        "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "14902854502023921134"
+      "templateHash": "13725735388652471713"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19844,7 +19844,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), createObject('value', parameters('aiFoundryConfiguration').project.name), createObject('value', format('{0}/proj-{1}', reference('foundryAccount').outputs.name.value, variables('resourcesName'))))]",
+          "name": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), createObject('value', parameters('aiFoundryConfiguration').project.name), createObject('value', format('proj-{0}', variables('resourcesName'))))]",
           "desc": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'desc'))), createObject('value', parameters('aiFoundryConfiguration').project.desc), createObject('value', 'This is the default project for AI Foundry.'))]",
           "displayName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'displayName'))), createObject('value', parameters('aiFoundryConfiguration').project.displayName), createObject('value', format('{0} Default Project', parameters('baseName'))))]",
           "accountName": {
@@ -19871,7 +19871,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16206545770885539382"
+              "templateHash": "16694886600263366284"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20201,7 +20201,9 @@
             "aiServicesConns": {
               "copy": {
                 "name": "aiServicesConns",
-                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -20390,7 +20392,9 @@
             "cosmosDbConns": {
               "copy": {
                 "name": "cosmosDbConns",
-                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -20578,7 +20582,9 @@
             "aiSearchConns": {
               "copy": {
                 "name": "aiSearchConns",
-                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -20767,7 +20773,9 @@
             "storageAccountConns": {
               "copy": {
                 "name": "storageAccountConns",
-                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",

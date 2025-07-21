@@ -224,7 +224,7 @@ module foundryProject 'modules/project/main.bicep' = {
   params: {
     name: !empty(aiFoundryConfiguration.?project.?name)
       ? aiFoundryConfiguration!.project!.name!
-      : '${foundryAccount.outputs.name}/proj-${resourcesName}'
+      : 'proj-${resourcesName}'
     desc: !empty(aiFoundryConfiguration.?project.?desc)
       ? aiFoundryConfiguration!.project!.desc!
       : 'This is the default project for AI Foundry.'

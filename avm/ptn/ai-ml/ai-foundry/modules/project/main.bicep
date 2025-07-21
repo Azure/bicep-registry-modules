@@ -55,53 +55,53 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 }
 
+@batchSize(1)
 module aiServicesConns 'connections/aiService.bicep' = [
   for connection in aiServicesConnections ?? []: {
     name: take('${name}-aiservices-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    #disable-next-line no-unnecessary-dependson
     dependsOn: [project]
     params: {
       name: connection.?name
-      projectName: project.name
+      projectName: name
       resourceIdOrName: connection.resourceId
     }
   }
 ]
 
+@batchSize(1)
 module cosmosDbConns 'connections/cosmosDb.bicep' = [
   for connection in cosmosDbConnections ?? []: {
     name: take('${name}-cosmos-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    #disable-next-line no-unnecessary-dependson
     dependsOn: [project]
     params: {
       name: connection.?name
-      projectName: project.name
+      projectName: name
       resourceIdOrName: connection.resourceId
     }
   }
 ]
 
+@batchSize(1)
 module aiSearchConns 'connections/aiSearch.bicep' = [
   for connection in aiSearchConnections ?? []: {
     name: take('${name}-search-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    #disable-next-line no-unnecessary-dependson
     dependsOn: [project]
     params: {
       name: connection.?name
-      projectName: project.name
+      projectName: name
       resourceIdOrName: connection.resourceId
     }
   }
 ]
 
+@batchSize(1)
 module storageAccountConns 'connections/storageAccount.bicep' = [
   for connection in storageAccountConnections ?? []: {
     name: take('${name}-storage-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    #disable-next-line no-unnecessary-dependson
     dependsOn: [project]
     params: {
       name: connection.?name
-      projectName: project.name
+      projectName: name
       resourceIdOrName: connection.resourceId
       containerName: connection.containerName
     }
@@ -111,7 +111,7 @@ module storageAccountConns 'connections/storageAccount.bicep' = [
 var createCapabilityHost = !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
 
 resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: '${project.name}-cap-host'
+  name: '${name}-cap-host'
   parent: project
   dependsOn: [...aiServicesConns, ...cosmosDbConns, ...aiSearchConns, ...storageAccountConns]
   properties: {
