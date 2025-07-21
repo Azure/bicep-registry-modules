@@ -93,7 +93,7 @@ module foundryAccount 'modules/account.bicep' = {
           openAIPrivateDnsZoneId: networking!.openAiPrivateDnsZoneId
           aiServicesPrivateDnsZoneId: networking!.aiServicesPrivateDnsZoneId
         }
-      : {}
+      : null
     aiModelDeployments: aiModelDeployments
     enableTelemetry: enableTelemetry
     tags: tags
@@ -116,7 +116,7 @@ module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
           privateEndpointSubnetId: networking!.privateEndpointSubnetId
           privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
         }
-      : {}
+      : null
     roleAssignments: keyVaultConfiguration.?roleAssignments
     enableTelemetry: enableTelemetry
     tags: tags
@@ -139,7 +139,7 @@ module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
           privateEndpointSubnetId: networking!.privateEndpointSubnetId
           privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
         }
-      : {}
+      : null
     roleAssignments: aiSearchConfiguration.?roleAssignments
     enableTelemetry: enableTelemetry
     tags: tags
@@ -163,7 +163,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
           blobPrivateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.storageBlobPrivateDnsZoneId
           filePrivateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.storageFilePrivateDnsZoneId
         }
-      : {}
+      : null
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
       !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?roleAssignments)
@@ -211,7 +211,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
           privateEndpointSubnetId: networking!.privateEndpointSubnetId
           privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
         }
-      : {}
+      : null
     enableTelemetry: enableTelemetry
     roleAssignments: cosmosDbConfiguration.?roleAssignments
     tags: tags

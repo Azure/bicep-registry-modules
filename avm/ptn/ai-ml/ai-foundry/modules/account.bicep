@@ -44,7 +44,7 @@ param includeCapabilityHost bool
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var networkIsolation = !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.cogServicesPrivateDnsZoneId) && !empty(privateNetworking!.openAIPrivateDnsZoneId) && !empty(privateNetworking!.aiServicesPrivateDnsZoneId)
+var networkIsolation = !empty(privateNetworking) && !empty(privateNetworking.?privateEndpointSubnetId) && !empty(privateNetworking.?cogServicesPrivateDnsZoneId) && !empty(privateNetworking.?openAIPrivateDnsZoneId) && !empty(privateNetworking.?aiServicesPrivateDnsZoneId)
 
 module cognitiveService 'br/public:avm/res/cognitive-services/account:0.12.0' = {
   name: take('cog-account-${name}-deployment', 64)

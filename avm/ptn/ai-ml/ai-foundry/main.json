@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3892666996008095602"
+      "templateHash": "8933691985256994674"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -544,7 +544,7 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "privateNetworking": "[if(variables('enablePrivateNetworking'), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'cogServicesPrivateDnsZoneId', parameters('networking').cognitiveServicesPrivateDnsZoneId, 'openAIPrivateDnsZoneId', parameters('networking').openAiPrivateDnsZoneId, 'aiServicesPrivateDnsZoneId', parameters('networking').aiServicesPrivateDnsZoneId)), createObject('value', createObject()))]",
+          "privateNetworking": "[if(variables('enablePrivateNetworking'), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'cogServicesPrivateDnsZoneId', parameters('networking').cognitiveServicesPrivateDnsZoneId, 'openAIPrivateDnsZoneId', parameters('networking').openAiPrivateDnsZoneId, 'aiServicesPrivateDnsZoneId', parameters('networking').aiServicesPrivateDnsZoneId)), createObject('value', null()))]",
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
           },
@@ -563,7 +563,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "13559049813506053649"
+              "templateHash": "10939023376007148627"
             }
           },
           "definitions": {
@@ -900,7 +900,7 @@
             }
           },
           "variables": {
-            "networkIsolation": "[and(and(and(and(not(empty(parameters('privateNetworking'))), not(empty(parameters('privateNetworking').privateEndpointSubnetId))), not(empty(parameters('privateNetworking').cogServicesPrivateDnsZoneId))), not(empty(parameters('privateNetworking').openAIPrivateDnsZoneId))), not(empty(parameters('privateNetworking').aiServicesPrivateDnsZoneId)))]"
+            "networkIsolation": "[and(and(and(and(not(empty(parameters('privateNetworking'))), not(empty(tryGet(parameters('privateNetworking'), 'privateEndpointSubnetId')))), not(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneId')))), not(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneId')))), not(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneId'))))]"
           },
           "resources": {
             "cognitiveServiceReference": {
@@ -3423,7 +3423,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'keyVaultPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.keyVaultPrivateDnsZoneId)), createObject('value', createObject()))]",
+          "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'keyVaultPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.keyVaultPrivateDnsZoneId)), createObject('value', null()))]",
           "roleAssignments": {
             "value": "[tryGet(parameters('keyVaultConfiguration'), 'roleAssignments')]"
           },
@@ -7069,7 +7069,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'aiSearchPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.aiSearchPrivateDnsZoneId)), createObject('value', createObject()))]",
+          "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'aiSearchPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.aiSearchPrivateDnsZoneId)), createObject('value', null()))]",
           "roleAssignments": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
           },
@@ -9608,7 +9608,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "privateNetworking": "[if(and(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageBlobPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageFilePrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'blobPrivateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.storageBlobPrivateDnsZoneId, 'filePrivateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.storageFilePrivateDnsZoneId)), createObject('value', createObject()))]",
+          "privateNetworking": "[if(and(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageBlobPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageFilePrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'blobPrivateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.storageBlobPrivateDnsZoneId, 'filePrivateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.storageFilePrivateDnsZoneId)), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -15785,7 +15785,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'cosmosDbPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.cosmosDbPrivateDnsZoneId)), createObject('value', createObject()))]",
+          "privateNetworking": "[if(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'cosmosDbPrivateDnsZoneId')))), createObject('value', createObject('privateEndpointSubnetId', parameters('networking').privateEndpointSubnetId, 'privateDnsZoneId', parameters('networking').associatedResourcesPrivateDnsZones.cosmosDbPrivateDnsZoneId)), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
