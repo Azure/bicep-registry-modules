@@ -220,7 +220,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-hc-${serviceShort}'
-    location: enforcedLocation
     customLocationResourceId: customLocation.id
     hardwareProfile: {
       memoryMB: 4096

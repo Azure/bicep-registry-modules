@@ -69,8 +69,6 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
         osType: 'Windows'
       }
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -122,10 +120,6 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
           "osType": "Windows"
         }
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -165,8 +159,6 @@ param storageProfile = {
     osType: 'Windows'
   }
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
