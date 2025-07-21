@@ -154,9 +154,6 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   scope: project
 }
 
-@description('Name of the deployed Azure Resource Group.')
-output resourceGroupName string = resourceGroup().name
-
 @description('Resource ID of the Project.')
 output resourceId string = project.id
 
@@ -169,45 +166,45 @@ output displayName string = project.properties.displayName
 @description('Description of the Project.')
 output desc string = project.properties.description
 
-// @description('AI Services Connections for the Project.')
-// output aiServicesConnections connectionOutputType[] = [
-//   for (conn, i) in aiServicesConnections ?? []: {
-//     resourceId: aiServicesConns[i].outputs.resourceId
-//     name: aiServicesConns[i].outputs.name
-//     category: 'AIServices'
-//     target: aiServicesConns[i].outputs.target
-//   }
-// ]
+@description('AI Services Connections for the Project.')
+output aiServicesConnections connectionOutputType[] = [
+  for (conn, i) in aiServicesConnections ?? []: {
+    resourceId: aiServiceConnResources[i].id
+    name: aiServiceConnResources[i].name
+    category: 'AIServices'
+    target: aiServiceConnResources[i].properties.target
+  }
+]
 
-// @description('AI Search Connections for the Project.')
-// output aiSearchConnections connectionOutputType[] = [
-//   for (conn, i) in aiSearchConnections ?? []: {
-//     resourceId: aiSearchConns[i].outputs.resourceId
-//     name: aiSearchConns[i].outputs.name
-//     category: 'CognitiveSearch'
-//     target: aiSearchConns[i].outputs.target
-//   }
-// ]
+@description('AI Search Connections for the Project.')
+output aiSearchConnections connectionOutputType[] = [
+  for (conn, i) in aiSearchConnections ?? []: {
+    resourceId: aiSearchConnResources[i].id
+    name: aiSearchConnResources[i].name
+    category: 'CognitiveSearch'
+    target: aiSearchConnResources[i].properties.target
+  }
+]
 
-// @description('Storage Account Connections for the Project.')
-// output storageAccountConnections connectionOutputType[] = [
-//   for (conn, i) in storageAccountConnections ?? []: {
-//     resourceId: storageAccountConns[i].outputs.resourceId
-//     name: storageAccountConns[i].outputs.name
-//     category: 'AzureBlob'
-//     target: storageAccountConns[i].outputs.target
-//   }
-// ]
+@description('Storage Account Connections for the Project.')
+output storageAccountConnections connectionOutputType[] = [
+  for (conn, i) in storageAccountConnections ?? []: {
+    resourceId: storageConnResources[i].id
+    name: storageConnResources[i].name
+    category: 'AzureBlob'
+    target: storageConnResources[i].properties.target
+  }
+]
 
-// @description('Cosmos DB Connections for the Project.')
-// output cosmosDbConnections connectionOutputType[] = [
-//   for (conn, i) in cosmosDbConnections ?? []: {
-//     resourceId: cosmosDbConns[i].outputs.resourceId
-//     name: cosmosDbConns[i].outputs.name
-//     category: 'CosmosDB'
-//     target: cosmosDbConns[i].outputs.target
-//   }
-// ]
+@description('Cosmos DB Connections for the Project.')
+output cosmosDbConnections connectionOutputType[] = [
+  for (conn, i) in cosmosDbConnections ?? []: {
+    resourceId: cosmosDbConnResources[i].id
+    name: cosmosDbConnResources[i].name
+    category: 'CosmosDB'
+    target: cosmosDbConnResources[i].properties.target
+  }
+]
 
 @export()
 @description('Type representing values to create an Azure connection to an AI Foundry project.')

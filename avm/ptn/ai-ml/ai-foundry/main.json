@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4321119756059049659"
+      "templateHash": "618041562099374573"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19913,7 +19913,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "13572253067751324517"
+              "templateHash": "9435246889825272986"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20364,13 +20364,6 @@
             }
           },
           "outputs": {
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the deployed Azure Resource Group."
-              },
-              "value": "[resourceGroup().name]"
-            },
             "resourceId": {
               "type": "string",
               "metadata": {
@@ -20398,6 +20391,78 @@
                 "description": "Description of the Project."
               },
               "value": "[reference('project').description]"
+            },
+            "aiServicesConnections": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/connectionOutputType"
+              },
+              "metadata": {
+                "description": "AI Services Connections for the Project."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]",
+                "input": {
+                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].name)]",
+                  "name": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].name]",
+                  "category": "AIServices",
+                  "target": "[reference(format('aiServiceConnResources[{0}]', copyIndex())).target]"
+                }
+              }
+            },
+            "aiSearchConnections": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/connectionOutputType"
+              },
+              "metadata": {
+                "description": "AI Search Connections for the Project."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
+                "input": {
+                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].name)]",
+                  "name": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].name]",
+                  "category": "CognitiveSearch",
+                  "target": "[reference(format('aiSearchConnResources[{0}]', copyIndex())).target]"
+                }
+              }
+            },
+            "storageAccountConnections": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/connectionOutputType"
+              },
+              "metadata": {
+                "description": "Storage Account Connections for the Project."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
+                "input": {
+                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
+                  "name": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name]",
+                  "category": "AzureBlob",
+                  "target": "[reference(format('storageConnResources[{0}]', copyIndex())).target]"
+                }
+              }
+            },
+            "cosmosDbConnections": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/connectionOutputType"
+              },
+              "metadata": {
+                "description": "Cosmos DB Connections for the Project."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
+                "input": {
+                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].name)]",
+                  "name": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].name]",
+                  "category": "CosmosDB",
+                  "target": "[reference(format('cosmosDbConnResources[{0}]', copyIndex())).target]"
+                }
+              }
             }
           }
         }
