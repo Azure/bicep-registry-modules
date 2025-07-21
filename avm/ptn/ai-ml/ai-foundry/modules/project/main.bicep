@@ -37,6 +37,9 @@ param lock lockType?
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
+@description('Required. The Resource ID or name of an existing AI Search resource to connect to the project.')
+param tempSearchResourceId string
+
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
 }
@@ -55,72 +58,105 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 }
 
-@batchSize(1)
-module aiServicesConns 'connections/aiService.bicep' = [
-  for connection in aiServicesConnections ?? []: {
-    name: take('${name}-aiservices-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    dependsOn: [project]
-    params: {
-      name: connection.?name
-      projectName: name
-      resourceIdOrName: connection.resourceId
-    }
+module searchParsedResourceId '../parseResourceId.bicep' = {
+  name: take('${name}-ai-search-conn-${take(uniqueString(tempSearchResourceId), 5)}-parse-resource-id', 64)
+  params: {
+    resourceIdOrName: tempSearchResourceId
   }
-]
+}
 
-@batchSize(1)
-module cosmosDbConns 'connections/cosmosDb.bicep' = [
-  for connection in cosmosDbConnections ?? []: {
-    name: take('${name}-cosmos-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    dependsOn: [project]
-    params: {
-      name: connection.?name
-      projectName: name
-      resourceIdOrName: connection.resourceId
-    }
-  }
-]
+resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [searchParsedResourceId]
+  name: searchParsedResourceId!.outputs.name
+  scope: resourceGroup(
+    searchParsedResourceId!.outputs.subscriptionId,
+    searchParsedResourceId!.outputs.resourceGroupName
+  )
+}
 
-@batchSize(1)
-module aiSearchConns 'connections/aiSearch.bicep' = [
-  for connection in aiSearchConnections ?? []: {
-    name: take('${name}-search-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    dependsOn: [project]
-    params: {
-      name: connection.?name
-      projectName: name
-      resourceIdOrName: connection.resourceId
+resource searchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+  name: aiSearch!.name
+  parent: project
+  properties: {
+    category: 'CognitiveSearch'
+    target: 'https://${aiSearch!.name}.search.windows.net/'
+    authType: 'AAD'
+    isSharedToAll: true
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: aiSearch!.id
+      location: aiSearch!.location
     }
   }
-]
+}
 
-@batchSize(1)
-module storageAccountConns 'connections/storageAccount.bicep' = [
-  for connection in storageAccountConnections ?? []: {
-    name: take('${name}-storage-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
-    dependsOn: [project]
-    params: {
-      name: connection.?name
-      projectName: name
-      resourceIdOrName: connection.resourceId
-      containerName: connection.containerName
-    }
-  }
-]
+// @batchSize(1)
+// module aiServicesConns 'connections/aiService.bicep' = [
+//   for connection in aiServicesConnections ?? []: {
+//     name: take('${name}-aiservices-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+//     dependsOn: [project]
+//     params: {
+//       name: connection.?name
+//       projectName: name
+//       resourceIdOrName: connection.resourceId
+//     }
+//   }
+// ]
+
+// @batchSize(1)
+// module cosmosDbConns 'connections/cosmosDb.bicep' = [
+//   for connection in cosmosDbConnections ?? []: {
+//     name: take('${name}-cosmos-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+//     dependsOn: [project]
+//     params: {
+//       name: connection.?name
+//       projectName: name
+//       resourceIdOrName: connection.resourceId
+//     }
+//   }
+// ]
+
+// @batchSize(1)
+// module aiSearchConns 'connections/aiSearch.bicep' = [
+//   for connection in aiSearchConnections ?? []: {
+//     name: take('${name}-search-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+//     dependsOn: [project]
+//     params: {
+//       name: connection.?name
+//       projectName: name
+//       resourceIdOrName: connection.resourceId
+//     }
+//   }
+// ]
+
+// @batchSize(1)
+// module storageAccountConns 'connections/storageAccount.bicep' = [
+//   for connection in storageAccountConnections ?? []: {
+//     name: take('${name}-storage-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+//     dependsOn: [project]
+//     params: {
+//       name: connection.?name
+//       projectName: name
+//       resourceIdOrName: connection.resourceId
+//       containerName: connection.containerName
+//     }
+//   }
+// ]
 
 var createCapabilityHost = !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
 
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: '${name}-cap-host'
-  parent: project
-  dependsOn: [...aiServicesConns, ...cosmosDbConns, ...aiSearchConns, ...storageAccountConns]
-  properties: {
-    capabilityHostKind: 'Agents'
-    vectorStoreConnections: [for (conn, i) in aiSearchConnections ?? []: aiSearchConns[i].outputs.name]
-    storageConnections: [for (conn, i) in storageAccountConnections ?? []: storageAccountConns[i].outputs.name]
-    threadStorageConnections: [for (conn, i) in cosmosDbConnections ?? []: cosmosDbConns[i].outputs.name]
-  }
-}
+// resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
+//   name: '${name}-cap-host'
+//   parent: project
+//   dependsOn: [...aiServicesConns, ...cosmosDbConns, ...aiSearchConns, ...storageAccountConns]
+//   properties: {
+//     capabilityHostKind: 'Agents'
+//     vectorStoreConnections: [for (conn, i) in aiSearchConnections ?? []: aiSearchConns[i].outputs.name]
+//     storageConnections: [for (conn, i) in storageAccountConnections ?? []: storageAccountConns[i].outputs.name]
+//     threadStorageConnections: [for (conn, i) in cosmosDbConnections ?? []: cosmosDbConns[i].outputs.name]
+//   }
+// }
 
 resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -148,45 +184,45 @@ output displayName string = project.properties.displayName
 @description('Description of the Project.')
 output desc string = project.properties.description
 
-@description('AI Services Connections for the Project.')
-output aiServicesConnections connectionOutputType[] = [
-  for (conn, i) in aiServicesConnections ?? []: {
-    resourceId: aiServicesConns[i].outputs.resourceId
-    name: aiServicesConns[i].outputs.name
-    category: 'AIServices'
-    target: aiServicesConns[i].outputs.target
-  }
-]
+// @description('AI Services Connections for the Project.')
+// output aiServicesConnections connectionOutputType[] = [
+//   for (conn, i) in aiServicesConnections ?? []: {
+//     resourceId: aiServicesConns[i].outputs.resourceId
+//     name: aiServicesConns[i].outputs.name
+//     category: 'AIServices'
+//     target: aiServicesConns[i].outputs.target
+//   }
+// ]
 
-@description('AI Search Connections for the Project.')
-output aiSearchConnections connectionOutputType[] = [
-  for (conn, i) in aiSearchConnections ?? []: {
-    resourceId: aiSearchConns[i].outputs.resourceId
-    name: aiSearchConns[i].outputs.name
-    category: 'CognitiveSearch'
-    target: aiSearchConns[i].outputs.target
-  }
-]
+// @description('AI Search Connections for the Project.')
+// output aiSearchConnections connectionOutputType[] = [
+//   for (conn, i) in aiSearchConnections ?? []: {
+//     resourceId: aiSearchConns[i].outputs.resourceId
+//     name: aiSearchConns[i].outputs.name
+//     category: 'CognitiveSearch'
+//     target: aiSearchConns[i].outputs.target
+//   }
+// ]
 
-@description('Storage Account Connections for the Project.')
-output storageAccountConnections connectionOutputType[] = [
-  for (conn, i) in storageAccountConnections ?? []: {
-    resourceId: storageAccountConns[i].outputs.resourceId
-    name: storageAccountConns[i].outputs.name
-    category: 'AzureBlob'
-    target: storageAccountConns[i].outputs.target
-  }
-]
+// @description('Storage Account Connections for the Project.')
+// output storageAccountConnections connectionOutputType[] = [
+//   for (conn, i) in storageAccountConnections ?? []: {
+//     resourceId: storageAccountConns[i].outputs.resourceId
+//     name: storageAccountConns[i].outputs.name
+//     category: 'AzureBlob'
+//     target: storageAccountConns[i].outputs.target
+//   }
+// ]
 
-@description('Cosmos DB Connections for the Project.')
-output cosmosDbConnections connectionOutputType[] = [
-  for (conn, i) in cosmosDbConnections ?? []: {
-    resourceId: cosmosDbConns[i].outputs.resourceId
-    name: cosmosDbConns[i].outputs.name
-    category: 'CosmosDB'
-    target: cosmosDbConns[i].outputs.target
-  }
-]
+// @description('Cosmos DB Connections for the Project.')
+// output cosmosDbConnections connectionOutputType[] = [
+//   for (conn, i) in cosmosDbConnections ?? []: {
+//     resourceId: cosmosDbConns[i].outputs.resourceId
+//     name: cosmosDbConns[i].outputs.name
+//     category: 'CosmosDB'
+//     target: cosmosDbConns[i].outputs.target
+//   }
+// ]
 
 @export()
 @description('Type representing an Azure connection to an AI Foundry project.')

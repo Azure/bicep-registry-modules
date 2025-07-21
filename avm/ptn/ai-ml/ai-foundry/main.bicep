@@ -247,6 +247,7 @@ module foundryProject 'modules/project/main.bicep' = {
           }
         ]
       : []
+    tempSearchResourceId: aiSearch!.outputs.resourceId
     tags: tags
     lock: lock
   }

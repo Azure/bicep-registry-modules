@@ -15,7 +15,6 @@ Creates an AI Foundry project and any associated Azure service connections.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.CognitiveServices/accounts/projects` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects) |
-| `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/capabilityHosts) |
 | `Microsoft.CognitiveServices/accounts/projects/connections` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/connections) |
 
 ## Parameters
@@ -26,6 +25,7 @@ Creates an AI Foundry project and any associated Azure service connections.
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-accountname) | string | Name of the existing parent Foundry Account resource. |
 | [`name`](#parameter-name) | string | The name of the AI Foundry project. |
+| [`tempSearchResourceId`](#parameter-tempsearchresourceid) | string | The Resource ID or name of an existing AI Search resource to connect to the project. |
 
 **Optional parameters**
 
@@ -51,6 +51,13 @@ Name of the existing parent Foundry Account resource.
 ### Parameter: `name`
 
 The name of the AI Foundry project.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tempSearchResourceId`
+
+The Resource ID or name of an existing AI Search resource to connect to the project.
 
 - Required: Yes
 - Type: string
@@ -265,15 +272,11 @@ Tags to be applied to the resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `aiSearchConnections` | array | AI Search Connections for the Project. |
-| `aiServicesConnections` | array | AI Services Connections for the Project. |
-| `cosmosDbConnections` | array | Cosmos DB Connections for the Project. |
 | `desc` | string | Description of the Project. |
 | `displayName` | string | Display name of the Project. |
 | `name` | string | Name of the Project. |
 | `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
 | `resourceId` | string | Resource ID of the Project. |
-| `storageAccountConnections` | array | Storage Account Connections for the Project. |
 
 ## Cross-referenced modules
 
