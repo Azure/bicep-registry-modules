@@ -35,7 +35,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
@@ -140,6 +140,7 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
     vectorStoreConnections: [for (conn, i) in aiSearchConnections ?? []: aiSearchConnResources[i].name]
     storageConnections: [for (conn, i) in storageAccountConnections ?? []: storageConnResources[i].name]
     threadStorageConnections: [for (conn, i) in cosmosDbConnections ?? []: cosmosDbConnResources[i].name]
+    tags: tags
   }
 }
 

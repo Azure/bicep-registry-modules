@@ -85,7 +85,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
     // Required parameters
-    baseName: 'fndrymin001'
+    baseName: 'fndrymin'
     // Non-required parameters
     aiModelDeployments: [
       {
@@ -119,7 +119,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "parameters": {
     // Required parameters
     "baseName": {
-      "value": "fndrymin001"
+      "value": "fndrymin"
     },
     // Non-required parameters
     "aiModelDeployments": {
@@ -153,7 +153,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
 // Required parameters
-param baseName = 'fndrymin001'
+param baseName = 'fndrymin'
 // Non-required parameters
 param aiModelDeployments = [
   {

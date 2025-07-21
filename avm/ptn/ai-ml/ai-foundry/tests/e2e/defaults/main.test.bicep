@@ -41,7 +41,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      baseName: '${namePrefix}${serviceShort}001'
+      baseName: '${namePrefix}${serviceShort}'
       aiModelDeployments: [
         {
           name: 'gpt-4.1'

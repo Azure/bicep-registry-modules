@@ -10,7 +10,7 @@ param existingResourceId string?
 param location string = resourceGroup().location
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')

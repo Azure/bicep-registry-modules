@@ -21,7 +21,7 @@ import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.1
 param aiModelDeployments deploymentType[] = []
 
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the AI resources.')

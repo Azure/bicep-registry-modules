@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10234766634683052896"
+      "templateHash": "3892666996008095602"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -436,10 +436,13 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+        },
         "description": "Optional. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
-      }
+      },
+      "defaultValue": {}
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -560,7 +563,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "452825142780894355"
+              "templateHash": "13559049813506053649"
             }
           },
           "definitions": {
@@ -860,10 +863,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "lock": {
               "$ref": "#/definitions/lockType",
@@ -3436,7 +3442,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3145294295865825417"
+              "templateHash": "11917122123217551768"
             }
           },
           "definitions": {
@@ -3563,10 +3569,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "roleAssignments": {
               "type": "array",
@@ -7079,7 +7088,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "14721438917163927610"
+              "templateHash": "7642178542867300015"
             }
           },
           "definitions": {
@@ -7207,10 +7216,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "roleAssignments": {
               "type": "array",
@@ -9615,7 +9627,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3558328976271260641"
+              "templateHash": "9046289379185617146"
             }
           },
           "definitions": {
@@ -9746,10 +9758,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "roleAssignments": {
               "type": "array",
@@ -15789,7 +15804,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16326676636887782424"
+              "templateHash": "16177012680669840812"
             }
           },
           "definitions": {
@@ -15916,10 +15931,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             },
             "roleAssignments": {
               "type": "array",
@@ -19913,7 +19931,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "9435246889825272986"
+              "templateHash": "7022345757284953452"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20191,10 +20209,13 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied to the resources."
-              }
+              },
+              "defaultValue": {}
             }
           },
           "variables": {
@@ -20338,7 +20359,8 @@
                     "input": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex('threadStorageConnections')].name]"
                   }
                 ],
-                "capabilityHostKind": "Agents"
+                "capabilityHostKind": "Agents",
+                "tags": "[parameters('tags')]"
               },
               "dependsOn": [
                 "aiSearchConnResources",
