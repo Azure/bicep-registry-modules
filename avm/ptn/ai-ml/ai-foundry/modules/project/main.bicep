@@ -58,48 +58,53 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 }
 
-module searchConnection 'connections/aiSearch.bicep' = if (!empty(tempSearchResourceId)) {
-  name: take('${name}-aiservices-conn-${take(uniqueString(tempSearchResourceId!), 5)}', 64)
-  dependsOn: [project]
+// module searchConnection 'connections/aiSearch.bicep' = if (!empty(tempSearchResourceId)) {
+//   name: take('${name}-aiservices-conn-${take(uniqueString(tempSearchResourceId!), 5)}', 64)
+//   dependsOn: [project]
+//   params: {
+//     name: 'mySearchConnection'
+//     projectName: name
+//     resourceIdOrName: tempSearchResourceId!
+//   }
+// }
+
+module searchParsedResourceId '../parseResourceId.bicep' = if (!empty(tempSearchResourceId)) {
+  name: take('${name}-ai-search-conn-${take(uniqueString(tempSearchResourceId!), 5)}-parse-resource-id', 64)
   params: {
-    name: 'mySearchConnection'
-    projectName: name
     resourceIdOrName: tempSearchResourceId!
   }
 }
 
-// module searchParsedResourceId '../parseResourceId.bicep' = {
-//   name: take('${name}-ai-search-conn-${take(uniqueString(tempSearchResourceId), 5)}-parse-resource-id', 64)
-//   params: {
-//     resourceIdOrName: tempSearchResourceId
-//   }
-// }
+resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = if (!empty(tempSearchResourceId)) {
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [searchParsedResourceId]
+  name: searchParsedResourceId!.outputs.name
+  scope: resourceGroup(
+    searchParsedResourceId!.outputs.subscriptionId,
+    searchParsedResourceId!.outputs.resourceGroupName
+  )
+}
 
-// resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
-//   #disable-next-line no-unnecessary-dependson
-//   dependsOn: [searchParsedResourceId]
-//   name: searchParsedResourceId!.outputs.name
-//   scope: resourceGroup(
-//     searchParsedResourceId!.outputs.subscriptionId,
-//     searchParsedResourceId!.outputs.resourceGroupName
-//   )
-// }
+resource existingProjectReference 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = if (!empty(tempSearchResourceId)) {
+  dependsOn: [project]
+  name: name
+}
 
-// resource searchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
-//   name: aiSearch!.name
-//   parent: project
-//   properties: {
-//     category: 'CognitiveSearch'
-//     target: 'https://${aiSearch!.name}.search.windows.net/'
-//     authType: 'AAD'
-//     isSharedToAll: true
-//     metadata: {
-//       ApiType: 'Azure'
-//       ResourceId: aiSearch!.id
-//       location: aiSearch!.location
-//     }
-//   }
-// }
+resource searchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(tempSearchResourceId)) {
+  name: aiSearch!.name
+  parent: existingProjectReference
+  properties: {
+    category: 'CognitiveSearch'
+    target: 'https://${aiSearch!.name}.search.windows.net/'
+    authType: 'AAD'
+    isSharedToAll: true
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: aiSearch!.id
+      location: aiSearch!.location
+    }
+  }
+}
 
 // @batchSize(1)
 // module aiServicesConns 'connections/aiService.bicep' = [
