@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11217600794836050145"
+      "templateHash": "13022808614684563154"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -263,8 +263,9 @@
     },
     "tempSearchResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The Resource ID or name of an existing AI Search resource to connect to the project."
+        "description": "Optional. The Resource ID or name of an existing AI Search resource to connect to the project."
       }
     }
   },
@@ -307,6 +308,7 @@
       ]
     },
     "searchConnection": {
+      "condition": "[not(empty(parameters('tempSearchResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-aiservices-conn-{1}', parameters('name'), take(uniqueString(parameters('tempSearchResourceId')), 5)), 64)]",
@@ -317,7 +319,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": null
+            "value": "mySearchConnection"
           },
           "projectName": {
             "value": "[parameters('name')]"

@@ -25,7 +25,6 @@ Creates an AI Foundry project and any associated Azure service connections.
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-accountname) | string | Name of the existing parent Foundry Account resource. |
 | [`name`](#parameter-name) | string | The name of the AI Foundry project. |
-| [`tempSearchResourceId`](#parameter-tempsearchresourceid) | string | The Resource ID or name of an existing AI Search resource to connect to the project. |
 
 **Optional parameters**
 
@@ -40,6 +39,7 @@ Creates an AI Foundry project and any associated Azure service connections.
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`storageAccountConnections`](#parameter-storageaccountconnections) | array | List of Azure Storage Account connections for the project. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
+| [`tempSearchResourceId`](#parameter-tempsearchresourceid) | string | The Resource ID or name of an existing AI Search resource to connect to the project. |
 
 ### Parameter: `accountName`
 
@@ -51,13 +51,6 @@ Name of the existing parent Foundry Account resource.
 ### Parameter: `name`
 
 The name of the AI Foundry project.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `tempSearchResourceId`
-
-The Resource ID or name of an existing AI Search resource to connect to the project.
 
 - Required: Yes
 - Type: string
@@ -267,6 +260,13 @@ Tags to be applied to the resources.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `tempSearchResourceId`
+
+The Resource ID or name of an existing AI Search resource to connect to the project.
+
+- Required: No
+- Type: string
 
 ## Outputs
 

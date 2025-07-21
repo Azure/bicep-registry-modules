@@ -37,8 +37,8 @@ param lock lockType?
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
-@description('Required. The Resource ID or name of an existing AI Search resource to connect to the project.')
-param tempSearchResourceId string
+@description('Optional. The Resource ID or name of an existing AI Search resource to connect to the project.')
+param tempSearchResourceId string?
 
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
@@ -58,13 +58,13 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 }
 
-module searchConnection 'connections/aiSearch.bicep' = {
-  name: take('${name}-aiservices-conn-${take(uniqueString(tempSearchResourceId), 5)}', 64)
+module searchConnection 'connections/aiSearch.bicep' = if (!empty(tempSearchResourceId)) {
+  name: take('${name}-aiservices-conn-${take(uniqueString(tempSearchResourceId!), 5)}', 64)
   dependsOn: [project]
   params: {
-    name: null
+    name: 'mySearchConnection'
     projectName: name
-    resourceIdOrName: tempSearchResourceId
+    resourceIdOrName: tempSearchResourceId!
   }
 }
 

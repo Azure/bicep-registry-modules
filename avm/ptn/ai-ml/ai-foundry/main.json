@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3503767261262812568"
+      "templateHash": "11241819570005372285"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19856,9 +19856,7 @@
           "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', reference('aiSearch').outputs.resourceId.value))), createObject('value', createArray()))]",
           "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', reference('cosmosDb').outputs.resourceId.value))), createObject('value', createArray()))]",
           "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
-          "tempSearchResourceId": {
-            "value": "[reference('aiSearch').outputs.resourceId.value]"
-          },
+          "tempSearchResourceId": "[if(parameters('includeAssociatedResources'), createObject('value', reference('aiSearch').outputs.resourceId.value), createObject('value', ''))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -19874,7 +19872,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "11217600794836050145"
+              "templateHash": "13022808614684563154"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20131,8 +20129,9 @@
             },
             "tempSearchResourceId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The Resource ID or name of an existing AI Search resource to connect to the project."
+                "description": "Optional. The Resource ID or name of an existing AI Search resource to connect to the project."
               }
             }
           },
@@ -20175,6 +20174,7 @@
               ]
             },
             "searchConnection": {
+              "condition": "[not(empty(parameters('tempSearchResourceId')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-aiservices-conn-{1}', parameters('name'), take(uniqueString(parameters('tempSearchResourceId')), 5)), 64)]",
@@ -20185,7 +20185,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": null
+                    "value": "mySearchConnection"
                   },
                   "projectName": {
                     "value": "[parameters('name')]"
