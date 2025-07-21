@@ -58,38 +58,48 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 }
 
-module searchParsedResourceId '../parseResourceId.bicep' = {
-  name: take('${name}-ai-search-conn-${take(uniqueString(tempSearchResourceId), 5)}-parse-resource-id', 64)
+module searchConnection 'connections/aiSearch.bicep' = {
+  name: take('${name}-aiservices-conn-${take(uniqueString(tempSearchResourceId), 5)}', 64)
+  dependsOn: [project]
   params: {
+    name: null
+    projectName: name
     resourceIdOrName: tempSearchResourceId
   }
 }
 
-resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [searchParsedResourceId]
-  name: searchParsedResourceId!.outputs.name
-  scope: resourceGroup(
-    searchParsedResourceId!.outputs.subscriptionId,
-    searchParsedResourceId!.outputs.resourceGroupName
-  )
-}
+// module searchParsedResourceId '../parseResourceId.bicep' = {
+//   name: take('${name}-ai-search-conn-${take(uniqueString(tempSearchResourceId), 5)}-parse-resource-id', 64)
+//   params: {
+//     resourceIdOrName: tempSearchResourceId
+//   }
+// }
 
-resource searchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
-  name: aiSearch!.name
-  parent: project
-  properties: {
-    category: 'CognitiveSearch'
-    target: 'https://${aiSearch!.name}.search.windows.net/'
-    authType: 'AAD'
-    isSharedToAll: true
-    metadata: {
-      ApiType: 'Azure'
-      ResourceId: aiSearch!.id
-      location: aiSearch!.location
-    }
-  }
-}
+// resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
+//   #disable-next-line no-unnecessary-dependson
+//   dependsOn: [searchParsedResourceId]
+//   name: searchParsedResourceId!.outputs.name
+//   scope: resourceGroup(
+//     searchParsedResourceId!.outputs.subscriptionId,
+//     searchParsedResourceId!.outputs.resourceGroupName
+//   )
+// }
+
+// resource searchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+//   name: aiSearch!.name
+//   parent: project
+//   properties: {
+//     category: 'CognitiveSearch'
+//     target: 'https://${aiSearch!.name}.search.windows.net/'
+//     authType: 'AAD'
+//     isSharedToAll: true
+//     metadata: {
+//       ApiType: 'Azure'
+//       ResourceId: aiSearch!.id
+//       location: aiSearch!.location
+//     }
+//   }
+// }
 
 // @batchSize(1)
 // module aiServicesConns 'connections/aiService.bicep' = [
