@@ -59,7 +59,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     consistencyPolicy: {
       defaultConsistencyLevel: 'Session'
     }
-    enableFreeTier: true
+    enableFreeTier: false
   }
 }
 
@@ -68,7 +68,7 @@ resource aiSearch 'Microsoft.Search/searchServices@2023-11-01' = {
   location: location
   tags: tags
   sku: {
-    name: 'basic'
+    name: 'standard'
   }
   properties: {
     hostingMode: 'default'

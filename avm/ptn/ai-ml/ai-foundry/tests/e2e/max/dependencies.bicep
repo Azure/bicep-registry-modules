@@ -13,13 +13,13 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   tags: tags
   properties: {
     addressSpace: {
-      addressPrefixes: ['10.0.0.0/24']
+      addressPrefixes: ['10.0.0.0/20']
     }
     subnets: [
       {
         name: 'agents'
         properties: {
-          addressPrefix: '10.0.1.0/23'
+          addressPrefix: '10.0.0.0/23'
         }
       }
       {
