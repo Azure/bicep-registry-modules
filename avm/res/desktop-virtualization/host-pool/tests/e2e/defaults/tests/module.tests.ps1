@@ -16,8 +16,8 @@ Describe 'Validate Host pool deployment' {
     Context 'Validate sucessful deployment' {
 
         It 'Registration token should be successfully returned' {
-            $registrationToken = $TestInputData.DeploymentOutputs.registrationToken.Value
-            $registrationToken | Should -Not -BeNullOrEmpty
+            $obscuredRegistrationToken = $TestInputData.DeploymentOutputs.obscuredRegistrationToken.Value
+            $obscuredRegistrationToken | Should -Not -BeNullOrEmpty
         }
     }
 }
