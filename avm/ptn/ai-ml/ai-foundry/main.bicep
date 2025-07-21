@@ -218,7 +218,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
   }
 }
 
-module foundryProject 'modules/project/main.bicep' = {
+module foundryProject 'modules/project.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   dependsOn: includeAssociatedResources ? [storageAccount, aiSearch, cosmosDb, keyvault] : []
   params: {
@@ -233,21 +233,44 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    aiSearchConnections: includeAssociatedResources ? [{ resourceId: aiSearch!.outputs.resourceId }] : []
-    cosmosDbConnections: includeAssociatedResources ? [{ resourceId: cosmosDb!.outputs.resourceId }] : []
+    aiSearchConnections: includeAssociatedResources
+      ? [
+          {
+            name: aiSearch!.outputs.name
+            target: aiSearch!.outputs.endpoint
+            location: aiSearch!.outputs.location
+            resourceId: aiSearch!.outputs.resourceId
+          }
+        ]
+      : []
+    cosmosDbConnections: includeAssociatedResources
+      ? [
+          {
+            name: cosmosDb!.outputs.name
+            target: cosmosDb!.outputs.endpoint
+            location: cosmosDb!.outputs.location
+            resourceId: cosmosDb!.outputs.resourceId
+          }
+        ]
+      : []
     storageAccountConnections: includeAssociatedResources
       ? [
           {
+            name: storageAccount!.outputs.name
+            target: storageAccount!.outputs.blobEndpoint
+            location: storageAccount!.outputs.location
             resourceId: storageAccount!.outputs.resourceId
             containerName: storageAccount!.outputs.projUploadsContainerName
           }
           {
+            name: storageAccount!.outputs.name
+            target: storageAccount!.outputs.blobEndpoint
+            location: storageAccount!.outputs.location
             resourceId: storageAccount!.outputs.resourceId
             containerName: storageAccount!.outputs.sysDataContainerName
           }
         ]
       : []
-    tempSearchResourceId: includeAssociatedResources ? aiSearch!.outputs.resourceId : ''
     tags: tags
     lock: lock
   }

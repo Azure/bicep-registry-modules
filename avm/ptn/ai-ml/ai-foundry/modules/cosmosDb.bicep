@@ -78,3 +78,11 @@ output resourceId string = empty(existingResourceId) ? cosmosDb!.outputs.resourc
 
 @description('Name of the Cosmos DB Account.')
 output name string = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
+
+@description('Location of the Cosmos DB Account.')
+output location string = empty(existingResourceId) ? cosmosDb!.outputs.location : existingCosmosDb!.location
+
+@description('Endpoint/target for the Cosmos DB Account.')
+output endpoint string = empty(existingResourceId)
+  ? cosmosDb!.outputs.endpoint
+  : existingCosmosDb!.properties.documentEndpoint

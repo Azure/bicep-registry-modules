@@ -108,6 +108,14 @@ output name string = empty(existingResourceId) ? storageAccount!.outputs.name : 
 @description('Resource ID of the Storage Account.')
 output resourceId string = empty(existingResourceId) ? storageAccount!.outputs.resourceId : existingStorageAccount.id
 
+@description('Blob endpoint of the Storage Account.')
+output blobEndpoint string = empty(existingResourceId)
+  ? storageAccount!.outputs.primaryBlobEndpoint
+  : existingStorageAccount!.properties.primaryEndpoints.blob
+
+@description('Location of the Storage Account.')
+output location string = empty(existingResourceId) ? storageAccount!.outputs.location : existingStorageAccount!.location
+
 @description('Name of the project uploads container.')
 output projUploadsContainerName string = projUploadsContainerName
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17792202475208467552"
+      "templateHash": "4321119756059049659"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -7079,7 +7079,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "6834850475426313505"
+              "templateHash": "14721438917163927610"
             }
           },
           "definitions": {
@@ -9551,6 +9551,20 @@
               },
               "value": "[if(empty(parameters('existingResourceId')), reference('aiSearch').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
             },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location of the AI Search resource."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('aiSearch').outputs.location.value, reference('existingAiSearch', '2025-05-01', 'full').location)]"
+            },
+            "endpoint": {
+              "type": "string",
+              "metadata": {
+                "description": "Endpoint/target for the AI Search resources."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('aiSearch').outputs.endpoint.value, format('https://{0}.search.windows.net/', reference('parsedResourceId').outputs.name.value))]"
+            },
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
@@ -9601,7 +9615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "4915072232591316119"
+              "templateHash": "3558328976271260641"
             }
           },
           "definitions": {
@@ -15700,6 +15714,20 @@
               },
               "value": "[if(empty(parameters('existingResourceId')), reference('storageAccount').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Storage/storageAccounts', reference('parsedResourceId').outputs.name.value))]"
             },
+            "blobEndpoint": {
+              "type": "string",
+              "metadata": {
+                "description": "Blob endpoint of the Storage Account."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('storageAccount').outputs.primaryBlobEndpoint.value, reference('existingStorageAccount').primaryEndpoints.blob)]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location of the Storage Account."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('storageAccount').outputs.location.value, reference('existingStorageAccount', '2025-01-01', 'full').location)]"
+            },
             "projUploadsContainerName": {
               "type": "string",
               "metadata": {
@@ -15761,7 +15789,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3902483062183308423"
+              "templateHash": "16326676636887782424"
             }
           },
           "definitions": {
@@ -19829,6 +19857,20 @@
                 "description": "Name of the Cosmos DB Account."
               },
               "value": "[if(empty(parameters('existingResourceId')), reference('cosmosDb').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location of the Cosmos DB Account."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('cosmosDb').outputs.location.value, reference('existingCosmosDb', '2025-04-15', 'full').location)]"
+            },
+            "endpoint": {
+              "type": "string",
+              "metadata": {
+                "description": "Endpoint/target for the Cosmos DB Account."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('cosmosDb').outputs.endpoint.value, reference('existingCosmosDb').documentEndpoint)]"
             }
           }
         }
@@ -19853,10 +19895,9 @@
           "location": {
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
-          "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', reference('aiSearch').outputs.resourceId.value))), createObject('value', createArray()))]",
-          "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', reference('cosmosDb').outputs.resourceId.value))), createObject('value', createArray()))]",
-          "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
-          "tempSearchResourceId": "[if(parameters('includeAssociatedResources'), createObject('value', reference('aiSearch').outputs.resourceId.value), createObject('value', ''))]",
+          "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('aiSearch').outputs.name.value, 'target', reference('aiSearch').outputs.endpoint.value, 'location', reference('aiSearch').outputs.location.value, 'resourceId', reference('aiSearch').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('cosmosDb').outputs.name.value, 'target', reference('cosmosDb').outputs.endpoint.value, 'location', reference('cosmosDb').outputs.location.value, 'resourceId', reference('cosmosDb').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -19872,7 +19913,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "2969863346333851659"
+              "templateHash": "13572253067751324517"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -19881,39 +19922,67 @@
             "azureConnectionType": {
               "type": "object",
               "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the project connection."
+                  }
+                },
                 "resourceId": {
                   "type": "string",
                   "metadata": {
                     "description": "Required. The resource ID of the Azure resource for the connection."
                   }
                 },
-                "name": {
+                "target": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the project connection. Will default to the resource name if not provided."
+                    "description": "Required. The target endpoint of the connection."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Location of the Azure resource for the connection."
                   }
                 }
               },
               "metadata": {
                 "__bicep_export!": true,
-                "description": "Type representing an Azure connection to an AI Foundry project."
+                "description": "Type representing values to create an Azure connection to an AI Foundry project."
               }
             },
             "storageAccountConnectionType": {
               "type": "object",
               "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the project connection."
+                  }
+                },
                 "resourceId": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The resource ID of the Storage Account for the connection."
+                    "description": "Required. The resource ID of the Azure resource for the connection."
                   }
                 },
-                "name": {
+                "target": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the project connection. Will default to the resource name if not provided."
+                    "description": "Required. The target endpoint of the connection."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Location of the Azure resource for the connection."
+                  }
+                },
+                "accountName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Storage Account to use for the connection."
                   }
                 },
                 "containerName": {
@@ -19925,7 +19994,7 @@
               },
               "metadata": {
                 "__bicep_export!": true,
-                "description": "Type representing an Azure Storage Account connection to an AI Foundry project."
+                "description": "Type representing values to create an Azure Storage Account connection to an AI Foundry project."
               }
             },
             "connectionAggregateType": {
@@ -20126,13 +20195,6 @@
               "metadata": {
                 "description": "Optional. Tags to be applied to the resources."
               }
-            },
-            "tempSearchResourceId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The Resource ID or name of an existing AI Search resource to connect to the project."
-              }
             }
           },
           "variables": {
@@ -20159,48 +20221,131 @@
               },
               "tags": "[parameters('tags')]"
             },
-            "aiSearch": {
-              "condition": "[not(empty(parameters('tempSearchResourceId')))]",
-              "existing": true,
-              "type": "Microsoft.Search/searchServices",
-              "apiVersion": "2025-05-01",
-              "subscriptionId": "[reference('searchParsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('searchParsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('searchParsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "searchParsedResourceId"
-              ]
-            },
-            "existingProjectReference": {
-              "condition": "[not(empty(parameters('tempSearchResourceId')))]",
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('name')]",
-              "dependsOn": [
-                "project"
-              ]
-            },
-            "searchConnection": {
-              "condition": "[not(empty(parameters('tempSearchResourceId')))]",
+            "aiServiceConnResources": {
+              "copy": {
+                "name": "aiServiceConnResources",
+                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]"
+              },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', split(parameters('name'), '/')[0], split(parameters('name'), '/')[1], reference('searchParsedResourceId').outputs.name.value)]",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].name)]",
               "properties": {
-                "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', reference('searchParsedResourceId').outputs.name.value)]",
+                "category": "AIServices",
+                "target": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].target]",
                 "authType": "AAD",
                 "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('searchParsedResourceId').outputs.subscriptionId.value, reference('searchParsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Search/searchServices', reference('searchParsedResourceId').outputs.name.value)]",
-                  "location": "[reference('aiSearch', '2025-05-01', 'full').location]"
+                  "ResourceId": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].resourceId]",
+                  "location": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].location]"
                 }
               },
               "dependsOn": [
-                "aiSearch",
+                "project"
+              ]
+            },
+            "aiSearchConnResources": {
+              "copy": {
+                "name": "aiSearchConnResources",
+                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]"
+              },
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].name)]",
+              "properties": {
+                "category": "CognitiveSearch",
+                "target": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].target]",
+                "authType": "AAD",
+                "isSharedToAll": true,
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].resourceId]",
+                  "location": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].location]"
+                }
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
+            "storageConnResources": {
+              "copy": {
+                "name": "storageConnResources",
+                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]"
+              },
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
+              "properties": {
+                "category": "AzureBlob",
+                "target": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].target]",
+                "authType": "AAD",
+                "isSharedToAll": true,
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId]",
+                  "location": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].location]",
+                  "accountName": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName]",
+                  "containerName": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName]"
+                }
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
+            "cosmosDbConnResources": {
+              "copy": {
+                "name": "cosmosDbConnResources",
+                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]"
+              },
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].name)]",
+              "properties": {
+                "category": "CosmosDB",
+                "target": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].target]",
+                "authType": "AAD",
+                "isSharedToAll": true,
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].resourceId]",
+                  "location": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].location]"
+                }
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
+            "projectCapabilityHost": {
+              "condition": "[variables('createCapabilityHost')]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('{0}-cap-host', parameters('name')))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "vectorStoreConnections",
+                    "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
+                    "input": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex('vectorStoreConnections')].name]"
+                  },
+                  {
+                    "name": "storageConnections",
+                    "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
+                    "input": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name]"
+                  },
+                  {
+                    "name": "threadStorageConnections",
+                    "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
+                    "input": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex('threadStorageConnections')].name]"
+                  }
+                ],
+                "capabilityHostKind": "Agents"
+              },
+              "dependsOn": [
+                "aiSearchConnResources",
+                "aiServiceConnResources",
+                "cosmosDbConnResources",
                 "project",
-                "searchParsedResourceId"
+                "storageConnResources"
               ]
             },
             "projectLock": {
@@ -20216,72 +20361,6 @@
               "dependsOn": [
                 "project"
               ]
-            },
-            "searchParsedResourceId": {
-              "condition": "[not(empty(parameters('tempSearchResourceId')))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-ai-search-conn-{1}-parse-resource-id', parameters('name'), take(uniqueString(parameters('tempSearchResourceId')), 5)), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "resourceIdOrName": {
-                    "value": "[parameters('tempSearchResourceId')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "4037985259053051656"
-                    }
-                  },
-                  "parameters": {
-                    "resourceIdOrName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The Resource ID or name of an existing resource."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
-                    "name": "[if(not(empty(variables('resourceParts'))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
-                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
-                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
-                  },
-                  "resources": [],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Name of the resource."
-                      },
-                      "value": "[variables('name')]"
-                    },
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Subscription ID of the resource."
-                      },
-                      "value": "[variables('subscriptionId')]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Resource Group Name of the resource."
-                      },
-                      "value": "[variables('resourceGroupName')]"
-                    }
-                  }
-                }
-              }
             }
           },
           "outputs": {

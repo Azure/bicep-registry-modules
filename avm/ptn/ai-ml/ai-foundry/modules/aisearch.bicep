@@ -79,6 +79,14 @@ output resourceId string = empty(existingResourceId) ? aiSearch!.outputs.resourc
 @description('Name of the AI Search resource.')
 output name string = empty(existingResourceId) ? aiSearch!.outputs.name : existingAiSearch.name
 
+@description('Location of the AI Search resource.')
+output location string = empty(existingResourceId) ? aiSearch!.outputs.location : existingAiSearch!.location
+
+@description('Endpoint/target for the AI Search resources.')
+output endpoint string = empty(existingResourceId)
+  ? aiSearch!.outputs.endpoint
+  : 'https://${existingAiSearch.name}.search.windows.net/'
+
 @description('System Assigned Identity principal ID of the AI Search resource.')
 output systemAssignedMIPrincipalId string = empty(existingResourceId)
   ? existingAiSearch!.identity.principalId
