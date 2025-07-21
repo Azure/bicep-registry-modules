@@ -40,7 +40,7 @@ var sysDataContainerName = 'ai-foundry-sys-data'
 
 var networkIsolation = !empty(privateNetworking) && !empty(privateNetworking!.privateEndpointSubnetId) && !empty(privateNetworking!.blobPrivateDnsZoneId) && !empty(privateNetworking!.filePrivateDnsZoneId)
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (empty(existingResourceId)) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (empty(existingResourceId)) {
   name: take('${name}-storage-account-deployment', 64)
   params: {
     name: name

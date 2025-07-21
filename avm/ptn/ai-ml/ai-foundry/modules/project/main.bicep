@@ -58,6 +58,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
 module aiServicesConns 'connections/aiService.bicep' = [
   for connection in aiServicesConnections ?? []: {
     name: take('${name}-aiservices-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+    #disable-next-line no-unnecessary-dependson
+    dependsOn: [project]
     params: {
       name: connection.?name
       projectName: project.name
@@ -69,6 +71,8 @@ module aiServicesConns 'connections/aiService.bicep' = [
 module cosmosDbConns 'connections/cosmosDb.bicep' = [
   for connection in cosmosDbConnections ?? []: {
     name: take('${name}-cosmos-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+    #disable-next-line no-unnecessary-dependson
+    dependsOn: [project]
     params: {
       name: connection.?name
       projectName: project.name
@@ -80,6 +84,8 @@ module cosmosDbConns 'connections/cosmosDb.bicep' = [
 module aiSearchConns 'connections/aiSearch.bicep' = [
   for connection in aiSearchConnections ?? []: {
     name: take('${name}-search-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+    #disable-next-line no-unnecessary-dependson
+    dependsOn: [project]
     params: {
       name: connection.?name
       projectName: project.name
@@ -91,6 +97,8 @@ module aiSearchConns 'connections/aiSearch.bicep' = [
 module storageAccountConns 'connections/storageAccount.bicep' = [
   for connection in storageAccountConnections ?? []: {
     name: take('${name}-storage-conn-${take(uniqueString(connection.resourceId), 5)}', 64)
+    #disable-next-line no-unnecessary-dependson
+    dependsOn: [project]
     params: {
       name: connection.?name
       projectName: project.name
