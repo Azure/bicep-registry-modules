@@ -22,7 +22,6 @@ on:
 
 env:
   # Used for token replacement steps in both PSRule and deployment validation
-  ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
@@ -72,7 +71,6 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
@@ -100,7 +98,6 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
@@ -140,13 +137,12 @@ jobs:
           modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           deploymentMetadataLocation: "WestEurope"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} # Still required for OIDC exception list
           VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
           VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
