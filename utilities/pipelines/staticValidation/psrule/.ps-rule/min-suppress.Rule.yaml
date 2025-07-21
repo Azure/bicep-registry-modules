@@ -58,6 +58,8 @@ spec:
     - Azure.SQL.VAScan # Excluded as it requires user input and additional configuration
     # Log Analytics
     - Azure.Log.Replication # Excluded as it requires user input and additional configuration
+    # Virtual Network Gateway
+    - Azure.VNG.MaintenanceConfig # Requires a maintenance configuration resource Id as a user input.
   if:
     name: "."
     contains:

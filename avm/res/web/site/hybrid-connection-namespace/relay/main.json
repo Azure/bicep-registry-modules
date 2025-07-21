@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "6277359123293522961"
+      "version": "0.36.177.2456",
+      "templateHash": "9231712453031392530"
     },
     "name": "Web/Function Apps Hybrid Connection Relay",
     "description": "This module deploys a Site Hybrid Connection Namespace Relay."

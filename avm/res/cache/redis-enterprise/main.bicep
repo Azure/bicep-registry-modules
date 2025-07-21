@@ -118,7 +118,7 @@ param skuName string = 'Balanced_B5'
   3
 ])
 @description('Optional. The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.')
-param zones int[] = [
+param availabilityZones int[] = [
   1
   2
   3
@@ -153,7 +153,7 @@ var isAmr = startsWith(skuName, 'Balanced') || startsWith(skuName, 'ComputeOptim
 ) || startsWith(skuName, 'MemoryOptimized')
 var isEnterprise = startsWith(skuName, 'Enterprise') || startsWith(skuName, 'EnterpriseFlash')
 
-var availabilityZones = isEnterprise ? map(zones, zone => string(zone)) : []
+var zones = isEnterprise ? map(availabilityZones, zone => string(zone)) : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -268,7 +268,7 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' = {
     capacity: isEnterprise ? capacity : null
     name: skuName
   }
-  zones: !empty(availabilityZones) ? availabilityZones : null
+  zones: !empty(zones) ? zones : null
 }
 
 module redisCluster_database 'database/main.bicep' = {

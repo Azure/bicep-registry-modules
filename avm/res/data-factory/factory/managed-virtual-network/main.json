@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "14700868208060134211"
+      "version": "0.36.177.2456",
+      "templateHash": "4327320360419549372"
     },
     "name": "Data Factory Managed Virtual Networks",
     "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -77,8 +77,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13532538255788105281"
+              "version": "0.36.177.2456",
+              "templateHash": "8692951553711522229"
             },
             "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
             "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -157,7 +157,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('dataFactoryName'), parameters('name'))]"
+      ]
     }
   ],
   "outputs": {

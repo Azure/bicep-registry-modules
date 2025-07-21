@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5338557594070532693"
+      "version": "0.36.1.42791",
+      "templateHash": "6181717056890837435"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -900,6 +900,40 @@
       "defaultValue": 0,
       "metadata": {
         "description": "Optional. Outbound IP Count for the Load balancer."
+      }
+    },
+    "allocatedOutboundPorts": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports."
+      }
+    },
+    "idleTimeoutInMinutes": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "Optional. Desired outbound flow idle timeout in minutes."
+      }
+    },
+    "outboundPublicIPResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules."
+      }
+    },
+    "outboundPublicIPPrefixResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules."
       }
     },
     "backendPoolType": {
@@ -1807,9 +1841,13 @@
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
           "loadBalancerProfile": {
+            "allocatedOutboundPorts": "[parameters('allocatedOutboundPorts')]",
+            "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
             "managedOutboundIPs": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null())]",
             "effectiveOutboundIPs": [],
-            "backendPoolType": "[parameters('backendPoolType')]"
+            "backendPoolType": "[parameters('backendPoolType')]",
+            "outboundIPPrefixes": "[if(not(empty(parameters('outboundPublicIPPrefixResourceIds'))), createObject('publicIPPrefixes', map(coalesce(parameters('outboundPublicIPPrefixResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null())]",
+            "outboundIPs": "[if(not(empty(parameters('outboundPublicIPResourceIds'))), createObject('publicIPs', map(coalesce(parameters('outboundPublicIPResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null())]"
           }
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
@@ -2006,8 +2044,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13067595449609999928"
+              "version": "0.36.1.42791",
+              "templateHash": "2040378203872905050"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2202,8 +2240,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3651532122518241859"
+              "version": "0.36.1.42791",
+              "templateHash": "15335448253202727588"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."

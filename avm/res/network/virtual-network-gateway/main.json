@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "16911264602813109884"
+      "version": "0.36.177.2456",
+      "templateHash": "17973519096655922373"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -402,6 +402,27 @@
         "description": "The type for an active-active BGP cluster configuration."
       }
     },
+    "maintenanceConfigurationType": {
+      "type": "object",
+      "properties": {
+        "assignmentName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the maintenance configuration assignment."
+          }
+        },
+        "maintenanceConfigurationResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the maintenance configuration to assign to the Virtual Network Gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a maintenance configuration."
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -717,9 +738,17 @@
         "description": "Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
       }
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "type": "array",
+      "items": {
+        "type": "int"
+      },
       "defaultValue": [
+        1,
+        2,
+        3
+      ],
+      "allowedValues": [
         1,
         2,
         3
@@ -990,6 +1019,13 @@
       "metadata": {
         "description": "Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients."
       }
+    },
+    "maintenanceConfiguration": {
+      "$ref": "#/definitions/maintenanceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The maintenance configuration to assign to the Virtual Network Gateway."
+      }
     }
   },
   "variables": {
@@ -1019,9 +1055,7 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    },
-    "isAzSku": "[contains(parameters('skuName'), 'AZ')]",
-    "publicIpZonesToApply": "[if(variables('isAzSku'), parameters('publicIpZones'), createArray())]"
+    }
   },
   "resources": {
     "primaryPublicIP": {
@@ -1105,6 +1139,20 @@
       },
       "dependsOn": [
         "publicIPAddress"
+      ]
+    },
+    "config": {
+      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+      "type": "Microsoft.Maintenance/configurationAssignments",
+      "apiVersion": "2023-04-01",
+      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "name": "[parameters('maintenanceConfiguration').assignmentName]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "maintenanceConfigurationId": "[parameters('maintenanceConfiguration').maintenanceConfigurationResourceId]"
+      },
+      "dependsOn": [
+        "virtualNetworkGateway"
       ]
     },
     "virtualNetworkGateway_lock": {
@@ -1218,9 +1266,7 @@
             "value": "[parameters('tags')]"
           },
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
-          "zones": {
-            "value": "[variables('publicIpZonesToApply')]"
-          },
+          "zones": "[if(contains(parameters('skuName'), 'AZ'), createObject('value', parameters('publicIpAvailabilityZones')), createObject('value', createArray()))]",
           "dnsSettings": {
             "value": {
               "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
@@ -1947,8 +1993,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8956365879743708053"
+              "version": "0.36.177.2456",
+              "templateHash": "17174012563137266411"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."

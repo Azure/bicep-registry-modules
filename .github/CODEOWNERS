@@ -3,6 +3,7 @@
 /scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
 /utilities/ @Azure/avm-core-team-technical-bicep
+/avm/ptn/ai-ml/ai-foundry/ @Azure/avm-ptn-aiml-aifoundry-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/aca-lza/hosting-environment/ @Azure/avm-ptn-acalza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/ai-platform/baseline/ @Azure/avm-ptn-aiplatform-baseline-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/alz/empty/ @Azure/avm-ptn-alz-empty-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -38,7 +39,9 @@
 /avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/private-link-private-dns-zones/ @Azure/avm-ptn-network-privatelinkprivatednszones-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/sa/content-processing/ @Azure/avm-ptn-sa-contentprocessing-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/conversation-knowledge-mining/ @Azure/avm-ptn-sa-conversationknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/sa/modernize-your-code/ @Azure/avm-ptn-sa-modernizeyourcode-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/multi-agent-custom-automation-engine/ @Azure/avm-ptn-sa-multiagentcustomautomationengine-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/subscription/service-health-alerts/ @Azure/avm-ptn-subscription-servicehealthalerts-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -56,8 +59,10 @@
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/cluster/ @Azure/avm-res-azurestackhci-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/logical-network/ @Azure/avm-res-azurestackhci-logicalnetwork-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/marketplace-gallery-image/ @Azure/avm-res-azurestackhci-marketplacegalleryimage-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/network-interface/ @Azure/avm-res-azurestackhci-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/virtual-hard-disk/ @Azure/avm-res-azurestackhci-virtualharddisk-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/virtual-machine-instance/ @Azure/avm-res-azurestackhci-virtualmachineinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis-enterprise/ @Azure/avm-res-cache-redisenterprise-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -88,6 +93,7 @@
 /avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-center/network-connection/ @Azure/avm-res-devcenter-networkconnection-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-center/project/ @Azure/avm-res-devcenter-project-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-ops-infrastructure/pool/ @Azure/avm-res-devopsinfrastructure-pool-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -125,6 +131,7 @@
 /avm/res/kusto/cluster/ @Azure/avm-res-kusto-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/load-test-service/load-test/ @Azure/avm-res-loadtestservice-loadtest-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/logic/workflow/ @Azure/avm-res-logic-workflow-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/machine-learning-services/registry/ @Azure/avm-res-machinelearningservices-registry-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/machine-learning-services/workspace/ @Azure/avm-res-machinelearningservices-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/maintenance/configuration-assignment/ @Azure/avm-res-maintenance-configurationassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/maintenance/maintenance-configuration/ @Azure/avm-res-maintenance-maintenanceconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep

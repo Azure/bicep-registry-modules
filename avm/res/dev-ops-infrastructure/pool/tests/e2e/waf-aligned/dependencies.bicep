@@ -66,11 +66,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
 
 // Network Contributor role assignment
 resource roleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(subscription().subscriptionId, 'DevOpsInfrastructure', 'Network Contributor', 'waf')
+  name: guid(subscription().subscriptionId, 'DevOpsInfrastructure', 'Network Contributor', devOpsInfrastructureObjectID)
   properties: {
     principalId: devOpsInfrastructureObjectID // DevOpsInfrastructure service principal
     #disable-next-line use-resource-id-functions
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7' // Network Contributor
     principalType: 'ServicePrincipal'
   }
   scope: virtualNetwork

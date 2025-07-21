@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "1585180545107563289"
+      "version": "0.36.177.2456",
+      "templateHash": "7016747611432091556"
     },
     "name": "DBforPostgreSQL Flexible Server Firewall Rules",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."

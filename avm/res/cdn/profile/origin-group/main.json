@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "248108132312315522"
+      "templateHash": "17376902853351027070"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group."
@@ -280,12 +280,12 @@
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('profileName')]"
     },
     "originGroup": {
       "type": "Microsoft.Cdn/profiles/originGroups",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
         "healthProbeSettings": "[parameters('healthProbeSettings')]",
@@ -353,7 +353,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "244673802552968776"
+              "templateHash": "3654686564131775119"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin."
@@ -531,18 +531,18 @@
             "profile::originGroup": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles/originGroups",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
             },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('profileName')]"
             },
             "origin": {
               "type": "Microsoft.Cdn/profiles/originGroups/origins",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('originGroupName'), parameters('name'))]",
               "properties": {
                 "enabledState": "[parameters('enabledState')]",
@@ -614,7 +614,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('profile', '2023-05-01', 'full').location]"
+      "value": "[reference('profile', '2025-04-15', 'full').location]"
     }
   }
 }
