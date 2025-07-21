@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "485532086708804154"
+      "templateHash": "9320303555949574740"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -62,7 +62,6 @@
       "properties": {
         "aiSearchPrivateDnsZoneId": {
           "type": "string",
-          "maxLength": 20,
           "metadata": {
             "description": "Required. The Resource ID of the DNS zone for the Azure AI Search service."
           }

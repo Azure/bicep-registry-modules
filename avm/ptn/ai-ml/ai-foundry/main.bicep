@@ -323,7 +323,6 @@ type networkConfigurationType = {
 
 @description('Values for the associated resources DNS Zone resource IDs.')
 type networkResourcesDnsZonesConfigurationType = {
-  @maxLength(20)
   @description('Required. The Resource ID of the DNS zone for the Azure AI Search service.')
   aiSearchPrivateDnsZoneId: string
 
