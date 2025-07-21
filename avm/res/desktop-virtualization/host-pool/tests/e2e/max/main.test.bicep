@@ -173,7 +173,3 @@ module testDeployment '../../../main.bicep' = {
     }
   }
 }
-
-@secure()
-@sys.description('The registration token of the host pool.')
-output registrationToken string = testDeployment.outputs.registrationToken

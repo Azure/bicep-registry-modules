@@ -39,3 +39,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}002'
   }
 }
+
+@secure()
+@sys.description('The registration token of the host pool.')
+output registrationToken string = testDeployment.outputs.registrationToken
