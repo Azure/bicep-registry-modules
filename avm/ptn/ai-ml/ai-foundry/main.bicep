@@ -260,6 +260,7 @@ module foundryProject 'modules/project.bicep' = {
             target: storageAccount!.outputs.blobEndpoint
             location: storageAccount!.outputs.location
             resourceId: storageAccount!.outputs.resourceId
+            accountName: storageAccount!.outputs.name
             containerName: storageAccount!.outputs.projUploadsContainerName
           }
           {
@@ -267,6 +268,7 @@ module foundryProject 'modules/project.bicep' = {
             target: storageAccount!.outputs.blobEndpoint
             location: storageAccount!.outputs.location
             resourceId: storageAccount!.outputs.resourceId
+            accountName: storageAccount!.outputs.name
             containerName: storageAccount!.outputs.sysDataContainerName
           }
         ]

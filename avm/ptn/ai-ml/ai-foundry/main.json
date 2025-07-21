@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "618041562099374573"
+      "templateHash": "10234766634683052896"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19897,7 +19897,7 @@
           },
           "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('aiSearch').outputs.name.value, 'target', reference('aiSearch').outputs.endpoint.value, 'location', reference('aiSearch').outputs.location.value, 'resourceId', reference('aiSearch').outputs.resourceId.value))), createObject('value', createArray()))]",
           "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('cosmosDb').outputs.name.value, 'target', reference('cosmosDb').outputs.endpoint.value, 'location', reference('cosmosDb').outputs.location.value, 'resourceId', reference('cosmosDb').outputs.resourceId.value))), createObject('value', createArray()))]",
-          "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
+          "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
