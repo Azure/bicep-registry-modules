@@ -58,6 +58,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 }
 
+@batchSize(1)
 resource aiServiceConnResources 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = [
   for (connection, i) in aiServicesConnections ?? []: {
     name: connection.name
@@ -76,6 +77,7 @@ resource aiServiceConnResources 'Microsoft.CognitiveServices/accounts/projects/c
   }
 ]
 
+@batchSize(1)
 resource aiSearchConnResources 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = [
   for (connection, i) in aiSearchConnections ?? []: {
     name: connection.name
@@ -94,10 +96,12 @@ resource aiSearchConnResources 'Microsoft.CognitiveServices/accounts/projects/co
   }
 ]
 
+@batchSize(1)
 resource storageConnResources 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = [
   for (connection, i) in storageAccountConnections ?? []: {
     name: empty(connection.?name) ? '${connection.accountName}-${connection.containerName}' : connection.name!
     parent: project
+    dependsOn: [aiServiceConnResources]
     properties: {
       category: 'AzureBlob'
       target: connection.target
@@ -114,10 +118,12 @@ resource storageConnResources 'Microsoft.CognitiveServices/accounts/projects/con
   }
 ]
 
+@batchSize(1)
 resource cosmosDbConnResources 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = [
   for (connection, i) in cosmosDbConnections ?? []: {
     name: connection.name
     parent: project
+    dependsOn: [storageConnResources]
     properties: {
       category: 'CosmosDB'
       target: connection.target

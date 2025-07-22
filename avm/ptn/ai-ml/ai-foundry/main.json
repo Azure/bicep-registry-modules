@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "1013400805210575843"
+      "templateHash": "866258780215156204"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -562,7 +562,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "10939023376007148627"
+              "templateHash": "9318420439926356693"
             }
           },
           "definitions": {
@@ -903,6 +903,7 @@
           },
           "resources": {
             "cognitiveServiceReference": {
+              "condition": "[parameters('includeCapabilityHost')]",
               "existing": true,
               "type": "Microsoft.CognitiveServices/accounts",
               "apiVersion": "2025-06-01",
@@ -19940,7 +19941,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "17547540084113028662"
+              "templateHash": "7567757668069814439"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20261,7 +20262,9 @@
             "aiServiceConnResources": {
               "copy": {
                 "name": "aiServiceConnResources",
-                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
@@ -20284,7 +20287,9 @@
             "aiSearchConnResources": {
               "copy": {
                 "name": "aiSearchConnResources",
-                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
@@ -20307,7 +20312,9 @@
             "storageConnResources": {
               "copy": {
                 "name": "storageConnResources",
-                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
@@ -20326,13 +20333,16 @@
                 }
               },
               "dependsOn": [
+                "aiServiceConnResources",
                 "project"
               ]
             },
             "cosmosDbConnResources": {
               "copy": {
                 "name": "cosmosDbConnResources",
-                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]"
+                "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
@@ -20349,7 +20359,8 @@
                 }
               },
               "dependsOn": [
-                "project"
+                "project",
+                "storageConnResources"
               ]
             },
             "projectCapabilityHost": {

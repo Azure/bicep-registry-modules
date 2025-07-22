@@ -92,7 +92,7 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.12.0' = 
   }
 }
 
-resource cognitiveServiceReference 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+resource cognitiveServiceReference 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = if (includeCapabilityHost) {
   dependsOn: [cognitiveService]
   name: name
 }
