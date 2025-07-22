@@ -171,6 +171,9 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
+@description('Optional. The configurations to create in the server.')
+param configurations array = []
+
 @description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
 @allowed([
   'Enabled'
@@ -425,6 +428,18 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       sid: administrator.sid
       identityResourceId: administrator.identityResourceId
       tenantId: administrator.?tenantId ?? tenant().tenantId
+    }
+  }
+]
+
+module flexibleServer_configurations 'configuration/main.bicep' = [
+  for (configuration, index) in configurations: {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
+    params: {
+      name: configuration.name
+      flexibleServerName: flexibleServer.name
+      source: configuration.?source
+      value: configuration.?value
     }
   }
 ]

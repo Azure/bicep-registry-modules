@@ -53,6 +53,13 @@ module testDeployment '../../../main.bicep' = [
       tier: 'GeneralPurpose'
       storageAutoGrow: 'Enabled'
       availabilityZone: -1
+      configurations: [
+        {
+          name: 'aad_auth_only'
+          source: 'user-override'
+          value: 'OFF'
+        }
+      ]
     }
   }
 ]
