@@ -155,9 +155,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     backupRetentionDays: 20
     configurations: [
       {
-        name: 'aad_auth_only'
+        name: 'max_connections'
         source: 'user-override'
-        value: 'ON'
+        value: '200'
       }
       {
         name: 'innodb_buffer_pool_size'
@@ -304,9 +304,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "configurations": {
       "value": [
         {
-          "name": "aad_auth_only",
+          "name": "max_connections",
           "source": "user-override",
-          "value": "ON"
+          "value": "200"
         },
         {
           "name": "innodb_buffer_pool_size",
@@ -471,9 +471,9 @@ param advancedThreatProtection = 'Enabled'
 param backupRetentionDays = 20
 param configurations = [
   {
-    name: 'aad_auth_only'
+    name: 'max_connections'
     source: 'user-override'
-    value: 'ON'
+    value: '200'
   }
   {
     name: 'innodb_buffer_pool_size'
