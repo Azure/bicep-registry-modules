@@ -75,8 +75,15 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = if (empty(existingR
   }
 }
 
+var outputResourceId = empty(existingResourceId) ? keyvault!.outputs.resourceId : existingKeyVault.id
+var outputName = empty(existingResourceId) ? keyvault!.outputs.name : existingKeyVault.name
+var outputLocation = empty(existingResourceId) ? keyvault!.outputs.location : existingKeyVault!.location
+
 @description('Resource ID of the Key Vault.')
-output resourceId string = empty(existingResourceId) ? keyvault!.outputs.resourceId : existingKeyVault.id
+output resourceId string = outputResourceId
 
 @description('Name of the Key Vault.')
-output name string = empty(existingResourceId) ? keyvault!.outputs.name : existingKeyVault.name
+output name string = outputName
+
+@description('Location of the Key Vault.')
+output location string = outputLocation

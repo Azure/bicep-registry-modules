@@ -73,16 +73,21 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (em
   }
 }
 
-@description('Resource ID of the Cosmos DB Account.')
-output resourceId string = empty(existingResourceId) ? cosmosDb!.outputs.resourceId : existingCosmosDb.id
-
-@description('Name of the Cosmos DB Account.')
-output name string = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
-
-@description('Location of the Cosmos DB Account.')
-output location string = empty(existingResourceId) ? cosmosDb!.outputs.location : existingCosmosDb!.location
-
-@description('Endpoint/target for the Cosmos DB Account.')
-output endpoint string = empty(existingResourceId)
+var outputResourceId = empty(existingResourceId) ? cosmosDb!.outputs.resourceId : existingCosmosDb.id
+var outputName = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
+var outputLocation = empty(existingResourceId) ? cosmosDb!.outputs.location : existingCosmosDb!.location
+var outputEndpoint = empty(existingResourceId)
   ? cosmosDb!.outputs.endpoint
   : existingCosmosDb!.properties.documentEndpoint
+
+@description('Resource ID of the Cosmos DB Account.')
+output resourceId string = outputResourceId
+
+@description('Name of the Cosmos DB Account.')
+output name string = outputName
+
+@description('Location of the Cosmos DB Account.')
+output location string = outputLocation
+
+@description('Endpoint/target for the Cosmos DB Account.')
+output endpoint string = outputEndpoint

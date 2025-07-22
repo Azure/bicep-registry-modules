@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "9320303555949574740"
+      "templateHash": "6866889935378944680"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -3441,7 +3441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "11917122123217551768"
+              "templateHash": "16833353582034851750"
             }
           },
           "definitions": {
@@ -7046,6 +7046,13 @@
                 "description": "Name of the Key Vault."
               },
               "value": "[if(empty(parameters('existingResourceId')), reference('keyvault').outputs.name.value, reference('parsedResourceId').outputs.name.value)]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location of the Key Vault."
+              },
+              "value": "[if(empty(parameters('existingResourceId')), reference('keyvault').outputs.location.value, reference('existingKeyVault', '2024-11-01', 'full').location)]"
             }
           }
         }
@@ -7087,7 +7094,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7642178542867300015"
+              "templateHash": "11202672403539849908"
             }
           },
           "definitions": {
@@ -9581,7 +9588,7 @@
               "metadata": {
                 "description": "System Assigned Identity principal ID of the AI Search resource."
               },
-              "value": "[if(empty(parameters('existingResourceId')), reference('existingAiSearch', '2025-05-01', 'full').identity.principalId, reference('aiSearch').outputs.systemAssignedMIPrincipalId.value)]"
+              "value": "[if(empty(parameters('existingResourceId')), reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, reference('existingAiSearch', '2025-05-01', 'full').identity.principalId)]"
             }
           }
         }

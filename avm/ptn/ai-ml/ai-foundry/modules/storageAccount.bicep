@@ -102,19 +102,24 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (e
   }
 }
 
-@description('Name of the Storage Account.')
-output name string = empty(existingResourceId) ? storageAccount!.outputs.name : existingStorageAccount.name
-
-@description('Resource ID of the Storage Account.')
-output resourceId string = empty(existingResourceId) ? storageAccount!.outputs.resourceId : existingStorageAccount.id
-
-@description('Blob endpoint of the Storage Account.')
-output blobEndpoint string = empty(existingResourceId)
+var outputResourceId = empty(existingResourceId) ? storageAccount!.outputs.resourceId : existingStorageAccount.id
+var outputName = empty(existingResourceId) ? storageAccount!.outputs.name : existingStorageAccount.name
+var outputLocation = empty(existingResourceId) ? storageAccount!.outputs.location : existingStorageAccount!.location
+var outputBlobEndpoint = empty(existingResourceId)
   ? storageAccount!.outputs.primaryBlobEndpoint
   : existingStorageAccount!.properties.primaryEndpoints.blob
 
+@description('Name of the Storage Account.')
+output name string = outputName
+
+@description('Resource ID of the Storage Account.')
+output resourceId string = outputResourceId
+
+@description('Blob endpoint of the Storage Account.')
+output blobEndpoint string = outputBlobEndpoint
+
 @description('Location of the Storage Account.')
-output location string = empty(existingResourceId) ? storageAccount!.outputs.location : existingStorageAccount!.location
+output location string = outputLocation
 
 @description('Name of the project uploads container.')
 output projUploadsContainerName string = projUploadsContainerName

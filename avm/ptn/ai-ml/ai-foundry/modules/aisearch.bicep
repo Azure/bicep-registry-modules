@@ -73,21 +73,27 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (empty(exi
   }
 }
 
-@description('Resource ID of the AI Search resource.')
-output resourceId string = empty(existingResourceId) ? aiSearch!.outputs.resourceId : existingAiSearch.id
-
-@description('Name of the AI Search resource.')
-output name string = empty(existingResourceId) ? aiSearch!.outputs.name : existingAiSearch.name
-
-@description('Location of the AI Search resource.')
-output location string = empty(existingResourceId) ? aiSearch!.outputs.location : existingAiSearch!.location
-
-@description('Endpoint/target for the AI Search resources.')
-output endpoint string = empty(existingResourceId)
+var outputResourceId = empty(existingResourceId) ? aiSearch!.outputs.resourceId : existingAiSearch.id
+var outputName = empty(existingResourceId) ? aiSearch!.outputs.name : existingAiSearch.name
+var outputLocation = empty(existingResourceId) ? aiSearch!.outputs.location : existingAiSearch!.location
+var outputEndpoint = empty(existingResourceId)
   ? aiSearch!.outputs.endpoint
   : 'https://${existingAiSearch.name}.search.windows.net/'
+var outputSystemAssignedMIPrincipalId = empty(existingResourceId)
+  ? aiSearch!.outputs.systemAssignedMIPrincipalId!
+  : existingAiSearch!.identity.principalId
+
+@description('Resource ID of the AI Search resource.')
+output resourceId string = outputResourceId
+
+@description('Name of the AI Search resource.')
+output name string = outputName
+
+@description('Location of the AI Search resource.')
+output location string = outputLocation
+
+@description('Endpoint/target for the AI Search resources.')
+output endpoint string = outputEndpoint
 
 @description('System Assigned Identity principal ID of the AI Search resource.')
-output systemAssignedMIPrincipalId string = empty(existingResourceId)
-  ? existingAiSearch!.identity.principalId
-  : aiSearch!.outputs.systemAssignedMIPrincipalId!
+output systemAssignedMIPrincipalId string = outputSystemAssignedMIPrincipalId
