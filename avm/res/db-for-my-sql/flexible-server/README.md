@@ -17,7 +17,7 @@ This module deploys a DBforMySQL Flexible Server.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DBforMySQL/flexibleServers` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers) |
+| `Microsoft.DBforMySQL/flexibleServers` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers) |
 | `Microsoft.DBforMySQL/flexibleServers/administrators` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/administrators) |
 | `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/advancedThreatProtectionSettings) |
 | `Microsoft.DBforMySQL/flexibleServers/configurations` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/configurations) |
