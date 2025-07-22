@@ -2,17 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/CHANGELOG.md).
 
-## 0.14.0
+## 0.13.1
 
 ### Changes
 
-- converted [`access-policy`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/access-policy) to a child module
-- converted [`key`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/key) to a child module
-- converted [`secret`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/secret) to a child module
+- Introduced [`access-policy`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/access-policy) as child module
+- Introduced [`key`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/key) as child module
+- Introduced [`secret`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/secret) as child module
 
 ### Breaking Changes
 
-- none
+- None
 
 ## 0.13.0
 

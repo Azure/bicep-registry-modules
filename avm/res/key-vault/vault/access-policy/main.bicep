@@ -33,7 +33,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: keyVaultName
 }
 
-resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = {
+resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2024-11-01' = {
   name: 'add'
   parent: keyVault
   properties: {

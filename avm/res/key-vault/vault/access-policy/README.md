@@ -13,7 +13,7 @@ This module deploys a Key Vault Access Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
+| `Microsoft.KeyVault/vaults/accessPolicies` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies) |
 
 ## Parameters
 

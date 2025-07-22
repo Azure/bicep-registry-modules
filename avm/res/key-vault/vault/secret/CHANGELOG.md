@@ -1,13 +1,13 @@
 # Changelog
 
-The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/secret/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/secret/CHANGELOG.md).
 
-## 0.0.1
+## 0.1.0
 
 ### Changes
 
-- initial release
+- Initial release
 
 ### Breaking Changes
 
-- none
+- None
