@@ -334,7 +334,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
           {
             auth: [
               {
-                secretRef: 'connectionString'
+                secretRef: 'connection-String'
                 triggerParameter: 'connection'
               }
             ]
@@ -523,7 +523,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
             {
               "auth": [
                 {
-                  "secretRef": "connectionString",
+                  "secretRef": "connection-String",
                   "triggerParameter": "connection"
                 }
               ],
@@ -718,7 +718,7 @@ param eventTriggerConfig = {
       {
         auth: [
           {
-            secretRef: 'connectionString'
+            secretRef: 'connection-String'
             triggerParameter: 'connection'
           }
         ]
