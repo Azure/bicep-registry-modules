@@ -13,6 +13,9 @@ param friendlyName string?
 @description('Required. Gets or sets the data source information.')
 param dataSourceInfo dataSourceInfoType
 
+@description('Optional. Gets or sets the data source set information.')
+param dataSourceSetInfo dataSourceSetInfoType?
+
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
@@ -48,7 +51,7 @@ resource backupInstance_snapshotRG_rbac 'Microsoft.Authorization/roleAssignments
 resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
   name: name
   parent: backupVault
-  properties: {
+  properties: union({
     friendlyName: friendlyName
     objectType: 'BackupInstance'
     dataSourceInfo: union(dataSourceInfo, { objectType: 'Datasource' })
@@ -56,7 +59,9 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
       policyId: backupVault::backupPolicy.id
       policyParameters: policyInfo.policyParameters
     }
-  }
+  }, !empty(dataSourceSetInfo) ? {
+    dataSourceSetInfo: union(dataSourceSetInfo!, { objectType: 'DatasourceSet' })
+  } : {})
   dependsOn: [
     backupInstance_dataSourceResource_rbac
     backupInstance_snapshotRG_rbac
@@ -95,6 +100,28 @@ type dataSourceInfoType = {
   resourceType: string
 
   @description('Required. The Uri of the resource.')
+  resourceUri: string
+}
+
+@export()
+@description('The type for backup instance data source set info properties.')
+type dataSourceSetInfoType = {
+  @description('Required. The data source type of the resource set.')
+  datasourceType: string
+
+  @description('Required. The resource ID of the resource set.')
+  resourceID: string
+
+  @description('Required. The location of the data source set.')
+  resourceLocation: string
+
+  @description('Required. Unique identifier of the resource set in the context of parent.')
+  resourceName: string
+
+  @description('Required. The resource type of the data source set.')
+  resourceType: string
+
+  @description('Required. The Uri of the resource set.')
   resourceUri: string
 }
 

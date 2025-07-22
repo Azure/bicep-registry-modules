@@ -1522,6 +1522,37 @@ param softDeleteSettings = {
 </details>
 <p>
 
+> **Note**: For AKS (Azure Kubernetes Service) backup scenarios, you can use the optional `dataSourceSetInfo` parameter in addition to or instead of `dataSourceInfo`. This is particularly useful when backing up Microsoft.ContainerService/managedClusters resources that require datasource set information.
+
+Example for AKS backup:
+```bicep
+backupInstances: [
+  {
+    name: 'myAksBackupInstance'
+    dataSourceInfo: {
+      datasourceType: 'Microsoft.ContainerService/managedClusters'
+      resourceID: '/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.ContainerService/managedClusters/myAKS'
+      resourceLocation: 'eastus'
+      resourceName: 'myAKS'
+      resourceType: 'Microsoft.ContainerService/managedClusters'
+      resourceUri: '/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.ContainerService/managedClusters/myAKS'
+    }
+    dataSourceSetInfo: {
+      datasourceType: 'Microsoft.ContainerService/managedClusters'
+      resourceID: '/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.ContainerService/managedClusters/myAKS'
+      resourceLocation: 'eastus'
+      resourceName: 'myAKS'
+      resourceType: 'Microsoft.ContainerService/managedClusters'
+      resourceUri: '/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.ContainerService/managedClusters/myAKS'
+    }
+    policyInfo: {
+      policyName: 'myAksPolicy'
+      policyParameters: {}
+    }
+  }
+]
+```
+
 ## Parameters
 
 **Required parameters**
@@ -1592,6 +1623,7 @@ List of all backup instances.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataSourceSetInfo`](#parameter-backupinstancesdatasourcesetinfo) | object | The data source set info for the backup instance. |
 | [`friendlyName`](#parameter-backupinstancesfriendlyname) | string | The friendly name of the backup instance. |
 
 ### Parameter: `backupInstances.dataSourceInfo`
@@ -1688,6 +1720,66 @@ Policy parameters for the backup instance.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `backupInstances.dataSourceSetInfo`
+
+The data source set info for the backup instance.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`datasourceType`](#parameter-backupinstancesdatasourcesetinfodatasourcetype) | string | The data source type of the resource set. |
+| [`resourceID`](#parameter-backupinstancesdatasourcesetinforesourceid) | string | The resource ID of the resource set. |
+| [`resourceLocation`](#parameter-backupinstancesdatasourcesetinforesourcelocation) | string | The location of the data source set. |
+| [`resourceName`](#parameter-backupinstancesdatasourcesetinforesourcename) | string | Unique identifier of the resource set in the context of parent. |
+| [`resourceType`](#parameter-backupinstancesdatasourcesetinforesourcetype) | string | The resource type of the data source set. |
+| [`resourceUri`](#parameter-backupinstancesdatasourcesetinforesourceuri) | string | The Uri of the resource set. |
+
+### Parameter: `backupInstances.dataSourceSetInfo.datasourceType`
+
+The data source type of the resource set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceID`
+
+The resource ID of the resource set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceLocation`
+
+The location of the data source set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceName`
+
+Unique identifier of the resource set in the context of parent.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceType`
+
+The resource type of the data source set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceUri`
+
+The Uri of the resource set.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `backupInstances.friendlyName`
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10390013005713732753"
+      "version": "0.36.177.2456",
+      "templateHash": "6763377575466601682"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -57,6 +57,51 @@
         "description": "The type for backup instance data source info properties."
       }
     },
+    "dataSourceSetInfoType": {
+      "type": "object",
+      "properties": {
+        "datasourceType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The data source type of the resource set."
+          }
+        },
+        "resourceID": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the resource set."
+          }
+        },
+        "resourceLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The location of the data source set."
+          }
+        },
+        "resourceName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Unique identifier of the resource set in the context of parent."
+          }
+        },
+        "resourceType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource type of the data source set."
+          }
+        },
+        "resourceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Uri of the resource set."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for backup instance data source set info properties."
+      }
+    },
     "policyInfoType": {
       "type": "object",
       "properties": {
@@ -105,6 +150,13 @@
         "description": "Required. Gets or sets the data source information."
       }
     },
+    "dataSourceSetInfo": {
+      "$ref": "#/definitions/dataSourceSetInfoType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Gets or sets the data source set information."
+      }
+    },
     "policyInfo": {
       "$ref": "#/definitions/policyInfoType",
       "metadata": {
@@ -143,15 +195,7 @@
       "type": "Microsoft.DataProtection/backupVaults/backupInstances",
       "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
-      "properties": {
-        "friendlyName": "[parameters('friendlyName')]",
-        "objectType": "BackupInstance",
-        "dataSourceInfo": "[union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource'))]",
-        "policyInfo": {
-          "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
-          "policyParameters": "[parameters('policyInfo').policyParameters]"
-        }
-      },
+      "properties": "[union(createObject('friendlyName', parameters('friendlyName'), 'objectType', 'BackupInstance', 'dataSourceInfo', union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource')), 'policyInfo', createObject('policyId', resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName), 'policyParameters', parameters('policyInfo').policyParameters)), if(not(empty(parameters('dataSourceSetInfo'))), createObject('dataSourceSetInfo', union(parameters('dataSourceSetInfo'), createObject('objectType', 'DatasourceSet'))), createObject()))]",
       "dependsOn": [
         "backupInstance_dataSourceResource_rbac",
         "backupInstance_snapshotRG_rbac"
@@ -181,8 +225,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12922926946246637028"
+              "version": "0.36.177.2456",
+              "templateHash": "12992848245853880425"
             }
           },
           "parameters": {

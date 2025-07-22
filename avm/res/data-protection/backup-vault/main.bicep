@@ -242,6 +242,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
       name: backupInstance.name
       friendlyName: backupInstance.?friendlyName
       dataSourceInfo: backupInstance.dataSourceInfo
+      dataSourceSetInfo: backupInstance.?dataSourceSetInfo
       policyInfo: backupInstance.policyInfo
     }
     dependsOn: [
@@ -306,7 +307,7 @@ type softDeleteSettingType = {
   state: ('AlwaysON' | 'On' | 'Off')
 }
 
-import { dataSourceInfoType, policyInfoType } from 'backup-instance/main.bicep'
+import { dataSourceInfoType, dataSourceSetInfoType, policyInfoType } from 'backup-instance/main.bicep'
 @export()
 @description('The type for a backup instance.')
 type backupInstanceType = {
@@ -318,6 +319,9 @@ type backupInstanceType = {
 
   @description('Required. The data source info for the backup instance.')
   dataSourceInfo: dataSourceInfoType
+
+  @description('Optional. The data source set info for the backup instance.')
+  dataSourceSetInfo: dataSourceSetInfoType?
 
   @description('Required. The policy info for the backup instance.')
   policyInfo: policyInfoType
