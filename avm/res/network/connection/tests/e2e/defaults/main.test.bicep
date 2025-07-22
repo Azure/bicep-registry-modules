@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -64,14 +64,9 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkGateway1: {
         id: nestedDependencies.outputs.primaryVNETGatewayResourceID
       }
-      virtualNetworkGateway2: {
-        id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
-      }
+      virtualNetworkGateway2ResourceId: nestedDependencies.outputs.secondaryVNETGatewayResourceID
       connectionType: 'Vnet2Vnet'
       vpnSharedKey: password
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

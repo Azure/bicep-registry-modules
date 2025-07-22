@@ -523,7 +523,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     skuName: 'Standard_B12ms'
     // Non-required parameters
     availabilityZones: [
-      '2'
+      2
     ]
     bootDiagnosticEnabled: true
     bootDiagnosticStorageAccountName: '<bootDiagnosticStorageAccountName>'
@@ -714,7 +714,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     // Non-required parameters
     "availabilityZones": {
       "value": [
-        "2"
+        2
       ]
     },
     "bootDiagnosticEnabled": {
@@ -931,7 +931,7 @@ param osType = 'Linux'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
 param availabilityZones = [
-  '2'
+  2
 ]
 param bootDiagnosticEnabled = true
 param bootDiagnosticStorageAccountName = '<bootDiagnosticStorageAccountName>'
@@ -2927,6 +2927,14 @@ The virtual machine scale set zones. NOTE: Availability zones can only be set wh
 - Required: No
 - Type: array
 - Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
   ```Bicep
   [
     1

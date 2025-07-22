@@ -20,12 +20,14 @@ param shareDeleteRetentionPolicy resourceInput<'Microsoft.Storage/storageAccount
 @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
 param corsRules corsRuleType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. File shares to create.')
 param shares array?
+
+var enableReferencedModulesTelemetry = false
 
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
@@ -88,6 +90,7 @@ module fileServices_shares 'share/main.bicep' = [
       rootSquash: share.?rootSquash
       shareQuota: share.?shareQuota
       roleAssignments: share.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

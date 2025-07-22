@@ -5,13 +5,190 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5128164965296759109"
+      "version": "0.36.1.42791",
+      "templateHash": "8611679748900233251"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection."
   },
   "definitions": {
+    "customIPSecPolicyType": {
+      "type": "object",
+      "properties": {
+        "saLifeTimeSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site to site VPN tunnel."
+          }
+        },
+        "saDataSizeKilobytes": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site to site VPN tunnel."
+          }
+        },
+        "ipsecEncryption": {
+          "type": "string",
+          "allowedValues": [
+            "AES128",
+            "AES192",
+            "AES256",
+            "DES",
+            "DES3",
+            "GCMAES128",
+            "GCMAES192",
+            "GCMAES256",
+            "None"
+          ],
+          "metadata": {
+            "description": "Required. The IPSec encryption algorithm (IKE phase 1)."
+          }
+        },
+        "ipsecIntegrity": {
+          "type": "string",
+          "allowedValues": [
+            "GCMAES128",
+            "GCMAES192",
+            "GCMAES256",
+            "MD5",
+            "SHA1",
+            "SHA256"
+          ],
+          "metadata": {
+            "description": "Required. The IPSec integrity algorithm (IKE phase 1)."
+          }
+        },
+        "ikeEncryption": {
+          "type": "string",
+          "allowedValues": [
+            "AES128",
+            "AES192",
+            "AES256",
+            "DES",
+            "DES3",
+            "GCMAES128",
+            "GCMAES256"
+          ],
+          "metadata": {
+            "description": "Required. The IKE encryption algorithm (IKE phase 2)."
+          }
+        },
+        "ikeIntegrity": {
+          "type": "string",
+          "allowedValues": [
+            "GCMAES128",
+            "GCMAES256",
+            "MD5",
+            "SHA1",
+            "SHA256",
+            "SHA384"
+          ],
+          "metadata": {
+            "description": "Required. The IKE integrity algorithm (IKE phase 2)."
+          }
+        },
+        "dhGroup": {
+          "type": "string",
+          "allowedValues": [
+            "DHGroup1",
+            "DHGroup14",
+            "DHGroup2",
+            "DHGroup2048",
+            "DHGroup24",
+            "ECP256",
+            "ECP384",
+            "None"
+          ],
+          "metadata": {
+            "description": "Required. The DH Group used in IKE Phase 1 for initial SA."
+          }
+        },
+        "pfsGroup": {
+          "type": "string",
+          "allowedValues": [
+            "ECP256",
+            "ECP384",
+            "None",
+            "PFS1",
+            "PFS14",
+            "PFS2",
+            "PFS2048",
+            "PFS24",
+            "PFSMM"
+          ],
+          "metadata": {
+            "description": "Required. The Pfs Group used in IKE Phase 2 for new child SA."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The custom IPSec policy configuration for the connection."
+      }
+    },
+    "virtualNetworkGatewayType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the virtual network gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The virtual network gateway configuration."
+      }
+    },
+    "gatewayCustomBgpIpAddressType": {
+      "type": "object",
+      "properties": {
+        "customBgpIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The custom BgpPeeringAddress which belongs to IpconfigurationId."
+          }
+        },
+        "ipConfigurationId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IpconfigurationId of ipconfiguration which belongs to gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Gateway custom BGP IP address configuration for APIPA."
+      }
+    },
+    "trafficSelectorPolicyType": {
+      "type": "object",
+      "properties": {
+        "localAddressRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A collection of local address spaces in CIDR format."
+          }
+        },
+        "remoteAddressRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A collection of remote address spaces in CIDR format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Traffic selector policy configuration."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -125,6 +302,9 @@
     },
     "trafficSelectorPolicies": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/trafficSelectorPolicyType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The traffic selector policies to be considered by this connection."
@@ -152,16 +332,16 @@
       }
     },
     "customIPSecPolicy": {
-      "type": "object",
+      "$ref": "#/definitions/customIPSecPolicyType",
       "defaultValue": {
         "saLifeTimeSeconds": 0,
         "saDataSizeKilobytes": 0,
-        "ipsecEncryption": "",
-        "ipsecIntegrity": "",
-        "ikeEncryption": "",
-        "ikeIntegrity": "",
-        "dhGroup": "",
-        "pfsGroup": ""
+        "ipsecEncryption": "None",
+        "ipsecIntegrity": "MD5",
+        "ikeEncryption": "DES",
+        "ikeIntegrity": "MD5",
+        "dhGroup": "None",
+        "pfsGroup": "None"
       },
       "metadata": {
         "description": "Optional. The IPSec Policies to be considered by this connection."
@@ -183,10 +363,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/connections@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -196,23 +379,23 @@
       }
     },
     "virtualNetworkGateway1": {
-      "type": "object",
+      "$ref": "#/definitions/virtualNetworkGatewayType",
       "metadata": {
         "description": "Required. The primary Virtual Network Gateway."
       }
     },
-    "virtualNetworkGateway2": {
-      "type": "object",
-      "defaultValue": {},
+    "virtualNetworkGateway2ResourceId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]."
+        "description": "Optional. The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet]."
       }
     },
-    "peer": {
-      "type": "object",
-      "defaultValue": {},
+    "peerResourceId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The remote peer. Used for connection connectionType [ExpressRoute]."
+        "description": "Optional. The remote peer resource ID. Used for connection connectionType [ExpressRoute]."
       }
     },
     "authorizationKey": {
@@ -222,11 +405,21 @@
         "description": "Optional. The Authorization Key to connect to an Express Route Circuit. Used for connection type [ExpressRoute]."
       }
     },
-    "localNetworkGateway2": {
-      "type": "object",
-      "defaultValue": {},
+    "localNetworkGateway2ResourceId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The local network gateway. Used for connection type [IPsec]."
+        "description": "Optional. The local network gateway resource ID. Used for connection type [IPsec]."
+      }
+    },
+    "gatewayCustomBgpIpAddresses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/gatewayCustomBgpIpAddressType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides."
       }
     }
   },
@@ -253,7 +446,7 @@
     },
     "connection": {
       "type": "Microsoft.Network/connections",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -265,17 +458,18 @@
         "enablePrivateLinkFastPath": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('enablePrivateLinkFastPath'), null())]",
         "expressRouteGatewayBypass": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('expressRouteGatewayBypass'), null())]",
         "virtualNetworkGateway1": "[parameters('virtualNetworkGateway1')]",
-        "virtualNetworkGateway2": "[if(equals(parameters('connectionType'), 'Vnet2Vnet'), parameters('virtualNetworkGateway2'), null())]",
-        "localNetworkGateway2": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('localNetworkGateway2'), null())]",
-        "peer": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('peer'), null())]",
+        "virtualNetworkGateway2": "[if(and(equals(parameters('connectionType'), 'Vnet2Vnet'), not(empty(parameters('virtualNetworkGateway2ResourceId')))), createObject('id', parameters('virtualNetworkGateway2ResourceId')), null())]",
+        "localNetworkGateway2": "[if(and(equals(parameters('connectionType'), 'IPsec'), not(empty(parameters('localNetworkGateway2ResourceId')))), createObject('id', parameters('localNetworkGateway2ResourceId')), null())]",
+        "peer": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('peerResourceId')))), createObject('id', parameters('peerResourceId')), null())]",
         "authorizationKey": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('authorizationKey')))), parameters('authorizationKey'), null())]",
         "sharedKey": "[if(not(equals(parameters('connectionType'), 'ExpressRoute')), parameters('vpnSharedKey'), null())]",
         "trafficSelectorPolicies": "[parameters('trafficSelectorPolicies')]",
         "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
-        "ipsecPolicies": "[if(not(empty(parameters('customIPSecPolicy').ipsecEncryption)), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), parameters('customIPSecPolicy').ipsecEncryption)]",
+        "ipsecPolicies": "[if(not(equals(parameters('customIPSecPolicy').ipsecEncryption, 'None')), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), null())]",
         "routingWeight": "[parameters('routingWeight')]",
         "enableBgp": "[parameters('enableBgp')]",
-        "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]"
+        "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]",
+        "gatewayCustomBgpIpAddresses": "[if(and(equals(parameters('connectionType'), 'IPsec'), not(empty(parameters('gatewayCustomBgpIpAddresses')))), parameters('gatewayCustomBgpIpAddresses'), null())]"
       }
     },
     "connection_lock": {
@@ -320,7 +514,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('connection', '2023-04-01', 'full').location]"
+      "value": "[reference('connection', '2024-05-01', 'full').location]"
     }
   }
 }

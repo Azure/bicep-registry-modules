@@ -8,7 +8,7 @@ param keyVaultName string
 param name string
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.KeyVault/vaults/keys@2024-11-01'>.tags?
 
 @description('Optional. Determines whether the object is enabled.')
 param attributesEnabled bool = true
@@ -38,7 +38,7 @@ param curveName string = 'P-256'
   'verify'
   'wrapKey'
 ])
-param keyOps array?
+param keyOps string[]?
 
 @description('Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA.')
 param keySize int?
@@ -60,7 +60,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Key rotation policy properties object.')
-param rotationPolicy object?
+param rotationPolicy rotationPolicyType?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -111,11 +111,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: keyVaultName
 }
 
-resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
+resource key 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
   name: name
   parent: keyVault
   tags: tags
@@ -153,6 +153,34 @@ resource key_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
     scope: key
   }
 ]
+
+@export()
+@description('The type for a rotation policy.')
+type rotationPolicyType = {
+  @description('Optional. The attributes of key rotation policy.')
+  attributes: {
+    @description('Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".')
+    expiryTime: string?
+  }?
+
+  @description('Optional. The key rotation policy lifetime actions.')
+  lifetimeActions: {
+    @description('Optional. The type of the action.')
+    action: {
+      @description('Optional. The type of the action.')
+      type: ('rotate' | 'notify')?
+    }?
+
+    @description('Optional. The time duration for rotating the key.')
+    trigger: {
+      @description('Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".')
+      timeAfterCreate: string?
+
+      @description('Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".')
+      timeBeforeExpiry: string?
+    }?
+  }[]?
+}
 
 @description('The uri of the key.')
 output keyUri string = key.properties.keyUri

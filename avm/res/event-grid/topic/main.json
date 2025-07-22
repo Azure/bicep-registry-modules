@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "10315563177917737765"
+      "version": "0.36.1.42791",
+      "templateHash": "11032169992217253394"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic."
@@ -73,6 +73,111 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "eventSubscriptionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the event subscription."
+          }
+        },
+        "deadLetterDestination": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/deadLetterDestination"
+            },
+            "description": "Optional. Dead Letter Destination."
+          },
+          "nullable": true
+        },
+        "deadLetterWithResourceIdentity": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/deadLetterWithResourceIdentity"
+            },
+            "description": "Optional. Dead Letter with Resource Identity Configuration."
+          },
+          "nullable": true
+        },
+        "deliveryWithResourceIdentity": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/deliveryWithResourceIdentity"
+            },
+            "description": "Optional. Delivery with Resource Identity Configuration."
+          },
+          "nullable": true
+        },
+        "destination": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/destination"
+            },
+            "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
+          },
+          "nullable": true
+        },
+        "eventDeliverySchema": {
+          "type": "string",
+          "allowedValues": [
+            "CloudEventSchemaV1_0",
+            "CustomInputSchema",
+            "EventGridEvent",
+            "EventGridSchema"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The event delivery schema for the event subscription."
+          }
+        },
+        "expirationTimeUtc": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
+          }
+        },
+        "filter": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/filter"
+            },
+            "description": "Optional. The filter for the event subscription."
+          },
+          "nullable": true
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of user defined labels."
+          }
+        },
+        "retryPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/retryPolicy"
+            },
+            "description": "Optional. The retry policy for events."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Event subscription configuration."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -617,9 +722,24 @@
     },
     "eventSubscriptions": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/eventSubscriptionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Event subscriptions to deploy."
+      }
+    },
+    "inputSchema": {
+      "type": "string",
+      "defaultValue": "EventGridSchema",
+      "allowedValues": [
+        "CloudEventSchemaV1_0",
+        "CustomEventSchema",
+        "EventGridSchema"
+      ],
+      "metadata": {
+        "description": "Optional. This determines the format that Event Grid should expect for incoming events published to the topic."
       }
     },
     "diagnosticSettings": {
@@ -666,6 +786,58 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "dataResidencyBoundary": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "WithinGeopair",
+        "WithinRegion"
+      ],
+      "metadata": {
+        "description": "Optional. Data residency boundary for the topic. Controls where event data can be stored and processed."
+      }
+    },
+    "eventTypeInfo": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/properties/properties/eventTypeInfo"
+        },
+        "description": "Optional. Event type information for the topic. Used to define custom event types."
+      },
+      "nullable": true
+    },
+    "inputSchemaMapping": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/properties/properties/inputSchemaMapping"
+        },
+        "description": "Optional. Input schema mapping for custom event schema. This is the full mapping object including fields and default values."
+      },
+      "nullable": true
+    },
+    "extendedLocation": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/extendedLocation"
+        },
+        "description": "Optional. Extended location for the topic (e.g., Edge Zones)."
+      },
+      "nullable": true
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "Azure",
+      "allowedValues": [
+        "Azure",
+        "AzureArc"
+      ],
+      "metadata": {
+        "description": "Optional. The kind of topic resource."
+      }
+    },
     "disableLocalAuth": {
       "type": "bool",
       "defaultValue": true,
@@ -673,12 +845,27 @@
         "description": "Optional. Allow only Azure AD authentication. Should be enabled for security reasons."
       }
     },
+    "minimumTlsVersionAllowed": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2"
+      ],
+      "metadata": {
+        "description": "Optional. Minimum TLS version of the publisher allowed to publish to this topic. For security reasons, it is recommended to use TLS 1.2."
+      }
+    },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/topics@2025-04-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -734,15 +921,22 @@
     },
     "topic": {
       "type": "Microsoft.EventGrid/topics",
-      "apiVersion": "2021-06-01-preview",
+      "apiVersion": "2025-04-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
+      "kind": "[parameters('kind')]",
+      "extendedLocation": "[parameters('extendedLocation')]",
       "properties": {
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('inboundIpRules'))), 'Disabled', null()))]",
         "inboundIpRules": "[if(empty(parameters('inboundIpRules')), null(), parameters('inboundIpRules'))]",
-        "disableLocalAuth": "[parameters('disableLocalAuth')]"
+        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "minimumTlsVersionAllowed": "[parameters('minimumTlsVersionAllowed')]",
+        "inputSchema": "[parameters('inputSchema')]",
+        "dataResidencyBoundary": "[parameters('dataResidencyBoundary')]",
+        "eventTypeInfo": "[parameters('eventTypeInfo')]",
+        "inputSchemaMapping": "[parameters('inputSchemaMapping')]"
       }
     },
     "topic_lock": {
@@ -825,7 +1019,7 @@
     "topics_eventSubscriptions": {
       "copy": {
         "name": "topics_eventSubscriptions",
-        "count": "[length(parameters('eventSubscriptions'))]"
+        "count": "[length(coalesce(parameters('eventSubscriptions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -836,32 +1030,47 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "destination": {
-            "value": "[parameters('eventSubscriptions')[copyIndex()].destination]"
-          },
+          "destination": "[if(empty(tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity')), createObject('value', tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'destination')), createObject('value', null()))]",
           "topicName": {
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('eventSubscriptions')[copyIndex()].name]"
+            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].name]"
           },
-          "deadLetterDestination": "[if(contains(parameters('eventSubscriptions'), 'deadLetterDestination'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deadLetterDestination), createObject('value', createObject()))]",
-          "deadLetterWithResourceIdentity": "[if(contains(parameters('eventSubscriptions'), 'deadLetterWithResourceIdentity'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deadLetterWithResourceIdentity), createObject('value', createObject()))]",
-          "deliveryWithResourceIdentity": "[if(contains(parameters('eventSubscriptions'), 'deliveryWithResourceIdentity'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deliveryWithResourceIdentity), createObject('value', createObject()))]",
-          "eventDeliverySchema": "[if(contains(parameters('eventSubscriptions'), 'eventDeliverySchema'), createObject('value', parameters('eventSubscriptions')[copyIndex()].eventDeliverySchema), createObject('value', 'EventGridSchema'))]",
-          "expirationTimeUtc": "[if(contains(parameters('eventSubscriptions'), 'expirationTimeUtc'), createObject('value', parameters('eventSubscriptions')[copyIndex()].expirationTimeUtc), createObject('value', ''))]",
-          "filter": "[if(contains(parameters('eventSubscriptions'), 'filter'), createObject('value', parameters('eventSubscriptions')[copyIndex()].filter), createObject('value', createObject()))]",
-          "labels": "[if(contains(parameters('eventSubscriptions'), 'labels'), createObject('value', parameters('eventSubscriptions')[copyIndex()].labels), createObject('value', createArray()))]",
-          "retryPolicy": "[if(contains(parameters('eventSubscriptions'), 'retryPolicy'), createObject('value', parameters('eventSubscriptions')[copyIndex()].retryPolicy), createObject('value', createObject()))]"
+          "deadLetterDestination": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deadLetterDestination')]"
+          },
+          "deadLetterWithResourceIdentity": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deadLetterWithResourceIdentity')]"
+          },
+          "deliveryWithResourceIdentity": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity')]"
+          },
+          "eventDeliverySchema": {
+            "value": "[coalesce(tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'eventDeliverySchema'), 'EventGridSchema')]"
+          },
+          "expirationTimeUtc": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'expirationTimeUtc')]"
+          },
+          "filter": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'filter')]"
+          },
+          "labels": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'labels')]"
+          },
+          "retryPolicy": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'retryPolicy')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "12662344736343761773"
+              "version": "0.36.1.42791",
+              "templateHash": "16501473536598784439"
             },
             "name": "EventGrid Topic Event Subscriptions",
             "description": "This module deploys an Event Grid Topic Event Subscription."
@@ -881,30 +1090,43 @@
             },
             "deadLetterDestination": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/deadLetterDestination"
+                },
                 "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
-              }
+              },
+              "nullable": true
             },
             "deadLetterWithResourceIdentity": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/deadLetterWithResourceIdentity"
+                },
                 "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
-              }
+              },
+              "nullable": true
             },
             "deliveryWithResourceIdentity": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/deliveryWithResourceIdentity"
+                },
                 "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
-              }
+              },
+              "nullable": true
             },
             "destination": {
               "type": "object",
               "metadata": {
-                "description": "Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/destination"
+                },
+                "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
+              },
+              "nullable": true
             },
             "eventDeliverySchema": {
               "type": "string",
@@ -921,51 +1143,66 @@
             },
             "expirationTimeUtc": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
               }
             },
             "filter": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/filter"
+                },
                 "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
-              }
+              },
+              "nullable": true
             },
             "labels": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The list of user defined labels."
               }
             },
             "retryPolicy": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview#properties/properties/properties/retryPolicy"
+                },
                 "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
+              },
+              "nullable": true
+            }
+          },
+          "resources": {
+            "topic": {
+              "existing": true,
+              "type": "Microsoft.EventGrid/topics",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[parameters('topicName')]"
+            },
+            "eventSubscription": {
+              "type": "Microsoft.EventGrid/topics/eventSubscriptions",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('topicName'), parameters('name'))]",
+              "properties": {
+                "deadLetterDestination": "[parameters('deadLetterDestination')]",
+                "deadLetterWithResourceIdentity": "[parameters('deadLetterWithResourceIdentity')]",
+                "deliveryWithResourceIdentity": "[parameters('deliveryWithResourceIdentity')]",
+                "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
+                "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
+                "expirationTimeUtc": "[coalesce(parameters('expirationTimeUtc'), '')]",
+                "filter": "[coalesce(parameters('filter'), createObject())]",
+                "labels": "[coalesce(parameters('labels'), createArray())]",
+                "retryPolicy": "[parameters('retryPolicy')]"
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.EventGrid/topics/eventSubscriptions",
-              "apiVersion": "2022-06-15",
-              "name": "[format('{0}/{1}', parameters('topicName'), parameters('name'))]",
-              "properties": {
-                "deadLetterDestination": "[if(not(empty(parameters('deadLetterDestination'))), parameters('deadLetterDestination'), null())]",
-                "deadLetterWithResourceIdentity": "[if(not(empty(parameters('deadLetterWithResourceIdentity'))), parameters('deadLetterWithResourceIdentity'), null())]",
-                "deliveryWithResourceIdentity": "[if(not(empty(parameters('deliveryWithResourceIdentity'))), parameters('deliveryWithResourceIdentity'), null())]",
-                "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
-                "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
-                "expirationTimeUtc": "[if(not(empty(parameters('expirationTimeUtc'))), parameters('expirationTimeUtc'), '')]",
-                "filter": "[if(not(empty(parameters('filter'))), parameters('filter'), createObject())]",
-                "labels": "[if(not(empty(parameters('labels'))), parameters('labels'), createArray())]",
-                "retryPolicy": "[if(not(empty(parameters('retryPolicy'))), parameters('retryPolicy'), null())]"
-              }
-            }
-          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -993,7 +1230,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.EventGrid/topics', parameters('topicName')), '2022-06-15', 'full').location]"
+              "value": "[reference('topic', '2025-04-01-preview', 'full').location]"
             }
           }
         }
@@ -1064,8 +1301,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1474,7 +1711,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1492,7 +1729,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1580,8 +1817,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -1653,12 +1890,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -1722,7 +1959,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -1787,7 +2024,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('topic', '2021-06-01-preview', 'full').location]"
+      "value": "[reference('topic', '2025-04-01-preview', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1795,7 +2032,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('topic', '2021-06-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('topic', '2025-04-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",

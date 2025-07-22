@@ -196,7 +196,7 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 var enableReferencedModulesTelemetry = false
 
 var standByAvailabilityZone = {
-  Disabled: null
+  Disabled: -1
   SameZone: availabilityZone
   ZoneRedundant: highAvailabilityZone
 }[?highAvailability]
@@ -258,19 +258,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -309,8 +309,8 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
     dataEncryption: !empty(customerManagedKey)
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-            : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+            : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
@@ -469,7 +469,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -542,11 +542,11 @@ output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 @description('The private endpoints of the PostgreSQL Flexible server.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
-    name: server_privateEndpoints[index].outputs.name
-    resourceId: server_privateEndpoints[index].outputs.resourceId
-    groupId: server_privateEndpoints[index].outputs.?groupId!
-    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
-    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
+    name: server_privateEndpoints[index]!.outputs.name
+    resourceId: server_privateEndpoints[index]!.outputs.resourceId
+    groupId: server_privateEndpoints[index]!.outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index]!.outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
   }
 ]
 

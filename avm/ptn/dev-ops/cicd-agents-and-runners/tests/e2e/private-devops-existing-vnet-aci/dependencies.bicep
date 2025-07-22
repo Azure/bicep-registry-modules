@@ -45,6 +45,20 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
           }
         }
       }
+      {
+        name: 'acr-deployment-script-subnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 4)
+          delegations: [
+            {
+              name: 'Microsoft.ContainerInstance/containerGroups'
+              properties: {
+                serviceName: 'Microsoft.ContainerInstance/containerGroups'
+              }
+            }
+          ]
+        }
+      }
     ]
   }
 }

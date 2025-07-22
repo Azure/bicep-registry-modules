@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "334431459776497504"
+      "version": "0.36.1.42791",
+      "templateHash": "12714930315609879649"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -1157,8 +1157,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "5965003583311219989"
+              "version": "0.36.1.42791",
+              "templateHash": "8454561523232143470"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -1255,8 +1255,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15240522535518107770"
+              "version": "0.36.1.42791",
+              "templateHash": "4198674748200869524"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -1409,8 +1409,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "4073135031349321088"
+              "version": "0.36.1.42791",
+              "templateHash": "5223490441794132706"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -1555,7 +1555,7 @@
               "type": "int",
               "defaultValue": 1,
               "minValue": 1,
-              "maxValue": 7,
+              "maxValue": 90,
               "metadata": {
                 "description": "Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to \"Compact\"."
               }
@@ -1708,7 +1708,7 @@
               "type": "int",
               "defaultValue": 1,
               "minValue": 1,
-              "maxValue": 168,
+              "maxValue": 2160,
               "metadata": {
                 "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
               }
@@ -1717,7 +1717,7 @@
               "type": "int",
               "defaultValue": 1,
               "minValue": 1,
-              "maxValue": 168,
+              "maxValue": 2160,
               "metadata": {
                 "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
               }
@@ -1847,8 +1847,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1586939108343613276"
+                      "version": "0.36.1.42791",
+                      "templateHash": "13587345575892314444"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -1952,8 +1952,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "13832886652635004938"
+                      "version": "0.36.1.42791",
+                      "templateHash": "16120347380330996321"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -2095,8 +2095,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "18442177264911391352"
+              "version": "0.36.1.42791",
+              "templateHash": "10311264071215691288"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -2998,8 +2998,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1586204151956272516"
+              "version": "0.36.1.42791",
+              "templateHash": "9828976783151673384"
             }
           },
           "definitions": {

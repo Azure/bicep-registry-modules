@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "16585885324390135986"
+      "version": "0.36.1.42791",
+      "templateHash": "120910409673792387"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service."
@@ -190,7 +190,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -260,6 +260,9 @@
         "description": "Optional. File shares to create."
       }
     }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "storageAccount": {
@@ -356,6 +359,9 @@
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -365,8 +371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "190690872747761309"
+              "version": "0.36.1.42791",
+              "templateHash": "11354148440724800946"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share."
@@ -443,7 +449,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             }
@@ -512,6 +518,13 @@
                 "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
               }
             },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -552,6 +565,26 @@
               "type": "Microsoft.Storage/storageAccounts/fileServices",
               "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "storageAccount": {
               "existing": true,

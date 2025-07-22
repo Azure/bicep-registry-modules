@@ -22,10 +22,10 @@ param name string = 'local'
 param alwaysLog string = 'allErrors'
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
-param backend object = {}
+param backend resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.backend?
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
-param frontend object = {}
+param frontend resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.frontend?
 
 @allowed([
   'Legacy'
@@ -59,19 +59,19 @@ param samplingPercentage int = 100
 @description('Optional. The verbosity level applied to traces emitted by trace policies.')
 param verbosity string = 'error'
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
-  resource api 'apis@2021-08-01' existing = {
+  resource api 'apis@2024-05-01' existing = {
     name: apiName
   }
 
-  resource logger 'loggers@2021-08-01' existing = {
+  resource logger 'loggers@2024-05-01' existing = {
     name: loggerName
   }
 }
 
-resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2022-08-01' = {
+resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01' = {
   name: name
   parent: service::api
   properties: {

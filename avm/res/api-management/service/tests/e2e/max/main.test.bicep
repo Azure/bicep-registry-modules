@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
             capacity: 1
           }
           disableGateway: false
-          publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion2
+          publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion2
           virtualNetworkConfiguration: {
             subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
           }
@@ -99,15 +99,8 @@ module testDeployment '../../../main.bicep' = [
       publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
-          apiVersionSet: {
-            name: 'echo-version-set'
-            properties: {
-              description: 'echo-version-set'
-              displayName: 'echo-version-set'
-              versioningScheme: 'Segment'
-            }
-          }
           displayName: 'Echo API'
+          apiVersionSetName: 'echo-version-set'
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'http://echoapi.cloudapp.net/api'
@@ -115,6 +108,14 @@ module testDeployment '../../../main.bicep' = [
             'http'
             'https'
           ]
+        }
+      ]
+      apiVersionSets: [
+        {
+          name: 'echo-version-set'
+          description: 'echo-version-set'
+          displayName: 'echo-version-set'
+          versioningScheme: 'Segment'
         }
       ]
       authorizationServers: [

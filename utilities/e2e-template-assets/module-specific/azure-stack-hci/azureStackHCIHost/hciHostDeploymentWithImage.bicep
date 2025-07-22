@@ -58,7 +58,7 @@ param maintenanceConfigurationAssignmentName string
 // =================================//
 
 // vm managed identity used for HCI Arc onboarding
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   location: location
   name: userAssignedIdentityName
 }
@@ -84,7 +84,7 @@ module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignmen
 }
 
 // optional VNET and subnet for the HCI host Azure VM
-resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -113,7 +113,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 }
 
 // create a mintenance configuration for the Azure Stack HCI Host VM and proxy server
-resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-09-01-preview' = {
+resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
   location: location
   name: maintenanceConfigurationName ?? ''
   properties: {
@@ -136,12 +136,12 @@ resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   location: location
   name: networkSecurityGroupName
 }
 
-resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = {
+resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
   name: HCIHostVirtualMachineScaleSetName
   location: location
   zones: ['1', '2', '3']
@@ -151,7 +151,7 @@ resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' 
   }
 }
 
-resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
+resource nic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
   location: location
   name: networkInterfaceName
   properties: {
@@ -175,7 +175,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 param imageReferenceId string = '/SharedGalleries/b9e38f20-7c9c-4497-a25d-1a0c5eef2108-DIRECTLYSHARING/Images/vhci-Generalized/Versions/latest'
 
 // Azure Stack HCI Host VM -
-resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
   location: location
   name: virtualMachineName
   zones: ['1']
@@ -246,6 +246,24 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
   scope: vm
 }
 
+resource wait 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  name: 'wait'
+  location: location
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/wait.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+    parameters: [
+      {
+        name: 'Minutes'
+        value: '5'
+      }
+    ]
+  }
+}
+
 // ================================================//
 // Initialize Arc on HCI Node VMs and AD for HCI  //
 // ==============================================//
@@ -254,18 +272,22 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'ad'
   location: location
+  dependsOn: [
+    wait
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-ad.ps1')
     }
+    treatFailureAsDeploymentFailure: true
     parameters: [
       {
         name: 'IP'
-        value: 'hciHost01'
+        value: '192.168.1.254'
       }
       {
         name: 'Port'
-        value: '6985'
+        value: '5985'
       }
       {
         name: 'Authentication'
@@ -305,18 +327,22 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'arc1'
   location: location
+  dependsOn: [
+    wait
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
+    treatFailureAsDeploymentFailure: true
     parameters: [
       {
         name: 'IP'
-        value: 'hciHost01'
+        value: '192.168.1.12'
       }
       {
         name: 'Port'
-        value: '15985'
+        value: '5985'
       }
       {
         name: 'Authentication'
@@ -364,18 +390,22 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'arc2'
   location: location
+  dependsOn: [
+    wait
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
+    treatFailureAsDeploymentFailure: true
     parameters: [
       {
         name: 'IP'
-        value: 'hciHost01'
+        value: '192.168.1.13'
       }
       {
         name: 'Port'
-        value: '25985'
+        value: '5985'
       }
       {
         name: 'Authentication'

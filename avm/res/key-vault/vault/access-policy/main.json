@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6321524620984159084"
+      "version": "0.36.1.42791",
+      "templateHash": "10958657547953938402"
     },
     "name": "Key Vault Access Policies",
     "description": "This module deploys a Key Vault Access Policy."
@@ -170,7 +170,7 @@
     "keyVault": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('keyVaultName')]"
     },
     "policies": {
