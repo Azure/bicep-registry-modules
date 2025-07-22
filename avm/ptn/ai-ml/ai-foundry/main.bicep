@@ -250,7 +250,6 @@ module foundryProject 'modules/project.bicep' = {
     storageAccountConnections: includeAssociatedResources
       ? [
           {
-            name: storageAccount!.outputs.name
             target: storageAccount!.outputs.blobEndpoint
             location: storageAccount!.outputs.location
             resourceId: storageAccount!.outputs.resourceId
@@ -258,7 +257,6 @@ module foundryProject 'modules/project.bicep' = {
             containerName: storageAccount!.outputs.projUploadsContainerName
           }
           {
-            name: storageAccount!.outputs.name
             target: storageAccount!.outputs.blobEndpoint
             location: storageAccount!.outputs.location
             resourceId: storageAccount!.outputs.resourceId

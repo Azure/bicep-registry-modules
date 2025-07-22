@@ -96,7 +96,7 @@ resource aiSearchConnResources 'Microsoft.CognitiveServices/accounts/projects/co
 
 resource storageConnResources 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = [
   for (connection, i) in storageAccountConnections ?? []: {
-    name: connection.name
+    name: empty(connection.name) ? '${connection.accountName}-${connection.containerName}' : connection.name
     parent: project
     properties: {
       category: 'AzureBlob'
@@ -229,8 +229,8 @@ type azureConnectionType = {
 @export()
 @description('Type representing values to create an Azure Storage Account connection to an AI Foundry project.')
 type storageAccountConnectionType = {
-  @description('Required. The name of the project connection.')
-  name: string
+  @description('Optional. The name of the project connection. Will default to <accountName>-<containerName> if not provided.')
+  name: string?
 
   @description('Required. The resource ID of the Azure resource for the connection.')
   resourceId: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10521974347031324735"
+      "templateHash": "11235956071924376619"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -3441,7 +3441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16833353582034851750"
+              "templateHash": "15986978542393250564"
             }
           },
           "definitions": {
@@ -3722,7 +3722,7 @@
                     "value": true
                   },
                   "enablePurgeProtection": {
-                    "value": true
+                    "value": false
                   },
                   "enableRbacAuthorization": {
                     "value": true
@@ -19924,7 +19924,7 @@
           },
           "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('aiSearch').outputs.name.value, 'target', reference('aiSearch').outputs.endpoint.value, 'location', reference('aiSearch').outputs.location.value, 'resourceId', reference('aiSearch').outputs.resourceId.value))), createObject('value', createArray()))]",
           "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('cosmosDb').outputs.name.value, 'target', reference('cosmosDb').outputs.endpoint.value, 'location', reference('cosmosDb').outputs.location.value, 'resourceId', reference('cosmosDb').outputs.resourceId.value))), createObject('value', createArray()))]",
-          "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('name', reference('storageAccount').outputs.name.value, 'target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
+          "storageAccountConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('target', reference('storageAccount').outputs.blobEndpoint.value, 'location', reference('storageAccount').outputs.location.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'accountName', reference('storageAccount').outputs.name.value, 'containerName', reference('storageAccount').outputs.sysDataContainerName.value))), createObject('value', createArray()))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -19940,7 +19940,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16809391513570929902"
+              "templateHash": "3231789817922549005"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -19984,8 +19984,9 @@
               "properties": {
                 "name": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The name of the project connection."
+                    "description": "Optional. The name of the project connection. Will default to <accountName>-<containerName> if not provided."
                   }
                 },
                 "resourceId": {
@@ -20310,7 +20311,7 @@
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name))]",
               "properties": {
                 "category": "AzureBlob",
                 "target": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].target]",
@@ -20366,7 +20367,7 @@
                   {
                     "name": "storageConnections",
                     "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
-                    "input": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name]"
+                    "input": "[if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name)]"
                   },
                   {
                     "name": "threadStorageConnections",
@@ -20476,8 +20477,8 @@
               "copy": {
                 "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
                 "input": {
-                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
-                  "name": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name]",
+                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name))]",
+                  "name": "[if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
                   "category": "AzureBlob",
                   "target": "[reference(format('storageConnResources[{0}]', copyIndex())).target]"
                 }

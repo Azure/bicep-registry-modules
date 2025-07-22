@@ -52,7 +52,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = if (empty(existingR
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
     enableVaultForTemplateDeployment: true
-    enablePurgeProtection: true
+    enablePurgeProtection: false
     enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
