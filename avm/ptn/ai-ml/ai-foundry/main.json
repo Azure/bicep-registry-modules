@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11235956071924376619"
+      "templateHash": "1013400805210575843"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -19940,7 +19940,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3231789817922549005"
+              "templateHash": "17547540084113028662"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20311,7 +20311,7 @@
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name))]",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), if(empty(tryGet(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()], 'name')), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name))]",
               "properties": {
                 "category": "AzureBlob",
                 "target": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].target]",
@@ -20367,7 +20367,7 @@
                   {
                     "name": "storageConnections",
                     "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
-                    "input": "[if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name)]"
+                    "input": "[if(empty(tryGet(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')], 'name')), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex('storageConnections')].name)]"
                   },
                   {
                     "name": "threadStorageConnections",
@@ -20477,8 +20477,8 @@
               "copy": {
                 "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
                 "input": {
-                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name))]",
-                  "name": "[if(empty(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
+                  "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('name'), if(empty(tryGet(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()], 'name')), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name))]",
+                  "name": "[if(empty(tryGet(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()], 'name')), format('{0}-{1}', coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].accountName, coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].name)]",
                   "category": "AzureBlob",
                   "target": "[reference(format('storageConnResources[{0}]', copyIndex())).target]"
                 }

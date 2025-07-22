@@ -96,7 +96,7 @@ resource aiSearchConnResources 'Microsoft.CognitiveServices/accounts/projects/co
 
 resource storageConnResources 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = [
   for (connection, i) in storageAccountConnections ?? []: {
-    name: empty(connection.name) ? '${connection.accountName}-${connection.containerName}' : connection.name
+    name: empty(connection.?name) ? '${connection.accountName}-${connection.containerName}' : connection.name!
     parent: project
     properties: {
       category: 'AzureBlob'
