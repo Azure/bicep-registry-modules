@@ -15,7 +15,7 @@ resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   location: location
 }
 
-module appInsights 'br/public:avm/res/insights/component:0.4.2' = {
+module appInsights 'br/public:avm/res/insights/component:0.6.0' = {
   name: '${uniqueString(deployment().name, location)}-appInsights'
   params: {
     name: appInsightsName
@@ -27,7 +27,7 @@ module appInsights 'br/public:avm/res/insights/component:0.4.2' = {
   }
 }
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: userIdentityName
   location: location
 }
