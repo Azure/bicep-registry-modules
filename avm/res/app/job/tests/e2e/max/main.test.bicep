@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
               }
               auth: [
                 {
-                  secretRef: 'connection-String'
+                  secretRef: 'connection-string'
                   triggerParameter: 'connection'
                 }
               ]
