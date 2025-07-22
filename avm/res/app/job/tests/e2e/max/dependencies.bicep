@@ -100,3 +100,7 @@ output storageAccountName string = storageAccount.name
 
 @description('The name of the storage queue created.')
 output storageQueueName string = storageAccount::storageQueueService::storageQueue.name
+
+@secure()
+@description('The connection string for the storage account created.')
+output storageAccountConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'

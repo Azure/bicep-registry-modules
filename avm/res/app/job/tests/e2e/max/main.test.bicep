@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
               }
               auth: [
                 {
-                  secretRef: 'connectionString'
+                  secretRef: 'connection-String'
                   triggerParameter: 'connection'
                 }
               ]
@@ -127,11 +127,7 @@ module testDeployment '../../../main.bicep' = [
       secrets: [
         {
           name: 'connection-string'
-          // needed for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
-          value: listKeys(
-            '${resourceGroup.id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}',
-            '2023-04-01'
-          ).keys[0].value
+          value: nestedDependencies.outputs.storageAccountConnectionString
         }
       ]
       containers: [
