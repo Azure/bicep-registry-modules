@@ -20,6 +20,7 @@ This module deploys a DBforMySQL Flexible Server.
 | `Microsoft.DBforMySQL/flexibleServers` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers) |
 | `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/administrators) |
 | `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers/advancedThreatProtectionSettings) |
+| `Microsoft.DBforMySQL/flexibleServers/configurations` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/flexibleServers/configurations) |
 | `Microsoft.DBforMySQL/flexibleServers/databases` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/databases) |
 | `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -152,6 +153,18 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLoginPassword: '<administratorLoginPassword>'
     advancedThreatProtection: 'Enabled'
     backupRetentionDays: 20
+    configurations: [
+      {
+        name: 'aad_auth_only'
+        source: 'user-override'
+        value: 'ON'
+      }
+      {
+        name: 'innodb_buffer_pool_size'
+        source: 'user-override'
+        value: '1073741824'
+      }
+    ]
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -287,6 +300,20 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "backupRetentionDays": {
       "value": 20
+    },
+    "configurations": {
+      "value": [
+        {
+          "name": "aad_auth_only",
+          "source": "user-override",
+          "value": "ON"
+        },
+        {
+          "name": "innodb_buffer_pool_size",
+          "source": "user-override",
+          "value": "1073741824"
+        }
+      ]
     },
     "customerManagedKey": {
       "value": {
@@ -442,6 +469,18 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param advancedThreatProtection = 'Enabled'
 param backupRetentionDays = 20
+param configurations = [
+  {
+    name: 'aad_auth_only'
+    source: 'user-override'
+    value: 'ON'
+  }
+  {
+    name: 'innodb_buffer_pool_size'
+    source: 'user-override'
+    value: '1073741824'
+  }
+]
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -1150,6 +1189,7 @@ param tags = {
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
 | [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
+| [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new MySQL server. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyGeo`](#parameter-customermanagedkeygeo) | object | The customer managed key definition to use when geoRedundantBackup is "Enabled". |
@@ -1322,6 +1362,14 @@ Backup retention days for the server.
 - Default: `7`
 - MinValue: 1
 - MaxValue: 35
+
+### Parameter: `configurations`
+
+The configurations to create in the server.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `createMode`
 
