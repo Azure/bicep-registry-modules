@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "9682785573849822804"
+      "templateHash": "5682472651042314919"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -1324,7 +1324,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "2376481360328882580"
+              "templateHash": "7607100665392844680"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1360,7 +1360,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/databases",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
@@ -1431,7 +1431,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "17839370044473662673"
+              "templateHash": "11759054215682586729"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1465,7 +1465,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1539,7 +1539,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7077211639917524660"
+              "templateHash": "11105219403461345447"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1580,7 +1580,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
               "properties": {
                 "administratorType": "ActiveDirectory",
@@ -1655,7 +1655,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "5856591541306782742"
+              "templateHash": "8741043436510154215"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1692,12 +1692,12 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforMySQL/flexibleServers",
-              "apiVersion": "2024-10-01-preview",
+              "apiVersion": "2024-12-01-preview",
               "name": "[parameters('flexibleServerName')]"
             },
             "configuration": {
               "type": "Microsoft.DBforMySQL/flexibleServers/configurations",
-              "apiVersion": "2024-10-01-preview",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "source": "[parameters('source')]",
@@ -1758,7 +1758,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "15768255940384774839"
+              "templateHash": "2980081786222066300"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -1785,7 +1785,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
-              "apiVersion": "2024-10-01-preview",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
               "properties": {
                 "state": "[parameters('advancedThreatProtection')]"

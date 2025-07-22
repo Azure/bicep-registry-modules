@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "5856591541306782742"
+      "templateHash": "8741043436510154215"
     },
     "name": "DBforMySQL Flexible Server Configurations",
     "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -43,12 +43,12 @@
     "flexibleServer": {
       "existing": true,
       "type": "Microsoft.DBforMySQL/flexibleServers",
-      "apiVersion": "2024-10-01-preview",
+      "apiVersion": "2024-12-01-preview",
       "name": "[parameters('flexibleServerName')]"
     },
     "configuration": {
       "type": "Microsoft.DBforMySQL/flexibleServers/configurations",
-      "apiVersion": "2024-10-01-preview",
+      "apiVersion": "2024-12-01-preview",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "source": "[parameters('source')]",
