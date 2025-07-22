@@ -140,9 +140,9 @@ module testDeployment '../../../main.bicep' = [
       ]
       configurations: [
         {
-          name: 'aad_auth_only'
+          name: 'max_connections'
           source: 'user-override'
-          value: 'ON'
+          value: '200'
         }
         {
           name: 'innodb_buffer_pool_size'
