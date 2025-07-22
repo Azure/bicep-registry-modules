@@ -28,7 +28,7 @@ var workloadName = '${namePrefix}${serviceShort}'
 // ============ //
 
 resource dependenciesResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: take('${workloadName}-dependencies-rg-deployment', 64)
+  name: 'dep-${namePrefix}-bicep-${serviceShort}-dependencies-rg'
   location: enforcedLocation
 }
 
