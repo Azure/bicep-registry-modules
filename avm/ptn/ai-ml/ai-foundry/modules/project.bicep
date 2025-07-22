@@ -82,6 +82,7 @@ resource aiSearchConnResources 'Microsoft.CognitiveServices/accounts/projects/co
   for (connection, i) in aiSearchConnections ?? []: {
     name: connection.name
     parent: project
+    dependsOn: [aiServiceConnResources]
     properties: {
       category: 'CognitiveSearch'
       target: connection.target
@@ -101,7 +102,7 @@ resource storageConnResources 'Microsoft.CognitiveServices/accounts/projects/con
   for (connection, i) in storageAccountConnections ?? []: {
     name: empty(connection.?name) ? '${connection.accountName}-${connection.containerName}' : connection.name!
     parent: project
-    dependsOn: [aiServiceConnResources]
+    dependsOn: [aiSearchConnResources]
     properties: {
       category: 'AzureBlob'
       target: connection.target
