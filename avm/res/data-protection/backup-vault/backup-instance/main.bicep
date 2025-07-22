@@ -19,7 +19,7 @@ param dataSourceSetInfo dataSourceSetInfoType?
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' existing = {
+resource backupVault 'Microsoft.DataProtection/backupVaults@2025-07-01' existing = {
   name: backupVaultName
 
   resource backupPolicy 'backupPolicies@2024-04-01' existing = {
@@ -51,17 +51,22 @@ resource backupInstance_snapshotRG_rbac 'Microsoft.Authorization/roleAssignments
 resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
   name: name
   parent: backupVault
-  properties: union({
-    friendlyName: friendlyName
-    objectType: 'BackupInstance'
-    dataSourceInfo: union(dataSourceInfo, { objectType: 'Datasource' })
-    policyInfo: {
-      policyId: backupVault::backupPolicy.id
-      policyParameters: policyInfo.policyParameters
-    }
-  }, !empty(dataSourceSetInfo) ? {
-    dataSourceSetInfo: union(dataSourceSetInfo!, { objectType: 'DatasourceSet' })
-  } : {})
+  properties: union(
+    {
+      friendlyName: friendlyName
+      objectType: 'BackupInstance'
+      dataSourceInfo: union(dataSourceInfo, { objectType: 'Datasource' })
+      policyInfo: {
+        policyId: backupVault::backupPolicy.id
+        policyParameters: policyInfo.policyParameters
+      }
+    },
+    !empty(dataSourceSetInfo)
+      ? {
+          dataSourceSetInfo: union(dataSourceSetInfo!, { objectType: 'DatasourceSet' })
+        }
+      : {}
+  )
   dependsOn: [
     backupInstance_dataSourceResource_rbac
     backupInstance_snapshotRG_rbac
