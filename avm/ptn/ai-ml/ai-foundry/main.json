@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "6866889935378944680"
+      "templateHash": "10521974347031324735"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -9619,7 +9619,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
-            "value": "[concat(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'roleAssignments')))), parameters('storageAccountConfiguration').roleAssignments, createArray()), createArray(createObject('principalId', reference('foundryAccount').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('foundryAccount').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
+            "value": "[concat(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'roleAssignments')))), parameters('storageAccountConfiguration').roleAssignments, createArray()), createArray(createObject('principalId', reference('foundryAccount').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
           },
           "tags": {
             "value": "[parameters('tags')]"

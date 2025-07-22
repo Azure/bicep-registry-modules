@@ -178,13 +178,6 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
       ],
       [
         {
-          principalId: foundryAccount.outputs.systemAssignedMIPrincipalId
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        }
-      ],
-      [
-        {
           principalId: aiSearch!.outputs.systemAssignedMIPrincipalId
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
