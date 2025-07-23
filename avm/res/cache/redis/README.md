@@ -2596,7 +2596,6 @@ Specifies how availability zones are allocated to the Redis cache. "Automatic" e
 
 - Required: No
 - Type: string
-- Default: `'Automatic'`
 - Allowed:
   ```Bicep
   [

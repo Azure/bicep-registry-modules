@@ -108,7 +108,7 @@ param availabilityZones int[] = [1, 2, 3]
   'NoZones'
   'UserDefined'
 ])
-param zonalAllocationPolicy string = 'Automatic'
+param zonalAllocationPolicy string?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3811307310285563551"
+      "templateHash": "15883190994640605829"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -932,7 +932,7 @@
     },
     "zonalAllocationPolicy": {
       "type": "string",
-      "defaultValue": "Automatic",
+      "nullable": true,
       "allowedValues": [
         "Automatic",
         "NoZones",
