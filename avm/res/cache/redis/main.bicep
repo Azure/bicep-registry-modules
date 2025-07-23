@@ -102,7 +102,7 @@ param zoneRedundant bool = true
 @allowed([1, 2, 3])
 param availabilityZones int[] = [1, 2, 3]
 
-@description('Optional. Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true.')
+@description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.')
 @allowed([
   'Automatic'
   'NoZones'

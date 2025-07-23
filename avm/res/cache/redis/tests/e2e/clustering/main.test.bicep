@@ -48,6 +48,8 @@ module testDeployment '../../../main.bicep' = [
       shardCount: 3
       replicasPerMaster: 1
       replicasPerPrimary: 1
+      zoneRedundant: true
+      zonalAllocationPolicy: 'NoZones'
     }
   }
 ]
