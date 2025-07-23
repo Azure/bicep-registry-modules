@@ -18,8 +18,8 @@ This module deploys a Recovery Services Vault.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.RecoveryServices/vaults` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults) |
 | `Microsoft.RecoveryServices/vaults/backupconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems) |
@@ -58,17 +58,7 @@ This instance deploys the module with the minimum set of required parameters.
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   name: 'vaultDeployment'
   params: {
-    // Required parameters
     name: 'rsvmin001'
-    // Non-required parameters
-    immutabilitySettingState: 'Unlocked'
-    replicationAlertSettings: {
-      customEmailAddresses: [
-        'test.user@testcompany.com'
-      ]
-      locale: 'en-US'
-      sendToOwners: 'Send'
-    }
   }
 }
 ```
@@ -85,22 +75,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "rsvmin001"
-    },
-    // Non-required parameters
-    "immutabilitySettingState": {
-      "value": "Unlocked"
-    },
-    "replicationAlertSettings": {
-      "value": {
-        "customEmailAddresses": [
-          "test.user@testcompany.com"
-        ],
-        "locale": "en-US",
-        "sendToOwners": "Send"
-      }
     }
   }
 }
@@ -116,17 +92,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/recovery-services/vault:<version>'
 
-// Required parameters
 param name = 'rsvmin001'
-// Non-required parameters
-param immutabilitySettingState = 'Unlocked'
-param replicationAlertSettings = {
-  customEmailAddresses: [
-    'test.user@testcompany.com'
-  ]
-  locale: 'en-US'
-  sendToOwners: 'Send'
-}
 ```
 
 </details>
@@ -148,7 +114,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
-    location: '<location>'
     replicationFabrics: [
       {
         location: 'NorthEurope'
@@ -204,11 +169,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         recoveryPointHistory: 2880
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -230,9 +190,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "replicationFabrics": {
       "value": [
         {
@@ -291,13 +248,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "recoveryPointHistory": 2880
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -316,7 +266,6 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 // Required parameters
 param name = '<name>'
 // Non-required parameters
-param location = '<location>'
 param replicationFabrics = [
   {
     location: 'NorthEurope'
@@ -372,11 +321,6 @@ param replicationPolicies = [
     recoveryPointHistory: 2880
   }
 ]
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 ```
 
 </details>
@@ -404,7 +348,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -439,9 +382,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -472,7 +412,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -733,6 +672,10 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
+    backupStorageConfig: {
+      crossRegionRestoreFlag: false
+      storageModelType: 'LocallyRedundant'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1132,6 +1075,12 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           }
         }
       ]
+    },
+    "backupStorageConfig": {
+      "value": {
+        "crossRegionRestoreFlag": false,
+        "storageModelType": "LocallyRedundant"
+      }
     },
     "diagnosticSettings": {
       "value": [
@@ -1549,6 +1498,10 @@ param backupPolicies = [
     }
   }
 ]
+param backupStorageConfig = {
+  crossRegionRestoreFlag: false
+  storageModelType: 'LocallyRedundant'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1966,7 +1919,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       }
     ]
     immutabilitySettingState: 'Unlocked'
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -2341,9 +2293,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "immutabilitySettingState": {
       "value": "Unlocked"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -2714,7 +2663,6 @@ param diagnosticSettings = [
   }
 ]
 param immutabilitySettingState = 'Unlocked'
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -3285,6 +3233,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -3304,6 +3253,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3628,6 +3584,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -3647,6 +3604,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4433,9 +4397,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
