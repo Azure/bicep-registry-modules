@@ -6,12 +6,45 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "262863032724464040"
+      "templateHash": "9610133962890939296"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
   },
   "definitions": {
+    "configurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the configuration."
+          }
+        },
+        "source": {
+          "type": "string",
+          "allowedValues": [
+            "system-default",
+            "user-override"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Source of the configuration."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value of the configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a configuration"
+      }
+    },
     "privateEndpointOutputType": {
       "type": "object",
       "properties": {
@@ -1016,7 +1049,10 @@
     },
     "configurations": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/configurationType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The configurations to create in the server."
       }
@@ -1623,7 +1659,7 @@
     "flexibleServer_configurations": {
       "copy": {
         "name": "flexibleServer_configurations",
-        "count": "[length(parameters('configurations'))]"
+        "count": "[length(coalesce(parameters('configurations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1635,16 +1671,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('configurations')[copyIndex()].name]"
+            "value": "[coalesce(parameters('configurations'), createArray())[copyIndex()].name]"
           },
           "flexibleServerName": {
             "value": "[parameters('name')]"
           },
           "source": {
-            "value": "[tryGet(parameters('configurations')[copyIndex()], 'source')]"
+            "value": "[tryGet(coalesce(parameters('configurations'), createArray())[copyIndex()], 'source')]"
           },
           "value": {
-            "value": "[tryGet(parameters('configurations')[copyIndex()], 'value')]"
+            "value": "[tryGet(coalesce(parameters('configurations'), createArray())[copyIndex()], 'value')]"
           }
         },
         "template": {
@@ -1655,7 +1691,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "8741043436510154215"
+              "templateHash": "17826526974982250438"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1676,6 +1712,10 @@
             "source": {
               "type": "string",
               "nullable": true,
+              "allowedValues": [
+                "system-default",
+                "user-override"
+              ],
               "metadata": {
                 "description": "Optional. Source of the configuration."
               }

@@ -10,7 +10,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - New `configurations` parameter allows setting MySQL server configuration parameters directly through the module
 - Created new configuration child resource module at `configuration/main.bicep`
 - Added `configurationType` definition with proper typing for configuration parameters
-- Enhanced test coverage with configuration examples in max test scenario
 
 ### Breaking Changes
 
