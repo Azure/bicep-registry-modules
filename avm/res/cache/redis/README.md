@@ -68,8 +68,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     replicasPerPrimary: 1
     shardCount: 3
     skuName: 'Premium'
-    zonalAllocationPolicy: 'NoZones'
-    zoneRedundant: true
   }
 }
 ```
@@ -108,12 +106,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "skuName": {
       "value": "Premium"
-    },
-    "zonalAllocationPolicy": {
-      "value": "NoZones"
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -138,8 +130,6 @@ param replicasPerMaster = 1
 param replicasPerPrimary = 1
 param shardCount = 3
 param skuName = 'Premium'
-param zonalAllocationPolicy = 'NoZones'
-param zoneRedundant = true
 ```
 
 </details>
@@ -1208,6 +1198,11 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crwaf001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     capacity: 2
     diagnosticSettings: [
       {
@@ -1258,7 +1253,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Redis Cache'
     }
-    zonalAllocationPolicy: 'Automatic'
+    zonalAllocationPolicy: 'UserDefined'
     zoneRedundant: true
   }
 }
@@ -1281,6 +1276,13 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crwaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "capacity": {
       "value": 2
     },
@@ -1358,7 +1360,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       }
     },
     "zonalAllocationPolicy": {
-      "value": "Automatic"
+      "value": "UserDefined"
     },
     "zoneRedundant": {
       "value": true
@@ -1380,6 +1382,11 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crwaf001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -1430,7 +1437,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'Redis Cache'
 }
-param zonalAllocationPolicy = 'Automatic'
+param zonalAllocationPolicy = 'UserDefined'
 param zoneRedundant = true
 ```
 

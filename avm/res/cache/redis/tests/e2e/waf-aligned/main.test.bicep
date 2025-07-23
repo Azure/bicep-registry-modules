@@ -87,7 +87,8 @@ module testDeployment '../../../main.bicep' = [
       }
       minimumTlsVersion: '1.2'
       zoneRedundant: true
-      zonalAllocationPolicy: 'Automatic'
+      availabilityZones: [1, 2, 3]
+      zonalAllocationPolicy: 'UserDefined'
       privateEndpoints: [
         {
           privateDnsZoneGroup: {
