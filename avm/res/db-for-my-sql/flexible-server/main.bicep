@@ -172,7 +172,7 @@ param databases array = []
 param firewallRules array = []
 
 @description('Optional. The configurations to create in the server.')
-param configurations array = []
+param configurations configurationType[]?
 
 @description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
 @allowed([
@@ -433,7 +433,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
 ]
 
 module flexibleServer_configurations 'configuration/main.bicep' = [
-  for (configuration, index) in configurations: {
+  for (configuration, index) in (configurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
     params: {
       name: configuration.name
@@ -565,6 +565,19 @@ output privateEndpoints privateEndpointOutputType[] = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The type for a configuration')
+type configurationType = {
+  @description('Required. The name of the configuration.')
+  name: string
+
+  @description('Optional. Source of the configuration.')
+  source: ('system-default' | 'user-override')?
+
+  @description('Optional. Value of the configuration.')
+  value: string?
+}
 
 @export()
 type privateEndpointOutputType = {

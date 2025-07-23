@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "8741043436510154215"
+      "templateHash": "17826526974982250438"
     },
     "name": "DBforMySQL Flexible Server Configurations",
     "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -27,6 +27,10 @@
     "source": {
       "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "system-default",
+        "user-override"
+      ],
       "metadata": {
         "description": "Optional. Source of the configuration."
       }
