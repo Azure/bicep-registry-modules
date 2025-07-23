@@ -8,6 +8,10 @@ param name string
 param flexibleServerName string
 
 @description('Optional. Source of the configuration.')
+@allowed([
+  'system-default'
+  'user-override'
+])
 param source string?
 
 @description('Optional. Value of the configuration.')
