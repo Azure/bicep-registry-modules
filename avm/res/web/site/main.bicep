@@ -36,10 +36,10 @@ param httpsOnly bool = true
 @description('Optional. If client affinity is enabled.')
 param clientAffinityEnabled bool = true
 
-@description('Optional.To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true.')
+@description('Optional. To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true.')
 param clientAffinityProxyEnabled bool = true
 
-@description('Optional.  To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false.')
+@description('Optional. To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false.')
 param clientAffinityPartitioningEnabled bool = false
 
 @description('Optional. The resource ID of the app service environment to use for this resource.')
