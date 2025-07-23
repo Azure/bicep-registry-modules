@@ -11,6 +11,14 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated Web site resource provider API version to `2024-11-01`
 - Updated Web site slot resource provider API version to `2024-11-01`
 
+### Breaking Changes
+
+- Removed `vnetContentShareEnabled` parameter. Use `outboundVnetRouting.contentShareTraffic` instead.
+- Removed `vnetImagePullEnabled` parameter. Use `outboundVnetRouting.imagePullTraffic` instead.
+- Removed `vnetRouteAllEnabled` parameter. Use `outboundVnetRouting.allTraffic` instead.
+- Changed `outboundVnetRouting` parameter to be optional instead of having default values derived from the deprecated parameters.
+- For more information about `outboundVnetRouting`, see the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/templates/microsoft.web/2024-11-01/sites?pivots=deployment-language-bicep#outboundvnetrouting).
+
 ## 0.17.0
 
 ### Changes

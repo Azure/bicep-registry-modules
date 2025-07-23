@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12790067994378036873"
+      "templateHash": "14577359339681284917"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -4363,40 +4363,15 @@
         "description": "Optional. The site publishing credential policy names which are associated with the site slot."
       }
     },
-    "vnetContentShareEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. To enable accessing content over virtual network."
-      }
-    },
-    "vnetImagePullEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. To enable pulling image over Virtual Network."
-      }
-    },
-    "vnetRouteAllEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied."
-      }
-    },
     "outboundVnetRouting": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.Web/sites/slots@2024-11-01#properties/properties/properties/outboundVnetRouting"
         },
-        "description": "Optional. The outbound VNET routing configuration for the site. To maitain backward compatibility, the default values for contentShareTraffic, imagePullTraffic, and allTraffic are set from vnetContentShareEnabled, vnetImagePullEnabled, and vnetRouteAllEnabled respectively."
+        "description": "Optional. The outbound VNET routing configuration for the site"
       },
-      "defaultValue": {
-        "contentShareTraffic": "[parameters('vnetContentShareEnabled')]",
-        "imagePullTraffic": "[parameters('vnetImagePullEnabled')]",
-        "allTraffic": "[parameters('vnetRouteAllEnabled')]"
-      }
+      "nullable": true
     },
     "hybridConnectionRelays": {
       "type": "array",

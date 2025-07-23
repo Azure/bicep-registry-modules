@@ -71,7 +71,7 @@ This module deploys a Web or Function App Deployment Slot.
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. To maitain backward compatibility, the default values for contentShareTraffic, imagePullTraffic, and allTraffic are set from vnetContentShareEnabled, vnetImagePullEnabled, and vnetRouteAllEnabled respectively. |
+| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or block all public traffic. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -81,9 +81,6 @@ This module deploys a Web or Function App Deployment Slot.
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
-| [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
-| [`vnetImagePullEnabled`](#parameter-vnetimagepullenabled) | bool | To enable pulling image over Virtual Network. |
-| [`vnetRouteAllEnabled`](#parameter-vnetrouteallenabled) | bool | Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. |
 
 ### Parameter: `kind`
 
@@ -4923,18 +4920,10 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `outboundVnetRouting`
 
-The outbound VNET routing configuration for the site. To maitain backward compatibility, the default values for contentShareTraffic, imagePullTraffic, and allTraffic are set from vnetContentShareEnabled, vnetImagePullEnabled, and vnetRouteAllEnabled respectively.
+The outbound VNET routing configuration for the site
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      allTraffic: '[parameters(\'vnetRouteAllEnabled\')]'
-      contentShareTraffic: '[parameters(\'vnetContentShareEnabled\')]'
-      imagePullTraffic: '[parameters(\'vnetImagePullEnabled\')]'
-  }
-  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -5534,30 +5523,6 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 
 - Required: No
 - Type: string
-
-### Parameter: `vnetContentShareEnabled`
-
-To enable accessing content over virtual network.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `vnetImagePullEnabled`
-
-To enable pulling image over Virtual Network.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `vnetRouteAllEnabled`
-
-Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ## Outputs
 

@@ -146,21 +146,8 @@ param redundancyMode string = 'None'
 @description('Optional. The site publishing credential policy names which are associated with the site slot.')
 param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 
-@description('Optional. To enable accessing content over virtual network.')
-param vnetContentShareEnabled bool = false
-
-@description('Optional. To enable pulling image over Virtual Network.')
-param vnetImagePullEnabled bool = false
-
-@description('Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.')
-param vnetRouteAllEnabled bool = false
-
-@description('Optional. The outbound VNET routing configuration for the site. To maitain backward compatibility, the default values for contentShareTraffic, imagePullTraffic, and allTraffic are set from vnetContentShareEnabled, vnetImagePullEnabled, and vnetRouteAllEnabled respectively.')
-param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2024-11-01'>.properties.outboundVnetRouting = {
-  contentShareTraffic: vnetContentShareEnabled
-  imagePullTraffic: vnetImagePullEnabled
-  allTraffic: vnetRouteAllEnabled
-}
+@description('Optional. The outbound VNET routing configuration for the site')
+param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2024-11-01'>.properties.outboundVnetRouting?
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?

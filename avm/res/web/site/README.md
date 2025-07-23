@@ -48,7 +48,7 @@ The following section provides usage examples for the module, which were used to
 - [Web App, using only defaults](#example-6-web-app-using-only-defaults)
 - [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
 - [Linux Web App, using only defaults](#example-8-linux-web-app-using-only-defaults)
-- [Linux Web App, using large parameter set](#example-9-linux-web-app-using-large-parameter-set)
+- [Webapplinux.Max](#example-9-webapplinuxmax)
 - [Windows Web App for Containers, using only defaults](#example-10-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
@@ -862,6 +862,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     ]
     httpsOnly: true
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
+    }
     publicNetworkAccess: 'Disabled'
     scmSiteAlsoStopped: true
     siteConfig: {
@@ -876,9 +881,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       ]
       minTlsVersion: '1.2'
     }
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
   }
 }
 ```
@@ -931,6 +933,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "httpsOnly": {
       "value": true
     },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
+      }
+    },
     "publicNetworkAccess": {
       "value": "Disabled"
     },
@@ -950,15 +959,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ],
         "minTlsVersion": "1.2"
       }
-    },
-    "vnetContentShareEnabled": {
-      "value": true
-    },
-    "vnetImagePullEnabled": {
-      "value": true
-    },
-    "vnetRouteAllEnabled": {
-      "value": true
     }
   }
 }
@@ -998,6 +998,11 @@ param diagnosticSettings = [
   }
 ]
 param httpsOnly = true
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
+}
 param publicNetworkAccess = 'Disabled'
 param scmSiteAlsoStopped = true
 param siteConfig = {
@@ -1012,9 +1017,6 @@ param siteConfig = {
   ]
   minTlsVersion: '1.2'
 }
-param vnetContentShareEnabled = true
-param vnetImagePullEnabled = true
-param vnetRouteAllEnabled = true
 ```
 
 </details>
@@ -1433,6 +1435,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
+    }
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1598,9 +1605,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'slot2'
       }
     ]
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
   }
 }
 ```
@@ -1742,6 +1746,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
       }
     },
     "privateEndpoints": {
@@ -1920,15 +1931,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "name": "slot2"
         }
       ]
-    },
-    "vnetContentShareEnabled": {
-      "value": true
-    },
-    "vnetImagePullEnabled": {
-      "value": true
-    },
-    "vnetRouteAllEnabled": {
-      "value": true
     }
   }
 }
@@ -2046,6 +2048,11 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
 }
 param privateEndpoints = [
   {
@@ -2212,9 +2219,6 @@ param slots = [
     name: 'slot2'
   }
 ]
-param vnetContentShareEnabled = true
-param vnetImagePullEnabled = true
-param vnetRouteAllEnabled = true
 ```
 
 </details>
@@ -2286,10 +2290,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 9: _Linux Web App, using large parameter set_
-
-This instance deploys the module asa Linux Web App with most of its features enabled.
-
+### Example 9: _Webapplinux.Max_
 
 <details>
 
@@ -3154,7 +3155,7 @@ param siteConfig = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedEnvironmentId`](#parameter-managedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. To maitain backward compatibility, the default values for contentShareTraffic, imagePullTraffic, and allTraffic are set from vnetContentShareEnabled, vnetImagePullEnabled, and vnetRouteAllEnabled respectively. |
+| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -3165,9 +3166,6 @@ param siteConfig = {
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
-| [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
-| [`vnetImagePullEnabled`](#parameter-vnetimagepullenabled) | bool | To enable pulling image over Virtual Network. |
-| [`vnetRouteAllEnabled`](#parameter-vnetrouteallenabled) | bool | Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. |
 
 ### Parameter: `kind`
 
@@ -8097,18 +8095,10 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `outboundVnetRouting`
 
-The outbound VNET routing configuration for the site. To maitain backward compatibility, the default values for contentShareTraffic, imagePullTraffic, and allTraffic are set from vnetContentShareEnabled, vnetImagePullEnabled, and vnetRouteAllEnabled respectively.
+The outbound VNET routing configuration for the site.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      allTraffic: '[parameters(\'vnetRouteAllEnabled\')]'
-      contentShareTraffic: '[parameters(\'vnetContentShareEnabled\')]'
-      imagePullTraffic: '[parameters(\'vnetImagePullEnabled\')]'
-  }
-  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -14184,30 +14174,6 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 
 - Required: No
 - Type: string
-
-### Parameter: `vnetContentShareEnabled`
-
-To enable accessing content over virtual network.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `vnetImagePullEnabled`
-
-To enable pulling image over Virtual Network.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `vnetRouteAllEnabled`
-
-Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ## Outputs
 
