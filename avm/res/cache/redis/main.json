@@ -932,10 +932,11 @@
     },
     "zonalAllocationPolicy": {
       "type": "string",
-      "defaultValue": "CrossZone",
+      "defaultValue": "Automatic",
       "allowedValues": [
-        "UserDefined",
-        "CrossZone"
+        "Automatic",
+        "NoZones",
+        "UserDefined"
       ],
       "metadata": {
         "description": "Optional. Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true."

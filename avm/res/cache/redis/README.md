@@ -1253,7 +1253,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Redis Cache'
     }
-    zonalAllocationPolicy: 'CrossZone'
+    zonalAllocationPolicy: 'Automatic'
     zoneRedundant: true
   }
 }
@@ -1360,7 +1360,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       }
     },
     "zonalAllocationPolicy": {
-      "value": "CrossZone"
+      "value": "Automatic"
     },
     "zoneRedundant": {
       "value": true
@@ -1437,7 +1437,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'Redis Cache'
 }
-param zonalAllocationPolicy = 'CrossZone'
+param zonalAllocationPolicy = 'Automatic'
 param zoneRedundant = true
 ```
 
@@ -2596,11 +2596,12 @@ Specifies how replicas are distributed across availability zones. Only applicabl
 
 - Required: No
 - Type: string
-- Default: `'CrossZone'`
+- Default: `'Automatic'`
 - Allowed:
   ```Bicep
   [
-    'CrossZone'
+    'Automatic'
+    'NoZones'
     'UserDefined'
   ]
   ```
