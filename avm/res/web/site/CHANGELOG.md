@@ -2,6 +2,15 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.18.0
+
+### Features
+
+- Added support for `clientAffinityProxyEnabled` parameter to control session affinity cookies
+- Added support for `clientAffinityPartitioningEnabled` parameter to enable client affinity partitioning using CHIPS cookies
+- Updated Web site resource provider API version to `2024-11-01`
+- Updated Web site slot resource provider API version to `2024-11-01`
+
 ## 0.17.0
 
 ### Changes
