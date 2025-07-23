@@ -55,6 +55,13 @@ Source of the configuration.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'system-default'
+    'user-override'
+  ]
+  ```
 
 ### Parameter: `value`
 

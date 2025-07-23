@@ -1,4 +1,4 @@
-# DBforMySQL Flexible Servers `[Microsoft.dbformysql/flexibleserver]`
+# DBforMySQL Flexible Servers `[Microsoft.DBforMySQL/flexibleServers]`
 
 This module deploys a DBforMySQL Flexible Server.
 
@@ -9,22 +9,23 @@ This module deploys a DBforMySQL Flexible Server.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.DBforMySQL/flexibleServers` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/configurations` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/databases` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/flexibleServers) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/privateEndpoints) |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.DBforMySQL/flexibleServers` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers) |
+| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/administrators) |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/advancedThreatProtectionSettings) |
+| `Microsoft.DBforMySQL/flexibleServers/configurations` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/configurations) |
+| `Microsoft.DBforMySQL/flexibleServers/databases` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/databases) |
+| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/firewallRules) |
+| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -34,13 +35,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-my-sql/flexible-server:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Private](#example-3-private)
-- [Public-With-Pe](#example-4-public-with-pe)
-- [Waf-Aligned](#example-5-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Deploys in connectivity mode "Private Access"](#example-3-deploys-in-connectivity-mode-private-access)
+- [Deploys in connectivity mode "Public Access" with private endpoint](#example-4-deploys-in-connectivity-mode-public-access-with-private-endpoint)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -126,7 +130,10 @@ param storageAutoGrow = 'Enabled'
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -573,7 +580,10 @@ param version = '8.0.21'
 </details>
 <p>
 
-### Example 3: _Private_
+### Example 3: _Deploys in connectivity mode "Private Access"_
+
+This instance deploys the module with connectivity mode "Private Access".
+
 
 <details>
 
@@ -804,7 +814,10 @@ param storageSizeGB = 64
 </details>
 <p>
 
-### Example 4: _Public-With-Pe_
+### Example 4: _Deploys in connectivity mode "Public Access" with private endpoint_
+
+This instance deploys the module with connectivity mode "Public Access" and a private endpoint.
+
 
 <details>
 
@@ -1030,7 +1043,10 @@ param storageSizeGB = 64
 </details>
 <p>
 
-### Example 5: _Waf-Aligned_
+### Example 5: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -1353,7 +1369,47 @@ The configurations to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-configurationsname) | string | The name of the configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`source`](#parameter-configurationssource) | string | Source of the configuration. |
+| [`value`](#parameter-configurationsvalue) | string | Value of the configuration. |
+
+### Parameter: `configurations.name`
+
+The name of the configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `configurations.source`
+
+Source of the configuration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'system-default'
+    'user-override'
+  ]
+  ```
+
+### Parameter: `configurations.value`
+
+Value of the configuration.
+
+- Required: No
+- Type: string
 
 ### Parameter: `createMode`
 
@@ -2384,3 +2440,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
