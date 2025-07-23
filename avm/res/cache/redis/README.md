@@ -1484,7 +1484,7 @@ param zoneRedundant = true
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the Redis cache in. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
-| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true. |
+| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how availability zones are allocated to the Redis cache. Only applicable when zoneRedundant is true. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
 
 ### Parameter: `name`
@@ -2592,7 +2592,7 @@ A dictionary of tenant settings.
 
 ### Parameter: `zonalAllocationPolicy`
 
-Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true.
+Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.
 
 - Required: No
 - Type: string
