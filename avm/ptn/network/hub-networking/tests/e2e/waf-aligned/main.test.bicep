@@ -89,6 +89,9 @@ module testDeployment '../../../main.bicep' = [
             enableShareableLink: false
             scaleUnits: 2
             skuName: 'Standard'
+            publicIPAddressObject: {
+              name: 'waf-bastion-pip'
+            }
           }
           enableAzureFirewall: true
           enableBastion: true

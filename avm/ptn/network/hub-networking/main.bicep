@@ -149,6 +149,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.6.1' = [
       enableShareableLink: hub.value.?bastionHost.?enableShareableLink
       location: hub.value.?location ?? location
       enableTelemetry: enableTelemetry
+      publicIPAddressObject: hub.value.?bastionHost.?publicIPAddressObject
       roleAssignments: hub.value.?roleAssignments
       scaleUnits: hub.value.?bastionHost.?scaleUnits ?? 4
       skuName: hub.value.?bastionHost.?skuName ?? 'Standard'
@@ -313,6 +314,9 @@ type hubVirtualNetworkType = {
 
       @description('Optional. The name of the bastion host.')
       bastionHostName: string?
+
+      @description('Optional. Public IP address object.')
+      publicIPAddressObject: object?
     }?
 
     @description('Optional. Enable/Disable Azure Bastion for the virtual network.')
