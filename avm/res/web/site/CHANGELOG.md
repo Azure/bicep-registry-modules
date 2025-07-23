@@ -11,6 +11,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated Web site resource provider API version to `2024-11-01`
 - Updated Web site slot resource provider API version to `2024-11-01`
 
+### Breaking Changes
+- None
+
 ## 0.17.0
 
 ### Changes
