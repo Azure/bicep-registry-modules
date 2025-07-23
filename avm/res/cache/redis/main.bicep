@@ -102,6 +102,13 @@ param zoneRedundant bool = true
 @allowed([1, 2, 3])
 param availabilityZones int[] = [1, 2, 3]
 
+@description('Optional. Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true.')
+@allowed([
+  'UserDefined'
+  'CrossZone'
+])
+param zonalAllocationPolicy string = 'CrossZone'
+
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
@@ -224,6 +231,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     staticIP: !empty(staticIP) ? staticIP : null
     subnetId: !empty(subnetResourceId) ? subnetResourceId : null
     tenantSettings: tenantSettings
+    zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
   }
   zones: zones
 }
