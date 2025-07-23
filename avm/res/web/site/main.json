@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4403408141765121558"
+      "templateHash": "8385695146292342509"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5062,7 +5062,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "8533042021027882687"
+              "templateHash": "7361696555743372541"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5150,7 +5150,7 @@
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-01-01",
               "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
               "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -5165,7 +5165,7 @@
               "type": "Microsoft.Web/sites/config",
               "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
               "dependsOn": [
                 "applicationInsights",
                 "storageAccount"
@@ -5462,7 +5462,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "393998820903632728"
+              "templateHash": "18373787811491819427"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -10164,7 +10164,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.177.2456",
-                      "templateHash": "17923793921152502607"
+                      "templateHash": "17747975671959926329"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -10203,13 +10203,13 @@
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
                       "properties": {
                         "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
-                        "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
+                        "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2024-01-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2024-01-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
                         "relayName": "[split(parameters('hybridConnectionResourceId'), '/')[10]]",
                         "relayArmUri": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
-                        "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[0]]",
-                        "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[1])]",
+                        "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2024-01-01').userMetadata)[0].value, ':')[0]]",
+                        "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2024-01-01').userMetadata)[0].value, ':')[1])]",
                         "sendKeyName": "[parameters('sendKeyName')]",
-                        "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2021-11-01').primaryKey]"
+                        "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2024-01-01').primaryKey]"
                       }
                     }
                   ],
@@ -10287,7 +10287,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.177.2456",
-                      "templateHash": "9270425470681478858"
+                      "templateHash": "16144301784822003794"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -10386,7 +10386,7 @@
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2023-05-01",
+                      "apiVersion": "2025-01-01",
                       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -10401,7 +10401,7 @@
                       "type": "Microsoft.Web/sites/slots/config",
                       "apiVersion": "2024-04-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
@@ -11544,7 +11544,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "9231712453031392530"
+              "templateHash": "9219991038433059021"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay."
@@ -11577,13 +11577,13 @@
               "name": "[format('{0}/{1}/{2}', parameters('appName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
               "properties": {
                 "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
-                "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
+                "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2024-01-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2024-01-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
                 "relayName": "[split(parameters('hybridConnectionResourceId'), '/')[10]]",
                 "relayArmUri": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
-                "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[0]]",
-                "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[1])]",
+                "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2024-01-01').userMetadata)[0].value, ':')[0]]",
+                "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2024-01-01').userMetadata)[0].value, ':')[1])]",
                 "sendKeyName": "[parameters('sendKeyName')]",
-                "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2021-11-01').primaryKey]"
+                "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2024-01-01').primaryKey]"
               }
             }
           ],
@@ -11678,8 +11678,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -12088,7 +12088,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -12106,7 +12106,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -12194,8 +12194,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -12267,12 +12267,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -12336,7 +12336,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
