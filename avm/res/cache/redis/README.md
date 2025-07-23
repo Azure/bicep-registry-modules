@@ -68,6 +68,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     replicasPerPrimary: 1
     shardCount: 3
     skuName: 'Premium'
+    zonalAllocationPolicy: 'NoZones'
+    zoneRedundant: true
   }
 }
 ```
@@ -106,6 +108,12 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "skuName": {
       "value": "Premium"
+    },
+    "zonalAllocationPolicy": {
+      "value": "NoZones"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -130,6 +138,8 @@ param replicasPerMaster = 1
 param replicasPerPrimary = 1
 param shardCount = 3
 param skuName = 'Premium'
+param zonalAllocationPolicy = 'NoZones'
+param zoneRedundant = true
 ```
 
 </details>
@@ -1198,11 +1208,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crwaf001'
     // Non-required parameters
-    availabilityZones: [
-      1
-      2
-      3
-    ]
     capacity: 2
     diagnosticSettings: [
       {
@@ -1276,13 +1281,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crwaf001"
     },
     // Non-required parameters
-    "availabilityZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
-    },
     "capacity": {
       "value": 2
     },
@@ -1382,11 +1380,6 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crwaf001'
 // Non-required parameters
-param availabilityZones = [
-  1
-  2
-  3
-]
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -1484,7 +1477,7 @@ param zoneRedundant = true
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the Redis cache in. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
-| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how availability zones are allocated to the Redis cache. Only applicable when zoneRedundant is true. |
+| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
 
 ### Parameter: `name`

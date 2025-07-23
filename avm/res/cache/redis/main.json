@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17870336039941804165"
+      "templateHash": "3811307310285563551"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -939,7 +939,7 @@
         "UserDefined"
       ],
       "metadata": {
-        "description": "Optional. Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true."
+        "description": "Optional. Specifies how availability zones are allocated to the Redis cache. \"Automatic\" enables zone redundancy and Azure will automatically select zones. \"UserDefined\" will select availability zones passed in by you using the \"availabilityZones\" parameter. \"NoZones\" will produce a non-zonal cache. Only applicable when zoneRedundant is true."
       }
     },
     "privateEndpoints": {
