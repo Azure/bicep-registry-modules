@@ -77,15 +77,18 @@ module testDeployment '../../../main.bicep' = [
         crossRegionRestoreFlag: false
         storageModelType: 'LocallyRedundant'
       }
-      protectedItems: [
-        {
-          name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
-          protectionContainerName: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
-          policyName: 'VMpolicy'
-          protectedItemType: 'Microsoft.Compute/virtualMachines'
-          sourceResourceId: nestedDependencies.outputs.virtualMachineResourceId
-        }
-      ]
+      // redundancySettings: {
+      //   crossRegionRestore: 'Enabled'
+      // }
+      // protectedItems: [
+      //   {
+      //     name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+      //     protectionContainerName: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+      //     policyName: 'VMpolicy'
+      //     protectedItemType: 'Microsoft.Compute/virtualMachines'
+      //     sourceResourceId: nestedDependencies.outputs.virtualMachineResourceId
+      //   }
+      // ]
       backupPolicies: [
         {
           name: 'VMpolicy'

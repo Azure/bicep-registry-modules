@@ -4,7 +4,7 @@ metadata description = 'This module deploys a Recovery Services Vault.'
 @description('Required. Name of the Azure Recovery Service Vault.')
 param name string
 
-@description('Optional. The storage configuration for the Azure Recovery Service Vault.')
+@description('Optional. The storage configuration for the Azure Recovery Service Vault. Must not be used in combination with the `redundancySettings` parameter.')
 param backupStorageConfig backupStorageConfigType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -75,8 +75,8 @@ param immutabilitySettingState string?
 ])
 param publicNetworkAccess string = 'Disabled'
 
-@description('Optional. The redundancy settings of the vault.')
-param redundancySettings redundancySettingsType?
+@description('Optional. The redundancy settings of the vault. Must not be used in combination with the `backupStorageConfig` parameter.')
+param redundancySettings resourceInput<'Microsoft.RecoveryServices/vaults@2024-04-01'>.properties.redundancySettings?
 
 @description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
@@ -226,7 +226,7 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
       softDeleteSettings: softDeleteSettings
     }
     publicNetworkAccess: publicNetworkAccess
-    redundancySettings: redundancySettings
+    ...(!empty(redundancySettings) ? { redundancySettings: redundancySettings } : {})
     restoreSettings: restoreSettings
     encryption: !empty(customerManagedKey)
       ? {
@@ -505,16 +505,6 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
-}
-
-@export()
-@description('The type for redundancy settings.')
-type redundancySettingsType = {
-  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
-  crossRegionRestore: string?
-
-  @description('Optional. The storage redundancy setting of a vault.')
-  standardTierStorageRedundancy: string?
 }
 
 @export()
