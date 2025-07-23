@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Re-compiled main.json with latest Bicep version
+- Re-compiled `main.json` with latest Bicep version
 
 ### Breaking Changes
 
