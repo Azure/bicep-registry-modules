@@ -67,7 +67,6 @@ resource aiServiceConnResources 'Microsoft.CognitiveServices/accounts/projects/c
       category: 'AIServices'
       target: connection.target
       authType: 'AAD'
-      isSharedToAll: true
       metadata: {
         ApiType: 'Azure'
         ResourceId: connection.resourceId
@@ -87,7 +86,6 @@ resource aiSearchConnResources 'Microsoft.CognitiveServices/accounts/projects/co
       category: 'CognitiveSearch'
       target: connection.target
       authType: 'AAD'
-      isSharedToAll: true
       metadata: {
         ApiType: 'Azure'
         ResourceId: connection.resourceId
@@ -107,7 +105,6 @@ resource storageConnResources 'Microsoft.CognitiveServices/accounts/projects/con
       category: 'AzureBlob'
       target: connection.target
       authType: 'AAD'
-      isSharedToAll: true
       metadata: {
         ApiType: 'Azure'
         ResourceId: connection.resourceId
@@ -129,7 +126,6 @@ resource cosmosDbConnResources 'Microsoft.CognitiveServices/accounts/projects/co
       category: 'CosmosDB'
       target: connection.target
       authType: 'AAD'
-      isSharedToAll: true
       metadata: {
         ApiType: 'Azure'
         ResourceId: connection.resourceId

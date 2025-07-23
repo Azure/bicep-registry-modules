@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "5428436198079237714"
+      "templateHash": "9093186483567685134"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -538,7 +538,7 @@
           "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
           "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
           "includeCapabilityHost": {
-            "value": false
+            "value": true
           },
           "lock": {
             "value": "[parameters('lock')]"
@@ -19941,7 +19941,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12186035187527515066"
+              "templateHash": "7831065565380767101"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20273,7 +20273,6 @@
                 "category": "AIServices",
                 "target": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].target]",
                 "authType": "AAD",
-                "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].resourceId]",
@@ -20298,7 +20297,6 @@
                 "category": "CognitiveSearch",
                 "target": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].target]",
                 "authType": "AAD",
-                "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].resourceId]",
@@ -20324,7 +20322,6 @@
                 "category": "AzureBlob",
                 "target": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].target]",
                 "authType": "AAD",
-                "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId]",
@@ -20352,7 +20349,6 @@
                 "category": "CosmosDB",
                 "target": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].target]",
                 "authType": "AAD",
-                "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].resourceId]",

@@ -26,19 +26,22 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   location: location
   tags: tags
   properties: {
-    tenantId: subscription().tenantId
     sku: {
+      name: 'premium'
       family: 'A'
-      name: 'standard'
     }
-    accessPolicies: []
+    tenantId: subscription().tenantId
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      defaultAction: 'Allow'
+    }
     enabledForDeployment: true
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
+    enablePurgeProtection: null // set to null instead of false because that's what the AVM module does
+    enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-    enablePurgeProtection: false
-    publicNetworkAccess: 'Enabled'
   }
 }
 

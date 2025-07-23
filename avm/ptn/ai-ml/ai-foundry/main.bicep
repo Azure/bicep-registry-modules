@@ -84,7 +84,7 @@ module foundryAccount 'modules/account.bicep' = {
   params: {
     name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
-    includeCapabilityHost: false
+    includeCapabilityHost: true
     lock: lock
     privateNetworking: enablePrivateNetworking
       ? {
