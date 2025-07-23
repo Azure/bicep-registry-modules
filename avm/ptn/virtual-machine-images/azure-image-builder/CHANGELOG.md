@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/virtual-machine-images/azure-image-builder/CHANGELOG.md).
 
+## 0.2.2
+
+### Changes
+
+- Removed icon from parameter description that can conflict with upstream tools
+
+### Breaking Changes
+
+- None
+
+## 0.2.1
+
+### Changes
+
+- Added disclaimer for `storageAccountFilesToUpload` parameter to **not** upload files containing emojis (🍪) as they may cause problems when loaded into the environment of the uploading deployment script.
+- Updated to latest Compute Gallery version `0.9.3` to incorporate a disclaimer for DevBox-tailored images
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

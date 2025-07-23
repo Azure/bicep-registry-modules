@@ -43,9 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      zones: [
-        '1'
-      ]
+      availabilityZone: 1
       type: 'Standard'
       tags: {
         'hidden-title': 'This is visible in the resource name'

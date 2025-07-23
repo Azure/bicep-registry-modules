@@ -119,7 +119,8 @@ Describe 'Validate Deployment' {
                     -PrivateEndpointCounts 0 `
                     -PrivateEndpoints $null `
                     -Tags $expectedTags `
-                    -Locks $false
+                    -Locks $false `
+                    -EnforceDataIntegrityCheckForIscsi $false
 
                 if ($item.VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
