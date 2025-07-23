@@ -74,7 +74,6 @@ module testDeployment '../../../main.bicep' = [
         softDeleteFeatureState: 'Disabled'
       }
       redundancySettings: {
-        crossRegionRestore: 'Enabled'
         standardTierStorageRedundancy: 'LocallyRedundant'
       }
       // protectedItems: [

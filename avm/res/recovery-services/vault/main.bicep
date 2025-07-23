@@ -73,7 +73,7 @@ param immutabilitySettingState string?
 param publicNetworkAccess string = 'Disabled'
 
 @description('Optional. The redundancy settings of the vault.')
-param redundancySettings resourceInput<'Microsoft.RecoveryServices/vaults@2024-04-01'>.properties.redundancySettings?
+param redundancySettings redundancySettingsType?
 
 @description('Optional. The restore settings of the vault.')
 param restoreSettings restoreSettingsType?
@@ -647,10 +647,6 @@ type monitoringSettingsType = {
   }?
 }
 
-// =============== //
-//   Definitions   //
-// =============== //
-
 @export()
 @description('The type for soft delete settings.')
 type softDeleteSettingType = {
@@ -662,4 +658,27 @@ type softDeleteSettingType = {
 
   @description('Required. The soft delete state.')
   softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+}
+
+@export()
+@discriminator('standardTierStorageRedundancy')
+@description('The type for the recovery services vault\'s redundancy settings.')
+type redundancySettingsType = redundancySettingsGeoType | redundancySettingsLocalType | redundancySettingsZoneType
+
+type redundancySettingsGeoType = {
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: 'GeoRedundant'
+
+  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
+  crossRegionRestore: 'Enabled' | 'Disabled'?
+}
+
+type redundancySettingsLocalType = {
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: 'LocallyRedundant'
+}
+
+type redundancySettingsZoneType = {
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: 'ZoneRedundant'
 }
