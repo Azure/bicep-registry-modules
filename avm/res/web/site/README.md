@@ -48,7 +48,7 @@ The following section provides usage examples for the module, which were used to
 - [Web App, using only defaults](#example-6-web-app-using-only-defaults)
 - [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
 - [Linux Web App, using only defaults](#example-8-linux-web-app-using-only-defaults)
-- [Webapplinux.Max](#example-9-webapplinuxmax)
+- [Linux Web App, using large parameter set](#example-9-linux-web-app-using-large-parameter-set)
 - [Windows Web App for Containers, using only defaults](#example-10-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
@@ -2290,7 +2290,10 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 9: _Webapplinux.Max_
+### Example 9: _Linux Web App, using large parameter set_
+
+This instance deploys the module asa Linux Web App with most of its features enabled.
+
 
 <details>
 
@@ -2353,6 +2356,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
     }
     privateEndpoints: [
       {
@@ -2508,9 +2516,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'slot2'
       }
     ]
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
   }
 }
 ```
@@ -2601,6 +2606,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
       }
     },
     "privateEndpoints": {
@@ -2768,15 +2780,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "name": "slot2"
         }
       ]
-    },
-    "vnetContentShareEnabled": {
-      "value": true
-    },
-    "vnetImagePullEnabled": {
-      "value": true
-    },
-    "vnetRouteAllEnabled": {
-      "value": true
     }
   }
 }
@@ -2845,6 +2848,11 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
 }
 param privateEndpoints = [
   {
@@ -3000,9 +3008,6 @@ param slots = [
     name: 'slot2'
   }
 ]
-param vnetContentShareEnabled = true
-param vnetImagePullEnabled = true
-param vnetRouteAllEnabled = true
 ```
 
 </details>
