@@ -146,7 +146,7 @@ param redundancyMode string = 'None'
 @description('Optional. The site publishing credential policy names which are associated with the site slot.')
 param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 
-@description('Optional. The outbound VNET routing configuration for the site')
+@description('Optional. The outbound VNET routing configuration for the site.')
 param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2024-11-01'>.properties.outboundVnetRouting?
 
 @description('Optional. Names of hybrid connection relays to connect app with.')

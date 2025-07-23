@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4011103310242553014"
+      "templateHash": "8708892069000883058"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5459,7 +5459,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "14577359339681284917"
+              "templateHash": "4401647317916070891"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -9822,7 +9822,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.Web/sites/slots@2024-11-01#properties/properties/properties/outboundVnetRouting"
                 },
-                "description": "Optional. The outbound VNET routing configuration for the site"
+                "description": "Optional. The outbound VNET routing configuration for the site."
               },
               "nullable": true
             },

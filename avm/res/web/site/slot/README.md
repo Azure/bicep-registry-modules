@@ -71,7 +71,7 @@ This module deploys a Web or Function App Deployment Slot.
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site |
+| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or block all public traffic. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -4920,7 +4920,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `outboundVnetRouting`
 
-The outbound VNET routing configuration for the site
+The outbound VNET routing configuration for the site.
 
 - Required: No
 - Type: object
