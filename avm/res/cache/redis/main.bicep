@@ -321,7 +321,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(

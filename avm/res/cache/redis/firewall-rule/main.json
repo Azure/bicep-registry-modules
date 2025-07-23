@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "2981769507448863297"
+      "version": "0.36.177.2456",
+      "templateHash": "1446936391553152650"
     },
     "name": "Redis Cache Firewall Rules",
     "description": "This module creates a firewall rule for Redis Cache."

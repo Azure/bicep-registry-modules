@@ -24,9 +24,9 @@ This module deploys a Redis Cache.
 | `Microsoft.Cache/redis/firewallRules` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/firewallRules) |
 | `Microsoft.Cache/redis/linkedServers` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-12-01-preview/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -546,6 +546,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Redis Cache'
     }
+    zonalAllocationPolicy: 'UserDefined'
     zoneRedundant: true
   }
 }
@@ -718,6 +719,9 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "resourceType": "Redis Cache"
       }
     },
+    "zonalAllocationPolicy": {
+      "value": "UserDefined"
+    },
     "zoneRedundant": {
       "value": true
     }
@@ -858,6 +862,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'Redis Cache'
 }
+param zonalAllocationPolicy = 'UserDefined'
 param zoneRedundant = true
 ```
 
@@ -1248,6 +1253,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Redis Cache'
     }
+    zonalAllocationPolicy: 'CrossZone'
     zoneRedundant: true
   }
 }
@@ -1353,6 +1359,9 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "resourceType": "Redis Cache"
       }
     },
+    "zonalAllocationPolicy": {
+      "value": "CrossZone"
+    },
     "zoneRedundant": {
       "value": true
     }
@@ -1428,6 +1437,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'Redis Cache'
 }
+param zonalAllocationPolicy = 'CrossZone'
 param zoneRedundant = true
 ```
 
@@ -1474,6 +1484,7 @@ param zoneRedundant = true
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the Redis cache in. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
+| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
 
 ### Parameter: `name`
@@ -2579,6 +2590,21 @@ A dictionary of tenant settings.
 - Type: object
 - Default: `{}`
 
+### Parameter: `zonalAllocationPolicy`
+
+Specifies how replicas are distributed across availability zones. Only applicable when zoneRedundant is true.
+
+- Required: No
+- Type: string
+- Default: `'CrossZone'`
+- Allowed:
+  ```Bicep
+  [
+    'CrossZone'
+    'UserDefined'
+  ]
+  ```
+
 ### Parameter: `zoneRedundant`
 
 When true, replicas will be provisioned in availability zones specified in the zones parameter.
@@ -2608,8 +2634,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 
