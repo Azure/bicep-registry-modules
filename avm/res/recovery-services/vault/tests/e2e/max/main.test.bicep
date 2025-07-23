@@ -73,13 +73,10 @@ module testDeployment '../../../main.bicep' = [
         enhancedSecurityState: 'Disabled'
         softDeleteFeatureState: 'Disabled'
       }
-      backupStorageConfig: {
-        crossRegionRestoreFlag: false
-        storageModelType: 'LocallyRedundant'
+      redundancySettings: {
+        crossRegionRestore: 'Enabled'
+        standardTierStorageRedundancy: 'LocallyRedundant'
       }
-      // redundancySettings: {
-      //   crossRegionRestore: 'Enabled'
-      // }
       // protectedItems: [
       //   {
       //     name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'

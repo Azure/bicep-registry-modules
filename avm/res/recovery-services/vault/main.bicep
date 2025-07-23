@@ -4,9 +4,6 @@ metadata description = 'This module deploys a Recovery Services Vault.'
 @description('Required. Name of the Azure Recovery Service Vault.')
 param name string
 
-@description('Optional. The storage configuration for the Azure Recovery Service Vault. Must not be used in combination with the `redundancySettings` parameter.')
-param backupStorageConfig backupStorageConfigType?
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -75,7 +72,7 @@ param immutabilitySettingState string?
 ])
 param publicNetworkAccess string = 'Disabled'
 
-@description('Optional. The redundancy settings of the vault. Must not be used in combination with the `backupStorageConfig` parameter.')
+@description('Optional. The redundancy settings of the vault.')
 param redundancySettings resourceInput<'Microsoft.RecoveryServices/vaults@2024-04-01'>.properties.redundancySettings?
 
 @description('Optional. The restore settings of the vault.')
@@ -226,7 +223,7 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
       softDeleteSettings: softDeleteSettings
     }
     publicNetworkAccess: publicNetworkAccess
-    ...(!empty(redundancySettings) ? { redundancySettings: redundancySettings } : {})
+    redundancySettings: redundancySettings
     restoreSettings: restoreSettings
     encryption: !empty(customerManagedKey)
       ? {
@@ -278,16 +275,6 @@ module rsv_replicationPolicies 'replication-policy/main.bicep' = [
     }
   }
 ]
-
-module rsv_backupStorageConfiguration 'backup-storage-config/main.bicep' = if (!empty(backupStorageConfig)) {
-  name: '${uniqueString(deployment().name, location)}-RSV-BackupStorageConfig'
-  params: {
-    recoveryVaultName: rsv.name
-    storageModelType: backupStorageConfig!.?storageModelType
-    crossRegionRestoreFlag: backupStorageConfig!.?crossRegionRestoreFlag
-  }
-}
-
 module rsv_backupFabric_protectionContainer_protectedItems 'backup-fabric/protection-container/protected-item/main.bicep' = [
   for (protectedItem, index) in (protectedItems ?? []): {
     name: '${uniqueString(deployment().name, location)}-ProtectedItem-${index}'
@@ -548,19 +535,6 @@ type replicationPolicyType = {
 
   @description('Optional. The duration in minutes until which the recovery points need to be stored.')
   recoveryPointHistory: int?
-}
-
-@export()
-@description('The type for a backup storage config.')
-type backupStorageConfigType = {
-  @description('Optional. The name of the backup storage config.')
-  name: string?
-
-  @description('Optional. Change Vault Storage Type (Works if vault has not registered any backup instance).')
-  storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
-
-  @description('Optional. Opt in details of Cross Region Restore feature.')
-  crossRegionRestoreFlag: bool?
 }
 
 @export()
