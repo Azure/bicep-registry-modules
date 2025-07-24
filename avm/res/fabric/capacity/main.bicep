@@ -185,7 +185,7 @@ resource capacityStateHandler 'Microsoft.Resources/deploymentScripts@2023-08-01'
   }
 }
 
-resource fabricCapacity 'Microsoft.Fabric/capacities@2023-11-01' = {
+resource fabricCapacity 'Microsoft.Fabric/capacities@2025-01-15-preview' = {
   name: name
   location: location
   tags: tags
@@ -293,6 +293,9 @@ output resourceId string = fabricCapacity.id
 
 @description('The name of the deployed Fabric resource.')
 output name string = fabricCapacity.name
+
+@description('The state of the deployed Fabric resource.')
+output state string = fabricCapacity.properties.state
 
 @description('The location the resource was deployed into.')
 output location string = fabricCapacity.location

@@ -16,7 +16,7 @@ This module deploys Fabric capacities, which provide the compute resources for a
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Fabric/capacities` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Fabric/2023-11-01/capacities) |
+| `Microsoft.Fabric/capacities` | [2025-01-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Fabric/2025-01-15-preview/capacities) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
@@ -577,6 +577,7 @@ Tags of the resource.
 | `name` | string | The name of the deployed Fabric resource. |
 | `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `resourceId` | string | The resource ID of the deployed Fabric resource. |
+| `state` | string | The state of the deployed Fabric resource. |
 
 ## Cross-referenced modules
 
