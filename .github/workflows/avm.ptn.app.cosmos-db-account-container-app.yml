@@ -57,7 +57,7 @@ jobs:
         id: get-workflow-param
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
-          workflowPath: "${{ env.workflowPath}}"
+          workflowPath: "${{ env.workflowPath }}"
       - name: "Get module test file paths"
         id: get-module-test-file-paths
         uses: ./.github/actions/templates/avm-getModuleTestFiles
@@ -84,5 +84,5 @@ jobs:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
-      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath }}"
     secrets: inherit
