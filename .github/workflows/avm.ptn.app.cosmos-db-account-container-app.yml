@@ -22,11 +22,9 @@ on:
         type: string
         description: "Default location overwrite (e.g., eastus)"
         required: false
-  pull_request:
   push:
     branches:
       - main
-      - "avm/ptn/app/cosmos-db-account-container-app"
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
