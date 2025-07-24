@@ -1,12 +1,7 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
@@ -43,14 +38,8 @@
       }
     }
   },
-  "resources": {
-    "flexibleServer": {
-      "existing": true,
-      "type": "Microsoft.DBforMySQL/flexibleServers",
-      "apiVersion": "2024-10-01-preview",
-      "name": "[parameters('flexibleServerName')]"
-    },
-    "database": {
+  "resources": [
+    {
       "type": "Microsoft.DBforMySQL/flexibleServers/databases",
       "apiVersion": "2024-12-01-preview",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
@@ -59,7 +48,7 @@
         "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
       }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",

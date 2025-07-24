@@ -145,6 +145,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'dfmsfsentid001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
@@ -183,6 +184,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "dfmsfsentid001"
     },
@@ -239,6 +243,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'dfmsfsentid001'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'

@@ -15,7 +15,7 @@ resource entraAdmin 'Microsoft.Graph/users@v1.0' existing = {
   userPrincipalName: adminMembersSecret
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: managedIdentityName
   location: location
 }
