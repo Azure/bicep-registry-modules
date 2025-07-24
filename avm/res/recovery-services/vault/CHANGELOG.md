@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
-## 0.9.3
+## 0.10.0
 
 ### Changes
 
@@ -12,7 +12,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Deprecated `backupStorageConfig` parameter in favor of `redundancySettings` only.
+  Background: If the `redundancySettings` parameter is not provided to the Resource Provider it automatically configures Geo-Redundant-Storage which conflicts with the `backupStorageConfig` configuration (- API mismatch)
 
 ## 0.9.2
 
