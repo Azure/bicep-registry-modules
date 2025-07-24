@@ -1263,7 +1263,7 @@ param virtualNetworkName = '<virtualNetworkName>'
 | [`imageTemplateResourceGroupName`](#parameter-imagetemplateresourcegroupname) | string | The name of the Resource Group to deploy the Image Template resources into. |
 | [`location`](#parameter-location) | string | The location to deploy into. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The name of the Resource Group. |
-| [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | array | The files to upload to the Assets Storage Account. |
+| [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | array | The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis as they may cause problems when loaded into the environment of the uploading deployment script. |
 | [`storageDeploymentScriptName`](#parameter-storagedeploymentscriptname) | string | The name of the Deployment Script to upload files to the assets storage account. |
 | [`virtualNetworkAddressPrefix`](#parameter-virtualnetworkaddressprefix) | string | The address space of the Virtual Network. |
 | [`virtualNetworkDeploymentScriptSubnetAddressPrefix`](#parameter-virtualnetworkdeploymentscriptsubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the deployment script. |
@@ -1320,7 +1320,8 @@ The Image Definitions in the Azure Compute Gallery.
 | [`privacyStatementUri`](#parameter-computegalleryimagedefinitionsprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-computegalleryimagedefinitionspurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-computegalleryimagedefinitionsreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
-| [`securityType`](#parameter-computegalleryimagedefinitionssecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
+| [`securityType`](#parameter-computegalleryimagedefinitionssecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required. |
+| [`tags`](#parameter-computegalleryimagedefinitionstags) | object | Tags for all the image. |
 | [`vCPUs`](#parameter-computegalleryimagedefinitionsvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
 
 ### Parameter: `computeGalleryImageDefinitions.identifier`
@@ -1567,7 +1568,7 @@ The release note uri. Has to be a valid URL.
 
 ### Parameter: `computeGalleryImageDefinitions.securityType`
 
-The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.
+The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required.
 
 - Required: No
 - Type: string
@@ -1582,6 +1583,13 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'TrustedLaunchSupported'
   ]
   ```
+
+### Parameter: `computeGalleryImageDefinitions.tags`
+
+Tags for all the image.
+
+- Required: No
+- Type: object
 
 ### Parameter: `computeGalleryImageDefinitions.vCPUs`
 
@@ -1771,7 +1779,7 @@ The name of the Resource Group.
 
 ### Parameter: `storageAccountFilesToUpload`
 
-The files to upload to the Assets Storage Account.
+The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis as they may cause problems when loaded into the environment of the uploading deployment script.
 
 - Required: No
 - Type: array
@@ -1893,12 +1901,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.0` | Remote reference |
-| `br/public:avm/res/compute/gallery:0.9.1` | Remote reference |
-| `br/public:avm/res/compute/gallery:0.9.2` | Remote reference |
+| `br/public:avm/res/compute/gallery:0.9.3` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.25.1` | Remote reference |
 | `br/public:avm/res/virtual-machine-images/image-template:0.6.0` | Remote reference |
 
 ## Notes

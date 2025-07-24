@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12328659693701538576"
+      "templateHash": "11744781664550629014"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -65,7 +65,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         },
         "description": "The type for an image identifier."
       }
@@ -94,7 +94,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         },
         "description": "The type for an image purchase plan."
       }
@@ -120,7 +120,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         },
         "description": "The type for a resource range."
       }
@@ -141,6 +141,16 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The description of this gallery image definition resource. This property is updatable."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+            },
+            "description": "Optional. Tags for all the image."
           }
         },
         "allowUpdateImage": {
@@ -213,7 +223,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
           }
         },
         "isAcceleratedNetworkSupported": {
@@ -302,7 +312,7 @@
       "metadata": {
         "description": "The type of an image.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/compute/gallery:0.9.3"
         }
       }
     }
@@ -455,7 +465,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The files to upload to the Assets Storage Account."
+        "description": "Optional. The files to upload to the Assets Storage Account. Note, the file you're uploading should not contain emojis as they may cause problems when loaded into the environment of the uploading deployment script."
       }
     },
     "imageTemplateDeploymentScriptName": {
@@ -1790,8 +1800,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1475705896315322321"
+              "version": "0.36.177.2456",
+              "templateHash": "9068139270997121520"
             },
             "name": "Azure Compute Galleries",
             "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -1814,6 +1824,16 @@
                   "metadata": {
                     "description": "Optional. The description of this gallery image definition resource. This property is updatable."
                   }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+                    },
+                    "description": "Optional. Tags for all the image."
+                  },
+                  "nullable": true
                 },
                 "allowUpdateImage": {
                   "type": "bool",
@@ -1885,7 +1905,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+                    "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
                   }
                 },
                 "isAcceleratedNetworkSupported": {
@@ -2054,10 +2074,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+                    },
                     "description": "Optional. Tags for all resources."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -2404,25 +2427,34 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries@2024-03-03#properties/tags"
+                },
                 "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
                 "description": "Optional. Tags for all resources."
-              }
+              },
+              "nullable": true
             },
             "sharingProfile": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/sharingProfile"
+                },
                 "description": "Optional. Profile for gallery sharing to subscription or tenant."
-              }
+              },
+              "nullable": true
             },
             "softDeletePolicy": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/softDeletePolicy"
+                },
                 "description": "Optional. Soft deletion policy of the gallery."
-              }
+              },
+              "nullable": true
             }
           },
           "variables": {
@@ -2447,7 +2479,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.compute-gallery.{0}.{1}', replace('0.9.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.compute-gallery.{0}.{1}', replace('0.9.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2569,8 +2601,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "14256121951310131781"
+                      "version": "0.36.177.2456",
+                      "templateHash": "10342729687544373770"
                     },
                     "name": "Compute Galleries Applications",
                     "description": "This module deploys an Azure Compute Gallery Application."
@@ -2809,10 +2841,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+                        },
                         "description": "Optional. Tags for all resources."
-                      }
+                      },
+                      "nullable": true
                     },
                     "customActions": {
                       "type": "array",
@@ -3020,8 +3055,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "9577580862088206504"
+                      "version": "0.36.177.2456",
+                      "templateHash": "11484064782357517234"
                     },
                     "name": "Compute Galleries Image Definitions",
                     "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -3301,7 +3336,7 @@
                       ],
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
+                        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
                       }
                     },
                     "isAcceleratedNetworkSupported": {
@@ -3399,11 +3434,14 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+                        },
                         "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                         "description": "Optional. Tags for all the image."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "variables": {
@@ -3529,6 +3567,9 @@
             },
             "imageResourceIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "metadata": {
                 "description": "The resource ids of the deployed images."
               },
@@ -5269,8 +5310,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11337232077129027386"
+              "version": "0.36.177.2456",
+              "templateHash": "8372201108893410794"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -6591,7 +6632,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7491,8 +7532,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "15460042769205098170"
+                      "version": "0.36.177.2456",
+                      "templateHash": "6496156712513767604"
                     },
                     "name": "Storage Account Management Policies",
                     "description": "This module deploys a Storage Account Management Policy."
@@ -7603,8 +7644,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "9887081627902627152"
+                      "version": "0.36.177.2456",
+                      "templateHash": "1848298161211813339"
                     },
                     "name": "Storage Account Local Users",
                     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -7841,8 +7882,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2268741299785261985"
+                      "version": "0.36.177.2456",
+                      "templateHash": "11910419758160029371"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -8312,8 +8353,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "16916608328363874370"
+                              "version": "0.36.177.2456",
+                              "templateHash": "6122312203250039927"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -8540,7 +8581,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -8631,8 +8672,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "8550034166416361637"
+                                      "version": "0.36.177.2456",
+                                      "templateHash": "10543597982986889039"
                                     },
                                     "name": "Storage Account Blob Container Immutability Policies",
                                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -8811,8 +8852,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "1154226771534321833"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13648200339882213035"
                     },
                     "name": "Storage Account File Share Services",
                     "description": "This module deploys a Storage Account File Share Service."
@@ -9067,6 +9108,9 @@
                       }
                     }
                   },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
+                  },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
@@ -9162,6 +9206,9 @@
                           },
                           "roleAssignments": {
                             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -9171,8 +9218,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "10293576827034199934"
+                              "version": "0.36.177.2456",
+                              "templateHash": "14521101547538449945"
                             },
                             "name": "Storage Account File Shares",
                             "description": "This module deploys a Storage Account File Share."
@@ -9318,6 +9365,13 @@
                                 "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
                               }
                             },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
+                            },
                             "roleAssignments": {
                               "type": "array",
                               "items": {
@@ -9358,6 +9412,26 @@
                               "type": "Microsoft.Storage/storageAccounts/fileServices",
                               "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "storageAccount": {
                               "existing": true,
@@ -9606,8 +9680,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "12471258242431737986"
+                      "version": "0.36.177.2456",
+                      "templateHash": "9773019661912371328"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -9925,8 +9999,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "4374879850096827769"
+                              "version": "0.36.177.2456",
+                              "templateHash": "15007234791973585726"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -10198,8 +10272,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "14024954014872913175"
+                      "version": "0.36.177.2456",
+                      "templateHash": "11814035234561258492"
                     },
                     "name": "Storage Account Table Services",
                     "description": "This module deploys a Storage Account Table Service."
@@ -10514,8 +10588,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "9958350701479452427"
+                              "version": "0.36.177.2456",
+                              "templateHash": "13467255229088290809"
                             },
                             "name": "Storage Account Table",
                             "description": "This module deploys a Storage Account Table."
@@ -10768,8 +10842,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "8001412005028765743"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13684748067799780567"
                     }
                   },
                   "definitions": {
@@ -11056,8 +11130,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11337232077129027386"
+              "version": "0.36.177.2456",
+              "templateHash": "8372201108893410794"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -12378,7 +12452,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -13278,8 +13352,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "15460042769205098170"
+                      "version": "0.36.177.2456",
+                      "templateHash": "6496156712513767604"
                     },
                     "name": "Storage Account Management Policies",
                     "description": "This module deploys a Storage Account Management Policy."
@@ -13390,8 +13464,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "9887081627902627152"
+                      "version": "0.36.177.2456",
+                      "templateHash": "1848298161211813339"
                     },
                     "name": "Storage Account Local Users",
                     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -13628,8 +13702,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2268741299785261985"
+                      "version": "0.36.177.2456",
+                      "templateHash": "11910419758160029371"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -14099,8 +14173,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "16916608328363874370"
+                              "version": "0.36.177.2456",
+                              "templateHash": "6122312203250039927"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -14327,7 +14401,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -14418,8 +14492,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "8550034166416361637"
+                                      "version": "0.36.177.2456",
+                                      "templateHash": "10543597982986889039"
                                     },
                                     "name": "Storage Account Blob Container Immutability Policies",
                                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -14598,8 +14672,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "1154226771534321833"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13648200339882213035"
                     },
                     "name": "Storage Account File Share Services",
                     "description": "This module deploys a Storage Account File Share Service."
@@ -14854,6 +14928,9 @@
                       }
                     }
                   },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
+                  },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
@@ -14949,6 +15026,9 @@
                           },
                           "roleAssignments": {
                             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -14958,8 +15038,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "10293576827034199934"
+                              "version": "0.36.177.2456",
+                              "templateHash": "14521101547538449945"
                             },
                             "name": "Storage Account File Shares",
                             "description": "This module deploys a Storage Account File Share."
@@ -15105,6 +15185,13 @@
                                 "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
                               }
                             },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
+                            },
                             "roleAssignments": {
                               "type": "array",
                               "items": {
@@ -15145,6 +15232,26 @@
                               "type": "Microsoft.Storage/storageAccounts/fileServices",
                               "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "storageAccount": {
                               "existing": true,
@@ -15393,8 +15500,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "12471258242431737986"
+                      "version": "0.36.177.2456",
+                      "templateHash": "9773019661912371328"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -15712,8 +15819,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "4374879850096827769"
+                              "version": "0.36.177.2456",
+                              "templateHash": "15007234791973585726"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -15985,8 +16092,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "14024954014872913175"
+                      "version": "0.36.177.2456",
+                      "templateHash": "11814035234561258492"
                     },
                     "name": "Storage Account Table Services",
                     "description": "This module deploys a Storage Account Table Service."
@@ -16301,8 +16408,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "9958350701479452427"
+                              "version": "0.36.177.2456",
+                              "templateHash": "13467255229088290809"
                             },
                             "name": "Storage Account Table",
                             "description": "This module deploys a Storage Account Table."
@@ -16555,8 +16662,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "8001412005028765743"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13684748067799780567"
                     }
                   },
                   "definitions": {
