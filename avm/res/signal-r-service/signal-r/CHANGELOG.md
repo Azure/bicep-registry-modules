@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/signal-r-service/signal-r/CHANGELOG.md).
 
+## 0.10.0
+
+### Changes
+
+- Added support for `diagnosticSettings`
+- Added additional types
+
+### Breaking Changes
+
+- None
+
 ## 0.9.0
 
 ### Changes
