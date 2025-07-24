@@ -31,31 +31,31 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
-// module nestedDependencies 'dependencies.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-//   params: {
-//     location: resourceLocation
-//     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-//     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-//     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-//     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
-//     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
-//   }
-// }
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+  }
+}
 
 // Diagnostics
 // ===========
-// module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-//   params: {
-//     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-//     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-//     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-//     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-//   }
-// }
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+  }
+}
 
 // ============== //
 // Test Execution //
@@ -76,15 +76,15 @@ module testDeployment '../../../main.bicep' = [
       redundancySettings: {
         standardTierStorageRedundancy: 'LocallyRedundant'
       }
-      // protectedItems: [
-      //   {
-      //     name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
-      //     protectionContainerName: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
-      //     policyName: 'VMpolicy'
-      //     protectedItemType: 'Microsoft.Compute/virtualMachines'
-      //     sourceResourceId: nestedDependencies.outputs.virtualMachineResourceId
-      //   }
-      // ]
+      protectedItems: [
+        {
+          name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+          protectionContainerName: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+          policyName: 'VMpolicy'
+          protectedItemType: 'Microsoft.Compute/virtualMachines'
+          sourceResourceId: nestedDependencies.outputs.virtualMachineResourceId
+        }
+      ]
       backupPolicies: [
         {
           name: 'VMpolicy'
@@ -322,111 +322,111 @@ module testDeployment '../../../main.bicep' = [
         locale: 'en-US'
         sendToOwners: 'Send'
       }
-      // diagnosticSettings: [
-      //   {
-      //     name: 'customSetting'
-      //     metricCategories: [
-      //       {
-      //         category: 'AllMetrics'
-      //       }
-      //     ]
-      //     eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-      //     eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-      //     storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-      //     workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      //   }
-      // ]
-      // lock: {
-      //   kind: 'CanNotDelete'
-      //   name: 'myCustomLockName'
-      // }
-      // managedIdentities: {
-      //   systemAssigned: true
-      //   userAssignedResourceIds: [
-      //     nestedDependencies.outputs.managedIdentityResourceId
-      //   ]
-      // }
-      // privateEndpoints: [
-      //   {
-      //     ipConfigurations: [
-      //       {
-      //         name: 'myIpConfig-1'
-      //         properties: {
-      //           groupId: 'AzureSiteRecovery'
-      //           memberName: 'SiteRecovery-tel1'
-      //           privateIPAddress: '10.0.0.10'
-      //         }
-      //       }
-      //       {
-      //         name: 'myIPconfig-2'
-      //         properties: {
-      //           groupId: 'AzureSiteRecovery'
-      //           memberName: 'SiteRecovery-prot2'
-      //           privateIPAddress: '10.0.0.11'
-      //         }
-      //       }
-      //       {
-      //         name: 'myIPconfig-3'
-      //         properties: {
-      //           groupId: 'AzureSiteRecovery'
-      //           memberName: 'SiteRecovery-srs1'
-      //           privateIPAddress: '10.0.0.12'
-      //         }
-      //       }
-      //       {
-      //         name: 'myIPconfig-4'
-      //         properties: {
-      //           groupId: 'AzureSiteRecovery'
-      //           memberName: 'SiteRecovery-rcm1'
-      //           privateIPAddress: '10.0.0.13'
-      //         }
-      //       }
-      //       {
-      //         name: 'myIPconfig-5'
-      //         properties: {
-      //           groupId: 'AzureSiteRecovery'
-      //           memberName: 'SiteRecovery-id1'
-      //           privateIPAddress: '10.0.0.14'
-      //         }
-      //       }
-      //     ]
-      //     privateDnsZoneGroup: {
-      //       privateDnsZoneGroupConfigs: [
-      //         {
-      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-      //         }
-      //       ]
-      //     }
-      //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      //     tags: {
-      //       'hidden-title': 'This is visible in the resource name'
-      //       Environment: 'Non-Prod'
-      //       Role: 'DeploymentValidation'
-      //     }
-      //   }
-      // ]
-      // roleAssignments: [
-      //   {
-      //     name: '35288372-e6b4-4333-9ee6-dd997b96d52b'
-      //     roleDefinitionIdOrName: 'Owner'
-      //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-      //     principalType: 'ServicePrincipal'
-      //   }
-      //   {
-      //     name: guid('Custom seed ${namePrefix}${serviceShort}')
-      //     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-      //     principalType: 'ServicePrincipal'
-      //   }
-      //   {
-      //     roleDefinitionIdOrName: subscriptionResourceId(
-      //       'Microsoft.Authorization/roleDefinitions',
-      //       'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-      //     )
-      //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-      //     principalType: 'ServicePrincipal'
-      //   }
-      // ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      privateEndpoints: [
+        {
+          ipConfigurations: [
+            {
+              name: 'myIpConfig-1'
+              properties: {
+                groupId: 'AzureSiteRecovery'
+                memberName: 'SiteRecovery-tel1'
+                privateIPAddress: '10.0.0.10'
+              }
+            }
+            {
+              name: 'myIPconfig-2'
+              properties: {
+                groupId: 'AzureSiteRecovery'
+                memberName: 'SiteRecovery-prot2'
+                privateIPAddress: '10.0.0.11'
+              }
+            }
+            {
+              name: 'myIPconfig-3'
+              properties: {
+                groupId: 'AzureSiteRecovery'
+                memberName: 'SiteRecovery-srs1'
+                privateIPAddress: '10.0.0.12'
+              }
+            }
+            {
+              name: 'myIPconfig-4'
+              properties: {
+                groupId: 'AzureSiteRecovery'
+                memberName: 'SiteRecovery-rcm1'
+                privateIPAddress: '10.0.0.13'
+              }
+            }
+            {
+              name: 'myIPconfig-5'
+              properties: {
+                groupId: 'AzureSiteRecovery'
+                memberName: 'SiteRecovery-id1'
+                privateIPAddress: '10.0.0.14'
+              }
+            }
+          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+      ]
+      roleAssignments: [
+        {
+          name: '35288372-e6b4-4333-9ee6-dd997b96d52b'
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       monitoringSettings: {
         azureMonitorAlertSettings: {
           alertsForAllJobFailures: 'Enabled'
