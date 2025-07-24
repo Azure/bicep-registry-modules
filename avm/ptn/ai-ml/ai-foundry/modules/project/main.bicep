@@ -138,6 +138,9 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   scope: project
 }
 
+@description('Name of the deployed Azure Resource Group.')
+output resourceGroupName string = resourceGroup().name
+
 @description('Resource ID of the Project.')
 output resourceId string = project.id
 

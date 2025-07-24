@@ -276,6 +276,7 @@ Tags to be applied to the resources.
 | `desc` | string | Description of the Project. |
 | `displayName` | string | Display name of the Project. |
 | `name` | string | Name of the Project. |
+| `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
 | `resourceId` | string | Resource ID of the Project. |
 
 ## Cross-referenced modules

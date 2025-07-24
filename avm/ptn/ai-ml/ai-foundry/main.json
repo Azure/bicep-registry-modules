@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "5255922979282782094"
+      "templateHash": "13785042870318362380"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -18722,7 +18722,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "13018055903355703964"
+              "templateHash": "3451517069635434509"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -19814,6 +19814,13 @@
             }
           },
           "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the deployed Azure Resource Group."
+              },
+              "value": "[resourceGroup().name]"
+            },
             "resourceId": {
               "type": "string",
               "metadata": {
