@@ -3158,7 +3158,7 @@ param siteConfig = {
 | [`keyVaultAccessIdentityResourceId`](#parameter-keyvaultaccessidentityresourceid) | string | The resource ID of the assigned identity to be used to access a key vault with. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedEnvironmentId`](#parameter-managedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
+| [`managedEnvironmentResourceId`](#parameter-managedenvironmentresourceid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -8063,7 +8063,7 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `managedEnvironmentId`
+### Parameter: `managedEnvironmentResourceId`
 
 Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.
 
@@ -8715,7 +8715,7 @@ Configuration for deployment slots for an app.
 | [`keyVaultAccessIdentityResourceId`](#parameter-slotskeyvaultaccessidentityresourceid) | string | The resource ID of the assigned identity to be used to access a key vault with. |
 | [`location`](#parameter-slotslocation) | string | Location for all Resources. |
 | [`lock`](#parameter-slotslock) | object | The lock settings of the service. |
-| [`managedEnvironmentId`](#parameter-slotsmanagedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
+| [`managedEnvironmentResourceId`](#parameter-slotsmanagedenvironmentresourceid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-slotsmanagedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-slotsprivateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-slotspublicnetworkaccess) | string | Allow or block all public traffic. |
@@ -13538,7 +13538,7 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `slots.managedEnvironmentId`
+### Parameter: `slots.managedEnvironmentResourceId`
 
 Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.
 

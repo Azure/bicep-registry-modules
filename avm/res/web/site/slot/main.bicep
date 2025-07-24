@@ -31,7 +31,7 @@ param kind string
 param serverFarmResourceId string?
 
 @description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
-param managedEnvironmentId string?
+param managedEnvironmentResourceId string?
 
 @description('Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
@@ -238,8 +238,8 @@ resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
   tags: tags
   identity: identity
   properties: {
-    managedEnvironmentId: !empty(managedEnvironmentId) ? managedEnvironmentId : null
-    serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && (!empty(app.properties.managedEnvironmentId) || !empty(managedEnvironmentId))
+    managedEnvironmentId: !empty(managedEnvironmentResourceId) ? managedEnvironmentResourceId : null
+    serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && (!empty(app.properties.managedEnvironmentId) || !empty(managedEnvironmentResourceId))
       ? null
       : serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled

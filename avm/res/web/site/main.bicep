@@ -28,7 +28,7 @@ param kind string
 param serverFarmResourceId string
 
 @description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
-param managedEnvironmentId string?
+param managedEnvironmentResourceId string?
 
 @description('Optional. Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
@@ -265,8 +265,8 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
   tags: tags
   identity: identity
   properties: {
-    managedEnvironmentId: !empty(managedEnvironmentId) ? managedEnvironmentId : null
-    serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentId)
+    managedEnvironmentId: !empty(managedEnvironmentResourceId) ? managedEnvironmentResourceId : null
+    serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
       ? null
       : serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled
@@ -340,10 +340,10 @@ module app_slots 'slot/main.bicep' = [
       appName: app.name
       location: location
       kind: kind
-      serverFarmResourceId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentId)
+      serverFarmResourceId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
         ? null
         : serverFarmResourceId
-      managedEnvironmentId: slot.?managedEnvironmentId ?? managedEnvironmentId
+      managedEnvironmentResourceId: slot.?managedEnvironmentResourceId ?? managedEnvironmentResourceId
       httpsOnly: slot.?httpsOnly ?? httpsOnly
       appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
       clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
@@ -664,7 +664,7 @@ type slotType = {
   serverFarmResourceId: string?
 
   @description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
-  managedEnvironmentId: string?
+  managedEnvironmentResourceId: string?
 
   @description('Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests.')
   httpsOnly: bool?

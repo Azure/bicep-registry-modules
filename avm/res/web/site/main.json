@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13869074277548188715"
+      "templateHash": "14882810550653377719"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -199,7 +199,7 @@
             "description": "Optional. The resource ID of the app service plan to use for the slot."
           }
         },
-        "managedEnvironmentId": {
+        "managedEnvironmentResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -4526,7 +4526,7 @@
         "description": "Required. The resource ID of the app service plan to use for the site. Set as empty string when using a managed environment id for container apps."
       }
     },
-    "managedEnvironmentId": {
+    "managedEnvironmentResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -4926,8 +4926,8 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentId'))), parameters('managedEnvironmentId'), null())]",
-        "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentId')))), null(), parameters('serverFarmResourceId'))]",
+        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+        "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentResourceId')))), null(), parameters('serverFarmResourceId'))]",
         "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
         "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
         "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",
@@ -5358,9 +5358,9 @@
           "kind": {
             "value": "[parameters('kind')]"
           },
-          "serverFarmResourceId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentId')))), createObject('value', null()), createObject('value', parameters('serverFarmResourceId')))]",
-          "managedEnvironmentId": {
-            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedEnvironmentId'), parameters('managedEnvironmentId'))]"
+          "serverFarmResourceId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentResourceId')))), createObject('value', null()), createObject('value', parameters('serverFarmResourceId')))]",
+          "managedEnvironmentResourceId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedEnvironmentResourceId'), parameters('managedEnvironmentResourceId'))]"
           },
           "httpsOnly": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'httpsOnly'), parameters('httpsOnly'))]"
@@ -5470,7 +5470,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "5295143633867998864"
+              "templateHash": "2467503612762973649"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -9565,7 +9565,7 @@
                 "description": "Optional. The resource ID of the app service plan to use for the slot."
               }
             },
-            "managedEnvironmentId": {
+            "managedEnvironmentResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -9919,8 +9919,8 @@
               "tags": "[parameters('tags')]",
               "identity": "[variables('identity')]",
               "properties": {
-                "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentId'))), parameters('managedEnvironmentId'), null())]",
-                "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), or(not(empty(reference('app').managedEnvironmentId)), not(empty(parameters('managedEnvironmentId'))))), null(), parameters('serverFarmResourceId'))]",
+                "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+                "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), or(not(empty(reference('app').managedEnvironmentId)), not(empty(parameters('managedEnvironmentResourceId'))))), null(), parameters('serverFarmResourceId'))]",
                 "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
                 "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
                 "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",

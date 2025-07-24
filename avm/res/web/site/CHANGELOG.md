@@ -6,11 +6,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- `serverFarmResourceId` can be passed as empty string when `kind` is `functionapp,linux,container,azurecontainerapps` and `managedEnvironmentId` is provided.
+- `serverFarmResourceId` can be passed as empty string when `kind` is `functionapp,linux,container,azurecontainerapps` and `managedEnvironmentResourceId` is provided.
+- Renamed parameter `managedEnvironmentId` to `managedEnvironmentResourceId` to align with naming standards
 
 ### Breaking Changes
 
-- None
+- Parameter `managedEnvironmentId` has been renamed to `managedEnvironmentResourceId`
 
 ## 0.18.0
 
