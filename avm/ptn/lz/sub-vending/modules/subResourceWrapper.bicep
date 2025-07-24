@@ -657,11 +657,10 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
                   subnet.?routeTableName ?? ''
                 )
               : null
-            routeTableName: subnet.?routeTableName ?? null
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.?outputs.resourceId
               : null
-            delegation: subnet.?delegation ?? null
+            delegation: subnet.?delegation
           }
         : {}
     ]
@@ -1714,7 +1713,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
           natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
             ? createAdditonalNatGateway[i].?outputs.resourceId
             : null
-          delegation: subnet.?delegation ?? null
+          delegation: subnet.?delegation
         }
       ]
       location: vnet.?location ?? deployment().location
