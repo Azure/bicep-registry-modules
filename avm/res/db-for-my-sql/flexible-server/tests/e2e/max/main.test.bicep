@@ -138,6 +138,18 @@ module testDeployment '../../../main.bicep' = [
           collation: 'ascii_general_ci'
         }
       ]
+      configurations: [
+        {
+          name: 'max_connections'
+          source: 'user-override'
+          value: '200'
+        }
+        {
+          name: 'innodb_buffer_pool_size'
+          source: 'user-override'
+          value: '1073741824'
+        }
+      ]
       publicNetworkAccess: 'Enabled'
       firewallRules: [
         {

@@ -70,6 +70,7 @@ This module deploys a Web or Function App Deployment Slot.
 | [`keyVaultAccessIdentityResourceId`](#parameter-keyvaultaccessidentityresourceid) | string | The resource ID of the assigned identity to be used to access a key vault with. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedEnvironmentResourceId`](#parameter-managedenvironmentresourceid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
@@ -4886,6 +4887,13 @@ Specify the name of lock.
 ### Parameter: `lock.notes`
 
 Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `managedEnvironmentResourceId`
+
+Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.
 
 - Required: No
 - Type: string
