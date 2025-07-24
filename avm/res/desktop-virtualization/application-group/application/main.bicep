@@ -36,11 +36,24 @@ param iconPath string?
 @sys.description('Optional. Index of the icon.')
 param iconIndex int = 0
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' existing = {
+@sys.description('Optional. Resource Type of Application.')
+@allowed([
+  'InBuilt'
+  'MsixApplication'
+])
+param applicationType string?
+
+@sys.description('Optional. Specifies the package application Id for MSIX applications.')
+param msixPackageApplicationId string?
+
+@sys.description('Optional. Specifies the package family name for MSIX applications.')
+param msixPackageFamilyName string?
+
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' existing = {
   name: applicationGroupName
 }
 
-resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2023-09-05' = {
+resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2024-04-03' = {
   name: name
   parent: appGroup
   properties: {
@@ -52,6 +65,9 @@ resource application 'Microsoft.DesktopVirtualization/applicationGroups/applicat
     showInPortal: showInPortal
     iconPath: iconPath
     iconIndex: iconIndex
+    applicationType: applicationType
+    msixPackageApplicationId: msixPackageApplicationId
+    msixPackageFamilyName: msixPackageFamilyName
   }
 }
 

@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Security Alert Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/securityAlertPolicies) |
+| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/securityAlertPolicies) |
 
 ## Parameters
 

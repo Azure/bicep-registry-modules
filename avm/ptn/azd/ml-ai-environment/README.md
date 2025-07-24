@@ -1,5 +1,11 @@
 # Azd Azure Machine Learning Environment `[Azd/MlAiEnvironment]`
 
+> ⚠️THIS MODULE IS DEPRECATED.⚠️
+> 
+> - It will no longer receive any updates.
+> - The module can still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
+> - It is recommended to migrate to a replacement/alternative version of the module, if available.
+
 Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.

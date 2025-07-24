@@ -123,9 +123,9 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. True if the image from which the OS disk is created supports accelerated networking.')
 param acceleratedNetwork bool = false
 
-@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  0
+  -1
   1
   2
   3
@@ -256,7 +256,7 @@ resource disk 'Microsoft.Compute/disks@2023-10-02' = {
         }
       : {}
   }
-  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null
 }
 
 resource disk_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

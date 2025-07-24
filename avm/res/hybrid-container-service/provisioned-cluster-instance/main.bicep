@@ -31,6 +31,9 @@ param keyVaultName string?
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationResourceId string
 
+@description('Optional. The profile for Linux VMs in the provisioned cluster.')
+param linuxProfile linuxProfileType?
+
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
 
@@ -68,9 +71,6 @@ param networkProfile networkProfileType = {
     count: 0
   }
 }
-
-@description('Optional. The profile for Linux VMs in the provisioned cluster.')
-param linuxProfile linuxProfileType?
 
 @description('Optional. The license profile of the provisioned cluster.')
 param licenseProfile licenseProfileType = { azureHybridBenefit: 'False' }
@@ -284,6 +284,7 @@ type linuxProfileType = {
     @description('Required. SSH public keys configuration.')
     publicKeys: [
       {
+        @secure()
         @description('Required. The SSH public key data.')
         keyData: string
       }

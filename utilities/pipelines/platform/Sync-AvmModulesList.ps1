@@ -31,9 +31,9 @@ function Sync-AvmModulesList {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
 
     # get CSV data
-    $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object { ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object { ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object { ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
 
     $issueTemplatePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
     $issueTemplateContent = Get-Content $issueTemplatePath
@@ -204,11 +204,13 @@ $([Environment]::NewLine)
             $ProjectNumber = 538 # AVM - Issue Triage
             Add-GitHubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
         }
-    } else {
+    }
+    else {
         if ($issuesFound) {
             # update body
             gh issue edit $issues[0].url --body $body --repo $Repo
-        } else {
+        }
+        else {
             # close issue
             gh issue close $issues[0].url --repo $Repo
         }

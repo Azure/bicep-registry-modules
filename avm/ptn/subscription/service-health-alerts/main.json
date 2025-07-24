@@ -1,0 +1,2272 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "8472192964992017275"
+    },
+    "name": "Azure Service Health Alerts",
+    "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
+  },
+  "definitions": {
+    "serviceHealthAlertType": {
+      "type": "object",
+      "properties": {
+        "serviceHealthAlert": {
+          "type": "string",
+          "allowedValues": [
+            "Resource Health Unhealthy",
+            "Service Health Advisory",
+            "Service Health Incident",
+            "Service Health Maintenance",
+            "Service Health Security"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The service health alerts to enable."
+          }
+        },
+        "alertName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the service health alert."
+          }
+        },
+        "alertDescription": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the service health alert."
+          }
+        },
+        "isEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to enable or disable the alert."
+          }
+        },
+        "actionGroup": {
+          "$ref": "#/definitions/actionGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The action group to use for the alert."
+          }
+        }
+      }
+    },
+    "actionGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the action group."
+          }
+        },
+        "groupShortName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The short name of the action group. Max length is 12 characters."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Flag to enable or disable the action group."
+          }
+        },
+        "emailReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/emailReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of email receivers for the action group."
+          }
+        },
+        "eventHubReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/eventHubReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of event hub receivers for the action group."
+          }
+        },
+        "smsReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/smsReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of SMS receivers for the action group."
+          }
+        },
+        "webhookReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/webhookReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of webhook receivers for the action group."
+          }
+        },
+        "itsmReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/itsmReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of ITSM receivers for the action group."
+          }
+        },
+        "azureAppPushReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/azureAppPushReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of Azure App Push receivers for the action group."
+          }
+        },
+        "automationRunbookReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/automationRunbookReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of automation runbook receivers for the action group."
+          }
+        },
+        "voiceReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/voiceReceiverType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of voice receivers for the action group."
+          }
+        },
+        "logicAppReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/logicAppReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of logic app receivers for the action group."
+          }
+        },
+        "armRoleReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/armRoleReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of ARM role receivers for the action group."
+          }
+        },
+        "azureFunctionReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/azureFunctionReceiversType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of Azure function receivers for the action group."
+          }
+        },
+        "incidentReceivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/incidentReceiverType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of incident receivers for the action group."
+          }
+        }
+      }
+    },
+    "incidentReceiverType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the incident receiver."
+          }
+        },
+        "incidentManagementService": {
+          "type": "string",
+          "allowedValues": [
+            "Icm"
+          ],
+          "metadata": {
+            "description": "Required. The incident management service type."
+          }
+        },
+        "connection": {
+          "$ref": "#/definitions/incidentReceiverConnectionType",
+          "metadata": {
+            "description": "Required. The connection details for the incident management service."
+          }
+        },
+        "mappings": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. The list of Field mappings for the incident service."
+          }
+        }
+      }
+    },
+    "incidentReceiverConnectionType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. GUID value representing the connection ID for the incident management service."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the connection."
+          }
+        }
+      }
+    },
+    "armRoleReceiversType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the ARM role receiver."
+          }
+        },
+        "roleId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role ID of the ARM role receiver."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        }
+      }
+    },
+    "automationRunbookReceiversType": {
+      "type": "object",
+      "properties": {
+        "automationAccountId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource Id of the automation runbook account."
+          }
+        },
+        "isGlobalRunbook": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Flag to indicate if the runbook is global."
+          }
+        },
+        "managedIdentity": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "SystemAssigned"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal id of the managed identity."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the webhook."
+          }
+        },
+        "runbookName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the runbook."
+          }
+        },
+        "serviceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The URI where webhooks should be sent."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        },
+        "webhookResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource Id of the webhook."
+          }
+        }
+      }
+    },
+    "azureAppPushReceiversType": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The email address registered for the Azure mobile app."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure mobile app push receiver."
+          }
+        }
+      }
+    },
+    "eventHubReceiversType": {
+      "type": "object",
+      "properties": {
+        "eventHubName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the specific Event Hub queue."
+          }
+        },
+        "eventHubNameSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Event Hub namespace."
+          }
+        },
+        "managedIdentity": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "SystemAssigned"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal id of the managed identity."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Event Hub receiver."
+          }
+        },
+        "subscriptionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Id for the subscription containing this event hub."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The tenant Id for the subscription containing this event hub."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        }
+      }
+    },
+    "itsmReceiversType": {
+      "type": "object",
+      "properties": {
+        "connectionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Unique identification of ITSM connection."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the ITSM connection."
+          }
+        },
+        "region": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Region in which workspace resides. Supported values:'centralindia','japaneast','southeastasia','australiasoutheast','uksouth','westcentralus','canadacentral','eastus','westeurope'."
+          }
+        },
+        "ticketConfiguration": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. JSON blob for the configurations of the ITSM action. CreateMultipleWorkItems option will be part of this blob as well."
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Log analytics workspace Id."
+          }
+        }
+      }
+    },
+    "logicAppReceiversType": {
+      "type": "object",
+      "properties": {
+        "callbackUrl": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The callback url where http request sent to."
+          }
+        },
+        "managedIdentity": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "SystemAssigned"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal id of the managed identity."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the logic app receiver."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource Id of the logic app."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        }
+      }
+    },
+    "smsReceiversType": {
+      "type": "object",
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The country code of the SMS receiver."
+          }
+        },
+        "phoneNumber": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The phone number of the SMS receiver."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the SMS receiver."
+          }
+        }
+      }
+    },
+    "voiceReceiverType": {
+      "type": "object",
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The country code of the voice receiver."
+          }
+        },
+        "phoneNumber": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The phone number of the voice receiver."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the voice receiver."
+          }
+        }
+      }
+    },
+    "webhookReceiversType": {
+      "type": "object",
+      "properties": {
+        "identifierUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The identifier uri for aad auth."
+          }
+        },
+        "managedIdentity": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "SystemAssigned"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal id of the managed identity."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the webhook receiver."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        },
+        "objectId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The webhook app object Id for aad auth."
+          }
+        },
+        "serviceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The URI where webhooks should be sent."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tenant Id."
+          }
+        },
+        "useAadAuth": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use Entra ID autentication."
+          }
+        }
+      }
+    },
+    "emailReceiversType": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The email address of the email receiver."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the email receiver."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        }
+      }
+    },
+    "azureFunctionReceiversType": {
+      "type": "object",
+      "properties": {
+        "functionName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure function in the function App."
+          }
+        },
+        "functionAppResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. TThe resource Id of the function App."
+          }
+        },
+        "managedIdentity": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "SystemAssigned"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal id of the managed identity."
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to use common alert schema."
+          }
+        },
+        "httpTriggerUrl": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The http trigger url where http request sent to."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure function receiver."
+          }
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "serviceHealthAlertsResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[format('rg-asha-{0}', parameters('subscriptionId'))]",
+      "metadata": {
+        "description": "Optional. The name of the resource group to deploy service health alerts into."
+      }
+    },
+    "serviceHealthAlerts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/serviceHealthAlertType"
+      },
+      "defaultValue": [
+        {
+          "serviceHealthAlert": "Resource Health Unhealthy",
+          "alertName": "ResourceHealthUnhealthyAlert",
+          "alertDescription": "Alert for Resource Health Unhealthy status.",
+          "isEnabled": true
+        },
+        {
+          "serviceHealthAlert": "Service Health Advisory",
+          "alertName": "ServiceHealthAdvisoryAlert",
+          "alertDescription": "Alert for Service Health Advisory incidents.",
+          "isEnabled": true
+        },
+        {
+          "serviceHealthAlert": "Service Health Incident",
+          "alertName": "ServiceHealthIncidentAlert",
+          "alertDescription": "Alert for Service Health Incident occurrences.",
+          "isEnabled": true
+        },
+        {
+          "serviceHealthAlert": "Service Health Maintenance",
+          "alertName": "ServiceHealthMaintenanceAlert",
+          "alertDescription": "Alert for Service Health Maintenance events.",
+          "isEnabled": true
+        },
+        {
+          "serviceHealthAlert": "Service Health Security",
+          "alertName": "ServiceHealthSecurityAlert",
+          "alertDescription": "Alert for Service Health Security incidents.",
+          "isEnabled": true
+        }
+      ],
+      "metadata": {
+        "description": "Optional. The list of service health alerts to create. If empty or not provided, all service health alerts will be created."
+      }
+    },
+    "subscriptionId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "Optional. The subscription Id to deploy service health alerts for."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "serviceHealthAlertsMap": [
+      {
+        "serviceHealthAlert": "Resource Health Unhealthy",
+        "alertName": "ResourceHealthUnhealthyAlert",
+        "condition": {
+          "allOf": [
+            {
+              "field": "category",
+              "equals": "ResourceHealth"
+            },
+            {
+              "anyOf": [
+                {
+                  "field": "properties.cause",
+                  "equals": "PlatformInitiated"
+                },
+                {
+                  "field": "properties.cause",
+                  "equals": "UserInitiated"
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "field": "properties.currentHealthStatus",
+                  "equals": "Degraded"
+                },
+                {
+                  "field": "properties.currentHealthStatus",
+                  "equals": "Unavailable"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "serviceHealthAlert": "Service Health Advisory",
+        "alertName": "ServiceHealthAdvisoryAlert",
+        "condition": {
+          "allOf": [
+            {
+              "field": "category",
+              "equals": "ServiceHealth"
+            },
+            {
+              "field": "properties.incidentType",
+              "equals": "ActionRequired"
+            }
+          ]
+        }
+      },
+      {
+        "serviceHealthAlert": "Service Health Incident",
+        "alertName": "ServiceHealthIncidentAlert",
+        "condition": {
+          "allOf": [
+            {
+              "field": "category",
+              "equals": "ServiceHealth"
+            },
+            {
+              "field": "properties.incidentType",
+              "equals": "Incident"
+            }
+          ]
+        }
+      },
+      {
+        "serviceHealthAlert": "Service Health Maintenance",
+        "alertName": "ServiceHealthMaintenanceAlert",
+        "condition": {
+          "allOf": [
+            {
+              "field": "category",
+              "equals": "ServiceHealth"
+            },
+            {
+              "field": "properties.incidentType",
+              "equals": "Maintenance"
+            }
+          ]
+        }
+      },
+      {
+        "serviceHealthAlert": "Service Health Security",
+        "alertName": "ServiceHealthSecurityAlert",
+        "condition": {
+          "allOf": [
+            {
+              "field": "category",
+              "equals": "ServiceHealth"
+            },
+            {
+              "field": "properties.incidentType",
+              "equals": "Security"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.subscription-svchealthalerts.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "string",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "alertsResourceGroup": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('alertsResourceGroup-{0}', uniqueString('alertsResourceGroup', deployment().name))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('serviceHealthAlertsResourceGroupName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "15010504026239849745"
+            },
+            "name": "Resource Groups",
+            "description": "This module deploys a Resource Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Resource Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the storage account resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "resourceGroup": {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {}
+            },
+            "resourceGroup_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+              "resourceGroup": "[parameters('name')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
+                  "name": {
+                    "value": "[parameters('name')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "1203907446887412297"
+                    }
+                  },
+                  "definitions": {
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Resource Group."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "resourceGroup_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "resourceGroup"
+              ]
+            },
+            "resourceGroup_roleAssignments": {
+              "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+              "resourceGroup": "[parameters('name')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "6029968255804453751"
+                    }
+                  },
+                  "definitions": {
+                    "roleAssignmentType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
+                          "roleDefinitionIdOrName": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                            }
+                          },
+                          "principalId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                            }
+                          },
+                          "principalType": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Device",
+                              "ForeignGroup",
+                              "Group",
+                              "ServicePrincipal",
+                              "User"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The principal type of the assigned principal ID."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The description of the role assignment."
+                            }
+                          },
+                          "condition": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                            }
+                          },
+                          "conditionVersion": {
+                            "type": "string",
+                            "allowedValues": [
+                              "2.0"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Version of the condition."
+                            }
+                          },
+                          "delegatedManagedIdentityResourceId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The Resource Id of the delegated managed identity resource."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "roleAssignments": {
+                      "$ref": "#/definitions/roleAssignmentType",
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Quota Request Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e5f05e5-9ab9-446b-b98d-1e2157c94125')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Tag Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')]",
+                      "Template Spec Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c9b6475-caf0-4164-b5a1-2142a7116f4b')]",
+                      "Template Spec Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '392ae280-861d-42bd-9ea5-08ee6d83b80e')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": {
+                    "resourceGroup_roleAssignments": {
+                      "copy": {
+                        "name": "resourceGroup_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "resourceGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the resource group."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
+    "createServiceHealthAlerts": {
+      "copy": {
+        "name": "createServiceHealthAlerts",
+        "count": "[length(parameters('serviceHealthAlerts'))]"
+      },
+      "condition": "[not(empty(parameters('serviceHealthAlerts')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('createServiceHealthAlerts-{0}-{1}', copyIndex(), uniqueString('createServiceHealthAlerts', deployment().name))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('serviceHealthAlertsResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'serviceHealthAlert'), variables('serviceHealthAlertsMap')[copyIndex()].alertName)]"
+          },
+          "conditions": {
+            "value": "[filter(variables('serviceHealthAlertsMap'), lambda('alertMap', equals(lambdaVariables('alertMap').serviceHealthAlert, tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'serviceHealthAlert'))))[0].condition.allOf]"
+          },
+          "alertDescription": {
+            "value": "[coalesce(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'alertDescription'), variables('serviceHealthAlertsMap')[copyIndex()].serviceHealthAlert)]"
+          },
+          "actions": "[if(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), createObject('value', createArray(reference(format('createActionGroups[{0}]', copyIndex())).outputs.resourceId.value)), createObject('value', null()))]",
+          "enabled": {
+            "value": "[coalesce(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'isEnabled'), true())]"
+          },
+          "location": {
+            "value": "Global"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16414025636235132062"
+            },
+            "name": "Activity Log Alerts",
+            "description": "This module deploys an Activity Log Alert."
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the alert."
+              }
+            },
+            "alertDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of the alert."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "global",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "enabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Indicates whether this alert is enabled."
+              }
+            },
+            "scopes": {
+              "type": "array",
+              "defaultValue": [
+                "[subscription().id]"
+              ],
+              "metadata": {
+                "description": "Optional. The list of resource IDs that this Activity Log Alert is scoped to."
+              }
+            },
+            "actions": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of actions to take when alert triggers."
+              }
+            },
+            "conditions": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. An Array of objects containing conditions that will cause this alert to activate. Conditions can also be combined with logical operators `allOf` and `anyOf`. Each condition can specify only one field between `equals` and `containsAny`. An alert rule condition must have exactly one category (Administrative, ServiceHealth, ResourceHealth, Alert, Autoscale, Recommendation, Security, or Policy)."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "actionGroups",
+                "count": "[length(parameters('actions'))]",
+                "input": {
+                  "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
+                  "webhookProperties": "[tryGet(parameters('actions')[copyIndex('actionGroups')], 'webhookProperties')]"
+                }
+              },
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.insights-activitylogalert.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "activityLogAlert": {
+              "type": "Microsoft.Insights/activityLogAlerts",
+              "apiVersion": "2020-10-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "scopes": "[parameters('scopes')]",
+                "condition": {
+                  "allOf": "[parameters('conditions')]"
+                },
+                "actions": {
+                  "actionGroups": "[variables('actionGroups')]"
+                },
+                "enabled": "[parameters('enabled')]",
+                "description": "[parameters('alertDescription')]"
+              }
+            },
+            "activityLogAlert_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Insights/activityLogAlerts/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "activityLogAlert"
+              ]
+            },
+            "activityLogAlert_roleAssignments": {
+              "copy": {
+                "name": "activityLogAlert_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Insights/activityLogAlerts/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Insights/activityLogAlerts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "activityLogAlert"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the activity log alert."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the activity log alert."
+              },
+              "value": "[resourceId('Microsoft.Insights/activityLogAlerts', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the activity log alert was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('activityLogAlert', '2020-10-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "alertsResourceGroup",
+        "[format('createActionGroups[{0}]', copyIndex())]"
+      ]
+    },
+    "createActionGroups": {
+      "copy": {
+        "name": "createActionGroups",
+        "count": "[length(parameters('serviceHealthAlerts'))]"
+      },
+      "condition": "[not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('createActionGroups-{0}-{1}', copyIndex(), uniqueString('createActionGroups', deployment().name))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('serviceHealthAlertsResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'name'), format('{0}-action-group', tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'alertName')))]"
+          },
+          "groupShortName": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'groupShortName'), take(coalesce(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'alertName'), 'servicehealth'), 12))]"
+          },
+          "location": {
+            "value": "Global"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "enabled": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'enabled'), true())]"
+          },
+          "azureFunctionReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'azureFunctionReceivers'), createArray())]"
+          },
+          "voiceReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'voiceReceivers'), createArray())]"
+          },
+          "webhookReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'webhookReceivers'), createArray())]"
+          },
+          "armRoleReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'armRoleReceivers'), createArray())]"
+          },
+          "automationRunbookReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'automationRunbookReceivers'), createArray())]"
+          },
+          "azureAppPushReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'azureAppPushReceivers'), createArray())]"
+          },
+          "emailReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'emailReceivers'), createArray())]"
+          },
+          "eventHubReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'eventHubReceivers'), createArray())]"
+          },
+          "itsmReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'itsmReceivers'), createArray())]"
+          },
+          "logicAppReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'logicAppReceivers'), createArray())]"
+          },
+          "smsReceivers": {
+            "value": "[coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'smsReceivers'), createArray())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "9960707856189022447"
+            },
+            "name": "Action Groups",
+            "description": "This module deploys an Action Group."
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the action group."
+              }
+            },
+            "groupShortName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The short name of the action group."
+              }
+            },
+            "enabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "emailReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of email receivers that are part of this action group."
+              }
+            },
+            "eventHubReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of Event Hub receivers that are part of this action group."
+              }
+            },
+            "smsReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of SMS receivers that are part of this action group."
+              }
+            },
+            "webhookReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of webhook receivers that are part of this action group."
+              }
+            },
+            "itsmReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of ITSM receivers that are part of this action group."
+              }
+            },
+            "azureAppPushReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of AzureAppPush receivers that are part of this action group."
+              }
+            },
+            "automationRunbookReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of AutomationRunbook receivers that are part of this action group."
+              }
+            },
+            "voiceReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of voice receivers that are part of this action group."
+              }
+            },
+            "logicAppReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of logic app receivers that are part of this action group."
+              }
+            },
+            "azureFunctionReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of function receivers that are part of this action group."
+              }
+            },
+            "armRoleReceivers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "global",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.insights-actiongroup.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "actionGroup": {
+              "type": "Microsoft.Insights/actionGroups",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "groupShortName": "[parameters('groupShortName')]",
+                "enabled": "[parameters('enabled')]",
+                "emailReceivers": "[parameters('emailReceivers')]",
+                "eventHubReceivers": "[parameters('eventHubReceivers')]",
+                "smsReceivers": "[parameters('smsReceivers')]",
+                "webhookReceivers": "[parameters('webhookReceivers')]",
+                "itsmReceivers": "[parameters('itsmReceivers')]",
+                "azureAppPushReceivers": "[parameters('azureAppPushReceivers')]",
+                "automationRunbookReceivers": "[parameters('automationRunbookReceivers')]",
+                "voiceReceivers": "[parameters('voiceReceivers')]",
+                "logicAppReceivers": "[parameters('logicAppReceivers')]",
+                "azureFunctionReceivers": "[parameters('azureFunctionReceivers')]",
+                "armRoleReceivers": "[parameters('armRoleReceivers')]"
+              }
+            },
+            "actionGroup_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Insights/actionGroups/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "actionGroup"
+              ]
+            },
+            "actionGroup_roleAssignments": {
+              "copy": {
+                "name": "actionGroup_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Insights/actionGroups/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Insights/actionGroups', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "actionGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the action group was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the action group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the action group."
+              },
+              "value": "[resourceId('Microsoft.Insights/actionGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('actionGroup', '2023-01-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "alertsResourceGroup"
+      ]
+    }
+  },
+  "outputs": {
+    "alertsResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the created alerts."
+      },
+      "copy": {
+        "count": "[length(parameters('serviceHealthAlerts'))]",
+        "input": {
+          "alertResourceId": "[reference(format('createServiceHealthAlerts[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
+      }
+    },
+    "actionGroupResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the created action groups."
+      },
+      "copy": {
+        "count": "[length(parameters('serviceHealthAlerts'))]",
+        "input": "[if(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), createObject('actionGroupResourceId', reference(format('createActionGroups[{0}]', copyIndex())).outputs.resourceId.value), null())]"
+      }
+    }
+  }
+}

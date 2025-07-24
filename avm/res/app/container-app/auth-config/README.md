@@ -12,7 +12,7 @@ This module deploys Container App Auth Configs.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps/authConfigs` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps/authConfigs) |
+| `Microsoft.App/containerApps/authConfigs` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs) |
 
 ## Parameters
 

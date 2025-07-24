@@ -1,6 +1,6 @@
-# Azure Active Directory Domain Services `[Microsoft.AAD/domainServices]`
+# Microsoft Entra Domain Services `[Microsoft.AAD/domainServices]`
 
-This module deploys an Azure Active Directory Domain Services (AADDS) instance.
+This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
 ## Navigation
 
@@ -81,11 +81,14 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     pfxCertificatePassword: '<pfxCertificatePassword>'
     replicaSets: [
       {
-        location: 'NorthEurope'
+        location: '<location>'
+        subnetId: '<subnetId>'
+      }
+      {
+        location: '<location>'
         subnetId: '<subnetId>'
       }
     ]
-    sku: 'Standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -165,13 +168,14 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     "replicaSets": {
       "value": [
         {
-          "location": "NorthEurope",
+          "location": "<location>",
+          "subnetId": "<subnetId>"
+        },
+        {
+          "location": "<location>",
           "subnetId": "<subnetId>"
         }
       ]
-    },
-    "sku": {
-      "value": "Standard"
     },
     "tags": {
       "value": {
@@ -231,11 +235,14 @@ param pfxCertificate = '<pfxCertificate>'
 param pfxCertificatePassword = '<pfxCertificatePassword>'
 param replicaSets = [
   {
-    location: 'NorthEurope'
+    location: '<location>'
+    subnetId: '<subnetId>'
+  }
+  {
+    location: '<location>'
     subnetId: '<subnetId>'
   }
 ]
-param sku = 'Standard'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -252,7 +259,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`domainName`](#parameter-domainname) | string | The domain name specific to the Azure ADDS service. |
+| [`domainName`](#parameter-domainname) | string | The domain name specific to the Azure AD DS service. |
 
 **Conditional parameters**
 
@@ -269,28 +276,29 @@ param tags = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`domainConfigurationType`](#parameter-domainconfigurationtype) | string | The value is to provide domain configuration type. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`externalAccess`](#parameter-externalaccess) | string | The value is to enable the Secure LDAP for external services of Azure ADDS Services. |
+| [`externalAccess`](#parameter-externalaccess) | string | The value is to enable the Secure LDAP for external services of Azure AD DS Services. |
 | [`filteredSync`](#parameter-filteredsync) | string | The value is to synchronize scoped users and groups. |
 | [`kerberosArmoring`](#parameter-kerberosarmoring) | string | The value is to enable to provide a protected channel between the Kerberos client and the KDC. |
 | [`kerberosRc4Encryption`](#parameter-kerberosrc4encryption) | string | The value is to enable Kerberos requests that use RC4 encryption. |
 | [`ldaps`](#parameter-ldaps) | string | A flag to determine whether or not Secure LDAP is enabled or disabled. |
-| [`location`](#parameter-location) | string | The location to deploy the Azure ADDS Services. Uses the resource group location if not specified. |
+| [`location`](#parameter-location) | string | The location to deploy the Azure AD DS Services. Uses the resource group location if not specified. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`name`](#parameter-name) | string | The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters. |
+| [`name`](#parameter-name) | string | The name of the Azure AD DS resource. Defaults to the domain name specific to the Azure AD DS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters. |
 | [`notifyDcAdmins`](#parameter-notifydcadmins) | string | The value is to notify the DC Admins. |
 | [`notifyGlobalAdmins`](#parameter-notifyglobaladmins) | string | The value is to notify the Global Admins. |
 | [`ntlmV1`](#parameter-ntlmv1) | string | The value is to enable clients making request using NTLM v1. |
 | [`replicaSets`](#parameter-replicasets) | array | Additional replica set for the managed domain. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure ADDS Services. |
+| [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise. |
 | [`syncNtlmPasswords`](#parameter-syncntlmpasswords) | string | The value is to enable synchronized users to use NTLM authentication. |
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
+| [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
 
 ### Parameter: `domainName`
 
-The domain name specific to the Azure ADDS service.
+The domain name specific to the Azure AD DS service.
 
 - Required: Yes
 - Type: string
@@ -500,7 +508,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `externalAccess`
 
-The value is to enable the Secure LDAP for external services of Azure ADDS Services.
+The value is to enable the Secure LDAP for external services of Azure AD DS Services.
 
 - Required: No
 - Type: string
@@ -575,7 +583,7 @@ A flag to determine whether or not Secure LDAP is enabled or disabled.
 
 ### Parameter: `location`
 
-The location to deploy the Azure ADDS Services. Uses the resource group location if not specified.
+The location to deploy the Azure AD DS Services. Uses the resource group location if not specified.
 
 - Required: No
 - Type: string
@@ -619,7 +627,7 @@ Specify the name of lock.
 
 ### Parameter: `name`
 
-The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.
+The name of the Azure AD DS resource. Defaults to the domain name specific to the Azure AD DS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.
 
 - Required: No
 - Type: string
@@ -804,11 +812,11 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `sku`
 
-The name of the SKU specific to Azure ADDS Services.
+The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise.
 
 - Required: No
 - Type: string
-- Default: `'Standard'`
+- Default: `'Enterprise'`
 - Allowed:
   ```Bicep
   [
@@ -848,6 +856,21 @@ The value is to enable on-premises users to authenticate against managed domain.
   ]
   ```
 
+### Parameter: `syncScope`
+
+All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.
+
+- Required: No
+- Type: string
+- Default: `'All'`
+- Allowed:
+  ```Bicep
+  [
+    'All'
+    'CloudOnly'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -882,9 +905,9 @@ The value is to enable clients making request using TLSv1.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The domain name of the Azure Active Directory Domain Services(Azure ADDS). |
-| `resourceGroupName` | string | The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in. |
-| `resourceId` | string | The resource ID of the Azure Active Directory Domain Services(Azure ADDS). |
+| `name` | string | The domain name of the Microsoft Entra Domain Services(Azure AD DS). |
+| `resourceGroupName` | string | The name of the resource group the Microsoft Entra Domain Services(Azure AD DS) was created in. |
+| `resourceId` | string | The resource ID of the Microsoft Entra Domain Services(Azure AD DS). |
 
 ## Cross-referenced modules
 
