@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10426848890322826437"
+      "templateHash": "5925752657150402268"
     },
     "name": "Azd Azure Monitoring",
     "description": "Creates an Application Insights instance and a Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -33,7 +33,7 @@
     },
     "applicationInsightsDashboardName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource portal dashboards name."
       }
@@ -47,11 +47,14 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.OperationalInsights/workspaces@2025-02-01#properties/tags"
+        },
         "example": "  {\n      \"key1\": \"value1\"\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
