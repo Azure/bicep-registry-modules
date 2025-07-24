@@ -69,6 +69,7 @@ module testDeployment '../../../main.bicep' = [
       }
       web: {
         zoneRedundant: false
+        enableLogResiliency: false
         publicNetworkAccessEnabled: true
         additionalRoleBasedAccessControlPrincipals: [
           deployer().objectId

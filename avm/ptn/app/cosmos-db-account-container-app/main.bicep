@@ -62,14 +62,14 @@ module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assi
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if ((web.?enableLogAnalytics ?? false) || (database.?enableLogAnalytics ?? false)) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if ((web.?enableLogAnalytics ?? false) || (database.?enableLogAnalytics ?? false)) {
   params: {
     name: 'log-${name}-${location}-001'
     location: location
     tags: tags != null ? union(tags ?? {}, web.?tags ?? {}) : web.?tags ?? null
     enableTelemetry: enableTelemetry
     replication: {
-      enabled: false
+      enabled: web.?enableLogResiliency ?? true
     }
   }
 }
@@ -87,10 +87,12 @@ module azureContainerAppsEnvironment 'br/public:avm/res/app/managed-environment:
     appLogsConfiguration: web.?enableLogAnalytics ?? false
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
-            sharedKey: logAnalyticsWorkspace.outputs.primarySharedKey
-          }
+          logAnalyticsConfiguration: logAnalyticsWorkspace != null
+            ? {
+                customerId: logAnalyticsWorkspace.?outputs.logAnalyticsWorkspaceId ?? ''
+                sharedKey: logAnalyticsWorkspace.?outputs.primarySharedKey ?? ''
+              }
+            : null
         }
       : null
   }
@@ -123,7 +125,7 @@ func sanitizeName(name string) string => toLower(replace(replace(name, '__', '_'
 
 var tiersList = map(web.?tiers ?? [{ name: '' }], wt => wt.name)
 
-module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
+module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.18.1' = [
   for (tier, index) in web.?tiers ?? [{}]: {
     params: {
       name: 'ca-${name}-${location}-${format('{0:000}', index + 1)}'
@@ -273,7 +275,7 @@ module azureCosmosDBAccount 'br/public:avm/res/document-db/database-account:0.15
     diagnosticSettings: database.?enableLogAnalytics ?? false
       ? [
           {
-            workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+            workspaceResourceId: logAnalyticsWorkspace.?outputs.resourceId
           }
         ]
       : null
@@ -407,6 +409,9 @@ type azureContainerAppsEnvType = {
 
   @description('Optional. Indicates whether the environment is configured with a paired Azure Log Analytics workspace. Defaults to false. If true, the workspace will be automatically created.')
   enableLogAnalytics: bool?
+
+  @description('Optional. Indicates whether the paired Azure Log Analytics workspace is reslilient. Defaults to true. If `enableLogAnalytics` is set to false, this property will be ignored.')
+  enableLogResiliency: bool?
 
   @description('Optional. The resource ID of the virtual network subnet to use for the environment. Is not set by default. This property is required if zoneRedundant is set to true.')
   virtualNetworkSubnetResourceId: string?

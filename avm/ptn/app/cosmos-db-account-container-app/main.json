@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "11837809983356357423"
+      "version": "0.36.177.2456",
+      "templateHash": "893009356617150098"
     },
     "name": "Azure Cosmos DB & Azure Container Apps - Web Application",
     "description": "This module deploys an n-teir web application to Azure Container Apps. The module also deploys a backing Azure Cosmos DB account with an account type switch. Options for Azure Cosmos DB include; NoSQL, Table, and MongoDB (RU). The web application uses the appropriate security best practices to connect the web application to the backing account."
@@ -44,6 +44,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Indicates whether the environment is configured with a paired Azure Log Analytics workspace. Defaults to false. If true, the workspace will be automatically created."
+          }
+        },
+        "enableLogResiliency": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the paired Azure Log Analytics workspace is reslilient. Defaults to true. If `enableLogAnalytics` is set to false, this property will be ignored."
           }
         },
         "virtualNetworkSubnetResourceId": {
@@ -952,6 +959,11 @@
           "tags": "[if(not(equals(parameters('tags'), null())), createObject('value', union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('web'), 'tags'), createObject()))), createObject('value', coalesce(tryGet(parameters('web'), 'tags'), null())))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "replication": {
+            "value": {
+              "enabled": "[coalesce(tryGet(parameters('web'), 'enableLogResiliency'), true())]"
+            }
           }
         },
         "template": {
@@ -961,8 +973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10549387460031423688"
+              "version": "0.36.1.42791",
+              "templateHash": "1749032521457140145"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace."
@@ -1401,10 +1413,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                    },
                     "description": "Optional. Tags to configure in the resource."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -1514,6 +1529,29 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Features of the workspace."
+              }
+            },
+            "workspaceReplicationType": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The location to which the workspace is replicated. Required if replication is enabled."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Replication properties of the workspace."
               }
             },
             "_1.columnType": {
@@ -1635,7 +1673,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1663,7 +1701,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1770,7 +1808,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1885,7 +1923,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.1"
                 }
               }
             }
@@ -2070,6 +2108,13 @@
                 "description": "Optional. The workspace features."
               }
             },
+            "replication": {
+              "$ref": "#/definitions/workspaceReplicationType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The workspace replication properties."
+              }
+            },
             "diagnosticSettings": {
               "type": "array",
               "items": {
@@ -2106,10 +2151,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.OperationalInsights/workspaces@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -2149,7 +2197,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.11.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2167,7 +2215,7 @@
             },
             "logAnalyticsWorkspace": {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2025-02-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2189,7 +2237,8 @@
                 },
                 "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
                 "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
-                "forceCmkForQuery": "[parameters('forceCmkForQuery')]"
+                "forceCmkForQuery": "[parameters('forceCmkForQuery')]",
+                "replication": "[parameters('replication')]"
               },
               "identity": "[variables('identity')]"
             },
@@ -2315,8 +2364,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "2043978404537017691"
+                      "version": "0.36.1.42791",
+                      "templateHash": "1306323182548882150"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -2363,28 +2412,31 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2024-01-01",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                     },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "storageinsightconfig": {
                       "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2392,7 +2444,7 @@
                         "tables": "[parameters('tables')]",
                         "storageAccount": {
                           "id": "[parameters('storageAccountResourceId')]",
-                          "key": "[listKeys('storageAccount', '2022-09-01').keys[0].value]"
+                          "key": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
                         }
                       }
                     }
@@ -2460,8 +2512,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "15624488954958814427"
+                      "version": "0.36.1.42791",
+                      "templateHash": "5230241501765697269"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -2495,22 +2547,25 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/linkedServices@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "linkedService": {
                       "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2579,8 +2634,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "8250559094478594611"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10372135754202496594"
                     },
                     "name": "Log Analytics Workspace Linked Storage Accounts",
                     "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -2619,12 +2674,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "linkedStorageAccount": {
                       "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "properties": {
                         "storageAccountIds": "[parameters('storageAccountIds')]"
@@ -2712,8 +2767,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5149844663841891327"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9015459905306126128"
                     },
                     "name": "Log Analytics Workspace Saved Searches",
                     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -2751,10 +2806,13 @@
                     },
                     "tags": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01#properties/properties/properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "functionAlias": {
                       "type": "string",
@@ -2789,12 +2847,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "savedSearch": {
                       "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "properties": {
                         "etag": "[parameters('etag')]",
@@ -2875,8 +2933,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1695158270142527557"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8586520532175356447"
                     },
                     "name": "Log Analytics Workspace Data Exports",
                     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2958,12 +3016,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('workspaceName')]"
                     },
                     "dataExport": {
                       "type": "Microsoft.OperationalInsights/workspaces/dataExports",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
                       "properties": {
                         "destination": "[parameters('destination')]",
@@ -3068,8 +3126,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "3062149733782372246"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8336916453932906250"
                     },
                     "name": "Log Analytics Workspace Datasources",
                     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -3106,10 +3164,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                        },
                         "description": "Optional. Tags to configure in the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "linkedResourceId": {
                       "type": "string",
@@ -3193,12 +3254,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('logAnalyticsWorkspaceName')]"
                     },
                     "dataSource": {
                       "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
                       "kind": "[parameters('kind')]",
                       "tags": "[parameters('tags')]",
@@ -3295,8 +3356,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5855172714151847939"
+                      "version": "0.36.1.42791",
+                      "templateHash": "315390662258960765"
                     },
                     "name": "Log Analytics Workspace Tables",
                     "description": "This module deploys a Log Analytics Workspace Table."
@@ -3542,7 +3603,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     }
@@ -3645,12 +3706,12 @@
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[parameters('workspaceName')]"
                     },
                     "table": {
                       "type": "Microsoft.OperationalInsights/workspaces/tables",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2025-02-01",
                       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
                       "properties": {
                         "plan": "[parameters('plan')]",
@@ -3751,8 +3812,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "1867653058254938383"
+                      "version": "0.32.4.45862",
+                      "templateHash": "10255889523646649592"
                     },
                     "name": "Operations Management Solutions",
                     "description": "This module deploys an Operations Management Solution.",
@@ -3827,7 +3888,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3862,10 +3923,7 @@
                         "promotionCode": "",
                         "product": "[parameters('plan').product]",
                         "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
-                      },
-                      "dependsOn": [
-                        "logAnalyticsWorkspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3939,7 +3997,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('logAnalyticsWorkspace', '2023-09-01', 'full').location]"
+              "value": "[reference('logAnalyticsWorkspace', '2025-02-01', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -3947,21 +4005,21 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2023-09-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2025-02-01', 'full'), 'identity'), 'principalId')]"
             },
             "primarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The primary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey]"
             },
             "secondarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The secondary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').secondarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').secondarySharedKey]"
             }
           }
         }
@@ -3997,7 +4055,7 @@
             "value": "[coalesce(tryGet(parameters('web'), 'virtualNetworkSubnetResourceId'), null())]"
           },
           "publicNetworkAccess": "[if(coalesce(tryGet(parameters('web'), 'publicNetworkAccessEnabled'), false()), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
-          "appLogsConfiguration": "[if(coalesce(tryGet(parameters('web'), 'enableLogAnalytics'), false()), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString('logAnalyticsWorkspace', deployment().name))), '2022-09-01').logAnalyticsWorkspaceId, 'sharedKey', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString('logAnalyticsWorkspace', deployment().name))), '2022-09-01').primarySharedKey))), createObject('value', null()))]"
+          "appLogsConfiguration": "[if(coalesce(tryGet(parameters('web'), 'enableLogAnalytics'), false()), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', if(not(equals(reference('logAnalyticsWorkspace'), null())), createObject('customerId', coalesce(tryGet(if(or(coalesce(tryGet(parameters('web'), 'enableLogAnalytics'), false()), coalesce(tryGet(parameters('database'), 'enableLogAnalytics'), false())), reference('logAnalyticsWorkspace'), null()), 'outputs', 'logAnalyticsWorkspaceId', 'value'), ''), 'sharedKey', coalesce(tryGet(if(or(coalesce(tryGet(parameters('web'), 'enableLogAnalytics'), false()), coalesce(tryGet(parameters('database'), 'enableLogAnalytics'), false())), listOutputsWithSecureValues('logAnalyticsWorkspace', '2022-09-01'), null()), 'primarySharedKey'), '')), null()))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -7969,7 +8027,7 @@
           "managedIdentities": "[if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createObject('value', createObject('systemAssigned', false(), 'userAssignedResourceIds', createArray(reference('userAssignedManagedIdentity').outputs.resourceId.value))), createObject('value', null()))]",
           "registries": "[if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createObject('value', createArray(createObject('server', reference('azureContainerRegistry').outputs.loginServer.value, 'identity', reference('userAssignedManagedIdentity').outputs.resourceId.value))), createObject('value', createArray()))]",
           "secrets": {
-            "value": "[union(if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createArray(createObject('name', 'managed-identity-client-id', 'value', reference('userAssignedManagedIdentity').outputs.clientId.value)), createArray()), map(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'environment'), createArray()), lambda('env', createObject('name', __bicep.sanitizeName(lambdaVariables('env').name), 'value', if(not(equals(tryGet(lambdaVariables('env'), 'tierEndpoint'), null())), format(coalesce(tryGet(lambdaVariables('env'), 'format'), '{0}'), format('http://{0}', format('ca-{0}-{1}-{2}', parameters('name'), parameters('location'), format('{0:000}', add(indexOf(variables('tiersList'), tryGet(lambdaVariables('env'), 'tierEndpoint')), 1))))), if(not(equals(tryGet(lambdaVariables('env'), 'knownValue'), null())), createObject('AzureCosmosDBEndpoint', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').endpoint, 'ManagedIdentityTenantId', subscription().tenantId)[lambdaVariables('env').knownValue], coalesce(lambdaVariables('env').value, '')))))))]"
+            "value": "[union(if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createArray(createObject('name', 'managed-identity-client-id', 'value', reference('userAssignedManagedIdentity').outputs.clientId.value)), createArray()), map(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'environment'), createArray()), lambda('env', createObject('name', __bicep.sanitizeName(lambdaVariables('env').name), 'value', if(not(equals(tryGet(lambdaVariables('env'), 'tierEndpoint'), null())), format(coalesce(tryGet(lambdaVariables('env'), 'format'), '{0}'), format('http://{0}', format('ca-{0}-{1}-{2}', parameters('name'), parameters('location'), format('{0:000}', add(indexOf(variables('tiersList'), tryGet(lambdaVariables('env'), 'tierEndpoint')), 1))))), if(not(equals(tryGet(lambdaVariables('env'), 'knownValue'), null())), createObject('AzureCosmosDBEndpoint', reference('azureCosmosDBAccount').outputs.endpoint.value, 'ManagedIdentityTenantId', subscription().tenantId)[lambdaVariables('env').knownValue], coalesce(lambdaVariables('env').value, '')))))))]"
           },
           "containers": {
             "value": [
@@ -7992,8 +8050,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "6263940578550590353"
+              "version": "0.36.177.2456",
+              "templateHash": "13502451048865419001"
             },
             "name": "Container Apps",
             "description": "This module deploys a Container App."
@@ -8507,83 +8565,6 @@
                 "description": "The type for a volume mount."
               }
             },
-            "runtimeType": {
-              "type": "object",
-              "properties": {
-                "dotnet": {
-                  "type": "object",
-                  "properties": {
-                    "autoConfigureDataProtection": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Enable to auto configure the ASP.NET Core Data Protection feature."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Runtime configuration for ASP.NET Core."
-                  }
-                },
-                "java": {
-                  "type": "object",
-                  "properties": {
-                    "enableMetrics": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Enable JMX core metrics for the Java app."
-                      }
-                    },
-                    "enableJavaAgent": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Enable Java agent injection for the Java app."
-                      }
-                    },
-                    "loggerSettings": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "logger": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. Name of the logger."
-                            }
-                          },
-                          "level": {
-                            "type": "string",
-                            "allowedValues": [
-                              "debug",
-                              "error",
-                              "info",
-                              "off",
-                              "trace",
-                              "warn"
-                            ],
-                            "metadata": {
-                              "description": "Required. Java agent logging level."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Java agent logging configuration."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Runtime configuration for Java."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "Optional. App runtime configuration for the Container App."
-              }
-            },
             "secretType": {
               "type": "object",
               "properties": {
@@ -8628,7 +8609,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/encryptionSettings"
+                      "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/encryptionSettings"
                     },
                     "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
                   },
@@ -8638,7 +8619,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/globalValidation"
+                      "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/globalValidation"
                     },
                     "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
                   },
@@ -8648,7 +8629,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/httpSettings"
+                      "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/httpSettings"
                     },
                     "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
                   },
@@ -8658,7 +8639,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/identityProviders"
+                      "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/identityProviders"
                     },
                     "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
                   },
@@ -8668,7 +8649,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/login"
+                      "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/login"
                     },
                     "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
                   },
@@ -8678,7 +8659,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/platform"
+                      "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/platform"
                     },
                     "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
                   },
@@ -8688,6 +8669,95 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for the container app's authentication configuration."
+              }
+            },
+            "diagnosticSettingMetricsOnlyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of diagnostic setting."
+                  }
+                },
+                "metricCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
               }
             },
             "lockType": {
@@ -8897,10 +8967,13 @@
             },
             "service": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/service"
+                },
                 "description": "Optional. Dev ContainerApp service type."
-              }
+              },
+              "nullable": true
             },
             "includeAddOns": {
               "type": "bool",
@@ -8986,10 +9059,13 @@
             },
             "registries": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/registries"
+                },
                 "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
-              }
+              },
+              "nullable": true
             },
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentityAllType",
@@ -9017,10 +9093,13 @@
             },
             "customDomains": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/ingress/properties/customDomains"
+                },
                 "description": "Optional. Custom domain bindings for Container App hostnames."
-              }
+              },
+              "nullable": true
             },
             "exposedPort": {
               "type": "int",
@@ -9031,10 +9110,13 @@
             },
             "ipSecurityRestrictions": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/ingress/properties/ipSecurityRestrictions"
+                },
                 "description": "Optional. Rules to restrict incoming IP address."
-              }
+              },
+              "nullable": true
             },
             "trafficLabel": {
               "type": "string",
@@ -9066,16 +9148,19 @@
             },
             "dapr": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/dapr"
+                },
                 "description": "Optional. Dapr configuration for the Container App."
-              }
+              },
+              "nullable": true
             },
             "identitySettings": {
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/identitySettings"
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/identitySettings"
                 },
                 "description": "Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used."
               },
@@ -9089,11 +9174,14 @@
               }
             },
             "runtime": {
-              "$ref": "#/definitions/runtimeType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/configuration/properties/runtime"
+                },
                 "description": "Optional. Runtime configuration for the Container App."
-              }
+              },
+              "nullable": true
             },
             "containers": {
               "type": "array",
@@ -9106,10 +9194,13 @@
             },
             "initContainersTemplate": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/template/properties/initContainers"
+                },
                 "description": "Optional. List of specialized containers that run before app containers."
-              }
+              },
+              "nullable": true
             },
             "secrets": {
               "type": "array",
@@ -9130,10 +9221,13 @@
             },
             "volumes": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/template/properties/volumes"
+                },
                 "description": "Optional. List of volume definitions for the Container App."
-              }
+              },
+              "nullable": true
             },
             "workloadProfileName": {
               "type": "string",
@@ -9147,6 +9241,16 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. The name of the Container App Auth configs."
+              }
+            },
+            "diagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The diagnostic settings of the service."
               }
             }
           },
@@ -9174,7 +9278,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('0.16.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('0.18.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -9192,13 +9296,22 @@
             },
             "containerApp": {
               "type": "Microsoft.App/containerApps",
-              "apiVersion": "2024-10-02-preview",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
               "identity": "[variables('identity')]",
               "properties": {
                 "environmentId": "[parameters('environmentResourceId')]",
+                "workloadProfileName": "[parameters('workloadProfileName')]",
+                "template": {
+                  "containers": "[parameters('containers')]",
+                  "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
+                  "revisionSuffix": "[parameters('revisionSuffix')]",
+                  "scale": "[parameters('scaleSettings')]",
+                  "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
+                  "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
+                },
                 "configuration": {
                   "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
                   "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
@@ -9208,20 +9321,8 @@
                   "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
                   "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
                   "secrets": "[parameters('secrets')]",
-                  "runtime": {
-                    "dotnet": "[if(not(empty(tryGet(parameters('runtime'), 'dotnet'))), createObject('autoConfigureDataProtection', tryGet(parameters('runtime'), 'dotnet', 'autoConfigureDataProtection')), null())]",
-                    "java": "[if(not(empty(tryGet(parameters('runtime'), 'java'))), createObject('enableMetrics', tryGet(parameters('runtime'), 'java', 'enableMetrics'), 'javaAgent', createObject('enabled', tryGet(parameters('runtime'), 'java', 'enableJavaAgent'), 'logging', createObject('loggerSettings', tryGet(tryGet(parameters('runtime'), 'java'), 'loggerSettings')))), null())]"
-                  }
-                },
-                "template": {
-                  "containers": "[parameters('containers')]",
-                  "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
-                  "revisionSuffix": "[parameters('revisionSuffix')]",
-                  "scale": "[parameters('scaleSettings')]",
-                  "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
-                  "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
-                },
-                "workloadProfileName": "[parameters('workloadProfileName')]"
+                  "runtime": "[if(not(empty(parameters('runtime'))), parameters('runtime'), null())]"
+                }
               }
             },
             "containerApp_lock": {
@@ -9255,6 +9356,38 @@
                 "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "containerApp"
+              ]
+            },
+            "containerApp_diagnosticSettings": {
+              "copy": {
+                "name": "containerApp_diagnosticSettings",
+                "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.App/containerApps/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  }
+                ],
+                "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
               "dependsOn": [
                 "containerApp"
@@ -9300,8 +9433,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "1521483894843552371"
+                      "version": "0.36.177.2456",
+                      "templateHash": "9975390462196064744"
                     },
                     "name": "Container App Auth Configs",
                     "description": "This module deploys Container App Auth Configs."
@@ -9317,7 +9450,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/encryptionSettings"
+                          "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/encryptionSettings"
                         },
                         "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
                       },
@@ -9327,7 +9460,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/globalValidation"
+                          "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/globalValidation"
                         },
                         "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
                       },
@@ -9337,7 +9470,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/httpSettings"
+                          "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/httpSettings"
                         },
                         "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
                       },
@@ -9347,7 +9480,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/identityProviders"
+                          "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/identityProviders"
                         },
                         "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
                       },
@@ -9357,7 +9490,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/login"
+                          "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/login"
                         },
                         "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
                       },
@@ -9367,7 +9500,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/platform"
+                          "source": "Microsoft.App/containerApps/authConfigs@2025-01-01#properties/properties/properties/platform"
                         },
                         "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
                       },
@@ -9378,12 +9511,12 @@
                     "containerApp": {
                       "existing": true,
                       "type": "Microsoft.App/containerApps",
-                      "apiVersion": "2024-10-02-preview",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('containerAppName')]"
                     },
                     "containerAppAuthConfigs": {
                       "type": "Microsoft.App/containerApps/authConfigs",
-                      "apiVersion": "2024-10-02-preview",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('containerAppName'), 'current')]",
                       "properties": {
                         "encryptionSettings": "[parameters('encryptionSettings')]",
@@ -9460,14 +9593,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('containerApp', '2024-10-02-preview', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('containerApp', '2025-01-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('containerApp', '2024-10-02-preview', 'full').location]"
+              "value": "[reference('containerApp', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -9535,7 +9668,7 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(coalesce(tryGet(parameters('database'), 'enableLogAnalytics'), false()), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString('logAnalyticsWorkspace', deployment().name))), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(coalesce(tryGet(parameters('database'), 'enableLogAnalytics'), false()), createObject('value', createArray(createObject('workspaceResourceId', tryGet(if(or(coalesce(tryGet(parameters('web'), 'enableLogAnalytics'), false()), coalesce(tryGet(parameters('database'), 'enableLogAnalytics'), false())), reference('logAnalyticsWorkspace'), null()), 'outputs', 'resourceId', 'value')))), createObject('value', null()))]",
           "tables": "[if(equals(tryGet(parameters('database'), 'type'), 'Table'), createObject('value', map(coalesce(flatten(map(coalesce(tryGet(parameters('database'), 'databases'), createArray()), lambda('database', 'databaseIndex', map(coalesce(tryGet(lambdaVariables('database'), 'containers'), createArray()), lambda('container', 'containerIndex', createObject('container', lambdaVariables('container'), 'databaseIndex', lambdaVariables('databaseIndex'), 'containerIndex', lambdaVariables('containerIndex'))))))), createArray()), lambda('table', createObject('name', coalesce(tryGet(lambdaVariables('table').container, 'name'), format('table-{0}-{1}', format('{0:000}', add(lambdaVariables('table').databaseIndex, 1)), format('{0:000}', add(lambdaVariables('table').containerIndex, 1)))), 'throughput', if(coalesce(tryGet(parameters('database'), 'serverless'), true()), 400, null()))))), createObject('value', null()))]",
           "sqlDatabases": "[if(equals(coalesce(tryGet(parameters('database'), 'type'), 'NoSQL'), 'NoSQL'), createObject('value', map(coalesce(tryGet(parameters('database'), 'databases'), createArray()), lambda('database', 'databaseIndex', createObject('name', coalesce(tryGet(lambdaVariables('database'), 'name'), format('database-{0}', format('{0:000}', add(lambdaVariables('databaseIndex'), 1)))), 'containers', map(coalesce(tryGet(lambdaVariables('database'), 'containers'), createArray()), lambda('container', 'containerIndex', createObject('name', coalesce(tryGet(lambdaVariables('container'), 'name'), format('database-{0}-container-{1}', format('{0:000}', add(lambdaVariables('databaseIndex'), 1)), format('{0:000}', add(lambdaVariables('containerIndex'), 1)))), 'kind', if(greaterOrEquals(length(coalesce(tryGet(lambdaVariables('container'), 'partitionKeys'), createArray(''))), 2), 'MultiHash', 'Hash'), 'version', if(greaterOrEquals(length(coalesce(tryGet(lambdaVariables('container'), 'partitionKeys'), createArray(''))), 2), 2, 1), 'throughput', if(coalesce(tryGet(lambdaVariables('database'), 'serverless'), true()), 400, null()), 'paths', coalesce(tryGet(lambdaVariables('container'), 'partitionKeys'), createArray('/id'))))))))), createObject('value', null()))]"
         },
@@ -13354,7 +13487,7 @@
             "value": [
               {
                 "name": "ACCOUNT_ENDPOINT",
-                "secureValue": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').endpoint]"
+                "secureValue": "[reference('azureCosmosDBAccount').outputs.endpoint.value]"
               }
             ]
           },
@@ -13899,14 +14032,14 @@
       "metadata": {
         "description": "The resource ID of the Azure Cosmos DB account."
       },
-      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').resourceId]"
+      "value": "[reference('azureCosmosDBAccount').outputs.resourceId.value]"
     },
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the Azure Cosmos DB account."
       },
-      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').name]"
+      "value": "[reference('azureCosmosDBAccount').outputs.name.value]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -13927,7 +14060,7 @@
       "metadata": {
         "description": "The endpoint for the Azure Cosmos DB account."
       },
-      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').endpoint]"
+      "value": "[reference('azureCosmosDBAccount').outputs.endpoint.value]"
     }
   }
 }

@@ -14,8 +14,8 @@ This module deploys an n-teir web application to Azure Container Apps. The modul
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
-| `Microsoft.App/containerApps/authConfigs` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps/authConfigs) |
+| `Microsoft.App/containerApps` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps) |
+| `Microsoft.App/containerApps/authConfigs` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs) |
 | `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
 | `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
 | `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
@@ -42,14 +42,14 @@ This module deploys an n-teir web application to Azure Container Apps. The modul
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
@@ -111,6 +111,7 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
       additionalRoleBasedAccessControlPrincipals: [
         '<objectId>'
       ]
+      enableLogResiliency: false
       publicNetworkAccessEnabled: true
       tiers: [
         {
@@ -211,6 +212,7 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
         "additionalRoleBasedAccessControlPrincipals": [
           "<objectId>"
         ],
+        "enableLogResiliency": false,
         "publicNetworkAccessEnabled": true,
         "tiers": [
           {
@@ -303,6 +305,7 @@ param web = {
   additionalRoleBasedAccessControlPrincipals: [
     '<objectId>'
   ]
+  enableLogResiliency: false
   publicNetworkAccessEnabled: true
   tiers: [
     {
@@ -1077,6 +1080,7 @@ The settings for the Azure Container Apps and Azure Container Registry resources
 | :-- | :-- | :-- |
 | [`additionalRoleBasedAccessControlPrincipals`](#parameter-webadditionalrolebasedaccesscontrolprincipals) | array | List of additional role-based access control principals to assign the same role as the managed identity of the environment. For example, you can assign "deployer().objectId" to grant yourself RBAC permissions to the resource. Defaults to an empty array. |
 | [`enableLogAnalytics`](#parameter-webenableloganalytics) | bool | Indicates whether the environment is configured with a paired Azure Log Analytics workspace. Defaults to false. If true, the workspace will be automatically created. |
+| [`enableLogResiliency`](#parameter-webenablelogresiliency) | bool | Indicates whether the paired Azure Log Analytics workspace is reslilient. Defaults to true. If `enableLogAnalytics` is set to false, this property will be ignored. |
 | [`publicNetworkAccessEnabled`](#parameter-webpublicnetworkaccessenabled) | bool | Whether requests from the public network are allowed. Defaults to true. |
 | [`tags`](#parameter-webtags) | object | Resource tags specific to the Azure Container Apps environment. |
 | [`tiers`](#parameter-webtiers) | array | The settings for the tiers/apps in the environment. Defaults to a single default web application tier. |
@@ -1093,6 +1097,13 @@ List of additional role-based access control principals to assign the same role 
 ### Parameter: `web.enableLogAnalytics`
 
 Indicates whether the environment is configured with a paired Azure Log Analytics workspace. Defaults to false. If true, the workspace will be automatically created.
+
+- Required: No
+- Type: bool
+
+### Parameter: `web.enableLogResiliency`
+
+Indicates whether the paired Azure Log Analytics workspace is reslilient. Defaults to true. If `enableLogAnalytics` is set to false, this property will be ignored.
 
 - Required: No
 - Type: bool
