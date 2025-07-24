@@ -21,12 +21,12 @@ This module deploys a Web or Function App.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/sites` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites) |
+| `Microsoft.Web/sites` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
 | `Microsoft.Web/sites/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions) |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/hybridConnectionNamespaces/relays) |
-| `Microsoft.Web/sites/slots` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots) |
+| `Microsoft.Web/sites/slots` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots) |
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
 | `Microsoft.Web/sites/slots/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/extensions) |
@@ -862,6 +862,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     ]
     httpsOnly: true
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
+    }
     publicNetworkAccess: 'Disabled'
     scmSiteAlsoStopped: true
     siteConfig: {
@@ -876,9 +881,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       ]
       minTlsVersion: '1.2'
     }
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
   }
 }
 ```
@@ -931,6 +933,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "httpsOnly": {
       "value": true
     },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
+      }
+    },
     "publicNetworkAccess": {
       "value": "Disabled"
     },
@@ -950,15 +959,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ],
         "minTlsVersion": "1.2"
       }
-    },
-    "vnetContentShareEnabled": {
-      "value": true
-    },
-    "vnetImagePullEnabled": {
-      "value": true
-    },
-    "vnetRouteAllEnabled": {
-      "value": true
     }
   }
 }
@@ -998,6 +998,11 @@ param diagnosticSettings = [
   }
 ]
 param httpsOnly = true
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
+}
 param publicNetworkAccess = 'Disabled'
 param scmSiteAlsoStopped = true
 param siteConfig = {
@@ -1012,9 +1017,6 @@ param siteConfig = {
   ]
   minTlsVersion: '1.2'
 }
-param vnetContentShareEnabled = true
-param vnetImagePullEnabled = true
-param vnetRouteAllEnabled = true
 ```
 
 </details>
@@ -1433,6 +1435,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
+    }
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1598,9 +1605,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'slot2'
       }
     ]
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
   }
 }
 ```
@@ -1742,6 +1746,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
       }
     },
     "privateEndpoints": {
@@ -1920,15 +1931,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "name": "slot2"
         }
       ]
-    },
-    "vnetContentShareEnabled": {
-      "value": true
-    },
-    "vnetImagePullEnabled": {
-      "value": true
-    },
-    "vnetRouteAllEnabled": {
-      "value": true
     }
   }
 }
@@ -2046,6 +2048,11 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
 }
 param privateEndpoints = [
   {
@@ -2212,9 +2219,6 @@ param slots = [
     name: 'slot2'
   }
 ]
-param vnetContentShareEnabled = true
-param vnetImagePullEnabled = true
-param vnetRouteAllEnabled = true
 ```
 
 </details>
@@ -2352,6 +2356,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
     }
     privateEndpoints: [
       {
@@ -2507,9 +2516,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'slot2'
       }
     ]
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
   }
 }
 ```
@@ -2600,6 +2606,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
       }
     },
     "privateEndpoints": {
@@ -2767,15 +2780,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "name": "slot2"
         }
       ]
-    },
-    "vnetContentShareEnabled": {
-      "value": true
-    },
-    "vnetImagePullEnabled": {
-      "value": true
-    },
-    "vnetRouteAllEnabled": {
-      "value": true
     }
   }
 }
@@ -2844,6 +2848,11 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
 }
 param privateEndpoints = [
   {
@@ -2999,9 +3008,6 @@ param slots = [
     name: 'slot2'
   }
 ]
-param vnetContentShareEnabled = true
-param vnetImagePullEnabled = true
-param vnetRouteAllEnabled = true
 ```
 
 </details>
@@ -3129,6 +3135,8 @@ param siteConfig = {
 | [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | Specifies the scope of uniqueness for the default hostname during resource creation. |
 | [`basicPublishingCredentialsPolicies`](#parameter-basicpublishingcredentialspolicies) | array | The site publishing credential policy names which are associated with the sites. |
 | [`clientAffinityEnabled`](#parameter-clientaffinityenabled) | bool | If client affinity is enabled. |
+| [`clientAffinityPartitioningEnabled`](#parameter-clientaffinitypartitioningenabled) | bool | To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false. |
+| [`clientAffinityProxyEnabled`](#parameter-clientaffinityproxyenabled) | bool | To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true. |
 | [`clientCertEnabled`](#parameter-clientcertenabled) | bool | To enable client certificate authentication (TLS mutual authentication). |
 | [`clientCertExclusionPaths`](#parameter-clientcertexclusionpaths) | string | Client certificate authentication comma-separated exclusion paths. |
 | [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p> |
@@ -3152,6 +3160,7 @@ param siteConfig = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedEnvironmentId`](#parameter-managedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -3162,9 +3171,6 @@ param siteConfig = {
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
-| [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
-| [`vnetImagePullEnabled`](#parameter-vnetimagepullenabled) | bool | To enable pulling image over Virtual Network. |
-| [`vnetRouteAllEnabled`](#parameter-vnetrouteallenabled) | bool | Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. |
 
 ### Parameter: `kind`
 
@@ -3278,6 +3284,22 @@ Location for all Resources.
 ### Parameter: `clientAffinityEnabled`
 
 If client affinity is enabled.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `clientAffinityPartitioningEnabled`
+
+To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `clientAffinityProxyEnabled`
+
+To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true.
 
 - Required: No
 - Type: bool
@@ -8075,6 +8097,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `outboundVnetRouting`
+
+The outbound VNET routing configuration for the site.
+
+- Required: No
+- Type: object
 
 ### Parameter: `privateEndpoints`
 
@@ -14150,30 +14179,6 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 
 - Required: No
 - Type: string
-
-### Parameter: `vnetContentShareEnabled`
-
-To enable accessing content over virtual network.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `vnetImagePullEnabled`
-
-To enable pulling image over Virtual Network.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `vnetRouteAllEnabled`
-
-Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ## Outputs
 
