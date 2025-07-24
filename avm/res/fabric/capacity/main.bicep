@@ -46,9 +46,9 @@ param enableAutomaticPauseHandling bool = false
 @description('Optional. When automatic pause handling is enabled, restore the previous pause state after SKU changes. Only applies when enableAutomaticPauseHandling is true.')
 param restorePreviousState bool = true
 
-import { managedIdentityType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The managed identity definition for this resource. Required when enableAutomaticPauseHandling is true.')
-param managedIdentities managedIdentityType?
+param managedIdentities managedIdentityAllType?
 
 // ============== //
 // Variables      //
@@ -92,7 +92,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource capacityStateHandler 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (enableAutomaticPauseHandling) {
+resource capacityStateHandler 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (enableAutomaticPauseHandling) {
   name: '${name}-state-handler'
   location: location
   kind: 'AzurePowerShell'
@@ -119,7 +119,7 @@ resource capacityStateHandler 'Microsoft.Resources/deploymentScripts@2020-10-01'
           'Authorization' = "Bearer $((Get-AzAccessToken).Token)"
           'Content-Type' = 'application/json'
         }
-        
+
         try {
           $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $headers
           $currentState = $response.properties.state
@@ -134,15 +134,15 @@ resource capacityStateHandler 'Microsoft.Resources/deploymentScripts@2020-10-01'
             throw "Error checking capacity state: $_"
           }
         }
-        
+
         # Only process state changes if capacity exists and is paused/suspended
         if ($capacityExists -and ($currentState -eq 'Paused' -or $currentState -eq 'Suspended')) {
           Write-Output "Capacity is in $currentState state. Resuming capacity..."
-          
+
           # Resume the capacity
           $resumeUri = "${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName/resume?api-version=2023-11-01"
           $resumeResponse = Invoke-RestMethod -Uri $resumeUri -Method POST -Headers $headers
-          
+
           # Wait for resume operation to complete
           $retryCount = 0
           $maxRetries = 30
@@ -153,13 +153,13 @@ resource capacityStateHandler 'Microsoft.Resources/deploymentScripts@2020-10-01'
             Write-Output "Capacity state after resume attempt: $newState"
             $retryCount++
           } while ($newState -ne 'Active' -and $retryCount -lt $maxRetries)
-          
+
           if ($newState -ne 'Active') {
             throw "Failed to resume capacity after $maxRetries attempts. Current state: $newState"
           }
-          
+
           Write-Output "Capacity successfully resumed and is now Active"
-          
+
           # Store original state for potential restoration
           $DeploymentScriptOutputs = @{
             'originalState' = $currentState
@@ -212,7 +212,7 @@ resource fabricCapacity_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   scope: fabricCapacity
 }
 
-resource capacityStateRestorer 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (enableAutomaticPauseHandling && restorePreviousState) {
+resource capacityStateRestorer 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (enableAutomaticPauseHandling && restorePreviousState) {
   name: '${name}-state-restorer'
   location: location
   kind: 'AzurePowerShell'
@@ -236,24 +236,24 @@ resource capacityStateRestorer 'Microsoft.Resources/deploymentScripts@2020-10-01
       try {
         if ($WasResumed -and ($OriginalState -eq 'Paused' -or $OriginalState -eq 'Suspended')) {
           Write-Output "Restoring capacity to original state: $OriginalState"
-          
+
           $headers = @{
             'Authorization' = "Bearer $((Get-AzAccessToken).Token)"
             'Content-Type' = 'application/json'
           }
-          
+
           # Determine the appropriate action based on original state
           $action = if ($OriginalState -eq 'Paused') { 'suspend' } else { 'suspend' }
           $actionUri = "${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName/$action?api-version=2023-11-01"
-          
+
           # Perform the action
           $actionResponse = Invoke-RestMethod -Uri $actionUri -Method POST -Headers $headers
-          
+
           # Wait for the operation to complete
           $retryCount = 0
           $maxRetries = 30
           $checkUri = "${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName?api-version=2023-11-01"
-          
+
           do {
             Start-Sleep -Seconds 30
             $statusResponse = Invoke-RestMethod -Uri $checkUri -Method GET -Headers $headers
@@ -261,7 +261,7 @@ resource capacityStateRestorer 'Microsoft.Resources/deploymentScripts@2020-10-01
             Write-Output "Current capacity state: $currentState"
             $retryCount++
           } while ($currentState -ne $OriginalState -and $retryCount -lt $maxRetries)
-          
+
           if ($currentState -eq $OriginalState) {
             Write-Output "Successfully restored capacity to $OriginalState state"
           } else {

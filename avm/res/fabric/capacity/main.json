@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "1356596164991557039"
+      "templateHash": "15447793194792308545"
     },
     "name": "Fabric Capacities",
     "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric."
@@ -44,6 +44,34 @@
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
@@ -120,7 +148,32 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "enableAutomaticPauseHandling": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable automatic handling of paused capacity during SKU changes. When enabled, the module will automatically resume paused capacities before SKU changes and optionally restore the previous state."
+      }
+    },
+    "restorePreviousState": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. When automatic pause handling is enabled, restore the previous pause state after SKU changes. Only applies when enableAutomaticPauseHandling is true."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource. Required when enableAutomaticPauseHandling is true."
+      }
     }
+  },
+  "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(coalesce(parameters('managedIdentities'), createObject()))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -143,6 +196,22 @@
         }
       }
     },
+    "capacityStateHandler": {
+      "condition": "[parameters('enableAutomaticPauseHandling')]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}-state-handler', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "azPowerShellVersion": "10.0",
+        "retentionInterval": "P1D",
+        "timeout": "PT30M",
+        "scriptContent": "      param(\n        [string]$ResourceGroupName,\n        [string]$CapacityName,\n        [string]$SubscriptionId,\n        [bool]$RestorePreviousState\n      )\n\n      # Set the context\n      Set-AzContext -SubscriptionId $SubscriptionId\n\n      try {\n        # Get current capacity state (only if capacity exists)\n        $uri = \"${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName?api-version=2023-11-01\"\n        $headers = @{\n          'Authorization' = \"Bearer $((Get-AzAccessToken).Token)\"\n          'Content-Type' = 'application/json'\n        }\n\n        try {\n          $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $headers\n          $currentState = $response.properties.state\n          $capacityExists = $true\n          Write-Output \"Found existing capacity with state: $currentState\"\n        } catch {\n          if ($_.Exception.Response.StatusCode -eq 404) {\n            Write-Output \"Capacity does not exist yet. This appears to be a new deployment.\"\n            $capacityExists = $false\n            $currentState = \"NotFound\"\n          } else {\n            throw \"Error checking capacity state: $_\"\n          }\n        }\n\n        # Only process state changes if capacity exists and is paused/suspended\n        if ($capacityExists -and ($currentState -eq 'Paused' -or $currentState -eq 'Suspended')) {\n          Write-Output \"Capacity is in $currentState state. Resuming capacity...\"\n\n          # Resume the capacity\n          $resumeUri = \"${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName/resume?api-version=2023-11-01\"\n          $resumeResponse = Invoke-RestMethod -Uri $resumeUri -Method POST -Headers $headers\n\n          # Wait for resume operation to complete\n          $retryCount = 0\n          $maxRetries = 30\n          do {\n            Start-Sleep -Seconds 30\n            $statusResponse = Invoke-RestMethod -Uri $uri -Method GET -Headers $headers\n            $newState = $statusResponse.properties.state\n            Write-Output \"Capacity state after resume attempt: $newState\"\n            $retryCount++\n          } while ($newState -ne 'Active' -and $retryCount -lt $maxRetries)\n\n          if ($newState -ne 'Active') {\n            throw \"Failed to resume capacity after $maxRetries attempts. Current state: $newState\"\n          }\n\n          Write-Output \"Capacity successfully resumed and is now Active\"\n\n          # Store original state for potential restoration\n          $DeploymentScriptOutputs = @{\n            'originalState' = $currentState\n            'wasResumed' = $true\n          }\n        } else {\n          if ($capacityExists) {\n            Write-Output \"Capacity is already in Active state. No action needed.\"\n          } else {\n            Write-Output \"New capacity deployment. No state management needed.\"\n          }\n          $DeploymentScriptOutputs = @{\n            'originalState' = $currentState\n            'wasResumed' = $false\n          }\n        }\n      } catch {\n        Write-Error \"Error handling capacity state: $_\"\n        throw\n      }\n    ",
+        "arguments": "[format('-ResourceGroupName \"{0}\" -CapacityName \"{1}\" -SubscriptionId \"{2}\" -RestorePreviousState ${3}', resourceGroup().name, parameters('name'), subscription().subscriptionId, parameters('restorePreviousState'))]"
+      }
+    },
     "fabricCapacity": {
       "type": "Microsoft.Fabric/capacities",
       "apiVersion": "2023-11-01",
@@ -157,7 +226,10 @@
         "administration": {
           "members": "[parameters('adminMembers')]"
         }
-      }
+      },
+      "dependsOn": [
+        "capacityStateHandler"
+      ]
     },
     "fabricCapacity_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -170,6 +242,26 @@
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
+        "fabricCapacity"
+      ]
+    },
+    "capacityStateRestorer": {
+      "condition": "[and(parameters('enableAutomaticPauseHandling'), parameters('restorePreviousState'))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}-state-restorer', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "azPowerShellVersion": "10.0",
+        "retentionInterval": "P1D",
+        "timeout": "PT30M",
+        "scriptContent": "      param(\n        [string]$ResourceGroupName,\n        [string]$CapacityName,\n        [string]$SubscriptionId,\n        [string]$OriginalState,\n        [bool]$WasResumed\n      )\n\n      # Set the context\n      Set-AzContext -SubscriptionId $SubscriptionId\n\n      try {\n        if ($WasResumed -and ($OriginalState -eq 'Paused' -or $OriginalState -eq 'Suspended')) {\n          Write-Output \"Restoring capacity to original state: $OriginalState\"\n\n          $headers = @{\n            'Authorization' = \"Bearer $((Get-AzAccessToken).Token)\"\n            'Content-Type' = 'application/json'\n          }\n\n          # Determine the appropriate action based on original state\n          $action = if ($OriginalState -eq 'Paused') { 'suspend' } else { 'suspend' }\n          $actionUri = \"${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName/$action?api-version=2023-11-01\"\n\n          # Perform the action\n          $actionResponse = Invoke-RestMethod -Uri $actionUri -Method POST -Headers $headers\n\n          # Wait for the operation to complete\n          $retryCount = 0\n          $maxRetries = 30\n          $checkUri = \"${environment().resourceManager}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Fabric/capacities/$CapacityName?api-version=2023-11-01\"\n\n          do {\n            Start-Sleep -Seconds 30\n            $statusResponse = Invoke-RestMethod -Uri $checkUri -Method GET -Headers $headers\n            $currentState = $statusResponse.properties.state\n            Write-Output \"Current capacity state: $currentState\"\n            $retryCount++\n          } while ($currentState -ne $OriginalState -and $retryCount -lt $maxRetries)\n\n          if ($currentState -eq $OriginalState) {\n            Write-Output \"Successfully restored capacity to $OriginalState state\"\n          } else {\n            Write-Warning \"Could not restore capacity to original state within timeout. Current state: $currentState\"\n          }\n        } else {\n          Write-Output \"No state restoration needed. WasResumed: $WasResumed, OriginalState: $OriginalState\"\n        }\n      } catch {\n        Write-Error \"Error restoring capacity state: $_\"\n        # Don't throw here as the main deployment should succeed even if state restoration fails\n        Write-Warning \"State restoration failed but main deployment completed successfully\"\n      }\n    ",
+        "arguments": "[format('-ResourceGroupName \"{0}\" -CapacityName \"{1}\" -SubscriptionId \"{2}\" -OriginalState \"{3}\" -WasResumed {4}', resourceGroup().name, parameters('name'), subscription().subscriptionId, if(parameters('enableAutomaticPauseHandling'), coalesce(tryGet(reference('capacityStateHandler').outputs, 'originalState'), 'Unknown'), 'NotApplicable'), if(parameters('enableAutomaticPauseHandling'), coalesce(tryGet(reference('capacityStateHandler').outputs, 'wasResumed'), 'false'), 'false'))]"
+      },
+      "dependsOn": [
+        "capacityStateHandler",
         "fabricCapacity"
       ]
     }

@@ -17,6 +17,7 @@ This module deploys Fabric capacities, which provide the compute resources for a
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Fabric/capacities` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Fabric/2023-11-01/capacities) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
 
@@ -28,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set.](#example-2-using-large-parameter-set)
-- [With automatic pause handling](#example-3-with-automatic-pause-handling)
+- [Testing automatic pause handling](#example-3-testing-automatic-pause-handling)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -195,9 +196,9 @@ param lock = {
 </details>
 <p>
 
-### Example 3: _With automatic pause handling_
+### Example 3: _Testing automatic pause handling_
 
-This instance deploys the module with automatic pause handling enabled, allowing SKU changes even when the capacity is paused.
+This instance deploys the module with automatic pause handling enabled to test SKU changes on paused capacities.
 
 
 <details>
@@ -222,7 +223,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
       ]
     }
     restorePreviousState: true
-    skuName: 'F4'
+    skuName: '<skuName>'
   }
 }
 ```
@@ -266,7 +267,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
       "value": true
     },
     "skuName": {
-      "value": "F4"
+      "value": "<skuName>"
     }
   }
 }
@@ -296,7 +297,7 @@ param managedIdentities = {
   ]
 }
 param restorePreviousState = true
-param skuName = 'F4'
+param skuName = '<skuName>'
 ```
 
 </details>
@@ -486,7 +487,7 @@ Specify the notes of the lock.
 
 - Required: No
 - Type: string
-=======
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource. Required when enableAutomaticPauseHandling is true.
@@ -499,7 +500,7 @@ The managed identity definition for this resource. Required when enableAutomatic
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -510,7 +511,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
