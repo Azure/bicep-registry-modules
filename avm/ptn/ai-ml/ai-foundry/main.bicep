@@ -43,7 +43,7 @@ param keyVaultConfiguration resourceConfigurationType?
 param aiSearchConfiguration resourceConfigurationType?
 
 @description('Optional. Custom configuration for the Storage Account.')
-param storageAccountConfiguration resourceConfigurationType?
+param storageAccountConfiguration storageAccountConfigurationType?
 
 @description('Optional. Custom configuration for the Cosmos DB Account.')
 param cosmosDbConfiguration resourceConfigurationType?
@@ -59,6 +59,14 @@ var resourcesName = toLower(trim(replace(
   '*',
   ''
 )))
+
+// set proj name here to also be used for a default storage container name
+var projectName = !empty(aiFoundryConfiguration.?project.?name)
+  ? aiFoundryConfiguration!.project!.name!
+  : 'proj-${resourcesName}'
+
+// set a default storage container name so that connection to project can be established in default state
+var storageAccountContainers = storageAccountConfiguration.?containers ?? [projectName]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -100,7 +108,8 @@ module foundryAccount 'modules/account.bicep' = {
   }
 }
 
-module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
+var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
   name: take('${resourcesName}-keyvault-deployment', 64)
   params: {
     name: take(
@@ -109,24 +118,43 @@ module keyvault 'modules/keyvault.bicep' = if (includeAssociatedResources) {
         : 'kv${resourcesName}',
       24
     )
-    existingResourceId: keyVaultConfiguration.?existingResourceId
     location: location
-    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
-      ? {
-          privateEndpointSubnetId: networking!.privateEndpointSubnetId
-          privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
-        }
-      : null
-    roleAssignments: keyVaultConfiguration.?roleAssignments
-    enableTelemetry: enableTelemetry
     tags: tags
+    enableTelemetry: enableTelemetry
+    publicNetworkAccess: keyVaultPrivateNetworking ? 'Disabled' : 'Enabled'
+    networkAcls: {
+      defaultAction: keyVaultPrivateNetworking ? 'Deny' : 'Allow'
+    }
+    enableVaultForDeployment: true
+    enableVaultForDiskEncryption: true
+    enableVaultForTemplateDeployment: true
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 7
+    privateEndpoints: keyVaultPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
+                }
+              ]
+            }
+            service: 'vault'
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
+    roleAssignments: keyVaultConfiguration.?roleAssignments
   }
 }
 
-module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
-  name: take('${resourcesName}-ai-search-deployment', 64)
+var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
+module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
+  name: take('${resourcesName}-search-services-deployment', 64)
   params: {
-    #disable-next-line BCP334
     name: take(
       !empty(aiSearchConfiguration) && !empty(aiSearchConfiguration.?name)
         ? aiSearchConfiguration!.name!
@@ -134,19 +162,37 @@ module aiSearch 'modules/aisearch.bicep' = if (includeAssociatedResources) {
       60
     )
     location: location
-    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
-      ? {
-          privateEndpointSubnetId: networking!.privateEndpointSubnetId
-          privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
-        }
-      : null
-    roleAssignments: aiSearchConfiguration.?roleAssignments
     enableTelemetry: enableTelemetry
+    cmkEnforcement: 'Disabled'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccess: aiSearchPrivateNetworking ? 'Disabled' : 'Enabled'
+    disableLocalAuth: aiSearchPrivateNetworking
+    sku: 'standard'
+    partitionCount: 1
+    replicaCount: 3
+    roleAssignments: aiSearchConfiguration.?roleAssignments
+    privateEndpoints: aiSearchPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
+                }
+              ]
+            }
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
     tags: tags
   }
 }
 
-module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedResources) {
+var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
+module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResourceId)) {
   name: take('${resourcesName}-storage-account-deployment', 64)
   params: {
     name: take(
@@ -155,16 +201,57 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
         : 'st${resourcesName}',
       24
     )
-    existingResourceId: storageAccountConfiguration.?existingResourceId
     location: location
-    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
-      ? {
-          privateEndpointSubnetId: networking!.privateEndpointSubnetId
-          blobPrivateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.storageBlobPrivateDnsZoneId
-          filePrivateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.storageFilePrivateDnsZoneId
-        }
-      : null
+    tags: tags
     enableTelemetry: enableTelemetry
+    publicNetworkAccess: storageAccountPrivateNetworking ? 'Disabled' : 'Enabled'
+    accessTier: 'Hot'
+    allowBlobPublicAccess: !storageAccountPrivateNetworking
+    allowSharedKeyAccess: false
+    allowCrossTenantReplication: false
+    blobServices: {
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      containers: [
+        for container in storageAccountContainers ?? []: {
+          name: container
+        }
+      ]
+    }
+    minimumTlsVersion: 'TLS1_2'
+    networkAcls: {
+      defaultAction: storageAccountPrivateNetworking ? 'Deny' : 'Allow'
+      bypass: 'AzureServices'
+    }
+    supportsHttpsTrafficOnly: true
+    privateEndpoints: storageAccountPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.storageBlobPrivateDnsZoneId
+                }
+              ]
+            }
+            service: 'blob'
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.storageFilePrivateDnsZoneId
+                }
+              ]
+            }
+            service: 'file'
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
     roleAssignments: concat(
       !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?roleAssignments)
         ? storageAccountConfiguration!.roleAssignments!
@@ -176,19 +263,21 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
       ],
-      [
-        {
-          principalId: aiSearch!.outputs.systemAssignedMIPrincipalId
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        }
-      ]
+      empty(aiSearchConfiguration.?existingResourceId)
+        ? [
+            {
+              principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+            }
+          ]
+        : []
     )
-    tags: tags
   }
 }
 
-module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
+var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
   name: take('${resourcesName}-cosmosdb-deployment', 64)
   params: {
     name: take(
@@ -197,27 +286,61 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
         : 'cos${resourcesName}',
       44
     )
-    existingResourceId: cosmosDbConfiguration.?existingResourceId
-    location: location
-    privateNetworking: enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
-      ? {
-          privateEndpointSubnetId: networking!.privateEndpointSubnetId
-          privateDnsZoneId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
-        }
-      : null
     enableTelemetry: enableTelemetry
+    automaticFailover: true
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    location: location
+    minimumTlsVersion: 'Tls12'
+    defaultConsistencyLevel: 'Session'
+    networkRestrictions: {
+      networkAclBypass: 'AzureServices'
+      publicNetworkAccess: cosmosDbPrivateNetworking ? 'Disabled' : 'Enabled'
+    }
+    privateEndpoints: cosmosDbPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
+                }
+              ]
+            }
+            service: 'Sql'
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
     roleAssignments: cosmosDbConfiguration.?roleAssignments
     tags: tags
   }
 }
 
-module foundryProject 'modules/project.bicep' = {
+var aiSearchResourceId = includeAssociatedResources
+  ? (!empty(aiSearchConfiguration.?existingResourceId)
+      ? aiSearchConfiguration!.existingResourceId!
+      : aiSearch!.outputs.resourceId)
+  : ''
+
+var cosmosDbResourceId = includeAssociatedResources
+  ? (!empty(cosmosDbConfiguration.?existingResourceId)
+      ? cosmosDbConfiguration!.existingResourceId!
+      : cosmosDb!.outputs.resourceId)
+  : ''
+
+var storageAccountResourceId = includeAssociatedResources
+  ? (!empty(storageAccountConfiguration.?existingResourceId)
+      ? storageAccountConfiguration!.existingResourceId!
+      : storageAccount!.outputs.resourceId)
+  : ''
+
+module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
-  dependsOn: includeAssociatedResources ? [storageAccount, aiSearch, cosmosDb, keyvault] : []
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [storageAccount, aiSearch, cosmosDb, keyVault]
   params: {
-    name: !empty(aiFoundryConfiguration.?project.?name)
-      ? aiFoundryConfiguration!.project!.name!
-      : 'proj-${resourcesName}'
+    name: projectName
     desc: !empty(aiFoundryConfiguration.?project.?desc)
       ? aiFoundryConfiguration!.project!.desc!
       : 'This is the default project for AI Foundry.'
@@ -227,44 +350,14 @@ module foundryProject 'modules/project.bicep' = {
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
-    aiSearchConnections: includeAssociatedResources
-      ? [
-          {
-            name: aiSearch!.outputs.name
-            target: aiSearch!.outputs.endpoint
-            location: aiSearch!.outputs.location
-            resourceId: aiSearch!.outputs.resourceId
-          }
-        ]
-      : []
-    cosmosDbConnections: includeAssociatedResources
-      ? [
-          {
-            name: cosmosDb!.outputs.name
-            target: cosmosDb!.outputs.endpoint
-            location: cosmosDb!.outputs.location
-            resourceId: cosmosDb!.outputs.resourceId
-          }
-        ]
-      : []
-    storageAccountConnections: includeAssociatedResources
-      ? [
-          {
-            target: storageAccount!.outputs.blobEndpoint
-            location: storageAccount!.outputs.location
-            resourceId: storageAccount!.outputs.resourceId
-            accountName: storageAccount!.outputs.name
-            containerName: storageAccount!.outputs.projUploadsContainerName
-          }
-          {
-            target: storageAccount!.outputs.blobEndpoint
-            location: storageAccount!.outputs.location
-            resourceId: storageAccount!.outputs.resourceId
-            accountName: storageAccount!.outputs.name
-            containerName: storageAccount!.outputs.sysDataContainerName
-          }
-        ]
-      : []
+    aiSearchConnection: includeAssociatedResources ? { resourceId: aiSearchResourceId } : null
+    cosmosDbConnection: includeAssociatedResources ? { resourceId: cosmosDbResourceId } : null
+    storageAccountConnection: includeAssociatedResources
+      ? {
+          resourceId: storageAccountResourceId
+          containers: storageAccountContainers
+        }
+      : null
     tags: tags
     lock: lock
   }
@@ -274,7 +367,7 @@ module foundryProject 'modules/project.bicep' = {
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output keyVaultName string = includeAssociatedResources ? keyvault!.outputs.name : ''
+output keyVaultName string = includeAssociatedResources ? keyVault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
 output aiServicesName string = foundryAccount.outputs.name
@@ -339,6 +432,21 @@ type resourceConfigurationType = {
 
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
+
+  @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
+  roleAssignments: roleAssignmentType[]?
+}
+
+@description('Custom configuration for a Storage Account, including optional name, existing resource ID, containers, and role assignments.')
+type storageAccountConfigurationType = {
+  @description('Optional. Resource ID of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.')
+  existingResourceId: string?
+
+  @description('Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.')
+  name: string?
+
+  @description('Optional. The list of containers to create in the Storage Account. If using existingResourceId, these should be existing containers in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.')
+  containers: string[]?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?

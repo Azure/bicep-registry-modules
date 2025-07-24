@@ -2,7 +2,7 @@
 param resourceIdOrName string
 
 var resourceParts = split(resourceIdOrName, '/')
-var name = !empty(resourceParts) ? last(resourceParts) : resourceIdOrName
+var name = contains(resourceIdOrName, '/') && !empty(resourceParts) ? last(resourceParts) : resourceIdOrName
 var subscriptionId = length(resourceParts) > 2 ? resourceParts[2] : subscription().subscriptionId
 var resourceGroupName = length(resourceParts) > 4 ? resourceParts[4] : resourceGroup().name
 

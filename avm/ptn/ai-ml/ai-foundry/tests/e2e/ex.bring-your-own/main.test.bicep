@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
       }
       storageAccountConfiguration: {
         existingResourceId: dependencies.outputs.storageAccountResourceId
+        containers: dependencies.outputs.containers
       }
       cosmosDbConfiguration: {
         existingResourceId: dependencies.outputs.cosmosDbAccountResourceId

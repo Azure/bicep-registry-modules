@@ -215,6 +215,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       existingResourceId: '<existingResourceId>'
     }
     storageAccountConfiguration: {
+      containers: '<containers>'
       existingResourceId: '<existingResourceId>'
     }
   }
@@ -274,6 +275,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "storageAccountConfiguration": {
       "value": {
+        "containers": "<containers>",
         "existingResourceId": "<existingResourceId>"
       }
     }
@@ -319,6 +321,7 @@ param keyVaultConfiguration = {
   existingResourceId: '<existingResourceId>'
 }
 param storageAccountConfiguration = {
+  containers: '<containers>'
   existingResourceId: '<existingResourceId>'
 }
 ```
@@ -410,6 +413,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       privateEndpointSubnetId: '<privateEndpointSubnetId>'
     }
     storageAccountConfiguration: {
+      containers: [
+        'ai-foundry-proj-uploads'
+        'ai-foundry-sys-data'
+      ]
       name: '<name>'
       roleAssignments: [
         {
@@ -523,6 +530,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "storageAccountConfiguration": {
       "value": {
+        "containers": [
+          "ai-foundry-proj-uploads",
+          "ai-foundry-sys-data"
+        ],
         "name": "<name>",
         "roleAssignments": [
           {
@@ -618,6 +629,10 @@ param networking = {
   privateEndpointSubnetId: '<privateEndpointSubnetId>'
 }
 param storageAccountConfiguration = {
+  containers: [
+    'ai-foundry-proj-uploads'
+    'ai-foundry-sys-data'
+  ]
   name: '<name>'
   roleAssignments: [
     {
@@ -1586,20 +1601,28 @@ Custom configuration for the Storage Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
-| [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
+| [`containers`](#parameter-storageaccountconfigurationcontainers) | array | The list of containers to create in the Storage Account. If using existingResourceId, these should be existing containers in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created. |
+| [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource ID of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+
+### Parameter: `storageAccountConfiguration.containers`
+
+The list of containers to create in the Storage Account. If using existingResourceId, these should be existing containers in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.
+
+- Required: No
+- Type: array
 
 ### Parameter: `storageAccountConfiguration.existingResourceId`
 
-Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource ID of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
 - Type: string
 
 ### Parameter: `storageAccountConfiguration.name`
 
-Name to be used when creating the resource. This is ignored if an existingResourceId is provided.
+Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.
 
 - Required: No
 - Type: string

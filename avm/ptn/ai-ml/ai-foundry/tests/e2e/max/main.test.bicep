@@ -92,6 +92,7 @@ module testDeployment '../../../main.bicep' = [
       }
       storageAccountConfiguration: {
         name: 'stcustom${workloadName}'
+        containers: ['ai-foundry-proj-uploads', 'ai-foundry-sys-data']
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
