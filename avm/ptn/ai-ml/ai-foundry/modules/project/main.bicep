@@ -71,18 +71,18 @@ module aiServicesConnResources 'connections/aiServices.bicep' = [
   }
 ]
 
-// @batchSize(1)
-// module aiSearchConnResources 'connections/aiSearch.bicep' = [
-//   for connection in aiSearchConnections ?? []: {
-//     name: take('${name}-ai-search-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
-//     params: {
-//       name: connection.?name
-//       accountName: accountName
-//       projectName: project.name
-//       resourceIdOrName: connection!.resourceId
-//     }
-//   }
-// ]
+@batchSize(1)
+module aiSearchConnResources 'connections/aiSearch.bicep' = [
+  for connection in aiSearchConnections ?? []: {
+    name: take('${name}-ai-search-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
+    params: {
+      name: connection.?name
+      accountName: accountName
+      projectName: project.name
+      resourceIdOrName: connection!.resourceId
+    }
+  }
+]
 
 @batchSize(1)
 module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
