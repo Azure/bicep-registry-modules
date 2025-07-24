@@ -28,7 +28,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set.](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [With automatic pause handling](#example-3-with-automatic-pause-handling)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -194,7 +195,114 @@ param lock = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _With automatic pause handling_
+
+This instance deploys the module with automatic pause handling enabled, allowing SKU changes even when the capacity is paused.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
+  name: 'capacityDeployment'
+  params: {
+    // Required parameters
+    adminMembers: [
+      '<adminMembersSecret>'
+    ]
+    name: 'fcpause001'
+    // Non-required parameters
+    enableAutomaticPauseHandling: true
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    restorePreviousState: true
+    skuName: 'F4'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminMembers": {
+      "value": [
+        "<adminMembersSecret>"
+      ]
+    },
+    "name": {
+      "value": "fcpause001"
+    },
+    // Non-required parameters
+    "enableAutomaticPauseHandling": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "restorePreviousState": {
+      "value": true
+    },
+    "skuName": {
+      "value": "F4"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/fabric/capacity:<version>'
+
+// Required parameters
+param adminMembers = [
+  '<adminMembersSecret>'
+]
+param name = 'fcpause001'
+// Non-required parameters
+param enableAutomaticPauseHandling = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param restorePreviousState = true
+param skuName = 'F4'
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -287,9 +395,12 @@ param skuName = 'F64'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableAutomaticPauseHandling`](#parameter-enableautomaticpausehandling) | bool | Enable automatic handling of paused capacity during SKU changes. When enabled, the module will automatically resume paused capacities before SKU changes and optionally restore the previous state. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Required when enableAutomaticPauseHandling is true. |
+| [`restorePreviousState`](#parameter-restorepreviousstate) | bool | When automatic pause handling is enabled, restore the previous pause state after SKU changes. Only applies when enableAutomaticPauseHandling is true. |
 | [`skuName`](#parameter-skuname) | string | SKU tier of the Fabric resource. |
 | [`skuTier`](#parameter-skutier) | string | SKU name of the Fabric resource. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -307,6 +418,14 @@ Name of the resource to create.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `enableAutomaticPauseHandling`
+
+Enable automatic handling of paused capacity during SKU changes. When enabled, the module will automatically resume paused capacities before SKU changes and optionally restore the previous state.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -367,6 +486,42 @@ Specify the notes of the lock.
 
 - Required: No
 - Type: string
+=======
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource. Required when enableAutomaticPauseHandling is true.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
+
+### Parameter: `restorePreviousState`
+
+When automatic pause handling is enabled, restore the previous pause state after SKU changes. Only applies when enableAutomaticPauseHandling is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `skuName`
 
