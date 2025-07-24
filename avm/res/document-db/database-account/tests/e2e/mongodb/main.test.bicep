@@ -45,188 +45,195 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       mongodbDatabases: [
         {
+          name: '${namePrefix}-mdb-${serviceShort}-001'
+          manualThroughput: 600
           collections: [
             {
-              indexes: [
+              name: 'car_collection'
+              shardKeys: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      'car_id'
-                      'car_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  field: 'car_id'
+                  type: 'Hash'
                 }
               ]
-              name: 'car_collection'
-              shardKey: {
-                car_id: 'Hash'
-              }
-              throughput: 600
+              manualThroughput: 400
+              indexes: [
+                {
+                  keys: [
+                    '_id'
+                  ]
+                }
+                {
+                  keys: [
+                    '$**'
+                  ]
+                }
+                {
+                  keys: [
+                    'car_id'
+                    'car_model'
+                  ]
+                  unique: true
+                }
+                {
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
+                }
+              ]
             }
             {
-              indexes: [
+              name: 'truck_collection'
+              shardKeys: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      'truck_id'
-                      'truck_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  field: 'truck_id'
+                  type: 'Hash'
                 }
               ]
-              name: 'truck_collection'
-              shardKey: {
-                truck_id: 'Hash'
-              }
+              indexes: [
+                {
+                  keys: [
+                    '_id'
+                  ]
+                }
+                {
+                  keys: [
+                    '$**'
+                  ]
+                }
+                {
+                  keys: [
+                    'truck_id'
+                    'truck_model'
+                  ]
+                  unique: true
+                }
+                {
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
+                }
+              ]
             }
           ]
-          name: '${namePrefix}-mdb-${serviceShort}-001'
-          throughput: 800
         }
         {
+          name: '${namePrefix}-mdb-${serviceShort}-002'
           collections: [
             {
-              indexes: [
+              name: 'bike_collection'
+              manualThroughput: 400
+              shardKeys: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      'bike_id'
-                      'bike_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  field: 'bike_id'
+                  type: 'Hash'
                 }
               ]
-              name: 'bike_collection'
-              shardKey: {
-                bike_id: 'Hash'
-              }
+              indexes: [
+                {
+                  keys: [
+                    '_id'
+                  ]
+                }
+                {
+                  keys: [
+                    '$**'
+                  ]
+                }
+                {
+                  keys: [
+                    'bike_id'
+                    'bike_model'
+                  ]
+                  unique: true
+                }
+                {
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
+                }
+              ]
             }
             {
-              indexes: [
+              name: 'bicycle_collection'
+              autoscaleMaxThroughput: 1000
+              shardKeys: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      'bicycle_id'
-                      'bicycle_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
-                }
-                {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  field: 'bicycle_id'
+                  type: 'Hash'
                 }
               ]
-              name: 'bicycle_collection'
-              shardKey: {
-                bicycle_id: 'Hash'
-              }
+              indexes: [
+                {
+                  keys: [
+                    '_id'
+                  ]
+                }
+                {
+                  keys: [
+                    '$**'
+                  ]
+                }
+                {
+                  keys: [
+                    'bicycle_id'
+                    'bicycle_model'
+                  ]
+                  unique: true
+                }
+                {
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
+                }
+              ]
             }
           ]
-          name: '${namePrefix}-mdb-${serviceShort}-002'
+        }
+        {
+          name: '${namePrefix}-mdb-${serviceShort}-003'
+          autoscaleMaxThroughput: 1000
+          collections: [
+            {
+              name: 'wheel_collection'
+              autoscaleMaxThroughput: 1000
+              shardKeys: [
+                {
+                  field: 'wheel_id'
+                  type: 'Hash'
+                }
+              ]
+              indexes: [
+                {
+                  keys: [
+                    '_id'
+                  ]
+                }
+                {
+                  keys: [
+                    '$**'
+                  ]
+                }
+                {
+                  keys: [
+                    'wheel_id'
+                    'wheel_model'
+                  ]
+                  unique: true
+                }
+                {
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
+                }
+              ]
+            }
+          ]
         }
       ]
       zoneRedundant: false
