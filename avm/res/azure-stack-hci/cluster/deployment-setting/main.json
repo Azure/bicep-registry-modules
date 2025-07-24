@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13641741811738532757"
+      "templateHash": "6773391715547751649"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -312,7 +312,7 @@
     },
     "deploymentSettings": {
       "type": "Microsoft.AzureStackHCI/clusters/deploymentSettings",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-09-01-preview",
       "name": "[format('{0}/{1}', parameters('clusterName'), parameters('name'))]",
       "properties": {
         "arcNodeResourceIds": "[variables('arcNodeResourceIds')]",

@@ -163,7 +163,7 @@ var baseSecretNames = [
 
 var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-09-01-preview' = {
   name: name
   parent: cluster
   properties: {
