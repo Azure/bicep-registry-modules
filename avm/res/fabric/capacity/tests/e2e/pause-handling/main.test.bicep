@@ -35,20 +35,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-// Managed Identity for deployment scripts
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: '${namePrefix}${serviceShort}-mi'
-  location: resourceLocation
-}
-
-// Assign Contributor role to the managed identity
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: guid(resourceGroup.id, managedIdentity.id, 'Contributor')
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
-    principalType: 'ServicePrincipal'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    managedIdentityName: '${namePrefix}${serviceShort}-mi'
   }
 }
 
@@ -72,12 +64,12 @@ module testDeployment '../../../main.bicep' = [
       restorePreviousState: true
       managedIdentities: {
         userAssignedResourceIds: [
-          managedIdentity.id
+          nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
     }
     dependsOn: [
-      roleAssignment
+      nestedDependencies
     ]
   }
 ]
