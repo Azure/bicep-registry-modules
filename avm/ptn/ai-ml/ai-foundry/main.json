@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13785042870318362380"
+      "templateHash": "3101320396005803828"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -18696,14 +18696,14 @@
           "includeCapabilityHost": {
             "value": false
           },
-          "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', if(parameters('includeAssociatedResources'), if(not(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId'))), parameters('aiSearchConfiguration').existingResourceId, reference('aiSearch').outputs.resourceId.value), '')))), createObject('value', createArray()))]",
-          "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', if(parameters('includeAssociatedResources'), if(not(empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId'))), parameters('cosmosDbConfiguration').existingResourceId, reference('cosmosDb').outputs.resourceId.value), '')))), createObject('value', createArray()))]",
+          "aiSearchConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', if(not(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId'))), parameters('aiSearchConfiguration').existingResourceId, reference('aiSearch').outputs.resourceId.value)))), createObject('value', createArray()))]",
+          "cosmosDbConnections": "[if(parameters('includeAssociatedResources'), createObject('value', createArray(createObject('resourceId', if(not(empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId'))), parameters('cosmosDbConfiguration').existingResourceId, reference('cosmosDb').outputs.resourceId.value)))), createObject('value', createArray()))]",
           "storageAccountConnections": {
             "copy": [
               {
                 "name": "value",
                 "count": "[length(coalesce(variables('storageAccountContainers'), createArray()))]",
-                "input": "[createObject('resourceId', if(parameters('includeAssociatedResources'), if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId'))), parameters('storageAccountConfiguration').existingResourceId, reference('storageAccount').outputs.resourceId.value), ''), 'containerName', coalesce(variables('storageAccountContainers'), createArray())[copyIndex('value')])]"
+                "input": "[createObject('resourceId', if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId'))), parameters('storageAccountConfiguration').existingResourceId, reference('storageAccount').outputs.resourceId.value), 'containerName', coalesce(variables('storageAccountContainers'), createArray())[copyIndex('value')])]"
               }
             ]
           },
@@ -18722,7 +18722,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3451517069635434509"
+              "templateHash": "10287579877448350030"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -19605,7 +19605,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-storage-conn-{1}', parameters('name'), take(uniqueString(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId), 5)), 64)]",
+              "name": "[take(format('{0}-storage-conn-{1}-{2}', parameters('name'), take(uniqueString(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId), 5), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -19874,7 +19874,7 @@
       "metadata": {
         "description": "Name of the deployed Azure Key Vault."
       },
-      "value": "[if(parameters('includeAssociatedResources'), reference('keyVault').outputs.name.value, '')]"
+      "value": "[if(parameters('includeAssociatedResources'), 'keyVault!.outputs.name', '')]"
     },
     "aiServicesName": {
       "type": "string",
@@ -19888,7 +19888,7 @@
       "metadata": {
         "description": "Name of the deployed Azure AI Search service."
       },
-      "value": "[if(parameters('includeAssociatedResources'), reference('aiSearch').outputs.name.value, '')]"
+      "value": "[if(parameters('includeAssociatedResources'), 'aiSearch!.outputs.name', '')]"
     },
     "aiProjectName": {
       "type": "string",
@@ -19902,14 +19902,14 @@
       "metadata": {
         "description": "Name of the deployed Azure Storage Account."
       },
-      "value": "[if(parameters('includeAssociatedResources'), reference('storageAccount').outputs.name.value, '')]"
+      "value": "[if(parameters('includeAssociatedResources'), 'storageAccount!.outputs.name', '')]"
     },
     "cosmosAccountName": {
       "type": "string",
       "metadata": {
         "description": "Name of the deployed Azure Cosmos DB account."
       },
-      "value": "[if(parameters('includeAssociatedResources'), reference('cosmosDb').outputs.name.value, '')]"
+      "value": "[if(parameters('includeAssociatedResources'), 'cosmosDb!.outputs.name', '')]"
     }
   }
 }

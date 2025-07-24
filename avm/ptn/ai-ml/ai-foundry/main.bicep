@@ -320,24 +320,6 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (in
   }
 }
 
-var aiSearchResourceId = includeAssociatedResources
-  ? (!empty(aiSearchConfiguration.?existingResourceId)
-      ? aiSearchConfiguration!.existingResourceId!
-      : aiSearch!.outputs.resourceId)
-  : ''
-
-var cosmosDbResourceId = includeAssociatedResources
-  ? (!empty(cosmosDbConfiguration.?existingResourceId)
-      ? cosmosDbConfiguration!.existingResourceId!
-      : cosmosDb!.outputs.resourceId)
-  : ''
-
-var storageAccountResourceId = includeAssociatedResources
-  ? (!empty(storageAccountConfiguration.?existingResourceId)
-      ? storageAccountConfiguration!.existingResourceId!
-      : storageAccount!.outputs.resourceId)
-  : ''
-
 module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   #disable-next-line no-unnecessary-dependson
@@ -353,11 +335,29 @@ module foundryProject 'modules/project/main.bicep' = {
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
-    aiSearchConnections: includeAssociatedResources ? [{ resourceId: aiSearchResourceId }] : []
-    cosmosDbConnections: includeAssociatedResources ? [{ resourceId: cosmosDbResourceId }] : []
+    aiSearchConnections: includeAssociatedResources
+      ? [
+          {
+            resourceId: !empty(aiSearchConfiguration.?existingResourceId)
+              ? aiSearchConfiguration!.existingResourceId!
+              : aiSearch!.outputs.resourceId
+          }
+        ]
+      : []
+    cosmosDbConnections: includeAssociatedResources
+      ? [
+          {
+            resourceId: !empty(cosmosDbConfiguration.?existingResourceId)
+              ? cosmosDbConfiguration!.existingResourceId!
+              : cosmosDb!.outputs.resourceId
+          }
+        ]
+      : []
     storageAccountConnections: [
       for (container, i) in storageAccountContainers ?? []: {
-        resourceId: storageAccountResourceId
+        resourceId: !empty(storageAccountConfiguration.?existingResourceId)
+          ? storageAccountConfiguration!.existingResourceId!
+          : storageAccount!.outputs.resourceId
         containerName: container
       }
     ]
@@ -370,22 +370,22 @@ module foundryProject 'modules/project/main.bicep' = {
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output keyVaultName string = includeAssociatedResources ? keyVault!.outputs.name : ''
+output keyVaultName string = includeAssociatedResources ? 'keyVault!.outputs.name' : '' // TODO
 
 @description('Name of the deployed Azure AI Services account.')
 output aiServicesName string = foundryAccount.outputs.name
 
 @description('Name of the deployed Azure AI Search service.')
-output aiSearchName string = includeAssociatedResources ? aiSearch!.outputs.name : ''
+output aiSearchName string = includeAssociatedResources ? 'aiSearch!.outputs.name' : '' // TODO
 
 @description('Name of the deployed Azure AI Project.')
 output aiProjectName string = foundryProject.outputs.name
 
 @description('Name of the deployed Azure Storage Account.')
-output storageAccountName string = includeAssociatedResources ? storageAccount!.outputs.name : ''
+output storageAccountName string = includeAssociatedResources ? 'storageAccount!.outputs.name' : '' // TODO
 
 @description('Name of the deployed Azure Cosmos DB account.')
-output cosmosAccountName string = includeAssociatedResources ? cosmosDb!.outputs.name : ''
+output cosmosAccountName string = includeAssociatedResources ? 'cosmosDb!.outputs.name' : '' // TODO
 
 @description('Values to establish private networking for resources that support creating private endpoints.')
 type networkConfigurationType = {

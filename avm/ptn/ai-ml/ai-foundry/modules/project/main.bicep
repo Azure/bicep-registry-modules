@@ -100,7 +100,7 @@ module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
 @batchSize(1)
 module storageAccountConnResources 'connections/storageAccount.bicep' = [
   for connection in storageAccountConnections ?? []: {
-    name: take('${name}-storage-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
+    name: take('${name}-storage-conn-${take(uniqueString(connection!.resourceId), 5)}-${connection!.containerName}', 64)
     params: {
       name: connection.?name
       accountName: accountName

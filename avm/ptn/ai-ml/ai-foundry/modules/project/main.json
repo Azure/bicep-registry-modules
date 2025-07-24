@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3451517069635434509"
+      "templateHash": "10287579877448350030"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -889,7 +889,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-storage-conn-{1}', parameters('name'), take(uniqueString(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId), 5)), 64)]",
+      "name": "[take(format('{0}-storage-conn-{1}-{2}', parameters('name'), take(uniqueString(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId), 5), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
