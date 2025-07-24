@@ -223,7 +223,12 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
       softDeleteSettings: softDeleteSettings
     }
     publicNetworkAccess: publicNetworkAccess
-    redundancySettings: redundancySettings
+    redundancySettings: (!empty(redundancySettings))
+      ? {
+          standardTierStorageRedundancy: redundancySettings!.standardTierStorageRedundancy
+          crossRegionRestore: redundancySettings.?crossRegionRestore ?? 'Disabled'
+        }
+      : null
     restoreSettings: restoreSettings
     encryption: !empty(customerManagedKey)
       ? {
