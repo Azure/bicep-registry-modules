@@ -39,8 +39,8 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01
 }
 
 resource containerResources 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = [
-  for container in containers: {
-    name: container.name
+  for containerName in containers: {
+    name: containerName
     parent: blobServices
     properties: {}
   }
