@@ -71,18 +71,18 @@ module aiServicesConnResources 'connections/aiServices.bicep' = [
   }
 ]
 
-@batchSize(1)
-module aiSearchConnResources 'connections/aiSearch.bicep' = [
-  for connection in aiSearchConnections ?? []: {
-    name: take('${name}-ai-search-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
-    params: {
-      name: connection.?name
-      accountName: accountName
-      projectName: project.name
-      resourceIdOrName: connection!.resourceId
-    }
-  }
-]
+// @batchSize(1)
+// module aiSearchConnResources 'connections/aiSearch.bicep' = [
+//   for connection in aiSearchConnections ?? []: {
+//     name: take('${name}-ai-search-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
+//     params: {
+//       name: connection.?name
+//       accountName: accountName
+//       projectName: project.name
+//       resourceIdOrName: connection!.resourceId
+//     }
+//   }
+// ]
 
 @batchSize(1)
 module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
@@ -117,10 +117,10 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   name: '${name}-cap-host'
   parent: project
   #disable-next-line no-unnecessary-dependson
-  dependsOn: [aiServicesConnResources, cosmosDbConnResources, aiSearchConnResources, storageAccountConnResources]
+  dependsOn: [aiServicesConnResources, cosmosDbConnResources, storageAccountConnResources]
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: [for (conn, i) in aiSearchConnections ?? []: aiSearchConnResources[i].outputs.name]
+    vectorStoreConnections: []
     storageConnections: [for (conn, i) in storageAccountConnections ?? []: storageAccountConnResources[i].outputs.name]
     threadStorageConnections: [for (conn, i) in cosmosDbConnections ?? []: cosmosDbConnResources[i].outputs.name]
     tags: tags

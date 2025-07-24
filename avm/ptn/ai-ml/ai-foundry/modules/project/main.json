@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10287579877448350030"
+      "templateHash": "8226996730947723381"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -225,11 +225,6 @@
       "properties": {
         "copy": [
           {
-            "name": "vectorStoreConnections",
-            "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
-            "input": "[reference(format('aiSearchConnResources[{0}]', copyIndex('vectorStoreConnections'))).outputs.name.value]"
-          },
-          {
             "name": "storageConnections",
             "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
             "input": "[reference(format('storageAccountConnResources[{0}]', copyIndex('storageConnections'))).outputs.name.value]"
@@ -241,10 +236,10 @@
           }
         ],
         "capabilityHostKind": "Agents",
+        "vectorStoreConnections": [],
         "tags": "[parameters('tags')]"
       },
       "dependsOn": [
-        "aiSearchConnResources",
         "aiServicesConnResources",
         "cosmosDbConnResources",
         "project",
@@ -460,211 +455,6 @@
               "type": "string",
               "metadata": {
                 "description": "Target endpoint of the AI Service connection."
-              },
-              "value": "[reference('connection').target]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "project"
-      ]
-    },
-    "aiSearchConnResources": {
-      "copy": {
-        "name": "aiSearchConnResources",
-        "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-ai-search-conn-{1}', parameters('name'), take(uniqueString(coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].resourceId), 5)), 64)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[tryGet(coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()], 'name')]"
-          },
-          "accountName": {
-            "value": "[parameters('accountName')]"
-          },
-          "projectName": {
-            "value": "[parameters('name')]"
-          },
-          "resourceIdOrName": {
-            "value": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].resourceId]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15231465096576697193"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Name of the AI Service connection. If not provided, the name will default to the AI Service name."
-              }
-            },
-            "accountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry Account."
-              }
-            },
-            "projectName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry project to connect to the AI Service."
-              }
-            },
-            "resourceIdOrName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Resource ID or name of the existing AI Service to connect to."
-              }
-            }
-          },
-          "resources": {
-            "aiSearch": {
-              "existing": true,
-              "type": "Microsoft.Search/searchServices",
-              "apiVersion": "2025-05-01",
-              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('parsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "parsedResourceId"
-              ]
-            },
-            "account": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('accountName')]"
-            },
-            "project": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]"
-            },
-            "connection": {
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('projectName'), if(not(empty(parameters('name'))), parameters('name'), reference('parsedResourceId').outputs.name.value))]",
-              "properties": {
-                "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', reference('parsedResourceId').outputs.name.value)]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Search/searchServices', reference('parsedResourceId').outputs.name.value)]",
-                  "location": "[reference('aiSearch', '2025-05-01', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "aiSearch",
-                "parsedResourceId"
-              ]
-            },
-            "parsedResourceId": {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-ai-search-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "resourceIdOrName": {
-                    "value": "[parameters('resourceIdOrName')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "8219569796823241671"
-                    }
-                  },
-                  "parameters": {
-                    "resourceIdOrName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The Resource ID or name of an existing resource."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
-                    "name": "[if(and(contains(parameters('resourceIdOrName'), '/'), not(empty(variables('resourceParts')))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
-                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
-                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
-                  },
-                  "resources": [],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Name of the resource."
-                      },
-                      "value": "[variables('name')]"
-                    },
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Subscription ID of the resource."
-                      },
-                      "value": "[variables('subscriptionId')]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Resource Group Name of the resource."
-                      },
-                      "value": "[variables('resourceGroupName')]"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource ID of the AI Search connection."
-              },
-              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('projectName'), if(not(empty(parameters('name'))), parameters('name'), reference('parsedResourceId').outputs.name.value))]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the AI Search connection."
-              },
-              "value": "[if(not(empty(parameters('name'))), parameters('name'), reference('parsedResourceId').outputs.name.value)]"
-            },
-            "target": {
-              "type": "string",
-              "metadata": {
-                "description": "Target endpoint of the AI Search connection."
               },
               "value": "[reference('connection').target]"
             }
