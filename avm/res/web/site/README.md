@@ -3119,7 +3119,7 @@ param siteConfig = {
 | :-- | :-- | :-- |
 | [`kind`](#parameter-kind) | string | Type of site to deploy. |
 | [`name`](#parameter-name) | string | Name of the site. |
-| [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the site. |
+| [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the site. Set as empty string when using a managed environment id for container apps. |
 
 **Optional parameters**
 
@@ -3199,7 +3199,7 @@ Name of the site.
 
 ### Parameter: `serverFarmResourceId`
 
-The resource ID of the app service plan to use for the site.
+The resource ID of the app service plan to use for the site. Set as empty string when using a managed environment id for container apps.
 
 - Required: Yes
 - Type: string
@@ -8686,6 +8686,7 @@ Configuration for deployment slots for an app.
 | [`keyVaultAccessIdentityResourceId`](#parameter-slotskeyvaultaccessidentityresourceid) | string | The resource ID of the assigned identity to be used to access a key vault with. |
 | [`location`](#parameter-slotslocation) | string | Location for all Resources. |
 | [`lock`](#parameter-slotslock) | object | The lock settings of the service. |
+| [`managedEnvironmentId`](#parameter-slotsmanagedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-slotsmanagedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-slotsprivateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-slotspublicnetworkaccess) | string | Allow or block all public traffic. |
@@ -13504,6 +13505,13 @@ Specify the name of lock.
 ### Parameter: `slots.lock.notes`
 
 Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.managedEnvironmentId`
+
+Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.
 
 - Required: No
 - Type: string
