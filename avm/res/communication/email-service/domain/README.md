@@ -95,6 +95,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -114,6 +115,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -228,6 +236,40 @@ The domains to deploy into this namespace.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-senderusernamesname) | string | Name of the sender username resource to create. |
+| [`username`](#parameter-senderusernamesusername) | string | A sender username to be used when sending emails. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-senderusernamesdisplayname) | string | The display name for the senderUsername. |
+
+### Parameter: `senderUsernames.name`
+
+Name of the sender username resource to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `senderUsernames.username`
+
+A sender username to be used when sending emails.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `senderUsernames.displayName`
+
+The display name for the senderUsername.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Endpoint tags.
@@ -264,4 +306,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
