@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
   sku: {

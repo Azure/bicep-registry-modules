@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9925034311524259969"
+      "version": "0.35.1.17967",
+      "templateHash": "1615411879740192872"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver."
@@ -433,8 +433,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16944244045686961069"
+              "version": "0.35.1.17967",
+              "templateHash": "8457768565159397377"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint."
@@ -580,8 +580,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17191426470259312613"
+              "version": "0.35.1.17967",
+              "templateHash": "639610421576443145"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint."
@@ -722,7 +722,7 @@
         "$ref": "#/definitions/endpointDetailsType"
       },
       "metadata": {
-        "description": "The outbound endpoints object."
+        "description": "The inbound endpoints object."
       },
       "copy": {
         "count": "[length(range(0, length(coalesce(parameters('inboundEndpoints'), createArray()))))]",

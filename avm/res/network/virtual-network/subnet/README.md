@@ -16,7 +16,7 @@ This module deploys a Virtual Network Subnet.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 
 ## Parameters
 
@@ -32,6 +32,7 @@ This module deploys a Virtual Network Subnet.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the parent virtual network. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
@@ -69,6 +70,13 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 ### Parameter: `addressPrefixes`
 
 List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `ipamPoolPrefixAllocations`
+
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.
 
 - Required: No
 - Type: array
@@ -301,6 +309,7 @@ Set this property to Tenant to allow sharing the subnet with other subscriptions
 | :-- | :-- | :-- |
 | `addressPrefix` | string | The address prefix for the subnet. |
 | `addressPrefixes` | array | List of address prefixes for the subnet. |
+| `ipamPoolPrefixAllocations` | array | The IPAM pool prefix allocations for the subnet. |
 | `name` | string | The name of the virtual network peering. |
 | `resourceGroupName` | string | The resource group the virtual network peering was deployed into. |
 | `resourceId` | string | The resource ID of the virtual network peering. |

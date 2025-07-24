@@ -15,6 +15,9 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. A boolean indicating whether or not Data Integrity Check is enabled.')
+param enforceDataIntegrityCheckForIscsi bool = false
+
 @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.')
 param volumes volumeType[]?
 
@@ -76,23 +79,23 @@ var networkRules = [
 // Add your resources here
 //
 
-resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
+resource elasticSan 'Microsoft.ElasticSan/elasticSans@2024-05-01' existing = {
   name: elasticSanName
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -100,11 +103,12 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' = {
+resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' = {
   name: name
   parent: elasticSan
   identity: identity
   properties: {
+    enforceDataIntegrityCheckForIscsi: enforceDataIntegrityCheckForIscsi
     encryption: !empty(customerManagedKey)
       ? 'EncryptionAtRestWithCustomerManagedKey'
       : 'EncryptionAtRestWithPlatformKey'
@@ -118,10 +122,10 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
           keyVaultProperties: !empty(customerManagedKey)
             ? {
                 keyName: customerManagedKey!.keyName
-                keyVaultUri: cMKKeyVault.properties.vaultUri
+                keyVaultUri: cMKKeyVault!.properties.vaultUri
                 keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
                   ? customerManagedKey!.?keyVersion
-                  : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
               }
             : null
         }
@@ -218,6 +222,9 @@ output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
 output systemAssignedMIPrincipalId string? = volumeGroup.?identity.?principalId
+
+@description('A boolean indicating whether or not Data Integrity Check is enabled or not.')
+output enforceDataIntegrityCheckForIscsi bool = volumeGroup.properties.enforceDataIntegrityCheckForIscsi
 
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [

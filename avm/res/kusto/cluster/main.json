@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "501442185035724680"
+      "templateHash": "11734822042486185194"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -32,8 +32,9 @@
       "properties": {
         "languageExtensionCustomImageName": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the language extension custom image."
+            "description": "Optional. The name of the language extension custom image."
           }
         },
         "languageExtensionImageName": {

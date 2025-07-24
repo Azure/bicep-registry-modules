@@ -9,8 +9,8 @@
     ],
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "10791701534871605589"
+      "version": "0.36.177.2456",
+      "templateHash": "11759054215682586729"
     },
     "name": "DBforMySQL Flexible Server Firewall Rules",
     "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -50,7 +50,7 @@
     },
     "firewallRule": {
       "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
-      "apiVersion": "2023-12-30",
+      "apiVersion": "2024-12-01-preview",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "endIpAddress": "[parameters('endIpAddress')]",

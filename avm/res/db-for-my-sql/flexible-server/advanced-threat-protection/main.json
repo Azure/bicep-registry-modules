@@ -9,8 +9,8 @@
     ],
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "13820485544041430219"
+      "version": "0.36.177.2456",
+      "templateHash": "2980081786222066300"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
     "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -43,7 +43,7 @@
     },
     "advancedThreatProtectionSettings": {
       "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
-      "apiVersion": "2024-10-01-preview",
+      "apiVersion": "2024-12-01-preview",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
       "properties": {
         "state": "[parameters('advancedThreatProtection')]"

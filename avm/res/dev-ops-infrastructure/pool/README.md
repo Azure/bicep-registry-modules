@@ -18,7 +18,7 @@ This module deploys the Managed DevOps Pool resource.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DevOpsInfrastructure/pools` | [2024-10-19](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2024-10-19/pools) |
+| `Microsoft.DevOpsInfrastructure/pools` | [2025-01-21](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2025-01-21/pools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -29,11 +29,170 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/dev-ops-infrastructure/pool:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [All Week Schema](#example-1-all-week-schema)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _All Week Schema_
+
+This instance deploys the module using an All-Week Scheme for the manual scaling prediction configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
+  name: 'poolDeployment'
+  params: {
+    // Required parameters
+    agentProfile: {
+      kind: 'Stateless'
+      resourcePredictions: {
+        daysData: {
+          allWeekScheme: {
+            provisioningCount: 3
+          }
+        }
+        timeZone: 'UTC'
+      }
+      resourcePredictionsProfile: {
+        kind: 'Manual'
+      }
+    }
+    concurrency: 1
+    devCenterProjectResourceId: '<devCenterProjectResourceId>'
+    fabricProfileSkuName: 'Standard_DS2_v2'
+    images: [
+      {
+        wellKnownImageName: 'windows-2022/latest'
+      }
+    ]
+    name: 'mdpwk001'
+    organizationProfile: {
+      kind: 'AzureDevOps'
+      organizations: [
+        {
+          url: '<url>'
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "agentProfile": {
+      "value": {
+        "kind": "Stateless",
+        "resourcePredictions": {
+          "daysData": {
+            "allWeekScheme": {
+              "provisioningCount": 3
+            }
+          },
+          "timeZone": "UTC"
+        },
+        "resourcePredictionsProfile": {
+          "kind": "Manual"
+        }
+      }
+    },
+    "concurrency": {
+      "value": 1
+    },
+    "devCenterProjectResourceId": {
+      "value": "<devCenterProjectResourceId>"
+    },
+    "fabricProfileSkuName": {
+      "value": "Standard_DS2_v2"
+    },
+    "images": {
+      "value": [
+        {
+          "wellKnownImageName": "windows-2022/latest"
+        }
+      ]
+    },
+    "name": {
+      "value": "mdpwk001"
+    },
+    "organizationProfile": {
+      "value": {
+        "kind": "AzureDevOps",
+        "organizations": [
+          {
+            "url": "<url>"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictions: {
+    daysData: {
+      allWeekScheme: {
+        provisioningCount: 3
+      }
+    }
+    timeZone: 'UTC'
+  }
+  resourcePredictionsProfile: {
+    kind: 'Manual'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_DS2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpwk001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      url: '<url>'
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -67,8 +226,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         }
       ]
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -119,10 +276,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           }
         ]
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -159,14 +312,12 @@ param organizationProfile = {
     }
   ]
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -212,6 +363,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           'windows-2022'
         ]
         buffer: '*'
+        ephemeralType: 'Automatic'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -220,6 +372,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -232,10 +385,30 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     }
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -329,6 +502,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
             "windows-2022"
           ],
           "buffer": "*",
+          "ephemeralType": "Automatic",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -341,6 +515,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -354,6 +529,22 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -361,6 +552,14 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -452,6 +651,7 @@ param images = [
       'windows-2022'
     ]
     buffer: '*'
+    ephemeralType: 'Automatic'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -460,6 +660,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -472,10 +673,30 @@ param organizationProfile = {
   }
 }
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {
@@ -516,7 +737,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -542,6 +763,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     fabricProfileSkuName: 'Standard_D2_v2'
     images: [
       {
+        ephemeralType: 'CacheDisk'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -550,6 +772,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -602,6 +825,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     "images": {
       "value": [
         {
+          "ephemeralType": "CacheDisk",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -614,6 +838,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -660,6 +885,7 @@ param devCenterProjectResourceId = '<devCenterProjectResourceId>'
 param fabricProfileSkuName = 'Standard_D2_v2'
 param images = [
   {
+    ephemeralType: 'CacheDisk'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -668,6 +894,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -728,11 +955,11 @@ Defines how the machine will be handled once it executed a job.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Stateful`](#variant-agentprofilekind-stateful) |  |
-| [`Stateless`](#variant-agentprofilekind-stateless) |  |
+| [`Stateful`](#variant-agentprofilekind-stateful) | The type of a stateful agent profile. |
+| [`Stateless`](#variant-agentprofilekind-stateless) | The type of a stateless agent profile. |
 
 ### Variant: `agentProfile.kind-Stateful`
-
+The type of a stateful agent profile.
 
 To use this variant, set the property `kind` to `Stateful`.
 
@@ -815,6 +1042,7 @@ The number of agents needed at a specific time.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allWeekScheme`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataallweekscheme) | object | A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations. |
 | [`friday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatafriday) | object | The number of agents needed at a specific time for Friday. |
 | [`monday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatamonday) | object | The number of agents needed at a specific time for Monday. |
 | [`saturday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatasaturday) | object | The number of agents needed at a specific time for Saturday. |
@@ -822,6 +1050,26 @@ The number of agents needed at a specific time.
 | [`thursday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
 | [`tuesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
 | [`wednesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.allWeekScheme`
+
+A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`provisioningCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataallweekschemeprovisioningcount) | int | The agent count to provision throughout the week. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.allWeekScheme.provisioningCount`
+
+The agent count to provision throughout the week.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.friday`
 
@@ -1143,11 +1391,11 @@ Determines how the stand-by scheme should be provided.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Automatic`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-automatic) |  |
-| [`Manual`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-manual) |  |
+| [`Automatic`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-automatic) | The type of an automatic stand-by prediction profile. |
+| [`Manual`](#variant-agentprofilekind-statefulresourcepredictionsprofilekind-manual) | The type of a manual stand-by prediction profile. |
 
 ### Variant: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Automatic`
-
+The type of an automatic stand-by prediction profile.
 
 To use this variant, set the property `kind` to `Automatic`.
 
@@ -1189,7 +1437,7 @@ Determines the balance between cost and performance.
   ```
 
 ### Variant: `agentProfile.kind-Stateful.resourcePredictionsProfile.kind-Manual`
-
+The type of a manual stand-by prediction profile.
 
 To use this variant, set the property `kind` to `Manual`.
 
@@ -1213,7 +1461,7 @@ Customer provides the stand-by agent scheme.
   ```
 
 ### Variant: `agentProfile.kind-Stateless`
-
+The type of a stateless agent profile.
 
 To use this variant, set the property `kind` to `Stateless`.
 
@@ -1280,6 +1528,7 @@ The number of agents needed at a specific time.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allWeekScheme`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataallweekscheme) | object | A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations. |
 | [`friday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatafriday) | object | The number of agents needed at a specific time for Friday. |
 | [`monday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatamonday) | object | The number of agents needed at a specific time for Monday. |
 | [`saturday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatasaturday) | object | The number of agents needed at a specific time for Saturday. |
@@ -1287,6 +1536,26 @@ The number of agents needed at a specific time.
 | [`thursday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
 | [`tuesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
 | [`wednesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.allWeekScheme`
+
+A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`provisioningCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataallweekschemeprovisioningcount) | int | The agent count to provision throughout the week. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.allWeekScheme.provisioningCount`
+
+The agent count to provision throughout the week.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.friday`
 
@@ -1608,11 +1877,11 @@ Determines how the stand-by scheme should be provided.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Automatic`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-automatic) |  |
-| [`Manual`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-manual) |  |
+| [`Automatic`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-automatic) | The type of an automatic stand-by prediction profile. |
+| [`Manual`](#variant-agentprofilekind-statelessresourcepredictionsprofilekind-manual) | The type of a manual stand-by prediction profile. |
 
 ### Variant: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Automatic`
-
+The type of an automatic stand-by prediction profile.
 
 To use this variant, set the property `kind` to `Automatic`.
 
@@ -1654,7 +1923,7 @@ Determines the balance between cost and performance.
   ```
 
 ### Variant: `agentProfile.kind-Stateless.resourcePredictionsProfile.kind-Manual`
-
+The type of a manual stand-by prediction profile.
 
 To use this variant, set the property `kind` to `Manual`.
 
@@ -1720,6 +1989,7 @@ The VM images of the machines in the pool.
 | :-- | :-- | :-- |
 | [`aliases`](#parameter-imagesaliases) | array | List of aliases to reference the image by. |
 | [`buffer`](#parameter-imagesbuffer) | string | The percentage of the buffer to be allocated to this image. |
+| [`ephemeralType`](#parameter-imagesephemeraltype) | string | The ephemeral type of the image. |
 
 ### Parameter: `images.resourceId`
 
@@ -1749,6 +2019,21 @@ The percentage of the buffer to be allocated to this image.
 - Required: No
 - Type: string
 
+### Parameter: `images.ephemeralType`
+
+The ephemeral type of the image.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'CacheDisk'
+    'ResourceDisk'
+  ]
+  ```
+
 ### Parameter: `name`
 
 Name of the pool. It needs to be globally unique.
@@ -1762,124 +2047,6 @@ Defines the organization in which the pool will be used.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-organizationprofilekind) | string | Azure DevOps organization profile. |
-| [`organizations`](#parameter-organizationprofileorganizations) | array | The list of Azure DevOps organizations the pool should be present in.. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`permissionProfile`](#parameter-organizationprofilepermissionprofile) | object | The type of permission which determines which accounts are admins on the Azure DevOps pool. |
-
-### Parameter: `organizationProfile.kind`
-
-Azure DevOps organization profile.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDevOps'
-  ]
-  ```
-
-### Parameter: `organizationProfile.organizations`
-
-The list of Azure DevOps organizations the pool should be present in..
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`url`](#parameter-organizationprofileorganizationsurl) | string | The Azure DevOps organization URL in which the pool should be created. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`parallelism`](#parameter-organizationprofileorganizationsparallelism) | int | How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool. |
-| [`projects`](#parameter-organizationprofileorganizationsprojects) | array | List of projects in which the pool should be created. |
-
-### Parameter: `organizationProfile.organizations.url`
-
-The Azure DevOps organization URL in which the pool should be created.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `organizationProfile.organizations.parallelism`
-
-How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool.
-
-- Required: No
-- Type: int
-- MinValue: 1
-- MaxValue: 10000
-
-### Parameter: `organizationProfile.organizations.projects`
-
-List of projects in which the pool should be created.
-
-- Required: No
-- Type: array
-
-### Parameter: `organizationProfile.permissionProfile`
-
-The type of permission which determines which accounts are admins on the Azure DevOps pool.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-organizationprofilepermissionprofilekind) | string | Determines who has admin permissions to the Azure DevOps pool. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groups`](#parameter-organizationprofilepermissionprofilegroups) | array | Group email addresses. |
-| [`users`](#parameter-organizationprofilepermissionprofileusers) | array | User email addresses. |
-
-### Parameter: `organizationProfile.permissionProfile.kind`
-
-Determines who has admin permissions to the Azure DevOps pool.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CreatorOnly'
-    'Inherit'
-    'SpecificAccounts'
-  ]
-  ```
-
-### Parameter: `organizationProfile.permissionProfile.groups`
-
-Group email addresses.
-
-- Required: No
-- Type: array
-
-### Parameter: `organizationProfile.permissionProfile.users`
-
-User email addresses.
-
-- Required: No
-- Type: array
 
 ### Parameter: `diagnosticSettings`
 
@@ -2181,6 +2348,7 @@ The secret management settings of the machines in the pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateStoreLocation`](#parameter-osprofilesecretsmanagementsettingscertificatestorelocation) | string | Where to store certificates on the machine. |
+| [`certificateStoreName`](#parameter-osprofilesecretsmanagementsettingscertificatestorename) | string | Name of the certificate store to use on the machine. |
 
 ### Parameter: `osProfile.secretsManagementSettings.keyExportable`
 
@@ -2202,6 +2370,20 @@ Where to store certificates on the machine.
 
 - Required: No
 - Type: string
+
+### Parameter: `osProfile.secretsManagementSettings.certificateStoreName`
+
+Name of the certificate store to use on the machine.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'My'
+    'Root'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

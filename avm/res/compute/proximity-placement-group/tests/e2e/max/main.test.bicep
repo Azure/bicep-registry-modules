@@ -78,9 +78,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      zones: [
-        '1'
-      ]
+      availabilityZone: 1
       type: 'Standard'
       tags: {
         'hidden-title': 'This is visible in the resource name'

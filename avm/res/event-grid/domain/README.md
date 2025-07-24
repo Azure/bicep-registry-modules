@@ -18,6 +18,7 @@ This module deploys an Event Grid Domain.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.EventGrid/domains` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-06-01-preview/domains) |
+| `Microsoft.EventGrid/domains/eventSubscriptions` | [2025-02-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/domains/eventSubscriptions) |
 | `Microsoft.EventGrid/domains/topics` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/domains/topics) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -129,6 +130,23 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    eventSubscriptions: [
+      {
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueName: '<queueName>'
+            resourceId: '<resourceId>'
+          }
+        }
+        filter: {
+          includedEventTypes: [
+            'Microsoft.Resources.ResourceWriteSuccess'
+          ]
+        }
+        name: 'sub-egdmax001'
+      }
+    ]
     inboundIpRules: [
       {
         action: 'Allow'
@@ -139,6 +157,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
     }
     minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
@@ -232,6 +253,25 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         }
       ]
     },
+    "eventSubscriptions": {
+      "value": [
+        {
+          "destination": {
+            "endpointType": "StorageQueue",
+            "properties": {
+              "queueName": "<queueName>",
+              "resourceId": "<resourceId>"
+            }
+          },
+          "filter": {
+            "includedEventTypes": [
+              "Microsoft.Resources.ResourceWriteSuccess"
+            ]
+          },
+          "name": "sub-egdmax001"
+        }
+      ]
+    },
     "inboundIpRules": {
       "value": [
         {
@@ -247,6 +287,11 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
       }
     },
     "minimumTlsVersionAllowed": {
@@ -345,6 +390,23 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param eventSubscriptions = [
+  {
+    destination: {
+      endpointType: 'StorageQueue'
+      properties: {
+        queueName: '<queueName>'
+        resourceId: '<resourceId>'
+      }
+    }
+    filter: {
+      includedEventTypes: [
+        'Microsoft.Resources.ResourceWriteSuccess'
+      ]
+    }
+    name: 'sub-egdmax001'
+  }
+]
 param inboundIpRules = [
   {
     action: 'Allow'
@@ -355,6 +417,9 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
 }
 param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [
@@ -649,6 +714,7 @@ param topics = [
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -844,6 +910,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `eventSubscriptions`
+
+Event subscriptions to deploy.
+
+- Required: No
+- Type: array
 
 ### Parameter: `inboundIpRules`
 

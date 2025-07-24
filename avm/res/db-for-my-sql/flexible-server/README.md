@@ -17,11 +17,12 @@ This module deploys a DBforMySQL Flexible Server.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DBforMySQL/flexibleServers` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/administrators) |
-| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers/advancedThreatProtectionSettings) |
-| `Microsoft.DBforMySQL/flexibleServers/databases` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/databases) |
-| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/firewallRules) |
+| `Microsoft.DBforMySQL/flexibleServers` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers) |
+| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/administrators) |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/advancedThreatProtectionSettings) |
+| `Microsoft.DBforMySQL/flexibleServers/configurations` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/configurations) |
+| `Microsoft.DBforMySQL/flexibleServers/databases` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/databases) |
+| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
@@ -55,13 +56,13 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'dfmsfsmin001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    location: '<location>'
     storageAutoGrow: 'Enabled'
   }
 }
@@ -80,6 +81,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "dfmsfsmin001"
     },
@@ -95,9 +99,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
-    },
-    "location": {
-      "value": "<location>"
     },
     "storageAutoGrow": {
       "value": "Enabled"
@@ -117,13 +118,13 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'dfmsfsmin001'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param location = '<location>'
 param storageAutoGrow = 'Enabled'
 ```
 
@@ -278,6 +279,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'dfmsmax001'
     skuName: 'Standard_D2ads_v5'
     tier: 'GeneralPurpose'
@@ -285,8 +287,19 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     advancedThreatProtection: 'Enabled'
-    availabilityZone: '1'
     backupRetentionDays: 20
+    configurations: [
+      {
+        name: 'max_connections'
+        source: 'user-override'
+        value: '200'
+      }
+      {
+        name: 'innodb_buffer_pool_size'
+        source: 'user-override'
+        value: '1073741824'
+      }
+    ]
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -339,7 +352,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     geoRedundantBackup: 'Enabled'
-    highAvailability: 'ZoneRedundant'
+    highAvailability: 'Disabled'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -398,6 +411,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "dfmsmax001"
     },
@@ -417,11 +433,22 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "advancedThreatProtection": {
       "value": "Enabled"
     },
-    "availabilityZone": {
-      "value": "1"
-    },
     "backupRetentionDays": {
       "value": 20
+    },
+    "configurations": {
+      "value": [
+        {
+          "name": "max_connections",
+          "source": "user-override",
+          "value": "200"
+        },
+        {
+          "name": "innodb_buffer_pool_size",
+          "source": "user-override",
+          "value": "1073741824"
+        }
+      ]
     },
     "customerManagedKey": {
       "value": {
@@ -488,7 +515,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Enabled"
     },
     "highAvailability": {
-      "value": "ZoneRedundant"
+      "value": "Disabled"
     },
     "location": {
       "value": "<location>"
@@ -568,6 +595,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'dfmsmax001'
 param skuName = 'Standard_D2ads_v5'
 param tier = 'GeneralPurpose'
@@ -575,8 +603,19 @@ param tier = 'GeneralPurpose'
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param advancedThreatProtection = 'Enabled'
-param availabilityZone = '1'
 param backupRetentionDays = 20
+param configurations = [
+  {
+    name: 'max_connections'
+    source: 'user-override'
+    value: '200'
+  }
+  {
+    name: 'innodb_buffer_pool_size'
+    source: 'user-override'
+    value: '1073741824'
+  }
+]
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -629,7 +668,7 @@ param firewallRules = [
   }
 ]
 param geoRedundantBackup = 'Enabled'
-param highAvailability = 'ZoneRedundant'
+param highAvailability = 'Disabled'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -690,6 +729,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'dfmspvt001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
@@ -728,7 +768,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     highAvailability: 'SameZone'
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -756,6 +795,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "dfmspvt001"
     },
@@ -816,9 +858,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailability": {
       "value": "SameZone"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -856,6 +895,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'dfmspvt001'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
@@ -894,7 +934,6 @@ param firewallRules = [
   }
 ]
 param highAvailability = 'SameZone'
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -924,6 +963,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'dfmsppe001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
@@ -944,7 +984,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     highAvailability: 'SameZone'
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -989,6 +1028,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "dfmsppe001"
     },
@@ -1026,9 +1068,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "highAvailability": {
       "value": "SameZone"
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -1086,6 +1125,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'dfmsppe001'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
@@ -1106,7 +1146,6 @@ param databases = [
   }
 ]
 param highAvailability = 'SameZone'
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1153,20 +1192,15 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'dfmswaf001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    availabilityZone: '1'
     highAvailability: 'ZoneRedundant'
-    highAvailabilityZone: '2'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    highAvailabilityZone: 2
     storageAutoGrow: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
@@ -1190,6 +1224,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "dfmswaf001"
     },
@@ -1206,23 +1243,11 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
-    "availabilityZone": {
-      "value": "1"
-    },
     "highAvailability": {
       "value": "ZoneRedundant"
     },
     "highAvailabilityZone": {
-      "value": "2"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+      "value": 2
     },
     "storageAutoGrow": {
       "value": "Enabled"
@@ -1249,20 +1274,15 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'dfmswaf001'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param availabilityZone = '1'
 param highAvailability = 'ZoneRedundant'
-param highAvailabilityZone = '2'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
+param highAvailabilityZone = 2
 param storageAutoGrow = 'Enabled'
 param tags = {
   Environment: 'Non-Prod'
@@ -1280,6 +1300,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the MySQL flexible server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
 | [`tier`](#parameter-tier) | string | The tier of the particular SKU. Tier must align with the "skuName" property. Example, tier cannot be "Burstable" if skuName is "Standard_D4s_v3". |
@@ -1302,8 +1323,8 @@ param tags = {
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
 | [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server. |
-| [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
+| [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new MySQL server. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyGeo`](#parameter-customermanagedkeygeo) | object | The customer managed key definition to use when geoRedundantBackup is "Enabled". |
@@ -1314,7 +1335,7 @@ param tags = {
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the MySQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. If "Enabled" and "cMKKeyName" is not empty, then "geoBackupCMKKeyVaultResourceId" and "cMKUserAssignedIdentityResourceId" are also required. |
 | [`highAvailability`](#parameter-highavailability) | string | The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning. |
-| [`highAvailabilityZone`](#parameter-highavailabilityzone) | string | Standby availability zone information of the server. Default will have no preference set. |
+| [`highAvailabilityZone`](#parameter-highavailabilityzone) | int | Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
@@ -1327,6 +1348,22 @@ param tags = {
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. In all compute tiers, the minimum storage supported is 20 GiB and maximum is 16 TiB. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`version`](#parameter-version) | string | MySQL Server version. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -1451,23 +1488,6 @@ Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.
   ]
   ```
 
-### Parameter: `availabilityZone`
-
-Availability zone information of the server. Default will have no preference set.
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    '1'
-    '2'
-    '3'
-  ]
-  ```
-
 ### Parameter: `backupRetentionDays`
 
 Backup retention days for the server.
@@ -1477,6 +1497,54 @@ Backup retention days for the server.
 - Default: `7`
 - MinValue: 1
 - MaxValue: 35
+
+### Parameter: `configurations`
+
+The configurations to create in the server.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-configurationsname) | string | The name of the configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`source`](#parameter-configurationssource) | string | Source of the configuration. |
+| [`value`](#parameter-configurationsvalue) | string | Value of the configuration. |
+
+### Parameter: `configurations.name`
+
+The name of the configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `configurations.source`
+
+Source of the configuration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'system-default'
+    'user-override'
+  ]
+  ```
+
+### Parameter: `configurations.value`
+
+Value of the configuration.
+
+- Required: No
+- Type: string
 
 ### Parameter: `createMode`
 
@@ -1803,11 +1871,20 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
 
 ### Parameter: `highAvailabilityZone`
 
-Standby availability zone information of the server. Default will have no preference set.
+Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: int
+- Default: `-1`
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `location`
 

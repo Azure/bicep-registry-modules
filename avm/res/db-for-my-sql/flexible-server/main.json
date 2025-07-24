@@ -9,13 +9,46 @@
     ],
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "1642081039905944114"
+      "version": "0.36.177.2456",
+      "templateHash": "9610133962890939296"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
   },
   "definitions": {
+    "configurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the configuration."
+          }
+        },
+        "source": {
+          "type": "string",
+          "allowedValues": [
+            "system-default",
+            "user-override"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Source of the configuration."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value of the configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a configuration"
+      }
+    },
     "privateEndpointOutputType": {
       "type": "object",
       "properties": {
@@ -744,10 +777,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "administratorLogin": {
       "type": "string",
@@ -788,23 +824,28 @@
       }
     },
     "availabilityZone": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
       "allowedValues": [
-        "",
-        "1",
-        "2",
-        "3"
+        -1,
+        1,
+        2,
+        3
       ],
       "metadata": {
-        "description": "Optional. Availability zone information of the server. Default will have no preference set."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "highAvailabilityZone": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
+      "defaultValue": -1,
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. Standby availability zone information of the server. Default will have no preference set."
+        "description": "Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set."
       }
     },
     "backupRetentionDays": {
@@ -875,10 +916,13 @@
     },
     "maintenanceWindow": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/properties/properties/maintenanceWindow"
+        },
         "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
-      }
+      },
+      "defaultValue": {}
     },
     "delegatedSubnetResourceId": {
       "type": "string",
@@ -1007,6 +1051,16 @@
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
       }
     },
+    "configurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/configurationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The configurations to create in the server."
+      }
+    },
     "advancedThreatProtection": {
       "type": "string",
       "defaultValue": "Enabled",
@@ -1065,12 +1119,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
-    "standByAvailabilityZoneTable": {
-      "Disabled": null,
-      "SameZone": "[parameters('availabilityZone')]",
-      "ZoneRedundant": "[parameters('highAvailabilityZone')]"
-    },
-    "standByAvailabilityZone": "[tryGet(variables('standByAvailabilityZoneTable'), parameters('highAvailability'))]",
+    "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1087,7 +1136,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1096,7 +1145,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKeyGeo'), 'keyName'))]"
@@ -1125,7 +1174,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1134,7 +1183,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -1143,7 +1192,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/'))]"
@@ -1152,14 +1201,14 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "flexibleServer": {
       "type": "Microsoft.DBforMySQL/flexibleServers",
-      "apiVersion": "2024-10-01-preview",
+      "apiVersion": "2024-12-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1171,7 +1220,7 @@
       "properties": {
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "availabilityZone": "[parameters('availabilityZone')]",
+        "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), null())]",
         "backup": {
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
           "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
@@ -1180,7 +1229,7 @@
         "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('type', 'AzureKeyVault', 'geoBackupKeyURI', if(equals(parameters('geoRedundantBackup'), 'Enabled'), if(not(empty(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKGeoKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKeyGeo'), 'keyVersion')), reference('cMKGeoKeyVault::cMKKey').keyUriWithVersion), null()), 'geoBackupUserAssignedIdentityId', if(equals(parameters('geoRedundantBackup'), 'Enabled'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/'))), null()), 'primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
-          "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
+          "standbyAvailabilityZone": "[if(not(equals(variables('standByAvailabilityZone'), -1)), string(variables('standByAvailabilityZone')), null())]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": {
@@ -1319,8 +1368,8 @@
             ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "15661095256291299483"
+              "version": "0.36.177.2456",
+              "templateHash": "7607100665392844680"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1362,7 +1411,7 @@
             },
             "database": {
               "type": "Microsoft.DBforMySQL/flexibleServers/databases",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
@@ -1437,8 +1486,8 @@
             ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10791701534871605589"
+              "version": "0.36.177.2456",
+              "templateHash": "11759054215682586729"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1478,7 +1527,7 @@
             },
             "firewallRule": {
               "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1556,8 +1605,8 @@
             ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14009485938235832570"
+              "version": "0.36.177.2456",
+              "templateHash": "11105219403461345447"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1604,7 +1653,7 @@
             },
             "administrator": {
               "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
               "properties": {
                 "administratorType": "ActiveDirectory",
@@ -1644,6 +1693,124 @@
         "flexibleServer"
       ]
     },
+    "flexibleServer_configurations": {
+      "copy": {
+        "name": "flexibleServer_configurations",
+        "count": "[length(coalesce(parameters('configurations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-Configuration-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('configurations'), createArray())[copyIndex()].name]"
+          },
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "source": {
+            "value": "[tryGet(coalesce(parameters('configurations'), createArray())[copyIndex()], 'source')]"
+          },
+          "value": {
+            "value": "[tryGet(coalesce(parameters('configurations'), createArray())[copyIndex()], 'value')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.177.2456",
+              "templateHash": "17826526974982250438"
+            },
+            "name": "DBforMySQL Flexible Server Configurations",
+            "description": "This module deploys a DBforMySQL Flexible Server Configuration."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the configuration."
+              }
+            },
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "source": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "system-default",
+                "user-override"
+              ],
+              "metadata": {
+                "description": "Optional. Source of the configuration."
+              }
+            },
+            "value": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Value of the configuration."
+              }
+            }
+          },
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-12-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "configuration": {
+              "type": "Microsoft.DBforMySQL/flexibleServers/configurations",
+              "apiVersion": "2024-12-01-preview",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+              "properties": {
+                "source": "[parameters('source')]",
+                "value": "[parameters('value')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed configuration."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/configurations', parameters('flexibleServerName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name of the deployed configuration."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
     "flexibleServer_advancedThreatProtection": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1672,8 +1839,8 @@
             ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13820485544041430219"
+              "version": "0.36.177.2456",
+              "templateHash": "2980081786222066300"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -1706,7 +1873,7 @@
             },
             "advancedThreatProtectionSettings": {
               "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
-              "apiVersion": "2024-10-01-preview",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
               "properties": {
                 "state": "[parameters('advancedThreatProtection')]"
@@ -2528,7 +2695,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flexibleServer', '2024-10-01-preview', 'full').location]"
+      "value": "[reference('flexibleServer', '2024-12-01-preview', 'full').location]"
     },
     "fqdn": {
       "type": "string",
