@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "18373787811491819427"
+      "templateHash": "2467503612762973649"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -4101,6 +4101,13 @@
         "description": "Optional. The resource ID of the app service plan to use for the slot."
       }
     },
+    "managedEnvironmentResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app."
+      }
+    },
     "httpsOnly": {
       "type": "bool",
       "defaultValue": true,
@@ -4113,6 +4120,20 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. If client affinity is enabled."
+      }
+    },
+    "clientAffinityProxyEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true."
+      }
+    },
+    "clientAffinityPartitioningEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false."
       }
     },
     "appServiceEnvironmentResourceId": {
@@ -4349,26 +4370,15 @@
         "description": "Optional. The site publishing credential policy names which are associated with the site slot."
       }
     },
-    "vnetContentShareEnabled": {
-      "type": "bool",
-      "defaultValue": false,
+    "outboundVnetRouting": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. To enable accessing content over virtual network."
-      }
-    },
-    "vnetImagePullEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. To enable pulling image over Virtual Network."
-      }
-    },
-    "vnetRouteAllEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2024-11-01#properties/properties/properties/outboundVnetRouting"
+        },
+        "description": "Optional. The outbound VNET routing configuration for the site."
+      },
+      "nullable": true
     },
     "hybridConnectionRelays": {
       "type": "array",
@@ -4424,26 +4434,32 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
       "Web Plan Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')]",
       "Website Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]"
-    }
+    },
+    "managedEnvironmentSupportedKinds": [
+      "functionapp,linux,container,azurecontainerapps"
+    ]
   },
   "resources": {
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('appName')]"
     },
     "slot": {
       "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "serverFarmId": "[parameters('serverFarmResourceId')]",
+        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+        "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), or(not(empty(reference('app').managedEnvironmentId)), not(empty(parameters('managedEnvironmentResourceId'))))), null(), parameters('serverFarmResourceId'))]",
         "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
+        "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
+        "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",
         "httpsOnly": "[parameters('httpsOnly')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('id', parameters('appServiceEnvironmentResourceId')), null())]",
         "storageAccountRequired": "[parameters('storageAccountRequired')]",
@@ -4463,12 +4479,13 @@
         "hyperV": "[parameters('hyperV')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "redundancyMode": "[parameters('redundancyMode')]",
-        "vnetContentShareEnabled": "[parameters('vnetContentShareEnabled')]",
-        "vnetImagePullEnabled": "[parameters('vnetImagePullEnabled')]",
-        "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]",
         "dnsConfiguration": "[parameters('dnsConfiguration')]",
-        "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]"
-      }
+        "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
+        "outboundVnetRouting": "[parameters('outboundVnetRouting')]"
+      },
+      "dependsOn": [
+        "app"
+      ]
     },
     "slot_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -5904,14 +5921,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('slot', '2024-04-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('slot', '2024-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('slot', '2024-04-01', 'full').location]"
+      "value": "[reference('slot', '2024-11-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
