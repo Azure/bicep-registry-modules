@@ -151,7 +151,6 @@ The resource portal dashboards name.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
