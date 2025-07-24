@@ -30,6 +30,9 @@ param kind string
 @description('Optional. The resource ID of the app service plan to use for the slot.')
 param serverFarmResourceId string?
 
+@description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
+param managedEnvironmentResourceId string?
+
 @description('Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
 
@@ -207,6 +210,11 @@ var builtInRoleNames = {
   )
 }
 
+// List of site kinds that support managed environment
+var managedEnvironmentSupportedKinds = [
+  'functionapp,linux,container,azurecontainerapps'
+]
+
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
     roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
@@ -230,7 +238,10 @@ resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
   tags: tags
   identity: identity
   properties: {
-    serverFarmId: serverFarmResourceId
+    managedEnvironmentId: !empty(managedEnvironmentResourceId) ? managedEnvironmentResourceId : null
+    serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && (!empty(app.properties.managedEnvironmentId) || !empty(managedEnvironmentResourceId))
+      ? null
+      : serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled
     clientAffinityProxyEnabled: clientAffinityProxyEnabled
     clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled

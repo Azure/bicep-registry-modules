@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "8708892069000883058"
+      "templateHash": "14882810550653377719"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -197,6 +197,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID of the app service plan to use for the slot."
+          }
+        },
+        "managedEnvironmentResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app."
           }
         },
         "httpsOnly": {
@@ -4516,10 +4523,10 @@
     "serverFarmResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The resource ID of the app service plan to use for the site."
+        "description": "Required. The resource ID of the app service plan to use for the site. Set as empty string when using a managed environment id for container apps."
       }
     },
-    "managedEnvironmentId": {
+    "managedEnvironmentResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -4873,6 +4880,9 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "managedEnvironmentSupportedKinds": [
+      "functionapp,linux,container,azurecontainerapps"
+    ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -4916,8 +4926,8 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentId'))), parameters('managedEnvironmentId'), null())]",
-        "serverFarmId": "[parameters('serverFarmResourceId')]",
+        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+        "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentResourceId')))), null(), parameters('serverFarmResourceId'))]",
         "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
         "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
         "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",
@@ -5348,8 +5358,9 @@
           "kind": {
             "value": "[parameters('kind')]"
           },
-          "serverFarmResourceId": {
-            "value": "[parameters('serverFarmResourceId')]"
+          "serverFarmResourceId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentResourceId')))), createObject('value', null()), createObject('value', parameters('serverFarmResourceId')))]",
+          "managedEnvironmentResourceId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedEnvironmentResourceId'), parameters('managedEnvironmentResourceId'))]"
           },
           "httpsOnly": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'httpsOnly'), parameters('httpsOnly'))]"
@@ -5459,7 +5470,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "4401647317916070891"
+              "templateHash": "2467503612762973649"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -9554,6 +9565,13 @@
                 "description": "Optional. The resource ID of the app service plan to use for the slot."
               }
             },
+            "managedEnvironmentResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app."
+              }
+            },
             "httpsOnly": {
               "type": "bool",
               "defaultValue": true,
@@ -9880,7 +9898,10 @@
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
               "Web Plan Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')]",
               "Website Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]"
-            }
+            },
+            "managedEnvironmentSupportedKinds": [
+              "functionapp,linux,container,azurecontainerapps"
+            ]
           },
           "resources": {
             "app": {
@@ -9898,7 +9919,8 @@
               "tags": "[parameters('tags')]",
               "identity": "[variables('identity')]",
               "properties": {
-                "serverFarmId": "[parameters('serverFarmResourceId')]",
+                "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+                "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), or(not(empty(reference('app').managedEnvironmentId)), not(empty(parameters('managedEnvironmentResourceId'))))), null(), parameters('serverFarmResourceId'))]",
                 "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
                 "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
                 "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",
@@ -9924,7 +9946,10 @@
                 "dnsConfiguration": "[parameters('dnsConfiguration')]",
                 "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
                 "outboundVnetRouting": "[parameters('outboundVnetRouting')]"
-              }
+              },
+              "dependsOn": [
+                "app"
+              ]
             },
             "slot_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
