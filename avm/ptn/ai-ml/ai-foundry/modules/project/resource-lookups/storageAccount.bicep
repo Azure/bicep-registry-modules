@@ -1,8 +1,20 @@
+@description('Optional. Name of the storage connection. If not provided, the name will default to the Storage Account name + Container Name.')
+param name string?
+
+@description('Required. The name of the existing AI Foundry Account.')
+param accountName string
+
+@description('Required. The name of the existing AI Foundry project to connect to the Storage Account.')
+param projectName string
+
 @description('Required. The Resource ID or name of the existing Storage Account to connect to.')
 param resourceIdOrName string
 
+@description('Required. The name of the container in the Storage Account to use for the connection.')
+param containerName string
+
 module parsedResourceId '../../parseResourceId.bicep' = {
-  name: take('project-storage-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-resource-id', 64)
+  name: take('proj-storage-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-rid', 64)
   params: {
     resourceIdOrName: resourceIdOrName
   }
@@ -15,14 +27,37 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
   scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
 }
 
-@description('Name of the Storage Account.')
-output name string = storageAccount.name
+resource account 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+  name: accountName
+}
 
-@description('Resource ID of the Storage Account.')
-output resourceId string = storageAccount.id
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = {
+  name: projectName
+  parent: account
+}
 
-@description('Blob endpoint of the Storage Account.')
-output blobEndpoint string = storageAccount!.properties.primaryEndpoints.blob
+resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+  name: !empty(name) ? name! : '${storageAccount!.name}-${containerName}'
+  parent: project
+  properties: {
+    category: 'AzureBlob'
+    target: storageAccount!.properties.primaryEndpoints.blob
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: storageAccount.id
+      location: storageAccount!.location
+      accountName: storageAccount.name
+      containerName: containerName
+    }
+  }
+}
 
-@description('Location of the Storage Account.')
-output location string = storageAccount!.location
+@description('Resource ID of the Storage Account connection.')
+output resourceId string = connection.id
+
+@description('Name of the Storage Account connection.')
+output name string = connection.name
+
+@description('Target endpoint of the Storage Account connection.')
+output target string = connection.properties.target

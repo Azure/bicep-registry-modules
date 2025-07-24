@@ -1,8 +1,17 @@
-@description('Required. The Resource ID or name of the existing AI Service.')
+@description('Optional. Name of the AI Service connection. If not provided, the name will default to the AI Service name.')
+param name string?
+
+@description('Required. The name of the existing AI Foundry Account.')
+param accountName string
+
+@description('Required. The name of the existing AI Foundry project to connect to the AI Service.')
+param projectName string
+
+@description('Required. The Resource ID or name of the existing AI Service to connect to.')
 param resourceIdOrName string
 
 module parsedResourceId '../../parseResourceId.bicep' = {
-  name: take('project-ai-service-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-resource-id', 64)
+  name: take('proj-ai-service-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-rid', 64)
   params: {
     resourceIdOrName: resourceIdOrName
   }
@@ -15,14 +24,36 @@ resource aiService 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = 
   scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
 }
 
-@description('Resource ID of the AI Service.')
-output resourceId string = aiService.id
+resource account 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+  name: accountName
+}
 
-@description('Name of the AI Service.')
-output name string = aiService.name
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = {
+  name: projectName
+  parent: account
+}
 
-@description('Endpoint of the AI Service.')
-output endpoint string = aiService!.properties.endpoint
+resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+  name: !empty(name) ? name! : aiService!.name
+  parent: project
+  properties: {
+    category: 'AIServices'
+    target: aiService!.properties.endpoint
+    authType: 'AAD'
 
-@description('Location of the AI Service.')
-output location string = aiService!.location
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: aiService!.id
+      location: aiService!.location
+    }
+  }
+}
+
+@description('Resource ID of the AI Service connection.')
+output resourceId string = connection.id
+
+@description('Name of the AI Service connection.')
+output name string = connection.name
+
+@description('Target endpoint of the AI Service connection.')
+output target string = connection.properties.target

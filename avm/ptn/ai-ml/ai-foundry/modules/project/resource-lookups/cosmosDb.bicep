@@ -1,8 +1,17 @@
+@description('Optional. Name of the Cosmos DB connection. If not provided, the name will default to the Cosmos DB Account name.')
+param name string?
+
+@description('Required. The name of the existing AI Foundry Account.')
+param accountName string
+
+@description('Required. The name of the existing AI Foundry project to connect to the Cosmos DB Account.')
+param projectName string
+
 @description('Required. The Resource ID or name of the existing Cosmos DB Account to connect to.')
 param resourceIdOrName string
 
 module parsedResourceId '../../parseResourceId.bicep' = {
-  name: take('project-cosmos-db-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-resource-id', 64)
+  name: take('proj-cosmos-db-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-rid', 64)
   params: {
     resourceIdOrName: resourceIdOrName
   }
@@ -15,14 +24,35 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
 }
 
-@description('Resource ID of the Cosmos DB.')
-output resourceId string = cosmosDb.id
+resource account 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+  name: accountName
+}
+
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = {
+  name: projectName
+  parent: account
+}
+
+resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+  name: !empty(name) ? name! : cosmosDb!.name
+  parent: project
+  properties: {
+    category: 'CosmosDB'
+    target: cosmosDb!.properties.documentEndpoint
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: cosmosDb!.id
+      location: cosmosDb!.location
+    }
+  }
+}
+
+@description('Resource ID of the Cosmos DB connection.')
+output resourceId string = connection.id
 
 @description('Name of the Cosmos DB connection.')
-output name string = cosmosDb.name
+output name string = connection.name
 
-@description('Document endpoint of the Cosmos DB.')
-output documentEndpoint string = cosmosDb!.properties.documentEndpoint
-
-@description('Location of the Cosmos DB.')
-output location string = cosmosDb!.location
+@description('Target endpoint of the Cosmos DB connection.')
+output target string = connection.properties.target

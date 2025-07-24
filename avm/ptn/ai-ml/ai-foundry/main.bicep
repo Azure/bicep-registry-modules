@@ -66,7 +66,10 @@ var projectName = !empty(aiFoundryConfiguration.?project.?name)
   : 'proj-${resourcesName}'
 
 // set a default storage container name so that connection to project can be established in default state
-var storageAccountContainers = storageAccountConfiguration.?containers ?? [projectName]
+// also set to empty if not including associated resources so project connections are only made when included associated resources
+var storageAccountContainers = includeAssociatedResources
+  ? (storageAccountConfiguration.?containers ?? [projectName])
+  : []
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -350,14 +353,14 @@ module foundryProject 'modules/project/main.bicep' = {
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
-    aiSearchConnection: includeAssociatedResources ? { resourceId: aiSearchResourceId } : null
-    cosmosDbConnection: includeAssociatedResources ? { resourceId: cosmosDbResourceId } : null
-    storageAccountConnection: includeAssociatedResources
-      ? {
-          resourceId: storageAccountResourceId
-          containers: storageAccountContainers
-        }
-      : null
+    aiSearchConnections: includeAssociatedResources ? [{ resourceId: aiSearchResourceId }] : []
+    cosmosDbConnections: includeAssociatedResources ? [{ resourceId: cosmosDbResourceId }] : []
+    storageAccountConnections: [
+      for (container, i) in storageAccountContainers ?? []: {
+        resourceId: storageAccountResourceId
+        containerName: container
+      }
+    ]
     tags: tags
     lock: lock
   }
