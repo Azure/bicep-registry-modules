@@ -59,7 +59,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
 }
 
 @batchSize(1)
-module aiServicesConnResources 'resource-lookups/aiServices.bicep' = [
+module aiServicesConnResources 'connections/aiServices.bicep' = [
   for connection in aiServicesConnections ?? []: {
     name: take('${name}-ai-services-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
     params: {
@@ -72,7 +72,7 @@ module aiServicesConnResources 'resource-lookups/aiServices.bicep' = [
 ]
 
 @batchSize(1)
-module aiSearchConnResources 'resource-lookups/aiSearch.bicep' = [
+module aiSearchConnResources 'connections/aiSearch.bicep' = [
   for connection in aiSearchConnections ?? []: {
     name: take('${name}-ai-search-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
     params: {
@@ -85,7 +85,7 @@ module aiSearchConnResources 'resource-lookups/aiSearch.bicep' = [
 ]
 
 @batchSize(1)
-module cosmosDbConnResources 'resource-lookups/cosmosDb.bicep' = [
+module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
   for connection in cosmosDbConnections ?? []: {
     name: take('${name}-cosmos-db-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
     params: {
@@ -98,7 +98,7 @@ module cosmosDbConnResources 'resource-lookups/cosmosDb.bicep' = [
 ]
 
 @batchSize(1)
-module storageAccountConnResources 'resource-lookups/storageAccount.bicep' = [
+module storageAccountConnResources 'connections/storageAccount.bicep' = [
   for connection in storageAccountConnections ?? []: {
     name: take('${name}-storage-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
     params: {
