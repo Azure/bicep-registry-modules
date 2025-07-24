@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Introduced a type for the `tags` parameter
 - Updated `avm-common-types` which in turn allows the specification of 'Notes' on locks
 - Addressed diverse warnings
+- Added discriminated type for `redundancySettings` to mimic Portal behavior. `crossRegionRestore` is only available if `standardTierStorageRedundancy` is set to 'GeoRedundant'.
 
 ### Breaking Changes
 
