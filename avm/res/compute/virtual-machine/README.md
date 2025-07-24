@@ -68,6 +68,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -102,7 +103,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
@@ -132,6 +132,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": -1
     },
     "imageReference": {
       "value": {
@@ -179,9 +182,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
     "configurationProfile": {
       "value": "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction"
@@ -216,6 +216,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -250,7 +251,6 @@ param osDisk = {
 }
 param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
 param disablePasswordAuthentication = true
@@ -281,6 +281,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -308,7 +309,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
@@ -337,6 +337,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": -1
     },
     "imageReference": {
       "value": {
@@ -377,9 +380,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
     "disablePasswordAuthentication": {
       "value": true
@@ -411,6 +411,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -438,7 +439,6 @@ param osDisk = {
 }
 param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param disablePasswordAuthentication = true
 param location = '<location>'
@@ -468,13 +468,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdministrator'
+    availabilityZone: 1
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
       sku: '<sku>'
       version: 'latest'
     }
-    name: 'cvmlinmax'
+    name: 'cvmlimax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -586,7 +587,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
-    zone: 1
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
@@ -768,6 +768,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdministrator"
     },
+    "availabilityZone": {
+      "value": 1
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-focal",
@@ -777,7 +780,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlinmax"
+      "value": "cvmlimax"
     },
     "nicConfigurations": {
       "value": [
@@ -897,9 +900,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 1
     },
     // Non-required parameters
     "backupPolicyName": {
@@ -1126,13 +1126,14 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdministrator'
+param availabilityZone = 1
 param imageReference = {
   offer: '0001-com-ubuntu-server-focal'
   publisher: 'Canonical'
   sku: '<sku>'
   version: 'latest'
 }
-param name = 'cvmlinmax'
+param name = 'cvmlimax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -1244,7 +1245,6 @@ param osDisk = {
 }
 param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
-param zone = 1
 // Non-required parameters
 param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
@@ -1426,6 +1426,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
+    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1516,7 +1517,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
     backupPolicyName: '<backupPolicyName>'
@@ -1703,6 +1703,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
+    "availabilityZone": {
+      "value": 2
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -1804,9 +1807,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 2
     },
     // Non-required parameters
     "adminPassword": {
@@ -2040,6 +2040,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'VMAdmin'
+param availabilityZone = 2
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2130,7 +2131,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param backupPolicyName = '<backupPolicyName>'
@@ -2317,6 +2317,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2344,7 +2345,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -2367,6 +2367,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": -1
     },
     "imageReference": {
       "value": {
@@ -2407,9 +2410,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -2433,6 +2433,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2460,7 +2461,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param location = '<location>'
@@ -2484,6 +2484,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: 1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2511,7 +2512,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 1
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -2556,6 +2556,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "availabilityZone": {
+      "value": 1
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2594,9 +2597,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 1
     },
     // Non-required parameters
     "adminPassword": {
@@ -2646,6 +2646,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = 1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2673,7 +2674,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 1
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
@@ -2718,6 +2718,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2749,7 +2750,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionGuestConfigurationExtension: {
@@ -2802,6 +2802,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "availabilityZone": {
+      "value": -1
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2844,9 +2847,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 0
     },
     // Non-required parameters
     "adminPassword": {
@@ -2906,6 +2906,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2937,7 +2938,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionGuestConfigurationExtension = {
@@ -2990,6 +2990,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -3017,7 +3018,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
@@ -3064,6 +3064,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "availabilityZone": {
+      "value": -1
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -3102,9 +3105,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 0
     },
     // Non-required parameters
     "adminPassword": {
@@ -3158,6 +3158,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -3185,7 +3186,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionAadJoinConfig = {
@@ -3232,6 +3232,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
+    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -3346,7 +3347,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 2
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3573,6 +3573,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
+    "availabilityZone": {
+      "value": 2
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -3698,9 +3701,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 2
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -3978,6 +3978,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'VMAdmin'
+param availabilityZone = 2
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4092,7 +4093,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 2
 // Non-required parameters
 param additionalUnattendContent = [
   {
@@ -4319,6 +4319,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4346,7 +4347,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_NV6ads_A10_v5'
-    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionNvidiaGpuDriverWindows: {
@@ -4373,6 +4373,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": -1
     },
     "imageReference": {
       "value": {
@@ -4413,9 +4416,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_NV6ads_A10_v5"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -4447,6 +4447,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4474,7 +4475,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_NV6ads_A10_v5'
-param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionNvidiaGpuDriverWindows = {
@@ -4502,6 +4502,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'
+    availabilityZone: -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4523,24 +4524,19 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     osDisk: {
       diskSizeGB: 128
       managedDisk: {
-        diskEncryptionSet: {
-          id: '<id>'
-        }
+        diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
         storageAccountType: 'Premium_LRS'
       }
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
       {
         diskSizeGB: 128
         managedDisk: {
-          diskEncryptionSet: {
-            id: '<id>'
-          }
+          diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
           storageAccountType: 'Premium_LRS'
         }
       }
@@ -4565,6 +4561,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "VMAdministrator"
+    },
+    "availabilityZone": {
+      "value": -1
     },
     "imageReference": {
       "value": {
@@ -4594,9 +4593,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "diskSizeGB": 128,
         "managedDisk": {
-          "diskEncryptionSet": {
-            "id": "<id>"
-          },
+          "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
           "storageAccountType": "Premium_LRS"
         }
       }
@@ -4607,9 +4604,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -4619,9 +4613,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         {
           "diskSizeGB": 128,
           "managedDisk": {
-            "diskEncryptionSet": {
-              "id": "<id>"
-            },
+            "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
             "storageAccountType": "Premium_LRS"
           }
         }
@@ -4646,6 +4638,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'VMAdministrator'
+param availabilityZone = -1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4667,24 +4660,19 @@ param nicConfigurations = [
 param osDisk = {
   diskSizeGB: 128
   managedDisk: {
-    diskEncryptionSet: {
-      id: '<id>'
-    }
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     storageAccountType: 'Premium_LRS'
   }
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
   {
     diskSizeGB: 128
     managedDisk: {
-      diskEncryptionSet: {
-        id: '<id>'
-      }
+      diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
       storageAccountType: 'Premium_LRS'
     }
   }
@@ -4710,6 +4698,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4737,7 +4726,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -4761,6 +4749,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": -1
     },
     "imageReference": {
       "value": {
@@ -4801,9 +4792,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -4830,6 +4818,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = -1
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4857,7 +4846,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param location = '<location>'
@@ -4882,6 +4870,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4909,7 +4898,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
-    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -4941,6 +4929,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 2
     },
     "imageReference": {
       "value": {
@@ -4981,9 +4972,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
-    "zone": {
-      "value": 2
-    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -5018,6 +5006,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param adminUsername = 'localAdminUser'
+param availabilityZone = 2
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -5045,7 +5034,6 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
-param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
@@ -5070,13 +5058,13 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 | [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
 | [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`osType`](#parameter-ostype) | string | The chosen OS type. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VMs. |
-| [`zone`](#parameter-zone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 
 **Optional parameters**
 
@@ -5094,6 +5082,7 @@ param location = '<location>'
 | [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Custom storage account used to store boot diagnostic information. Boot diagnostics will be enabled with a custom storage account if a value is provided. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
 | [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
+| [`capacityReservationGroupResourceId`](#parameter-capacityreservationgroupresourceid) | string | Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved. |
 | [`certificatesToBeInstalled`](#parameter-certificatestobeinstalled) | array | Specifies set of certificates that should be installed onto the virtual machine. |
 | [`computerName`](#parameter-computername) | string | Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name. |
 | [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile. |
@@ -5115,9 +5104,9 @@ param location = '<location>'
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionGuestConfigurationExtension`](#parameter-extensionguestconfigurationextension) | object | The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
+| [`extensionGuestConfigurationExtension`](#parameter-extensionguestconfigurationextension) | object | The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity. |
 | [`extensionGuestConfigurationExtensionProtectedSettings`](#parameter-extensionguestconfigurationextensionprotectedsettings) | secureObject | An object that contains the extension specific protected settings. |
-| [`extensionHostPoolRegistration`](#parameter-extensionhostpoolregistration) | object | The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
+| [`extensionHostPoolRegistration`](#parameter-extensionhostpoolregistration) | secureObject | The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
@@ -5130,6 +5119,7 @@ param location = '<location>'
 | [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationresourceid) | string | The resource Id of a maintenance configuration for this VM. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
 | [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
+| [`networkAccessPolicy`](#parameter-networkaccesspolicy) | string | Policy for accessing the disk via network. |
 | [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
 | [`patchMode`](#parameter-patchmode) | string | VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'. |
 | [`plan`](#parameter-plan) | object | Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use. |
@@ -5137,6 +5127,7 @@ param location = '<location>'
 | [`provisionVMAgent`](#parameter-provisionvmagent) | bool | Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`publicKeys`](#parameter-publickeys) | array | The list of SSH public keys used to authenticate with linux based VMs. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Policy for controlling export on the disk. |
 | [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
@@ -5162,6 +5153,22 @@ Administrator username.
 
 - Required: Yes
 - Type: securestring
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `imageReference`
 
@@ -6936,22 +6943,6 @@ Specifies the size for the VMs.
 - Required: Yes
 - Type: string
 
-### Parameter: `zone`
-
-If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
-
-- Required: Yes
-- Type: int
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
-
 ### Parameter: `additionalUnattendContent`
 
 Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.
@@ -7170,6 +7161,14 @@ Enables customer to schedule patching without accidental upgrades.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `capacityReservationGroupResourceId`
+
+Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `certificatesToBeInstalled`
 
@@ -7581,7 +7580,7 @@ The configuration for the [Desired State Configuration] extension. Must at least
 
 ### Parameter: `extensionGuestConfigurationExtension`
 
-The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.
+The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.
 
 - Required: No
 - Type: object
@@ -7602,10 +7601,10 @@ An object that contains the extension specific protected settings.
 
 ### Parameter: `extensionHostPoolRegistration`
 
-The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.
+The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.
 
 - Required: No
-- Type: object
+- Type: secureObject
 - Default:
   ```Bicep
   {
@@ -7840,6 +7839,22 @@ Specifies the maximum price you are willing to pay for a low priority VM/VMSS. T
 - Type: string
 - Default: `''`
 
+### Parameter: `networkAccessPolicy`
+
+Policy for accessing the disk via network.
+
+- Required: No
+- Type: string
+- Default: `'DenyAll'`
+- Allowed:
+  ```Bicep
+  [
+    'AllowAll'
+    'AllowPrivate'
+    'DenyAll'
+  ]
+  ```
+
 ### Parameter: `patchAssessmentMode`
 
 VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours.
@@ -7976,6 +7991,21 @@ Specifies the full path on the created VM where ssh public key is stored. If the
 
 - Required: Yes
 - Type: string
+
+### Parameter: `publicNetworkAccess`
+
+Policy for controlling export on the disk.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `rebootSetting`
 

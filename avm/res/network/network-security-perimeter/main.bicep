@@ -13,20 +13,20 @@ param profiles profileType[]?
 @description('Optional. Array of resource associations to create.')
 param resourceAssociations resourceAssociationType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the NSG resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/networkSecurityPerimeters@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -61,7 +61,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-nwsecurityperimeter.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -79,7 +79,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2023-08-01-preview' = {
+resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2024-07-01' = {
   name: name
   location: location
   tags: tags
@@ -96,7 +96,8 @@ module networkSecurityPerimeter_profiles 'profile/main.bicep' = [
   }
 ]
 
-resource networkSecurityPerimeter_resourceAssociations 'Microsoft.Network/networkSecurityPerimeters/resourceAssociations@2023-08-01-preview' = [
+@batchSize(1)
+resource networkSecurityPerimeter_resourceAssociations 'Microsoft.Network/networkSecurityPerimeters/resourceAssociations@2024-07-01' = [
   for (resourceAssociation, index) in (resourceAssociations ?? []): {
     name: '${guid(resourceAssociation.privateLinkResource, name, resourceAssociation.profile)}-nsp-ra'
     parent: networkSecurityPerimeter

@@ -18,7 +18,7 @@ This module deploys an Elastic SAN.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ElasticSan/elasticSans` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans) |
-| `Microsoft.ElasticSan/elasticSans/volumegroups` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups) |
+| `Microsoft.ElasticSan/elasticSans/volumegroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2024-05-01/elasticSans/volumegroups) |
 | `Microsoft.ElasticSan/elasticSans/volumegroups/snapshots` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/snapshots) |
 | `Microsoft.ElasticSan/elasticSans/volumegroups/volumes` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/volumes) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -53,9 +53,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
     // Required parameters
+    availabilityZone: 2
     name: 'esancmk001'
     // Non-required parameters
-    availabilityZone: 2
     sku: 'Premium_LRS'
     volumeGroups: [
       {
@@ -103,13 +103,13 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 2
+    },
     "name": {
       "value": "esancmk001"
     },
     // Non-required parameters
-    "availabilityZone": {
-      "value": 2
-    },
     "sku": {
       "value": "Premium_LRS"
     },
@@ -159,9 +159,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
+param availabilityZone = 2
 param name = 'esancmk001'
 // Non-required parameters
-param availabilityZone = 2
 param sku = 'Premium_LRS'
 param volumeGroups = [
   {
@@ -210,6 +210,8 @@ This instance deploys the module with the minimum set of required parameters.
 module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
+    // Required parameters
+    availabilityZone: -1
     name: 'esanmin001'
   }
 }
@@ -227,6 +229,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "esanmin001"
     }
@@ -244,6 +250,8 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
+// Required parameters
+param availabilityZone = -1
 param name = 'esanmin001'
 ```
 
@@ -264,9 +272,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
     // Required parameters
+    availabilityZone: 3
     name: 'esanmax001'
     // Non-required parameters
-    availabilityZone: 3
     baseSizeTiB: 2
     diagnosticSettings: [
       {
@@ -410,13 +418,13 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 3
+    },
     "name": {
       "value": "esanmax001"
     },
     // Non-required parameters
-    "availabilityZone": {
-      "value": 3
-    },
     "baseSizeTiB": {
       "value": 2
     },
@@ -574,9 +582,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
+param availabilityZone = 3
 param name = 'esanmax001'
 // Non-required parameters
-param availabilityZone = 3
 param baseSizeTiB = 2
 param diagnosticSettings = [
   {
@@ -722,14 +730,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'esanpe001'
     // Non-required parameters
-    availabilityZone: 1
-    sku: 'Premium_LRS'
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
-    }
+    sku: 'Premium_ZRS'
     volumeGroups: [
       {
         name: 'vol-grp-01'
@@ -772,21 +776,15 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "esanpe001"
     },
     // Non-required parameters
-    "availabilityZone": {
-      "value": 1
-    },
     "sku": {
-      "value": "Premium_LRS"
-    },
-    "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
+      "value": "Premium_ZRS"
     },
     "volumeGroups": {
       "value": [
@@ -830,14 +828,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'esanpe001'
 // Non-required parameters
-param availabilityZone = 1
-param sku = 'Premium_LRS'
-param tags = {
-  CostCenter: '123-456-789'
-  Owner: 'Contoso'
-}
+param sku = 'Premium_ZRS'
 param volumeGroups = [
   {
     name: 'vol-grp-01'
@@ -882,6 +876,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'esanwaf001'
     // Non-required parameters
     diagnosticSettings: [
@@ -899,7 +894,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
-    sku: 'Premium_ZRS'
+    sku: 'Premium_LRS'
     tags: {
       CostCenter: '123-456-789'
       Owner: 'Contoso'
@@ -958,6 +953,9 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "esanwaf001"
     },
@@ -982,7 +980,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "Disabled"
     },
     "sku": {
-      "value": "Premium_ZRS"
+      "value": "Premium_LRS"
     },
     "tags": {
       "value": {
@@ -1044,6 +1042,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'esanwaf001'
 // Non-required parameters
 param diagnosticSettings = [
@@ -1061,7 +1060,7 @@ param diagnosticSettings = [
   }
 ]
 param publicNetworkAccess = 'Disabled'
-param sku = 'Premium_ZRS'
+param sku = 'Premium_LRS'
 param tags = {
   CostCenter: '123-456-789'
   Owner: 'Contoso'
@@ -1120,7 +1119,7 @@ param volumeGroups = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
+| [`availabilityZone`](#parameter-availabilityzone) | int | Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 
 **Optional parameters**
 
@@ -1147,13 +1146,14 @@ Name of the Elastic SAN. The name can only contain lowercase letters, numbers, h
 
 ### Parameter: `availabilityZone`
 
-Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
-- Required: No
+- Required: Yes
 - Type: int
 - Allowed:
   ```Bicep
   [
+    -1
     1
     2
     3

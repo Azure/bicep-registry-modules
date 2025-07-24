@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6473026260124919331"
+      "version": "0.35.1.17967",
+      "templateHash": "1102691711402093786"
     },
-    "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
-    "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database."
+    "name": "Azure Managed Redis Database Access Policy Assignment",
+    "description": "This module deploys an access policy assignment for an Azure Managed Redis database."
   },
   "parameters": {
     "name": {
@@ -28,13 +28,13 @@
     "clusterName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the grandparent Azure Managed Redis cluster. Required if the template is used in a standalone deployment."
       }
     },
     "databaseName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Azure Managed Redis (Preview) database. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Azure Managed Redis database. Required if the template is used in a standalone deployment."
       }
     },
     "accessPolicyName": {
@@ -52,18 +52,18 @@
     "redisCluster::database": {
       "existing": true,
       "type": "Microsoft.Cache/redisEnterprise/databases",
-      "apiVersion": "2024-09-01-preview",
+      "apiVersion": "2025-05-01-preview",
       "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
     },
     "redisCluster": {
       "existing": true,
       "type": "Microsoft.Cache/redisEnterprise",
-      "apiVersion": "2024-09-01-preview",
+      "apiVersion": "2025-05-01-preview",
       "name": "[parameters('clusterName')]"
     },
     "accessPolicyAssignment": {
       "type": "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments",
-      "apiVersion": "2024-09-01-preview",
+      "apiVersion": "2025-05-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('userObjectId')))]",
       "properties": {
         "accessPolicyName": "[parameters('accessPolicyName')]",

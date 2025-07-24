@@ -36,6 +36,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
     $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
@@ -50,6 +51,9 @@ function Set-AvmGitHubIssueOwnerConfig {
         # get CSV data
         $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
+        $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleOwnersGHTeam)
+        $contributorTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleContributorsGHTeam)
+
         # new/unknown module
         if ($null -eq $module) {
             $reply = @"
@@ -60,7 +64,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
         }
         # orphaned module
-        elseif ($module.ModuleStatus -eq 'Orphaned :eyes:') {
+        elseif ($module.ModuleStatus -eq 'Orphaned') {
             $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -91,10 +95,20 @@ function Set-AvmGitHubIssueOwnerConfig {
             gh issue comment $issue.url --body $reply --repo $Repo
         }
 
-        if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+        if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
             if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
                 # assign owner
                 $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+
+                #assign owner team members
+                $ownerTeamMembers | ForEach-Object {
+                    gh issue edit $issue.url --add-assignee $_ --repo $Repo
+                }
+
+                #assign contributor team members
+                $contributorTeamMembers | ForEach-Object {
+                    gh issue edit $issue.url --add-assignee $_ --repo $Repo
+                }
             }
 
             if ([String]::IsNullOrEmpty($assign)) {

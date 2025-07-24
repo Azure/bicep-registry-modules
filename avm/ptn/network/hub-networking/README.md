@@ -18,14 +18,15 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/azureFirewalls) |
-| `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/azureFirewalls` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/azureFirewalls) |
+| `Microsoft.Network/bastionHosts` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
-| `Microsoft.Network/routeTables/routes` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/routeTables/routes) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/routeTables/routes` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/routeTables/routes) |
+| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
@@ -108,6 +109,20 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
+          diagnosticSettings: [
+            {
+              eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+              eventHubName: '<eventHubName>'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              name: 'customSetting'
+              storageAccountResourceId: '<storageAccountResourceId>'
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub1-waf-pip'
@@ -185,6 +200,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           {
             addressPrefix: '<addressPrefix>'
             name: 'AzureBastionSubnet'
+          }
+          {
+            addressPrefix: '<addressPrefix>'
+            delegation: 'Microsoft.Network/dnsResolvers'
+            name: 'DNSResolver'
           }
         ]
         tags: {
@@ -291,6 +311,20 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
+            "diagnosticSettings": [
+              {
+                "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                "eventHubName": "<eventHubName>",
+                "metricCategories": [
+                  {
+                    "category": "AllMetrics"
+                  }
+                ],
+                "name": "customSetting",
+                "storageAccountResourceId": "<storageAccountResourceId>",
+                "workspaceResourceId": "<workspaceResourceId>"
+              }
+            ],
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub1-waf-pip"
@@ -368,6 +402,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             {
               "addressPrefix": "<addressPrefix>",
               "name": "AzureBastionSubnet"
+            },
+            {
+              "addressPrefix": "<addressPrefix>",
+              "delegation": "Microsoft.Network/dnsResolvers",
+              "name": "DNSResolver"
             }
           ],
           "tags": {
@@ -474,6 +513,20 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: 'customSetting'
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub1-waf-pip'
@@ -551,6 +604,11 @@ param hubVirtualNetworks = {
       {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        delegation: 'Microsoft.Network/dnsResolvers'
+        name: 'DNSResolver'
       }
     ]
     tags: {
@@ -872,6 +930,14 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
+          diagnosticSettings: [
+            {
+              eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+              eventHubName: '<eventHubName>'
+              storageAccountResourceId: '<storageAccountResourceId>'
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub1PublicIp'
@@ -969,6 +1035,14 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
+            "diagnosticSettings": [
+              {
+                "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                "eventHubName": "<eventHubName>",
+                "storageAccountResourceId": "<storageAccountResourceId>",
+                "workspaceResourceId": "<workspaceResourceId>"
+              }
+            ],
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub1PublicIp"
@@ -1066,6 +1140,14 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub1PublicIp'
@@ -1236,7 +1318,7 @@ The Azure Firewall config.
 | [`applicationRuleCollections`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsapplicationrulecollections) | array | Application rule collections. |
 | [`azureFirewallName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazurefirewallname) | string | The name of the Azure Firewall. |
 | [`azureSkuTier`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazureskutier) | string | Azure Firewall SKU. |
-| [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettings) | object | Diagnostic settings. |
+| [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettings) | array | Diagnostic settings. |
 | [`firewallPolicyId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsfirewallpolicyid) | string | Firewall policy ID. |
 | [`hubIpAddresses`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingshubipaddresses) | object | Hub IP addresses. |
 | [`location`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslocation) | string | The location of the virtual network. Defaults to the location of the resource group. |
@@ -1250,7 +1332,7 @@ The Azure Firewall config.
 | [`roleAssignments`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignments) | array | Role assignments. |
 | [`tags`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingstags) | object | Tags of the resource. |
 | [`threatIntelMode`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsthreatintelmode) | string | Threat Intel mode. |
-| [`virtualHub`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsvirtualhub) | string | Virtual Hub ID. |
+| [`virtualHubResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsvirtualhubresourceid) | string | Virtual Hub resource dID. |
 | [`zones`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingszones) | array | Zones. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.additionalPublicIpConfigurations`
@@ -1294,7 +1376,7 @@ Azure Firewall SKU.
 Diagnostic settings.
 
 - Required: No
-- Type: object
+- Type: array
 
 **Optional parameters**
 
@@ -1469,6 +1551,7 @@ Lock settings.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.kind`
 
@@ -1488,6 +1571,13 @@ Specify the type of lock.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1645,9 +1735,9 @@ Threat Intel mode.
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.virtualHub`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.virtualHubResourceId`
 
-Virtual Hub ID.
+Virtual Hub resource dID.
 
 - Required: No
 - Type: string
@@ -1952,6 +2042,7 @@ The lock settings of the virtual network.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-hubvirtualnetworks>any_other_property<lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-hubvirtualnetworks>any_other_property<lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-hubvirtualnetworks>any_other_property<locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.kind`
 
@@ -1971,6 +2062,13 @@ Specify the type of lock.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2190,11 +2288,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/azure-firewall:0.5.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.4.0` | Remote reference |
-| `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
+| `br/public:avm/res/network/azure-firewall:0.7.1` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
+| `br/public:avm/res/network/route-table:0.4.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

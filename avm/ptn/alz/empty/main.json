@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "18222221275297383351"
+      "version": "0.36.1.42791",
+      "templateHash": "13219794560610520414"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
@@ -186,6 +186,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+          }
+        },
+        "definitionVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
           }
         },
         "additionalManagementGroupsIDsToAssignRbacTo": {
@@ -851,8 +858,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10017467904567479058"
+              "version": "0.36.1.42791",
+              "templateHash": "7098678057241875925"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
@@ -884,8 +891,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10017467904567479058"
+              "version": "0.36.1.42791",
+              "templateHash": "7098678057241875925"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
@@ -918,8 +925,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2664824932346119822"
+              "version": "0.36.1.42791",
+              "templateHash": "13903514106979025495"
             },
             "name": "avm/ptn/alz/empty/policy-definitions",
             "description": "Azure Landing Zones - Bicep - Empty - Policy Definitions Module"
@@ -1013,8 +1020,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10017467904567479058"
+              "version": "0.36.1.42791",
+              "templateHash": "7098678057241875925"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
@@ -1047,8 +1054,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13047015858683353284"
+              "version": "0.36.1.42791",
+              "templateHash": "16744617044693941549"
             },
             "name": "avm/ptn/alz/empty/policy-set-definitions",
             "description": "Azure Landing Zones - Bicep - Empty - Policy Set Definitions Module"
@@ -1155,8 +1162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10017467904567479058"
+              "version": "0.36.1.42791",
+              "templateHash": "7098678057241875925"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
@@ -1224,6 +1231,9 @@
           "resourceSelectors": {
             "value": "[tryGet(coalesce(parameters('managementGroupPolicyAssignments'), createArray())[copyIndex()], 'resourceSelectors')]"
           },
+          "definitionVersion": {
+            "value": "[tryGet(coalesce(parameters('managementGroupPolicyAssignments'), createArray())[copyIndex()], 'definitionVersion')]"
+          },
           "notScopes": {
             "value": "[tryGet(coalesce(parameters('managementGroupPolicyAssignments'), createArray())[copyIndex()], 'notScopes')]"
           },
@@ -1242,12 +1252,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "14093961291693843693"
+              "version": "0.36.1.42791",
+              "templateHash": "1602129596204903277"
             },
             "name": "Policy Assignments (All scopes)",
             "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -1408,6 +1419,13 @@
                 "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
               }
             },
+            "definitionVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
+              }
+            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -1416,12 +1434,12 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "location": "[parameters('location')]",
               "properties": {
                 "mode": "Incremental",
@@ -1438,7 +1456,7 @@
                 }
               }
             },
-            {
+            "policyAssignment_mg": {
               "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1478,6 +1496,9 @@
                   },
                   "overrides": "[if(not(empty(parameters('overrides'))), createObject('value', parameters('overrides')), createObject('value', createArray()))]",
                   "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]",
+                  "definitionVersion": {
+                    "value": "[parameters('definitionVersion')]"
+                  },
                   "additionalManagementGroupsIDsToAssignRbacTo": {
                     "value": "[parameters('additionalManagementGroupsIDsToAssignRbacTo')]"
                   },
@@ -1490,12 +1511,13 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10678509985815740940"
+                      "version": "0.36.1.42791",
+                      "templateHash": "16571041331828455729"
                     },
                     "name": "Policy Assignments (Management Group scope)",
                     "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -1635,16 +1657,23 @@
                       "metadata": {
                         "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
                       }
+                    },
+                    "definitionVersion": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
+                      }
                     }
                   },
                   "variables": {
                     "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]",
                     "finalArrayOfManagementGroupsToAssignRbacTo": "[if(equals(parameters('identity'), 'SystemAssigned'), union(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray(managementGroup().name)), createArray())]"
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "policyAssignment": {
                       "type": "Microsoft.Authorization/policyAssignments",
-                      "apiVersion": "2022-06-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "properties": {
@@ -1657,11 +1686,12 @@
                         "enforcementMode": "[parameters('enforcementMode')]",
                         "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
                         "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
-                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]",
+                        "definitionVersion": "[parameters('definitionVersion')]"
                       },
                       "identity": "[variables('identityVar')]"
                     },
-                    {
+                    "managementGroupRoleAssignments": {
                       "copy": {
                         "name": "managementGroupRoleAssignments",
                         "count": "[length(parameters('roleDefinitionIds'))]"
@@ -1681,7 +1711,7 @@
                             "value": "[parameters('name')]"
                           },
                           "policyAssignmentIdentityId": {
-                            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]"
+                            "value": "[reference('policyAssignment', '2025-01-01', 'full').identity.principalId]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -1696,8 +1726,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "9631038445585845349"
+                              "version": "0.36.1.42791",
+                              "templateHash": "16132708231319273822"
                             }
                           },
                           "parameters": {
@@ -1768,8 +1798,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.32.4.45862",
-                                      "templateHash": "9140403539470176881"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "18359218032794714355"
                                     }
                                   },
                                   "parameters": {
@@ -1819,10 +1849,10 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                        "policyAssignment"
                       ]
                     },
-                    {
+                    "additionalSubscriptionRoleAssignments": {
                       "copy": {
                         "name": "additionalSubscriptionRoleAssignments",
                         "count": "[length(parameters('roleDefinitionIds'))]"
@@ -1842,7 +1872,7 @@
                             "value": "[parameters('name')]"
                           },
                           "policyAssignmentIdentityId": {
-                            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]"
+                            "value": "[reference('policyAssignment', '2025-01-01', 'full').identity.principalId]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -1857,8 +1887,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "5868976721767457523"
+                              "version": "0.36.1.42791",
+                              "templateHash": "13456700536070272376"
                             }
                           },
                           "parameters": {
@@ -1929,8 +1959,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.32.4.45862",
-                                      "templateHash": "1856107527131838082"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "283263530432177648"
                                     }
                                   },
                                   "parameters": {
@@ -1980,10 +2010,10 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                        "policyAssignment"
                       ]
                     },
-                    {
+                    "additionalResourceGroupRoleAssignments": {
                       "copy": {
                         "name": "additionalResourceGroupRoleAssignments",
                         "count": "[length(parameters('roleDefinitionIds'))]"
@@ -2003,7 +2033,7 @@
                             "value": "[parameters('name')]"
                           },
                           "policyAssignmentIdentityId": {
-                            "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]"
+                            "value": "[reference('policyAssignment', '2025-01-01', 'full').identity.principalId]"
                           },
                           "roleDefinitionId": {
                             "value": "[parameters('roleDefinitionIds')[copyIndex()]]"
@@ -2018,8 +2048,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "12514251766635911763"
+                              "version": "0.36.1.42791",
+                              "templateHash": "1587977627296299534"
                             }
                           },
                           "parameters": {
@@ -2090,8 +2120,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.32.4.45862",
-                                      "templateHash": "11358116386111113340"
+                                      "version": "0.36.1.42791",
+                                      "templateHash": "17794491056080423713"
                                     }
                                   },
                                   "parameters": {
@@ -2141,10 +2171,10 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                        "policyAssignment"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -2158,7 +2188,7 @@
                       "metadata": {
                         "description": "Policy Assignment principal ID."
                       },
-                      "value": "[coalesce(tryGet(tryGet(reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+                      "value": "[coalesce(tryGet(tryGet(reference('policyAssignment', '2025-01-01', 'full'), 'identity'), 'principalId'), '')]"
                     },
                     "resourceId": {
                       "type": "string",
@@ -2172,13 +2202,13 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+                      "value": "[reference('policyAssignment', '2025-01-01', 'full').location]"
                     }
                   }
                 }
               }
             },
-            {
+            "policyAssignment_sub": {
               "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2220,16 +2250,20 @@
                     "value": "[parameters('location')]"
                   },
                   "overrides": "[if(not(empty(parameters('overrides'))), createObject('value', parameters('overrides')), createObject('value', createArray()))]",
-                  "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]"
+                  "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]",
+                  "definitionVersion": {
+                    "value": "[parameters('definitionVersion')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "2523227409976507857"
+                      "version": "0.36.1.42791",
+                      "templateHash": "1309214929264356674"
                     },
                     "name": "Policy Assignments (Subscription scope)",
                     "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -2349,6 +2383,13 @@
                         "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
                       }
                     },
+                    "definitionVersion": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
+                      }
+                    },
                     "subscriptionId": {
                       "type": "string",
                       "defaultValue": "[subscription().subscriptionId]",
@@ -2360,10 +2401,10 @@
                   "variables": {
                     "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "policyAssignment": {
                       "type": "Microsoft.Authorization/policyAssignments",
-                      "apiVersion": "2022-06-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "properties": {
@@ -2376,11 +2417,12 @@
                         "enforcementMode": "[parameters('enforcementMode')]",
                         "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
                         "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
-                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]",
+                        "definitionVersion": "[parameters('definitionVersion')]"
                       },
                       "identity": "[variables('identityVar')]"
                     },
-                    {
+                    "roleAssignment": {
                       "copy": {
                         "name": "roleAssignment",
                         "count": "[length(parameters('roleDefinitionIds'))]"
@@ -2391,14 +2433,14 @@
                       "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
                       "properties": {
                         "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
-                        "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                        "principalId": "[reference('policyAssignment', '2025-01-01', 'full').identity.principalId]",
                         "principalType": "ServicePrincipal"
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                        "policyAssignment"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -2412,7 +2454,7 @@
                       "metadata": {
                         "description": "Policy Assignment principal ID."
                       },
-                      "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+                      "value": "[coalesce(tryGet(tryGet(reference('policyAssignment', '2025-01-01', 'full'), 'identity'), 'principalId'), '')]"
                     },
                     "resourceId": {
                       "type": "string",
@@ -2426,13 +2468,13 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+                      "value": "[reference('policyAssignment', '2025-01-01', 'full').location]"
                     }
                   }
                 }
               }
             },
-            {
+            "policyAssignment_rg": {
               "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2474,16 +2516,20 @@
                     "value": "[parameters('location')]"
                   },
                   "overrides": "[if(not(empty(parameters('overrides'))), createObject('value', parameters('overrides')), createObject('value', createArray()))]",
-                  "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]"
+                  "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), createObject('value', parameters('resourceSelectors')), createObject('value', createArray()))]",
+                  "definitionVersion": {
+                    "value": "[parameters('definitionVersion')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "3323049503112762784"
+                      "version": "0.36.1.42791",
+                      "templateHash": "11388691241992820794"
                     },
                     "name": "Policy Assignments (Resource Group scope)",
                     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -2603,6 +2649,13 @@
                         "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
                       }
                     },
+                    "definitionVersion": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
+                      }
+                    },
                     "subscriptionId": {
                       "type": "string",
                       "defaultValue": "[subscription().subscriptionId]",
@@ -2621,10 +2674,10 @@
                   "variables": {
                     "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "policyAssignment": {
                       "type": "Microsoft.Authorization/policyAssignments",
-                      "apiVersion": "2022-06-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "properties": {
@@ -2637,11 +2690,12 @@
                         "enforcementMode": "[parameters('enforcementMode')]",
                         "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
                         "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
-                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]",
+                        "definitionVersion": "[parameters('definitionVersion')]"
                       },
                       "identity": "[variables('identityVar')]"
                     },
-                    {
+                    "roleAssignment": {
                       "copy": {
                         "name": "roleAssignment",
                         "count": "[length(parameters('roleDefinitionIds'))]"
@@ -2652,14 +2706,14 @@
                       "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
                       "properties": {
                         "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
-                        "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                        "principalId": "[reference('policyAssignment', '2025-01-01', 'full').identity.principalId]",
                         "principalType": "ServicePrincipal"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                        "policyAssignment"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -2673,7 +2727,7 @@
                       "metadata": {
                         "description": "Policy Assignment principal ID."
                       },
-                      "value": "[coalesce(tryGet(tryGet(reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+                      "value": "[coalesce(tryGet(tryGet(reference('policyAssignment', '2025-01-01', 'full'), 'identity'), 'principalId'), '')]"
                     },
                     "resourceId": {
                       "type": "string",
@@ -2694,41 +2748,41 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+                      "value": "[reference('policyAssignment', '2025-01-01', 'full').location]"
                     }
                   }
                 }
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "Policy Assignment Name."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('policyAssignment_mg').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('policyAssignment_sub').outputs.name.value, reference('policyAssignment_rg').outputs.name.value))]"
             },
             "principalId": {
               "type": "string",
               "metadata": {
                 "description": "Policy Assignment principal ID."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.principalId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.principalId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.principalId.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('policyAssignment_mg').outputs.principalId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('policyAssignment_sub').outputs.principalId.value, reference('policyAssignment_rg').outputs.principalId.value))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "Policy Assignment resource ID."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('policyAssignment_mg').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('policyAssignment_sub').outputs.resourceId.value, reference('policyAssignment_rg').outputs.resourceId.value))]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-PolicyAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('policyAssignment_mg').outputs.location.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('policyAssignment_sub').outputs.location.value, reference('policyAssignment_rg').outputs.location.value))]"
             }
           }
         }
@@ -2763,8 +2817,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10017467904567479058"
+              "version": "0.36.1.42791",
+              "templateHash": "7098678057241875925"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
@@ -2828,11 +2882,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12848012148376173969"
+              "templateHash": "11771591169360468159"
             },
             "name": "avm/ptn/authorization/role-definition",
-            "description": "This module deploys a custom role definition to a Management Group.",
-            "owner": "@jtracey93"
+            "description": "This module deploys a custom role definition to a Management Group."
           },
           "parameters": {
             "enableTelemetry": {
@@ -2913,7 +2966,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.authorization-roledefinition.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.authorization-roledefinition.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "location": "[parameters('location')]",
               "properties": {
                 "mode": "Incremental",
@@ -2999,8 +3052,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10017467904567479058"
+              "version": "0.36.1.42791",
+              "templateHash": "7098678057241875925"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
@@ -3054,12 +3107,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13013262889229995760"
+              "version": "0.32.4.45862",
+              "templateHash": "15934868457214952424"
             },
             "name": "Role Assignments (All scopes)",
-            "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope."
           },
           "parameters": {
             "roleDefinitionIdOrName": {
@@ -3161,7 +3213,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.2.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3214,12 +3266,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "16307162966269052514"
+                      "version": "0.32.4.45862",
+                      "templateHash": "2146197675736538693"
                     },
                     "name": "Role Assignments (Management Group scope)",
-                    "description": "This module deploys a Role Assignment at a Management Group scope.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Role Assignment at a Management Group scope."
                   },
                   "parameters": {
                     "roleDefinitionIdOrName": {
@@ -3291,14 +3342,14 @@
                   "variables": {
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                      "Owner": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Resource Policy Contributor": "/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
                       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
                       "Management Group Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ac63b705-f282-497d-ac71-919bf39d939d')]"
                     },
-                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                    "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
                   },
                   "resources": [
                     {
@@ -3378,12 +3429,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "7865292958983636483"
+                      "version": "0.32.4.45862",
+                      "templateHash": "18268822790511715012"
                     },
                     "name": "Role Assignments (Subscription scope)",
-                    "description": "This module deploys a Role Assignment at a Subscription scope.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Role Assignment at a Subscription scope."
                   },
                   "parameters": {
                     "roleDefinitionIdOrName": {
@@ -3460,7 +3510,7 @@
                       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     },
-                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                    "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
                   },
                   "resources": [
                     {
@@ -3550,12 +3600,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "4013817963006824674"
+                      "version": "0.32.4.45862",
+                      "templateHash": "8200662209265445642"
                     },
                     "name": "Role Assignments (Resource Group scope)",
-                    "description": "This module deploys a Role Assignment at a Resource Group scope.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Role Assignment at a Resource Group scope."
                   },
                   "parameters": {
                     "roleDefinitionIdOrName": {
@@ -3638,7 +3687,7 @@
                       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     },
-                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                    "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
                   },
                   "resources": [
                     {

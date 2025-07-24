@@ -8,10 +8,10 @@ param name string
 param vpnGatewayName string
 
 @description('Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range.')
-param externalMappings array = []
+param externalMappings vpnNatRuleMappingType[] = []
 
 @description('Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.')
-param internalMappings array = []
+param internalMappings vpnNatRuleMappingType[] = []
 
 @description('Optional. A NAT rule must be configured to a specific VPN Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both VPN Gateway instances.')
 param ipConfigurationId string?
@@ -30,11 +30,11 @@ param mode string?
 ])
 param type string?
 
-resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' existing = {
+resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' existing = {
   name: vpnGatewayName
 }
 
-resource natRule 'Microsoft.Network/vpnGateways/natRules@2023-04-01' = {
+resource natRule 'Microsoft.Network/vpnGateways/natRules@2024-07-01' = {
   name: name
   parent: vpnGateway
   properties: {
@@ -54,3 +54,17 @@ output resourceId string = natRule.id
 
 @description('The name of the resource group the NAT rule was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for a VPN NAT rule mapping.')
+type vpnNatRuleMappingType = {
+  @description('Required. Address space for VPN NAT rule mapping.')
+  addressSpace: string
+
+  @description('Optional. Port range for VPN NAT rule mapping.')
+  portRange: string?
+}
