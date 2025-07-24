@@ -246,9 +246,6 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
       name: policy.name
       permissions: policy.permissions
     }
-    dependsOn: [
-      redis // Ensure Redis cache is fully deployed before creating access policies
-    ]
   }
 ]
 
