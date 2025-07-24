@@ -83,19 +83,6 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
             foreach ($moduleName in $moduleNames) {
                 $modulePath = "$moduleGroupPath/$moduleName"
-
-                # Check if the module is deprecated by looking for a DEPRECATED.md file
-                if (Test-Path -Path "$modulePath/DEPRECATED.md") {
-                    Write-Verbose "Module '$modulePath' is marked as DEPRECATED. Skipping..." -Verbose
-                    continue
-                }
-
-                # Only proceed if the module has necessary files
-                if (-not (Test-Path -Path "$modulePath/main.json")) {
-                    Write-Verbose "Module '$modulePath' does not have main.json. Skipping..." -Verbose
-                    continue
-                }
-
                 $mainJsonPath = "$modulePath/main.json"
                 $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
 
@@ -109,13 +96,6 @@ function Invoke-AvmJsonModuleIndexGeneration {
                     Write-Verbose "  Possible child modules: $possibleChildModules" -Verbose
                     foreach ($possibleChildModule in $possibleChildModules) {
                         Write-Verbose "    Processing possible child module: $possibleChildModule" -Verbose
-
-                        # Check if child module is deprecated
-                        $childModuleIsDeprecated = Test-Path -Path "$modulePath/$possibleChildModule/DEPRECATED.md"
-                        if ($childModuleIsDeprecated) {
-                            Write-Verbose "      Child module '$possibleChildModule' is marked as DEPRECATED. Skipping..." -Verbose
-                            continue
-                        }
 
                         $checkChildModuleContainsRequiredFilesForPublishing = (Test-Path -Path "$modulePath/$possibleChildModule/main.bicep") -and (Test-Path -Path "$modulePath/$possibleChildModule/main.json") -and (Test-Path -Path "$modulePath/$possibleChildModule/README.md") -and (Test-Path -Path "$modulePath/$possibleChildModule/version.json")
                         Write-Verbose "      Child module contains required files for publishing?: $checkChildModuleContainsRequiredFilesForPublishing" -Verbose
@@ -131,221 +111,97 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
                 foreach ($verifiedChildModule in $verifiedChildModules) {
                     $childModulePath = "$modulePath/$verifiedChildModule"
-
-                    # Double-check if the child module is deprecated (should already be filtered, but just to be safe)
-                    if (Test-Path -Path "$childModulePath/DEPRECATED.md") {
-                        Write-Verbose "  Child module '$childModulePath' is marked as DEPRECATED. Skipping..." -Verbose
-                        continue
-                    }
-
-                    # Double-check that the required files exist
-                    if (-not (Test-Path -Path "$childModulePath/main.json")) {
-                        Write-Verbose "  Child module '$childModulePath' does not have main.json. Skipping..." -Verbose
-                        continue
-                    }
-
                     $childModuleMainJsonPath = "$childModulePath/main.json"
-                    $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath/tags/list"
+                    $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath$mod/tags/list"
 
                     Add-ModuleToAvmJsonModuleIndex -modulePath $childModulePath -mainJsonPath $childModuleMainJsonPath -tagListUrl $childModuleTagListUrl
                 }
-            } else {
-                Write-Verbose '  No child modules found for this module.' -Verbose
+
             }
+
+            $numberOfModuleGroupsProcessed++
+        }
+    }
+
+    Write-Verbose "Processed $numberOfModuleGroupsProcessed modules groups." -Verbose
+    Write-Verbose "Processed $($global:moduleIndexData.Count) total modules." -Verbose
+
+    Write-Verbose "Convert moduleIndexData variable to JSON and save as 'generated-moduleIndex.json'" -Verbose
+    $global:moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $currentGeneratedModuleIndexJsonFilePath
+
+    ## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
+    if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
+        try {
+            $lastModuleIndexJsonFilePath = $prefixForLastModuleIndexJsonFile + $moduleIndexJsonFilePath
+
+            Write-Verbose "Attempting to get last version of the moduleIndex.json from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName and save to file: $lastModuleIndexJsonFilePath ..." -Verbose
+
+            $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
+
+            Get-AzStorageBlobContent -Blob $storageBlobName -Container $storageAccountContainer -Context $storageContext -Destination $lastModuleIndexJsonFilePath -Force | Out-Null
+        } catch {
+            Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction 'Stop'
         }
 
-    }
+        ## Check if the last version of the moduleIndex.json (last-moduleIndex.json) file exists and is not empty
 
-    $numberOfModuleGroupsProcessed++
-}
-}
+        if (Test-Path $lastModuleIndexJsonFilePath) {
+            $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
+            if ($null -eq $lastModuleIndexJsonFileContent) {
+                Write-Error "The last version of the moduleIndex.json file (last-moduleIndex.json) exists but is empty. File: $lastModuleIndexJsonFilePath" -ErrorAction 'Stop'
+            }
+            Write-Verbose 'The last version of the moduleIndex.json file (last-moduleIndex.json) exists and is not empty. Proceeding...' -Verbose
+        }
 
-Write-Verbose "Processed $numberOfModuleGroupsProcessed modules groups." -Verbose
-Write-Verbose "Processed $($global:moduleIndexData.Count) total modules." -Verbose
+        ## Merge the new moduleIndex.json file with the previous version if the $doNotMergeWithLastModuleIndexJsonFileVersion is not specified
+        Write-Verbose "Merging 'generated-moduleIndex.json' (new) file with 'last-moduleIndex.json' (previous) file..." -Verbose
 
-Write-Verbose "Convert moduleIndexData variable to JSON and save as 'generated-moduleIndex.json'" -Verbose
-$global:moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $currentGeneratedModuleIndexJsonFilePath
-
-## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
-if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
-    try {
-        $lastModuleIndexJsonFilePath = $prefixForLastModuleIndexJsonFile + $moduleIndexJsonFilePath
-
-        Write-Verbose "Attempting to get last version of the moduleIndex.json from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName and save to file: $lastModuleIndexJsonFilePath ..." -Verbose
-
-        $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
-
-        Get-AzStorageBlobContent -Blob $storageBlobName -Container $storageAccountContainer -Context $storageContext -Destination $lastModuleIndexJsonFilePath -Force | Out-Null
-    } catch {
-        Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction 'Stop'
-    }
-
-    ## Check if the last version of the moduleIndex.json (last-moduleIndex.json) file exists and is not empty
-
-    if (Test-Path $lastModuleIndexJsonFilePath) {
         $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
-        if ($null -eq $lastModuleIndexJsonFileContent) {
-            Write-Error "The last version of the moduleIndex.json file (last-moduleIndex.json) exists but is empty. File: $lastModuleIndexJsonFilePath" -ErrorAction 'Stop'
-        }
-        Write-Verbose 'The last version of the moduleIndex.json file (last-moduleIndex.json) exists and is not empty. Proceeding...' -Verbose
-    }
+        $currentGeneratedModuleIndexJsonFileContent = Get-Content $currentGeneratedModuleIndexJsonFilePath
 
-    ## Merge the new moduleIndex.json file with the previous version if the $doNotMergeWithLastModuleIndexJsonFileVersion is not specified
-    Write-Verbose "Merging 'generated-moduleIndex.json' (new) file with 'last-moduleIndex.json' (previous) file..." -Verbose
+        $lastModuleIndexData = $lastModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
+        $currentGeneratedModuleIndexData = $currentGeneratedModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
 
-    $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
-    $currentGeneratedModuleIndexJsonFileContent = Get-Content $currentGeneratedModuleIndexJsonFilePath
+        $initialMergeOfJsonFilesData = @{}
 
-    $lastModuleIndexData = $lastModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
-    $currentGeneratedModuleIndexData = $currentGeneratedModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
-
-    $initialMergeOfJsonFilesData = @{}
-
-    foreach ($module in $currentGeneratedModuleIndexData) {
-        $initialMergeOfJsonFilesData[$module.moduleName] = $module
-    }
-
-    # Add modules from lastModuleIndexData to the initialMergeOfJsonFilesData hashtable, merging tags and properties if they exist in both files
-    foreach ($module in $lastModuleIndexData) {
-        if (-not $initialMergeOfJsonFilesData.ContainsKey($module.moduleName)) {
+        foreach ($module in $currentGeneratedModuleIndexData) {
             $initialMergeOfJsonFilesData[$module.moduleName] = $module
-        } else {
-            # If the module exists, merge the tags and properties
-            $mergedModule = $initialMergeOfJsonFilesData[$module.moduleName]
-            $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Culture 'en-US' -Unique)
+        }
 
-            # Merge properties
-            foreach ($property in $module.properties.PSObject.Properties) {
-                if (-not $mergedModule.properties.PSObject.Properties.Name.Contains($property.Name)) {
-                    $mergedModule.properties | Add-Member -NotePropertyName $property.Name -NotePropertyValue $property.Value
+        # Add modules from lastModuleIndexData to the initialMergeOfJsonFilesData hashtable, merging tags and properties if they exist in both files
+        foreach ($module in $lastModuleIndexData) {
+            if (-not $initialMergeOfJsonFilesData.ContainsKey($module.moduleName)) {
+                $initialMergeOfJsonFilesData[$module.moduleName] = $module
+            } else {
+                # If the module exists, merge the tags and properties
+                $mergedModule = $initialMergeOfJsonFilesData[$module.moduleName]
+                $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Culture 'en-US' -Unique)
+
+                # Merge properties
+                foreach ($property in $module.properties.PSObject.Properties) {
+                    if (-not $mergedModule.properties.PSObject.Properties.Name.Contains($property.Name)) {
+                        $mergedModule.properties | Add-Member -NotePropertyName $property.Name -NotePropertyValue $property.Value
+                    }
                 }
             }
         }
+
+        # Convert the mergedModuleIndexData hashtable to an array of values (i.e., the modules)
+        $mergedModuleIndexData = $initialMergeOfJsonFilesData.Values
+
+        # Sort the modules by their names
+        $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object -Culture 'en-US' -Property 'moduleName'
+
+        Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
+        $sortedMergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath
+    }
+    if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $true) {
+        Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as `doNotMergeWithLastModuleIndexJsonFileVersion` was specified'" -Verbose
+        $global:moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
     }
 
-    # Convert the mergedModuleIndexData hashtable to an array of values (i.e., the modules)
-    $mergedModuleIndexData = $initialMergeOfJsonFilesData.Values
+    return ($global:anyErrorsOccurred ? $false : $true)
 
-    # Sort the modules by their names
-    $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object -Culture 'en-US' -Property 'moduleName'
-
-    Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
-    $sortedMergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath
-}
-if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $true) {
-    Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as `doNotMergeWithLastModuleIndexJsonFileVersion` was specified'" -Verbose
-    $global:moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
-}
-
-return ($global:anyErrorsOccurred ? $false : $true)
-
-}
-
-function Test-IsMultiScopeModule {
-    <#
-    .SYNOPSIS
-    Tests if a module is a multi-scope module that should not be published directly.
-
-    .DESCRIPTION
-    Uses the same reliable logic as module.tests.ps1 to detect multi-scope modules by checking
-    for child directories that match the naming pattern for scope-specific modules (rg-scope, sub-scope, mg-scope).
-
-    .PARAMETER modulePath
-    The path to the module.
-
-    .OUTPUTS
-    Returns $true if the module is a multi-scope module, $false otherwise.
-    #>
-    param (
-        [Parameter(Mandatory = $true)]
-        [string] $modulePath
-    )
-
-    # Use the same logic as module.tests.ps1: check for child directories matching scope patterns
-    # This is more reliable than parsing text content and matches the existing codebase approach
-    try {
-        $scopeDirectories = Get-ChildItem -Directory -Path $modulePath -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }
-        $isMultiScopeParentModule = $scopeDirectories.Count -gt 0
-
-        if ($isMultiScopeParentModule) {
-            Write-Verbose "  Multi-scope module detected: '$modulePath' (found $($scopeDirectories.Count) scope modules: $($scopeDirectories.Name -join ', '))" -Verbose
-        }
-
-        return $isMultiScopeParentModule
-    } catch {
-        Write-Verbose "  Warning: Could not analyze directory structure for module '$modulePath': $($_.Exception.Message)" -Verbose
-        return $false
-    }
-}
-
-function Find-ChildModulesRecursively {
-    <#
-    .SYNOPSIS
-    Recursively finds all valid child modules at any depth level.
-
-    .DESCRIPTION
-    Searches through a module's directory structure to find all child modules
-    that have the required files (main.bicep, main.json, README.md, version.json)
-    and are not marked as deprecated.
-
-    .PARAMETER modulePath
-    The path to the parent module to search within.
-
-    .PARAMETER processedPaths
-    HashSet to track already processed paths to avoid duplicates.
-
-    .OUTPUTS
-    Returns an array of child module paths that meet the requirements.
-    #>
-    param (
-        [Parameter(Mandatory = $true)]
-        [string] $modulePath,
-
-        [Parameter(Mandatory = $false)]
-        [System.Collections.Generic.HashSet[string]] $processedPaths = [System.Collections.Generic.HashSet[string]]::new()
-    )
-
-    $validChildModules = @()
-
-    # Get all subdirectories, excluding 'tests' and any already processed paths
-    $possibleChildDirectories = Get-ChildItem -Path $modulePath -Directory -Exclude 'tests' -ErrorAction SilentlyContinue
-
-    foreach ($childDir in $possibleChildDirectories) {
-        $childPath = $childDir.FullName
-        $relativePath = $childPath -replace [regex]::Escape((Get-Location).Path + [System.IO.Path]::DirectorySeparatorChar), ''
-        $relativePath = $relativePath -replace '\\', '/'  # Normalize path separators
-
-        # Skip if we've already processed this path
-        if ($processedPaths.Contains($relativePath)) {
-            continue
-        }
-
-        # Add to processed paths
-        $processedPaths.Add($relativePath) | Out-Null
-
-        # Check if this directory is deprecated
-        if (Test-Path -Path "$childPath/DEPRECATED.md") {
-            Write-Verbose "    Child module '$relativePath' is marked as DEPRECATED. Skipping..." -Verbose
-            continue
-        }
-
-        # Check if this directory has the required files for a publishable module
-        $hasRequiredFiles = (Test-Path -Path "$childPath/main.bicep") -and
-        (Test-Path -Path "$childPath/main.json") -and
-        (Test-Path -Path "$childPath/README.md") -and
-        (Test-Path -Path "$childPath/version.json")
-
-        if ($hasRequiredFiles) {
-            Write-Verbose "    Found valid child module: $relativePath" -Verbose
-            $validChildModules += $relativePath
-        }
-
-        # Recursively search this directory for more child modules
-        $nestedChildren = Find-ChildModulesRecursively -modulePath $childPath -processedPaths $processedPaths
-        $validChildModules += $nestedChildren
-    }
-
-    return $validChildModules
 }
 
 function Add-ModuleToAvmJsonModuleIndex {
