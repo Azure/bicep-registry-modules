@@ -641,6 +641,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
+            delegation: subnet.?delegation
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
               : resourceId(
@@ -1687,6 +1688,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
         for subnet in (vnet.?subnets ?? []): {
           name: subnet.name
           addressPrefix: subnet.?addressPrefix
+          delegation: subnet.?delegation
           networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
             ? createBastionNsg.outputs.resourceId
             : !empty(subnet.?networkSecurityGroup)
