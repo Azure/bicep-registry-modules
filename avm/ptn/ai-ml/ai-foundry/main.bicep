@@ -365,9 +365,7 @@ module foundryProject 'modules/project/main.bicep' = {
     //   }
     // ]
     tempStorageAccountConnection: {
-      resourceId: !empty(storageAccountConfiguration.?existingResourceId)
-        ? storageAccountConfiguration!.existingResourceId!
-        : storageAccount!.outputs.resourceId
+      resourceId: storageAccount!.outputs.resourceId
       containerName: projectName
     }
     tags: tags
