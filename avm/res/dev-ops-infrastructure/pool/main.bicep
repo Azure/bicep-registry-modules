@@ -81,6 +81,26 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param managedIdentities managedIdentityAllType?
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 
+// ================ //
+// Input validation //
+// ================ //
+
+var daysData = agentProfile.?resourcePredictions.?daysData
+var hasAllWeekScheme = !empty(daysData) && contains(daysData, 'allWeekScheme')
+var hasWeekDaysScheme = !empty(daysData) && contains(daysData, 'weekDaysScheme')
+
+#disable-next-line no-unused-vars
+var allWeekSchemeConflict = hasAllWeekScheme && length(daysData) > 1
+  ? fail('Configuration error: allWeekScheme cannot be combined with other day configurations. Please use either allWeekScheme for all 7 days or other individual day/scheme configurations.')
+  : null
+
+#disable-next-line no-unused-vars
+var weekDaysSchemeConflict = hasWeekDaysScheme && length(daysData) > 1
+  ? fail('Configuration error: weekDaysScheme cannot be combined with other day configurations. Please use either weekDaysScheme for weekdays or individual day configurations.')
+  : null
+
+// ================ //
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -128,16 +148,28 @@ var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
             '00:00:00': agentProfile.resourcePredictions.daysData.allWeekScheme.provisioningCount
           }
         ]
-      : map(
-          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-          day =>
-            contains(agentProfile.resourcePredictions.daysData, day)
-              ? {
-                  '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
-                  '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
-                }
-              : {}
-        )
+      : contains(agentProfile.resourcePredictions.daysData, 'weekDaysScheme')
+          ? map(
+              ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+              (day, index) =>
+                // Apply weekDaysScheme only to weekdays (Monday-Friday, indices 1-5)
+                index >= 1 && index <= 5
+                  ? {
+                      '${agentProfile.resourcePredictions.daysData.weekDaysScheme.startTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.startAgentCount
+                      '${agentProfile.resourcePredictions.daysData.weekDaysScheme.endTime}': agentProfile.resourcePredictions.daysData.weekDaysScheme.endAgentCount
+                    }
+                  : {}
+            )
+          : map(
+              ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+              day =>
+                contains(agentProfile.resourcePredictions.daysData, day)
+                  ? {
+                      '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
+                      '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
+                    }
+                  : {}
+            )
   : null
 
 // ============== //
@@ -243,6 +275,7 @@ resource managedDevOpsPool_roleAssignments 'Microsoft.Authorization/roleAssignme
   }
 ]
 
+#disable-next-line use-recent-api-versions
 resource managedDevOpsPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -475,4 +508,7 @@ type daysDataType = {
     @description('Required. The agent count to provision throughout the week.')
     provisioningCount: int
   }?
+
+  @description('Optional. A schema to apply to weekdays (Monday to Friday). Overrules daily configurations.')
+  weekDaysScheme: standbyAgentsConfigType?
 }

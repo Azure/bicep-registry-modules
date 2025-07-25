@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "15640152839449553255"
+      "version": "0.36.177.2456",
+      "templateHash": "8069864631855326132"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -499,6 +499,13 @@
           "metadata": {
             "description": "Optional. A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations."
           }
+        },
+        "weekDaysScheme": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A schema to apply to weekdays (Monday to Friday). Overrules daily configurations."
+          }
         }
       },
       "metadata": {
@@ -905,6 +912,11 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "daysData": "[tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData')]",
+    "hasAllWeekScheme": "[and(not(empty(variables('daysData'))), contains(variables('daysData'), 'allWeekScheme'))]",
+    "hasWeekDaysScheme": "[and(not(empty(variables('daysData'))), contains(variables('daysData'), 'weekDaysScheme'))]",
+    "allWeekSchemeConflict": "[if(and(variables('hasAllWeekScheme'), greater(length(variables('daysData')), 1)), fail('Configuration error: allWeekScheme cannot be combined with other day configurations. Please use either allWeekScheme for all 7 days or other individual day/scheme configurations.'), null())]",
+    "weekDaysSchemeConflict": "[if(and(variables('hasWeekDaysScheme'), greater(length(variables('daysData')), 1)), fail('Configuration error: weekDaysScheme cannot be combined with other day configurations. Please use either weekDaysScheme for weekdays or individual day configurations.'), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -914,7 +926,7 @@
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createArray(createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount)), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject())))), null())]"
+    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createArray(createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount)), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'weekDaysScheme'), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', 'index', if(and(greaterOrEquals(lambdaVariables('index'), 1), lessOrEquals(lambdaVariables('index'), 5)), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.startTime), parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.endTime), parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.endAgentCount), createObject()))), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject()))))), null())]"
   },
   "resources": {
     "avmTelemetry": {
