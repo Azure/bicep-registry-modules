@@ -114,18 +114,39 @@ module storageAccountConnResources 'connections/storageAccount.bicep' = [
   }
 ]
 
-module tempStorageAccountConnResource 'connections/storageAccount.bicep' = if (!empty(tempStorageAccountConnection)) {
-  name: take(
-    #disable-next-line BCP318
-    '${name}-temp-storage-conn-${tempStorageAccountConnection!.containerName}',
-    64
-  )
-  params: {
-    name: tempStorageAccountConnection.?name
-    accountName: accountName
-    projectName: project.name
-    resourceIdOrName: tempStorageAccountConnection!.resourceId
-    containerName: tempStorageAccountConnection!.containerName
+// module tempStorageAccountConnResource 'connections/storageAccount.bicep' = if (!empty(tempStorageAccountConnection)) {
+//   name: take(
+//     #disable-next-line BCP318
+//     '${name}-temp-storage-conn-${tempStorageAccountConnection!.containerName}',
+//     64
+//   )
+//   params: {
+//     name: tempStorageAccountConnection.?name
+//     accountName: accountName
+//     projectName: project.name
+//     resourceIdOrName: tempStorageAccountConnection!.resourceId
+//     containerName: tempStorageAccountConnection!.containerName
+//   }
+// }
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
+  name: tempStorageAccountConnection!.resourceId
+}
+
+resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+  name: 'idontcare'
+  parent: project
+  properties: {
+    category: 'AzureBlob'
+    target: storageAccount!.properties.primaryEndpoints.blob
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: storageAccount.id
+      location: storageAccount!.location
+      accountName: storageAccount.name
+      containerName: tempStorageAccountConnection!.containerName
+    }
   }
 }
 
