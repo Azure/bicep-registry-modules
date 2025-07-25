@@ -154,45 +154,45 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociat
   }
 }
 
-var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
-module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-search-services-deployment', 64)
-  params: {
-    name: take(
-      !empty(aiSearchConfiguration) && !empty(aiSearchConfiguration.?name)
-        ? aiSearchConfiguration!.name!
-        : 'srch${resourcesName}',
-      60
-    )
-    location: location
-    enableTelemetry: enableTelemetry
-    cmkEnforcement: 'Disabled'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    publicNetworkAccess: aiSearchPrivateNetworking ? 'Disabled' : 'Enabled'
-    disableLocalAuth: aiSearchPrivateNetworking
-    sku: 'basic'
-    partitionCount: 1
-    replicaCount: 3
-    roleAssignments: aiSearchConfiguration.?roleAssignments
-    privateEndpoints: aiSearchPrivateNetworking
-      ? [
-          {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
-                }
-              ]
-            }
-            subnetResourceId: networking!.privateEndpointSubnetId
-          }
-        ]
-      : []
-    tags: tags
-  }
-}
+// var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
+// module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
+//   name: take('${resourcesName}-search-services-deployment', 64)
+//   params: {
+//     name: take(
+//       !empty(aiSearchConfiguration) && !empty(aiSearchConfiguration.?name)
+//         ? aiSearchConfiguration!.name!
+//         : 'srch${resourcesName}',
+//       60
+//     )
+//     location: location
+//     enableTelemetry: enableTelemetry
+//     cmkEnforcement: 'Disabled'
+//     managedIdentities: {
+//       systemAssigned: true
+//     }
+//     publicNetworkAccess: aiSearchPrivateNetworking ? 'Disabled' : 'Enabled'
+//     disableLocalAuth: aiSearchPrivateNetworking
+//     sku: 'basic'
+//     partitionCount: 1
+//     replicaCount: 3
+//     roleAssignments: aiSearchConfiguration.?roleAssignments
+//     privateEndpoints: aiSearchPrivateNetworking
+//       ? [
+//           {
+//             privateDnsZoneGroup: {
+//               privateDnsZoneGroupConfigs: [
+//                 {
+//                   privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
+//                 }
+//               ]
+//             }
+//             subnetResourceId: networking!.privateEndpointSubnetId
+//           }
+//         ]
+//       : []
+//     tags: tags
+//   }
+// }
 
 var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
 module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResourceId)) {
@@ -265,65 +265,65 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
-      ],
-      empty(aiSearchConfiguration.?existingResourceId)
-        ? [
-            {
-              principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-            }
-          ]
-        : []
+      ]
+      // empty(aiSearchConfiguration.?existingResourceId)
+      //   ? [
+      //       {
+      //         principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
+      //         principalType: 'ServicePrincipal'
+      //         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+      //       }
+      //     ]
+      //   : []
     )
   }
 }
 
-var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-cosmosdb-deployment', 64)
-  params: {
-    name: take(
-      !empty(cosmosDbConfiguration) && !empty(cosmosDbConfiguration.?name)
-        ? cosmosDbConfiguration!.name!
-        : 'cos${resourcesName}',
-      44
-    )
-    enableTelemetry: enableTelemetry
-    automaticFailover: true
-    disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuthentication: true
-    location: location
-    minimumTlsVersion: 'Tls12'
-    defaultConsistencyLevel: 'Session'
-    networkRestrictions: {
-      networkAclBypass: 'AzureServices'
-      publicNetworkAccess: cosmosDbPrivateNetworking ? 'Disabled' : 'Enabled'
-    }
-    privateEndpoints: cosmosDbPrivateNetworking
-      ? [
-          {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
-                }
-              ]
-            }
-            service: 'Sql'
-            subnetResourceId: networking!.privateEndpointSubnetId
-          }
-        ]
-      : []
-    roleAssignments: cosmosDbConfiguration.?roleAssignments
-    tags: tags
-  }
-}
+// var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
+// module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
+//   name: take('${resourcesName}-cosmosdb-deployment', 64)
+//   params: {
+//     name: take(
+//       !empty(cosmosDbConfiguration) && !empty(cosmosDbConfiguration.?name)
+//         ? cosmosDbConfiguration!.name!
+//         : 'cos${resourcesName}',
+//       44
+//     )
+//     enableTelemetry: enableTelemetry
+//     automaticFailover: true
+//     disableKeyBasedMetadataWriteAccess: true
+//     disableLocalAuthentication: true
+//     location: location
+//     minimumTlsVersion: 'Tls12'
+//     defaultConsistencyLevel: 'Session'
+//     networkRestrictions: {
+//       networkAclBypass: 'AzureServices'
+//       publicNetworkAccess: cosmosDbPrivateNetworking ? 'Disabled' : 'Enabled'
+//     }
+//     privateEndpoints: cosmosDbPrivateNetworking
+//       ? [
+//           {
+//             privateDnsZoneGroup: {
+//               privateDnsZoneGroupConfigs: [
+//                 {
+//                   privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
+//                 }
+//               ]
+//             }
+//             service: 'Sql'
+//             subnetResourceId: networking!.privateEndpointSubnetId
+//           }
+//         ]
+//       : []
+//     roleAssignments: cosmosDbConfiguration.?roleAssignments
+//     tags: tags
+//   }
+// }
 
 module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   #disable-next-line no-unnecessary-dependson
-  dependsOn: [storageAccount, aiSearch, cosmosDb, keyVault]
+  dependsOn: [storageAccount, /*aiSearch, cosmosDb,*/ keyVault]
   params: {
     name: projectName
     desc: !empty(aiFoundryConfiguration.?project.?desc)
@@ -335,24 +335,24 @@ module foundryProject 'modules/project/main.bicep' = {
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
-    aiSearchConnections: includeAssociatedResources
-      ? [
-          {
-            resourceId: !empty(aiSearchConfiguration.?existingResourceId)
-              ? aiSearchConfiguration!.existingResourceId!
-              : aiSearch!.outputs.resourceId
-          }
-        ]
-      : []
-    cosmosDbConnections: includeAssociatedResources
-      ? [
-          {
-            resourceId: !empty(cosmosDbConfiguration.?existingResourceId)
-              ? cosmosDbConfiguration!.existingResourceId!
-              : cosmosDb!.outputs.resourceId
-          }
-        ]
-      : []
+    // aiSearchConnections: includeAssociatedResources
+    //   ? [
+    //       {
+    //         resourceId: !empty(aiSearchConfiguration.?existingResourceId)
+    //           ? aiSearchConfiguration!.existingResourceId!
+    //           : aiSearch!.outputs.resourceId
+    //       }
+    //     ]
+    //   : []
+    // cosmosDbConnections: includeAssociatedResources
+    //   ? [
+    //       {
+    //         resourceId: !empty(cosmosDbConfiguration.?existingResourceId)
+    //           ? cosmosDbConfiguration!.existingResourceId!
+    //           : cosmosDb!.outputs.resourceId
+    //       }
+    //     ]
+    //   : []
     storageAccountConnections: [
       for (container, i) in storageAccountContainers ?? []: {
         resourceId: !empty(storageAccountConfiguration.?existingResourceId)
