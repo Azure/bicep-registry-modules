@@ -59,13 +59,17 @@ resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' 
   kind: 'StorageV2'
 }
 
-resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+resource aiServices 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   name: aiServicesName
   location: location
   sku: {
     name: 'S0'
   }
   kind: 'AIServices'
+  properties: {
+    customSubDomainName: aiServicesName
+    publicNetworkAccess: 'Enabled'
+  }
 }
 
 @description('The resource ID of the created Application Insights instance.')
