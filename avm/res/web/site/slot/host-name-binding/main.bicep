@@ -52,37 +52,81 @@ param siteName string?
 param sslState string?
 
 @description('Optional. SSL certificate thumbprint.')
-param thumbprint string?
+param thumbprint string = ''
 
-resource app 'Microsoft.Web/sites@2024-11-01' existing = {
-  name: appName
+@description('Optional. Certificate object with properties for certificate creation. The expected structure matches the certificateType defined in host-name-binding-type.bicep.')
+param certificate object = {}
 
-  resource slot 'slots@2024-11-01' existing = {
-    name: slotName
-  }
-}
+@description('Optional. Resource location.')
+param location string = resourceGroup().location
 
-resource hostNameBinding 'Microsoft.Web/sites/slots/hostNameBindings@2024-11-01' = {
-  parent: app::slot
-  name: name
-  kind: kind
-  properties: {
+var certificateName = 'cert-${replace(name, '.', '-')}'
+var shouldCreateCertificate = !empty(certificate)
+
+// Create certificate if certificate object is provided and add hostname binding
+module withCertificateScenario 'with-certificate.bicep' = if (shouldCreateCertificate) {
+  name: 'SlotHostNameBindingWithCert-${name}'
+  params: {
+    appName: appName
+    slotName: slotName
+    name: name
+    kind: kind
+    location: location
+    certificateName: certificateName
+    certificate: certificate
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
     domainId: domainId
     hostNameType: hostNameType
     siteName: siteName
-    sslState: sslState
+    sslState: sslState ?? 'SniEnabled'
+  }
+}
+
+// Just add hostname binding with existing thumbprint if provided
+module withoutCertificateScenario 'without-certificate.bicep' = if (!shouldCreateCertificate) {
+  name: 'SlotHostNameBindingWithoutCert-${name}'
+  params: {
+    appName: appName
+    slotName: slotName
+    name: name
+    kind: kind
+    azureResourceName: azureResourceName
+    azureResourceType: azureResourceType
+    customHostNameDnsRecordType: customHostNameDnsRecordType
+    domainId: domainId
+    hostNameType: hostNameType
+    siteName: siteName
+    sslState: !empty(thumbprint) ? (sslState ?? 'SniEnabled') : sslState
     thumbprint: thumbprint
   }
 }
 
+// Define output variables
+var bindingResourceId = shouldCreateCertificate
+  ? withCertificateScenario.?outputs.?resourceId ?? ''
+  : withoutCertificateScenario.?outputs.?resourceId ?? ''
+
+var bindingCertificateThumbprint = shouldCreateCertificate
+  ? withCertificateScenario.?outputs.?certificateThumbprint ?? ''
+  : ''
+
+var bindingCertificateResourceId = shouldCreateCertificate
+  ? withCertificateScenario.?outputs.?certificateResourceId ?? ''
+  : ''
+
 @description('The name of the host name binding.')
-output name string = hostNameBinding.name
+output name string = name
 
 @description('The resource ID of the host name binding.')
-output resourceId string = hostNameBinding.id
+output resourceId string = bindingResourceId
 
 @description('The name of the resource group the resource was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The thumbprint of the certificate if one was created.')
+output certificateThumbprint string = bindingCertificateThumbprint
+
+@description('The resource ID of the certificate if one was created.')
+output certificateResourceId string = bindingCertificateResourceId

@@ -318,6 +318,7 @@ module slot_hostNameBindings 'host-name-binding/main.bicep' = [
       siteName: hostNameBinding.?siteName
       sslState: hostNameBinding.?sslState
       thumbprint: hostNameBinding.?thumbprint
+      certificate: hostNameBinding.?certificate
     }
   }
 ]
