@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
       sku: 'Basic'
       kind: 'Hub'
       // There currently appears to be a bug that fails the idempotent deployment if it runs
-      // immediately after the initial deployment with no delay, when this connections is defined.
+      // immediately after the initial deployment with no delay, when the connection is defined.
       // The connection is commented out for now, but should be uncommented once the bug is fixed.
       // connections: [
       //   {
