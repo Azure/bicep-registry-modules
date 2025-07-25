@@ -36,17 +36,149 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cache/redis:<version>`.
 
-- [Using clustering configuration](#example-1-using-clustering-configuration)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using EntraID authentication](#example-3-using-entraid-authentication)
-- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [Passive Geo-Replicated Redis Cache](#example-6-passive-geo-replicated-redis-cache)
-- [Using data persistence configuration](#example-7-using-data-persistence-configuration)
-- [Using custom Redis configuration](#example-8-using-custom-redis-configuration)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Using access policies](#example-1-using-access-policies)
+- [Using clustering configuration](#example-2-using-clustering-configuration)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using EntraID authentication](#example-4-using-entraid-authentication)
+- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [Passive Geo-Replicated Redis Cache](#example-7-passive-geo-replicated-redis-cache)
+- [Using data persistence configuration](#example-8-using-data-persistence-configuration)
+- [Using custom Redis configuration](#example-9-using-custom-redis-configuration)
+- [WAF-aligned](#example-10-waf-aligned)
 
-### Example 1: _Using clustering configuration_
+### Example 1: _Using access policies_
+
+This instance deploys the module with access policies configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  name: 'redisDeployment'
+  params: {
+    // Required parameters
+    name: 'cracp001'
+    // Non-required parameters
+    accessPolicies: [
+      {
+        name: 'Read Only Policy'
+        permissions: '+@read'
+      }
+      {
+        name: 'Write Only Policy'
+        permissions: '+@write'
+      }
+      {
+        name: 'Admin Policy'
+        permissions: '+@all'
+      }
+      {
+        name: 'Custom Pattern Policy'
+        permissions: '+@read +set ~cache:*'
+      }
+    ]
+    location: '<location>'
+    redisConfiguration: {
+      'aad-enabled': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "cracp001"
+    },
+    // Non-required parameters
+    "accessPolicies": {
+      "value": [
+        {
+          "name": "Read Only Policy",
+          "permissions": "+@read"
+        },
+        {
+          "name": "Write Only Policy",
+          "permissions": "+@write"
+        },
+        {
+          "name": "Admin Policy",
+          "permissions": "+@all"
+        },
+        {
+          "name": "Custom Pattern Policy",
+          "permissions": "+@read +set ~cache:*"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "redisConfiguration": {
+      "value": {
+        "aad-enabled": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'cracp001'
+// Non-required parameters
+param accessPolicies = [
+  {
+    name: 'Read Only Policy'
+    permissions: '+@read'
+  }
+  {
+    name: 'Write Only Policy'
+    permissions: '+@write'
+  }
+  {
+    name: 'Admin Policy'
+    permissions: '+@all'
+  }
+  {
+    name: 'Custom Pattern Policy'
+    permissions: '+@read +set ~cache:*'
+  }
+]
+param location = '<location>'
+param redisConfiguration = {
+  'aad-enabled': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using clustering configuration_
 
 This instance deploys the module with clustering enabled.
 
@@ -135,7 +267,7 @@ param skuName = 'Premium'
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -199,7 +331,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using EntraID authentication_
+### Example 4: _Using EntraID authentication_
 
 This instance deploys the module with EntraID authentication.
 
@@ -317,7 +449,7 @@ param redisConfiguration = {
 </details>
 <p>
 
-### Example 4: _Deploying with a key vault reference to save secrets_
+### Example 5: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -410,7 +542,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -869,7 +1001,7 @@ param zoneRedundant = true
 </details>
 <p>
 
-### Example 6: _Passive Geo-Replicated Redis Cache_
+### Example 7: _Passive Geo-Replicated Redis Cache_
 
 This instance deploys the module with geo-replication enabled.
 
@@ -1009,7 +1141,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 7: _Using data persistence configuration_
+### Example 8: _Using data persistence configuration_
 
 This instance deploys the module with data persistence enabled.
 
@@ -1098,7 +1230,7 @@ param skuName = 'Premium'
 </details>
 <p>
 
-### Example 8: _Using custom Redis configuration_
+### Example 9: _Using custom Redis configuration_
 
 This instance deploys the module with custom Redis configuration.
 
@@ -1182,7 +1314,7 @@ param redisConfiguration = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
