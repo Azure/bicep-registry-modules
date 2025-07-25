@@ -8,11 +8,11 @@ var resourceType = '${split(resourceId, '/')[6]}/${split(resourceId, '/')[7]}'
 
 // Azure Blob Storage Backup
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: last(split(resourceId, '/'))
 }
 
-resource disk 'Microsoft.Compute/disks@2024-03-02' existing = if (resourceType == 'Microsoft.Compute/disks') {
+resource disk 'Microsoft.Compute/disks@2025-01-02' existing = if (resourceType == 'Microsoft.Compute/disks') {
   name: last(split(resourceId, '/'))
 }
 
