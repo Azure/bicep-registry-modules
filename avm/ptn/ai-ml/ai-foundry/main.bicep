@@ -194,16 +194,15 @@ module foundryAccount 'modules/account.bicep' = {
 //   }
 // }
 
+var storageAccountName = take(
+  !empty(storageAccountConfiguration.?name) ? storageAccountConfiguration!.name! : 'st${resourcesName}',
+  24
+)
 var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
 module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResourceId)) {
   name: take('${resourcesName}-storage-account-deployment', 64)
   params: {
-    name: take(
-      !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?name)
-        ? storageAccountConfiguration!.name!
-        : 'st${resourcesName}',
-      24
-    )
+    name: storageAccountName
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -365,7 +364,7 @@ module foundryProject 'modules/project/main.bicep' = {
     //   }
     // ]
     tempStorageAccountConnection: {
-      resourceId: storageAccount!.outputs.name
+      resourceId: storageAccountName
       containerName: projectName
     }
     tags: tags

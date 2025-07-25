@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13768083481591247989"
+      "templateHash": "2594251698863704343"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -547,6 +547,7 @@
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
     "storageAccountContainers": "[if(parameters('includeAssociatedResources'), coalesce(tryGet(parameters('storageAccountConfiguration'), 'containers'), createArray(variables('projectName'))), createArray())]",
+    "storageAccountName": "[take(if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'name'))), parameters('storageAccountConfiguration').name, format('st{0}', variables('resourcesName'))), 24)]",
     "storageAccountPrivateNetworking": "[and(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageBlobPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageFilePrivateDnsZoneId'))))]"
   },
   "resources": {
@@ -3460,7 +3461,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'name')))), parameters('storageAccountConfiguration').name, format('st{0}', variables('resourcesName'))), 24)]"
+            "value": "[variables('storageAccountName')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -9316,7 +9317,7 @@
           },
           "tempStorageAccountConnection": {
             "value": {
-              "resourceId": "[reference('storageAccount').outputs.name.value]",
+              "resourceId": "[variables('storageAccountName')]",
               "containerName": "[variables('projectName')]"
             }
           },
