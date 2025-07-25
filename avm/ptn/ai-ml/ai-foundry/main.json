@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13705935883501611610"
+      "templateHash": "2765066568282739084"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -6832,13 +6832,13 @@
             "value": "[variables('aiSearchPrivateNetworking')]"
           },
           "sku": {
-            "value": "standard"
+            "value": "basic"
           },
           "partitionCount": {
             "value": 1
           },
           "replicaCount": {
-            "value": 3
+            "value": 1
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
