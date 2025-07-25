@@ -111,48 +111,48 @@ module foundryAccount 'modules/account.bicep' = {
   }
 }
 
-var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-keyvault-deployment', 64)
-  params: {
-    name: take(
-      !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
-        ? keyVaultConfiguration!.name!
-        : 'kv${resourcesName}',
-      24
-    )
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    publicNetworkAccess: keyVaultPrivateNetworking ? 'Disabled' : 'Enabled'
-    networkAcls: {
-      defaultAction: keyVaultPrivateNetworking ? 'Deny' : 'Allow'
-    }
-    enableVaultForDeployment: true
-    enableVaultForDiskEncryption: true
-    enableVaultForTemplateDeployment: true
-    enablePurgeProtection: false
-    enableRbacAuthorization: true
-    enableSoftDelete: true
-    softDeleteRetentionInDays: 7
-    privateEndpoints: keyVaultPrivateNetworking
-      ? [
-          {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
-                }
-              ]
-            }
-            service: 'vault'
-            subnetResourceId: networking!.privateEndpointSubnetId
-          }
-        ]
-      : []
-    roleAssignments: keyVaultConfiguration.?roleAssignments
-  }
-}
+// var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
+// module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
+//   name: take('${resourcesName}-keyvault-deployment', 64)
+//   params: {
+//     name: take(
+//       !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
+//         ? keyVaultConfiguration!.name!
+//         : 'kv${resourcesName}',
+//       24
+//     )
+//     location: location
+//     tags: tags
+//     enableTelemetry: enableTelemetry
+//     publicNetworkAccess: keyVaultPrivateNetworking ? 'Disabled' : 'Enabled'
+//     networkAcls: {
+//       defaultAction: keyVaultPrivateNetworking ? 'Deny' : 'Allow'
+//     }
+//     enableVaultForDeployment: true
+//     enableVaultForDiskEncryption: true
+//     enableVaultForTemplateDeployment: true
+//     enablePurgeProtection: false
+//     enableRbacAuthorization: true
+//     enableSoftDelete: true
+//     softDeleteRetentionInDays: 7
+//     privateEndpoints: keyVaultPrivateNetworking
+//       ? [
+//           {
+//             privateDnsZoneGroup: {
+//               privateDnsZoneGroupConfigs: [
+//                 {
+//                   privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
+//                 }
+//               ]
+//             }
+//             service: 'vault'
+//             subnetResourceId: networking!.privateEndpointSubnetId
+//           }
+//         ]
+//       : []
+//     roleAssignments: keyVaultConfiguration.?roleAssignments
+//   }
+// }
 
 // var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
 // module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
@@ -322,8 +322,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
 
 module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [storageAccount, /*aiSearch, cosmosDb,*/ keyVault]
+  dependsOn: [
+    #disable-next-line no-unnecessary-dependson
+    storageAccount
+    /*aiSearch, cosmosDb, keyVault*/
+  ]
   params: {
     name: projectName
     desc: !empty(aiFoundryConfiguration.?project.?desc)
@@ -361,6 +364,12 @@ module foundryProject 'modules/project/main.bicep' = {
         containerName: container
       }
     ]
+    tempStorageAccountConnection: {
+      resourceId: !empty(storageAccountConfiguration.?existingResourceId)
+        ? storageAccountConfiguration!.existingResourceId!
+        : storageAccount!.outputs.resourceId
+      containerName: projectName
+    }
     tags: tags
     lock: lock
   }

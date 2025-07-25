@@ -33,6 +33,9 @@ param aiSearchConnections azureConnectionType[]?
 @description('Optional. List of Azure Storage Account connections for the project.')
 param storageAccountConnections storageAccountConnectionType[]?
 
+@description('Optional. Temp thing.')
+param tempStorageAccountConnection storageAccountConnectionType?
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -110,6 +113,20 @@ module storageAccountConnResources 'connections/storageAccount.bicep' = [
     }
   }
 ]
+
+module tempStorageAccountConnResource 'connections/storageAccount.bicep' = if (!empty(tempStorageAccountConnection)) {
+  name: take(
+    '${name}-temp-storage-conn-${take(uniqueString(tempStorageAccountConnection!.resourceId), 5)}-${tempStorageAccountConnection!.containerName}',
+    64
+  )
+  params: {
+    name: tempStorageAccountConnection.?name
+    accountName: accountName
+    projectName: project.name
+    resourceIdOrName: tempStorageAccountConnection!.resourceId
+    containerName: tempStorageAccountConnection!.containerName
+  }
+}
 
 var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
 

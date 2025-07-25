@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16978906275885002937"
+      "templateHash": "12842045229395316753"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -173,6 +173,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. List of Azure Storage Account connections for the project."
+      }
+    },
+    "tempStorageAccountConnection": {
+      "$ref": "#/definitions/storageAccountConnectionType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Temp thing."
       }
     },
     "lock": {
@@ -914,6 +921,220 @@
           },
           "containerName": {
             "value": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.177.2456",
+              "templateHash": "528791720500521222"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the storage connection. If not provided, the name will default to the Storage Account name + Container Name."
+              }
+            },
+            "accountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the existing AI Foundry Account."
+              }
+            },
+            "projectName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the existing AI Foundry project to connect to the Storage Account."
+              }
+            },
+            "resourceIdOrName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Resource ID or name of the existing Storage Account to connect to."
+              }
+            },
+            "containerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the container in the Storage Account to use for the connection."
+              }
+            }
+          },
+          "variables": {
+            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')), parameters('containerName')))]"
+          },
+          "resources": {
+            "storageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2025-01-01",
+              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
+              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
+              "name": "[reference('parsedResourceId').outputs.name.value]",
+              "dependsOn": [
+                "parsedResourceId"
+              ]
+            },
+            "account": {
+              "existing": true,
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2025-06-01",
+              "name": "[parameters('accountName')]"
+            },
+            "project": {
+              "existing": true,
+              "type": "Microsoft.CognitiveServices/accounts/projects",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]"
+            },
+            "connection": {
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('projectName'), variables('connectionName'))]",
+              "properties": {
+                "category": "AzureBlob",
+                "target": "[reference('storageAccount').primaryEndpoints.blob]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Storage/storageAccounts', reference('parsedResourceId').outputs.name.value)]",
+                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
+                  "accountName": "[reference('parsedResourceId').outputs.name.value]",
+                  "containerName": "[parameters('containerName')]"
+                }
+              },
+              "dependsOn": [
+                "parsedResourceId",
+                "storageAccount"
+              ]
+            },
+            "parsedResourceId": {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('proj-storage-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceIdOrName": {
+                    "value": "[parameters('resourceIdOrName')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.177.2456",
+                      "templateHash": "8219569796823241671"
+                    }
+                  },
+                  "parameters": {
+                    "resourceIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID or name of an existing resource."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
+                    "name": "[if(and(contains(parameters('resourceIdOrName'), '/'), not(empty(variables('resourceParts')))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
+                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
+                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
+                  },
+                  "resources": [],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the resource."
+                      },
+                      "value": "[variables('name')]"
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Subscription ID of the resource."
+                      },
+                      "value": "[variables('subscriptionId')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource Group Name of the resource."
+                      },
+                      "value": "[variables('resourceGroupName')]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the Storage Account connection."
+              },
+              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('projectName'), variables('connectionName'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the Storage Account connection."
+              },
+              "value": "[variables('connectionName')]"
+            },
+            "target": {
+              "type": "string",
+              "metadata": {
+                "description": "Target endpoint of the Storage Account connection."
+              },
+              "value": "[reference('connection').target]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "project"
+      ]
+    },
+    "tempStorageAccountConnResource": {
+      "condition": "[not(empty(parameters('tempStorageAccountConnection')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('{0}-temp-storage-conn-{1}-{2}', parameters('name'), take(uniqueString(parameters('tempStorageAccountConnection').resourceId), 5), parameters('tempStorageAccountConnection').containerName), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[tryGet(parameters('tempStorageAccountConnection'), 'name')]"
+          },
+          "accountName": {
+            "value": "[parameters('accountName')]"
+          },
+          "projectName": {
+            "value": "[parameters('name')]"
+          },
+          "resourceIdOrName": {
+            "value": "[parameters('tempStorageAccountConnection').resourceId]"
+          },
+          "containerName": {
+            "value": "[parameters('tempStorageAccountConnection').containerName]"
           }
         },
         "template": {

@@ -41,6 +41,7 @@ Creates an AI Foundry project and any associated Azure service connections.
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`storageAccountConnections`](#parameter-storageaccountconnections) | array | List of Azure Storage Account connections for the project. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
+| [`tempStorageAccountConnection`](#parameter-tempstorageaccountconnection) | object | Temp thing. |
 
 ### Parameter: `accountName`
 
@@ -268,6 +269,47 @@ Tags to be applied to the resources.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `tempStorageAccountConnection`
+
+Temp thing.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerName`](#parameter-tempstorageaccountconnectioncontainername) | string | Name of container in the Storage Account to use for the connections. |
+| [`resourceId`](#parameter-tempstorageaccountconnectionresourceid) | string | The resource ID of the Azure resource for the connection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tempstorageaccountconnectionname) | string | The name of the project connection. Will default to "<account>-<container>" if not provided. |
+
+### Parameter: `tempStorageAccountConnection.containerName`
+
+Name of container in the Storage Account to use for the connections.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tempStorageAccountConnection.resourceId`
+
+The resource ID of the Azure resource for the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tempStorageAccountConnection.name`
+
+The name of the project connection. Will default to "<account>-<container>" if not provided.
+
+- Required: No
+- Type: string
 
 ## Outputs
 
