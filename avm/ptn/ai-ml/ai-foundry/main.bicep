@@ -174,7 +174,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAs
     disableLocalAuth: aiSearchPrivateNetworking
     sku: 'basic'
     partitionCount: 1
-    replicaCount: 1
+    replicaCount: 3
     roleAssignments: aiSearchConfiguration.?roleAssignments
     privateEndpoints: aiSearchPrivateNetworking
       ? [

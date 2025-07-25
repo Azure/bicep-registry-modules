@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "2765066568282739084"
+      "templateHash": "3911490608103324012"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -6838,7 +6838,7 @@
             "value": 1
           },
           "replicaCount": {
-            "value": 1
+            "value": 3
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
