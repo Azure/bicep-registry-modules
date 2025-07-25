@@ -72,6 +72,65 @@ var storagePrivateDnsZones = {
   'privatelink.file.${environment().suffixes.storage}': 'file'
 }
 
+// Location pairs mapping for replication (no primary == secondary)
+var locationPairs = {
+  // North America
+  canadacentral: 'centralus'
+  canadaeast: 'canadacentral'
+  centralus: 'eastus'
+  eastus: 'eastus2'
+  eastus2: 'eastus'
+  northcentralus: 'centralus'
+  southcentralus: 'westus'
+  westcentralus: 'westus'
+  westus: 'westus2'
+  westus2: 'westus'
+  westus3: 'westus2'
+  // South America
+  brazilsouth: 'brazilsoutheast'
+  brazilsoutheast: 'brazilsouth'
+  // Europe
+  francecentral: 'westeurope'
+  francesouth: 'francecentral'
+  germanynorth: 'northeurope'
+  germanywestcentral: 'germanynorth'
+  italynorth: 'francecentral'
+  northeurope: 'westeurope'
+  norwayeast: 'northeurope'
+  norwaywest: 'northeurope'
+  polandcentral: 'northeurope'
+  uksouth: 'westeurope'
+  spaincentral: 'francecentral'
+  swedencentral: 'northeurope'
+  swedensouth: 'swedencentral'
+  switzerlandnorth: 'westeurope'
+  switzerlandwest: 'westeurope'
+  westeurope: 'northeurope'
+  ukwest: 'uksouth'
+  // Middle East
+  qatarcentral: 'uaecentral'
+  uaecentral: 'uaenorth'
+  uaenorth: 'qatarcentral'
+  // India
+  centralindia: 'southindia'
+  southindia: 'centralindia'
+  // Asia Pacific
+  eastasia: 'southeastasia'
+  japaneast: 'japanwest'
+  japanwest: 'japaneast'
+  koreacentral: 'koreasouth'
+  koreasouth: 'koreacentral'
+  southeastasia: 'eastasia'
+  // Oceania
+  australiacentral: 'australiaeast'
+  australiacentral2: 'australiacentral'
+  australiaeast: 'australiasoutheast'
+  australiasoutheast: 'australiaeast'
+  // Africa
+  southafricanorth: 'southafricawest'
+  southafricawest: 'southafricanorth'
+}
+
 // ============== //
 // Resources      //
 // ============== //
@@ -276,9 +335,15 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: managedIdentityName ?? 'null'
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsConfiguration.?name ?? 'log-${name}'
   location: location
+  properties: {
+    replication: {
+      enabled: true
+      location: locationPairs[location]
+    }
+  }
   tags: tags
 }
 
