@@ -356,14 +356,14 @@ module foundryProject 'modules/project/main.bicep' = {
     //       }
     //     ]
     //   : []
-    storageAccountConnections: [
-      for (container, i) in storageAccountContainers ?? []: {
-        resourceId: !empty(storageAccountConfiguration.?existingResourceId)
-          ? storageAccountConfiguration!.existingResourceId!
-          : storageAccount!.outputs.resourceId
-        containerName: container
-      }
-    ]
+    // storageAccountConnections: [
+    //   for (container, i) in storageAccountContainers ?? []: {
+    //     resourceId: !empty(storageAccountConfiguration.?existingResourceId)
+    //       ? storageAccountConfiguration!.existingResourceId!
+    //       : storageAccount!.outputs.resourceId
+    //     containerName: container
+    //   }
+    // ]
     tempStorageAccountConnection: {
       resourceId: !empty(storageAccountConfiguration.?existingResourceId)
         ? storageAccountConfiguration!.existingResourceId!

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17867257632764299787"
+      "templateHash": "7203236066898168669"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -9313,15 +9313,6 @@
           },
           "includeCapabilityHost": {
             "value": false
-          },
-          "storageAccountConnections": {
-            "copy": [
-              {
-                "name": "value",
-                "count": "[length(coalesce(variables('storageAccountContainers'), createArray()))]",
-                "input": "[createObject('resourceId', if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId'))), parameters('storageAccountConfiguration').existingResourceId, reference('storageAccount').outputs.resourceId.value), 'containerName', coalesce(variables('storageAccountContainers'), createArray())[copyIndex('value')])]"
-              }
-            ]
           },
           "tempStorageAccountConnection": {
             "value": {
