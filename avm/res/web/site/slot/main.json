@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "2467503612762973649"
+      "templateHash": "17612279172392359160"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -3771,6 +3771,103 @@
         }
       }
     },
+    "hostNameBindingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Hostname in the hostname binding."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Kind of resource."
+          }
+        },
+        "azureResourceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Azure resource name."
+          }
+        },
+        "azureResourceType": {
+          "type": "string",
+          "allowedValues": [
+            "TrafficManager",
+            "Website"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Azure resource type. Possible values are Website and TrafficManager."
+          }
+        },
+        "customHostNameDnsRecordType": {
+          "type": "string",
+          "allowedValues": [
+            "A",
+            "CName"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS record type. Possible values are CName and A."
+          }
+        },
+        "domainId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Fully qualified ARM domain resource URI."
+          }
+        },
+        "hostNameType": {
+          "type": "string",
+          "allowedValues": [
+            "Managed",
+            "Verified"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Hostname type. Possible values are Verified and Managed."
+          }
+        },
+        "siteName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. App Service app name."
+          }
+        },
+        "sslState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "IpBasedEnabled",
+            "SniEnabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled."
+          }
+        },
+        "thumbprint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SSL certificate thumbprint."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a host name binding.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../host-name-binding-type.bicep"
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -4390,6 +4487,16 @@
         "description": "Optional. Names of hybrid connection relays to connect app with."
       }
     },
+    "hostNameBindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/hostNameBindingType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Host Name Bindings for the slot."
+      }
+    },
     "dnsConfiguration": {
       "type": "object",
       "metadata": {
@@ -4788,6 +4895,229 @@
                 "description": "The resource ID of the hybrid connection relay."
               },
               "value": "[resourceId('Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays', split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[3])]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the resource was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "slot"
+      ]
+    },
+    "slot_hostNameBindings": {
+      "copy": {
+        "name": "slot_hostNameBindings",
+        "count": "[length(coalesce(parameters('hostNameBindings'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Slot-HostNameBinding-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('hostNameBindings'), createArray())[copyIndex()].name]"
+          },
+          "appName": {
+            "value": "[parameters('appName')]"
+          },
+          "slotName": {
+            "value": "[parameters('name')]"
+          },
+          "kind": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'kind')]"
+          },
+          "azureResourceName": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'azureResourceName')]"
+          },
+          "azureResourceType": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'azureResourceType')]"
+          },
+          "customHostNameDnsRecordType": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'customHostNameDnsRecordType')]"
+          },
+          "domainId": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'domainId')]"
+          },
+          "hostNameType": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'hostNameType')]"
+          },
+          "siteName": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'siteName')]"
+          },
+          "sslState": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'sslState')]"
+          },
+          "thumbprint": {
+            "value": "[tryGet(coalesce(parameters('hostNameBindings'), createArray())[copyIndex()], 'thumbprint')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.177.2456",
+              "templateHash": "5041594886045443575"
+            },
+            "name": "Web/Function Apps Slot Host Name Bindings",
+            "description": "This module deploys a Site Slot Host Name Binding."
+          },
+          "parameters": {
+            "appName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+              }
+            },
+            "slotName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the site slot. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Hostname in the hostname binding."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Kind of resource."
+              }
+            },
+            "azureResourceName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Azure resource name."
+              }
+            },
+            "azureResourceType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Website",
+                "TrafficManager"
+              ],
+              "metadata": {
+                "description": "Optional. Azure resource type. Possible values are Website and TrafficManager."
+              }
+            },
+            "customHostNameDnsRecordType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "CName",
+                "A"
+              ],
+              "metadata": {
+                "description": "Optional. Custom DNS record type. Possible values are CName and A."
+              }
+            },
+            "domainId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Fully qualified ARM domain resource URI."
+              }
+            },
+            "hostNameType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Verified",
+                "Managed"
+              ],
+              "metadata": {
+                "description": "Optional. Hostname type. Possible values are Verified and Managed."
+              }
+            },
+            "siteName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. App Service app name."
+              }
+            },
+            "sslState": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Disabled",
+                "SniEnabled",
+                "IpBasedEnabled"
+              ],
+              "metadata": {
+                "description": "Optional. SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled."
+              }
+            },
+            "thumbprint": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. SSL certificate thumbprint."
+              }
+            }
+          },
+          "resources": {
+            "app::slot": {
+              "existing": true,
+              "type": "Microsoft.Web/sites/slots",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+            },
+            "app": {
+              "existing": true,
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2024-11-01",
+              "name": "[parameters('appName')]"
+            },
+            "hostNameBinding": {
+              "type": "Microsoft.Web/sites/slots/hostNameBindings",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
+              "kind": "[parameters('kind')]",
+              "properties": {
+                "azureResourceName": "[parameters('azureResourceName')]",
+                "azureResourceType": "[parameters('azureResourceType')]",
+                "customHostNameDnsRecordType": "[parameters('customHostNameDnsRecordType')]",
+                "domainId": "[parameters('domainId')]",
+                "hostNameType": "[parameters('hostNameType')]",
+                "siteName": "[parameters('siteName')]",
+                "sslState": "[parameters('sslState')]",
+                "thumbprint": "[parameters('thumbprint')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the host name binding."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the host name binding."
+              },
+              "value": "[resourceId('Microsoft.Web/sites/slots/hostNameBindings', parameters('appName'), parameters('slotName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -5946,6 +6276,19 @@
           "groupId": "[tryGet(tryGet(reference(format('slot_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
           "customDnsConfigs": "[reference(format('slot_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
           "networkInterfaceResourceIds": "[reference(format('slot_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
+    },
+    "hostNameBindings": {
+      "type": "array",
+      "metadata": {
+        "description": "The host name bindings of the slot."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('hostNameBindings'), createArray()))]",
+        "input": {
+          "name": "[reference(format('slot_hostNameBindings[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('slot_hostNameBindings[{0}]', copyIndex())).outputs.resourceId.value]"
         }
       }
     }

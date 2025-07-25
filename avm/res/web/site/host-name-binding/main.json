@@ -1,0 +1,155 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.177.2456",
+      "templateHash": "17623012349408104090"
+    },
+    "name": "Web/Function Apps Host Name Bindings",
+    "description": "This module deploys a Site Host Name Binding."
+  },
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Hostname in the hostname binding."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Kind of resource."
+      }
+    },
+    "azureResourceName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Azure resource name."
+      }
+    },
+    "azureResourceType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Website",
+        "TrafficManager"
+      ],
+      "metadata": {
+        "description": "Optional. Azure resource type. Possible values are Website and TrafficManager."
+      }
+    },
+    "customHostNameDnsRecordType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "CName",
+        "A"
+      ],
+      "metadata": {
+        "description": "Optional. Custom DNS record type. Possible values are CName and A."
+      }
+    },
+    "domainId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Fully qualified ARM domain resource URI."
+      }
+    },
+    "hostNameType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Verified",
+        "Managed"
+      ],
+      "metadata": {
+        "description": "Optional. Hostname type. Possible values are Verified and Managed."
+      }
+    },
+    "siteName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. App Service app name."
+      }
+    },
+    "sslState": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "SniEnabled",
+        "IpBasedEnabled"
+      ],
+      "metadata": {
+        "description": "Optional. SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled."
+      }
+    },
+    "thumbprint": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. SSL certificate thumbprint."
+      }
+    }
+  },
+  "resources": {
+    "app": {
+      "existing": true,
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2024-11-01",
+      "name": "[parameters('appName')]"
+    },
+    "hostNameBinding": {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2024-11-01",
+      "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
+      "kind": "[parameters('kind')]",
+      "properties": {
+        "azureResourceName": "[parameters('azureResourceName')]",
+        "azureResourceType": "[parameters('azureResourceType')]",
+        "customHostNameDnsRecordType": "[parameters('customHostNameDnsRecordType')]",
+        "domainId": "[parameters('domainId')]",
+        "hostNameType": "[parameters('hostNameType')]",
+        "siteName": "[parameters('siteName')]",
+        "sslState": "[parameters('sslState')]",
+        "thumbprint": "[parameters('thumbprint')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the host name binding."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the host name binding."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/hostNameBindings', parameters('appName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the resource was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

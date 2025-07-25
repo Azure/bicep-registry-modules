@@ -25,11 +25,13 @@ This module deploys a Web or Function App.
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
 | `Microsoft.Web/sites/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions) |
+| `Microsoft.Web/sites/hostNameBindings` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/hostNameBindings) |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/hybridConnectionNamespaces/relays) |
 | `Microsoft.Web/sites/slots` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots) |
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
 | `Microsoft.Web/sites/slots/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/extensions) |
+| `Microsoft.Web/sites/slots/hostNameBindings` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots/hostNameBindings) |
 | `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays) |
 
 ## Usage examples
@@ -3151,6 +3153,7 @@ param siteConfig = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extensions`](#parameter-extensions) | array | The extensions configuration. |
 | [`functionAppConfig`](#parameter-functionappconfig) | object | The Function App configuration object. |
+| [`hostNameBindings`](#parameter-hostnamebindings) | array | Host Name Bindings for the site. |
 | [`hostNameSslStates`](#parameter-hostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-httpsonly) | bool | Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests. |
 | [`hybridConnectionRelays`](#parameter-hybridconnectionrelays) | array | Names of hybrid connection relays to connect app with. |
@@ -7948,6 +7951,132 @@ The Function App configuration object.
 - Required: No
 - Type: object
 
+### Parameter: `hostNameBindings`
+
+Host Name Bindings for the site.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-hostnamebindingsname) | string | Hostname in the hostname binding. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureResourceName`](#parameter-hostnamebindingsazureresourcename) | string | Azure resource name. |
+| [`azureResourceType`](#parameter-hostnamebindingsazureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
+| [`customHostNameDnsRecordType`](#parameter-hostnamebindingscustomhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
+| [`domainId`](#parameter-hostnamebindingsdomainid) | string | Fully qualified ARM domain resource URI. |
+| [`hostNameType`](#parameter-hostnamebindingshostnametype) | string | Hostname type. Possible values are Verified and Managed. |
+| [`kind`](#parameter-hostnamebindingskind) | string | Kind of resource. |
+| [`siteName`](#parameter-hostnamebindingssitename) | string | App Service app name. |
+| [`sslState`](#parameter-hostnamebindingssslstate) | string | SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled. |
+| [`thumbprint`](#parameter-hostnamebindingsthumbprint) | string | SSL certificate thumbprint. |
+
+### Parameter: `hostNameBindings.name`
+
+Hostname in the hostname binding.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hostNameBindings.azureResourceName`
+
+Azure resource name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.azureResourceType`
+
+Azure resource type. Possible values are Website and TrafficManager.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'TrafficManager'
+    'Website'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.customHostNameDnsRecordType`
+
+Custom DNS record type. Possible values are CName and A.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'A'
+    'CName'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.domainId`
+
+Fully qualified ARM domain resource URI.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.hostNameType`
+
+Hostname type. Possible values are Verified and Managed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Managed'
+    'Verified'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.kind`
+
+Kind of resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.siteName`
+
+App Service app name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.sslState`
+
+SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'IpBasedEnabled'
+    'SniEnabled'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.thumbprint`
+
+SSL certificate thumbprint.
+
+- Required: No
+- Type: string
+
 ### Parameter: `hostNameSslStates`
 
 Hostname SSL states are used to manage the SSL bindings for app's hostnames.
@@ -8708,6 +8837,7 @@ Configuration for deployment slots for an app.
 | [`enabled`](#parameter-slotsenabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`extensions`](#parameter-slotsextensions) | array | The extensions configuration. |
 | [`functionAppConfig`](#parameter-slotsfunctionappconfig) | object | The Function App config object. |
+| [`hostNameBindings`](#parameter-slotshostnamebindings) | array | Host Name Bindings for the slot. |
 | [`hostNameSslStates`](#parameter-slotshostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-slotshttpsonly) | bool | Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests. |
 | [`hybridConnectionRelays`](#parameter-slotshybridconnectionrelays) | array | Names of hybrid connection relays to connect app with. |
@@ -13426,6 +13556,132 @@ The Function App config object.
 - Required: No
 - Type: object
 
+### Parameter: `slots.hostNameBindings`
+
+Host Name Bindings for the slot.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-slotshostnamebindingsname) | string | Hostname in the hostname binding. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureResourceName`](#parameter-slotshostnamebindingsazureresourcename) | string | Azure resource name. |
+| [`azureResourceType`](#parameter-slotshostnamebindingsazureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
+| [`customHostNameDnsRecordType`](#parameter-slotshostnamebindingscustomhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
+| [`domainId`](#parameter-slotshostnamebindingsdomainid) | string | Fully qualified ARM domain resource URI. |
+| [`hostNameType`](#parameter-slotshostnamebindingshostnametype) | string | Hostname type. Possible values are Verified and Managed. |
+| [`kind`](#parameter-slotshostnamebindingskind) | string | Kind of resource. |
+| [`siteName`](#parameter-slotshostnamebindingssitename) | string | App Service app name. |
+| [`sslState`](#parameter-slotshostnamebindingssslstate) | string | SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled. |
+| [`thumbprint`](#parameter-slotshostnamebindingsthumbprint) | string | SSL certificate thumbprint. |
+
+### Parameter: `slots.hostNameBindings.name`
+
+Hostname in the hostname binding.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `slots.hostNameBindings.azureResourceName`
+
+Azure resource name.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.azureResourceType`
+
+Azure resource type. Possible values are Website and TrafficManager.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'TrafficManager'
+    'Website'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.customHostNameDnsRecordType`
+
+Custom DNS record type. Possible values are CName and A.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'A'
+    'CName'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.domainId`
+
+Fully qualified ARM domain resource URI.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.hostNameType`
+
+Hostname type. Possible values are Verified and Managed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Managed'
+    'Verified'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.kind`
+
+Kind of resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.siteName`
+
+App Service app name.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.sslState`
+
+SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'IpBasedEnabled'
+    'SniEnabled'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.thumbprint`
+
+SSL certificate thumbprint.
+
+- Required: No
+- Type: string
+
 ### Parameter: `slots.hostNameSslStates`
 
 Hostname SSL states are used to manage the SSL bindings for app's hostnames.
@@ -14194,6 +14450,7 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 | :-- | :-- | :-- |
 | `customDomainVerificationId` | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
 | `defaultHostname` | string | Default hostname of the app. |
+| `hostNameBindings` | array | The host name bindings of the site. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
 | `outboundIpAddresses` | string | The outbound IP addresses of the app. |
