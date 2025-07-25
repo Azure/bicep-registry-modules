@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4225953294845166141"
+      "version": "0.36.177.2456",
+      "templateHash": "16723079916597333381"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan."
@@ -244,7 +244,7 @@
       "allowedValues": [
         "app",
         "elastic",
-        "functionApp",
+        "functionapp",
         "windows",
         "linux"
       ],
@@ -403,16 +403,12 @@
     },
     "appServicePlan": {
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "sku": {
-        "name": "[parameters('skuName')]",
-        "capacity": "[if(equals(parameters('skuName'), 'FC1'), null(), parameters('skuCapacity'))]",
-        "tier": "[if(equals(parameters('skuName'), 'FC1'), 'FlexConsumption', null())]"
-      },
+      "sku": "[if(equals(parameters('skuName'), 'FC1'), createObject('name', parameters('skuName'), 'tier', 'FlexConsumption'), createObject('name', parameters('skuName'), 'capacity', parameters('skuCapacity')))]",
       "properties": {
         "workerTierName": "[parameters('workerTierName')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentId'))), createObject('id', parameters('appServiceEnvironmentId')), null())]",
@@ -521,7 +517,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('appServicePlan', '2022-09-01', 'full').location]"
+      "value": "[reference('appServicePlan', '2024-11-01', 'full').location]"
     }
   }
 }

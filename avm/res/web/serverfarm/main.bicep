@@ -28,7 +28,7 @@ param location string = resourceGroup().location
 @allowed([
   'app'
   'elastic'
-  'functionApp'
+  'functionapp'
   'windows'
   'linux'
 ])
@@ -136,16 +136,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' = {
   name: name
   kind: kind
   location: location
   tags: tags
-  sku: {
-    name: skuName
-    capacity: skuName == 'FC1' ? null : skuCapacity
-    tier: skuName == 'FC1' ? 'FlexConsumption' : null
-  }
+  sku: skuName == 'FC1'
+    ? {
+        name: skuName
+        tier: 'FlexConsumption'
+      }
+    : {
+        name: skuName
+        capacity: skuCapacity
+      }
   properties: {
     workerTierName: workerTierName
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId)
