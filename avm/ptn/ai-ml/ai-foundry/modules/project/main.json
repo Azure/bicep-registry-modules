@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "2469586966657801700"
+      "templateHash": "5854024910253585478"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -931,7 +931,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "528791720500521222"
+              "templateHash": "8699620053462069426"
             }
           },
           "parameters": {
@@ -968,7 +968,7 @@
             }
           },
           "variables": {
-            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')), parameters('containerName')))]"
+            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', reference('parsedResourceId').outputs.name.value, parameters('containerName')))]"
           },
           "resources": {
             "storageAccount": {
@@ -1145,7 +1145,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "528791720500521222"
+              "templateHash": "8699620053462069426"
             }
           },
           "parameters": {
@@ -1182,7 +1182,7 @@
             }
           },
           "variables": {
-            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')), parameters('containerName')))]"
+            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', reference('parsedResourceId').outputs.name.value, parameters('containerName')))]"
           },
           "resources": {
             "storageAccount": {

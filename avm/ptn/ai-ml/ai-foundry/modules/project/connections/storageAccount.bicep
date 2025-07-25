@@ -37,9 +37,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' exis
 }
 
 // building connection name manually based on resourceIdOrName due to bicep restrictions on module output and resource naming
-var connectionName = !empty(name)
-  ? name!
-  : '${contains(resourceIdOrName, '/') ? last(split(resourceIdOrName, '/')) : resourceIdOrName}-${containerName}'
+var connectionName = !empty(name) ? name! : '${storageAccount.name}-${containerName}'
 
 resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
   name: connectionName
