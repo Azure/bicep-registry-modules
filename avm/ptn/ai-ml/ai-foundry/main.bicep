@@ -319,7 +319,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
 //   }
 // }
 
-module foundryProject 'modules/project/main.bicep' = {
+module foundryProject 'modules/project.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   dependsOn: [
     #disable-next-line no-unnecessary-dependson
