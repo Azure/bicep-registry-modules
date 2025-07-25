@@ -116,7 +116,8 @@ module storageAccountConnResources 'connections/storageAccount.bicep' = [
 
 module tempStorageAccountConnResource 'connections/storageAccount.bicep' = if (!empty(tempStorageAccountConnection)) {
   name: take(
-    '${name}-temp-storage-conn-${take(uniqueString(last(split(tempStorageAccountConnection!.resourceId, '/'))), 5)}-${tempStorageAccountConnection!.containerName}',
+    #disable-next-line BCP318
+    '${name}-temp-storage-conn-${take(uniqueString(tempStorageAccountConnection.resourceId), 5)}-${tempStorageAccountConnection!.containerName}',
     64
   )
   params: {
