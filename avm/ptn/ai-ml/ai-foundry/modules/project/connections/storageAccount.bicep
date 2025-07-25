@@ -20,11 +20,15 @@ module parsedResourceId '../../parseResourceId.bicep' = {
   }
 }
 
+// resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
+//   #disable-next-line no-unnecessary-dependson
+//   dependsOn: [parsedResourceId]
+//   name: parsedResourceId!.outputs.name
+//   scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
+// }
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [parsedResourceId]
-  name: parsedResourceId!.outputs.name
-  scope: resourceGroup(parsedResourceId!.outputs.subscriptionId, parsedResourceId!.outputs.resourceGroupName)
+  name: resourceIdOrName
 }
 
 resource account 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {

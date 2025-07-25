@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4132277077244238393"
+      "templateHash": "7226103118779396321"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -931,7 +931,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7743230297261319992"
+              "templateHash": "3627685082904735150"
             }
           },
           "parameters": {
@@ -975,12 +975,7 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2025-01-01",
-              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('parsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "parsedResourceId"
-              ]
+              "name": "[parameters('resourceIdOrName')]"
             },
             "account": {
               "existing": true,
@@ -1004,14 +999,13 @@
                 "authType": "AAD",
                 "metadata": {
                   "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Storage/storageAccounts', reference('parsedResourceId').outputs.name.value)]",
+                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('resourceIdOrName'))]",
                   "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-                  "accountName": "[reference('parsedResourceId').outputs.name.value]",
+                  "accountName": "[parameters('resourceIdOrName')]",
                   "containerName": "[parameters('containerName')]"
                 }
               },
               "dependsOn": [
-                "parsedResourceId",
                 "storageAccount"
               ]
             },
@@ -1145,7 +1139,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "7743230297261319992"
+              "templateHash": "3627685082904735150"
             }
           },
           "parameters": {
@@ -1189,12 +1183,7 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2025-01-01",
-              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('parsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "parsedResourceId"
-              ]
+              "name": "[parameters('resourceIdOrName')]"
             },
             "account": {
               "existing": true,
@@ -1218,14 +1207,13 @@
                 "authType": "AAD",
                 "metadata": {
                   "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Storage/storageAccounts', reference('parsedResourceId').outputs.name.value)]",
+                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('resourceIdOrName'))]",
                   "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-                  "accountName": "[reference('parsedResourceId').outputs.name.value]",
+                  "accountName": "[parameters('resourceIdOrName')]",
                   "containerName": "[parameters('containerName')]"
                 }
               },
               "dependsOn": [
-                "parsedResourceId",
                 "storageAccount"
               ]
             },
