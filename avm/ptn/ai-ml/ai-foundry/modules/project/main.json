@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "5854024910253585478"
+      "templateHash": "5412649683717554825"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -931,7 +931,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "8699620053462069426"
+              "templateHash": "9878403179133048102"
             }
           },
           "parameters": {
@@ -1018,7 +1018,7 @@
             "parsedResourceId": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-storage-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
+              "name": "[take('proj-storage-conn-parse-rid', 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1145,7 +1145,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "8699620053462069426"
+              "templateHash": "9878403179133048102"
             }
           },
           "parameters": {
@@ -1232,7 +1232,7 @@
             "parsedResourceId": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-storage-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
+              "name": "[take('proj-storage-conn-parse-rid', 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

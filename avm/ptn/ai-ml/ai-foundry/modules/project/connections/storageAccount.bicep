@@ -14,7 +14,7 @@ param resourceIdOrName string
 param containerName string
 
 module parsedResourceId '../../parseResourceId.bicep' = {
-  name: take('proj-storage-conn-${take(uniqueString(resourceIdOrName), 5)}-parse-rid', 64)
+  name: take('proj-storage-conn-parse-rid', 64)
   params: {
     resourceIdOrName: resourceIdOrName
   }
