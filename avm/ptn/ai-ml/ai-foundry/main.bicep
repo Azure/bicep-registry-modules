@@ -68,7 +68,7 @@ var projectName = !empty(aiFoundryConfiguration.?project.?name)
 // set a default storage container name so that connection to project can be established in default state
 // also set to empty if not including associated resources so project connections are only made when included associated resources
 var storageAccountContainers = includeAssociatedResources
-  ? (storageAccountConfiguration.?containers ?? [projectName])
+  ? (storageAccountConfiguration.?containers ?? ['${projectName}'])
   : []
 
 #disable-next-line no-deployments-resources
@@ -95,7 +95,7 @@ module foundryAccount 'modules/account.bicep' = {
   params: {
     name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
-    includeCapabilityHost: false
+    includeCapabilityHost: true
     lock: lock
     privateNetworking: enablePrivateNetworking
       ? {
