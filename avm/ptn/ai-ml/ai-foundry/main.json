@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "6841896152391108516"
+      "templateHash": "2315852021175851733"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -9335,7 +9335,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12842045229395316753"
+              "templateHash": "2469586966657801700"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -9605,7 +9605,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-ai-services-conn-{1}', parameters('name'), take(uniqueString(coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].resourceId), 5)), 64)]",
+              "name": "[take(format('{0}-ai-services-conn-{1}', parameters('name'), copyIndex()), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -9813,7 +9813,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-ai-search-conn-{1}', parameters('name'), take(uniqueString(coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].resourceId), 5)), 64)]",
+              "name": "[take(format('{0}-ai-search-conn-{1}', parameters('name'), copyIndex()), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -10021,7 +10021,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-cosmos-db-conn-{1}', parameters('name'), take(uniqueString(coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].resourceId), 5)), 64)]",
+              "name": "[take(format('{0}-cosmos-db-conn-{1}', parameters('name'), copyIndex()), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -10229,7 +10229,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-storage-conn-{1}-{2}', parameters('name'), take(uniqueString(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId), 5), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), 64)]",
+              "name": "[take(format('{0}-storage-conn-{1}-{2}', parameters('name'), copyIndex(), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -10443,7 +10443,7 @@
               "condition": "[not(empty(parameters('tempStorageAccountConnection')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-temp-storage-conn-{1}-{2}', parameters('name'), take(uniqueString(parameters('tempStorageAccountConnection').resourceId), 5), parameters('tempStorageAccountConnection').containerName), 64)]",
+              "name": "[take(format('{0}-temp-storage-conn-{1}', parameters('name'), parameters('tempStorageAccountConnection').containerName), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

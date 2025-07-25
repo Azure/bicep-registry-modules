@@ -63,8 +63,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
 
 @batchSize(1)
 module aiServicesConnResources 'connections/aiServices.bicep' = [
-  for connection in aiServicesConnections ?? []: {
-    name: take('${name}-ai-services-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
+  for (connection, i) in aiServicesConnections ?? []: {
+    name: take('${name}-ai-services-conn-${i}', 64)
     params: {
       name: connection.?name
       accountName: accountName
@@ -76,8 +76,8 @@ module aiServicesConnResources 'connections/aiServices.bicep' = [
 
 @batchSize(1)
 module aiSearchConnResources 'connections/aiSearch.bicep' = [
-  for connection in aiSearchConnections ?? []: {
-    name: take('${name}-ai-search-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
+  for (connection, i) in aiSearchConnections ?? []: {
+    name: take('${name}-ai-search-conn-${i}', 64)
     params: {
       name: connection.?name
       accountName: accountName
@@ -89,8 +89,8 @@ module aiSearchConnResources 'connections/aiSearch.bicep' = [
 
 @batchSize(1)
 module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
-  for connection in cosmosDbConnections ?? []: {
-    name: take('${name}-cosmos-db-conn-${take(uniqueString(connection!.resourceId), 5)}', 64)
+  for (connection, i) in cosmosDbConnections ?? []: {
+    name: take('${name}-cosmos-db-conn-${i}', 64)
     params: {
       name: connection.?name
       accountName: accountName
@@ -102,8 +102,8 @@ module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
 
 @batchSize(1)
 module storageAccountConnResources 'connections/storageAccount.bicep' = [
-  for connection in storageAccountConnections ?? []: {
-    name: take('${name}-storage-conn-${take(uniqueString(connection!.resourceId), 5)}-${connection!.containerName}', 64)
+  for (connection, i) in storageAccountConnections ?? []: {
+    name: take('${name}-storage-conn-${i}-${connection!.containerName}', 64)
     params: {
       name: connection.?name
       accountName: accountName
@@ -117,7 +117,7 @@ module storageAccountConnResources 'connections/storageAccount.bicep' = [
 module tempStorageAccountConnResource 'connections/storageAccount.bicep' = if (!empty(tempStorageAccountConnection)) {
   name: take(
     #disable-next-line BCP318
-    '${name}-temp-storage-conn-${take(uniqueString(tempStorageAccountConnection.resourceId), 5)}-${tempStorageAccountConnection!.containerName}',
+    '${name}-temp-storage-conn-${tempStorageAccountConnection!.containerName}',
     64
   )
   params: {
