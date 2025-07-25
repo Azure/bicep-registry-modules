@@ -21,6 +21,7 @@ This module deploys a Web or Function App.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Web/certificates` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/certificates) |
 | `Microsoft.Web/sites` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
@@ -7970,6 +7971,7 @@ Host Name Bindings for the site.
 | :-- | :-- | :-- |
 | [`azureResourceName`](#parameter-hostnamebindingsazureresourcename) | string | Azure resource name. |
 | [`azureResourceType`](#parameter-hostnamebindingsazureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
+| [`certificate`](#parameter-hostnamebindingscertificate) | object | Certificate creation properties. If specified, a certificate will be created and used for this hostname binding. |
 | [`customHostNameDnsRecordType`](#parameter-hostnamebindingscustomhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
 | [`domainId`](#parameter-hostnamebindingsdomainid) | string | Fully qualified ARM domain resource URI. |
 | [`hostNameType`](#parameter-hostnamebindingshostnametype) | string | Hostname type. Possible values are Verified and Managed. |
@@ -8005,6 +8007,82 @@ Azure resource type. Possible values are Website and TrafficManager.
     'Website'
   ]
   ```
+
+### Parameter: `hostNameBindings.certificate`
+
+Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`canonicalName`](#parameter-hostnamebindingscertificatecanonicalname) | string | CNAME of the certificate to be issued via free certificate. |
+| [`domainValidationMethod`](#parameter-hostnamebindingscertificatedomainvalidationmethod) | string | Method of domain validation for free certificate. |
+| [`hostNames`](#parameter-hostnamebindingscertificatehostnames) | array | Certificate host names. By default, will use the hostname from the binding. |
+| [`keyVaultId`](#parameter-hostnamebindingscertificatekeyvaultid) | string | Key Vault resource ID. |
+| [`keyVaultSecretName`](#parameter-hostnamebindingscertificatekeyvaultsecretname) | string | Key Vault secret name. |
+| [`password`](#parameter-hostnamebindingscertificatepassword) | securestring | Certificate password. |
+| [`pfxBlob`](#parameter-hostnamebindingscertificatepfxblob) | securestring | Certificate data in PFX format. |
+| [`serverFarmResourceId`](#parameter-hostnamebindingscertificateserverfarmresourceid) | string | Server farm resource ID. |
+
+### Parameter: `hostNameBindings.certificate.canonicalName`
+
+CNAME of the certificate to be issued via free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.domainValidationMethod`
+
+Method of domain validation for free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.hostNames`
+
+Certificate host names. By default, will use the hostname from the binding.
+
+- Required: No
+- Type: array
+
+### Parameter: `hostNameBindings.certificate.keyVaultId`
+
+Key Vault resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.keyVaultSecretName`
+
+Key Vault secret name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.password`
+
+Certificate password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `hostNameBindings.certificate.pfxBlob`
+
+Certificate data in PFX format.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `hostNameBindings.certificate.serverFarmResourceId`
+
+Server farm resource ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hostNameBindings.customHostNameDnsRecordType`
 
@@ -13575,6 +13653,7 @@ Host Name Bindings for the slot.
 | :-- | :-- | :-- |
 | [`azureResourceName`](#parameter-slotshostnamebindingsazureresourcename) | string | Azure resource name. |
 | [`azureResourceType`](#parameter-slotshostnamebindingsazureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
+| [`certificate`](#parameter-slotshostnamebindingscertificate) | object | Certificate creation properties. If specified, a certificate will be created and used for this hostname binding. |
 | [`customHostNameDnsRecordType`](#parameter-slotshostnamebindingscustomhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
 | [`domainId`](#parameter-slotshostnamebindingsdomainid) | string | Fully qualified ARM domain resource URI. |
 | [`hostNameType`](#parameter-slotshostnamebindingshostnametype) | string | Hostname type. Possible values are Verified and Managed. |
@@ -13610,6 +13689,82 @@ Azure resource type. Possible values are Website and TrafficManager.
     'Website'
   ]
   ```
+
+### Parameter: `slots.hostNameBindings.certificate`
+
+Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`canonicalName`](#parameter-slotshostnamebindingscertificatecanonicalname) | string | CNAME of the certificate to be issued via free certificate. |
+| [`domainValidationMethod`](#parameter-slotshostnamebindingscertificatedomainvalidationmethod) | string | Method of domain validation for free certificate. |
+| [`hostNames`](#parameter-slotshostnamebindingscertificatehostnames) | array | Certificate host names. By default, will use the hostname from the binding. |
+| [`keyVaultId`](#parameter-slotshostnamebindingscertificatekeyvaultid) | string | Key Vault resource ID. |
+| [`keyVaultSecretName`](#parameter-slotshostnamebindingscertificatekeyvaultsecretname) | string | Key Vault secret name. |
+| [`password`](#parameter-slotshostnamebindingscertificatepassword) | securestring | Certificate password. |
+| [`pfxBlob`](#parameter-slotshostnamebindingscertificatepfxblob) | securestring | Certificate data in PFX format. |
+| [`serverFarmResourceId`](#parameter-slotshostnamebindingscertificateserverfarmresourceid) | string | Server farm resource ID. |
+
+### Parameter: `slots.hostNameBindings.certificate.canonicalName`
+
+CNAME of the certificate to be issued via free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.domainValidationMethod`
+
+Method of domain validation for free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.hostNames`
+
+Certificate host names. By default, will use the hostname from the binding.
+
+- Required: No
+- Type: array
+
+### Parameter: `slots.hostNameBindings.certificate.keyVaultId`
+
+Key Vault resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.keyVaultSecretName`
+
+Key Vault secret name.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.password`
+
+Certificate password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `slots.hostNameBindings.certificate.pfxBlob`
+
+Certificate data in PFX format.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `slots.hostNameBindings.certificate.serverFarmResourceId`
+
+Server farm resource ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `slots.hostNameBindings.customHostNameDnsRecordType`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17612279172392359160"
+      "templateHash": "15374313507003570564"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -3540,7 +3540,74 @@
         "description": "The type of a hybrid connection relay."
       }
     },
-    "_1.privateEndpointCustomDnsConfigType": {
+    "_1.certificateType": {
+      "type": "object",
+      "properties": {
+        "hostNames": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Certificate host names. By default, will use the hostname from the binding."
+          }
+        },
+        "keyVaultId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Key Vault resource ID."
+          }
+        },
+        "keyVaultSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Key Vault secret name."
+          }
+        },
+        "serverFarmResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Server farm resource ID."
+          }
+        },
+        "canonicalName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. CNAME of the certificate to be issued via free certificate."
+          }
+        },
+        "password": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Certificate password."
+          }
+        },
+        "pfxBlob": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Certificate data in PFX format."
+          }
+        },
+        "domainValidationMethod": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Method of domain validation for free certificate."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of certificate properties for hostname binding.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../host-name-binding-type.bicep"
+        }
+      }
+    },
+    "_2.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -3566,7 +3633,7 @@
         }
       }
     },
-    "_1.privateEndpointIpConfigurationType": {
+    "_2.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -3608,7 +3675,7 @@
         }
       }
     },
-    "_1.privateEndpointPrivateDnsZoneGroupType": {
+    "_2.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -3859,6 +3926,13 @@
           "metadata": {
             "description": "Optional. SSL certificate thumbprint."
           }
+        },
+        "certificate": {
+          "$ref": "#/definitions/_1.certificateType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Certificate creation properties. If specified, a certificate will be created and used for this hostname binding."
+          }
         }
       },
       "metadata": {
@@ -3978,7 +4052,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -4002,7 +4076,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -4012,7 +4086,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {

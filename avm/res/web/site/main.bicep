@@ -416,15 +416,22 @@ module app_hostNameBindings 'host-name-binding/main.bicep' = [
     params: {
       name: hostNameBinding.name
       appName: app.name
-      kind: hostNameBinding.?kind
-      azureResourceName: hostNameBinding.?azureResourceName
-      azureResourceType: hostNameBinding.?azureResourceType
-      customHostNameDnsRecordType: hostNameBinding.?customHostNameDnsRecordType
-      domainId: hostNameBinding.?domainId
-      hostNameType: hostNameBinding.?hostNameType
-      siteName: hostNameBinding.?siteName
-      sslState: hostNameBinding.?sslState
-      thumbprint: hostNameBinding.?thumbprint
+      kind: hostNameBinding.kind
+      azureResourceName: hostNameBinding.azureResourceName
+      azureResourceType: hostNameBinding.azureResourceType
+      customHostNameDnsRecordType: hostNameBinding.customHostNameDnsRecordType
+      domainId: hostNameBinding.domainId
+      hostNameType: hostNameBinding.hostNameType
+      siteName: hostNameBinding.siteName
+      sslState: hostNameBinding.sslState
+      thumbprint: hostNameBinding.thumbprint
+      // Certificate parameters
+      certificate: contains(hostNameBinding, 'certificate')
+        ? union(hostNameBinding.certificate, {
+            serverFarmResourceId: hostNameBinding.certificate.?serverFarmResourceId ?? serverFarmResourceId
+          })
+        : {}
+      location: location
     }
   }
 ]

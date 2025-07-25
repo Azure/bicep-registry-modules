@@ -30,4 +30,37 @@ type hostNameBindingType = {
 
   @description('Optional. SSL certificate thumbprint.')
   thumbprint: string?
+
+  @description('Optional. Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.')
+  certificate: certificateType?
+}
+
+@export()
+@description('The type of certificate properties for hostname binding.')
+type certificateType = {
+  @description('Optional. Certificate host names. By default, will use the hostname from the binding.')
+  hostNames: array?
+
+  @description('Optional. Key Vault resource ID.')
+  keyVaultId: string?
+
+  @description('Optional. Key Vault secret name.')
+  keyVaultSecretName: string?
+
+  @description('Optional. Server farm resource ID.')
+  serverFarmResourceId: string?
+
+  @description('Optional. CNAME of the certificate to be issued via free certificate.')
+  canonicalName: string?
+
+  @description('Optional. Certificate password.')
+  @secure()
+  password: string?
+
+  @description('Optional. Certificate data in PFX format.')
+  @secure()
+  pfxBlob: string?
+
+  @description('Optional. Method of domain validation for free certificate.')
+  domainValidationMethod: string?
 }
