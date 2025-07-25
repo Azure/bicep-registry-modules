@@ -67,9 +67,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Bring Your Own Resources](#example-2-bring-your-own-resources)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Create with Associated Resources](#example-2-create-with-associated-resources)
+- [Bring Your Own Resources](#example-3-bring-your-own-resources)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -178,10 +179,122 @@ param aiModelDeployments = [
 </details>
 <p>
 
-### Example 2: _Bring Your Own Resources_
+### Example 2: _Create with Associated Resources_
+
+Creates an AI Foundry account and project with Standard Agent Services.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    includeAssociatedResources: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "includeAssociatedResources": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param includeAssociatedResources = true
+```
+
+</details>
+<p>
+
+### Example 3: _Bring Your Own Resources_
 
 Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp ignore for faster testing
+```
 
 <details>
 
@@ -333,7 +446,7 @@ param storageAccountConfiguration = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -655,7 +768,7 @@ param storageAccountConfiguration = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
