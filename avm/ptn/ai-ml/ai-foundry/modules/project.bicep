@@ -65,7 +65,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 
   resource connection 'connections@2025-06-01' = {
-    name: 'idontcare'
+    name: tempStorageAccountConnection!.resourceId
     properties: {
       category: 'AzureBlob'
       target: storageAccount!.properties.primaryEndpoints.blob
@@ -74,8 +74,6 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
         ApiType: 'Azure'
         ResourceId: storageAccount.id
         location: storageAccount!.location
-        accountName: storageAccount.name
-        containerName: tempStorageAccountConnection!.containerName
       }
     }
   }
@@ -97,6 +95,15 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
 // }
 
 // var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
+
+// resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
+//   name: take('${name}-cap-host', 64)
+//   parent: foundryAccount
+//   properties: {
+//     capabilityHostKind: 'Agents'
+//     tags: tags
+//   }
+// }
 
 // resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
 //   name: '${name}-cap-host'
@@ -121,6 +128,16 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
       : 'Cannot delete or modify the resource or child resources.'
   }
   scope: project
+}
+
+module storageAccountRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: take('project-storage-account-role-assignment-${name}', 64)
+  params: {
+    resourceId: storageAccount.id
+    principalId: project.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Storage Contributor
+  }
 }
 
 @description('Name of the deployed Azure Resource Group.')

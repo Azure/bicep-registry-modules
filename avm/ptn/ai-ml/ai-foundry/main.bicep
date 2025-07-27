@@ -90,24 +90,52 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module foundryAccount 'modules/account.bicep' = {
+var foundryAccountName = !empty(aiFoundryConfiguration.?accountName)
+  ? aiFoundryConfiguration!.accountName!
+  : 'ai${resourcesName}'
+var foundryAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?privateEndpointSubnetId) && !empty(networking.?cognitiveServicesPrivateDnsZoneId) && !empty(networking.?openAiPrivateDnsZoneId) && !empty(networking.?aiServicesPrivateDnsZoneId)
+module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
   name: take('${resourcesName}-foundry-account-deployment', 64)
   params: {
-    name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
+    name: foundryAccountName
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
-    includeCapabilityHost: true
-    lock: lock
-    privateNetworking: enablePrivateNetworking
-      ? {
-          privateEndpointSubnetId: networking!.privateEndpointSubnetId
-          cogServicesPrivateDnsZoneId: networking!.cognitiveServicesPrivateDnsZoneId
-          openAIPrivateDnsZoneId: networking!.openAiPrivateDnsZoneId
-          aiServicesPrivateDnsZoneId: networking!.aiServicesPrivateDnsZoneId
-        }
-      : null
-    aiModelDeployments: aiModelDeployments
-    enableTelemetry: enableTelemetry
     tags: tags
+    sku: 'S0'
+    kind: 'AIServices'
+    lock: lock
+    allowProjectManagement: true
+    managedIdentities: {
+      systemAssigned: true
+    }
+    deployments: aiModelDeployments
+    customSubDomainName: foundryAccountName
+    disableLocalAuth: foundryAccountPrivateNetworking
+    publicNetworkAccess: foundryAccountPrivateNetworking ? 'Disabled' : 'Enabled'
+    networkAcls: {
+      defaultAction: foundryAccountPrivateNetworking ? 'Deny' : 'Allow'
+      bypass: 'AzureServices'
+    }
+    privateEndpoints: foundryAccountPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.cognitiveServicesPrivateDnsZoneId!
+                }
+                {
+                  privateDnsZoneResourceId: networking!.openAiPrivateDnsZoneId!
+                }
+                {
+                  privateDnsZoneResourceId: networking!.aiServicesPrivateDnsZoneId!
+                }
+              ]
+            }
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -260,7 +288,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
         : [],
       [
         {
-          principalId: foundryAccount.outputs.systemAssignedMIPrincipalId
+          principalId: foundryAccount.outputs.systemAssignedMIPrincipalId!
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
