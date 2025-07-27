@@ -307,46 +307,42 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
   }
 }
 
-// var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
-// module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
-//   name: take('${resourcesName}-cosmosdb-deployment', 64)
-//   params: {
-//     name: take(
-//       !empty(cosmosDbConfiguration) && !empty(cosmosDbConfiguration.?name)
-//         ? cosmosDbConfiguration!.name!
-//         : 'cos${resourcesName}',
-//       44
-//     )
-//     enableTelemetry: enableTelemetry
-//     automaticFailover: true
-//     disableKeyBasedMetadataWriteAccess: true
-//     disableLocalAuthentication: true
-//     location: location
-//     minimumTlsVersion: 'Tls12'
-//     defaultConsistencyLevel: 'Session'
-//     networkRestrictions: {
-//       networkAclBypass: 'AzureServices'
-//       publicNetworkAccess: cosmosDbPrivateNetworking ? 'Disabled' : 'Enabled'
-//     }
-//     privateEndpoints: cosmosDbPrivateNetworking
-//       ? [
-//           {
-//             privateDnsZoneGroup: {
-//               privateDnsZoneGroupConfigs: [
-//                 {
-//                   privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
-//                 }
-//               ]
-//             }
-//             service: 'Sql'
-//             subnetResourceId: networking!.privateEndpointSubnetId
-//           }
-//         ]
-//       : []
-//     roleAssignments: cosmosDbConfiguration.?roleAssignments
-//     tags: tags
-//   }
-// }
+var cosmosDbName = take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
+var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
+  name: take('${resourcesName}-cosmosdb-deployment', 64)
+  params: {
+    name: cosmosDbName
+    enableTelemetry: enableTelemetry
+    automaticFailover: true
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    location: location
+    minimumTlsVersion: 'Tls12'
+    defaultConsistencyLevel: 'Session'
+    networkRestrictions: {
+      networkAclBypass: 'AzureServices'
+      publicNetworkAccess: cosmosDbPrivateNetworking ? 'Disabled' : 'Enabled'
+    }
+    privateEndpoints: cosmosDbPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
+                }
+              ]
+            }
+            service: 'Sql'
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
+    roleAssignments: cosmosDbConfiguration.?roleAssignments
+    tags: tags
+  }
+}
 
 module foundryProject 'modules/project.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
@@ -391,6 +387,9 @@ module foundryProject 'modules/project.bicep' = {
     }
     aiSearchConnection: {
       resourceIdOrName: aiSearchName
+    }
+    cosmosDbConnection: {
+      resourceIdOrName: cosmosDbName
     }
     tags: tags
     lock: lock

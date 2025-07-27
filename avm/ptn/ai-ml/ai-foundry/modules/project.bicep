@@ -24,8 +24,8 @@ param includeCapabilityHost bool
 @description('Optional. List of Azure AI Services connections for the project.')
 param aiServicesConnections azureConnectionType[]?
 
-@description('Optional. List of Azure Cosmos DB connections for the project.')
-param cosmosDbConnections azureConnectionType[]?
+@description('Optional. Azure Cosmos DB connection for the project.')
+param cosmosDbConnection azureConnectionType?
 
 @description('Optional. Azure Cognitive Search connection for the project.')
 param aiSearchConnection azureConnectionType?
@@ -50,6 +50,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
 
 resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
   name: aiSearchConnection!.resourceIdOrName
+}
+
+resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+  name: cosmosDbConnection!.resourceIdOrName
 }
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
@@ -91,6 +95,20 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
         ApiType: 'Azure'
         ResourceId: aiSearch!.id
         location: aiSearch!.location
+      }
+    }
+  }
+
+  resource cosmosConnection 'connections@2025-06-01' = {
+    name: cosmosDbConnection!.resourceIdOrName
+    properties: {
+      category: 'CosmosDB'
+      target: cosmosDb!.properties.documentEndpoint
+      authType: 'AAD'
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: cosmosDb!.id
+        location: cosmosDb!.location
       }
     }
   }
@@ -174,6 +192,16 @@ module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resou
     principalId: project.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
+  }
+}
+
+module cosmosDbOperatorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: take('proj-cosmos-db-operator-role-assign-${name}', 64)
+  params: {
+    resourceId: cosmosDb.id
+    principalId: project.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: '230815da-be43-4aae-9cb4-875f7bd000aa' // Cosmos DB Operator
   }
 }
 
