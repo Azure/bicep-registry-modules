@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11704064005554898296"
+      "templateHash": "15316941133659639073"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14944,7 +14944,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12670086389188761413"
+              "templateHash": "411633858379830645"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -15073,16 +15073,6 @@
                 "description": "Required. Include the capability host for the Foundry project."
               }
             },
-            "aiServicesConnections": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/azureConnectionType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. List of Azure AI Services connections for the project."
-              }
-            },
             "cosmosDbConnection": {
               "$ref": "#/definitions/azureConnectionType",
               "nullable": true,
@@ -15121,6 +15111,11 @@
               },
               "defaultValue": {}
             }
+          },
+          "variables": {
+            "createCapabilityHost": "[and(and(and(parameters('includeCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
+            "cosmosContainerNameSuffixes": "[if(variables('createCapabilityHost'), createArray('thread-message-store', 'system-thread-message-store', 'agent-entity-store'), createArray())]",
+            "cosmosDefaultSqlRoleDefinitionId": "[if(variables('createCapabilityHost'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDbConnection').resourceIdOrName, '00000000-0000-0000-0000-000000000002'), '')]"
           },
           "resources": {
             "project::storageConnection": {
@@ -15220,6 +15215,38 @@
               },
               "tags": "[parameters('tags')]"
             },
+            "capabilityHost": {
+              "condition": "[variables('createCapabilityHost')]",
+              "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}', parameters('accountName'), take(format('{0}-cap-host', parameters('name')), 64))]",
+              "properties": {
+                "capabilityHostKind": "Agents",
+                "tags": "[parameters('tags')]"
+              }
+            },
+            "projectCapabilityHost": {
+              "condition": "[variables('createCapabilityHost')]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('{0}-cap-host', parameters('name')))]",
+              "properties": {
+                "capabilityHostKind": "Agents",
+                "vectorStoreConnections": [
+                  "[format('{0}', parameters('aiSearchConnection').resourceIdOrName)]"
+                ],
+                "storageConnections": [
+                  "[format('{0}', parameters('storageAccountConnection').resourceIdOrName)]"
+                ],
+                "threadStorageConnections": [
+                  "[format('{0}', parameters('cosmosDbConnection').resourceIdOrName)]"
+                ],
+                "tags": "[parameters('tags')]"
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
             "projectLock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
@@ -15229,6 +15256,45 @@
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                 "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
+            "storageBlobDataOwnerRoleDefinition": {
+              "existing": true,
+              "type": "Microsoft.Authorization/roleDefinitions",
+              "apiVersion": "2022-04-01",
+              "name": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b"
+            },
+            "storageAccountDataOwnerRoleAssignment": {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountConnection').resourceIdOrName)]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').resourceIdOrName), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('name'))]",
+              "properties": {
+                "principalId": "[reference('project', '2025-06-01', 'full').identity.principalId]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                "principalType": "ServicePrincipal",
+                "conditionVersion": "2.0",
+                "condition": "[format('((!(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read''}})  AND  !(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action''}}) AND  !(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write''}}) ) OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase ''{0}'' AND @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringLikeIgnoreCase ''*-azureml-agent''))', format('{0}-{1}-{2}-{3}-{4}', substring(reference('project').internalId, 0, 8), substring(reference('project').internalId, 8, 4), substring(reference('project').internalId, 12, 4), substring(reference('project').internalId, 16, 4), substring(reference('project').internalId, 20, 12)))]"
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
+            "cosmosDataRoleAssigment": {
+              "copy": {
+                "name": "cosmosDataRoleAssigment",
+                "count": "[length(variables('cosmosContainerNameSuffixes'))]"
+              },
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2025-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDbConnection').resourceIdOrName, guid(variables('cosmosDefaultSqlRoleDefinitionId'), parameters('name'), variables('cosmosContainerNameSuffixes')[copyIndex()]))]",
+              "properties": {
+                "principalId": "[reference('project', '2025-06-01', 'full').identity.principalId]",
+                "roleDefinitionId": "[variables('cosmosDefaultSqlRoleDefinitionId')]",
+                "scope": "[format('{0}/dbs/enterprise_memory/colls/{1}-{2}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbConnection').resourceIdOrName), format('{0}-{1}-{2}-{3}-{4}', substring(reference('project').internalId, 0, 8), substring(reference('project').internalId, 8, 4), substring(reference('project').internalId, 12, 4), substring(reference('project').internalId, 16, 4), substring(reference('project').internalId, 20, 12)), variables('cosmosContainerNameSuffixes')[copyIndex()])]"
               },
               "dependsOn": [
                 "project"

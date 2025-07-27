@@ -364,24 +364,6 @@ module foundryProject 'modules/project.bicep' = {
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
-    // aiSearchConnections: includeAssociatedResources
-    //   ? [
-    //       {
-    //         resourceId: !empty(aiSearchConfiguration.?existingResourceId)
-    //           ? aiSearchConfiguration!.existingResourceId!
-    //           : aiSearch!.outputs.resourceId
-    //       }
-    //     ]
-    //   : []
-    // cosmosDbConnections: includeAssociatedResources
-    //   ? [
-    //       {
-    //         resourceId: !empty(cosmosDbConfiguration.?existingResourceId)
-    //           ? cosmosDbConfiguration!.existingResourceId!
-    //           : cosmosDb!.outputs.resourceId
-    //       }
-    //     ]
-    //   : []
     storageAccountConnection: {
       resourceIdOrName: storageAccountName
       containerName: projectName
