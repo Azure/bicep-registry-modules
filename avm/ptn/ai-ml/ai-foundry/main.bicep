@@ -182,45 +182,46 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
 //   }
 // }
 
-// var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
-// module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
-//   name: take('${resourcesName}-search-services-deployment', 64)
-//   params: {
-//     name: take(
-//       !empty(aiSearchConfiguration) && !empty(aiSearchConfiguration.?name)
-//         ? aiSearchConfiguration!.name!
-//         : 'srch${resourcesName}',
-//       60
-//     )
-//     location: location
-//     enableTelemetry: enableTelemetry
-//     cmkEnforcement: 'Disabled'
-//     managedIdentities: {
-//       systemAssigned: true
-//     }
-//     publicNetworkAccess: aiSearchPrivateNetworking ? 'Disabled' : 'Enabled'
-//     disableLocalAuth: aiSearchPrivateNetworking
-//     sku: 'basic'
-//     partitionCount: 1
-//     replicaCount: 3
-//     roleAssignments: aiSearchConfiguration.?roleAssignments
-//     privateEndpoints: aiSearchPrivateNetworking
-//       ? [
-//           {
-//             privateDnsZoneGroup: {
-//               privateDnsZoneGroupConfigs: [
-//                 {
-//                   privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
-//                 }
-//               ]
-//             }
-//             subnetResourceId: networking!.privateEndpointSubnetId
-//           }
-//         ]
-//       : []
-//     tags: tags
-//   }
-// }
+var aiSearchName = take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
+var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
+module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
+  name: take('${resourcesName}-search-services-deployment', 64)
+  params: {
+    name: aiSearchName
+    location: location
+    enableTelemetry: enableTelemetry
+    cmkEnforcement: 'Unspecified'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccess: aiSearchPrivateNetworking ? 'Disabled' : 'Enabled'
+    disableLocalAuth: aiSearchPrivateNetworking
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
+    sku: 'standard'
+    partitionCount: 1
+    replicaCount: 3
+    roleAssignments: aiSearchConfiguration.?roleAssignments
+    privateEndpoints: aiSearchPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
+                }
+              ]
+            }
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
+    tags: tags
+  }
+}
 
 var storageAccountName = take(
   !empty(storageAccountConfiguration.?name) ? storageAccountConfiguration!.name! : 'st${resourcesName}',
@@ -292,16 +293,16 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
-      ]
-      // empty(aiSearchConfiguration.?existingResourceId)
-      //   ? [
-      //       {
-      //         principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
-      //         principalType: 'ServicePrincipal'
-      //         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-      //       }
-      //     ]
-      //   : []
+      ],
+      empty(aiSearchConfiguration.?existingResourceId)
+        ? [
+            {
+              principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+            }
+          ]
+        : []
     )
   }
 }
@@ -352,7 +353,8 @@ module foundryProject 'modules/project.bicep' = {
   dependsOn: [
     #disable-next-line no-unnecessary-dependson
     storageAccount
-    /*aiSearch, cosmosDb, keyVault*/
+    aiSearch
+    /* cosmosDb, keyVault*/
   ]
   params: {
     name: projectName
@@ -383,17 +385,12 @@ module foundryProject 'modules/project.bicep' = {
     //       }
     //     ]
     //   : []
-    // storageAccountConnections: [
-    //   for (container, i) in storageAccountContainers ?? []: {
-    //     resourceId: !empty(storageAccountConfiguration.?existingResourceId)
-    //       ? storageAccountConfiguration!.existingResourceId!
-    //       : storageAccount!.outputs.resourceId
-    //     containerName: container
-    //   }
-    // ]
-    tempStorageAccountConnection: {
-      resourceId: storageAccountName
+    storageAccountConnection: {
+      resourceIdOrName: storageAccountName
       containerName: projectName
+    }
+    aiSearchConnection: {
+      resourceIdOrName: aiSearchName
     }
     tags: tags
     lock: lock

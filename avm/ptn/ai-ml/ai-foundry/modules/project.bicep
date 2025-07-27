@@ -27,14 +27,11 @@ param aiServicesConnections azureConnectionType[]?
 @description('Optional. List of Azure Cosmos DB connections for the project.')
 param cosmosDbConnections azureConnectionType[]?
 
-@description('Optional. List of Azure Cognitive Search connections for the project.')
-param aiSearchConnections azureConnectionType[]?
+@description('Optional. Azure Cognitive Search connection for the project.')
+param aiSearchConnection azureConnectionType?
 
-@description('Optional. List of Azure Storage Account connections for the project.')
-param storageAccountConnections storageAccountConnectionType[]?
-
-@description('Optional. Temp thing.')
-param tempStorageAccountConnection storageAccountConnectionType?
+@description('Optional. Storage Account connection for the project.')
+param storageAccountConnection storageAccountConnectionType?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -48,7 +45,11 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existi
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
-  name: tempStorageAccountConnection!.resourceId
+  name: storageAccountConnection!.resourceIdOrName
+}
+
+resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
+  name: aiSearchConnection!.resourceIdOrName
 }
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
@@ -64,8 +65,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   }
   tags: tags
 
-  resource connection 'connections@2025-06-01' = {
-    name: tempStorageAccountConnection!.resourceId
+  resource storageConnection 'connections@2025-06-01' = {
+    name: storageAccountConnection!.resourceIdOrName
     properties: {
       category: 'AzureBlob'
       target: storageAccount!.properties.primaryEndpoints.blob
@@ -75,7 +76,21 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
         ResourceId: storageAccount.id
         location: storageAccount!.location
         AccountName: storageAccount!.name
-        ContainerName: tempStorageAccountConnection!.containerName
+        ContainerName: storageAccountConnection!.containerName
+      }
+    }
+  }
+
+  resource searchConnection 'connections@2025-06-01' = {
+    name: aiSearchConnection!.resourceIdOrName
+    properties: {
+      category: 'CognitiveSearch'
+      target: 'https://${aiSearch!.name}.search.windows.net/'
+      authType: 'AAD'
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: aiSearch!.id
+        location: aiSearch!.location
       }
     }
   }
@@ -132,13 +147,33 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   scope: project
 }
 
-module storageAccountRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: take('project-storage-account-role-assignment-${name}', 64)
+module storageAccountBlobContributorRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: take('proj-storage-blob-contributer-role-assign-${name}', 64)
   params: {
     resourceId: storageAccount.id
     principalId: project.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Storage Contributor
+  }
+}
+
+module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: take('proj-search-index-data-contributor-role-assign-${name}', 64)
+  params: {
+    resourceId: aiSearch.id
+    principalId: project.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Search Index Data Contributor
+  }
+}
+
+module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: take('proj-search-service-contributor-role-assign-${name}', 64)
+  params: {
+    resourceId: aiSearch.id
+    principalId: project.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
   }
 }
 
@@ -163,8 +198,8 @@ type azureConnectionType = {
   @description('Optional. The name of the project connection. Will default to the resource name if not provided.')
   name: string?
 
-  @description('Required. The resource ID of the Azure resource for the connection.')
-  resourceId: string
+  @description('Required. The resource ID or name of the Azure resource for the connection.')
+  resourceIdOrName: string
 }
 
 @export()
@@ -173,8 +208,8 @@ type storageAccountConnectionType = {
   @description('Optional. The name of the project connection. Will default to "<account>-<container>" if not provided.')
   name: string?
 
-  @description('Required. The resource ID of the Azure resource for the connection.')
-  resourceId: string
+  @description('Required. The resource ID or name of the Storage Account for the connection.')
+  resourceIdOrName: string
 
   @description('Required. Name of container in the Storage Account to use for the connections.')
   containerName: string
