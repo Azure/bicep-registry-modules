@@ -350,7 +350,8 @@ module foundryProject 'modules/project.bicep' = {
     #disable-next-line no-unnecessary-dependson
     storageAccount
     aiSearch
-    /* cosmosDb, keyVault*/
+    cosmosDb
+    /* keyVault*/
   ]
   params: {
     name: projectName

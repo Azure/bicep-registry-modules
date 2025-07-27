@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "18354082607642691588"
+      "templateHash": "11704064005554898296"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -16260,6 +16260,7 @@
       },
       "dependsOn": [
         "aiSearch",
+        "cosmosDb",
         "foundryAccount",
         "storageAccount"
       ]
