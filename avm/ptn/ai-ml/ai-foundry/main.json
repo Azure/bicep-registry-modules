@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "3778229183094393252"
+      "templateHash": "15292142695548991183"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -8892,7 +8892,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "9643183807095396096"
+              "templateHash": "18013202631100272771"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -9098,7 +9098,9 @@
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('tempStorageAccountConnection').resourceId)]",
-                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]"
+                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
+                  "AccountName": "[parameters('tempStorageAccountConnection').resourceId]",
+                  "ContainerName": "[parameters('tempStorageAccountConnection').containerName]"
                 }
               },
               "dependsOn": [

@@ -74,6 +74,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
         ApiType: 'Azure'
         ResourceId: storageAccount.id
         location: storageAccount!.location
+        AccountName: storageAccount!.name
+        ContainerName: tempStorageAccountConnection!.containerName
       }
     }
   }
