@@ -171,6 +171,9 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
+@description('Optional. The configurations to create in the server.')
+param configurations configurationType[]?
+
 @description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
 @allowed([
   'Enabled'
@@ -302,7 +305,7 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -429,6 +432,18 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
+module flexibleServer_configurations 'configuration/main.bicep' = [
+  for (configuration, index) in (configurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
+    params: {
+      name: configuration.name
+      flexibleServerName: flexibleServer.name
+      source: configuration.?source
+      value: configuration.?value
+    }
+  }
+]
+
 module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
   params: {
@@ -550,6 +565,19 @@ output privateEndpoints privateEndpointOutputType[] = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The type for a configuration')
+type configurationType = {
+  @description('Required. The name of the configuration.')
+  name: string
+
+  @description('Optional. Source of the configuration.')
+  source: ('system-default' | 'user-override')?
+
+  @description('Optional. Value of the configuration.')
+  value: string?
+}
 
 @export()
 type privateEndpointOutputType = {

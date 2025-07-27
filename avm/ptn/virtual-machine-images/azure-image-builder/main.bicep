@@ -77,7 +77,7 @@ param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virt
 @description('Optional. The name of the Deployment Script to upload files to the assets storage account.')
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
-@description('Optional. The files to upload to the Assets Storage Account. Note, the file you\'re uploading should not contain emojis (🍔) as they may cause problems when loaded into the environment of the uploading deployment script.')
+@description('Optional. The files to upload to the Assets Storage Account. Note, the file you\'re uploading should not contain emojis as they may cause problems when loaded into the environment of the uploading deployment script.')
 param storageAccountFilesToUpload storageAccountFilesToUploadType[]?
 
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
@@ -262,7 +262,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (deploymentsT
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
@@ -315,7 +315,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
 }
 
 // Deployment scripts & their storage account
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {

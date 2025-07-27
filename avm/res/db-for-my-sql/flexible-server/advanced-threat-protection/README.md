@@ -12,7 +12,7 @@ This module enables Advanced Threat Protection for DBforMySQL Flexible Server.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers/advancedThreatProtectionSettings) |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/advancedThreatProtectionSettings) |
 
 ## Parameters
 
