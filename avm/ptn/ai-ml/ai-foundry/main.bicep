@@ -359,12 +359,8 @@ module foundryProject 'modules/project/main.bicep' = {
           storageAccountName: empty(storageAccountConfiguration.?existingResource.?name)
             ? storageAccountName
             : storageAccountConfiguration!.existingResource!.name!
-          subscriptionId: empty(storageAccountConfiguration.?existingResource.?subscriptionId)
-            ? subscription().subscriptionId
-            : storageAccountConfiguration!.existingResource!.subscriptionId!
-          resourceGroupName: empty(storageAccountConfiguration.?existingResource.?resourceGroupName)
-            ? resourceGroup().name
-            : storageAccountConfiguration!.existingResource!.resourceGroupName!
+          subscriptionId: storageAccountConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: storageAccountConfiguration!.existingResource!.resourceGroupName!
           containerName: storageAccountContainerName
         }
       : null
@@ -373,12 +369,8 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceName: empty(aiSearchConfiguration.?existingResource.?name)
             ? aiSearchName
             : aiSearchConfiguration!.existingResource!.name!
-          subscriptionId: empty(aiSearchConfiguration.?existingResource.?subscriptionId)
-            ? subscription().subscriptionId
-            : aiSearchConfiguration!.existingResource!.subscriptionId!
-          resourceGroupName: empty(aiSearchConfiguration.?existingResource.?resourceGroupName)
-            ? resourceGroup().name
-            : aiSearchConfiguration!.existingResource!.resourceGroupName!
+          subscriptionId: aiSearchConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: aiSearchConfiguration!.existingResource!.resourceGroupName!
         }
       : null
     cosmosDbConnection: includeAssociatedResources
@@ -386,12 +378,8 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceName: empty(cosmosDbConfiguration.?existingResource.?name)
             ? cosmosDbName
             : cosmosDbConfiguration!.existingResource!.name!
-          subscriptionId: empty(cosmosDbConfiguration.?existingResource.?subscriptionId)
-            ? subscription().subscriptionId
-            : cosmosDbConfiguration!.existingResource!.subscriptionId!
-          resourceGroupName: empty(cosmosDbConfiguration.?existingResource.?resourceGroupName)
-            ? resourceGroup().name
-            : cosmosDbConfiguration!.existingResource!.resourceGroupName!
+          subscriptionId: cosmosDbConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: cosmosDbConfiguration!.existingResource!.resourceGroupName!
         }
       : null
     tags: tags

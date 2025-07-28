@@ -67,28 +67,28 @@ module testDeployment '../../../main.bicep' = [
         existingResource: {
           name: dependencies.outputs.keyVaultName
           subscriptionId: subscription().subscriptionId
-          resourceGroupName: dependencies.outputs.resourceGroupName
+          resourceGroupName: dependenciesResourceGroup.name
         }
       }
       storageAccountConfiguration: {
         existingResource: {
           name: dependencies.outputs.storageAccountName
           subscriptionId: subscription().subscriptionId
-          resourceGroupName: dependencies.outputs.resourceGroupName
+          resourceGroupName: dependenciesResourceGroup.name
         }
       }
       cosmosDbConfiguration: {
         existingResource: {
           name: dependencies.outputs.cosmosDbAccountName
           subscriptionId: subscription().subscriptionId
-          resourceGroupName: dependencies.outputs.resourceGroupName
+          resourceGroupName: dependenciesResourceGroup.name
         }
       }
       aiSearchConfiguration: {
         existingResource: {
           name: dependencies.outputs.aiSearchName
           subscriptionId: subscription().subscriptionId
-          resourceGroupName: dependencies.outputs.resourceGroupName
+          resourceGroupName: dependenciesResourceGroup.name
         }
       }
       aiModelDeployments: [

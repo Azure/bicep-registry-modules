@@ -77,6 +77,10 @@ The following section provides usage examples for the module, which were used to
 
 Creates an AI Foundry account and project with Basic services.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp ignore for faster testing
+```
 
 <details>
 
@@ -180,6 +184,10 @@ param aiModelDeployments = [
 
 Creates an AI Foundry account and project with Standard Agent Services.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp ignore for faster testing
+```
 
 <details>
 
