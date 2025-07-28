@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "9808448073295958994"
+      "templateHash": "4608001923897257057"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -546,6 +546,7 @@
     "storageAccountContainerName": "[if(empty(tryGet(parameters('storageAccountConfiguration'), 'containerName')), variables('projectName'), parameters('storageAccountConfiguration').containerName)]",
     "foundryAccountName": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), parameters('aiFoundryConfiguration').accountName, format('ai{0}', variables('resourcesName')))]",
     "foundryAccountPrivateNetworking": "[and(and(and(and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('networking'), 'privateEndpointSubnetId')))), not(empty(tryGet(parameters('networking'), 'cognitiveServicesPrivateDnsZoneId')))), not(empty(tryGet(parameters('networking'), 'openAiPrivateDnsZoneId')))), not(empty(tryGet(parameters('networking'), 'aiServicesPrivateDnsZoneId'))))]",
+    "keyVaultName": "[take(if(and(not(empty(parameters('keyVaultConfiguration'))), not(empty(tryGet(parameters('keyVaultConfiguration'), 'name')))), parameters('keyVaultConfiguration').name, format('kv{0}', variables('resourcesName'))), 24)]",
     "keyVaultPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'keyVaultPrivateDnsZoneId'))))]",
     "aiSearchName": "[take(if(not(empty(tryGet(parameters('aiSearchConfiguration'), 'name'))), parameters('aiSearchConfiguration').name, format('srch{0}', variables('resourcesName'))), 60)]",
     "aiSearchPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'aiSearchPrivateDnsZoneId'))))]",
@@ -590,7 +591,7 @@
     "foundryAccount": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-foundry-account-deployment', variables('resourcesName')), 64)]",
+      "name": "[take(format('avm.res.cognitive-services.account.{0}', variables('foundryAccountName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3023,7 +3024,7 @@
       "condition": "[and(parameters('includeAssociatedResources'), empty(tryGet(parameters('keyVaultConfiguration'), 'existingResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-keyvault-deployment', variables('resourcesName')), 64)]",
+      "name": "[take(format('avm.res.key-vault.vault.{0}', variables('keyVaultName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3031,7 +3032,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(if(and(not(empty(parameters('keyVaultConfiguration'))), not(empty(tryGet(parameters('keyVaultConfiguration'), 'name')))), parameters('keyVaultConfiguration').name, format('kv{0}', variables('resourcesName'))), 24)]"
+            "value": "[variables('keyVaultName')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6371,7 +6372,7 @@
       "condition": "[and(parameters('includeAssociatedResources'), empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-search-services-deployment', variables('resourcesName')), 64)]",
+      "name": "[take(format('avm.res.search.search-service.{0}', variables('aiSearchName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -8594,7 +8595,7 @@
       "condition": "[and(parameters('includeAssociatedResources'), empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-storage-account-deployment', variables('resourcesName')), 64)]",
+      "name": "[take(format('avm.res.storage.storage-account.{0}', variables('storageAccountName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -14433,7 +14434,7 @@
       "condition": "[and(parameters('includeAssociatedResources'), empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-cosmosdb-deployment', variables('resourcesName')), 64)]",
+      "name": "[take(format('avm.res.document-db.database-account.{0}', variables('cosmosDbName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -18246,7 +18247,7 @@
     "foundryProject": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-foundry-project-deployment', variables('resourcesName')), 64)]",
+      "name": "[take(format('module.project.main.{0}', variables('projectName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -18307,7 +18308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "235933748387541695"
+              "templateHash": "2795535143834169633"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -18669,7 +18670,7 @@
               "condition": "[not(empty(parameters('storageAccountConnection')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-storage-role-assignments-{0}', parameters('name')), 64)]",
+              "name": "[take(format('module.project.role-assign.storageAccount.{0}', parameters('name')), 64)]",
               "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
               "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
               "properties": {
@@ -18698,7 +18699,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.177.2456",
-                      "templateHash": "15739857416072112454"
+                      "templateHash": "17473143425102329494"
                     }
                   },
                   "parameters": {
@@ -18745,7 +18746,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('proj-storage-blob-contributer-role-assign-{0}', parameters('storageAccountName')), 64)]",
+                      "name": "[take(format('avm.ptn.auth.res-role-assign.blobContributor.{0}', parameters('storageAccountName')), 64)]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -18999,7 +19000,7 @@
               "condition": "[not(empty(parameters('cosmosDbConnection')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-cosmos-role-assignments-{0}', parameters('name')), 64)]",
+              "name": "[take(format('module.project.role-assign.cosmosDb.{0}', parameters('name')), 64)]",
               "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
               "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
               "properties": {
@@ -19031,7 +19032,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.177.2456",
-                      "templateHash": "11788740740028997705"
+                      "templateHash": "11689735788130494072"
                     }
                   },
                   "parameters": {
@@ -19086,13 +19087,13 @@
                         "scope": "[format('{0}/dbs/enterprise_memory/colls/{1}-{2}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), parameters('projectWorkspaceId'), variables('cosmosContainerNameSuffixes')[copyIndex()])]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', take(format('proj-cosmos-db-operator-role-assign-{0}', parameters('cosmosDbName')), 64))]"
+                        "[resourceId('Microsoft.Resources/deployments', take(format('avm.ptn.auth.res-role-assign.cosmosDbOperator.{0}', parameters('cosmosDbName')), 64))]"
                       ]
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('proj-cosmos-db-operator-role-assign-{0}', parameters('cosmosDbName')), 64)]",
+                      "name": "[take(format('avm.ptn.auth.res-role-assign.cosmosDbOperator.{0}', parameters('cosmosDbName')), 64)]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -19347,7 +19348,7 @@
               "condition": "[not(empty(parameters('aiSearchConnection')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-search-index-data-contributor-role-assign-{0}', parameters('name')), 64)]",
+              "name": "[take(format('avm.ptn.auth.res-role-assign.srchIndexDataCont.{0}', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -19597,7 +19598,7 @@
               "condition": "[not(empty(parameters('aiSearchConnection')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-search-service-contributor-role-assign-{0}', parameters('name')), 64)]",
+              "name": "[take(format('avm.ptn.auth.res-role-assign.srchServiceCont.{0}', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

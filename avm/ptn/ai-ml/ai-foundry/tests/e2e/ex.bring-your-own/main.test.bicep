@@ -36,7 +36,7 @@ resource dependenciesResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-0
 }
 
 module dependencies 'dependencies.bicep' = {
-  name: take('${workloadName}-dependencies-deployment', 64)
+  name: take('module.dependencies.${workloadName}', 64)
   scope: dependenciesResourceGroup
   params: {
     workloadName: workloadName

@@ -15,7 +15,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
 }
 
 module storageAccountBlobContributorRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: take('proj-storage-blob-contributer-role-assign-${storageAccountName}', 64)
+  name: take('avm.ptn.auth.res-role-assign.blobContributor.${storageAccountName}', 64)
   params: {
     resourceId: storageAccount.id
     principalId: projectIdentityPrincipalId

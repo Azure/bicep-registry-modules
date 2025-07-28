@@ -18,7 +18,7 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
 }
 
 module cosmosDbOperatorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: take('proj-cosmos-db-operator-role-assign-${cosmosDbName}', 64)
+  name: take('avm.ptn.auth.res-role-assign.cosmosDbOperator.${cosmosDbName}', 64)
   params: {
     resourceId: cosmosDb.id
     principalId: projectIdentityPrincipalId

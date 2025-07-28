@@ -35,7 +35,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
 }
 
 module blobDnsZone 'dependencies.dns.bicep' = {
-  name: take('privatelink.blob.${environment().suffixes.storage}-pdns-deployment', 64)
+  name: take('module.dns.storage.blob.${workloadName}', 64)
   params: {
     name: 'privatelink.blob.${environment().suffixes.storage}'
     virtualNetworkResourceId: vnet.id
@@ -44,7 +44,7 @@ module blobDnsZone 'dependencies.dns.bicep' = {
 }
 
 module fileDnsZone 'dependencies.dns.bicep' = {
-  name: take('privatelink.file.${environment().suffixes.storage}-pdns-deployment', 64)
+  name: take('module.dns.storage.file.${workloadName}', 64)
   params: {
     name: 'privatelink.file.${environment().suffixes.storage}'
     virtualNetworkResourceId: vnet.id
@@ -53,10 +53,7 @@ module fileDnsZone 'dependencies.dns.bicep' = {
 }
 
 module documentsDnsZone 'dependencies.dns.bicep' = {
-  name: take(
-    'privatelink.documents.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}-pdns-deployment',
-    64
-  )
+  name: take('module.dns.cosmos.documents.${workloadName}', 64)
   params: {
     name: 'privatelink.documents.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
     virtualNetworkResourceId: vnet.id
@@ -65,7 +62,7 @@ module documentsDnsZone 'dependencies.dns.bicep' = {
 }
 
 module searchDnsZone 'dependencies.dns.bicep' = {
-  name: take('privatelink.search.windows.net-pdns-deployment', 64)
+  name: take('module.dns.search.${workloadName}', 64)
   params: {
     name: 'privatelink.search.windows.net'
     virtualNetworkResourceId: vnet.id
@@ -74,10 +71,7 @@ module searchDnsZone 'dependencies.dns.bicep' = {
 }
 
 module keyVaultDnsZone 'dependencies.dns.bicep' = {
-  name: take(
-    'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}-pdns-deployment',
-    64
-  )
+  name: take('module.dns.keyvault.${workloadName}', 64)
   params: {
     name: 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
     virtualNetworkResourceId: vnet.id
@@ -86,10 +80,7 @@ module keyVaultDnsZone 'dependencies.dns.bicep' = {
 }
 
 module openaiDnsZone 'dependencies.dns.bicep' = {
-  name: take(
-    'privatelink.openai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}-pdns-deployment',
-    64
-  )
+  name: take('module.dns.openai.${workloadName}', 64)
   params: {
     name: 'privatelink.openai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
     virtualNetworkResourceId: vnet.id
@@ -98,10 +89,7 @@ module openaiDnsZone 'dependencies.dns.bicep' = {
 }
 
 module servicesAiDnsZone 'dependencies.dns.bicep' = {
-  name: take(
-    'privatelink.services.ai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}-pdns-deployment',
-    64
-  )
+  name: take('module.dns.services.ai.${workloadName}', 64)
   params: {
     name: 'privatelink.services.ai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
     virtualNetworkResourceId: vnet.id
@@ -110,10 +98,7 @@ module servicesAiDnsZone 'dependencies.dns.bicep' = {
 }
 
 module cognitiveServicesDnsZone 'dependencies.dns.bicep' = {
-  name: take(
-    'privatelink.cognitiveservices.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}-pdns-deployment',
-    64
-  )
+  name: take('module.dns.cognitive.services.${workloadName}', 64)
   params: {
     name: 'privatelink.cognitiveservices.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
     virtualNetworkResourceId: vnet.id

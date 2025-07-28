@@ -94,7 +94,7 @@ var foundryAccountName = !empty(aiFoundryConfiguration.?accountName)
   : 'ai${resourcesName}'
 var foundryAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?privateEndpointSubnetId) && !empty(networking.?cognitiveServicesPrivateDnsZoneId) && !empty(networking.?openAiPrivateDnsZoneId) && !empty(networking.?aiServicesPrivateDnsZoneId)
 module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
-  name: take('${resourcesName}-foundry-account-deployment', 64)
+  name: take('avm.res.cognitive-services.account.${foundryAccountName}', 64)
   params: {
     name: foundryAccountName
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
@@ -138,16 +138,17 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
   }
 }
 
+var keyVaultName = take(
+  !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
+    ? keyVaultConfiguration!.name!
+    : 'kv${resourcesName}',
+  24
+)
 var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
 module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-keyvault-deployment', 64)
+  name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
   params: {
-    name: take(
-      !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
-        ? keyVaultConfiguration!.name!
-        : 'kv${resourcesName}',
-      24
-    )
+    name: keyVaultName
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -184,7 +185,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociat
 var aiSearchName = take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
 var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
 module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-search-services-deployment', 64)
+  name: take('avm.res.search.search-service.${aiSearchName}', 64)
   params: {
     name: aiSearchName
     location: location
@@ -235,7 +236,7 @@ var storageAccountName = take(
 )
 var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
 module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-storage-account-deployment', 64)
+  name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
     location: location
@@ -323,7 +324,7 @@ var storageAccountResourceGroupName = length(existingStorageAccountParts) > 4
 var cosmosDbName = take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
 var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
-  name: take('${resourcesName}-cosmosdb-deployment', 64)
+  name: take('avm.res.document-db.database-account.${cosmosDbName}', 64)
   params: {
     name: cosmosDbName
     enableTelemetry: enableTelemetry
@@ -367,14 +368,8 @@ var cosmosDbResourceGroupName = length(existingCosmosDbResourceParts) > 4
   : resourceGroup().name
 
 module foundryProject 'modules/project/main.bicep' = {
-  name: take('${resourcesName}-foundry-project-deployment', 64)
-  dependsOn: [
-    #disable-next-line no-unnecessary-dependson
-    storageAccount
-    aiSearch
-    cosmosDb
-    keyVault
-  ]
+  name: take('module.project.main.${projectName}', 64)
+  dependsOn: [storageAccount, aiSearch, cosmosDb, keyVault]
   params: {
     name: projectName
     desc: !empty(aiFoundryConfiguration.?project.?desc)

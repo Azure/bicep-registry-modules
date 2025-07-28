@@ -152,7 +152,7 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
 }
 
 module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
-  name: take('proj-storage-role-assignments-${name}', 64)
+  name: take('module.project.role-assign.storageAccount.${name}', 64)
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
   params: {
     storageAccountName: storageAccount.name
@@ -173,7 +173,7 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
 module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
-  name: take('proj-cosmos-role-assignments-${name}', 64)
+  name: take('module.project.role-assign.cosmosDb.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
   dependsOn: [
     projectCapabilityHost
@@ -188,7 +188,7 @@ module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(co
 }
 
 module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(aiSearchConnection)) {
-  name: take('proj-search-index-data-contributor-role-assign-${name}', 64)
+  name: take('avm.ptn.auth.res-role-assign.srchIndexDataCont.${name}', 64)
   params: {
     resourceId: aiSearch.id
     principalId: project.identity.principalId
@@ -199,7 +199,7 @@ module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization
 }
 
 module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(aiSearchConnection)) {
-  name: take('proj-search-service-contributor-role-assign-${name}', 64)
+  name: take('avm.ptn.auth.res-role-assign.srchServiceCont.${name}', 64)
   params: {
     resourceId: aiSearch.id
     principalId: project.identity.principalId

@@ -30,7 +30,7 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 // ============ //
 
 module dependencies 'dependencies.bicep' = {
-  name: take('${workloadName}-dependencies-deployment', 64)
+  name: take('module.dependencies.${workloadName}', 64)
   scope: resourceGroup
   params: {
     workloadName: workloadName
