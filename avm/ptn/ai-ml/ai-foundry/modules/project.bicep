@@ -41,16 +41,37 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existi
   name: accountName
 }
 
+var storageAccountName = contains(storageAccountConnection!.resourceIdOrName, '/')
+  ? last(split(storageAccountConnection!.resourceIdOrName, '/'))
+  : storageAccountConnection!.resourceIdOrName
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
-  name: storageAccountConnection!.resourceIdOrName
+  name: storageAccountName
+  scope: resourceGroup(
+    storageAccountConnection.?subscriptionId ?? subscription().subscriptionId,
+    storageAccountConnection.?resourceGroupName ?? resourceGroup().name
+  )
 }
 
+var aiSearchName = contains(aiSearchConnection!.resourceIdOrName, '/')
+  ? last(split(aiSearchConnection!.resourceIdOrName, '/'))
+  : aiSearchConnection!.resourceIdOrName
 resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
-  name: aiSearchConnection!.resourceIdOrName
+  name: aiSearchName
+  scope: resourceGroup(
+    aiSearchConnection.?subscriptionId ?? subscription().subscriptionId,
+    aiSearchConnection.?resourceGroupName ?? resourceGroup().name
+  )
 }
 
+var cosmosDbName = contains(cosmosDbConnection!.resourceIdOrName, '/')
+  ? last(split(cosmosDbConnection!.resourceIdOrName, '/'))
+  : cosmosDbConnection!.resourceIdOrName
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
-  name: cosmosDbConnection!.resourceIdOrName
+  name: cosmosDbName
+  scope: resourceGroup(
+    cosmosDbConnection.?subscriptionId ?? subscription().subscriptionId,
+    cosmosDbConnection.?resourceGroupName ?? resourceGroup().name
+  )
 }
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
@@ -67,7 +88,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   tags: tags
 
   resource storageConnection 'connections@2025-06-01' = {
-    name: storageAccountConnection!.resourceIdOrName
+    name: storageAccount.name
     properties: {
       category: 'AzureBlob'
       target: storageAccount!.properties.primaryEndpoints.blob
@@ -83,7 +104,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   }
 
   resource searchConnection 'connections@2025-06-01' = {
-    name: aiSearchConnection!.resourceIdOrName
+    name: aiSearch.name
     properties: {
       category: 'CognitiveSearch'
       target: 'https://${aiSearch!.name}.search.windows.net/'
@@ -97,7 +118,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   }
 
   resource cosmosConnection 'connections@2025-06-01' = {
-    name: cosmosDbConnection!.resourceIdOrName
+    name: cosmosDb.name
     properties: {
       category: 'CosmosDB'
       target: cosmosDb!.properties.documentEndpoint
@@ -127,9 +148,9 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   parent: project
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: ['${aiSearchConnection!.resourceIdOrName}']
-    storageConnections: ['${storageAccountConnection!.resourceIdOrName}']
-    threadStorageConnections: ['${cosmosDbConnection!.resourceIdOrName}']
+    vectorStoreConnections: ['${aiSearch.name}']
+    storageConnections: ['${storageAccount.name}']
+    threadStorageConnections: ['${cosmosDb.name}']
     tags: tags
   }
 }
@@ -145,6 +166,19 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   scope: project
 }
 
+module storageAccountRoleAssignments 'project.roles.storage.bicep' = {
+  name: take('proj-storage-role-assignments-${name}', 64)
+  scope: resourceGroup(
+    storageAccountConnection.?subscriptionId ?? subscription().subscriptionId,
+    storageAccountConnection.?resourceGroupName ?? resourceGroup().name
+  )
+  params: {
+    storageAccountName: storageAccountName
+    projectIdentityPrincipalId: project.identity.principalId
+    containerName: storageAccountConnection!.containerName
+  }
+}
+
 #disable-next-line BCP053
 var internalId = project.properties.internalId
 var workspacePart1 = substring(internalId, 0, 8)
@@ -155,29 +189,17 @@ var workspacePart5 = substring(internalId, 20, 12) // Remaining 12 characters
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
-module storageAccountBlobContributorRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: take('proj-storage-blob-contributer-role-assign-${name}', 64)
+module cosmosDbRoleAssignments 'project.roles.cosmos.bicep' = {
+  name: take('proj-cosmos-role-assignments-${name}', 64)
+  scope: resourceGroup(
+    cosmosDbConnection.?subscriptionId ?? subscription().subscriptionId,
+    cosmosDbConnection.?resourceGroupName ?? resourceGroup().name
+  )
   params: {
-    resourceId: storageAccount.id
-    principalId: project.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Storage Contributor
-  }
-}
-
-resource storageBlobDataOwnerRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b' // Storage Blob Data Owner
-}
-
-resource storageAccountDataOwnerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: storageAccount
-  name: guid(storageAccount.id, storageBlobDataOwnerRoleDefinition.id, name)
-  properties: {
-    principalId: project.identity.principalId
-    roleDefinitionId: storageBlobDataOwnerRoleDefinition.id
-    principalType: 'ServicePrincipal'
-    conditionVersion: '2.0'
-    condition: '((!(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read\'})  AND  !(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action\'}) AND  !(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write\'}) ) OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase \'${storageAccountConnection!.containerName}\'))'
+    cosmosDbName: cosmosDbName
+    projectIdentityPrincipalId: project.identity.principalId
+    projectWorkspaceId: projectWorkspaceId
+    createCapabilityHost: createCapabilityHost
   }
 }
 
@@ -200,48 +222,6 @@ module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resou
     roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
   }
 }
-
-module cosmosDbOperatorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: take('proj-cosmos-db-operator-role-assign-${name}', 64)
-  params: {
-    resourceId: cosmosDb.id
-    principalId: project.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: '230815da-be43-4aae-9cb4-875f7bd000aa' // Cosmos DB Operator
-  }
-}
-
-var cosmosContainerNameSuffixes = createCapabilityHost
-  ? [
-      'thread-message-store'
-      'system-thread-message-store'
-      'agent-entity-store'
-    ]
-  : []
-
-var cosmosDefaultSqlRoleDefinitionId = createCapabilityHost
-  ? resourceId(
-      'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions',
-      cosmosDbConnection!.resourceIdOrName,
-      '00000000-0000-0000-0000-000000000002'
-    )
-  : ''
-
-resource cosmosDataRoleAssigment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2025-04-15' = [
-  for (containerSuffix, i) in cosmosContainerNameSuffixes: {
-    parent: cosmosDb
-    dependsOn: [
-      cosmosDbOperatorAssignment
-      projectCapabilityHost
-    ]
-    name: guid(cosmosDefaultSqlRoleDefinitionId, name, containerSuffix)
-    properties: {
-      principalId: project.identity.principalId
-      roleDefinitionId: cosmosDefaultSqlRoleDefinitionId
-      scope: '${cosmosDb.id}/dbs/enterprise_memory/colls/${projectWorkspaceId}-${containerSuffix}'
-    }
-  }
-]
 
 @description('Name of the deployed Azure Resource Group.')
 output resourceGroupName string = resourceGroup().name
@@ -266,6 +246,12 @@ type azureConnectionType = {
 
   @description('Required. The resource ID or name of the Azure resource for the connection.')
   resourceIdOrName: string
+
+  @description('Optional. The subscription ID of the resource. If not provided, the current subscription will be used.')
+  subscriptionId: string?
+
+  @description('Optional. The resource group name of the resource. If not provided, the current resource group will be used.')
+  resourceGroupName: string?
 }
 
 @export()
@@ -279,4 +265,10 @@ type storageAccountConnectionType = {
 
   @description('Required. Name of container in the Storage Account to use for the connections.')
   containerName: string
+
+  @description('Optional. The subscription ID of the Storage Account. If not provided, the current subscription will be used.')
+  subscriptionId: string?
+
+  @description('Optional. The resource group name of the Storage Account. If not provided, the current resource group will be used.')
+  resourceGroupName: string?
 }

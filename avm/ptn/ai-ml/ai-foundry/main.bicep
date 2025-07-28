@@ -363,7 +363,7 @@ module foundryProject 'modules/project.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    includeCapabilityHost: true
+    includeCapabilityHost: false
     storageAccountConnection: {
       resourceIdOrName: storageAccountName
       containerName: projectName
