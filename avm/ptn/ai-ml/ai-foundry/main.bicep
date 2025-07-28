@@ -196,11 +196,13 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAs
     }
     publicNetworkAccess: aiSearchPrivateNetworking ? 'Disabled' : 'Enabled'
     disableLocalAuth: aiSearchPrivateNetworking
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
+    authOptions: aiSearchPrivateNetworking
+      ? null
+      : {
+          aadOrApiKey: {
+            aadAuthFailureMode: 'http401WithBearerChallenge'
+          }
+        }
     sku: 'standard'
     partitionCount: 1
     replicaCount: 3

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "6066806477651599572"
+      "templateHash": "14616607509845025617"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -6416,13 +6416,7 @@
           "disableLocalAuth": {
             "value": "[variables('aiSearchPrivateNetworking')]"
           },
-          "authOptions": {
-            "value": {
-              "aadOrApiKey": {
-                "aadAuthFailureMode": "http401WithBearerChallenge"
-              }
-            }
-          },
+          "authOptions": "[if(variables('aiSearchPrivateNetworking'), createObject('value', null()), createObject('value', createObject('aadOrApiKey', createObject('aadAuthFailureMode', 'http401WithBearerChallenge'))))]",
           "sku": {
             "value": "standard"
           },
