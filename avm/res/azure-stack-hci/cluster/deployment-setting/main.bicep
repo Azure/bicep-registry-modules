@@ -169,7 +169,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
   properties: {
     arcNodeResourceIds: arcNodeResourceIds
     deploymentMode: deploymentMode
-    operationType: operationType
+    operationType: operationType == 'ClusterUpgrade' ? operationType : null
     deploymentConfiguration: {
       version: operationType == 'ClusterUpgrade' ? '10.1.0.0' : '10.0.0.0'
       scaleUnits: [
