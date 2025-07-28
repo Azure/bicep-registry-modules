@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "15831148718887430160"
+      "templateHash": "5171871824937084430"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -18293,7 +18293,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12085490217656763444"
+              "templateHash": "8016275311625063579"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -18980,7 +18980,7 @@
                     "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
                   },
                   "projectWorkspaceId": {
-                    "value": "[format('{0}-{1}-{2}-{3}-{4}', substring(coalesce(reference('project').internalId, resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('name'))), 0, 8), substring(coalesce(reference('project').internalId, resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('name'))), 8, 4), substring(coalesce(reference('project').internalId, resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('name'))), 12, 4), substring(coalesce(reference('project').internalId, resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('name'))), 16, 4), substring(coalesce(reference('project').internalId, resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('name'))), 20, 12))]"
+                    "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
                   },
                   "createCapabilityHost": {
                     "value": "[variables('createCapabilityHost')]"
