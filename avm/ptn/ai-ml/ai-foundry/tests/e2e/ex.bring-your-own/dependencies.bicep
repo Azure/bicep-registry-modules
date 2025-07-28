@@ -69,7 +69,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
-  name: take('cosmosbyor${workloadName}cosmos', 50)
+  name: take('cosmosbyor${workloadName}', 44)
   location: location
   tags: tags
   kind: 'GlobalDocumentDB'
@@ -90,7 +90,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
 }
 
 resource aiSearch 'Microsoft.Search/searchServices@2023-11-01' = {
-  name: 'srch${workloadName}search'
+  name: take('srchbyor${workloadName}', 60)
   location: location
   tags: tags
   sku: {
@@ -104,9 +104,28 @@ resource aiSearch 'Microsoft.Search/searchServices@2023-11-01' = {
   }
 }
 
-output storageAccountResourceId string = storageAccount.id
-output keyVaultResourceId string = keyVault.id
-output cosmosDbAccountResourceId string = cosmosDbAccount.id
-output aiSearchResourceId string = aiSearch.id
-
+output storageAccountResourceId string = resourceId(
+  subscription().subscriptionId,
+  resourceGroup().name,
+  'Microsoft.Storage/storageAccounts',
+  storageAccount.name
+)
+output keyVaultResourceId string = resourceId(
+  subscription().subscriptionId,
+  resourceGroup().name,
+  'Microsoft.KeyVault/vaults',
+  keyVault.name
+)
+output cosmosDbAccountResourceId string = resourceId(
+  subscription().subscriptionId,
+  resourceGroup().name,
+  'Microsoft.DocumentDB/databaseAccounts',
+  cosmosDbAccount.name
+)
+output aiSearchResourceId string = resourceId(
+  subscription().subscriptionId,
+  resourceGroup().name,
+  'Microsoft.Search/searchServices',
+  aiSearch.name
+)
 output containerName string = containerName
