@@ -145,7 +145,7 @@ var keyVaultName = take(
   24
 )
 var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResource)) {
   name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
   params: {
     name: keyVaultName
@@ -184,7 +184,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociat
 
 var aiSearchName = take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
 var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
-module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResourceId)) {
+module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResource)) {
   name: take('avm.res.search.search-service.${aiSearchName}', 64)
   params: {
     name: aiSearchName
@@ -223,19 +223,12 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAs
   }
 }
 
-var existingAiResourceParts = split(aiSearchConfiguration.?existingResourceId ?? '', '/')
-var existingAiSearchName = !empty(aiSearchConfiguration.?existingResourceId) ? last(existingAiResourceParts) : ''
-var aiSearchSubscriptionId = length(existingAiResourceParts) > 2
-  ? existingAiResourceParts[2]
-  : subscription().subscriptionId
-var aiSearchResourceGroupName = length(existingAiResourceParts) > 4 ? existingAiResourceParts[4] : resourceGroup().name
-
 var storageAccountName = take(
   !empty(storageAccountConfiguration.?name) ? storageAccountConfiguration!.name! : 'st${resourcesName}',
   24
 )
 var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
-module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResourceId)) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResource)) {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -297,7 +290,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
       ],
-      empty(aiSearchConfiguration.?existingResourceId)
+      empty(aiSearchConfiguration.?existingResource)
         ? [
             {
               principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
@@ -310,20 +303,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
   }
 }
 
-var existingStorageAccountParts = split(storageAccountConfiguration.?existingResourceId ?? '', '/')
-var existingStorageAccountName = !empty(storageAccountConfiguration.?existingResourceId)
-  ? last(existingStorageAccountParts)
-  : ''
-var storageAccountSubscriptionId = length(existingStorageAccountParts) > 2
-  ? existingStorageAccountParts[2]
-  : subscription().subscriptionId
-var storageAccountResourceGroupName = length(existingStorageAccountParts) > 4
-  ? existingStorageAccountParts[4]
-  : resourceGroup().name
-
 var cosmosDbName = take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
 var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResource)) {
   name: take('avm.res.document-db.database-account.${cosmosDbName}', 64)
   params: {
     name: cosmosDbName
@@ -358,15 +340,6 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (in
   }
 }
 
-var existingCosmosDbResourceParts = split(cosmosDbConfiguration.?existingResourceId ?? '', '/')
-var existingCosmosDbName = !empty(cosmosDbConfiguration.?existingResourceId) ? last(existingCosmosDbResourceParts) : ''
-var cosmosDbSubscriptionId = length(existingCosmosDbResourceParts) > 2
-  ? existingCosmosDbResourceParts[2]
-  : subscription().subscriptionId
-var cosmosDbResourceGroupName = length(existingCosmosDbResourceParts) > 4
-  ? existingCosmosDbResourceParts[4]
-  : resourceGroup().name
-
 module foundryProject 'modules/project/main.bicep' = {
   name: take('module.project.main.${projectName}', 64)
   dependsOn: [storageAccount, aiSearch, cosmosDb, keyVault]
@@ -383,26 +356,42 @@ module foundryProject 'modules/project/main.bicep' = {
     includeCapabilityHost: false
     storageAccountConnection: includeAssociatedResources
       ? {
-          storageAccountName: empty(storageAccountConfiguration.?existingResourceId)
+          storageAccountName: empty(storageAccountConfiguration.?existingResource.?name)
             ? storageAccountName
-            : existingStorageAccountName
-          subscriptionId: storageAccountSubscriptionId
-          resourceGroupName: storageAccountResourceGroupName
+            : storageAccountConfiguration!.existingResource!.name!
+          subscriptionId: empty(storageAccountConfiguration.?existingResource.?subscriptionId)
+            ? subscription().subscriptionId
+            : storageAccountConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: empty(storageAccountConfiguration.?existingResource.?resourceGroupName)
+            ? resourceGroup().name
+            : storageAccountConfiguration!.existingResource!.resourceGroupName!
           containerName: storageAccountContainerName
         }
       : null
     aiSearchConnection: includeAssociatedResources
       ? {
-          resourceName: empty(aiSearchConfiguration.?existingResourceId) ? aiSearchName : existingAiSearchName
-          subscriptionId: aiSearchSubscriptionId
-          resourceGroupName: aiSearchResourceGroupName
+          resourceName: empty(aiSearchConfiguration.?existingResource.?name)
+            ? aiSearchName
+            : aiSearchConfiguration!.existingResource!.name!
+          subscriptionId: empty(aiSearchConfiguration.?existingResource.?subscriptionId)
+            ? subscription().subscriptionId
+            : aiSearchConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: empty(aiSearchConfiguration.?existingResource.?resourceGroupName)
+            ? resourceGroup().name
+            : aiSearchConfiguration!.existingResource!.resourceGroupName!
         }
       : null
     cosmosDbConnection: includeAssociatedResources
       ? {
-          resourceName: empty(cosmosDbConfiguration.?existingResourceId) ? cosmosDbName : existingCosmosDbName
-          subscriptionId: cosmosDbSubscriptionId
-          resourceGroupName: cosmosDbResourceGroupName
+          resourceName: empty(cosmosDbConfiguration.?existingResource.?name)
+            ? cosmosDbName
+            : cosmosDbConfiguration!.existingResource!.name!
+          subscriptionId: empty(cosmosDbConfiguration.?existingResource.?subscriptionId)
+            ? subscription().subscriptionId
+            : cosmosDbConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: empty(cosmosDbConfiguration.?existingResource.?resourceGroupName)
+            ? resourceGroup().name
+            : cosmosDbConfiguration!.existingResource!.resourceGroupName!
         }
       : null
     tags: tags
@@ -471,12 +460,26 @@ type networkResourcesDnsZonesConfigurationType = {
   storageFilePrivateDnsZoneId: string
 }
 
+@description('Custom type to represent ID for a given resource in Azure. It includes subscription ID, resource group name, and resource name.')
+type resourceIdType = {
+  @description('Required. The name of the resource.')
+  @maxLength(64)
+  @minLength(3)
+  name: string
+
+  @description('Required. The name of the resource group.')
+  resourceGroupName: string
+
+  @description('Required. The subscription ID.')
+  subscriptionId: string
+}
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 
 @description('Custom configuration for a resource, including optional name, existing resource ID, and role assignments.')
 type resourceConfigurationType = {
-  @description('Optional. Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.')
-  existingResourceId: string?
+  @description('Optional. Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.')
+  existingResource: resourceIdType?
 
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
@@ -487,8 +490,8 @@ type resourceConfigurationType = {
 
 @description('Custom configuration for a Storage Account, including optional name, existing resource ID, containers, and role assignments.')
 type storageAccountConfigurationType = {
-  @description('Optional. Resource ID of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.')
-  existingResourceId: string?
+  @description('Optional. Resource identifier of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.')
+  existingResource: resourceIdType?
 
   @description('Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.')
   name: string?

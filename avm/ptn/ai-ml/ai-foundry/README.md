@@ -323,18 +323,33 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       }
     ]
     aiSearchConfiguration: {
-      existingResourceId: '<existingResourceId>'
+      existingResource: {
+        name: '<name>'
+        resourceGroupName: '<resourceGroupName>'
+        subscriptionId: '<subscriptionId>'
+      }
     }
     cosmosDbConfiguration: {
-      existingResourceId: '<existingResourceId>'
+      existingResource: {
+        name: '<name>'
+        resourceGroupName: '<resourceGroupName>'
+        subscriptionId: '<subscriptionId>'
+      }
     }
     includeAssociatedResources: true
     keyVaultConfiguration: {
-      existingResourceId: '<existingResourceId>'
+      existingResource: {
+        name: '<name>'
+        resourceGroupName: '<resourceGroupName>'
+        subscriptionId: '<subscriptionId>'
+      }
     }
     storageAccountConfiguration: {
-      containerName: '<containerName>'
-      existingResourceId: '<existingResourceId>'
+      existingResource: {
+        name: '<name>'
+        resourceGroupName: '<resourceGroupName>'
+        subscriptionId: '<subscriptionId>'
+      }
     }
   }
 }
@@ -375,12 +390,20 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "aiSearchConfiguration": {
       "value": {
-        "existingResourceId": "<existingResourceId>"
+        "existingResource": {
+          "name": "<name>",
+          "resourceGroupName": "<resourceGroupName>",
+          "subscriptionId": "<subscriptionId>"
+        }
       }
     },
     "cosmosDbConfiguration": {
       "value": {
-        "existingResourceId": "<existingResourceId>"
+        "existingResource": {
+          "name": "<name>",
+          "resourceGroupName": "<resourceGroupName>",
+          "subscriptionId": "<subscriptionId>"
+        }
       }
     },
     "includeAssociatedResources": {
@@ -388,13 +411,20 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "keyVaultConfiguration": {
       "value": {
-        "existingResourceId": "<existingResourceId>"
+        "existingResource": {
+          "name": "<name>",
+          "resourceGroupName": "<resourceGroupName>",
+          "subscriptionId": "<subscriptionId>"
+        }
       }
     },
     "storageAccountConfiguration": {
       "value": {
-        "containerName": "<containerName>",
-        "existingResourceId": "<existingResourceId>"
+        "existingResource": {
+          "name": "<name>",
+          "resourceGroupName": "<resourceGroupName>",
+          "subscriptionId": "<subscriptionId>"
+        }
       }
     }
   }
@@ -429,18 +459,33 @@ param aiModelDeployments = [
   }
 ]
 param aiSearchConfiguration = {
-  existingResourceId: '<existingResourceId>'
+  existingResource: {
+    name: '<name>'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
 }
 param cosmosDbConfiguration = {
-  existingResourceId: '<existingResourceId>'
+  existingResource: {
+    name: '<name>'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
 }
 param includeAssociatedResources = true
 param keyVaultConfiguration = {
-  existingResourceId: '<existingResourceId>'
+  existingResource: {
+    name: '<name>'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
 }
 param storageAccountConfiguration = {
-  containerName: '<containerName>'
-  existingResourceId: '<existingResourceId>'
+  existingResource: {
+    name: '<name>'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
 }
 ```
 
@@ -535,10 +580,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       privateEndpointSubnetId: '<privateEndpointSubnetId>'
     }
     storageAccountConfiguration: {
-      containers: [
-        'ai-foundry-proj-uploads'
-        'ai-foundry-sys-data'
-      ]
+      containerName: 'my-foundry-proj-data'
       name: '<name>'
       roleAssignments: [
         {
@@ -652,10 +694,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "storageAccountConfiguration": {
       "value": {
-        "containers": [
-          "ai-foundry-proj-uploads",
-          "ai-foundry-sys-data"
-        ],
+        "containerName": "my-foundry-proj-data",
         "name": "<name>",
         "roleAssignments": [
           {
@@ -751,10 +790,7 @@ param networking = {
   privateEndpointSubnetId: '<privateEndpointSubnetId>'
 }
 param storageAccountConfiguration = {
-  containers: [
-    'ai-foundry-proj-uploads'
-    'ai-foundry-sys-data'
-  ]
+  containerName: 'my-foundry-proj-data'
   name: '<name>'
   roleAssignments: [
     {
@@ -1171,15 +1207,44 @@ Custom configuration for the AI Search resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResource`](#parameter-aisearchconfigurationexistingresource) | object | Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `aiSearchConfiguration.existingResourceId`
+### Parameter: `aiSearchConfiguration.existingResource`
 
-Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-aisearchconfigurationexistingresourcename) | string | The name of the resource. |
+| [`resourceGroupName`](#parameter-aisearchconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
+| [`subscriptionId`](#parameter-aisearchconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
+
+### Parameter: `aiSearchConfiguration.existingResource.name`
+
+The name of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiSearchConfiguration.existingResource.resourceGroupName`
+
+The name of the resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiSearchConfiguration.existingResource.subscriptionId`
+
+The subscription ID.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `aiSearchConfiguration.name`
@@ -1305,15 +1370,44 @@ Custom configuration for the Cosmos DB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResource`](#parameter-cosmosdbconfigurationexistingresource) | object | Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `cosmosDbConfiguration.existingResourceId`
+### Parameter: `cosmosDbConfiguration.existingResource`
 
-Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cosmosdbconfigurationexistingresourcename) | string | The name of the resource. |
+| [`resourceGroupName`](#parameter-cosmosdbconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
+| [`subscriptionId`](#parameter-cosmosdbconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
+
+### Parameter: `cosmosDbConfiguration.existingResource.name`
+
+The name of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.existingResource.resourceGroupName`
+
+The name of the resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.existingResource.subscriptionId`
+
+The subscription ID.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `cosmosDbConfiguration.name`
@@ -1447,15 +1541,44 @@ Custom configuration for the Key Vault.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResourceId`](#parameter-keyvaultconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResource`](#parameter-keyvaultconfigurationexistingresource) | object | Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-keyvaultconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-keyvaultconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `keyVaultConfiguration.existingResourceId`
+### Parameter: `keyVaultConfiguration.existingResource`
 
-Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keyvaultconfigurationexistingresourcename) | string | The name of the resource. |
+| [`resourceGroupName`](#parameter-keyvaultconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
+| [`subscriptionId`](#parameter-keyvaultconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
+
+### Parameter: `keyVaultConfiguration.existingResource.name`
+
+The name of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultConfiguration.existingResource.resourceGroupName`
+
+The name of the resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultConfiguration.existingResource.subscriptionId`
+
+The subscription ID.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `keyVaultConfiguration.name`
@@ -1728,7 +1851,7 @@ Custom configuration for the Storage Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerName`](#parameter-storageaccountconfigurationcontainername) | string | The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created. |
-| [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource ID of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResource`](#parameter-storageaccountconfigurationexistingresource) | object | Resource identifier of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
@@ -1739,11 +1862,40 @@ The name of the container to create in the Storage Account. If using existingRes
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountConfiguration.existingResourceId`
+### Parameter: `storageAccountConfiguration.existingResource`
 
-Resource ID of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.
+Resource identifier of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-storageaccountconfigurationexistingresourcename) | string | The name of the resource. |
+| [`resourceGroupName`](#parameter-storageaccountconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
+| [`subscriptionId`](#parameter-storageaccountconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
+
+### Parameter: `storageAccountConfiguration.existingResource.name`
+
+The name of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountConfiguration.existingResource.resourceGroupName`
+
+The name of the resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountConfiguration.existingResource.subscriptionId`
+
+The subscription ID.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountConfiguration.name`

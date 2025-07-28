@@ -64,37 +64,32 @@ module testDeployment '../../../main.bicep' = [
       baseName: workloadName
       includeAssociatedResources: true
       keyVaultConfiguration: {
-        existingResourceId: resourceId(
-          subscription().subscriptionId,
-          dependencies.outputs.resourceGroupName,
-          'Microsoft.KeyVault/vaults',
-          dependencies.outputs.keyVaultName
-        )
+        existingResource: {
+          name: dependencies.outputs.keyVaultName
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: dependencies.outputs.resourceGroupName
+        }
       }
       storageAccountConfiguration: {
-        existingResourceId: resourceId(
-          subscription().subscriptionId,
-          dependencies.outputs.resourceGroupName,
-          'Microsoft.Storage/storageAccounts',
-          dependencies.outputs.storageAccountName
-        )
-        containerName: dependencies.outputs.containerName
+        existingResource: {
+          name: dependencies.outputs.storageAccountName
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: dependencies.outputs.resourceGroupName
+        }
       }
       cosmosDbConfiguration: {
-        existingResourceId: resourceId(
-          subscription().subscriptionId,
-          dependencies.outputs.resourceGroupName,
-          'Microsoft.DocumentDB/databaseAccounts',
-          dependencies.outputs.cosmosDbAccountName
-        )
+        existingResource: {
+          name: dependencies.outputs.cosmosDbAccountName
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: dependencies.outputs.resourceGroupName
+        }
       }
       aiSearchConfiguration: {
-        existingResourceId: resourceId(
-          subscription().subscriptionId,
-          dependencies.outputs.resourceGroupName,
-          'Microsoft.Search/searchServices',
-          dependencies.outputs.aiSearchName
-        )
+        existingResource: {
+          name: dependencies.outputs.aiSearchName
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: dependencies.outputs.resourceGroupName
+        }
       }
       aiModelDeployments: [
         {
