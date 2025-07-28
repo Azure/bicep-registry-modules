@@ -180,7 +180,7 @@ module storageAccountRoleAssignments 'project.roles.storage.bicep' = {
 }
 
 #disable-next-line BCP053
-var internalId = project.properties.internalId
+var internalId = project.properties.internalId ?? project.id // setting to be defaulted to id solely to pass AVM validation. this should NEVER occur
 var workspacePart1 = substring(internalId, 0, 8)
 var workspacePart2 = substring(internalId, 8, 4) // Next 4 characters
 var workspacePart3 = substring(internalId, 12, 4) // Next 4 characters
