@@ -2028,7 +2028,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.12.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |

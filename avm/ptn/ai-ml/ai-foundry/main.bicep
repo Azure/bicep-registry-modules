@@ -359,8 +359,12 @@ module foundryProject 'modules/project/main.bicep' = {
           storageAccountName: empty(storageAccountConfiguration.?existingResource.?name)
             ? storageAccountName
             : storageAccountConfiguration!.existingResource!.name!
-          subscriptionId: subscription().subscriptionId
-          resourceGroupName: 'dep-swan-bicep-fndrybyo-dependencies-rg'
+          subscriptionId: empty(storageAccountConfiguration.?existingResource.?subscriptionId)
+            ? subscription().subscriptionId
+            : storageAccountConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: empty(storageAccountConfiguration.?existingResource.?resourceGroupName)
+            ? resourceGroup().name
+            : storageAccountConfiguration!.existingResource!.resourceGroupName!
           containerName: storageAccountContainerName
         }
       : null
@@ -369,8 +373,12 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceName: empty(aiSearchConfiguration.?existingResource.?name)
             ? aiSearchName
             : aiSearchConfiguration!.existingResource!.name!
-          subscriptionId: subscription().subscriptionId
-          resourceGroupName: 'dep-swan-bicep-fndrybyo-dependencies-rg'
+          subscriptionId: empty(aiSearchConfiguration.?existingResource.?subscriptionId)
+            ? subscription().subscriptionId
+            : aiSearchConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: empty(aiSearchConfiguration.?existingResource.?resourceGroupName)
+            ? resourceGroup().name
+            : aiSearchConfiguration!.existingResource!.resourceGroupName!
         }
       : null
     cosmosDbConnection: includeAssociatedResources
@@ -378,12 +386,15 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceName: empty(cosmosDbConfiguration.?existingResource.?name)
             ? cosmosDbName
             : cosmosDbConfiguration!.existingResource!.name!
-          subscriptionId: subscription().subscriptionId
-          resourceGroupName: 'dep-swan-bicep-fndrybyo-dependencies-rg'
+          subscriptionId: empty(cosmosDbConfiguration.?existingResource.?subscriptionId)
+            ? subscription().subscriptionId
+            : cosmosDbConfiguration!.existingResource!.subscriptionId!
+          resourceGroupName: empty(cosmosDbConfiguration.?existingResource.?resourceGroupName)
+            ? resourceGroup().name
+            : cosmosDbConfiguration!.existingResource!.resourceGroupName!
         }
       : null
     tags: tags
-    enableTelemetry: enableTelemetry
     lock: lock
   }
 }

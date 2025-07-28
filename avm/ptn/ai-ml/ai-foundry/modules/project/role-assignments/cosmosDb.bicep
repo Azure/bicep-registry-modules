@@ -10,21 +10,24 @@ param projectWorkspaceId string
 @description('Required. Whether to create a capability host for the project.')
 param createCapabilityHost bool
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: cosmosDbName
+  scope: resourceGroup()
 }
 
-module cosmosDbOperatorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: take('avm.ptn.auth.res-role-assign.cosmosDbOperator.${cosmosDbName}', 64)
-  params: {
-    resourceId: cosmosDb.id
+resource cosmosDBOperatorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '230815da-be43-4aae-9cb4-875f7bd000aa' // Cosmos DB Operator
+  scope: resourceGroup()
+}
+
+// NOTE: using resource module over AVM due to resource possibly existing out of the current scope
+resource cosmosDBOperatorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: cosmosDb
+  name: guid(projectIdentityPrincipalId, cosmosDBOperatorRole.id, cosmosDb.id)
+  properties: {
     principalId: projectIdentityPrincipalId
+    roleDefinitionId: cosmosDBOperatorRole.id
     principalType: 'ServicePrincipal'
-    roleDefinitionId: '230815da-be43-4aae-9cb4-875f7bd000aa' // Cosmos DB Operator
-    enableTelemetry: enableTelemetry
   }
 }
 
@@ -48,7 +51,7 @@ resource cosmosDataRoleAssigment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleA
   for (containerSuffix, i) in cosmosContainerNameSuffixes: {
     parent: cosmosDb
     dependsOn: [
-      cosmosDbOperatorAssignment
+      cosmosDBOperatorRoleAssignment
     ]
     name: guid(cosmosDefaultSqlRoleDefinitionId, cosmosDbName, containerSuffix)
     properties: {
