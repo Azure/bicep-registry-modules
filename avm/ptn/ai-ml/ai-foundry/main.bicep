@@ -365,14 +365,20 @@ module foundryProject 'modules/project.bicep' = {
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
     storageAccountConnection: {
-      resourceIdOrName: storageAccountName
+      storageAccountName: storageAccountName
+      subscriptionId: subscription().subscriptionId
+      resourceGroupName: resourceGroup().name
       containerName: projectName
     }
     aiSearchConnection: {
-      resourceIdOrName: aiSearchName
+      resourceName: aiSearchName
+      subscriptionId: subscription().subscriptionId
+      resourceGroupName: resourceGroup().name
     }
     cosmosDbConnection: {
-      resourceIdOrName: cosmosDbName
+      resourceName: cosmosDbName
+      subscriptionId: subscription().subscriptionId
+      resourceGroupName: resourceGroup().name
     }
     tags: tags
     lock: lock

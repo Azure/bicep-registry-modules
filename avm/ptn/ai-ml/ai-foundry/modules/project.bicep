@@ -41,37 +41,19 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existi
   name: accountName
 }
 
-var storageAccountName = contains(storageAccountConnection!.resourceIdOrName, '/')
-  ? last(split(storageAccountConnection!.resourceIdOrName, '/'))
-  : storageAccountConnection!.resourceIdOrName
-resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
-  name: storageAccountName
-  scope: resourceGroup(
-    storageAccountConnection.?subscriptionId ?? subscription().subscriptionId,
-    storageAccountConnection.?resourceGroupName ?? resourceGroup().name
-  )
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountConnection)) {
+  name: storageAccountConnection!.storageAccountName
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
 }
 
-var aiSearchName = contains(aiSearchConnection!.resourceIdOrName, '/')
-  ? last(split(aiSearchConnection!.resourceIdOrName, '/'))
-  : aiSearchConnection!.resourceIdOrName
-resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = {
-  name: aiSearchName
-  scope: resourceGroup(
-    aiSearchConnection.?subscriptionId ?? subscription().subscriptionId,
-    aiSearchConnection.?resourceGroupName ?? resourceGroup().name
-  )
+resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = if (!empty(aiSearchConnection)) {
+  name: aiSearchConnection!.resourceName
+  scope: resourceGroup(aiSearchConnection!.subscriptionId, aiSearchConnection!.resourceGroupName)
 }
 
-var cosmosDbName = contains(cosmosDbConnection!.resourceIdOrName, '/')
-  ? last(split(cosmosDbConnection!.resourceIdOrName, '/'))
-  : cosmosDbConnection!.resourceIdOrName
-resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
-  name: cosmosDbName
-  scope: resourceGroup(
-    cosmosDbConnection.?subscriptionId ?? subscription().subscriptionId,
-    cosmosDbConnection.?resourceGroupName ?? resourceGroup().name
-  )
+resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = if (!empty(cosmosDbConnection)) {
+  name: cosmosDbConnection!.resourceName
+  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
@@ -87,7 +69,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   }
   tags: tags
 
-  resource storageConnection 'connections@2025-06-01' = {
+  resource storageConnection 'connections@2025-06-01' = if (!empty(storageAccountConnection)) {
     name: storageAccount.name
     properties: {
       category: 'AzureBlob'
@@ -103,7 +85,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
     }
   }
 
-  resource searchConnection 'connections@2025-06-01' = {
+  resource searchConnection 'connections@2025-06-01' = if (!empty(aiSearchConnection)) {
     name: aiSearch.name
     properties: {
       category: 'CognitiveSearch'
@@ -117,7 +99,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
     }
   }
 
-  resource cosmosConnection 'connections@2025-06-01' = {
+  resource cosmosConnection 'connections@2025-06-01' = if (!empty(cosmosDbConnection)) {
     name: cosmosDb.name
     properties: {
       category: 'CosmosDB'
@@ -166,14 +148,11 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   scope: project
 }
 
-module storageAccountRoleAssignments 'project.roles.storage.bicep' = {
+module storageAccountRoleAssignments 'project.roles.storage.bicep' = if (!empty(storageAccountConnection)) {
   name: take('proj-storage-role-assignments-${name}', 64)
-  scope: resourceGroup(
-    storageAccountConnection.?subscriptionId ?? subscription().subscriptionId,
-    storageAccountConnection.?resourceGroupName ?? resourceGroup().name
-  )
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
   params: {
-    storageAccountName: storageAccountName
+    storageAccountName: storageAccount.name
     projectIdentityPrincipalId: project.identity.principalId
     containerName: storageAccountConnection!.containerName
   }
@@ -189,21 +168,21 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
-module cosmosDbRoleAssignments 'project.roles.cosmos.bicep' = {
+module cosmosDbRoleAssignments 'project.roles.cosmos.bicep' = if (!empty(cosmosDbConnection)) {
   name: take('proj-cosmos-role-assignments-${name}', 64)
-  scope: resourceGroup(
-    cosmosDbConnection.?subscriptionId ?? subscription().subscriptionId,
-    cosmosDbConnection.?resourceGroupName ?? resourceGroup().name
-  )
+  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
+  dependsOn: [
+    projectCapabilityHost
+  ]
   params: {
-    cosmosDbName: cosmosDbName
+    cosmosDbName: cosmosDb.name
     projectIdentityPrincipalId: project.identity.principalId
     projectWorkspaceId: projectWorkspaceId
     createCapabilityHost: createCapabilityHost
   }
 }
 
-module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(aiSearchConnection)) {
   name: take('proj-search-index-data-contributor-role-assign-${name}', 64)
   params: {
     resourceId: aiSearch.id
@@ -213,7 +192,7 @@ module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization
   }
 }
 
-module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(aiSearchConnection)) {
   name: take('proj-search-service-contributor-role-assign-${name}', 64)
   params: {
     resourceId: aiSearch.id
@@ -244,14 +223,14 @@ type azureConnectionType = {
   @description('Optional. The name of the project connection. Will default to the resource name if not provided.')
   name: string?
 
-  @description('Required. The resource ID or name of the Azure resource for the connection.')
-  resourceIdOrName: string
+  @description('Required. The resource name of the Azure resource for the connection.')
+  resourceName: string
 
-  @description('Optional. The subscription ID of the resource. If not provided, the current subscription will be used.')
-  subscriptionId: string?
+  @description('Required. The subscription ID of the resource.')
+  subscriptionId: string
 
-  @description('Optional. The resource group name of the resource. If not provided, the current resource group will be used.')
-  resourceGroupName: string?
+  @description('Required. The resource group name of the resource.')
+  resourceGroupName: string
 }
 
 @export()
@@ -260,15 +239,15 @@ type storageAccountConnectionType = {
   @description('Optional. The name of the project connection. Will default to "<account>-<container>" if not provided.')
   name: string?
 
-  @description('Required. The resource ID or name of the Storage Account for the connection.')
-  resourceIdOrName: string
+  @description('Required. The name of the Storage Account for the connection.')
+  storageAccountName: string
 
   @description('Required. Name of container in the Storage Account to use for the connections.')
   containerName: string
 
-  @description('Optional. The subscription ID of the Storage Account. If not provided, the current subscription will be used.')
-  subscriptionId: string?
+  @description('Required. The subscription ID of the Storage Account.')
+  subscriptionId: string
 
-  @description('Optional. The resource group name of the Storage Account. If not provided, the current resource group will be used.')
-  resourceGroupName: string?
+  @description('Required. The resource group name of the Storage Account.')
+  resourceGroupName: string
 }
