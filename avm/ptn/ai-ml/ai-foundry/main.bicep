@@ -344,7 +344,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (in
   }
 }
 
-module foundryProject 'modules/project.bicep' = {
+module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   dependsOn: [
     #disable-next-line no-unnecessary-dependson

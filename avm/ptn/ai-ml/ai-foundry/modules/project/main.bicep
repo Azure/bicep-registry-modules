@@ -21,20 +21,14 @@ param accountName string
 @description('Required. Include the capability host for the Foundry project.')
 param includeCapabilityHost bool
 
-@description('Optional. List of Azure AI Services connections for the project.')
-param aiServicesConnections azureConnectionType[]?
+@description('Optional. Azure Cosmos DB connection for the project.')
+param cosmosDbConnection azureConnectionType?
 
-@description('Optional. List of Azure Cosmos DB connections for the project.')
-param cosmosDbConnections azureConnectionType[]?
+@description('Optional. Azure Cognitive Search connection for the project.')
+param aiSearchConnection azureConnectionType?
 
-@description('Optional. List of Azure Cognitive Search connections for the project.')
-param aiSearchConnections azureConnectionType[]?
-
-@description('Optional. List of Azure Storage Account connections for the project.')
-param storageAccountConnections storageAccountConnectionType[]?
-
-@description('Optional. Temp thing.')
-param tempStorageAccountConnection storageAccountConnectionType?
+@description('Optional. Storage Account connection for the project.')
+param storageAccountConnection storageAccountConnectionType?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -45,6 +39,21 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
 
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountConnection)) {
+  name: storageAccountConnection!.storageAccountName
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+}
+
+resource aiSearch 'Microsoft.Search/searchServices@2025-05-01' existing = if (!empty(aiSearchConnection)) {
+  name: aiSearchConnection!.resourceName
+  scope: resourceGroup(aiSearchConnection!.subscriptionId, aiSearchConnection!.resourceGroupName)
+}
+
+resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = if (!empty(cosmosDbConnection)) {
+  name: cosmosDbConnection!.resourceName
+  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
@@ -59,109 +68,71 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
     description: !empty(desc) ? desc : name
   }
   tags: tags
-}
 
-@batchSize(1)
-module aiServicesConnResources 'connections/aiServices.bicep' = [
-  for (connection, i) in aiServicesConnections ?? []: {
-    name: take('${name}-ai-services-conn-${i}', 64)
-    params: {
-      name: connection.?name
-      accountName: accountName
-      projectName: project.name
-      resourceIdOrName: connection!.resourceId
+  resource storageConnection 'connections@2025-06-01' = if (!empty(storageAccountConnection)) {
+    name: storageAccount.name
+    properties: {
+      category: 'AzureBlob'
+      target: storageAccount!.properties.primaryEndpoints.blob
+      authType: 'AAD'
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: storageAccount.id
+        location: storageAccount!.location
+        AccountName: storageAccount!.name
+        ContainerName: storageAccountConnection!.containerName
+      }
     }
   }
-]
 
-@batchSize(1)
-module aiSearchConnResources 'connections/aiSearch.bicep' = [
-  for (connection, i) in aiSearchConnections ?? []: {
-    name: take('${name}-ai-search-conn-${i}', 64)
-    params: {
-      name: connection.?name
-      accountName: accountName
-      projectName: project.name
-      resourceIdOrName: connection!.resourceId
+  resource searchConnection 'connections@2025-06-01' = if (!empty(aiSearchConnection)) {
+    name: aiSearch.name
+    properties: {
+      category: 'CognitiveSearch'
+      target: 'https://${aiSearch!.name}.search.windows.net/'
+      authType: 'AAD'
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: aiSearch!.id
+        location: aiSearch!.location
+      }
     }
   }
-]
 
-@batchSize(1)
-module cosmosDbConnResources 'connections/cosmosDb.bicep' = [
-  for (connection, i) in cosmosDbConnections ?? []: {
-    name: take('${name}-cosmos-db-conn-${i}', 64)
-    params: {
-      name: connection.?name
-      accountName: accountName
-      projectName: project.name
-      resourceIdOrName: connection!.resourceId
-    }
-  }
-]
-
-@batchSize(1)
-module storageAccountConnResources 'connections/storageAccount.bicep' = [
-  for (connection, i) in storageAccountConnections ?? []: {
-    name: take('${name}-storage-conn-${i}-${connection!.containerName}', 64)
-    params: {
-      name: connection.?name
-      accountName: accountName
-      projectName: project.name
-      resourceIdOrName: connection!.resourceId
-      containerName: connection!.containerName
-    }
-  }
-]
-
-// module tempStorageAccountConnResource 'connections/storageAccount.bicep' = if (!empty(tempStorageAccountConnection)) {
-//   name: take(
-//     #disable-next-line BCP318
-//     '${name}-temp-storage-conn-${tempStorageAccountConnection!.containerName}',
-//     64
-//   )
-//   params: {
-//     name: tempStorageAccountConnection.?name
-//     accountName: accountName
-//     projectName: project.name
-//     resourceIdOrName: tempStorageAccountConnection!.resourceId
-//     containerName: tempStorageAccountConnection!.containerName
-//   }
-// }
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
-  name: tempStorageAccountConnection!.resourceId
-}
-
-resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
-  name: 'idontcare'
-  parent: project
-  properties: {
-    category: 'AzureBlob'
-    target: storageAccount!.properties.primaryEndpoints.blob
-    authType: 'AAD'
-    metadata: {
-      ApiType: 'Azure'
-      ResourceId: storageAccount.id
-      location: storageAccount!.location
-      accountName: storageAccount.name
-      containerName: tempStorageAccountConnection!.containerName
+  resource cosmosConnection 'connections@2025-06-01' = if (!empty(cosmosDbConnection)) {
+    name: cosmosDb.name
+    properties: {
+      category: 'CosmosDB'
+      target: cosmosDb!.properties.documentEndpoint
+      authType: 'AAD'
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: cosmosDb!.id
+        location: cosmosDb!.location
+      }
     }
   }
 }
 
-var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnections) && !empty(aiSearchConnections) && !empty(storageAccountConnections)
+var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: '${name}-cap-host'
-  parent: project
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [aiServicesConnResources, cosmosDbConnResources, storageAccountConnResources]
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
+  name: take('${accountName}-cap-host', 64)
+  parent: foundryAccount
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: []
-    storageConnections: [for (conn, i) in storageAccountConnections ?? []: storageAccountConnResources[i].outputs.name]
-    threadStorageConnections: [for (conn, i) in cosmosDbConnections ?? []: cosmosDbConnResources[i].outputs.name]
+    tags: tags
+  }
+}
+
+resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
+  name: take('${name}-cap-host', 64)
+  parent: project
+  properties: {
+    capabilityHostKind: 'Agents'
+    vectorStoreConnections: ['${aiSearch.name}']
+    storageConnections: ['${storageAccount.name}']
+    threadStorageConnections: ['${cosmosDb.name}']
     tags: tags
   }
 }
@@ -175,6 +146,60 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
       : 'Cannot delete or modify the resource or child resources.'
   }
   scope: project
+}
+
+module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
+  name: take('proj-storage-role-assignments-${name}', 64)
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+  params: {
+    storageAccountName: storageAccount.name
+    projectIdentityPrincipalId: project.identity.principalId
+    containerName: storageAccountConnection!.containerName
+  }
+}
+
+#disable-next-line BCP053
+var internalId = project.properties.internalId
+var workspacePart1 = length(internalId) >= 8 ? substring(internalId, 0, 8) : ''
+var workspacePart2 = length(internalId) >= 12 ? substring(internalId, 8, 4) : ''
+var workspacePart3 = length(internalId) >= 16 ? substring(internalId, 12, 4) : ''
+var workspacePart4 = length(internalId) >= 20 ? substring(internalId, 16, 4) : ''
+var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : ''
+
+var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
+
+module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
+  name: take('proj-cosmos-role-assignments-${name}', 64)
+  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
+  dependsOn: [
+    projectCapabilityHost
+  ]
+  params: {
+    cosmosDbName: cosmosDb.name
+    projectIdentityPrincipalId: project.identity.principalId
+    projectWorkspaceId: projectWorkspaceId
+    createCapabilityHost: createCapabilityHost
+  }
+}
+
+module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(aiSearchConnection)) {
+  name: take('proj-search-index-data-contributor-role-assign-${name}', 64)
+  params: {
+    resourceId: aiSearch.id
+    principalId: project.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Search Index Data Contributor
+  }
+}
+
+module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(aiSearchConnection)) {
+  name: take('proj-search-service-contributor-role-assign-${name}', 64)
+  params: {
+    resourceId: aiSearch.id
+    principalId: project.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
+  }
 }
 
 @description('Name of the deployed Azure Resource Group.')
@@ -198,8 +223,14 @@ type azureConnectionType = {
   @description('Optional. The name of the project connection. Will default to the resource name if not provided.')
   name: string?
 
-  @description('Required. The resource ID of the Azure resource for the connection.')
-  resourceId: string
+  @description('Required. The resource name of the Azure resource for the connection.')
+  resourceName: string
+
+  @description('Required. The subscription ID of the resource.')
+  subscriptionId: string
+
+  @description('Required. The resource group name of the resource.')
+  resourceGroupName: string
 }
 
 @export()
@@ -208,9 +239,15 @@ type storageAccountConnectionType = {
   @description('Optional. The name of the project connection. Will default to "<account>-<container>" if not provided.')
   name: string?
 
-  @description('Required. The resource ID of the Azure resource for the connection.')
-  resourceId: string
+  @description('Required. The name of the Storage Account for the connection.')
+  storageAccountName: string
 
   @description('Required. Name of container in the Storage Account to use for the connections.')
   containerName: string
+
+  @description('Required. The subscription ID of the Storage Account.')
+  subscriptionId: string
+
+  @description('Required. The resource group name of the Storage Account.')
+  resourceGroupName: string
 }

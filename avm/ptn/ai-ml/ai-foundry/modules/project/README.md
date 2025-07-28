@@ -14,9 +14,12 @@ Creates an AI Foundry project and any associated Azure service connections.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.CognitiveServices/accounts/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/capabilityHosts) |
 | `Microsoft.CognitiveServices/accounts/projects` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects) |
 | `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/capabilityHosts) |
 | `Microsoft.CognitiveServices/accounts/projects/connections` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/connections) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlRoleAssignments) |
 
 ## Parameters
 
@@ -32,16 +35,14 @@ Creates an AI Foundry project and any associated Azure service connections.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiSearchConnections`](#parameter-aisearchconnections) | array | List of Azure Cognitive Search connections for the project. |
-| [`aiServicesConnections`](#parameter-aiservicesconnections) | array | List of Azure AI Services connections for the project. |
-| [`cosmosDbConnections`](#parameter-cosmosdbconnections) | array | List of Azure Cosmos DB connections for the project. |
+| [`aiSearchConnection`](#parameter-aisearchconnection) | object | Azure Cognitive Search connection for the project. |
+| [`cosmosDbConnection`](#parameter-cosmosdbconnection) | object | Azure Cosmos DB connection for the project. |
 | [`desc`](#parameter-desc) | string | The description of the AI Foundry project. |
 | [`displayName`](#parameter-displayname) | string | The display name of the AI Foundry project. |
 | [`location`](#parameter-location) | string | Specifies the location for all the Azure resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`storageAccountConnections`](#parameter-storageaccountconnections) | array | List of Azure Storage Account connections for the project. |
+| [`storageAccountConnection`](#parameter-storageaccountconnection) | object | Storage Account connection for the project. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
-| [`tempStorageAccountConnection`](#parameter-tempstorageaccountconnection) | object | Temp thing. |
 
 ### Parameter: `accountName`
 
@@ -64,99 +65,98 @@ The name of the AI Foundry project.
 - Required: Yes
 - Type: string
 
-### Parameter: `aiSearchConnections`
+### Parameter: `aiSearchConnection`
 
-List of Azure Cognitive Search connections for the project.
+Azure Cognitive Search connection for the project.
 
 - Required: No
-- Type: array
+- Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceId`](#parameter-aisearchconnectionsresourceid) | string | The resource ID of the Azure resource for the connection. |
+| [`resourceGroupName`](#parameter-aisearchconnectionresourcegroupname) | string | The resource group name of the resource. |
+| [`resourceName`](#parameter-aisearchconnectionresourcename) | string | The resource name of the Azure resource for the connection. |
+| [`subscriptionId`](#parameter-aisearchconnectionsubscriptionid) | string | The subscription ID of the resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-aisearchconnectionsname) | string | The name of the project connection. Will default to the resource name if not provided. |
+| [`name`](#parameter-aisearchconnectionname) | string | The name of the project connection. Will default to the resource name if not provided. |
 
-### Parameter: `aiSearchConnections.resourceId`
+### Parameter: `aiSearchConnection.resourceGroupName`
 
-The resource ID of the Azure resource for the connection.
+The resource group name of the resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aiSearchConnections.name`
+### Parameter: `aiSearchConnection.resourceName`
+
+The resource name of the Azure resource for the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiSearchConnection.subscriptionId`
+
+The subscription ID of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiSearchConnection.name`
 
 The name of the project connection. Will default to the resource name if not provided.
 
 - Required: No
 - Type: string
 
-### Parameter: `aiServicesConnections`
+### Parameter: `cosmosDbConnection`
 
-List of Azure AI Services connections for the project.
+Azure Cosmos DB connection for the project.
 
 - Required: No
-- Type: array
+- Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceId`](#parameter-aiservicesconnectionsresourceid) | string | The resource ID of the Azure resource for the connection. |
+| [`resourceGroupName`](#parameter-cosmosdbconnectionresourcegroupname) | string | The resource group name of the resource. |
+| [`resourceName`](#parameter-cosmosdbconnectionresourcename) | string | The resource name of the Azure resource for the connection. |
+| [`subscriptionId`](#parameter-cosmosdbconnectionsubscriptionid) | string | The subscription ID of the resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-aiservicesconnectionsname) | string | The name of the project connection. Will default to the resource name if not provided. |
+| [`name`](#parameter-cosmosdbconnectionname) | string | The name of the project connection. Will default to the resource name if not provided. |
 
-### Parameter: `aiServicesConnections.resourceId`
+### Parameter: `cosmosDbConnection.resourceGroupName`
 
-The resource ID of the Azure resource for the connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiServicesConnections.name`
-
-The name of the project connection. Will default to the resource name if not provided.
-
-- Required: No
-- Type: string
-
-### Parameter: `cosmosDbConnections`
-
-List of Azure Cosmos DB connections for the project.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`resourceId`](#parameter-cosmosdbconnectionsresourceid) | string | The resource ID of the Azure resource for the connection. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cosmosdbconnectionsname) | string | The name of the project connection. Will default to the resource name if not provided. |
-
-### Parameter: `cosmosDbConnections.resourceId`
-
-The resource ID of the Azure resource for the connection.
+The resource group name of the resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `cosmosDbConnections.name`
+### Parameter: `cosmosDbConnection.resourceName`
+
+The resource name of the Azure resource for the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDbConnection.subscriptionId`
+
+The subscription ID of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDbConnection.name`
 
 The name of the project connection. Will default to the resource name if not provided.
 
@@ -221,41 +221,57 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountConnections`
+### Parameter: `storageAccountConnection`
 
-List of Azure Storage Account connections for the project.
+Storage Account connection for the project.
 
 - Required: No
-- Type: array
+- Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containerName`](#parameter-storageaccountconnectionscontainername) | string | Name of container in the Storage Account to use for the connections. |
-| [`resourceId`](#parameter-storageaccountconnectionsresourceid) | string | The resource ID of the Azure resource for the connection. |
+| [`containerName`](#parameter-storageaccountconnectioncontainername) | string | Name of container in the Storage Account to use for the connections. |
+| [`resourceGroupName`](#parameter-storageaccountconnectionresourcegroupname) | string | The resource group name of the Storage Account. |
+| [`storageAccountName`](#parameter-storageaccountconnectionstorageaccountname) | string | The name of the Storage Account for the connection. |
+| [`subscriptionId`](#parameter-storageaccountconnectionsubscriptionid) | string | The subscription ID of the Storage Account. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-storageaccountconnectionsname) | string | The name of the project connection. Will default to "<account>-<container>" if not provided. |
+| [`name`](#parameter-storageaccountconnectionname) | string | The name of the project connection. Will default to "<account>-<container>" if not provided. |
 
-### Parameter: `storageAccountConnections.containerName`
+### Parameter: `storageAccountConnection.containerName`
 
 Name of container in the Storage Account to use for the connections.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `storageAccountConnections.resourceId`
+### Parameter: `storageAccountConnection.resourceGroupName`
 
-The resource ID of the Azure resource for the connection.
+The resource group name of the Storage Account.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `storageAccountConnections.name`
+### Parameter: `storageAccountConnection.storageAccountName`
+
+The name of the Storage Account for the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountConnection.subscriptionId`
+
+The subscription ID of the Storage Account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountConnection.name`
 
 The name of the project connection. Will default to "<account>-<container>" if not provided.
 
@@ -269,47 +285,6 @@ Tags to be applied to the resources.
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `tempStorageAccountConnection`
-
-Temp thing.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`containerName`](#parameter-tempstorageaccountconnectioncontainername) | string | Name of container in the Storage Account to use for the connections. |
-| [`resourceId`](#parameter-tempstorageaccountconnectionresourceid) | string | The resource ID of the Azure resource for the connection. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-tempstorageaccountconnectionname) | string | The name of the project connection. Will default to "<account>-<container>" if not provided. |
-
-### Parameter: `tempStorageAccountConnection.containerName`
-
-Name of container in the Storage Account to use for the connections.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `tempStorageAccountConnection.resourceId`
-
-The resource ID of the Azure resource for the connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `tempStorageAccountConnection.name`
-
-The name of the project connection. Will default to "<account>-<container>" if not provided.
-
-- Required: No
-- Type: string
 
 ## Outputs
 
@@ -327,4 +302,5 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

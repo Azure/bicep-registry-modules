@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "15372691320761656588"
+      "templateHash": "8562669532457218529"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -22,10 +22,22 @@
             "description": "Optional. The name of the project connection. Will default to the resource name if not provided."
           }
         },
-        "resourceId": {
+        "resourceName": {
           "type": "string",
           "metadata": {
-            "description": "Required. The resource ID of the Azure resource for the connection."
+            "description": "Required. The resource name of the Azure resource for the connection."
+          }
+        },
+        "subscriptionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subscription ID of the resource."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource group name of the resource."
           }
         }
       },
@@ -44,16 +56,28 @@
             "description": "Optional. The name of the project connection. Will default to \"<account>-<container>\" if not provided."
           }
         },
-        "resourceId": {
+        "storageAccountName": {
           "type": "string",
           "metadata": {
-            "description": "Required. The resource ID of the Azure resource for the connection."
+            "description": "Required. The name of the Storage Account for the connection."
           }
         },
         "containerName": {
           "type": "string",
           "metadata": {
             "description": "Required. Name of container in the Storage Account to use for the connections."
+          }
+        },
+        "subscriptionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subscription ID of the Storage Account."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource group name of the Storage Account."
           }
         }
       },
@@ -135,51 +159,25 @@
         "description": "Required. Include the capability host for the Foundry project."
       }
     },
-    "aiServicesConnections": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/azureConnectionType"
-      },
+    "cosmosDbConnection": {
+      "$ref": "#/definitions/azureConnectionType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of Azure AI Services connections for the project."
+        "description": "Optional. Azure Cosmos DB connection for the project."
       }
     },
-    "cosmosDbConnections": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/azureConnectionType"
-      },
+    "aiSearchConnection": {
+      "$ref": "#/definitions/azureConnectionType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of Azure Cosmos DB connections for the project."
+        "description": "Optional. Azure Cognitive Search connection for the project."
       }
     },
-    "aiSearchConnections": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/azureConnectionType"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. List of Azure Cognitive Search connections for the project."
-      }
-    },
-    "storageAccountConnections": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/storageAccountConnectionType"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. List of Azure Storage Account connections for the project."
-      }
-    },
-    "tempStorageAccountConnection": {
+    "storageAccountConnection": {
       "$ref": "#/definitions/storageAccountConnectionType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Temp thing."
+        "description": "Optional. Storage Account connection for the project."
       }
     },
     "lock": {
@@ -201,14 +199,103 @@
     }
   },
   "variables": {
-    "createCapabilityHost": "[and(and(and(parameters('includeCapabilityHost'), not(empty(parameters('cosmosDbConnections')))), not(empty(parameters('aiSearchConnections')))), not(empty(parameters('storageAccountConnections'))))]"
+    "createCapabilityHost": "[and(and(and(parameters('includeCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
   },
   "resources": {
+    "project::storageConnection": {
+      "condition": "[not(empty(parameters('storageAccountConnection')))]",
+      "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').storageAccountName)]",
+      "properties": {
+        "category": "AzureBlob",
+        "target": "[reference('storageAccount').primaryEndpoints.blob]",
+        "authType": "AAD",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').storageAccountName)]",
+          "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
+          "AccountName": "[parameters('storageAccountConnection').storageAccountName]",
+          "ContainerName": "[parameters('storageAccountConnection').containerName]"
+        }
+      },
+      "dependsOn": [
+        "project",
+        "storageAccount"
+      ]
+    },
+    "project::searchConnection": {
+      "condition": "[not(empty(parameters('aiSearchConnection')))]",
+      "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('aiSearchConnection').resourceName)]",
+      "properties": {
+        "category": "CognitiveSearch",
+        "target": "[format('https://{0}.search.windows.net/', parameters('aiSearchConnection').resourceName)]",
+        "authType": "AAD",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('aiSearchConnection').subscriptionId, parameters('aiSearchConnection').resourceGroupName), 'Microsoft.Search/searchServices', parameters('aiSearchConnection').resourceName)]",
+          "location": "[reference('aiSearch', '2025-05-01', 'full').location]"
+        }
+      },
+      "dependsOn": [
+        "aiSearch",
+        "project"
+      ]
+    },
+    "project::cosmosConnection": {
+      "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+      "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('cosmosDbConnection').resourceName)]",
+      "properties": {
+        "category": "CosmosDB",
+        "target": "[reference('cosmosDb').documentEndpoint]",
+        "authType": "AAD",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('cosmosDbConnection').subscriptionId, parameters('cosmosDbConnection').resourceGroupName), 'Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbConnection').resourceName)]",
+          "location": "[reference('cosmosDb', '2025-04-15', 'full').location]"
+        }
+      },
+      "dependsOn": [
+        "cosmosDb",
+        "project"
+      ]
+    },
     "foundryAccount": {
       "existing": true,
       "type": "Microsoft.CognitiveServices/accounts",
       "apiVersion": "2025-06-01",
       "name": "[parameters('accountName')]"
+    },
+    "storageAccount": {
+      "condition": "[not(empty(parameters('storageAccountConnection')))]",
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-01-01",
+      "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
+      "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
+      "name": "[parameters('storageAccountConnection').storageAccountName]"
+    },
+    "aiSearch": {
+      "condition": "[not(empty(parameters('aiSearchConnection')))]",
+      "existing": true,
+      "type": "Microsoft.Search/searchServices",
+      "apiVersion": "2025-05-01",
+      "subscriptionId": "[parameters('aiSearchConnection').subscriptionId]",
+      "resourceGroup": "[parameters('aiSearchConnection').resourceGroupName]",
+      "name": "[parameters('aiSearchConnection').resourceName]"
+    },
+    "cosmosDb": {
+      "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2025-04-15",
+      "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
+      "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
+      "name": "[parameters('cosmosDbConnection').resourceName]"
     },
     "project": {
       "type": "Microsoft.CognitiveServices/accounts/projects",
@@ -224,60 +311,36 @@
       },
       "tags": "[parameters('tags')]"
     },
-    "storageAccount": {
-      "existing": true,
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2025-01-01",
-      "name": "[parameters('tempStorageAccountConnection').resourceId]"
-    },
-    "connection": {
-      "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+    "accountCapabilityHost": {
+      "condition": "[variables('createCapabilityHost')]",
+      "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
       "apiVersion": "2025-06-01",
-      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), 'idontcare')]",
+      "name": "[format('{0}/{1}', parameters('accountName'), take(format('{0}-cap-host', parameters('accountName')), 64))]",
       "properties": {
-        "category": "AzureBlob",
-        "target": "[reference('storageAccount').primaryEndpoints.blob]",
-        "authType": "AAD",
-        "metadata": {
-          "ApiType": "Azure",
-          "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('tempStorageAccountConnection').resourceId)]",
-          "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-          "accountName": "[parameters('tempStorageAccountConnection').resourceId]",
-          "containerName": "[parameters('tempStorageAccountConnection').containerName]"
-        }
-      },
-      "dependsOn": [
-        "project",
-        "storageAccount"
-      ]
+        "capabilityHostKind": "Agents",
+        "tags": "[parameters('tags')]"
+      }
     },
     "projectCapabilityHost": {
       "condition": "[variables('createCapabilityHost')]",
       "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
       "apiVersion": "2025-06-01",
-      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('{0}-cap-host', parameters('name')))]",
+      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), take(format('{0}-cap-host', parameters('name')), 64))]",
       "properties": {
-        "copy": [
-          {
-            "name": "storageConnections",
-            "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
-            "input": "[reference(format('storageAccountConnResources[{0}]', copyIndex('storageConnections'))).outputs.name.value]"
-          },
-          {
-            "name": "threadStorageConnections",
-            "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
-            "input": "[reference(format('cosmosDbConnResources[{0}]', copyIndex('threadStorageConnections'))).outputs.name.value]"
-          }
-        ],
         "capabilityHostKind": "Agents",
-        "vectorStoreConnections": [],
+        "vectorStoreConnections": [
+          "[format('{0}', parameters('aiSearchConnection').resourceName)]"
+        ],
+        "storageConnections": [
+          "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
+        ],
+        "threadStorageConnections": [
+          "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
+        ],
         "tags": "[parameters('tags')]"
       },
       "dependsOn": [
-        "aiServicesConnResources",
-        "cosmosDbConnResources",
-        "project",
-        "storageAccountConnResources"
+        "project"
       ]
     },
     "projectLock": {
@@ -294,760 +357,94 @@
         "project"
       ]
     },
-    "aiServicesConnResources": {
-      "copy": {
-        "name": "aiServicesConnResources",
-        "count": "[length(coalesce(parameters('aiServicesConnections'), createArray()))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
+    "storageAccountRoleAssignments": {
+      "condition": "[not(empty(parameters('storageAccountConnection')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-ai-services-conn-{1}', parameters('name'), copyIndex()), 64)]",
+      "name": "[take(format('proj-storage-role-assignments-{0}', parameters('name')), 64)]",
+      "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
+      "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[tryGet(coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()], 'name')]"
+          "storageAccountName": {
+            "value": "[parameters('storageAccountConnection').storageAccountName]"
           },
-          "accountName": {
-            "value": "[parameters('accountName')]"
-          },
-          "projectName": {
-            "value": "[parameters('name')]"
-          },
-          "resourceIdOrName": {
-            "value": "[coalesce(parameters('aiServicesConnections'), createArray())[copyIndex()].resourceId]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "10329053132816652628"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Name of the AI Service connection. If not provided, the name will default to the AI Service name."
-              }
-            },
-            "accountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry Account."
-              }
-            },
-            "projectName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry project to connect to the AI Service."
-              }
-            },
-            "resourceIdOrName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Resource ID or name of the existing AI Service to connect to."
-              }
-            }
-          },
-          "variables": {
-            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')))]"
-          },
-          "resources": {
-            "aiService": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('parsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "parsedResourceId"
-              ]
-            },
-            "account": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('accountName')]"
-            },
-            "project": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]"
-            },
-            "connection": {
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('projectName'), variables('connectionName'))]",
-              "properties": {
-                "category": "AIServices",
-                "target": "[reference('aiService').endpoint]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.CognitiveServices/accounts', reference('parsedResourceId').outputs.name.value)]",
-                  "location": "[reference('aiService', '2025-06-01', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "aiService",
-                "parsedResourceId"
-              ]
-            },
-            "parsedResourceId": {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-ai-service-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "resourceIdOrName": {
-                    "value": "[parameters('resourceIdOrName')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "8219569796823241671"
-                    }
-                  },
-                  "parameters": {
-                    "resourceIdOrName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The Resource ID or name of an existing resource."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
-                    "name": "[if(and(contains(parameters('resourceIdOrName'), '/'), not(empty(variables('resourceParts')))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
-                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
-                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
-                  },
-                  "resources": [],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Name of the resource."
-                      },
-                      "value": "[variables('name')]"
-                    },
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Subscription ID of the resource."
-                      },
-                      "value": "[variables('subscriptionId')]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Resource Group Name of the resource."
-                      },
-                      "value": "[variables('resourceGroupName')]"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource ID of the AI Service connection."
-              },
-              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('projectName'), variables('connectionName'))]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the AI Service connection."
-              },
-              "value": "[variables('connectionName')]"
-            },
-            "target": {
-              "type": "string",
-              "metadata": {
-                "description": "Target endpoint of the AI Service connection."
-              },
-              "value": "[reference('connection').target]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "project"
-      ]
-    },
-    "aiSearchConnResources": {
-      "copy": {
-        "name": "aiSearchConnResources",
-        "count": "[length(coalesce(parameters('aiSearchConnections'), createArray()))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-ai-search-conn-{1}', parameters('name'), copyIndex()), 64)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[tryGet(coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()], 'name')]"
-          },
-          "accountName": {
-            "value": "[parameters('accountName')]"
-          },
-          "projectName": {
-            "value": "[parameters('name')]"
-          },
-          "resourceIdOrName": {
-            "value": "[coalesce(parameters('aiSearchConnections'), createArray())[copyIndex()].resourceId]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15760030372547443862"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Name of the AI Service connection. If not provided, the name will default to the AI Service name."
-              }
-            },
-            "accountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry Account."
-              }
-            },
-            "projectName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry project to connect to the AI Service."
-              }
-            },
-            "resourceIdOrName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Resource ID or name of the existing AI Service to connect to."
-              }
-            }
-          },
-          "variables": {
-            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')))]"
-          },
-          "resources": {
-            "aiSearch": {
-              "existing": true,
-              "type": "Microsoft.Search/searchServices",
-              "apiVersion": "2025-05-01",
-              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('parsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "parsedResourceId"
-              ]
-            },
-            "account": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('accountName')]"
-            },
-            "project": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]"
-            },
-            "connection": {
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('projectName'), variables('connectionName'))]",
-              "properties": {
-                "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', reference('parsedResourceId').outputs.name.value)]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.Search/searchServices', reference('parsedResourceId').outputs.name.value)]",
-                  "location": "[reference('aiSearch', '2025-05-01', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "aiSearch",
-                "parsedResourceId"
-              ]
-            },
-            "parsedResourceId": {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-ai-search-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "resourceIdOrName": {
-                    "value": "[parameters('resourceIdOrName')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "8219569796823241671"
-                    }
-                  },
-                  "parameters": {
-                    "resourceIdOrName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The Resource ID or name of an existing resource."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
-                    "name": "[if(and(contains(parameters('resourceIdOrName'), '/'), not(empty(variables('resourceParts')))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
-                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
-                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
-                  },
-                  "resources": [],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Name of the resource."
-                      },
-                      "value": "[variables('name')]"
-                    },
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Subscription ID of the resource."
-                      },
-                      "value": "[variables('subscriptionId')]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Resource Group Name of the resource."
-                      },
-                      "value": "[variables('resourceGroupName')]"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource ID of the AI Search connection."
-              },
-              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('projectName'), variables('connectionName'))]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the AI Search connection."
-              },
-              "value": "[variables('connectionName')]"
-            },
-            "target": {
-              "type": "string",
-              "metadata": {
-                "description": "Target endpoint of the AI Search connection."
-              },
-              "value": "[reference('connection').target]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "project"
-      ]
-    },
-    "cosmosDbConnResources": {
-      "copy": {
-        "name": "cosmosDbConnResources",
-        "count": "[length(coalesce(parameters('cosmosDbConnections'), createArray()))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-cosmos-db-conn-{1}', parameters('name'), copyIndex()), 64)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[tryGet(coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()], 'name')]"
-          },
-          "accountName": {
-            "value": "[parameters('accountName')]"
-          },
-          "projectName": {
-            "value": "[parameters('name')]"
-          },
-          "resourceIdOrName": {
-            "value": "[coalesce(parameters('cosmosDbConnections'), createArray())[copyIndex()].resourceId]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "3719952448399610022"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Name of the Cosmos DB connection. If not provided, the name will default to the Cosmos DB Account name."
-              }
-            },
-            "accountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry Account."
-              }
-            },
-            "projectName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry project to connect to the Cosmos DB Account."
-              }
-            },
-            "resourceIdOrName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Resource ID or name of the existing Cosmos DB Account to connect to."
-              }
-            }
-          },
-          "variables": {
-            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')))]"
-          },
-          "resources": {
-            "cosmosDb": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2025-04-15",
-              "subscriptionId": "[reference('parsedResourceId').outputs.subscriptionId.value]",
-              "resourceGroup": "[reference('parsedResourceId').outputs.resourceGroupName.value]",
-              "name": "[reference('parsedResourceId').outputs.name.value]",
-              "dependsOn": [
-                "parsedResourceId"
-              ]
-            },
-            "account": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('accountName')]"
-            },
-            "project": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]"
-            },
-            "connection": {
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('projectName'), variables('connectionName'))]",
-              "properties": {
-                "category": "CosmosDB",
-                "target": "[reference('cosmosDb').documentEndpoint]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', reference('parsedResourceId').outputs.subscriptionId.value, reference('parsedResourceId').outputs.resourceGroupName.value), 'Microsoft.DocumentDB/databaseAccounts', reference('parsedResourceId').outputs.name.value)]",
-                  "location": "[reference('cosmosDb', '2025-04-15', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "cosmosDb",
-                "parsedResourceId"
-              ]
-            },
-            "parsedResourceId": {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[take(format('proj-cosmos-db-conn-{0}-parse-rid', take(uniqueString(parameters('resourceIdOrName')), 5)), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "resourceIdOrName": {
-                    "value": "[parameters('resourceIdOrName')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "8219569796823241671"
-                    }
-                  },
-                  "parameters": {
-                    "resourceIdOrName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The Resource ID or name of an existing resource."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
-                    "name": "[if(and(contains(parameters('resourceIdOrName'), '/'), not(empty(variables('resourceParts')))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
-                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
-                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
-                  },
-                  "resources": [],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Name of the resource."
-                      },
-                      "value": "[variables('name')]"
-                    },
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Subscription ID of the resource."
-                      },
-                      "value": "[variables('subscriptionId')]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Resource Group Name of the resource."
-                      },
-                      "value": "[variables('resourceGroupName')]"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource ID of the Cosmos DB connection."
-              },
-              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('projectName'), variables('connectionName'))]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the Cosmos DB connection."
-              },
-              "value": "[variables('connectionName')]"
-            },
-            "target": {
-              "type": "string",
-              "metadata": {
-                "description": "Target endpoint of the Cosmos DB connection."
-              },
-              "value": "[reference('connection').target]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "project"
-      ]
-    },
-    "storageAccountConnResources": {
-      "copy": {
-        "name": "storageAccountConnResources",
-        "count": "[length(coalesce(parameters('storageAccountConnections'), createArray()))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-storage-conn-{1}-{2}', parameters('name'), copyIndex(), coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName), 64)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[tryGet(coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()], 'name')]"
-          },
-          "accountName": {
-            "value": "[parameters('accountName')]"
-          },
-          "projectName": {
-            "value": "[parameters('name')]"
-          },
-          "resourceIdOrName": {
-            "value": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].resourceId]"
+          "projectIdentityPrincipalId": {
+            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
           },
           "containerName": {
-            "value": "[coalesce(parameters('storageAccountConnections'), createArray())[copyIndex()].containerName]"
+            "value": "[parameters('storageAccountConnection').containerName]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3627685082904735150"
+              "templateHash": "13981617801567249549"
             }
           },
           "parameters": {
-            "name": {
+            "storageAccountName": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Name of the storage connection. If not provided, the name will default to the Storage Account name + Container Name."
+                "description": "Required. The name of the storage account."
               }
             },
-            "accountName": {
+            "projectIdentityPrincipalId": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the existing AI Foundry Account."
-              }
-            },
-            "projectName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the existing AI Foundry project to connect to the Storage Account."
-              }
-            },
-            "resourceIdOrName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Resource ID or name of the existing Storage Account to connect to."
+                "description": "Required. The principal ID of the project identity."
               }
             },
             "containerName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the container in the Storage Account to use for the connection."
+                "description": "Required. The name of the blob container for the project."
               }
             }
           },
-          "variables": {
-            "connectionName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', if(contains(parameters('resourceIdOrName'), '/'), last(split(parameters('resourceIdOrName'), '/')), parameters('resourceIdOrName')), parameters('containerName')))]"
-          },
-          "resources": {
-            "storageAccount": {
-              "existing": true,
-              "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2025-01-01",
-              "name": "[parameters('resourceIdOrName')]"
-            },
-            "account": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('accountName')]"
-            },
-            "project": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]"
-            },
-            "connection": {
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('projectName'), variables('connectionName'))]",
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('storageAccountName'))]",
               "properties": {
-                "category": "AzureBlob",
-                "target": "[reference('storageAccount').primaryEndpoints.blob]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('resourceIdOrName'))]",
-                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-                  "accountName": "[parameters('resourceIdOrName')]",
-                  "containerName": "[parameters('containerName')]"
-                }
-              },
-              "dependsOn": [
-                "storageAccount"
-              ]
+                "principalId": "[parameters('projectIdentityPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                "principalType": "ServicePrincipal",
+                "conditionVersion": "2.0",
+                "condition": "[format('((!(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read''}})  AND  !(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action''}}) AND  !(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write''}}) ) OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase ''{0}''))', parameters('containerName'))]"
+              }
             },
-            "parsedResourceId": {
+            {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take('proj-storage-conn-parse-rid', 64)]",
+              "name": "[take(format('proj-storage-blob-contributer-role-assign-{0}', parameters('storageAccountName')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "resourceIdOrName": {
-                    "value": "[parameters('resourceIdOrName')]"
+                  "resourceId": {
+                    "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('projectIdentityPrincipalId')]"
+                  },
+                  "principalType": {
+                    "value": "ServicePrincipal"
+                  },
+                  "roleDefinitionId": {
+                    "value": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
                   }
                 },
                 "template": {
@@ -1056,73 +453,1048 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "8219569796823241671"
-                    }
+                      "version": "0.32.4.45862",
+                      "templateHash": "14634305923902101494"
+                    },
+                    "name": "Resource-scoped role assignment",
+                    "description": "This module deploys a Role Assignment for a specific resource."
                   },
                   "parameters": {
-                    "resourceIdOrName": {
+                    "resourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. The Resource ID or name of an existing resource."
+                        "description": "Required. The scope for the role assignment, fully qualified resourceId."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]",
+                      "metadata": {
+                        "description": "Optional. The unique guid name for the role assignment."
+                      }
+                    },
+                    "roleDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The role definition ID for the role assignment."
+                      }
+                    },
+                    "roleName": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The name for the role, used for logging."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "allowedValues": [
+                        "ServicePrincipal",
+                        "Group",
+                        "User",
+                        "ForeignGroup",
+                        "Device",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. The principal type of the assigned principal ID."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The description of role assignment."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     }
                   },
                   "variables": {
-                    "resourceParts": "[split(parameters('resourceIdOrName'), '/')]",
-                    "name": "[if(and(contains(parameters('resourceIdOrName'), '/'), not(empty(variables('resourceParts')))), last(variables('resourceParts')), parameters('resourceIdOrName'))]",
-                    "subscriptionId": "[if(greater(length(variables('resourceParts')), 2), variables('resourceParts')[2], subscription().subscriptionId)]",
-                    "resourceGroupName": "[if(greater(length(variables('resourceParts')), 4), variables('resourceParts')[4], resourceGroup().name)]"
+                    "$fxv#0": {
+                      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                      "contentVersion": "1.0.0.0",
+                      "parameters": {
+                        "scope": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "roleDefinitionId": {
+                          "type": "string"
+                        },
+                        "principalId": {
+                          "type": "string"
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User",
+                            ""
+                          ],
+                          "defaultValue": "",
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "resources": [
+                        {
+                          "type": "Microsoft.Authorization/roleAssignments",
+                          "apiVersion": "2022-04-01",
+                          "scope": "[[parameters('scope')]",
+                          "name": "[[parameters('name')]",
+                          "properties": {
+                            "roleDefinitionId": "[[parameters('roleDefinitionId')]",
+                            "principalId": "[[parameters('principalId')]",
+                            "principalType": "[[parameters('principalType')]",
+                            "description": "[[parameters('description')]"
+                          }
+                        }
+                      ],
+                      "outputs": {
+                        "roleAssignmentId": {
+                          "type": "string",
+                          "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+                        }
+                      }
+                    }
                   },
-                  "resources": [],
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2023-07-01",
+                      "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "expressionEvaluationOptions": {
+                          "scope": "Outer"
+                        },
+                        "template": "[variables('$fxv#0')]",
+                        "parameters": {
+                          "scope": {
+                            "value": "[parameters('resourceId')]"
+                          },
+                          "name": {
+                            "value": "[parameters('name')]"
+                          },
+                          "roleDefinitionId": {
+                            "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
+                          },
+                          "principalId": {
+                            "value": "[parameters('principalId')]"
+                          },
+                          "principalType": {
+                            "value": "[parameters('principalType')]"
+                          },
+                          "description": {
+                            "value": "[parameters('description')]"
+                          }
+                        }
+                      }
+                    }
+                  ],
                   "outputs": {
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Name of the resource."
+                        "description": "The GUID of the Role Assignment."
                       },
-                      "value": "[variables('name')]"
+                      "value": "[parameters('name')]"
                     },
-                    "subscriptionId": {
+                    "roleName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Subscription ID of the resource."
+                        "description": "The name for the role, used for logging."
                       },
-                      "value": "[variables('subscriptionId')]"
+                      "value": "[parameters('roleName')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Role Assignment."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
                     },
                     "resourceGroupName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Resource Group Name of the resource."
+                        "description": "The name of the resource group the role assignment was applied at."
                       },
-                      "value": "[variables('resourceGroupName')]"
+                      "value": "[resourceGroup().name]"
                     }
                   }
                 }
               }
             }
+          ]
+        }
+      },
+      "dependsOn": [
+        "project"
+      ]
+    },
+    "cosmosDbRoleAssignments": {
+      "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('proj-cosmos-role-assignments-{0}', parameters('name')), 64)]",
+      "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
+      "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosDbName": {
+            "value": "[parameters('cosmosDbConnection').resourceName]"
           },
-          "outputs": {
+          "projectIdentityPrincipalId": {
+            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+          },
+          "projectWorkspaceId": {
+            "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
+          },
+          "createCapabilityHost": {
+            "value": "[variables('createCapabilityHost')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.177.2456",
+              "templateHash": "4958517478195879106"
+            }
+          },
+          "parameters": {
+            "cosmosDbName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Cosmos DB account."
+              }
+            },
+            "projectIdentityPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the project identity."
+              }
+            },
+            "projectWorkspaceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The project workspace ID."
+              }
+            },
+            "createCapabilityHost": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to create a capability host for the project."
+              }
+            }
+          },
+          "variables": {
+            "cosmosContainerNameSuffixes": "[if(parameters('createCapabilityHost'), createArray('thread-message-store', 'system-thread-message-store', 'agent-entity-store'), createArray())]",
+            "cosmosDefaultSqlRoleDefinitionId": "[if(parameters('createCapabilityHost'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDbName'), '00000000-0000-0000-0000-000000000002'), '')]"
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "cosmosDataRoleAssigment",
+                "count": "[length(variables('cosmosContainerNameSuffixes'))]"
+              },
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2025-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDbName'), guid(variables('cosmosDefaultSqlRoleDefinitionId'), parameters('cosmosDbName'), variables('cosmosContainerNameSuffixes')[copyIndex()]))]",
+              "properties": {
+                "principalId": "[parameters('projectIdentityPrincipalId')]",
+                "roleDefinitionId": "[variables('cosmosDefaultSqlRoleDefinitionId')]",
+                "scope": "[format('{0}/dbs/enterprise_memory/colls/{1}-{2}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), parameters('projectWorkspaceId'), variables('cosmosContainerNameSuffixes')[copyIndex()])]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', take(format('proj-cosmos-db-operator-role-assign-{0}', parameters('cosmosDbName')), 64))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('proj-cosmos-db-operator-role-assign-{0}', parameters('cosmosDbName')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceId": {
+                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName'))]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('projectIdentityPrincipalId')]"
+                  },
+                  "principalType": {
+                    "value": "ServicePrincipal"
+                  },
+                  "roleDefinitionId": {
+                    "value": "230815da-be43-4aae-9cb4-875f7bd000aa"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "14634305923902101494"
+                    },
+                    "name": "Resource-scoped role assignment",
+                    "description": "This module deploys a Role Assignment for a specific resource."
+                  },
+                  "parameters": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The scope for the role assignment, fully qualified resourceId."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]",
+                      "metadata": {
+                        "description": "Optional. The unique guid name for the role assignment."
+                      }
+                    },
+                    "roleDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The role definition ID for the role assignment."
+                      }
+                    },
+                    "roleName": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The name for the role, used for logging."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "allowedValues": [
+                        "ServicePrincipal",
+                        "Group",
+                        "User",
+                        "ForeignGroup",
+                        "Device",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. The principal type of the assigned principal ID."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The description of role assignment."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "$fxv#0": {
+                      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                      "contentVersion": "1.0.0.0",
+                      "parameters": {
+                        "scope": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "roleDefinitionId": {
+                          "type": "string"
+                        },
+                        "principalId": {
+                          "type": "string"
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User",
+                            ""
+                          ],
+                          "defaultValue": "",
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "resources": [
+                        {
+                          "type": "Microsoft.Authorization/roleAssignments",
+                          "apiVersion": "2022-04-01",
+                          "scope": "[[parameters('scope')]",
+                          "name": "[[parameters('name')]",
+                          "properties": {
+                            "roleDefinitionId": "[[parameters('roleDefinitionId')]",
+                            "principalId": "[[parameters('principalId')]",
+                            "principalType": "[[parameters('principalType')]",
+                            "description": "[[parameters('description')]"
+                          }
+                        }
+                      ],
+                      "outputs": {
+                        "roleAssignmentId": {
+                          "type": "string",
+                          "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+                        }
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2023-07-01",
+                      "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "expressionEvaluationOptions": {
+                          "scope": "Outer"
+                        },
+                        "template": "[variables('$fxv#0')]",
+                        "parameters": {
+                          "scope": {
+                            "value": "[parameters('resourceId')]"
+                          },
+                          "name": {
+                            "value": "[parameters('name')]"
+                          },
+                          "roleDefinitionId": {
+                            "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
+                          },
+                          "principalId": {
+                            "value": "[parameters('principalId')]"
+                          },
+                          "principalType": {
+                            "value": "[parameters('principalType')]"
+                          },
+                          "description": {
+                            "value": "[parameters('description')]"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The GUID of the Role Assignment."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "roleName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name for the role, used for logging."
+                      },
+                      "value": "[parameters('roleName')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Role Assignment."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the role assignment was applied at."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "project",
+        "projectCapabilityHost"
+      ]
+    },
+    "searchRoleIndexDataContributorAssignment": {
+      "condition": "[not(empty(parameters('aiSearchConnection')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('proj-search-index-data-contributor-role-assign-{0}', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "resourceId": {
+            "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('aiSearchConnection').subscriptionId, parameters('aiSearchConnection').resourceGroupName), 'Microsoft.Search/searchServices', parameters('aiSearchConnection').resourceName)]"
+          },
+          "principalId": {
+            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+          },
+          "principalType": {
+            "value": "ServicePrincipal"
+          },
+          "roleDefinitionId": {
+            "value": "8ebe5a00-799e-43f5-93ac-243d3dce84a7"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "14634305923902101494"
+            },
+            "name": "Resource-scoped role assignment",
+            "description": "This module deploys a Role Assignment for a specific resource."
+          },
+          "parameters": {
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "Resource ID of the Storage Account connection."
-              },
-              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('accountName'), parameters('projectName'), variables('connectionName'))]"
+                "description": "Required. The scope for the role assignment, fully qualified resourceId."
+              }
             },
             "name": {
               "type": "string",
+              "defaultValue": "[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]",
               "metadata": {
-                "description": "Name of the Storage Account connection."
-              },
-              "value": "[variables('connectionName')]"
+                "description": "Optional. The unique guid name for the role assignment."
+              }
             },
-            "target": {
+            "roleDefinitionId": {
               "type": "string",
               "metadata": {
-                "description": "Target endpoint of the Storage Account connection."
+                "description": "Required. The role definition ID for the role assignment."
+              }
+            },
+            "roleName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The name for the role, used for logging."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "ServicePrincipal",
+                "Group",
+                "User",
+                "ForeignGroup",
+                "Device",
+                ""
+              ],
+              "metadata": {
+                "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of role assignment."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "scope": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "roleDefinitionId": {
+                  "type": "string"
+                },
+                "principalId": {
+                  "type": "string"
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User",
+                    ""
+                  ],
+                  "defaultValue": "",
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string"
+                }
               },
-              "value": "[reference('connection').target]"
+              "resources": [
+                {
+                  "type": "Microsoft.Authorization/roleAssignments",
+                  "apiVersion": "2022-04-01",
+                  "scope": "[[parameters('scope')]",
+                  "name": "[[parameters('name')]",
+                  "properties": {
+                    "roleDefinitionId": "[[parameters('roleDefinitionId')]",
+                    "principalId": "[[parameters('principalId')]",
+                    "principalType": "[[parameters('principalType')]",
+                    "description": "[[parameters('description')]"
+                  }
+                }
+              ],
+              "outputs": {
+                "roleAssignmentId": {
+                  "type": "string",
+                  "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+                }
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
+              "properties": {
+                "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                  "scope": "Outer"
+                },
+                "template": "[variables('$fxv#0')]",
+                "parameters": {
+                  "scope": {
+                    "value": "[parameters('resourceId')]"
+                  },
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('principalId')]"
+                  },
+                  "principalType": {
+                    "value": "[parameters('principalType')]"
+                  },
+                  "description": {
+                    "value": "[parameters('description')]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The GUID of the Role Assignment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "roleName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name for the role, used for logging."
+              },
+              "value": "[parameters('roleName')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Role Assignment."
+              },
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the role assignment was applied at."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "project"
+      ]
+    },
+    "searchServiceContributorAssignment": {
+      "condition": "[not(empty(parameters('aiSearchConnection')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('proj-search-service-contributor-role-assign-{0}', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "resourceId": {
+            "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('aiSearchConnection').subscriptionId, parameters('aiSearchConnection').resourceGroupName), 'Microsoft.Search/searchServices', parameters('aiSearchConnection').resourceName)]"
+          },
+          "principalId": {
+            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+          },
+          "principalType": {
+            "value": "ServicePrincipal"
+          },
+          "roleDefinitionId": {
+            "value": "7ca78c08-252a-4471-8644-bb5ff32d4ba0"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "14634305923902101494"
+            },
+            "name": "Resource-scoped role assignment",
+            "description": "This module deploys a Role Assignment for a specific resource."
+          },
+          "parameters": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The scope for the role assignment, fully qualified resourceId."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]",
+              "metadata": {
+                "description": "Optional. The unique guid name for the role assignment."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The role definition ID for the role assignment."
+              }
+            },
+            "roleName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The name for the role, used for logging."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "ServicePrincipal",
+                "Group",
+                "User",
+                "ForeignGroup",
+                "Device",
+                ""
+              ],
+              "metadata": {
+                "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of role assignment."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "scope": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "roleDefinitionId": {
+                  "type": "string"
+                },
+                "principalId": {
+                  "type": "string"
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User",
+                    ""
+                  ],
+                  "defaultValue": "",
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "resources": [
+                {
+                  "type": "Microsoft.Authorization/roleAssignments",
+                  "apiVersion": "2022-04-01",
+                  "scope": "[[parameters('scope')]",
+                  "name": "[[parameters('name')]",
+                  "properties": {
+                    "roleDefinitionId": "[[parameters('roleDefinitionId')]",
+                    "principalId": "[[parameters('principalId')]",
+                    "principalType": "[[parameters('principalType')]",
+                    "description": "[[parameters('description')]"
+                  }
+                }
+              ],
+              "outputs": {
+                "roleAssignmentId": {
+                  "type": "string",
+                  "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+                }
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
+              "properties": {
+                "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                  "scope": "Outer"
+                },
+                "template": "[variables('$fxv#0')]",
+                "parameters": {
+                  "scope": {
+                    "value": "[parameters('resourceId')]"
+                  },
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('principalId')]"
+                  },
+                  "principalType": {
+                    "value": "[parameters('principalType')]"
+                  },
+                  "description": {
+                    "value": "[parameters('description')]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The GUID of the Role Assignment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "roleName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name for the role, used for logging."
+              },
+              "value": "[parameters('roleName')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Role Assignment."
+              },
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the role assignment was applied at."
+              },
+              "value": "[resourceGroup().name]"
             }
           }
         }
