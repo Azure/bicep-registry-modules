@@ -359,8 +359,8 @@ module foundryProject 'modules/project/main.bicep' = {
           storageAccountName: empty(storageAccountConfiguration.?existingResource.?name)
             ? storageAccountName
             : storageAccountConfiguration!.existingResource!.name!
-          subscriptionId: storageAccountConfiguration!.existingResource!.subscriptionId!
-          resourceGroupName: storageAccountConfiguration!.existingResource!.resourceGroupName!
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: 'dep-swan-bicep-fndrybyo-dependencies-rg'
           containerName: storageAccountContainerName
         }
       : null
@@ -369,8 +369,8 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceName: empty(aiSearchConfiguration.?existingResource.?name)
             ? aiSearchName
             : aiSearchConfiguration!.existingResource!.name!
-          subscriptionId: aiSearchConfiguration!.existingResource!.subscriptionId!
-          resourceGroupName: aiSearchConfiguration!.existingResource!.resourceGroupName!
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: 'dep-swan-bicep-fndrybyo-dependencies-rg'
         }
       : null
     cosmosDbConnection: includeAssociatedResources
@@ -378,8 +378,8 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceName: empty(cosmosDbConfiguration.?existingResource.?name)
             ? cosmosDbName
             : cosmosDbConfiguration!.existingResource!.name!
-          subscriptionId: cosmosDbConfiguration!.existingResource!.subscriptionId!
-          resourceGroupName: cosmosDbConfiguration!.existingResource!.resourceGroupName!
+          subscriptionId: subscription().subscriptionId
+          resourceGroupName: 'dep-swan-bicep-fndrybyo-dependencies-rg'
         }
       : null
     tags: tags

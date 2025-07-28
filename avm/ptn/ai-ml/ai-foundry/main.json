@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16892438526518736672"
+      "templateHash": "5226165882424288749"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -18284,9 +18284,9 @@
           "includeCapabilityHost": {
             "value": false
           },
-          "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('storageAccountName', if(empty(tryGet(tryGet(parameters('storageAccountConfiguration'), 'existingResource'), 'name')), variables('storageAccountName'), parameters('storageAccountConfiguration').existingResource.name), 'subscriptionId', parameters('storageAccountConfiguration').existingResource.subscriptionId, 'resourceGroupName', parameters('storageAccountConfiguration').existingResource.resourceGroupName, 'containerName', variables('storageAccountContainerName'))), createObject('value', null()))]",
-          "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(tryGet(parameters('aiSearchConfiguration'), 'existingResource'), 'name')), variables('aiSearchName'), parameters('aiSearchConfiguration').existingResource.name), 'subscriptionId', parameters('aiSearchConfiguration').existingResource.subscriptionId, 'resourceGroupName', parameters('aiSearchConfiguration').existingResource.resourceGroupName)), createObject('value', null()))]",
-          "cosmosDbConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(tryGet(parameters('cosmosDbConfiguration'), 'existingResource'), 'name')), variables('cosmosDbName'), parameters('cosmosDbConfiguration').existingResource.name), 'subscriptionId', parameters('cosmosDbConfiguration').existingResource.subscriptionId, 'resourceGroupName', parameters('cosmosDbConfiguration').existingResource.resourceGroupName)), createObject('value', null()))]",
+          "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('storageAccountName', if(empty(tryGet(tryGet(parameters('storageAccountConfiguration'), 'existingResource'), 'name')), variables('storageAccountName'), parameters('storageAccountConfiguration').existingResource.name), 'subscriptionId', subscription().subscriptionId, 'resourceGroupName', 'dep-swan-bicep-fndrybyo-dependencies-rg', 'containerName', variables('storageAccountContainerName'))), createObject('value', null()))]",
+          "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(tryGet(parameters('aiSearchConfiguration'), 'existingResource'), 'name')), variables('aiSearchName'), parameters('aiSearchConfiguration').existingResource.name), 'subscriptionId', subscription().subscriptionId, 'resourceGroupName', 'dep-swan-bicep-fndrybyo-dependencies-rg')), createObject('value', null()))]",
+          "cosmosDbConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(tryGet(parameters('cosmosDbConfiguration'), 'existingResource'), 'name')), variables('cosmosDbName'), parameters('cosmosDbConfiguration').existingResource.name), 'subscriptionId', subscription().subscriptionId, 'resourceGroupName', 'dep-swan-bicep-fndrybyo-dependencies-rg')), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
