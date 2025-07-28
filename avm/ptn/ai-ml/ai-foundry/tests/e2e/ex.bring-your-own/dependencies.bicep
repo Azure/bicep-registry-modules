@@ -7,7 +7,7 @@ param location string
 @description('Optional. Tags of the resources.')
 param tags object = {}
 
-var containers = ['project-data', 'sys-data']
+var containerName = 'my-custom-project-data'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: take('stbyor${workloadName}', 24)
@@ -38,13 +38,11 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01
   }
 }
 
-resource containerResources 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = [
-  for containerName in containers: {
-    name: containerName
-    parent: blobServices
-    properties: {}
-  }
-]
+resource containerResource 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  name: containerName
+  parent: blobServices
+  properties: {}
+}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: take('kvbyor${workloadName}', 24)
@@ -111,4 +109,4 @@ output keyVaultResourceId string = keyVault.id
 output cosmosDbAccountResourceId string = cosmosDbAccount.id
 output aiSearchResourceId string = aiSearch.id
 
-output containers string[] = containers
+output containerName string = containerName

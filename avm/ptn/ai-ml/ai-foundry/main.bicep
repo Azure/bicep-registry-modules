@@ -66,10 +66,9 @@ var projectName = !empty(aiFoundryConfiguration.?project.?name)
   : 'proj-${resourcesName}'
 
 // set a default storage container name so that connection to project can be established in default state
-// also set to empty if not including associated resources so project connections are only made when included associated resources
-var storageAccountContainers = includeAssociatedResources
-  ? (storageAccountConfiguration.?containers ?? ['${projectName}'])
-  : []
+var storageAccountContainerName = empty(storageAccountConfiguration.?containerName)
+  ? projectName
+  : storageAccountConfiguration!.containerName!
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -223,6 +222,13 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAs
   }
 }
 
+var existingAiResourceParts = split(aiSearchConfiguration.?existingResourceId ?? '', '/')
+var existingAiSearchName = !empty(aiSearchConfiguration.?existingResourceId) ? last(existingAiResourceParts) : ''
+var aiSearchSubscriptionId = length(existingAiResourceParts) > 2
+  ? existingAiResourceParts[2]
+  : subscription().subscriptionId
+var aiSearchResourceGroupName = length(existingAiResourceParts) > 4 ? existingAiResourceParts[4] : resourceGroup().name
+
 var storageAccountName = take(
   !empty(storageAccountConfiguration.?name) ? storageAccountConfiguration!.name! : 'st${resourcesName}',
   24
@@ -245,11 +251,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
       deleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
-      containers: [
-        for container in storageAccountContainers ?? []: {
-          name: container
-        }
-      ]
+      containers: [{ name: storageAccountContainerName }]
     }
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
@@ -307,6 +309,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
   }
 }
 
+var existingStorageAccountParts = split(storageAccountConfiguration.?existingResourceId ?? '', '/')
+var existingStorageAccountName = !empty(storageAccountConfiguration.?existingResourceId)
+  ? last(existingStorageAccountParts)
+  : ''
+var storageAccountSubscriptionId = length(existingStorageAccountParts) > 2
+  ? existingStorageAccountParts[2]
+  : subscription().subscriptionId
+var storageAccountResourceGroupName = length(existingStorageAccountParts) > 4
+  ? existingStorageAccountParts[4]
+  : resourceGroup().name
+
 var cosmosDbName = take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
 var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResourceId)) {
@@ -344,6 +357,15 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (in
   }
 }
 
+var existingCosmosDbResourceParts = split(cosmosDbConfiguration.?existingResourceId ?? '', '/')
+var existingCosmosDbName = !empty(cosmosDbConfiguration.?existingResourceId) ? last(existingCosmosDbResourceParts) : ''
+var cosmosDbSubscriptionId = length(existingCosmosDbResourceParts) > 2
+  ? existingCosmosDbResourceParts[2]
+  : subscription().subscriptionId
+var cosmosDbResourceGroupName = length(existingCosmosDbResourceParts) > 4
+  ? existingCosmosDbResourceParts[4]
+  : resourceGroup().name
+
 module foundryProject 'modules/project/main.bicep' = {
   name: take('${resourcesName}-foundry-project-deployment', 64)
   dependsOn: [
@@ -365,20 +387,22 @@ module foundryProject 'modules/project/main.bicep' = {
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
     storageAccountConnection: {
-      storageAccountName: storageAccountName
-      subscriptionId: subscription().subscriptionId
-      resourceGroupName: resourceGroup().name
-      containerName: projectName
+      storageAccountName: empty(storageAccountConfiguration.?existingResourceId)
+        ? storageAccountName
+        : existingStorageAccountName
+      subscriptionId: storageAccountSubscriptionId
+      resourceGroupName: storageAccountResourceGroupName
+      containerName: storageAccountContainerName
     }
     aiSearchConnection: {
-      resourceName: aiSearchName
-      subscriptionId: subscription().subscriptionId
-      resourceGroupName: resourceGroup().name
+      resourceName: empty(aiSearchConfiguration.?existingResourceId) ? aiSearchName : existingAiSearchName
+      subscriptionId: aiSearchSubscriptionId
+      resourceGroupName: aiSearchResourceGroupName
     }
     cosmosDbConnection: {
-      resourceName: cosmosDbName
-      subscriptionId: subscription().subscriptionId
-      resourceGroupName: resourceGroup().name
+      resourceName: empty(cosmosDbConfiguration.?existingResourceId) ? cosmosDbName : existingCosmosDbName
+      subscriptionId: cosmosDbSubscriptionId
+      resourceGroupName: cosmosDbResourceGroupName
     }
     tags: tags
     enableTelemetry: enableTelemetry
@@ -468,8 +492,8 @@ type storageAccountConfigurationType = {
   @description('Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The list of containers to create in the Storage Account. If using existingResourceId, these should be existing containers in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.')
-  containers: string[]?
+  @description('Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.')
+  containerName: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?

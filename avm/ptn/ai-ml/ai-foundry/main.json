@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "18287577595137940836"
+      "templateHash": "9808448073295958994"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -144,14 +144,11 @@
             "description": "Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided."
           }
         },
-        "containers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+        "containerName": {
+          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The list of containers to create in the Storage Account. If using existingResourceId, these should be existing containers in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created."
+            "description": "Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created."
           }
         },
         "roleAssignments": {
@@ -546,16 +543,28 @@
     "enablePrivateNetworking": "[and(not(empty(parameters('networking'))), not(empty(parameters('networking').privateEndpointSubnetId)))]",
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
-    "storageAccountContainers": "[if(parameters('includeAssociatedResources'), coalesce(tryGet(parameters('storageAccountConfiguration'), 'containers'), createArray(format('{0}', variables('projectName')))), createArray())]",
+    "storageAccountContainerName": "[if(empty(tryGet(parameters('storageAccountConfiguration'), 'containerName')), variables('projectName'), parameters('storageAccountConfiguration').containerName)]",
     "foundryAccountName": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), parameters('aiFoundryConfiguration').accountName, format('ai{0}', variables('resourcesName')))]",
     "foundryAccountPrivateNetworking": "[and(and(and(and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('networking'), 'privateEndpointSubnetId')))), not(empty(tryGet(parameters('networking'), 'cognitiveServicesPrivateDnsZoneId')))), not(empty(tryGet(parameters('networking'), 'openAiPrivateDnsZoneId')))), not(empty(tryGet(parameters('networking'), 'aiServicesPrivateDnsZoneId'))))]",
     "keyVaultPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'keyVaultPrivateDnsZoneId'))))]",
     "aiSearchName": "[take(if(not(empty(tryGet(parameters('aiSearchConfiguration'), 'name'))), parameters('aiSearchConfiguration').name, format('srch{0}', variables('resourcesName'))), 60)]",
     "aiSearchPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'aiSearchPrivateDnsZoneId'))))]",
+    "existingAiResourceParts": "[split(coalesce(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId'), ''), '/')]",
+    "existingAiSearchName": "[if(not(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId'))), last(variables('existingAiResourceParts')), '')]",
+    "aiSearchSubscriptionId": "[if(greater(length(variables('existingAiResourceParts')), 2), variables('existingAiResourceParts')[2], subscription().subscriptionId)]",
+    "aiSearchResourceGroupName": "[if(greater(length(variables('existingAiResourceParts')), 4), variables('existingAiResourceParts')[4], resourceGroup().name)]",
     "storageAccountName": "[take(if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'name'))), parameters('storageAccountConfiguration').name, format('st{0}', variables('resourcesName'))), 24)]",
     "storageAccountPrivateNetworking": "[and(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageBlobPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageFilePrivateDnsZoneId'))))]",
+    "existingStorageAccountParts": "[split(coalesce(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId'), ''), '/')]",
+    "existingStorageAccountName": "[if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId'))), last(variables('existingStorageAccountParts')), '')]",
+    "storageAccountSubscriptionId": "[if(greater(length(variables('existingStorageAccountParts')), 2), variables('existingStorageAccountParts')[2], subscription().subscriptionId)]",
+    "storageAccountResourceGroupName": "[if(greater(length(variables('existingStorageAccountParts')), 4), variables('existingStorageAccountParts')[4], resourceGroup().name)]",
     "cosmosDbName": "[take(if(not(empty(tryGet(parameters('cosmosDbConfiguration'), 'name'))), parameters('cosmosDbConfiguration').name, format('cos{0}', variables('resourcesName'))), 44)]",
-    "cosmosDbPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'cosmosDbPrivateDnsZoneId'))))]"
+    "cosmosDbPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'cosmosDbPrivateDnsZoneId'))))]",
+    "existingCosmosDbResourceParts": "[split(coalesce(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId'), ''), '/')]",
+    "existingCosmosDbName": "[if(not(empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId'))), last(variables('existingCosmosDbResourceParts')), '')]",
+    "cosmosDbSubscriptionId": "[if(greater(length(variables('existingCosmosDbResourceParts')), 2), variables('existingCosmosDbResourceParts')[2], subscription().subscriptionId)]",
+    "cosmosDbResourceGroupName": "[if(greater(length(variables('existingCosmosDbResourceParts')), 4), variables('existingCosmosDbResourceParts')[4], resourceGroup().name)]"
   },
   "resources": {
     "avmTelemetry": {
@@ -8619,19 +8628,15 @@
           },
           "blobServices": {
             "value": {
-              "copy": [
-                {
-                  "name": "containers",
-                  "count": "[length(coalesce(variables('storageAccountContainers'), createArray()))]",
-                  "input": {
-                    "name": "[coalesce(variables('storageAccountContainers'), createArray())[copyIndex('containers')]]"
-                  }
-                }
-              ],
               "deleteRetentionPolicyEnabled": true,
               "deleteRetentionPolicyDays": 7,
               "containerDeleteRetentionPolicyEnabled": true,
-              "containerDeleteRetentionPolicyDays": 7
+              "containerDeleteRetentionPolicyDays": 7,
+              "containers": [
+                {
+                  "name": "[variables('storageAccountContainerName')]"
+                }
+              ]
             }
           },
           "minimumTlsVersion": {
@@ -18264,24 +18269,24 @@
           },
           "storageAccountConnection": {
             "value": {
-              "storageAccountName": "[variables('storageAccountName')]",
-              "subscriptionId": "[subscription().subscriptionId]",
-              "resourceGroupName": "[resourceGroup().name]",
-              "containerName": "[variables('projectName')]"
+              "storageAccountName": "[if(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId')), variables('storageAccountName'), variables('existingStorageAccountName'))]",
+              "subscriptionId": "[variables('storageAccountSubscriptionId')]",
+              "resourceGroupName": "[variables('storageAccountResourceGroupName')]",
+              "containerName": "[variables('storageAccountContainerName')]"
             }
           },
           "aiSearchConnection": {
             "value": {
-              "resourceName": "[variables('aiSearchName')]",
-              "subscriptionId": "[subscription().subscriptionId]",
-              "resourceGroupName": "[resourceGroup().name]"
+              "resourceName": "[if(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId')), variables('aiSearchName'), variables('existingAiSearchName'))]",
+              "subscriptionId": "[variables('aiSearchSubscriptionId')]",
+              "resourceGroupName": "[variables('aiSearchResourceGroupName')]"
             }
           },
           "cosmosDbConnection": {
             "value": {
-              "resourceName": "[variables('cosmosDbName')]",
-              "subscriptionId": "[subscription().subscriptionId]",
-              "resourceGroupName": "[resourceGroup().name]"
+              "resourceName": "[if(empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId')), variables('cosmosDbName'), variables('existingCosmosDbName'))]",
+              "subscriptionId": "[variables('cosmosDbSubscriptionId')]",
+              "resourceGroupName": "[variables('cosmosDbResourceGroupName')]"
             }
           },
           "tags": {
