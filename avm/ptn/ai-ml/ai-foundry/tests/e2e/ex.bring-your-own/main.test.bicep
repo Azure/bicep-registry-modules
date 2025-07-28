@@ -64,17 +64,37 @@ module testDeployment '../../../main.bicep' = [
       baseName: workloadName
       includeAssociatedResources: true
       keyVaultConfiguration: {
-        existingResourceId: dependencies.outputs.keyVaultResourceId
+        existingResourceId: resourceId(
+          subscription().subscriptionId,
+          dependencies.outputs.resourceGroupName,
+          'Microsoft.KeyVault/vaults',
+          dependencies.outputs.keyVaultName
+        )
       }
       storageAccountConfiguration: {
-        existingResourceId: dependencies.outputs.storageAccountResourceId
+        existingResourceId: resourceId(
+          subscription().subscriptionId,
+          dependencies.outputs.resourceGroupName,
+          'Microsoft.Storage/storageAccounts',
+          dependencies.outputs.storageAccountName
+        )
         containerName: dependencies.outputs.containerName
       }
       cosmosDbConfiguration: {
-        existingResourceId: dependencies.outputs.cosmosDbAccountResourceId
+        existingResourceId: resourceId(
+          subscription().subscriptionId,
+          dependencies.outputs.resourceGroupName,
+          'Microsoft.DocumentDB/databaseAccounts',
+          dependencies.outputs.cosmosDbAccountName
+        )
       }
       aiSearchConfiguration: {
-        existingResourceId: dependencies.outputs.aiSearchResourceId
+        existingResourceId: resourceId(
+          subscription().subscriptionId,
+          dependencies.outputs.resourceGroupName,
+          'Microsoft.Search/searchServices',
+          dependencies.outputs.aiSearchName
+        )
       }
       aiModelDeployments: [
         {

@@ -104,28 +104,10 @@ resource aiSearch 'Microsoft.Search/searchServices@2023-11-01' = {
   }
 }
 
-output storageAccountResourceId string = resourceId(
-  subscription().subscriptionId,
-  resourceGroup().name,
-  'Microsoft.Storage/storageAccounts',
-  storageAccount.name
-)
-output keyVaultResourceId string = resourceId(
-  subscription().subscriptionId,
-  resourceGroup().name,
-  'Microsoft.KeyVault/vaults',
-  keyVault.name
-)
-output cosmosDbAccountResourceId string = resourceId(
-  subscription().subscriptionId,
-  resourceGroup().name,
-  'Microsoft.DocumentDB/databaseAccounts',
-  cosmosDbAccount.name
-)
-output aiSearchResourceId string = resourceId(
-  subscription().subscriptionId,
-  resourceGroup().name,
-  'Microsoft.Search/searchServices',
-  aiSearch.name
-)
+output resourceGroupName string = resourceGroup().name
+
+output storageAccountName string = storageAccount.name
+output keyVaultName string = keyVault.name
+output cosmosDbAccountName string = cosmosDbAccount.name
+output aiSearchName string = aiSearch.name
 output containerName string = containerName
