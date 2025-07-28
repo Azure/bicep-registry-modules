@@ -381,24 +381,30 @@ module foundryProject 'modules/project/main.bicep' = {
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
     includeCapabilityHost: false
-    storageAccountConnection: {
-      storageAccountName: empty(storageAccountConfiguration.?existingResourceId)
-        ? storageAccountName
-        : existingStorageAccountName
-      subscriptionId: storageAccountSubscriptionId
-      resourceGroupName: storageAccountResourceGroupName
-      containerName: storageAccountContainerName
-    }
-    aiSearchConnection: {
-      resourceName: empty(aiSearchConfiguration.?existingResourceId) ? aiSearchName : existingAiSearchName
-      subscriptionId: aiSearchSubscriptionId
-      resourceGroupName: aiSearchResourceGroupName
-    }
-    cosmosDbConnection: {
-      resourceName: empty(cosmosDbConfiguration.?existingResourceId) ? cosmosDbName : existingCosmosDbName
-      subscriptionId: cosmosDbSubscriptionId
-      resourceGroupName: cosmosDbResourceGroupName
-    }
+    storageAccountConnection: includeAssociatedResources
+      ? {
+          storageAccountName: empty(storageAccountConfiguration.?existingResourceId)
+            ? storageAccountName
+            : existingStorageAccountName
+          subscriptionId: storageAccountSubscriptionId
+          resourceGroupName: storageAccountResourceGroupName
+          containerName: storageAccountContainerName
+        }
+      : null
+    aiSearchConnection: includeAssociatedResources
+      ? {
+          resourceName: empty(aiSearchConfiguration.?existingResourceId) ? aiSearchName : existingAiSearchName
+          subscriptionId: aiSearchSubscriptionId
+          resourceGroupName: aiSearchResourceGroupName
+        }
+      : null
+    cosmosDbConnection: includeAssociatedResources
+      ? {
+          resourceName: empty(cosmosDbConfiguration.?existingResourceId) ? cosmosDbName : existingCosmosDbName
+          subscriptionId: cosmosDbSubscriptionId
+          resourceGroupName: cosmosDbResourceGroupName
+        }
+      : null
     tags: tags
     enableTelemetry: enableTelemetry
     lock: lock

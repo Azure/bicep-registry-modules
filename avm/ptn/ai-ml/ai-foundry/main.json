@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4608001923897257057"
+      "templateHash": "16614321751840072506"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -18268,28 +18268,9 @@
           "includeCapabilityHost": {
             "value": false
           },
-          "storageAccountConnection": {
-            "value": {
-              "storageAccountName": "[if(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId')), variables('storageAccountName'), variables('existingStorageAccountName'))]",
-              "subscriptionId": "[variables('storageAccountSubscriptionId')]",
-              "resourceGroupName": "[variables('storageAccountResourceGroupName')]",
-              "containerName": "[variables('storageAccountContainerName')]"
-            }
-          },
-          "aiSearchConnection": {
-            "value": {
-              "resourceName": "[if(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId')), variables('aiSearchName'), variables('existingAiSearchName'))]",
-              "subscriptionId": "[variables('aiSearchSubscriptionId')]",
-              "resourceGroupName": "[variables('aiSearchResourceGroupName')]"
-            }
-          },
-          "cosmosDbConnection": {
-            "value": {
-              "resourceName": "[if(empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId')), variables('cosmosDbName'), variables('existingCosmosDbName'))]",
-              "subscriptionId": "[variables('cosmosDbSubscriptionId')]",
-              "resourceGroupName": "[variables('cosmosDbResourceGroupName')]"
-            }
-          },
+          "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('storageAccountName', if(empty(tryGet(parameters('storageAccountConfiguration'), 'existingResourceId')), variables('storageAccountName'), variables('existingStorageAccountName')), 'subscriptionId', variables('storageAccountSubscriptionId'), 'resourceGroupName', variables('storageAccountResourceGroupName'), 'containerName', variables('storageAccountContainerName'))), createObject('value', null()))]",
+          "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId')), variables('aiSearchName'), variables('existingAiSearchName')), 'subscriptionId', variables('aiSearchSubscriptionId'), 'resourceGroupName', variables('aiSearchResourceGroupName'))), createObject('value', null()))]",
+          "cosmosDbConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(parameters('cosmosDbConfiguration'), 'existingResourceId')), variables('cosmosDbName'), variables('existingCosmosDbName')), 'subscriptionId', variables('cosmosDbSubscriptionId'), 'resourceGroupName', variables('cosmosDbResourceGroupName'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
