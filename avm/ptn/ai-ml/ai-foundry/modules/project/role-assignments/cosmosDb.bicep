@@ -10,6 +10,9 @@ param projectWorkspaceId string
 @description('Required. Whether to create a capability host for the project.')
 param createCapabilityHost bool
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: cosmosDbName
 }
@@ -21,6 +24,7 @@ module cosmosDbOperatorAssignment 'br/public:avm/ptn/authorization/resource-role
     principalId: projectIdentityPrincipalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: '230815da-be43-4aae-9cb4-875f7bd000aa' // Cosmos DB Operator
+    enableTelemetry: enableTelemetry
   }
 }
 

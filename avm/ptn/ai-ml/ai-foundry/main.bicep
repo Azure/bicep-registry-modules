@@ -381,6 +381,7 @@ module foundryProject 'modules/project/main.bicep' = {
       resourceGroupName: resourceGroup().name
     }
     tags: tags
+    enableTelemetry: enableTelemetry
     lock: lock
   }
 }

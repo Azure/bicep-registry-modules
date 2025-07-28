@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "8562669532457218529"
+      "templateHash": "235933748387541695"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -196,6 +196,13 @@
         "description": "Optional. Tags to be applied to the resources."
       },
       "defaultValue": {}
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -378,6 +385,9 @@
           },
           "containerName": {
             "value": "[parameters('storageAccountConnection').containerName]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -387,7 +397,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "13981617801567249549"
+              "templateHash": "15739857416072112454"
             }
           },
           "parameters": {
@@ -407,6 +417,13 @@
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the blob container for the project."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -445,6 +462,9 @@
                   },
                   "roleDefinitionId": {
                     "value": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -698,6 +718,9 @@
           },
           "createCapabilityHost": {
             "value": "[variables('createCapabilityHost')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -707,7 +730,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "4958517478195879106"
+              "templateHash": "11788740740028997705"
             }
           },
           "parameters": {
@@ -733,6 +756,13 @@
               "type": "bool",
               "metadata": {
                 "description": "Required. Whether to create a capability host for the project."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -779,6 +809,9 @@
                   },
                   "roleDefinitionId": {
                     "value": "230815da-be43-4aae-9cb4-875f7bd000aa"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -1031,6 +1064,9 @@
           },
           "roleDefinitionId": {
             "value": "8ebe5a00-799e-43f5-93ac-243d3dce84a7"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -1278,6 +1314,9 @@
           },
           "roleDefinitionId": {
             "value": "7ca78c08-252a-4471-8644-bb5ff32d4ba0"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {

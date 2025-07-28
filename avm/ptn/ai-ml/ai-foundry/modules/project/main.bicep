@@ -37,6 +37,9 @@ param lock lockType?
 @description('Optional. Tags to be applied to the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
 }
@@ -155,6 +158,7 @@ module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = i
     storageAccountName: storageAccount.name
     projectIdentityPrincipalId: project.identity.principalId
     containerName: storageAccountConnection!.containerName
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -179,6 +183,7 @@ module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(co
     projectIdentityPrincipalId: project.identity.principalId
     projectWorkspaceId: projectWorkspaceId
     createCapabilityHost: createCapabilityHost
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -189,6 +194,7 @@ module searchRoleIndexDataContributorAssignment 'br/public:avm/ptn/authorization
     principalId: project.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Search Index Data Contributor
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -199,6 +205,7 @@ module searchServiceContributorAssignment 'br/public:avm/ptn/authorization/resou
     principalId: project.identity.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
+    enableTelemetry: enableTelemetry
   }
 }
 

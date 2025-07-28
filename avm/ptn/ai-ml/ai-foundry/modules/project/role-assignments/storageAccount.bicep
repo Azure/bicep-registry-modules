@@ -7,6 +7,9 @@ param projectIdentityPrincipalId string
 @description('Required. The name of the blob container for the project.')
 param containerName string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 }
@@ -18,6 +21,7 @@ module storageAccountBlobContributorRoleAssignment 'br/public:avm/ptn/authorizat
     principalId: projectIdentityPrincipalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Storage Contributor
+    enableTelemetry: enableTelemetry
   }
 }
 
