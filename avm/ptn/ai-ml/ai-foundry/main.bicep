@@ -139,48 +139,48 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
   }
 }
 
-// var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
-// module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
-//   name: take('${resourcesName}-keyvault-deployment', 64)
-//   params: {
-//     name: take(
-//       !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
-//         ? keyVaultConfiguration!.name!
-//         : 'kv${resourcesName}',
-//       24
-//     )
-//     location: location
-//     tags: tags
-//     enableTelemetry: enableTelemetry
-//     publicNetworkAccess: keyVaultPrivateNetworking ? 'Disabled' : 'Enabled'
-//     networkAcls: {
-//       defaultAction: keyVaultPrivateNetworking ? 'Deny' : 'Allow'
-//     }
-//     enableVaultForDeployment: true
-//     enableVaultForDiskEncryption: true
-//     enableVaultForTemplateDeployment: true
-//     enablePurgeProtection: false
-//     enableRbacAuthorization: true
-//     enableSoftDelete: true
-//     softDeleteRetentionInDays: 7
-//     privateEndpoints: keyVaultPrivateNetworking
-//       ? [
-//           {
-//             privateDnsZoneGroup: {
-//               privateDnsZoneGroupConfigs: [
-//                 {
-//                   privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
-//                 }
-//               ]
-//             }
-//             service: 'vault'
-//             subnetResourceId: networking!.privateEndpointSubnetId
-//           }
-//         ]
-//       : []
-//     roleAssignments: keyVaultConfiguration.?roleAssignments
-//   }
-// }
+var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResourceId)) {
+  name: take('${resourcesName}-keyvault-deployment', 64)
+  params: {
+    name: take(
+      !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
+        ? keyVaultConfiguration!.name!
+        : 'kv${resourcesName}',
+      24
+    )
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    publicNetworkAccess: keyVaultPrivateNetworking ? 'Disabled' : 'Enabled'
+    networkAcls: {
+      defaultAction: keyVaultPrivateNetworking ? 'Deny' : 'Allow'
+    }
+    enableVaultForDeployment: true
+    enableVaultForDiskEncryption: true
+    enableVaultForTemplateDeployment: true
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 7
+    privateEndpoints: keyVaultPrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
+                }
+              ]
+            }
+            service: 'vault'
+            subnetResourceId: networking!.privateEndpointSubnetId
+          }
+        ]
+      : []
+    roleAssignments: keyVaultConfiguration.?roleAssignments
+  }
+}
 
 var aiSearchName = take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
 var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
@@ -351,7 +351,7 @@ module foundryProject 'modules/project.bicep' = {
     storageAccount
     aiSearch
     cosmosDb
-    /* keyVault*/
+    keyVault
   ]
   params: {
     name: projectName
@@ -363,7 +363,7 @@ module foundryProject 'modules/project.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    includeCapabilityHost: false
+    includeCapabilityHost: true
     storageAccountConnection: {
       resourceIdOrName: storageAccountName
       containerName: projectName

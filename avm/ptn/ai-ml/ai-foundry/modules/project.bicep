@@ -113,8 +113,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
 
 var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: take('${name}-cap-host', 64)
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
+  name: take('${accountName}-cap-host', 64)
   parent: foundryAccount
   properties: {
     capabilityHostKind: 'Agents'
@@ -123,7 +123,7 @@ resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@20
 }
 
 resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: '${name}-cap-host'
+  name: take('${name}-cap-host', 64)
   parent: project
   properties: {
     capabilityHostKind: 'Agents'
@@ -230,6 +230,10 @@ var cosmosDefaultSqlRoleDefinitionId = createCapabilityHost
 resource cosmosDataRoleAssigment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2025-04-15' = [
   for (containerSuffix, i) in cosmosContainerNameSuffixes: {
     parent: cosmosDb
+    dependsOn: [
+      cosmosDbOperatorAssignment
+      projectCapabilityHost
+    ]
     name: guid(cosmosDefaultSqlRoleDefinitionId, name, containerSuffix)
     properties: {
       principalId: project.identity.principalId
