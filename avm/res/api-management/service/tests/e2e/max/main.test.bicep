@@ -51,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
     routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
   }
 }
 
