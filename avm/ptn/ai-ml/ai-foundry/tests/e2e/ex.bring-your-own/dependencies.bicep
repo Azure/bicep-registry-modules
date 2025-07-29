@@ -106,8 +106,7 @@ resource aiSearch 'Microsoft.Search/searchServices@2023-11-01' = {
 
 output resourceGroupName string = resourceGroup().name
 
-output storageAccountName string = storageAccount.name
-output keyVaultName string = keyVault.name
-output cosmosDbAccountName string = cosmosDbAccount.name
-output aiSearchName string = aiSearch.name
-output containerName string = containerName
+output storageAccountResourceId string = storageAccount.id
+output keyVaultResourceId string = keyVault.id
+output cosmosDbAccountResourceId string = cosmosDbAccount.id
+output aiSearchResourceId string = aiSearch.id

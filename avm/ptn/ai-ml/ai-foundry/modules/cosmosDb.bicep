@@ -1,0 +1,90 @@
+@maxLength(44)
+@description('Required. The name of the Cosmos DB.')
+param name string
+
+@description('Required. The location for the Cosmos DB.')
+param location string
+
+@description('Optional. The full resource ID of an existing Cosmos DB to use instead of creating a new one.')
+param existingResourceId string?
+
+@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
+param privateEndpointSubnetId string?
+
+@description('Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints.')
+param privateDnsZoneId string?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. Specifies the role assignments for the Cosmos DB.')
+param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+@description('Optional. Specifies the resource tags for all the resources.')
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+
+var existingResourceParts = split(existingResourceId ?? '', '/')
+var existingName = !empty(existingResourceId) && contains(existingResourceId!, '/') && !empty(existingResourceParts)
+  ? last(existingResourceParts)
+  : existingResourceId!
+var existingSubscriptionId = !empty(existingResourceId) && length(existingResourceParts) > 2
+  ? existingResourceParts[2]
+  : subscription().subscriptionId
+var existingResourceGroupName = !empty(existingResourceId) && length(existingResourceParts) > 4
+  ? existingResourceParts[4]
+  : resourceGroup().name
+
+resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = if (!empty(existingResourceId)) {
+  name: existingName
+  scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
+}
+
+var privateNetworkingEnabled = !empty(privateDnsZoneId) && !empty(privateEndpointSubnetId)
+
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (empty(existingResourceId)) {
+  name: take('avm.res.document-db.database-account.${name}', 64)
+  params: {
+    name: name
+    enableTelemetry: enableTelemetry
+    automaticFailover: true
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    location: location
+    minimumTlsVersion: 'Tls12'
+    defaultConsistencyLevel: 'Session'
+    networkRestrictions: {
+      networkAclBypass: 'AzureServices'
+      publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
+    }
+    privateEndpoints: privateNetworkingEnabled
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: privateDnsZoneId!
+                }
+              ]
+            }
+            service: 'Sql'
+            subnetResourceId: privateEndpointSubnetId!
+          }
+        ]
+      : []
+    roleAssignments: roleAssignments
+    tags: tags
+  }
+}
+
+@description('Name of the Cosmos DB.')
+output name string = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
+
+@description('Resource ID of the Cosmos DB.')
+output resourceId string = empty(existingResourceId) ? cosmosDb!.outputs.resourceId : existingCosmosDb.id
+
+@description('Subscription ID of the Cosmos DB.')
+output subscriptionId string = empty(existingResourceId) ? subscription().subscriptionId : existingSubscriptionId
+
+@description('Resource Group Name of the Cosmos DB.')
+output resourceGroupName string = empty(existingResourceId) ? resourceGroup().name : existingResourceGroupName

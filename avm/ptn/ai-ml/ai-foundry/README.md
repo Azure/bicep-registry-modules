@@ -315,33 +315,17 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       }
     ]
     aiSearchConfiguration: {
-      existingResource: {
-        name: '<name>'
-        resourceGroupName: '<resourceGroupName>'
-        subscriptionId: '<subscriptionId>'
-      }
+      existingResourceId: '<existingResourceId>'
     }
     cosmosDbConfiguration: {
-      existingResource: {
-        name: '<name>'
-        resourceGroupName: '<resourceGroupName>'
-        subscriptionId: '<subscriptionId>'
-      }
+      existingResourceId: '<existingResourceId>'
     }
     includeAssociatedResources: true
     keyVaultConfiguration: {
-      existingResource: {
-        name: '<name>'
-        resourceGroupName: '<resourceGroupName>'
-        subscriptionId: '<subscriptionId>'
-      }
+      existingResourceId: '<existingResourceId>'
     }
     storageAccountConfiguration: {
-      existingResource: {
-        name: '<name>'
-        resourceGroupName: '<resourceGroupName>'
-        subscriptionId: '<subscriptionId>'
-      }
+      existingResourceId: '<existingResourceId>'
     }
   }
 }
@@ -382,20 +366,12 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "aiSearchConfiguration": {
       "value": {
-        "existingResource": {
-          "name": "<name>",
-          "resourceGroupName": "<resourceGroupName>",
-          "subscriptionId": "<subscriptionId>"
-        }
+        "existingResourceId": "<existingResourceId>"
       }
     },
     "cosmosDbConfiguration": {
       "value": {
-        "existingResource": {
-          "name": "<name>",
-          "resourceGroupName": "<resourceGroupName>",
-          "subscriptionId": "<subscriptionId>"
-        }
+        "existingResourceId": "<existingResourceId>"
       }
     },
     "includeAssociatedResources": {
@@ -403,20 +379,12 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "keyVaultConfiguration": {
       "value": {
-        "existingResource": {
-          "name": "<name>",
-          "resourceGroupName": "<resourceGroupName>",
-          "subscriptionId": "<subscriptionId>"
-        }
+        "existingResourceId": "<existingResourceId>"
       }
     },
     "storageAccountConfiguration": {
       "value": {
-        "existingResource": {
-          "name": "<name>",
-          "resourceGroupName": "<resourceGroupName>",
-          "subscriptionId": "<subscriptionId>"
-        }
+        "existingResourceId": "<existingResourceId>"
       }
     }
   }
@@ -451,33 +419,17 @@ param aiModelDeployments = [
   }
 ]
 param aiSearchConfiguration = {
-  existingResource: {
-    name: '<name>'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
-  }
+  existingResourceId: '<existingResourceId>'
 }
 param cosmosDbConfiguration = {
-  existingResource: {
-    name: '<name>'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
-  }
+  existingResourceId: '<existingResourceId>'
 }
 param includeAssociatedResources = true
 param keyVaultConfiguration = {
-  existingResource: {
-    name: '<name>'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
-  }
+  existingResourceId: '<existingResourceId>'
 }
 param storageAccountConfiguration = {
-  existingResource: {
-    name: '<name>'
-    resourceGroupName: '<resourceGroupName>'
-    subscriptionId: '<subscriptionId>'
-  }
+  existingResourceId: '<existingResourceId>'
 }
 ```
 
@@ -571,7 +523,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       name: '<name>'
     }
     privateEndpointSubnetId: '<privateEndpointSubnetId>'
-    sku: 'S1'
+    sku: 'S0'
     storageAccountConfiguration: {
       blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
       containerName: 'my-foundry-proj-data'
@@ -702,7 +654,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": "<privateEndpointSubnetId>"
     },
     "sku": {
-      "value": "S1"
+      "value": "S0"
     },
     "storageAccountConfiguration": {
       "value": {
@@ -813,7 +765,7 @@ param lock = {
   name: '<name>'
 }
 param privateEndpointSubnetId = '<privateEndpointSubnetId>'
-param sku = 'S1'
+param sku = 'S0'
 param storageAccountConfiguration = {
   blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
   containerName: 'my-foundry-proj-data'
@@ -1047,7 +999,7 @@ param storageAccountConfiguration = {
 | [`privateEndpointSubnetId`](#parameter-privateendpointsubnetid) | string | The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints. |
 | [`sku`](#parameter-sku) | string | SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
-| [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
+| [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. |
 
 ### Parameter: `baseName`
 
@@ -1073,6 +1025,7 @@ Custom configuration for the AI Foundry.
 | [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
 | [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
 | [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
+| [`roleAssignments`](#parameter-aifoundryconfigurationroleassignments) | array | Role assignments to apply to the AI Foundry resource when creating it. |
 
 ### Parameter: `aiFoundryConfiguration.accountName`
 
@@ -1186,6 +1139,103 @@ The name of the AI Foundry project.
 
 - Required: No
 - Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments`
+
+Role assignments to apply to the AI Foundry resource when creating it.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-aifoundryconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aifoundryconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-aifoundryconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aifoundryconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aifoundryconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aifoundryconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aifoundryconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-aifoundryconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `aiModelDeployments`
 
@@ -1335,45 +1385,16 @@ Custom configuration for the AI Search resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResource`](#parameter-aisearchconfigurationexistingresource) | object | Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`privateDnsZoneId`](#parameter-aisearchconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
 | [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `aiSearchConfiguration.existingResource`
+### Parameter: `aiSearchConfiguration.existingResourceId`
 
-Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-aisearchconfigurationexistingresourcename) | string | The name of the resource. |
-| [`resourceGroupName`](#parameter-aisearchconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
-| [`subscriptionId`](#parameter-aisearchconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
-
-### Parameter: `aiSearchConfiguration.existingResource.name`
-
-The name of the resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiSearchConfiguration.existingResource.resourceGroupName`
-
-The name of the resource group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiSearchConfiguration.existingResource.subscriptionId`
-
-The subscription ID.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `aiSearchConfiguration.name`
@@ -1506,45 +1527,16 @@ Custom configuration for the Cosmos DB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResource`](#parameter-cosmosdbconfigurationexistingresource) | object | Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`privateDnsZoneId`](#parameter-cosmosdbconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
 | [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `cosmosDbConfiguration.existingResource`
+### Parameter: `cosmosDbConfiguration.existingResourceId`
 
-Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cosmosdbconfigurationexistingresourcename) | string | The name of the resource. |
-| [`resourceGroupName`](#parameter-cosmosdbconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
-| [`subscriptionId`](#parameter-cosmosdbconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
-
-### Parameter: `cosmosDbConfiguration.existingResource.name`
-
-The name of the resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cosmosDbConfiguration.existingResource.resourceGroupName`
-
-The name of the resource group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cosmosDbConfiguration.existingResource.subscriptionId`
-
-The subscription ID.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `cosmosDbConfiguration.name`
@@ -1685,45 +1677,16 @@ Custom configuration for the Key Vault.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingResource`](#parameter-keyvaultconfigurationexistingresource) | object | Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResourceId`](#parameter-keyvaultconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-keyvaultconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`privateDnsZoneId`](#parameter-keyvaultconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
 | [`roleAssignments`](#parameter-keyvaultconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `keyVaultConfiguration.existingResource`
+### Parameter: `keyVaultConfiguration.existingResourceId`
 
-Resource identifier of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-keyvaultconfigurationexistingresourcename) | string | The name of the resource. |
-| [`resourceGroupName`](#parameter-keyvaultconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
-| [`subscriptionId`](#parameter-keyvaultconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
-
-### Parameter: `keyVaultConfiguration.existingResource.name`
-
-The name of the resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `keyVaultConfiguration.existingResource.resourceGroupName`
-
-The name of the resource group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `keyVaultConfiguration.existingResource.subscriptionId`
-
-The subscription ID.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `keyVaultConfiguration.name`
@@ -1932,7 +1895,7 @@ Custom configuration for the Storage Account.
 | :-- | :-- | :-- |
 | [`blobPrivateDnsZoneId`](#parameter-storageaccountconfigurationblobprivatednszoneid) | string | The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
 | [`containerName`](#parameter-storageaccountconfigurationcontainername) | string | The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created. |
-| [`existingResource`](#parameter-storageaccountconfigurationexistingresource) | object | Resource identifier of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
@@ -1950,40 +1913,11 @@ The name of the container to create in the Storage Account. If using existingRes
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountConfiguration.existingResource`
+### Parameter: `storageAccountConfiguration.existingResourceId`
 
-Resource identifier of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.
+Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-storageaccountconfigurationexistingresourcename) | string | The name of the resource. |
-| [`resourceGroupName`](#parameter-storageaccountconfigurationexistingresourceresourcegroupname) | string | The name of the resource group. |
-| [`subscriptionId`](#parameter-storageaccountconfigurationexistingresourcesubscriptionid) | string | The subscription ID. |
-
-### Parameter: `storageAccountConfiguration.existingResource.name`
-
-The name of the resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `storageAccountConfiguration.existingResource.resourceGroupName`
-
-The name of the resource group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `storageAccountConfiguration.existingResource.subscriptionId`
-
-The subscription ID.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountConfiguration.name`
@@ -2092,7 +2026,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `tags`
 
-Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.
+Specifies the resource tags for all the resources.
 
 - Required: No
 - Type: object
