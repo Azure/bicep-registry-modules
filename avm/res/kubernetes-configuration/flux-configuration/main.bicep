@@ -48,7 +48,7 @@ param scope resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@
 @description('Required. Source Kind to pull the configuration data from.')
 param sourceKind resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.sourceKind
 
-@description('Optional. Reconciliation wait duration (ISO 8601 format)')
+@description('Optional. Reconciliation wait duration (ISO 8601 format).')
 param reconciliationWaitDuration resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.reconciliationWaitDuration?
 
 @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')

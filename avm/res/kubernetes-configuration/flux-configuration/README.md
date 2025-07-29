@@ -633,7 +633,7 @@ param location = '<location>'
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`reconciliationWaitDuration`](#parameter-reconciliationwaitduration) | string | Reconciliation wait duration (ISO 8601 format) |
+| [`reconciliationWaitDuration`](#parameter-reconciliationwaitduration) | string | Reconciliation wait duration (ISO 8601 format). |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
 ### Parameter: `clusterName`
@@ -746,7 +746,7 @@ Location for all resources.
 
 ### Parameter: `reconciliationWaitDuration`
 
-Reconciliation wait duration (ISO 8601 format)
+Reconciliation wait duration (ISO 8601 format).
 
 - Required: No
 - Type: string

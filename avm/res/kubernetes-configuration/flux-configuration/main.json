@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "6415856844329548453"
+      "templateHash": "15229491299144039317"
     },
     "name": "Kubernetes Configuration Flux Configurations",
     "description": "This module deploys a Kubernetes Configuration Flux Configuration."
@@ -138,7 +138,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/reconciliationWaitDuration"
         },
-        "description": "Optional. Reconciliation wait duration (ISO 8601 format)"
+        "description": "Optional. Reconciliation wait duration (ISO 8601 format)."
       },
       "nullable": true
     },
