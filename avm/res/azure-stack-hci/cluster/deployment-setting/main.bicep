@@ -163,12 +163,13 @@ var baseSecretNames = [
 
 var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-09-01-preview' = {
   name: name
   parent: cluster
   properties: {
     arcNodeResourceIds: arcNodeResourceIds
     deploymentMode: deploymentMode
+    operationType: operationType == 'ClusterUpgrade' ? operationType : null
     deploymentConfiguration: {
       version: operationType == 'ClusterUpgrade' ? '10.1.0.0' : '10.0.0.0'
       scaleUnits: [

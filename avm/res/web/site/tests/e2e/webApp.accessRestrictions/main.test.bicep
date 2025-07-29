@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -75,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
               }
               {
                 // Allow access from Application Gateway service tag
-                // Note: For better security, consider using vnetSubnetResourceId instead 
+                // Note: For better security, consider using vnetSubnetResourceId instead
                 // to restrict to specific Application Gateway subnet
                 action: 'Allow'
                 description: 'Allow access from Application Gateway'
