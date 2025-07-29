@@ -19,7 +19,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Changed 'ring' parameter to a nullable `int` to remove the original workaround using a value of `-1` to achieve the same.
 
 ## 0.7.0
 

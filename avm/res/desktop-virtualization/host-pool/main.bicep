@@ -91,7 +91,7 @@ param agentUpdate resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-
 }
 
 @sys.description('Optional. The ring number of HostPool.')
-param ring int = -1
+param ring int?
 
 @sys.description('Optional. URL to customer ADFS server for signing WVD SSO certificates.')
 param ssoadfsAuthority string?
@@ -289,7 +289,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'
       : null
     vmTemplate: !empty(vmTemplate) ? string(vmTemplate) : null
     agentUpdate: agentUpdate
-    ring: ring != -1 ? ring : null
+    ring: ring
     ssoadfsAuthority: ssoadfsAuthority
     ssoClientId: ssoClientId
     ssoClientSecretKeyVaultPath: ssoClientSecretKeyVaultPath
