@@ -181,18 +181,6 @@ module testDeployment '../../../main.bicep' = [
             Role: 'DeploymentValidation'
           }
         }
-        {
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneGroup: {
-            name: 'group2'
-            privateDnsZoneGroupConfigs: [
-              {
-                name: 'config2'
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
-        }
       ]
       provisionNetworkNow: true
       roleAssignments: [
