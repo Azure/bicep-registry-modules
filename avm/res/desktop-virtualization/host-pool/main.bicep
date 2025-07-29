@@ -126,7 +126,7 @@ param publicUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03
 @sys.description('Optional. Where indirect UDP connectivity is established between the client and the session host via public network using Traversal Using Relay NAT (TURN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.')
 param relayUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.relayUDP = 'Default'
 
-@sys.description('Optional. The type of management for this hostpool. Note: If set to `Automated`, you must set the `tokenValidityLength` parameter to an empty string.')
+@sys.description('Optional. The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource.')
 param managementType resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.managementType = 'Standard'
 
 @sys.description('Optional. Tags of the resource.')
@@ -280,7 +280,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'
     loadBalancerType: loadBalancerType
     startVMOnConnect: startVMOnConnect
     validationEnvironment: validationEnvironment
-    registrationInfo: !empty(tokenValidityLength)
+    registrationInfo: !empty(tokenValidityLength) && managementType == 'Standard'
       ? {
           expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
           token: null
@@ -430,13 +430,10 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @secure()
-@sys.description('The registration token of the host pool.')
-output registrationToken string = first(hostPool.listRegistrationTokens().value)!.token
-// @secure()
-// @sys.description('The registration token of the host pool.')
-// output registrationToken string = managementType == 'Standard'
-//   ? hostPool.properties.registrationInfo.token
-//   : first(hostPool.listRegistrationTokens().value)!.token
+@sys.description('The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null.')
+output registrationToken string? = managementType == 'Standard'
+  ? first(hostPool.listRegistrationTokens().value)!.token
+  : null
 
 // =============== //
 //   Definitions   //

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "17442920840587739872"
+      "templateHash": "7328015309725307127"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -704,7 +704,7 @@
     },
     "ring": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. The ring number of HostPool."
       }
@@ -790,7 +790,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview#properties/properties/properties/managementType"
         },
-        "description": "Optional. The type of management for this hostpool. Note: If set to `Automated`, you must set the `tokenValidityLength` parameter to an empty string."
+        "description": "Optional. The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource."
       },
       "defaultValue": "Standard"
     },
@@ -912,10 +912,10 @@
         "loadBalancerType": "[parameters('loadBalancerType')]",
         "startVMOnConnect": "[parameters('startVMOnConnect')]",
         "validationEnvironment": "[parameters('validationEnvironment')]",
-        "registrationInfo": "[if(not(empty(parameters('tokenValidityLength'))), createObject('expirationTime', dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength')), 'token', null(), 'registrationTokenOperation', 'Update'), null())]",
+        "registrationInfo": "[if(and(not(empty(parameters('tokenValidityLength'))), equals(parameters('managementType'), 'Standard')), createObject('expirationTime', dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength')), 'token', null(), 'registrationTokenOperation', 'Update'), null())]",
         "vmTemplate": "[if(not(empty(parameters('vmTemplate'))), string(parameters('vmTemplate')), null())]",
         "agentUpdate": "[parameters('agentUpdate')]",
-        "ring": "[if(not(equals(parameters('ring'), -1)), parameters('ring'), null())]",
+        "ring": "[parameters('ring')]",
         "ssoadfsAuthority": "[parameters('ssoadfsAuthority')]",
         "ssoClientId": "[parameters('ssoClientId')]",
         "ssoClientSecretKeyVaultPath": "[parameters('ssoClientSecretKeyVaultPath')]",
@@ -1803,10 +1803,11 @@
     },
     "registrationToken": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
-        "description": "The registration token of the host pool."
+        "description": "The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null."
       },
-      "value": "[reference('hostPool').registrationInfo.token]"
+      "value": "[if(equals(parameters('managementType'), 'Standard'), first(listRegistrationTokens('hostPool', '2025-03-01-preview').value).token, null())]"
     }
   }
 }

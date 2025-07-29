@@ -202,7 +202,6 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    tokenValidityLength: ''
     vmTemplate: {
       customImageId: '<customImageId>'
       domain: 'domainname.onmicrosoft.com'
@@ -377,9 +376,6 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
         "Role": "DeploymentValidation"
       }
     },
-    "tokenValidityLength": {
-      "value": ""
-    },
     "vmTemplate": {
       "value": {
         "customImageId": "<customImageId>",
@@ -510,7 +506,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param tokenValidityLength = ''
 param vmTemplate = {
   customImageId: '<customImageId>'
   domain: 'domainname.onmicrosoft.com'
@@ -659,7 +654,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedPrivateUDP`](#parameter-managedprivateudp) | string | Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
-| [`managementType`](#parameter-managementtype) | string | The type of management for this hostpool. Note: If set to `Automated`, you must set the `tokenValidityLength` parameter to an empty string. |
+| [`managementType`](#parameter-managementtype) | string | The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource. |
 | [`maxSessionLimit`](#parameter-maxsessionlimit) | int | Maximum number of sessions. |
 | [`personalDesktopAssignmentType`](#parameter-personaldesktopassignmenttype) | string | Set the type of assignment for a Personal Host Pool type. |
 | [`preferredAppGroupType`](#parameter-preferredappgrouptype) | string | The type of preferred application group type, default to Desktop Application Group. |
@@ -955,7 +950,7 @@ Where direct UDP connectivity is established between the client and the session 
 
 ### Parameter: `managementType`
 
-The type of management for this hostpool. Note: If set to `Automated`, you must set the `tokenValidityLength` parameter to an empty string.
+The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource.
 
 - Required: No
 - Type: string
@@ -1459,7 +1454,6 @@ The ring number of HostPool.
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `roleAssignments`
 
@@ -1673,7 +1667,7 @@ Do not provide a value! This date value is used to generate a registration token
 | `location` | string | The location of the host pool. |
 | `name` | string | The name of the host pool. |
 | `privateEndpoints` | array | The private endpoints of the host pool. |
-| `registrationToken` | securestring | The registration token of the host pool. |
+| `registrationToken` | securestring | The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null. |
 | `resourceGroupName` | string | The name of the resource group the host pool was created in. |
 | `resourceId` | string | The resource ID of the host pool. |
 
