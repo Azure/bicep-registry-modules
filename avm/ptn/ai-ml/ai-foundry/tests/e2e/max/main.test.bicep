@@ -75,6 +75,13 @@ module testDeployment '../../../main.bicep' = [
           openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
           cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
+        roleAssignments: [
+          {
+            principalId: dependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+          }
+        ]
       }
       keyVaultConfiguration: {
         name: 'kvcustom${workloadName}'

@@ -465,6 +465,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         displayName: '<displayName>'
         name: '<name>'
       }
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+        }
+      ]
     }
     aiModelDeployments: [
       {
@@ -573,7 +580,14 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
           "desc": "This is a custom project for testing.",
           "displayName": "<displayName>",
           "name": "<name>"
-        }
+        },
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Cognitive Services OpenAI User"
+          }
+        ]
       }
     },
     "aiModelDeployments": {
@@ -703,6 +717,13 @@ param aiFoundryConfiguration = {
     displayName: '<displayName>'
     name: '<name>'
   }
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+    }
+  ]
 }
 param aiModelDeployments = [
   {
