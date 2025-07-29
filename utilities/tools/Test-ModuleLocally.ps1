@@ -240,7 +240,7 @@ function Test-ModuleLocally {
             # Find Test Parameter Files
             # -------------------------
             if ((Get-Item -Path $ModuleTestFilePath) -is [System.IO.DirectoryInfo]) {
-                $moduleTestFiles = (Get-ChildItem -Path $ModuleTestFilePath -File).FullName
+                $moduleTestFiles = (Get-ChildItem -Path $ModuleTestFilePath -Filter '*main.test.bicep' -Recurse -Force).FullName
             } else {
                 $moduleTestFiles = @($ModuleTestFilePath)
             }
