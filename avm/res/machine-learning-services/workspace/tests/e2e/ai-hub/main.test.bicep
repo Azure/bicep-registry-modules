@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Creating Azure AI Studio resources'
+metadata name = 'Creating Azure AI Studio hub resource'
 metadata description = 'This instance deploys an Azure AI hub workspace.'
 
 // ========== //
@@ -12,7 +12,7 @@ metadata description = 'This instance deploys an Azure AI hub workspace.'
 param resourceGroupName string = 'dep-${namePrefix}-machinelearningservices.workspaces-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mlswai'
+param serviceShort string = 'mlswaih'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -93,23 +93,5 @@ module testDeployment '../../../main.bicep' = [
         defaultWorkspaceResourceGroup: resourceGroup.id
       }
     }
-  }
-]
-
-@batchSize(1)
-module testProjectDeployment '../../../main.bicep' = [
-  for (iteration, i) in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-proj-${iteration}'
-    params: {
-      name: '${namePrefix}${serviceShort}002'
-      location: enforcedLocation
-      sku: 'Basic'
-      kind: 'Project'
-      hubResourceId: testDeployment[i].outputs.resourceId
-    }
-    dependsOn: [
-      testDeployment
-    ]
   }
 ]
