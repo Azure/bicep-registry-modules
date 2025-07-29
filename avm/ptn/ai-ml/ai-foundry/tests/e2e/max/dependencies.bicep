@@ -43,15 +43,6 @@ module blobDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module fileDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.storage.file.${workloadName}', 64)
-  params: {
-    name: 'privatelink.file.${environment().suffixes.storage}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
-
 module documentsDnsZone 'dependencies.dns.bicep' = {
   name: take('module.dns.cosmos.documents.${workloadName}', 64)
   params: {
@@ -121,7 +112,6 @@ output subnetPrivateEndpointsResourceId string = first(filter(
 output subnetAgentResourceId string = first(filter(vnet.properties.subnets, s => s.name == 'agents')).?id!
 
 output blobDnsZoneResourceId string = blobDnsZone.outputs.resourceId
-output fileDnsZoneResourceId string = fileDnsZone.outputs.resourceId
 output documentsDnsZoneResourceId string = documentsDnsZone.outputs.resourceId
 output searchDnsZoneResourceId string = searchDnsZone.outputs.resourceId
 output keyVaultDnsZoneResourceId string = keyVaultDnsZone.outputs.resourceId

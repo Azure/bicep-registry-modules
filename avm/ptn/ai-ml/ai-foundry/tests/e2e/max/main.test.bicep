@@ -57,21 +57,11 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       baseName: workloadName
+      baseUniqueName: substring(uniqueString(subscription().id, resourceGroup.name, serviceShort), 0, 5)
+      location: enforcedLocation
       includeAssociatedResources: true
-      networking: {
-        agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
-        privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
-        aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-        openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-        cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
-        associatedResourcesPrivateDnsZones: {
-          aiSearchPrivateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
-          keyVaultPrivateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
-          cosmosDbPrivateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
-          storageBlobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
-          storageFilePrivateDnsZoneId: dependencies.outputs.fileDnsZoneResourceId
-        }
-      }
+      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
+      sku: 'S1'
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
         project: {
@@ -79,9 +69,18 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'Custom Project for ${workloadName}'
           desc: 'This is a custom project for testing.'
         }
+        allowProjectManagement: true
+        createAIAgentService: false
+        networking: {
+          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
+        }
       }
       keyVaultConfiguration: {
         name: 'kvcustom${workloadName}'
+        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -93,6 +92,7 @@ module testDeployment '../../../main.bicep' = [
       storageAccountConfiguration: {
         name: 'stcustom${workloadName}'
         containerName: 'my-foundry-proj-data'
+        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -103,6 +103,7 @@ module testDeployment '../../../main.bicep' = [
       }
       cosmosDbConfiguration: {
         name: 'cosmoscustom${workloadName}'
+        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -113,6 +114,7 @@ module testDeployment '../../../main.bicep' = [
       }
       aiSearchConfiguration: {
         name: 'srchcustom${workloadName}'
+        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -135,6 +137,15 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'lock${workloadName}'
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Example'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]

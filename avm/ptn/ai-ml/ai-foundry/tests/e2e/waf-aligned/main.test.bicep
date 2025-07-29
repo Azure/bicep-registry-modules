@@ -57,19 +57,27 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
-      networking: {
-        agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
-        privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
-        aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-        openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-        cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
-        associatedResourcesPrivateDnsZones: {
-          aiSearchPrivateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
-          keyVaultPrivateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
-          cosmosDbPrivateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
-          storageBlobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
-          storageFilePrivateDnsZoneId: dependencies.outputs.fileDnsZoneResourceId
+      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
+      aiFoundryConfiguration: {
+        createAIAgentService: false
+        networking: {
+          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
+      }
+      storageAccountConfiguration: {
+        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
+      }
+      aiSearchConfiguration: {
+        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
+      }
+      keyVaultConfiguration: {
+        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
+      }
+      cosmosDbConfiguration: {
+        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
       }
       aiModelDeployments: [
         {

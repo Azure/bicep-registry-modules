@@ -6,95 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "14616607509845025617"
+      "templateHash": "7378647199934441611"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
   },
   "definitions": {
-    "networkConfigurationType": {
-      "type": "object",
-      "properties": {
-        "privateEndpointSubnetId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the subnet to establish the Private Endpoint(s)."
-          }
-        },
-        "agentServiceSubnetId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required.  The Resource ID of the subnet for the Azure AI Services account."
-          }
-        },
-        "cognitiveServicesPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
-          }
-        },
-        "openAiPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the Private DNS Zone for the OpenAI account."
-          }
-        },
-        "aiServicesPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
-          }
-        },
-        "associatedResourcesPrivateDnsZones": {
-          "$ref": "#/definitions/networkResourcesDnsZonesConfigurationType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Configuration for DNS zones for associated resources. This is only required if includeAssociatedResources is true."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Values to establish private networking for resources that support creating private endpoints."
-      }
-    },
-    "networkResourcesDnsZonesConfigurationType": {
-      "type": "object",
-      "properties": {
-        "aiSearchPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the DNS zone for the Azure AI Search service."
-          }
-        },
-        "cosmosDbPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the DNS zone for the Azure Cosmos DB account."
-          }
-        },
-        "keyVaultPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the DNS zone for the Azure Key Vault."
-          }
-        },
-        "storageBlobPrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the DNS zone \"blob\" for the Azure Storage Account."
-          }
-        },
-        "storageFilePrivateDnsZoneId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Resource ID of the DNS zone \"file\" for the Azure Storage Account."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Values for the associated resources DNS Zone resource IDs."
-      }
-    },
     "resourceIdType": {
       "type": "object",
       "properties": {
@@ -140,6 +57,13 @@
             "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
           }
         },
+        "privateDnsZoneId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided."
+          }
+        },
         "roleAssignments": {
           "type": "array",
           "items": {
@@ -179,6 +103,13 @@
             "description": "Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created."
           }
         },
+        "blobPrivateDnsZoneId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource ID of the DNS zone \"blob\" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided."
+          }
+        },
         "roleAssignments": {
           "type": "array",
           "items": {
@@ -211,6 +142,27 @@
             "description": "Optional. The location of the AI Foundry account. Will default to the resource group location if not specified."
           }
         },
+        "createAIAgentService": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, 'networking.agentServiceSubnetId' is required. Defaults to false."
+          }
+        },
+        "allowProjectManagement": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true."
+          }
+        },
+        "networking": {
+          "$ref": "#/definitions/foundryNetworkConfigurationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Values to establish private networking for the AI Foundry account and project."
+          }
+        },
         "project": {
           "$ref": "#/definitions/foundryProjectConfigurationType",
           "nullable": true,
@@ -221,6 +173,39 @@
       },
       "metadata": {
         "description": "Custom configuration for a AI Foundry, including optional account name and project configuration."
+      }
+    },
+    "foundryNetworkConfigurationType": {
+      "type": "object",
+      "properties": {
+        "agentServiceSubnetId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true."
+          }
+        },
+        "cognitiveServicesPrivateDnsZoneId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
+          }
+        },
+        "openAiPrivateDnsZoneId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Resource ID of the Private DNS Zone for the OpenAI account."
+          }
+        },
+        "aiServicesPrivateDnsZoneId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Values to establish private networking for the AI Foundry service."
       }
     },
     "foundryProjectConfigurationType": {
@@ -349,7 +334,7 @@
       "metadata": {
         "description": "The type for a cognitive services account deployment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.11.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.12.0"
         }
       }
     },
@@ -483,6 +468,33 @@
         "description": "Optional. Location for all Resources. Defaults to the location of the resource group."
       }
     },
+    "sku": {
+      "type": "string",
+      "defaultValue": "S0",
+      "allowedValues": [
+        "C2",
+        "C3",
+        "C4",
+        "F0",
+        "F1",
+        "S",
+        "S0",
+        "S1",
+        "S10",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8",
+        "S9",
+        "DC0"
+      ],
+      "metadata": {
+        "description": "Optional. SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -524,11 +536,11 @@
         "description": "Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false."
       }
     },
-    "networking": {
-      "$ref": "#/definitions/networkConfigurationType",
+    "privateEndpointSubnetId": {
+      "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used."
+        "description": "Optional. The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints."
       }
     },
     "aiFoundryConfiguration": {
@@ -568,20 +580,20 @@
     }
   },
   "variables": {
-    "enablePrivateNetworking": "[and(not(empty(parameters('networking'))), not(empty(parameters('networking').privateEndpointSubnetId)))]",
+    "enablePrivateNetworking": "[not(empty(parameters('privateEndpointSubnetId')))]",
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
     "storageAccountContainerName": "[if(empty(tryGet(parameters('storageAccountConfiguration'), 'containerName')), variables('projectName'), parameters('storageAccountConfiguration').containerName)]",
     "foundryAccountName": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), parameters('aiFoundryConfiguration').accountName, format('ai{0}', variables('resourcesName')))]",
-    "foundryAccountPrivateNetworking": "[and(and(and(and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('networking'), 'privateEndpointSubnetId')))), not(empty(tryGet(parameters('networking'), 'cognitiveServicesPrivateDnsZoneId')))), not(empty(tryGet(parameters('networking'), 'openAiPrivateDnsZoneId')))), not(empty(tryGet(parameters('networking'), 'aiServicesPrivateDnsZoneId'))))]",
+    "foundryAccountPrivateNetworking": "[and(and(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'cognitiveServicesPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'openAiPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'aiServicesPrivateDnsZoneId'))))]",
     "keyVaultName": "[take(if(and(not(empty(parameters('keyVaultConfiguration'))), not(empty(tryGet(parameters('keyVaultConfiguration'), 'name')))), parameters('keyVaultConfiguration').name, format('kv{0}', variables('resourcesName'))), 24)]",
-    "keyVaultPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'keyVaultPrivateDnsZoneId'))))]",
+    "keyVaultPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('keyVaultConfiguration'), 'privateDnsZoneId'))))]",
     "aiSearchName": "[take(if(not(empty(tryGet(parameters('aiSearchConfiguration'), 'name'))), parameters('aiSearchConfiguration').name, format('srch{0}', variables('resourcesName'))), 60)]",
-    "aiSearchPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'aiSearchPrivateDnsZoneId'))))]",
+    "aiSearchPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('aiSearchConfiguration'), 'privateDnsZoneId'))))]",
     "storageAccountName": "[take(if(not(empty(tryGet(parameters('storageAccountConfiguration'), 'name'))), parameters('storageAccountConfiguration').name, format('st{0}', variables('resourcesName'))), 24)]",
-    "storageAccountPrivateNetworking": "[and(and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageBlobPrivateDnsZoneId')))), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'storageFilePrivateDnsZoneId'))))]",
+    "storageAccountPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('storageAccountConfiguration'), 'blobPrivateDnsZoneId'))))]",
     "cosmosDbName": "[take(if(not(empty(tryGet(parameters('cosmosDbConfiguration'), 'name'))), parameters('cosmosDbConfiguration').name, format('cos{0}', variables('resourcesName'))), 44)]",
-    "cosmosDbPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(tryGet(parameters('networking'), 'associatedResourcesPrivateDnsZones'), 'cosmosDbPrivateDnsZoneId'))))]"
+    "cosmosDbPrivateNetworking": "[and(variables('enablePrivateNetworking'), not(empty(tryGet(parameters('cosmosDbConfiguration'), 'privateDnsZoneId'))))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -622,7 +634,7 @@
             "value": "[parameters('tags')]"
           },
           "sku": {
-            "value": "S0"
+            "value": "[parameters('sku')]"
           },
           "kind": {
             "value": "AIServices"
@@ -631,7 +643,7 @@
             "value": "[parameters('lock')]"
           },
           "allowProjectManagement": {
-            "value": true
+            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'allowProjectManagement'), true())]"
           },
           "managedIdentities": {
             "value": {
@@ -654,7 +666,7 @@
               "bypass": "AzureServices"
             }
           },
-          "privateEndpoints": "[if(variables('foundryAccountPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('networking').cognitiveServicesPrivateDnsZoneId), createObject('privateDnsZoneResourceId', parameters('networking').openAiPrivateDnsZoneId), createObject('privateDnsZoneResourceId', parameters('networking').aiServicesPrivateDnsZoneId))), 'subnetResourceId', parameters('networking').privateEndpointSubnetId))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('foundryAccountPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('aiFoundryConfiguration').networking.cognitiveServicesPrivateDnsZoneId), createObject('privateDnsZoneResourceId', parameters('aiFoundryConfiguration').networking.openAiPrivateDnsZoneId), createObject('privateDnsZoneResourceId', parameters('aiFoundryConfiguration').networking.aiServicesPrivateDnsZoneId))), 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -3086,7 +3098,7 @@
           "softDeleteRetentionInDays": {
             "value": 7
           },
-          "privateEndpoints": "[if(variables('keyVaultPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('networking').associatedResourcesPrivateDnsZones.keyVaultPrivateDnsZoneId))), 'service', 'vault', 'subnetResourceId', parameters('networking').privateEndpointSubnetId))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('keyVaultPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('keyVaultConfiguration').privateDnsZoneId))), 'service', 'vault', 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[tryGet(parameters('keyVaultConfiguration'), 'roleAssignments')]"
           }
@@ -6429,7 +6441,7 @@
           "roleAssignments": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
           },
-          "privateEndpoints": "[if(variables('aiSearchPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('networking').associatedResourcesPrivateDnsZones.aiSearchPrivateDnsZoneId))), 'subnetResourceId', parameters('networking').privateEndpointSubnetId))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('aiSearchPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('aiSearchConfiguration').privateDnsZoneId))), 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -8662,7 +8674,7 @@
           "supportsHttpsTrafficOnly": {
             "value": true
           },
-          "privateEndpoints": "[if(variables('storageAccountPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('networking').associatedResourcesPrivateDnsZones.storageBlobPrivateDnsZoneId))), 'service', 'blob', 'subnetResourceId', parameters('networking').privateEndpointSubnetId), createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('networking').associatedResourcesPrivateDnsZones.storageFilePrivateDnsZoneId))), 'service', 'file', 'subnetResourceId', parameters('networking').privateEndpointSubnetId))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('storageAccountPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('storageAccountConfiguration').blobPrivateDnsZoneId))), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[concat(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'roleAssignments')))), parameters('storageAccountConfiguration').roleAssignments, createArray()), createArray(createObject('principalId', reference('foundryAccount').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), if(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResource')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray()))]"
           }
@@ -14481,7 +14493,7 @@
               "publicNetworkAccess": "[if(variables('cosmosDbPrivateNetworking'), 'Disabled', 'Enabled')]"
             }
           },
-          "privateEndpoints": "[if(variables('cosmosDbPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('networking').associatedResourcesPrivateDnsZones.cosmosDbPrivateDnsZoneId))), 'service', 'Sql', 'subnetResourceId', parameters('networking').privateEndpointSubnetId))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('cosmosDbPrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('cosmosDbConfiguration').privateDnsZoneId))), 'service', 'Sql', 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[tryGet(parameters('cosmosDbConfiguration'), 'roleAssignments')]"
           },
@@ -18276,7 +18288,7 @@
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
           "includeCapabilityHost": {
-            "value": false
+            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createAIAgentService'), false())]"
           },
           "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('storageAccountName', if(empty(tryGet(tryGet(parameters('storageAccountConfiguration'), 'existingResource'), 'name')), variables('storageAccountName'), parameters('storageAccountConfiguration').existingResource.name), 'subscriptionId', if(empty(tryGet(tryGet(parameters('storageAccountConfiguration'), 'existingResource'), 'subscriptionId')), subscription().subscriptionId, parameters('storageAccountConfiguration').existingResource.subscriptionId), 'resourceGroupName', if(empty(tryGet(tryGet(parameters('storageAccountConfiguration'), 'existingResource'), 'resourceGroupName')), resourceGroup().name, parameters('storageAccountConfiguration').existingResource.resourceGroupName), 'containerName', variables('storageAccountContainerName'))), createObject('value', null()))]",
           "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', if(empty(tryGet(tryGet(parameters('aiSearchConfiguration'), 'existingResource'), 'name')), variables('aiSearchName'), parameters('aiSearchConfiguration').existingResource.name), 'subscriptionId', if(empty(tryGet(tryGet(parameters('aiSearchConfiguration'), 'existingResource'), 'subscriptionId')), subscription().subscriptionId, parameters('aiSearchConfiguration').existingResource.subscriptionId), 'resourceGroupName', if(empty(tryGet(tryGet(parameters('aiSearchConfiguration'), 'existingResource'), 'resourceGroupName')), resourceGroup().name, parameters('aiSearchConfiguration').existingResource.resourceGroupName))), createObject('value', null()))]",

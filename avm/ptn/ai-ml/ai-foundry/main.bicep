@@ -13,10 +13,33 @@ param baseUniqueName string = substring(uniqueString(subscription().id, resource
 @description('Optional. Location for all Resources. Defaults to the location of the resource group.')
 param location string = resourceGroup().location
 
+@description('Optional. SKU of the AI Foundry / Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+@allowed([
+  'C2'
+  'C3'
+  'C4'
+  'F0'
+  'F1'
+  'S'
+  'S0'
+  'S1'
+  'S10'
+  'S2'
+  'S3'
+  'S4'
+  'S5'
+  'S6'
+  'S7'
+  'S8'
+  'S9'
+  'DC0'
+])
+param sku string = 'S0'
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.11.0'
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.12.0'
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
@@ -30,8 +53,8 @@ param lock lockType?
 @description('Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false.')
 param includeAssociatedResources bool = false
 
-@description('Optional. Values to establish private networking for the AI Foundry account and project. If not specified, public endpoints will be used.')
-param networking networkConfigurationType?
+@description('Optional. The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints.')
+param privateEndpointSubnetId string?
 
 @description('Optional. Custom configuration for the AI Foundry.')
 param aiFoundryConfiguration foundryConfigurationType?
@@ -48,7 +71,7 @@ param storageAccountConfiguration storageAccountConfigurationType?
 @description('Optional. Custom configuration for the Cosmos DB Account.')
 param cosmosDbConfiguration resourceConfigurationType?
 
-var enablePrivateNetworking = !empty(networking) && !empty(networking!.privateEndpointSubnetId)
+var enablePrivateNetworking = !empty(privateEndpointSubnetId)
 
 var resourcesName = toLower(trim(replace(
   replace(
@@ -92,17 +115,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 var foundryAccountName = !empty(aiFoundryConfiguration.?accountName)
   ? aiFoundryConfiguration!.accountName!
   : 'ai${resourcesName}'
-var foundryAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?privateEndpointSubnetId) && !empty(networking.?cognitiveServicesPrivateDnsZoneId) && !empty(networking.?openAiPrivateDnsZoneId) && !empty(networking.?aiServicesPrivateDnsZoneId)
+var foundryAccountPrivateNetworking = enablePrivateNetworking && !empty(aiFoundryConfiguration.?networking.?cognitiveServicesPrivateDnsZoneId) && !empty(aiFoundryConfiguration.?networking.?openAiPrivateDnsZoneId) && !empty(aiFoundryConfiguration.?networking.?aiServicesPrivateDnsZoneId)
 module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
   name: take('avm.res.cognitive-services.account.${foundryAccountName}', 64)
   params: {
     name: foundryAccountName
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
     tags: tags
-    sku: 'S0'
+    sku: sku
     kind: 'AIServices'
     lock: lock
-    allowProjectManagement: true
+    allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     managedIdentities: {
       systemAssigned: true
     }
@@ -120,17 +143,17 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: networking!.cognitiveServicesPrivateDnsZoneId!
+                  privateDnsZoneResourceId: aiFoundryConfiguration!.networking!.cognitiveServicesPrivateDnsZoneId!
                 }
                 {
-                  privateDnsZoneResourceId: networking!.openAiPrivateDnsZoneId!
+                  privateDnsZoneResourceId: aiFoundryConfiguration!.networking!.openAiPrivateDnsZoneId!
                 }
                 {
-                  privateDnsZoneResourceId: networking!.aiServicesPrivateDnsZoneId!
+                  privateDnsZoneResourceId: aiFoundryConfiguration!.networking!.aiServicesPrivateDnsZoneId!
                 }
               ]
             }
-            subnetResourceId: networking!.privateEndpointSubnetId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
@@ -144,7 +167,7 @@ var keyVaultName = take(
     : 'kv${resourcesName}',
   24
 )
-var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?keyVaultPrivateDnsZoneId)
+var keyVaultPrivateNetworking = enablePrivateNetworking && !empty(keyVaultConfiguration.?privateDnsZoneId)
 module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociatedResources && empty(keyVaultConfiguration.?existingResource)) {
   name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
   params: {
@@ -169,12 +192,12 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociat
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.keyVaultPrivateDnsZoneId
+                  privateDnsZoneResourceId: keyVaultConfiguration!.privateDnsZoneId!
                 }
               ]
             }
             service: 'vault'
-            subnetResourceId: networking!.privateEndpointSubnetId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
@@ -183,7 +206,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (includeAssociat
 }
 
 var aiSearchName = take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
-var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?aiSearchPrivateDnsZoneId)
+var aiSearchPrivateNetworking = enablePrivateNetworking && !empty(aiSearchConfiguration.?privateDnsZoneId)
 module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAssociatedResources && empty(aiSearchConfiguration.?existingResource)) {
   name: take('avm.res.search.search-service.${aiSearchName}', 64)
   params: {
@@ -213,11 +236,11 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (includeAs
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.aiSearchPrivateDnsZoneId
+                  privateDnsZoneResourceId: aiSearchConfiguration!.privateDnsZoneId!
                 }
               ]
             }
-            subnetResourceId: networking!.privateEndpointSubnetId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
@@ -229,9 +252,11 @@ var storageAccountName = take(
   !empty(storageAccountConfiguration.?name) ? storageAccountConfiguration!.name! : 'st${resourcesName}',
   24
 )
-var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?storageBlobPrivateDnsZoneId) && !empty(networking.?associatedResourcesPrivateDnsZones.?storageFilePrivateDnsZoneId)
+var storageAccountPrivateNetworking = enablePrivateNetworking && !empty(storageAccountConfiguration.?blobPrivateDnsZoneId)
 module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (includeAssociatedResources && empty(storageAccountConfiguration.?existingResource)) {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [aiSearch]
   params: {
     name: storageAccountName
     location: location
@@ -261,23 +286,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.storageBlobPrivateDnsZoneId
+                  privateDnsZoneResourceId: storageAccountConfiguration!.blobPrivateDnsZoneId!
                 }
               ]
             }
             service: 'blob'
-            subnetResourceId: networking!.privateEndpointSubnetId
-          }
-          {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.storageFilePrivateDnsZoneId
-                }
-              ]
-            }
-            service: 'file'
-            subnetResourceId: networking!.privateEndpointSubnetId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
@@ -306,7 +320,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (i
 }
 
 var cosmosDbName = take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
-var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(networking.?associatedResourcesPrivateDnsZones.?cosmosDbPrivateDnsZoneId)
+var cosmosDbPrivateNetworking = enablePrivateNetworking && !empty(cosmosDbConfiguration.?privateDnsZoneId)
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (includeAssociatedResources && empty(cosmosDbConfiguration.?existingResource)) {
   name: take('avm.res.document-db.database-account.${cosmosDbName}', 64)
   params: {
@@ -328,12 +342,12 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (in
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: networking!.associatedResourcesPrivateDnsZones!.cosmosDbPrivateDnsZoneId
+                  privateDnsZoneResourceId: cosmosDbConfiguration!.privateDnsZoneId!
                 }
               ]
             }
             service: 'Sql'
-            subnetResourceId: networking!.privateEndpointSubnetId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
@@ -355,7 +369,7 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    includeCapabilityHost: false
+    includeCapabilityHost: aiFoundryConfiguration.?createAIAgentService ?? false
     storageAccountConnection: includeAssociatedResources
       ? {
           storageAccountName: empty(storageAccountConfiguration.?existingResource.?name)
@@ -422,45 +436,6 @@ output storageAccountName string = includeAssociatedResources ? 'storageAccount!
 @description('Name of the deployed Azure Cosmos DB account.')
 output cosmosAccountName string = includeAssociatedResources ? 'cosmosDb!.outputs.name' : '' // TODO
 
-@description('Values to establish private networking for resources that support creating private endpoints.')
-type networkConfigurationType = {
-  @description('Required. The Resource ID of the subnet to establish the Private Endpoint(s).')
-  privateEndpointSubnetId: string
-
-  @description('Required.  The Resource ID of the subnet for the Azure AI Services account.')
-  agentServiceSubnetId: string
-
-  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
-  cognitiveServicesPrivateDnsZoneId: string
-
-  @description('Required. The Resource ID of the Private DNS Zone for the OpenAI account.')
-  openAiPrivateDnsZoneId: string
-
-  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
-  aiServicesPrivateDnsZoneId: string
-
-  @description('Optional. Configuration for DNS zones for associated resources. This is only required if includeAssociatedResources is true.')
-  associatedResourcesPrivateDnsZones: networkResourcesDnsZonesConfigurationType?
-}
-
-@description('Values for the associated resources DNS Zone resource IDs.')
-type networkResourcesDnsZonesConfigurationType = {
-  @description('Required. The Resource ID of the DNS zone for the Azure AI Search service.')
-  aiSearchPrivateDnsZoneId: string
-
-  @description('Required. The Resource ID of the DNS zone for the Azure Cosmos DB account.')
-  cosmosDbPrivateDnsZoneId: string
-
-  @description('Required. The Resource ID of the DNS zone for the Azure Key Vault.')
-  keyVaultPrivateDnsZoneId: string
-
-  @description('Required. The Resource ID of the DNS zone "blob" for the Azure Storage Account.')
-  storageBlobPrivateDnsZoneId: string
-
-  @description('Required. The Resource ID of the DNS zone "file" for the Azure Storage Account.')
-  storageFilePrivateDnsZoneId: string
-}
-
 @description('Custom type to represent ID for a given resource in Azure. It includes subscription ID, resource group name, and resource name.')
 type resourceIdType = {
   @description('Required. The name of the resource.')
@@ -485,6 +460,9 @@ type resourceConfigurationType = {
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
 
+  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetId\' is provided.')
+  privateDnsZoneId: string?
+
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?
 }
@@ -500,6 +478,9 @@ type storageAccountConfigurationType = {
   @description('Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.')
   containerName: string?
 
+  @description('Optional. The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when \'privateEndpointSubnetId\' is provided.')
+  blobPrivateDnsZoneId: string?
+
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?
 }
@@ -512,8 +493,32 @@ type foundryConfigurationType = {
   @description('Optional. The location of the AI Foundry account. Will default to the resource group location if not specified.')
   location: string?
 
+  @description('Optional. Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, \'networking.agentServiceSubnetId\' is required. Defaults to false.')
+  createAIAgentService: bool?
+
+  @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
+  allowProjectManagement: bool?
+
+  @description('Optional. Values to establish private networking for the AI Foundry account and project.')
+  networking: foundryNetworkConfigurationType?
+
   @description('Optional. AI Foundry default project.')
   project: foundryProjectConfigurationType?
+}
+
+@description('Values to establish private networking for the AI Foundry service.')
+type foundryNetworkConfigurationType = {
+  @description('Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if \'createAIAgentService\' is true.')
+  agentServiceSubnetId: string?
+
+  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
+  cognitiveServicesPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the Private DNS Zone for the OpenAI account.')
+  openAiPrivateDnsZoneId: string
+
+  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
+  aiServicesPrivateDnsZoneId: string
 }
 
 @description('Custom configuration for an AI Foundry project, including optional name, friendly name, and description.')
