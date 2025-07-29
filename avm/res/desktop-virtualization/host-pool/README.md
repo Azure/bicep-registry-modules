@@ -654,7 +654,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedPrivateUDP`](#parameter-managedprivateudp) | string | Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
-| [`managementType`](#parameter-managementtype) | string | The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource. |
+| [`managementType`](#parameter-managementtype) | string | The type of management for this hostpool. Note: If set to `Automated`, no registrationToken is returned by the resource. |
 | [`maxSessionLimit`](#parameter-maxsessionlimit) | int | Maximum number of sessions. |
 | [`personalDesktopAssignmentType`](#parameter-personaldesktopassignmenttype) | string | Set the type of assignment for a Personal Host Pool type. |
 | [`preferredAppGroupType`](#parameter-preferredappgrouptype) | string | The type of preferred application group type, default to Desktop Application Group. |
@@ -950,7 +950,7 @@ Where direct UDP connectivity is established between the client and the session 
 
 ### Parameter: `managementType`
 
-The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource.
+The type of management for this hostpool. Note: If set to `Automated`, no registrationToken is returned by the resource.
 
 - Required: No
 - Type: string

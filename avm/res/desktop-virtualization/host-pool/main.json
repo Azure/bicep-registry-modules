@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "7328015309725307127"
+      "templateHash": "16797307257884757914"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -790,7 +790,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview#properties/properties/properties/managementType"
         },
-        "description": "Optional. The type of management for this hostpool. Note: If set to `Automated`, the no registrationToken is returned by the resource."
+        "description": "Optional. The type of management for this hostpool. Note: If set to `Automated`, no registrationToken is returned by the resource."
       },
       "defaultValue": "Standard"
     },
