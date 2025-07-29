@@ -8,13 +8,13 @@ param apiManagementServiceName string
 param displayName string
 
 @description('Optional. KeyVault location details of the namedValue.')
-param keyVault object = {}
+param keyVault resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
 @description('Required. Named value Name.')
 param name string
 
 @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
-param tags array?
+param tags resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.tags?
 
 @description('Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false.')
 #disable-next-line secure-secrets-in-params // Not a secret
@@ -23,21 +23,19 @@ param secret bool = false
 @description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
 param value string = newGuid()
 
-var keyVaultEmpty = empty(keyVault)
-
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource namedValue 'Microsoft.ApiManagement/service/namedValues@2022-08-01' = {
+resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-05-01' = {
   name: name
   parent: service
   properties: {
     tags: tags
     secret: secret
     displayName: displayName
-    value: keyVaultEmpty ? value : null
-    keyVault: !keyVaultEmpty ? keyVault : null
+    value: empty(keyVault) ? value : null
+    keyVault: keyVault
   }
 }
 

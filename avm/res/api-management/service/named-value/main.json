@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8157254408403610295"
+      "version": "0.36.177.2456",
+      "templateHash": "16434898948279118859"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -26,10 +26,13 @@
     },
     "keyVault": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/keyVault"
+        },
         "description": "Optional. KeyVault location details of the namedValue."
-      }
+      },
+      "nullable": true
     },
     "name": {
       "type": "string",
@@ -39,10 +42,13 @@
     },
     "tags": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/tags"
+        },
         "description": "Optional. Tags that when provided can be used to filter the NamedValue list. - string."
-      }
+      },
+      "nullable": true
     },
     "secret": {
       "type": "bool",
@@ -59,26 +65,23 @@
       }
     }
   },
-  "variables": {
-    "keyVaultEmpty": "[empty(parameters('keyVault'))]"
-  },
   "resources": {
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "namedValue": {
       "type": "Microsoft.ApiManagement/service/namedValues",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "tags": "[parameters('tags')]",
         "secret": "[parameters('secret')]",
         "displayName": "[parameters('displayName')]",
-        "value": "[if(variables('keyVaultEmpty'), parameters('value'), null())]",
-        "keyVault": "[if(not(variables('keyVaultEmpty')), parameters('keyVault'), null())]"
+        "value": "[if(empty(parameters('keyVault')), parameters('value'), null())]",
+        "keyVault": "[parameters('keyVault')]"
       }
     }
   },
