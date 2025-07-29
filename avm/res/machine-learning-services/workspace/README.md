@@ -36,12 +36,11 @@ The following section provides usage examples for the module, which were used to
 
 - [Creating Azure AI Studio hub resource](#example-1-creating-azure-ai-studio-hub-resource)
 - [Creating Azure AI Studio project resource](#example-2-creating-azure-ai-studio-project-resource)
-- [Ai](#example-3-ai)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
-- [Creating Azure ML managed feature store](#example-6-creating-azure-ml-managed-feature-store)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [WAF-aligned](#example-8-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
+- [Creating Azure ML managed feature store](#example-5-creating-azure-ml-managed-feature-store)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Creating Azure AI Studio hub resource_
 
@@ -225,19 +224,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Ai_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-```
-
-</details>
-<p>
-
-### Example 4: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -321,7 +308,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -491,7 +478,7 @@ param primaryUserAssignedIdentity = '<primaryUserAssignedIdentity>'
 </details>
 <p>
 
-### Example 6: _Creating Azure ML managed feature store_
+### Example 5: _Creating Azure ML managed feature store_
 
 This instance deploys an Azure ML managed feature store.
 
@@ -597,7 +584,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1159,7 +1146,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
