@@ -70,9 +70,7 @@ module testDeployment '../../../main.bicep' = [
           desc: 'This is a custom project for testing.'
         }
         allowProjectManagement: true
-        createAIAgentService: false
         networking: {
-          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
           aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
           openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
           cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId

@@ -455,9 +455,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryConfiguration: {
       accountName: '<accountName>'
       allowProjectManagement: true
-      createAIAgentService: false
       networking: {
-        agentServiceSubnetId: '<agentServiceSubnetId>'
         aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
         cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
         openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
@@ -566,9 +564,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "accountName": "<accountName>",
         "allowProjectManagement": true,
-        "createAIAgentService": false,
         "networking": {
-          "agentServiceSubnetId": "<agentServiceSubnetId>",
           "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
           "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
           "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>"
@@ -697,9 +693,7 @@ param baseName = '<baseName>'
 param aiFoundryConfiguration = {
   accountName: '<accountName>'
   allowProjectManagement: true
-  createAIAgentService: false
   networking: {
-    agentServiceSubnetId: '<agentServiceSubnetId>'
     aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
     cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
     openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
@@ -805,9 +799,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     baseName: '<baseName>'
     // Non-required parameters
     aiFoundryConfiguration: {
-      createAIAgentService: false
       networking: {
-        agentServiceSubnetId: '<agentServiceSubnetId>'
         aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
         cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
         openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
@@ -864,9 +856,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Non-required parameters
     "aiFoundryConfiguration": {
       "value": {
-        "createAIAgentService": false,
         "networking": {
-          "agentServiceSubnetId": "<agentServiceSubnetId>",
           "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
           "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
           "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>"
@@ -933,9 +923,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param baseName = '<baseName>'
 // Non-required parameters
 param aiFoundryConfiguration = {
-  createAIAgentService: false
   networking: {
-    agentServiceSubnetId: '<agentServiceSubnetId>'
     aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
     cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
     openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
@@ -1021,7 +1009,6 @@ Custom configuration for the AI Foundry.
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-aifoundryconfigurationaccountname) | string | The name of the AI Foundry account. |
 | [`allowProjectManagement`](#parameter-aifoundryconfigurationallowprojectmanagement) | bool | Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true. |
-| [`createAIAgentService`](#parameter-aifoundryconfigurationcreateaiagentservice) | bool | Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, 'networking.agentServiceSubnetId' is required. Defaults to false. |
 | [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
 | [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
 | [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
@@ -1037,13 +1024,6 @@ The name of the AI Foundry account.
 ### Parameter: `aiFoundryConfiguration.allowProjectManagement`
 
 Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.
-
-- Required: No
-- Type: bool
-
-### Parameter: `aiFoundryConfiguration.createAIAgentService`
-
-Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, 'networking.agentServiceSubnetId' is required. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -1070,12 +1050,6 @@ Values to establish private networking for the AI Foundry account and project.
 | [`cognitiveServicesPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
 | [`openAiPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the OpenAI account. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`agentServiceSubnetId`](#parameter-aifoundryconfigurationnetworkingagentservicesubnetid) | string | The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true. |
-
 ### Parameter: `aiFoundryConfiguration.networking.aiServicesPrivateDnsZoneId`
 
 The Resource ID of the Private DNS Zone for the Azure AI Services account.
@@ -1095,13 +1069,6 @@ The Resource ID of the Private DNS Zone for the Azure AI Services account.
 The Resource ID of the Private DNS Zone for the OpenAI account.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `aiFoundryConfiguration.networking.agentServiceSubnetId`
-
-The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true.
-
-- Required: No
 - Type: string
 
 ### Parameter: `aiFoundryConfiguration.project`

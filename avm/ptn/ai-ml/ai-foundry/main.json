@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "9706663028785405544"
+      "templateHash": "8546261414074113365"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -116,13 +116,6 @@
             "description": "Optional. The location of the AI Foundry account. Will default to the resource group location if not specified."
           }
         },
-        "createAIAgentService": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, 'networking.agentServiceSubnetId' is required. Defaults to false."
-          }
-        },
         "allowProjectManagement": {
           "type": "bool",
           "nullable": true,
@@ -163,13 +156,6 @@
     "foundryNetworkConfigurationType": {
       "type": "object",
       "properties": {
-        "agentServiceSubnetId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true."
-          }
-        },
         "cognitiveServicesPrivateDnsZoneId": {
           "type": "string",
           "metadata": {
@@ -19668,7 +19654,7 @@
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
           "includeCapabilityHost": {
-            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createAIAgentService'), false())]"
+            "value": false
           },
           "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('storageAccountName', reference('storageAccount').outputs.name.value, 'subscriptionId', reference('storageAccount').outputs.subscriptionId.value, 'resourceGroupName', reference('storageAccount').outputs.resourceGroupName.value, 'containerName', reference('storageAccount').outputs.containerName.value)), createObject('value', null()))]",
           "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('aiSearch').outputs.name.value, 'subscriptionId', reference('aiSearch').outputs.subscriptionId.value, 'resourceGroupName', reference('aiSearch').outputs.resourceGroupName.value)), createObject('value', null()))]",
