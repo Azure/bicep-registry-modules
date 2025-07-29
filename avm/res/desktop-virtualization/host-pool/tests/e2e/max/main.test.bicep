@@ -171,5 +171,10 @@ module testDeployment '../../../main.bicep' = {
         }
       ]
     }
+    directUDP: 'Enabled'
+    managedPrivateUDP: 'Enabled'
+    publicUDP: 'Enabled'
+    relayUDP: 'Enabled'
+    managementType: 'Automated'
   }
 }

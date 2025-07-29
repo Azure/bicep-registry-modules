@@ -2,6 +2,25 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/host-pool/CHANGELOG.md).
 
+## 0.8.0
+
+### Changes
+
+- Added parameters
+  - `managedPrivateUDP`
+  - `directUDP`
+  - `publicUDP`
+  - `relayUDP`
+  - `managementType`
+
+  with default values
+- Updated resource to API version `2025-03-01-preview`
+- Added several types
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes
