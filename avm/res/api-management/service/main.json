@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10235604547522990321"
+      "templateHash": "11452812603678687630"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -1906,7 +1906,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service@2024-05-01#properties/properties/properties/publicNetworkAccess"
         },
-        "description": "Optional. Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method."
+        "description": "Optional. Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method. MUST be enabled during service creation."
       },
       "nullable": true
     }

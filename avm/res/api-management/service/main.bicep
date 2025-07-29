@@ -162,7 +162,7 @@ param publicIpAddressResourceId string?
 @description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
 param enableDeveloperPortal bool = false
 
-@description('Optional. Whether or not public endpoint access is allowed for this API Management service. If set to \'Disabled\', private endpoints are the exclusive access method.')
+@description('Optional. Whether or not public endpoint access is allowed for this API Management service. If set to \'Disabled\', private endpoints are the exclusive access method. MUST be enabled during service creation.')
 param publicNetworkAccess resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.publicNetworkAccess?
 
 var enableReferencedModulesTelemetry bool = false

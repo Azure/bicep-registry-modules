@@ -262,7 +262,7 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-
+      publicNetworkAccess: iteration == 'init' ? 'Enabled' : null // MUST be enabled on service creation
       privateEndpoints: [
         {
           privateDnsZoneGroup: {
