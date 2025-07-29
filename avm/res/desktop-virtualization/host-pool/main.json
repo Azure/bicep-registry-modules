@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "16797307257884757914"
+      "templateHash": "10256606721981593368"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -1807,7 +1807,7 @@
       "metadata": {
         "description": "The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null."
       },
-      "value": "[if(equals(parameters('managementType'), 'Standard'), first(listRegistrationTokens('hostPool', '2025-03-01-preview').value).token, null())]"
+      "value": "[if(equals(parameters('managementType'), 'Standard'), reference('hostPool').registrationInfo.token, null())]"
     }
   }
 }

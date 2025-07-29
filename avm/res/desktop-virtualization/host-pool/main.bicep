@@ -431,9 +431,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @secure()
 @sys.description('The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null.')
-output registrationToken string? = managementType == 'Standard'
-  ? first(hostPool.listRegistrationTokens().value)!.token
-  : null
+output registrationToken string? = managementType == 'Standard' ? hostPool.properties.registrationInfo.token : null
 
 // =============== //
 //   Definitions   //
