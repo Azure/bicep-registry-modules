@@ -431,7 +431,12 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @secure()
 @sys.description('The registration token of the host pool.')
-output registrationToken string = hostPool.properties.registrationInfo.token
+output registrationToken string = first(hostPool.listRegistrationTokens().value)!.token
+// @secure()
+// @sys.description('The registration token of the host pool.')
+// output registrationToken string = managementType == 'Standard'
+//   ? hostPool.properties.registrationInfo.token
+//   : first(hostPool.listRegistrationTokens().value)!.token
 
 // =============== //
 //   Definitions   //
