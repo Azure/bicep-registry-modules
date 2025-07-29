@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'WAF-aligned with managed identity'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework and uses managed identities to deliver Event Grid Topic events.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -72,6 +72,13 @@ module testDeployment '../../../main.bicep' = [
       eventSubscriptions: [
         {
           name: '${namePrefix}${serviceShort}001'
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              resourceId: nestedDependencies.outputs.storageAccountResourceId
+              queueName: nestedDependencies.outputs.queueName
+            }
+          }
           expirationTimeUtc: '2099-01-01T11:00:21.715Z'
           filter: {
             isSubjectCaseSensitive: false
@@ -79,17 +86,9 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '120'
+            eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
-          destination: {
-            endpointType: 'StorageQueue'
-            properties: {
-              resourceId: nestedDependencies.outputs.storageAccountResourceId
-              queueMessageTimeToLiveInSeconds: 86400
-              queueName: nestedDependencies.outputs.queueName
-            }
-          }
         }
       ]
       diagnosticSettings: [

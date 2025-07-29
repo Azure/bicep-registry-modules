@@ -30,7 +30,7 @@ param baseTime string = utcNow('u')
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}-${serviceShort}'
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administrators: {
         azureADOnlyAuthentication: true
         login: 'myspn'
@@ -100,6 +100,7 @@ module testDeployment '../../../main.bicep' = [
             tier: 'GeneralPurpose'
             capacity: 10
           }
+          availabilityZone: -1 // SQLDB_GP_Gen5_10 does not support availability zone 1
           maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
         }
       ]
@@ -130,6 +131,7 @@ module testDeployment '../../../main.bicep' = [
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
           }
+          availabilityZone: 1
         }
       ]
       customerManagedKey: {
@@ -173,10 +175,11 @@ module testDeployment '../../../main.bicep' = [
         {
           ignoreMissingVnetServiceEndpoint: true
           name: 'newVnetRule1'
-          virtualNetworkSubnetId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
+          virtualNetworkSubnetResourceId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
         }
       ]
       restrictOutboundNetworkAccess: 'Disabled'
+      connectionPolicy: 'Redirect'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

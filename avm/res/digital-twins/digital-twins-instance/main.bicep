@@ -10,7 +10,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -75,7 +75,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -129,7 +129,7 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
 
 module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
   for (endpoint, index) in (endpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-${index}'
+    name: '${uniqueString(deployment().name, location)}-DigitalTwins-Endpoints-${index}'
     params: {
       digitalTwinInstanceName: digitalTwinsInstance.name
       name: endpoint.?name ?? '${endpoint.properties.endpointType}Endpoint'
@@ -138,9 +138,9 @@ module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
   }
 ]
 
-module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-digitalTwinsInstance-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-digitalTwins-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

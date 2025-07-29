@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8471825539906571393"
+      "version": "0.35.1.17967",
+      "templateHash": "5366931574985794833"
     },
     "name": "IP Groups",
     "description": "This module deploys an IP Group."
@@ -212,7 +212,7 @@
     },
     "ipGroup": {
       "type": "Microsoft.Network/ipGroups",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -284,7 +284,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('ipGroup', '2023-04-01', 'full').location]"
+      "value": "[reference('ipGroup', '2024-05-01', 'full').location]"
     }
   }
 }

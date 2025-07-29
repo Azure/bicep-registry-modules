@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "4486412525156332898"
+      "version": "0.36.1.42791",
+      "templateHash": "12714930315609879649"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -767,7 +767,7 @@
       "minValue": 1,
       "maxValue": 20,
       "metadata": {
-        "description": "Optional. The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units."
+        "description": "Optional. The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units."
       }
     },
     "zoneRedundant": {
@@ -915,10 +915,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventHub/namespaces@2024-01-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1043,8 +1046,8 @@
         "zoneRedundant": "[parameters('zoneRedundant')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "cMKKeyVault",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "eventHubNamespace_roleAssignments": {
@@ -1154,8 +1157,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10986956603827645787"
+              "version": "0.36.1.42791",
+              "templateHash": "8454561523232143470"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -1252,8 +1255,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "367738327808042586"
+              "version": "0.36.1.42791",
+              "templateHash": "4198674748200869524"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -1386,6 +1389,9 @@
           "status": {
             "value": "[tryGet(parameters('eventhubs')[copyIndex()], 'status')]"
           },
+          "retentionDescriptionEnabled": {
+            "value": "[tryGet(parameters('eventhubs')[copyIndex()], 'retentionDescriptionEnabled')]"
+          },
           "retentionDescriptionCleanupPolicy": {
             "value": "[tryGet(parameters('eventhubs')[copyIndex()], 'retentionDescriptionCleanupPolicy')]"
           },
@@ -1403,8 +1409,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6867966200326116947"
+              "version": "0.36.1.42791",
+              "templateHash": "5223490441794132706"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -1549,7 +1555,7 @@
               "type": "int",
               "defaultValue": 1,
               "minValue": 1,
-              "maxValue": 7,
+              "maxValue": 90,
               "metadata": {
                 "description": "Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to \"Compact\"."
               }
@@ -1680,6 +1686,13 @@
                 "description": "Optional. A value that indicates whether to Skip Empty Archives."
               }
             },
+            "retentionDescriptionEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored."
+              }
+            },
             "retentionDescriptionCleanupPolicy": {
               "type": "string",
               "defaultValue": "Delete",
@@ -1695,16 +1708,16 @@
               "type": "int",
               "defaultValue": 1,
               "minValue": 1,
-              "maxValue": 168,
+              "maxValue": 2160,
               "metadata": {
-                "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
+                "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
               }
             },
             "retentionDescriptionTombstoneRetentionTimeInHours": {
               "type": "int",
               "defaultValue": 1,
               "minValue": 1,
-              "maxValue": 168,
+              "maxValue": 2160,
               "metadata": {
                 "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
               }
@@ -1719,14 +1732,10 @@
               }
             ],
             "eventHubProperties": {
-              "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+              "messageRetentionInDays": "[if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays'))]",
               "partitionCount": "[parameters('partitionCount')]",
               "status": "[parameters('status')]",
-              "retentionDescription": {
-                "cleanupPolicy": "[parameters('retentionDescriptionCleanupPolicy')]",
-                "retentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null())]",
-                "tombstoneRetentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())]"
-              }
+              "retentionDescription": "[if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())]"
             },
             "eventHubPropertiesCapture": {
               "captureDescription": {
@@ -1765,7 +1774,7 @@
             },
             "eventHub": {
               "type": "Microsoft.EventHub/namespaces/eventhubs",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]"
             },
@@ -1838,8 +1847,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "12407548355987095287"
+                      "version": "0.36.1.42791",
+                      "templateHash": "13587345575892314444"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -1943,8 +1952,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "3026048541307905778"
+                      "version": "0.36.1.42791",
+                      "templateHash": "16120347380330996321"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -2086,8 +2095,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8142109563540488179"
+              "version": "0.36.1.42791",
+              "templateHash": "10311264071215691288"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -2212,8 +2221,9 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-eventHubNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "name": "[format('{0}-namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2266,8 +2276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2676,7 +2686,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2694,7 +2704,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2782,8 +2792,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2855,12 +2865,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -2924,7 +2934,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -2988,8 +2998,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14045530027687796477"
+              "version": "0.36.1.42791",
+              "templateHash": "9828976783151673384"
             }
           },
           "definitions": {
@@ -3168,7 +3178,7 @@
         "description": "The private endpoints of the eventspace."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('eventHubNamespace_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('eventHubNamespace_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -3184,6 +3194,34 @@
         "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
       },
       "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+    },
+    "primaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's primary connection string."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString]"
+    },
+    "secondaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's secondary connection string."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString]"
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's primary key."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryKey]"
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's secondary key."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryKey]"
     }
   }
 }

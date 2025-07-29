@@ -403,11 +403,11 @@ The type of the PIM role assignment whether its active or eligible.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Active`](#variant-pimroleassignmenttyperoleassignmenttype-active) |  |
-| [`Eligible`](#variant-pimroleassignmenttyperoleassignmenttype-eligible) |  |
+| [`Active`](#variant-pimroleassignmenttyperoleassignmenttype-active) | The type for an active PIM role assignment. |
+| [`Eligible`](#variant-pimroleassignmenttyperoleassignmenttype-eligible) | The type for a PIM-eligible role assignment. |
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active`
-
+The type for an active PIM role assignment.
 
 To use this variant, set the property `roleAssignmentType` to `Active`.
 
@@ -451,12 +451,12 @@ The schedule information for the role assignment.
 
 | Variant | Description |
 | :-- | :-- |
-| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-noexpiration) |  |
-| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterduration) |  |
-| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetime) |  |
+| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-noexpiration) | The type for a permanent role assignment schedule. |
+| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterduration) | The type for a time-bound role assignment schedule. |
+| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetime) | The type for a date-bound role assignment schedule. |
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-NoExpiration`
-
+The type for a permanent role assignment schedule.
 
 To use this variant, set the property `durationType` to `NoExpiration`.
 
@@ -480,7 +480,7 @@ The type of the duration.
   ```
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDuration`
-
+The type for a time-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDuration`.
 
@@ -520,7 +520,7 @@ The start time for the role assignment.
 - Type: string
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDateTime`
-
+The type for a date-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDateTime`.
 
@@ -581,7 +581,7 @@ The role assignment schedule instance id being updated.
 - Type: string
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible`
-
+The type for a PIM-eligible role assignment.
 
 To use this variant, set the property `roleAssignmentType` to `Eligible`.
 
@@ -624,12 +624,12 @@ The schedule information for the role assignment.
 
 | Variant | Description |
 | :-- | :-- |
-| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-noexpiration) |  |
-| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterduration) |  |
-| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetime) |  |
+| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-noexpiration) | The type for a permanent role assignment schedule. |
+| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterduration) | The type for a time-bound role assignment schedule. |
+| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetime) | The type for a date-bound role assignment schedule. |
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-NoExpiration`
-
+The type for a permanent role assignment schedule.
 
 To use this variant, set the property `durationType` to `NoExpiration`.
 
@@ -653,7 +653,7 @@ The type of the duration.
   ```
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDuration`
-
+The type for a time-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDuration`.
 
@@ -693,7 +693,7 @@ The start time for the role assignment.
 - Type: string
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDateTime`
-
+The type for a date-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDateTime`.
 

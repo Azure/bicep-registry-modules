@@ -5,12 +5,38 @@ on:
   schedule:
     - cron: "30 5 * * *" # Every day at 5:30 am
   workflow_dispatch:
+    inputs:
+      whatIf:
+        type: boolean
+        description: "Simulate execution"
+        required: false
+        default: false
+
+env:
+  workflowPath: ".github/workflows/platform.manage-workflow-issue.yml"
 
 jobs:
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
   manage-issues:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+    needs:
+      - job_initialize_pipeline
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
@@ -27,17 +53,17 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Set-AvmGithubIssueForWorkflow.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueForWorkflow.ps1')
 
           $functionInput = @{
-            Repo              = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-            RepoRoot          = $env:GITHUB_WORKSPACE
-            LimitNumberOfRuns = 500
-            LimitInDays       = 2
-            IgnoreWorkflows   = @()
+            RepositoryOwner = "${{ github.repository_owner }}"
+            RepositoryName  = "${{ github.event.repository.name }}"
+            RepoRoot        = $env:GITHUB_WORKSPACE
+            WhatIf          = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
+
           }
 
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-AvmGithubIssueForWorkflow @functionInput -Verbose # -WhatIf
+          Set-AvmGitHubIssueForWorkflow @functionInput

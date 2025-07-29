@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "11395333038508730086"
+      "version": "0.35.1.17967",
+      "templateHash": "8385270521150412415"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -49,6 +49,7 @@
         },
         "certificateKeyVaultProperties": {
           "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. A key vault reference."
           }
@@ -100,6 +101,48 @@
         "description": "The type of the storage."
       }
     },
+    "appLogsConfigurationType": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "allowedValues": [
+            "azure-monitor",
+            "log-analytics",
+            "none"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The destination of the logs."
+          }
+        },
+        "logAnalyticsConfiguration": {
+          "type": "object",
+          "properties": {
+            "customerId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Log Analytics Workspace ID."
+              }
+            },
+            "sharedKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The shared key of the Log Analytics workspace."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The Log Analytics configuration. Required if `destination` is `log-analytics`."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the App Logs Configuration."
+      }
+    },
     "certificateKeyVaultPropertiesType": {
       "type": "object",
       "properties": {
@@ -116,7 +159,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "The type for the certificate's key vault properties.",
         "__bicep_imported_from!": {
@@ -265,12 +307,6 @@
         "description": "Required. Name of the Container Apps Managed Environment."
       }
     },
-    "logAnalyticsWorkspaceResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -300,13 +336,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
-      }
-    },
-    "logsDestination": {
-      "type": "string",
-      "defaultValue": "log-analytics",
-      "metadata": {
-        "description": "Optional. Logs destination."
       }
     },
     "enableTelemetry": {
@@ -344,7 +373,7 @@
         "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
-    "infrastructureSubnetId": {
+    "infrastructureSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -462,6 +491,13 @@
       "metadata": {
         "description": "Optional. A Managed Environment Certificate."
       }
+    },
+    "appLogsConfiguration": {
+      "$ref": "#/definitions/appLogsConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The AppLogsConfiguration for the Managed Environment."
+      }
     }
   },
   "variables": {
@@ -502,7 +538,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -519,15 +555,6 @@
         }
       }
     },
-    "logAnalyticsWorkspace": {
-      "condition": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
-      "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
-      "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
-      "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
-    },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
       "apiVersion": "2024-10-02-preview",
@@ -539,13 +566,7 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": {
-          "destination": "[parameters('logsDestination')]",
-          "logAnalyticsConfiguration": {
-            "customerId": "[reference('logAnalyticsWorkspace').customerId]",
-            "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey]"
-          }
-        },
+        "appLogsConfiguration": "[parameters('appLogsConfiguration')]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {
@@ -563,18 +584,15 @@
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
-          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
-          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('dockerBridgeCidr'), null())]",
-          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedCidr'), null())]",
-          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedDnsIP'), null())]"
+          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('infrastructureSubnetResourceId'), null())]",
+          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('dockerBridgeCidr'), null())]",
+          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedCidr'), null())]",
+          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedDnsIP'), null())]"
         },
         "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
-      },
-      "dependsOn": [
-        "logAnalyticsWorkspace"
-      ]
+      }
     },
     "managedEnvironment_roleAssignments": {
       "copy": {
@@ -649,8 +667,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10404997262108850284"
+              "version": "0.35.1.17967",
+              "templateHash": "18123249047188753287"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -672,7 +690,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for the certificate's key vault properties."
@@ -701,6 +718,7 @@
             },
             "certificateKeyVaultProperties": {
               "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A key vault reference to the certificate to use for the custom domain."
               }

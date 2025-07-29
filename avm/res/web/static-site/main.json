@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16268801724082727900"
+      "version": "0.36.177.2456",
+      "templateHash": "16233732673264463839"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -636,6 +636,17 @@
         "description": "Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present."
       }
     },
+    "validationMethod": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "dns-txt-token",
+        "cname-delegation"
+      ],
+      "metadata": {
+        "description": "Optional. Custom domain validation method. If not specified, automatically determined based on domain structure."
+      }
+    },
     "publicNetworkAccess": {
       "type": "string",
       "defaultValue": "",
@@ -796,8 +807,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13255454067128443657"
+              "version": "0.36.177.2456",
+              "templateHash": "15319203273544922807"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
@@ -897,8 +908,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10411947595066907075"
+              "version": "0.36.177.2456",
+              "templateHash": "3254791146387663261"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -991,8 +1002,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10411947595066907075"
+              "version": "0.36.177.2456",
+              "templateHash": "3254791146387663261"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -1078,7 +1089,9 @@
           "staticSiteName": {
             "value": "[parameters('name')]"
           },
-          "validationMethod": "[if(equals(indexOf(parameters('customDomains')[copyIndex()], '.'), lastIndexOf(parameters('customDomains')[copyIndex()], '.')), createObject('value', 'dns-txt-token'), createObject('value', 'cname-delegation'))]"
+          "validationMethod": {
+            "value": "[coalesce(parameters('validationMethod'), if(equals(indexOf(parameters('customDomains')[copyIndex()], '.'), lastIndexOf(parameters('customDomains')[copyIndex()], '.')), 'dns-txt-token', 'cname-delegation'))]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1086,8 +1099,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13361505089055584794"
+              "version": "0.36.177.2456",
+              "templateHash": "14481731343233923917"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain."

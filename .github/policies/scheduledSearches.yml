@@ -25,6 +25,8 @@ configuration:
               label: "Needs: Triage :mag:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
+          - isNotLabeledWith:
+              label: "Status: Response Overdue :triangular_flag_on_post:"
           - noActivitySince:
               days: 5
         actions:
@@ -56,6 +58,8 @@ configuration:
               label: "Needs: Triage :mag:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
+          - isNotLabeledWith:
+              label: "Status: Response Overdue :triangular_flag_on_post:"
           - noActivitySince:
               days: 3
         actions:
@@ -90,6 +94,8 @@ configuration:
               label: "Status: Response Overdue :triangular_flag_on_post:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
+          - isNotLabeledWith:
+              label: "Needs: Immediate Attention :bangbang:"
           - noActivitySince:
               days: 5
         actions:
@@ -98,7 +104,7 @@ configuration:
                 - Azure/avm-core-team-technical-bicep
               replyTemplate: |
                 > [!CAUTION]
-                > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days. **
+                > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
 
                 > [!TIP]
                 > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
@@ -121,6 +127,8 @@ configuration:
               label: "Status: Response Overdue :triangular_flag_on_post:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
+          - isNotLabeledWith:
+              label: "Needs: Immediate Attention :bangbang:"
           - noActivitySince:
               days: 3
         actions:
@@ -129,7 +137,7 @@ configuration:
                 - Azure/avm-core-team-technical-bicep
               replyTemplate: |
                 > [!CAUTION]
-                > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days. **
+                > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
 
                 > [!TIP]
                 > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
@@ -199,7 +207,7 @@ configuration:
           - addReply:
               reply: |
                 > [!IMPORTANT]
-                > @${issueAuthor}, this issue has been automatically marked as stale because it has been marked as requiring author feedback but has not had any activity for **4 days**. It will be closed if no further activity occurs **within 3 days of this comment**.
+                > ${issueAuthor}, this issue has been automatically marked as stale because it has been marked as requiring author feedback but has not had any activity for **4 days**.
 
                 > [!TIP]
                 > To prevent further actions to take effect, one of the following conditions must be met:

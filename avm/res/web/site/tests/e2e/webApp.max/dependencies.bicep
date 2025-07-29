@@ -19,6 +19,9 @@ param relayNamespaceName string
 @description('Required. The name of the Hybrid Connection to create.')
 param hybridConnectionName string
 
+@description('Required. The name of the api management instance to create.')
+param apiManagementName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -66,10 +69,10 @@ resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: serverFarmName
   location: location
   sku: {
-    name: 'S1'
-    tier: 'Standard'
-    size: 'S1'
-    family: 'S'
+    name: 'P1v2'
+    tier: 'PremiumV2'
+    size: 'P1v2'
+    family: 'Pv2'
     capacity: 1
   }
   properties: {}
@@ -115,6 +118,30 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
 }
 
+resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
+  name: apiManagementName
+  location: location
+  sku: {
+    name: 'Consumption'
+    capacity: 0
+  }
+  properties: {
+    publisherEmail: 'noreply@microsoft.com'
+    publisherName: 'n/a'
+  }
+
+  resource api 'apis@2024-06-01-preview' = {
+    name: 'todo-api'
+    properties: {
+      displayName: 'Todo API'
+      path: 'todo-api'
+      protocols: [
+        'https'
+      ]
+    }
+  }
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -135,3 +162,6 @@ output hybridConnectionResourceId string = hybridConnection.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The resource ID of the created api management.')
+output apiManagementResourceId string = apiManagement.id

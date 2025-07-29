@@ -20,8 +20,9 @@ This module deploys a Scheduled Query Rule.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-15-preview/scheduledQueryRules) |
+| `Microsoft.Insights/scheduledQueryRules` | [2025-01-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2025-01-01-preview/scheduledQueryRules) |
 
 ## Usage examples
 
@@ -258,6 +259,10 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -376,6 +381,12 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
@@ -488,6 +499,10 @@ param alertDisplayName = '<alertDisplayName>'
 param autoMitigate = false
 param evaluationFrequency = 'PT5M'
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -759,6 +774,7 @@ param windowSize = 'PT5M'
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert. |
 | [`kind`](#parameter-kind) | string | Indicates the type of scheduled query rule. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -927,6 +943,42 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `managedIdentities`
 
@@ -1119,7 +1171,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 

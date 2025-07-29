@@ -5,13 +5,151 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6548535891657862733"
+      "version": "0.36.1.42791",
+      "templateHash": "14802204470909553902"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
   },
   "definitions": {
+    "eventSubscriptionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the event subscription."
+          }
+        },
+        "deadLetterDestination": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterDestination"
+            },
+            "description": "Optional. Dead Letter Destination."
+          },
+          "nullable": true
+        },
+        "deadLetterWithResourceIdentity": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterWithResourceIdentity"
+            },
+            "description": "Optional. Dead Letter with Resource Identity Configuration."
+          },
+          "nullable": true
+        },
+        "deliveryWithResourceIdentity": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deliveryWithResourceIdentity"
+            },
+            "description": "Optional. Delivery with Resource Identity Configuration."
+          },
+          "nullable": true
+        },
+        "destination": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/destination"
+            },
+            "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
+          },
+          "nullable": true
+        },
+        "eventDeliverySchema": {
+          "type": "string",
+          "allowedValues": [
+            "CloudEventSchemaV1_0",
+            "CustomInputSchema",
+            "EventGridEvent",
+            "EventGridSchema"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The event delivery schema for the event subscription."
+          }
+        },
+        "expirationTimeUtc": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
+          }
+        },
+        "filter": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/filter"
+            },
+            "description": "Optional. The filter for the event subscription."
+          },
+          "nullable": true
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of user defined labels."
+          }
+        },
+        "retryPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/retryPolicy"
+            },
+            "description": "Optional. The retry policy for events."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Event subscription configuration."
+      }
+    },
+    "externalResourceRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the target resource to assign permissions to."
+          }
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role definition ID (GUID) or full role definition resource ID. Example: \"ba92f5b4-2d11-453d-a403-e96b0029c9fe\" or \"/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe\"."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the role assignment."
+          }
+        },
+        "roleName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the role for logging purposes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "External resource role assignment configuration."
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -296,6 +434,9 @@
     },
     "eventSubscriptions": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/eventSubscriptionType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Event subscriptions to deploy."
@@ -321,6 +462,16 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
+    "externalResourceRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/externalResourceRoleAssignmentType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID)."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -337,10 +488,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics@2025-02-15#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -356,6 +510,11 @@
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      },
+      {
+        "name": "formattedExternalResourceRoleAssignments",
+        "count": "[length(coalesce(parameters('externalResourceRoleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')], createObject('roleDefinitionId', if(contains(coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')].roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')].roleDefinitionId, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')].roleDefinitionId))))]"
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -370,7 +529,8 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
@@ -395,7 +555,7 @@
     },
     "systemTopic": {
       "type": "Microsoft.EventGrid/systemTopics",
-      "apiVersion": "2023-12-15-preview",
+      "apiVersion": "2025-02-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -496,9 +656,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "destination": {
-            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].destination]"
-          },
+          "destination": "[if(empty(tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity')), createObject('value', tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'destination')), createObject('value', null()))]",
           "systemTopicName": {
             "value": "[parameters('name')]"
           },
@@ -537,8 +695,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14799612617605682724"
+              "version": "0.36.1.42791",
+              "templateHash": "5286684288587619638"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -558,30 +716,43 @@
             },
             "deadLetterDestination": {
               "type": "object",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterDestination"
+                },
+                "description": "Optional. Dead Letter Destination."
+              },
+              "nullable": true
             },
             "deadLetterWithResourceIdentity": {
               "type": "object",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterWithResourceIdentity"
+                },
+                "description": "Optional. Dead Letter with Resource Identity Configuration."
+              },
+              "nullable": true
             },
             "deliveryWithResourceIdentity": {
               "type": "object",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deliveryWithResourceIdentity"
+                },
+                "description": "Optional. Delivery with Resource Identity Configuration."
+              },
+              "nullable": true
             },
             "destination": {
               "type": "object",
               "metadata": {
-                "description": "Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/destination"
+                },
+                "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
+              },
+              "nullable": true
             },
             "eventDeliverySchema": {
               "type": "string",
@@ -605,13 +776,19 @@
             },
             "filter": {
               "type": "object",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/filter"
+                },
+                "description": "Optional. The filter for the event subscription."
+              },
+              "nullable": true
             },
             "labels": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. The list of user defined labels."
@@ -619,22 +796,25 @@
             },
             "retryPolicy": {
               "type": "object",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/retryPolicy"
+                },
+                "description": "Optional. The retry policy for events."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "systemTopic": {
               "existing": true,
               "type": "Microsoft.EventGrid/systemTopics",
-              "apiVersion": "2023-12-15-preview",
+              "apiVersion": "2025-02-15",
               "name": "[parameters('systemTopicName')]"
             },
             "eventSubscription": {
               "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-              "apiVersion": "2023-12-15-preview",
+              "apiVersion": "2025-02-15",
               "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
               "properties": {
                 "deadLetterDestination": "[parameters('deadLetterDestination')]",
@@ -676,7 +856,268 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
+              "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "systemTopic",
+        "systemTopic_externalResourceRoleAssignments"
+      ]
+    },
+    "systemTopic_externalResourceRoleAssignments": {
+      "copy": {
+        "name": "systemTopic_externalResourceRoleAssignments",
+        "count": "[length(variables('formattedExternalResourceRoleAssignments'))]"
+      },
+      "condition": "[coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EventGrid-SysTopic-ExtRoleAssign-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "resourceId": {
+            "value": "[variables('formattedExternalResourceRoleAssignments')[copyIndex()].resourceId]"
+          },
+          "roleDefinitionId": {
+            "value": "[variables('formattedExternalResourceRoleAssignments')[copyIndex()].roleDefinitionId]"
+          },
+          "principalId": {
+            "value": "[reference('systemTopic', '2025-02-15', 'full').identity.principalId]"
+          },
+          "principalType": {
+            "value": "ServicePrincipal"
+          },
+          "description": {
+            "value": "[coalesce(tryGet(variables('formattedExternalResourceRoleAssignments')[copyIndex()], 'description'), format('Role assignment for Event Grid System Topic {0}', parameters('name')))]"
+          },
+          "roleName": {
+            "value": "[coalesce(tryGet(variables('formattedExternalResourceRoleAssignments')[copyIndex()], 'roleName'), variables('formattedExternalResourceRoleAssignments')[copyIndex()].roleDefinitionId)]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "14634305923902101494"
+            },
+            "name": "Resource-scoped role assignment",
+            "description": "This module deploys a Role Assignment for a specific resource."
+          },
+          "parameters": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The scope for the role assignment, fully qualified resourceId."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]",
+              "metadata": {
+                "description": "Optional. The unique guid name for the role assignment."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The role definition ID for the role assignment."
+              }
+            },
+            "roleName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The name for the role, used for logging."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "ServicePrincipal",
+                "Group",
+                "User",
+                "ForeignGroup",
+                "Device",
+                ""
+              ],
+              "metadata": {
+                "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of role assignment."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "$fxv#0": {
+              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "scope": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "roleDefinitionId": {
+                  "type": "string"
+                },
+                "principalId": {
+                  "type": "string"
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User",
+                    ""
+                  ],
+                  "defaultValue": "",
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "resources": [
+                {
+                  "type": "Microsoft.Authorization/roleAssignments",
+                  "apiVersion": "2022-04-01",
+                  "scope": "[[parameters('scope')]",
+                  "name": "[[parameters('name')]",
+                  "properties": {
+                    "roleDefinitionId": "[[parameters('roleDefinitionId')]",
+                    "principalId": "[[parameters('principalId')]",
+                    "principalType": "[[parameters('principalType')]",
+                    "description": "[[parameters('description')]"
+                  }
+                }
+              ],
+              "outputs": {
+                "roleAssignmentId": {
+                  "type": "string",
+                  "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+                }
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
+              "properties": {
+                "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                  "scope": "Outer"
+                },
+                "template": "[variables('$fxv#0')]",
+                "parameters": {
+                  "scope": {
+                    "value": "[parameters('resourceId')]"
+                  },
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('principalId')]"
+                  },
+                  "principalType": {
+                    "value": "[parameters('principalType')]"
+                  },
+                  "description": {
+                    "value": "[parameters('description')]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The GUID of the Role Assignment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "roleName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name for the role, used for logging."
+              },
+              "value": "[parameters('roleName')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Role Assignment."
+              },
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the role assignment was applied at."
+              },
+              "value": "[resourceGroup().name]"
             }
           }
         }
@@ -714,14 +1155,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('systemTopic', '2023-12-15-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), reference('systemTopic', '2025-02-15', 'full').identity.principalId, null())]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
+      "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
     }
   }
 }

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
@@ -73,6 +72,14 @@ module testDeployment '../../../main.bicep' = [
               1
               2
               3
+            ]
+            diagnosticSettings: [
+              {
+                eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+                eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+                storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+                workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+              }
             ]
           }
           bastionHost: {
@@ -103,10 +110,6 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           location: resourceLocation
-          lock: {
-            kind: 'CanNotDelete'
-            name: 'hub1Lock'
-          }
           routes: [
             {
               name: 'defaultRoute'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17390199680821302828"
+      "version": "0.36.1.42791",
+      "templateHash": "17768721428681200332"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance."
@@ -954,10 +954,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -1050,7 +1053,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -1170,7 +1173,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-DigitalTwins-Endpoints-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1194,8 +1197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "4567758995064740596"
+              "version": "0.36.1.42791",
+              "templateHash": "5468659950690400320"
             },
             "name": "Digital Twins Instance Endpoint",
             "description": "This module deploys a Digital Twins Instance Endpoint."
@@ -1563,7 +1566,7 @@
               "condition": "[equals(parameters('properties').endpointType, 'EventGrid')]",
               "existing": true,
               "type": "Microsoft.EventGrid/topics",
-              "apiVersion": "2022-06-15",
+              "apiVersion": "2025-02-15",
               "subscriptionId": "[split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))]"
@@ -1596,7 +1599,7 @@
               "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
               "apiVersion": "2023-01-31",
               "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
-              "properties": "[shallowMerge(createArray(createObject('endpointType', parameters('properties').endpointType, 'identity', variables('identity'), 'deadLetterSecret', tryGet(parameters('properties'), 'deadLetterSecret'), 'deadLetterUri', tryGet(parameters('properties'), 'deadLetterUri')), if(equals(parameters('properties').endpointType, 'EventGrid'), createObject('authenticationType', 'KeyBased', 'TopicEndpoint', reference('eventGridTopic').endpoint, 'accessKey1', listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[2], split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[4]), 'Microsoft.EventGrid/topics', last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))), '2022-06-15').key1, 'accessKey2', listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[2], split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/')[4]), 'Microsoft.EventGrid/topics', last(split(tryGet(parameters('properties'), 'eventGridTopicResourceId'), '/'))), '2022-06-15').key2), createObject()), if(equals(parameters('properties').endpointType, 'EventHub'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.eventHubResourceId, '/')[8]), 'entityPath', last(split(parameters('properties').authentication.eventHubResourceId, '/'))), createObject('connectionStringPrimaryKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('properties').authentication.eventHubResourceId, '/')[2], split(parameters('properties').authentication.eventHubResourceId, '/')[4]), 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules', split(parameters('properties').authentication.eventHubResourceId, '/')[8], last(split(parameters('properties').authentication.eventHubResourceId, '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName')), '2024-01-01').primaryConnectionString, 'connectionStringSecondaryKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('properties').authentication.eventHubResourceId, '/')[2], split(parameters('properties').authentication.eventHubResourceId, '/')[4]), 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules', split(parameters('properties').authentication.eventHubResourceId, '/')[8], last(split(parameters('properties').authentication.eventHubResourceId, '/')), tryGet(parameters('properties').authentication, 'eventHubAuthorizationRuleName')), '2024-01-01').secondaryConnectionString)))), createObject()), if(equals(parameters('properties').endpointType, 'ServiceBus'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8]), 'entityPath', last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'))), createObject('primaryConnectionString', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[2], split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[4]), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')), tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName')), '2024-01-01').primaryConnectionString, 'secondaryConnectionString', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[2], split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[4]), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')), tryGet(parameters('properties').authentication, 'serviceBusNamespaceTopicAuthorizationRuleName')), '2024-01-01').secondaryConnectionString)))), createObject())))]",
+              "properties": "[shallowMerge(createArray(createObject('endpointType', parameters('properties').endpointType, 'identity', variables('identity'), 'deadLetterSecret', tryGet(parameters('properties'), 'deadLetterSecret'), 'deadLetterUri', tryGet(parameters('properties'), 'deadLetterUri')), if(equals(parameters('properties').endpointType, 'EventGrid'), createObject('authenticationType', 'KeyBased', 'TopicEndpoint', reference('eventGridTopic').endpoint, 'accessKey1', listkeys('eventGridTopic', '2025-02-15').key1, 'accessKey2', listkeys('eventGridTopic', '2025-02-15').key2), createObject()), if(equals(parameters('properties').endpointType, 'EventHub'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.eventHubResourceId, '/')[8]), 'entityPath', last(split(parameters('properties').authentication.eventHubResourceId, '/'))), createObject('connectionStringPrimaryKey', listKeys('eventHubNamespace::eventHub::authorizationRule', '2024-01-01').primaryConnectionString, 'connectionStringSecondaryKey', listKeys('eventHubNamespace::eventHub::authorizationRule', '2024-01-01').secondaryConnectionString)))), createObject()), if(equals(parameters('properties').endpointType, 'ServiceBus'), shallowMerge(createArray(createObject('authenticationType', parameters('properties').authentication.type), if(equals(parameters('properties').authentication.type, 'IdentityBased'), createObject('endpointUri', format('sb://{0}.servicebus.windows.net/', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8]), 'entityPath', last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/'))), createObject('primaryConnectionString', listKeys('serviceBusNamespace::topic::authorizationRule', '2024-01-01').primaryConnectionString, 'secondaryConnectionString', listKeys('serviceBusNamespace::topic::authorizationRule', '2024-01-01').secondaryConnectionString)))), createObject())))]",
               "dependsOn": [
                 "eventGridTopic"
               ]
@@ -1646,7 +1649,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-digitalTwinsInstance-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-digitalTwins-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
@@ -1701,8 +1704,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2111,7 +2114,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2129,7 +2132,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2217,8 +2220,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2290,12 +2293,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -2359,7 +2362,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",

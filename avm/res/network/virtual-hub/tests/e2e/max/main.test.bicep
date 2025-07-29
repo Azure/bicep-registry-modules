@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
       hubRouteTables: [
         {
           name: 'routeTable1'
+          routes: []
         }
       ]
       hubVirtualNetworkConnections: [
@@ -78,13 +79,29 @@ module testDeployment '../../../main.bicep' = [
                   id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
                 }
               ]
-              labels: [
-                'none'
+              labels: []
+            }
+            vnetRoutes: {
+              staticRoutes: [
+                {
+                  name: 'route1'
+                  addressPrefixes: [
+                    '10.150.0.0/24'
+                  ]
+                  nextHopIpAddress: '10.150.0.5'
+                }
               ]
+              staticRoutesConfig: {
+                vnetLocalRouteOverrideCriteria: 'Contains'
+              }
             }
           }
         }
       ]
+      sku:'Standard'
+      virtualRouterAutoScaleConfiguration: {
+        minCount: 2
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

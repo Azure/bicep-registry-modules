@@ -24,6 +24,14 @@ param autoDeleteTopicWithLastSubscription bool = true
 @description('Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.')
 param inboundIpRules array = []
 
+@description('Optional. The minimum TLS version required for API requests to the domain.')
+@allowed([
+  '1.0'
+  '1.1'
+  '1.2'
+])
+param minimumTlsVersionAllowed string = '1.2'
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -48,6 +56,9 @@ param enableTelemetry bool = true
 
 @description('Optional. The topic names which are associated with the domain.')
 param topics array?
+
+@description('Optional. Event subscriptions to deploy.')
+param eventSubscriptions array?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -149,6 +160,7 @@ resource domain 'Microsoft.EventGrid/domains@2023-06-01-preview' = {
     autoCreateTopicWithFirstSubscription: autoCreateTopicWithFirstSubscription
     autoDeleteTopicWithLastSubscription: autoDeleteTopicWithLastSubscription
     disableLocalAuth: disableLocalAuth
+    minimumTlsVersionAllowed: minimumTlsVersionAllowed
   }
 }
 
@@ -158,6 +170,27 @@ module domain_topics 'topic/main.bicep' = [
     params: {
       domainName: domain.name
       name: topic
+    }
+  }
+]
+
+
+// Event subscriptions
+module domain_eventSubscriptions 'event-subscription/main.bicep' = [
+  for (eventSubscription, index) in (eventSubscriptions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Domain-EventSubs-${index}'
+    params: {
+      name: eventSubscription.name
+      domainName: domain.name
+      destination: eventSubscription.destination
+      deadLetterDestination: eventSubscription.?deadLetterDestination
+      deadLetterWithResourceIdentity: eventSubscription.?deadLetterWithResourceIdentity
+      deliveryWithResourceIdentity: eventSubscription.?deliveryWithResourceIdentity
+      eventDeliverySchema: eventSubscription.?eventDeliverySchema
+      expirationTimeUtc: eventSubscription.?expirationTimeUtc
+      filter: eventSubscription.?filter
+      labels: eventSubscription.?labels
+      retryPolicy: eventSubscription.?retryPolicy
     }
   }
 ]

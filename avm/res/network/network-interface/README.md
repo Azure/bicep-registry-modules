@@ -134,7 +134,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
             id: '<id>'
           }
         ]
-        name: 'ipconfig01'
+        name: 'myIpconfig01'
         subnetResourceId: '<subnetResourceId>'
       }
       {
@@ -143,6 +143,13 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
             id: '<id>'
           }
         ]
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        name: 'myIpV6Config'
+        privateIPAddressVersion: 'IPv6'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -216,7 +223,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
               "id": "<id>"
             }
           ],
-          "name": "ipconfig01",
+          "name": "myIpconfig01",
           "subnetResourceId": "<subnetResourceId>"
         },
         {
@@ -225,6 +232,13 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
               "id": "<id>"
             }
           ],
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "name": "myIpV6Config",
+          "privateIPAddressVersion": "IPv6",
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -308,7 +322,7 @@ param ipConfigurations = [
         id: '<id>'
       }
     ]
-    name: 'ipconfig01'
+    name: 'myIpconfig01'
     subnetResourceId: '<subnetResourceId>'
   }
   {
@@ -317,6 +331,13 @@ param ipConfigurations = [
         id: '<id>'
       }
     ]
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    name: 'myIpV6Config'
+    privateIPAddressVersion: 'IPv6'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
     subnetResourceId: '<subnetResourceId>'
   }
 ]
@@ -1413,6 +1434,7 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `ipConfigurations` | array | The list of IP configurations of the network interface. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed resource. |
 | `resourceGroupName` | string | The resource group of the deployed resource. |

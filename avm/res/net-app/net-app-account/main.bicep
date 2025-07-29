@@ -1,5 +1,5 @@
 metadata name = 'Azure NetApp Files'
-metadata description = 'This module deploys an Azure NetApp File.'
+metadata description = 'This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.'
 
 @description('Required. The name of the NetApp account.')
 param name string
@@ -180,7 +180,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' = {
   name: name
   tags: tags
   identity: identity
@@ -232,7 +232,7 @@ resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
+module netAppAccount_backupPolicies 'backup-policy/main.bicep' = [
   for (backupPolicy, index) in (backupPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-backupPolicy-${index}'
     params: {
@@ -247,7 +247,7 @@ module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
   }
 ]
 
-module netAppAccount_snapshotPolicies 'snapshot-policies/main.bicep' = [
+module netAppAccount_snapshotPolicies 'snapshot-policy/main.bicep' = [
   for (snapshotPolicy, index) in (snapshotPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-snapshotPolicy-${index}'
     params: {
@@ -387,7 +387,7 @@ type capacityPoolType = {
   encryptionType: ('Single' | 'Double')?
 }
 
-import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policies/main.bicep'
+import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policy/main.bicep'
 @export()
 @description('The type for a snapshot policy.')
 type snapshotPolicyType = {
@@ -419,15 +419,19 @@ type backupPolicyType = {
   @description('Optional. The location of the backup policy.')
   location: string?
 
-  @description('Optional. The daily backups to keep.')
+  @description('Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
   @minValue(2)
   @maxValue(1019)
   dailyBackupsToKeep: int?
 
-  @description('Optional. The monthly backups to keep.')
+  @description('Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+  @minValue(0)
+  @maxValue(1019)
   monthlyBackupsToKeep: int?
 
-  @description('Optional. The weekly backups to keep.')
+  @description('Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+  @minValue(0)
+  @maxValue(1019)
   weeklyBackupsToKeep: int?
 
   @description('Optional. Indicates whether the backup policy is enabled.')

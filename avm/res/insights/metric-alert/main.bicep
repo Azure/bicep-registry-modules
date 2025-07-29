@@ -66,6 +66,10 @@ param actions array = []
 @description('Required. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
 param criteria alertType
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -150,6 +154,17 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     autoMitigate: autoMitigate
     actions: actionGroups
   }
+}
+
+resource metricAlert_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: metricAlert
 }
 
 resource metricAlert_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

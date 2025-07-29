@@ -18,11 +18,11 @@ This module deploys a Search Service.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Search/searchServices` | [2024-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices) |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices/sharedPrivateLinkResources) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
 
 ## Usage examples
 
@@ -51,10 +51,7 @@ This instance deploys the module with the minimum set of required parameters.
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
-    // Required parameters
     name: 'sssmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -71,13 +68,8 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "sssmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -93,10 +85,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/search/search-service:<version>'
 
-// Required parameters
 param name = 'sssmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -124,7 +113,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
     disableLocalAuth: false
-    location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       primaryAdminKeyName: 'Primary-Admin-Key'
@@ -161,9 +149,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "disableLocalAuth": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
@@ -194,7 +179,6 @@ param authOptions = {
   }
 }
 param disableLocalAuth = false
-param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   primaryAdminKeyName: 'Primary-Admin-Key'
@@ -526,7 +510,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     // Required parameters
     name: 'ssspr001'
     // Non-required parameters
-    location: '<location>'
     privateEndpoints: [
       {
         applicationSecurityGroupResourceIds: [
@@ -596,9 +579,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       "value": "ssspr001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -672,7 +652,6 @@ using 'br/public:avm/res/search/search-service:<version>'
 // Required parameters
 param name = 'ssspr001'
 // Non-required parameters
-param location = '<location>'
 param privateEndpoints = [
   {
     applicationSecurityGroupResourceIds: [
@@ -764,15 +743,11 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     ]
     disableLocalAuth: false
     hostingMode: 'highDensity'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
     networkRuleSet: {
+      bypass: 'AzureServices'
       ipRules: [
         {
           value: '40.74.28.0/23'
@@ -843,15 +818,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "hostingMode": {
       "value": "highDensity"
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -859,6 +825,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "networkRuleSet": {
       "value": {
+        "bypass": "AzureServices",
         "ipRules": [
           {
             "value": "40.74.28.0/23"
@@ -924,15 +891,11 @@ param diagnosticSettings = [
 ]
 param disableLocalAuth = false
 param hostingMode = 'highDensity'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
 }
 param networkRuleSet = {
+  bypass: 'AzureServices'
   ipRules: [
     {
       value: '40.74.28.0/23'
@@ -1332,6 +1295,7 @@ Network specific rules that determine how the Azure AI Search service may be rea
   ```Bicep
   [
     'AzurePortal'
+    'AzureServices'
     'None'
   ]
   ```
@@ -1395,7 +1359,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -1648,9 +1612,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1671,7 +1635,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2003,11 +1967,15 @@ Tags to help categorize the resource in the Azure portal.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoint` | string | The endpoint of the search service. |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the search service. |
+| `primaryKey` | securestring | The primary admin API key of the search service. |
+| `privateEndpoints` | array | The private endpoints of the search service. |
 | `resourceGroupName` | string | The name of the resource group the search service was created in. |
 | `resourceId` | string | The resource ID of the search service. |
+| `secondaryKey` | securestring | The secondaryKey admin API key of the search service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -2016,8 +1984,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

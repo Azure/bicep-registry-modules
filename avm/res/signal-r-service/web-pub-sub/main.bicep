@@ -7,20 +7,20 @@ param location string = resourceGroup().location
 @description('Required. The name of the Web PubSub Service resource.')
 param name string
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.SignalRService/webPubSub@2024-03-01'>.tags?
 
 @description('Optional. The unit count of the resource. 1 by default.')
 param capacity int = 1
@@ -32,7 +32,7 @@ param capacity int = 1
 @description('Optional. Pricing tier of the resource.')
 param sku string = 'Standard_S1'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
@@ -63,7 +63,7 @@ param resourceLogConfigurationsToEnable array = [
 param clientCertEnabled bool = false
 
 @description('Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the \'SKU\' is not \'Free_F1\'. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object?
+param networkAcls resourceInput<'Microsoft.SignalRService/webPubSub@2024-03-01'>.properties.networkACLs?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -168,7 +168,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource webPubSub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
+resource webPubSub 'Microsoft.SignalRService/webPubSub@2024-03-01' = {
   name: name
   location: location
   tags: tags
@@ -194,10 +194,13 @@ resource webPubSub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
   }
 }
 
-module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-webPubSub-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(webPubSub.id, '/'))}-${privateEndpoint.?service ?? 'webpubsub'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -301,12 +304,39 @@ output systemAssignedMIPrincipalId string? = webPubSub.?identity.?principalId
 output location string = webPubSub.location
 
 @description('The private endpoints of the Web PubSub.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: webPubSub_privateEndpoints[i].outputs.name
-    resourceId: webPubSub_privateEndpoints[i].outputs.resourceId
-    groupId: webPubSub_privateEndpoints[i].outputs.groupId
-    customDnsConfig: webPubSub_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: webPubSub_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: webPubSub_privateEndpoints[index].outputs.name
+    resourceId: webPubSub_privateEndpoints[index].outputs.resourceId
+    groupId: webPubSub_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: webPubSub_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: webPubSub_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

@@ -65,6 +65,10 @@ module testDeployment '../../../main.bicep' = [
           useCommonAlertSchema: true
         }
       ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
       roleAssignments: [
         {
           name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'

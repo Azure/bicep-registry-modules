@@ -47,7 +47,7 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param networkRuleSets object = {}
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Relay/namespaces@2021-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

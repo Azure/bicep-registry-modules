@@ -17,7 +17,7 @@ This module deploys a Virtual Network Gateway Connection.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/connections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/connections) |
+| `Microsoft.Network/connections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/connections) |
 
 ## Usage examples
 
@@ -28,8 +28,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/connection:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [IPSec connection with APIPA configuration](#example-2-ipsec-connection-with-apipa-configuration)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -52,9 +53,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     // Non-required parameters
     connectionType: 'Vnet2Vnet'
     location: '<location>'
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
+    virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
     vpnSharedKey: '<vpnSharedKey>'
   }
 }
@@ -88,10 +87,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "virtualNetworkGateway2ResourceId": {
+      "value": "<virtualNetworkGateway2ResourceId>"
     },
     "vpnSharedKey": {
       "value": "<vpnSharedKey>"
@@ -118,16 +115,183 @@ virtualNetworkGateway1: {
 // Non-required parameters
 param connectionType = 'Vnet2Vnet'
 param location = '<location>'
-virtualNetworkGateway2: {
-  id: '<id>'
-}
+virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
 param vpnSharedKey = '<vpnSharedKey>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _IPSec connection with APIPA configuration_
+
+This instance deploys the module with IPSec connection type and APIPA (gatewayCustomBgpIpAddresses) configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connection 'br/public:avm/res/network/connection:<version>' = {
+  name: 'connectionDeployment'
+  params: {
+    // Required parameters
+    name: 'ncapipa001'
+    virtualNetworkGateway1: {
+      id: '<id>'
+    }
+    // Non-required parameters
+    connectionType: 'IPsec'
+    customIPSecPolicy: {
+      dhGroup: 'DHGroup14'
+      ikeEncryption: 'AES256'
+      ikeIntegrity: 'SHA256'
+      ipsecEncryption: 'AES256'
+      ipsecIntegrity: 'SHA256'
+      pfsGroup: 'PFS14'
+      saDataSizeKilobytes: 102400000
+      saLifeTimeSeconds: 3600
+    }
+    enableBgp: true
+    gatewayCustomBgpIpAddresses: [
+      {
+        customBgpIpAddress: '169.254.21.1'
+        ipConfigurationId: '<ipConfigurationId>'
+      }
+    ]
+    localNetworkGateway2ResourceId: '<localNetworkGateway2ResourceId>'
+    location: '<location>'
+    tags: {
+      Environment: 'Test'
+      'hidden-title': 'IPSec APIPA Connection Test'
+      Role: 'DeploymentValidation'
+    }
+    useLocalAzureIpAddress: true
+    vpnSharedKey: '<vpnSharedKey>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ncapipa001"
+    },
+    "virtualNetworkGateway1": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    // Non-required parameters
+    "connectionType": {
+      "value": "IPsec"
+    },
+    "customIPSecPolicy": {
+      "value": {
+        "dhGroup": "DHGroup14",
+        "ikeEncryption": "AES256",
+        "ikeIntegrity": "SHA256",
+        "ipsecEncryption": "AES256",
+        "ipsecIntegrity": "SHA256",
+        "pfsGroup": "PFS14",
+        "saDataSizeKilobytes": 102400000,
+        "saLifeTimeSeconds": 3600
+      }
+    },
+    "enableBgp": {
+      "value": true
+    },
+    "gatewayCustomBgpIpAddresses": {
+      "value": [
+        {
+          "customBgpIpAddress": "169.254.21.1",
+          "ipConfigurationId": "<ipConfigurationId>"
+        }
+      ]
+    },
+    "localNetworkGateway2ResourceId": {
+      "value": "<localNetworkGateway2ResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Test",
+        "hidden-title": "IPSec APIPA Connection Test",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "useLocalAzureIpAddress": {
+      "value": true
+    },
+    "vpnSharedKey": {
+      "value": "<vpnSharedKey>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncapipa001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'IPsec'
+param customIPSecPolicy = {
+  dhGroup: 'DHGroup14'
+  ikeEncryption: 'AES256'
+  ikeIntegrity: 'SHA256'
+  ipsecEncryption: 'AES256'
+  ipsecIntegrity: 'SHA256'
+  pfsGroup: 'PFS14'
+  saDataSizeKilobytes: 102400000
+  saLifeTimeSeconds: 3600
+}
+param enableBgp = true
+param gatewayCustomBgpIpAddresses = [
+  {
+    customBgpIpAddress: '169.254.21.1'
+    ipConfigurationId: '<ipConfigurationId>'
+  }
+]
+localNetworkGateway2ResourceId: '<localNetworkGateway2ResourceId>'
+param location = '<location>'
+param tags = {
+  Environment: 'Test'
+  'hidden-title': 'IPSec APIPA Connection Test'
+  Role: 'DeploymentValidation'
+}
+param useLocalAzureIpAddress = true
+param vpnSharedKey = '<vpnSharedKey>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -160,9 +324,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       Role: 'DeploymentValidation'
     }
     usePolicyBasedTrafficSelectors: false
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
+    virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
     vpnSharedKey: '<vpnSharedKey>'
   }
 }
@@ -218,10 +380,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     "usePolicyBasedTrafficSelectors": {
       "value": false
     },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "virtualNetworkGateway2ResourceId": {
+      "value": "<virtualNetworkGateway2ResourceId>"
     },
     "vpnSharedKey": {
       "value": "<vpnSharedKey>"
@@ -260,16 +420,14 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param usePolicyBasedTrafficSelectors = false
-virtualNetworkGateway2: {
-  id: '<id>'
-}
+virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
 param vpnSharedKey = '<vpnSharedKey>'
 ```
 
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -299,9 +457,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
+    virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
     vpnSharedKey: '<vpnSharedKey>'
   }
 }
@@ -348,10 +504,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "virtualNetworkGateway2ResourceId": {
+      "value": "<virtualNetworkGateway2ResourceId>"
     },
     "vpnSharedKey": {
       "value": "<vpnSharedKey>"
@@ -387,9 +541,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-virtualNetworkGateway2: {
-  id: '<id>'
-}
+virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
 param vpnSharedKey = '<vpnSharedKey>'
 ```
 
@@ -419,16 +571,17 @@ param vpnSharedKey = '<vpnSharedKey>'
 | [`enablePrivateLinkFastPath`](#parameter-enableprivatelinkfastpath) | bool | Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastPath (expressRouteGatewayBypass) must be enabled. Only available when connection connectionType is Express Route. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayBypass`](#parameter-expressroutegatewaybypass) | bool | Bypass ExpressRoute Gateway for data forwarding. Only available when connection connectionType is Express Route. |
-| [`localNetworkGateway2`](#parameter-localnetworkgateway2) | object | The local network gateway. Used for connection type [IPsec]. |
+| [`gatewayCustomBgpIpAddresses`](#parameter-gatewaycustombgpipaddresses) | array | GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides. |
+| [`localNetworkGateway2ResourceId`](#parameter-localnetworkgateway2resourceid) | string | The local network gateway resource ID. Used for connection type [IPsec]. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`peer`](#parameter-peer) | object | The remote peer. Used for connection connectionType [ExpressRoute]. |
+| [`peerResourceId`](#parameter-peerresourceid) | string | The remote peer resource ID. Used for connection connectionType [ExpressRoute]. |
 | [`routingWeight`](#parameter-routingweight) | int | The weight added to routes learned from this BGP speaker. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trafficSelectorPolicies`](#parameter-trafficselectorpolicies) | array | The traffic selector policies to be considered by this connection. |
 | [`useLocalAzureIpAddress`](#parameter-uselocalazureipaddress) | bool | Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-usepolicybasedtrafficselectors) | bool | Enable policy-based traffic selectors. |
-| [`virtualNetworkGateway2`](#parameter-virtualnetworkgateway2) | object | The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]. |
+| [`virtualNetworkGateway2ResourceId`](#parameter-virtualnetworkgateway2resourceid) | string | The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet]. |
 | [`vpnSharedKey`](#parameter-vpnsharedkey) | securestring | Specifies a VPN shared key. The same value has to be specified on both Virtual Network Gateways. |
 
 ### Parameter: `name`
@@ -444,6 +597,19 @@ The primary Virtual Network Gateway.
 
 - Required: Yes
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-virtualnetworkgateway1id) | string | Resource ID of the virtual network gateway. |
+
+### Parameter: `virtualNetworkGateway1.id`
+
+Resource ID of the virtual network gateway.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `authorizationKey`
 
@@ -510,16 +676,160 @@ The IPSec Policies to be considered by this connection.
 - Default:
   ```Bicep
   {
-      dhGroup: ''
-      ikeEncryption: ''
-      ikeIntegrity: ''
-      ipsecEncryption: ''
-      ipsecIntegrity: ''
-      pfsGroup: ''
+      dhGroup: 'None'
+      ikeEncryption: 'DES'
+      ikeIntegrity: 'MD5'
+      ipsecEncryption: 'None'
+      ipsecIntegrity: 'MD5'
+      pfsGroup: 'None'
       saDataSizeKilobytes: 0
       saLifeTimeSeconds: 0
   }
   ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dhGroup`](#parameter-customipsecpolicydhgroup) | string | The DH Group used in IKE Phase 1 for initial SA. |
+| [`ikeEncryption`](#parameter-customipsecpolicyikeencryption) | string | The IKE encryption algorithm (IKE phase 2). |
+| [`ikeIntegrity`](#parameter-customipsecpolicyikeintegrity) | string | The IKE integrity algorithm (IKE phase 2). |
+| [`ipsecEncryption`](#parameter-customipsecpolicyipsecencryption) | string | The IPSec encryption algorithm (IKE phase 1). |
+| [`ipsecIntegrity`](#parameter-customipsecpolicyipsecintegrity) | string | The IPSec integrity algorithm (IKE phase 1). |
+| [`pfsGroup`](#parameter-customipsecpolicypfsgroup) | string | The Pfs Group used in IKE Phase 2 for new child SA. |
+| [`saDataSizeKilobytes`](#parameter-customipsecpolicysadatasizekilobytes) | int | The IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site to site VPN tunnel. |
+| [`saLifeTimeSeconds`](#parameter-customipsecpolicysalifetimeseconds) | int | The IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site to site VPN tunnel. |
+
+### Parameter: `customIPSecPolicy.dhGroup`
+
+The DH Group used in IKE Phase 1 for initial SA.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DHGroup1'
+    'DHGroup14'
+    'DHGroup2'
+    'DHGroup2048'
+    'DHGroup24'
+    'ECP256'
+    'ECP384'
+    'None'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ikeEncryption`
+
+The IKE encryption algorithm (IKE phase 2).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AES128'
+    'AES192'
+    'AES256'
+    'DES'
+    'DES3'
+    'GCMAES128'
+    'GCMAES256'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ikeIntegrity`
+
+The IKE integrity algorithm (IKE phase 2).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GCMAES128'
+    'GCMAES256'
+    'MD5'
+    'SHA1'
+    'SHA256'
+    'SHA384'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ipsecEncryption`
+
+The IPSec encryption algorithm (IKE phase 1).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AES128'
+    'AES192'
+    'AES256'
+    'DES'
+    'DES3'
+    'GCMAES128'
+    'GCMAES192'
+    'GCMAES256'
+    'None'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ipsecIntegrity`
+
+The IPSec integrity algorithm (IKE phase 1).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GCMAES128'
+    'GCMAES192'
+    'GCMAES256'
+    'MD5'
+    'SHA1'
+    'SHA256'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.pfsGroup`
+
+The Pfs Group used in IKE Phase 2 for new child SA.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ECP256'
+    'ECP384'
+    'None'
+    'PFS1'
+    'PFS14'
+    'PFS2'
+    'PFS2048'
+    'PFS24'
+    'PFSMM'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.saDataSizeKilobytes`
+
+The IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site to site VPN tunnel.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `customIPSecPolicy.saLifeTimeSeconds`
+
+The IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site to site VPN tunnel.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `dpdTimeoutSeconds`
 
@@ -563,13 +873,42 @@ Bypass ExpressRoute Gateway for data forwarding. Only available when connection 
 - Type: bool
 - Default: `False`
 
-### Parameter: `localNetworkGateway2`
+### Parameter: `gatewayCustomBgpIpAddresses`
 
-The local network gateway. Used for connection type [IPsec].
+GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customBgpIpAddress`](#parameter-gatewaycustombgpipaddressescustombgpipaddress) | string | The custom BgpPeeringAddress which belongs to IpconfigurationId. |
+| [`ipConfigurationId`](#parameter-gatewaycustombgpipaddressesipconfigurationid) | string | The IpconfigurationId of ipconfiguration which belongs to gateway. |
+
+### Parameter: `gatewayCustomBgpIpAddresses.customBgpIpAddress`
+
+The custom BgpPeeringAddress which belongs to IpconfigurationId.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gatewayCustomBgpIpAddresses.ipConfigurationId`
+
+The IpconfigurationId of ipconfiguration which belongs to gateway.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localNetworkGateway2ResourceId`
+
+The local network gateway resource ID. Used for connection type [IPsec].
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
@@ -615,13 +954,13 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `peer`
+### Parameter: `peerResourceId`
 
-The remote peer. Used for connection connectionType [ExpressRoute].
+The remote peer resource ID. Used for connection connectionType [ExpressRoute].
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: string
+- Default: `''`
 
 ### Parameter: `routingWeight`
 
@@ -645,6 +984,27 @@ The traffic selector policies to be considered by this connection.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`localAddressRanges`](#parameter-trafficselectorpolicieslocaladdressranges) | array | A collection of local address spaces in CIDR format. |
+| [`remoteAddressRanges`](#parameter-trafficselectorpoliciesremoteaddressranges) | array | A collection of remote address spaces in CIDR format. |
+
+### Parameter: `trafficSelectorPolicies.localAddressRanges`
+
+A collection of local address spaces in CIDR format.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `trafficSelectorPolicies.remoteAddressRanges`
+
+A collection of remote address spaces in CIDR format.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `useLocalAzureIpAddress`
 
 Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property.
@@ -661,13 +1021,13 @@ Enable policy-based traffic selectors.
 - Type: bool
 - Default: `False`
 
-### Parameter: `virtualNetworkGateway2`
+### Parameter: `virtualNetworkGateway2ResourceId`
 
-The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet].
+The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet].
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: string
+- Default: `''`
 
 ### Parameter: `vpnSharedKey`
 

@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    databaseIdentityName: 'dep-${namePrefix}-msidb-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -55,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administrators: {
         azureADOnlyAuthentication: true
         login: 'myspn'
@@ -63,20 +64,41 @@ module testDeployment '../../../main.bicep' = [
         principalType: 'Application'
         tenantId: tenant().tenantId
       }
-
       managedIdentities: {
         systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         keyName: nestedDependencies.outputs.keyVaultKeyName
         keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
         autoRotationEnabled: true
       }
+      databases: [
+        {
+          name: '${namePrefix}-${serviceShort}-db'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.databaseIdentityResourceId
+            ]
+          }
+          customerManagedKey: {
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            keyName: nestedDependencies.outputs.keyVaultDatabaseKeyName
+            keyVersion: last(split(nestedDependencies.outputs.keyVaultDatabaseEncryptionKeyUrl, '/'))
+            autoRotationEnabled: true
+          }
+          sku: {
+            name: 'Basic'
+            tier: 'Basic'
+          }
+          maxSizeBytes: 2147483648
+          zoneRedundant: false
+          availabilityZone: -1
+        }
+      ]
     }
   }
 ]

@@ -17,7 +17,6 @@
 ##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'                                |
 ##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'            |
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
-##   | subscriptionId             | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
@@ -39,9 +38,6 @@ inputs:
   deploymentMetadataLocation:
     description: "The location to store the deployment metadata"
     required: true
-  subscriptionId:
-    description: "The subscription ID to deploy to"
-    required: false
   managementGroupId:
     description: "The management group ID to deploy to"
     required: false
@@ -55,14 +51,46 @@ inputs:
   customLocation:
     description: "Custom location overwrite, if needed"
     required: false
+  e2eIgnore:
+    description: "If set to true, the test case deployment tasks will not be processed"
+    default: "false"
+    required: false
 
 runs:
   using: "composite"
   steps:
+    # [Deployment validation] task(s)
+    # -------------------------------
+    - name: "Validate Test Execution"
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        errorActionPreference: "SilentlyContinue"
+        inlineScript: |
+          # Resolve template file path
+          $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+
+          # Check if the deployment test should be bypassed
+          if ('${{ inputs.e2eIgnore }}' -eq 'true') {
+            Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFilePath"
+            Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
+
+            # Get the reason for skipping the deployment
+            $excludeReason = Get-Content Join-Path $moduleTestFilePath '.e2eignore'
+            excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
+
+            Write-Output "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
+            Write-Warning "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
+          } else {
+            Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFilePath" -Verbose
+            Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
+          }
+
     # [Azure login] task(s)
     # ------------------------------
     - name: "Set OIDC temporary exception"
       id: set-oidc-exception
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -78,6 +106,7 @@ runs:
             'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/compute/image'                              # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/compute/disk'                               # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
@@ -97,10 +126,9 @@ runs:
     # Default: support both OIDC and service principal with secret
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
       uses: azure/login@v2
       with:
-        creds: ${{ env.AZURE_CREDENTIALS }}
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
         subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
@@ -109,7 +137,7 @@ runs:
     # Exception: module requires login by using service principal with secret
     # Should only be leveraged by modules listed in $exceptionModulePaths above
     - name: "Azure Login - Exception"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
@@ -119,6 +147,7 @@ runs:
     # ---------------------------
     - name: "Get Resource Location"
       id: get-resource-location
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -153,6 +182,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -183,9 +213,9 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            subscriptionId    = '${{ inputs.subscriptionId }}'
+            subscriptionId    = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
-            tenantId          = '${{ env.ARM_TENANT_ID }}'
+            tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
 
           # Add local (source control) tokens
@@ -216,9 +246,8 @@ runs:
 
           Write-Output '::endgroup::'
 
-    # [Deployment validation] task(s)
-    # -------------------------------
     - name: "Validate template file"
+      if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -232,7 +261,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $subscriptionId = '${{ inputs.subscriptionId }}'
+          $subscriptionId = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
           # Resolve template file path
@@ -298,6 +327,7 @@ runs:
     # [Deployment execution] task(s)
     # ------------------------------
     - name: "Deploy template file"
+      if: env.skip_deployment_ci == 'false'
       id: deploy_step
       uses: azure/powershell@v2
       with:
@@ -311,7 +341,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $subscriptionId = '${{ inputs.subscriptionId }}'
+          $subscriptionId = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
           # Resolve template file path
@@ -392,6 +422,7 @@ runs:
     # [Post-Deployment test] task(s)
     # ------------------------------
     - name: "Run post-deployment Pester tests"
+      if: env.skip_deployment_ci == 'false'
       id: pester_run_step
       shell: pwsh
       run: |
@@ -462,7 +493,7 @@ runs:
         }
 
     - name: "Output to GitHub job summaries"
-      if: steps.pester_run_step.outputs.formattedPesterResultsPath != ''
+      if: env.skip_deployment_ci == 'false' && steps.pester_run_step.outputs.formattedPesterResultsPath != ''
       shell: pwsh
       run: |
         # Grouping task logs
@@ -482,7 +513,7 @@ runs:
     # [Deployment removal] task(s)
     # ----------------------------
     - name: "Remove deployed resources"
-      if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
+      if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' && env.skip_deployment_ci == 'false' }}
       uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
@@ -499,8 +530,8 @@ runs:
             ManagementGroupId = '${{ inputs.managementGroupId }}'
           }
 
-          if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
-              $functionInput['SubscriptionId'] = '${{ inputs.subscriptionId }}'
+          if (-not [String]::IsNullOrEmpty('${{ env.VALIDATE_SUBSCRIPTION_ID }}')) {
+              $functionInput['SubscriptionId'] = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
           }
 
           Write-Verbose 'Invoke task with' -Verbose

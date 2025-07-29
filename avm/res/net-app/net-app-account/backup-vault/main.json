@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "6318287714892140543"
+      "version": "0.35.1.17967",
+      "templateHash": "17170510390783455734"
     },
     "name": "Azure NetApp Files Volume Backup Vault",
     "description": "This module deploys a NetApp Files Backup Vault."
@@ -91,12 +91,12 @@
     "netAppAccount": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2024-09-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('netAppAccountName')]"
     },
     "backupVault": {
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-      "apiVersion": "2024-09-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {}
@@ -144,8 +144,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11103687332577035719"
+              "version": "0.35.1.17967",
+              "templateHash": "17444120099448473770"
             },
             "name": "Azure NetApp Files Volume Backup",
             "description": "This module deploys a backup of a NetApp Files Volume."
@@ -201,30 +201,30 @@
             "netAppAccount::remoteCapacityPool::volume": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
             },
             "netAppAccount::backupVault": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-              "apiVersion": "2024-09-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
             },
             "netAppAccount::remoteCapacityPool": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2024-09-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
             },
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2024-09-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "backup": {
               "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
-              "apiVersion": "2024-09-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]",
               "properties": {
                 "label": "[parameters('label')]",
@@ -290,7 +290,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('backupVault', '2024-09-01', 'full').location]"
+      "value": "[reference('backupVault', '2025-01-01', 'full').location]"
     }
   }
 }

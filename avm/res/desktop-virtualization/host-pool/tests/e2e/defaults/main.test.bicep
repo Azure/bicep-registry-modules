@@ -37,6 +37,9 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}002'
-    location: resourceLocation
   }
 }
+
+@sys.description('The registration token of the host pool.')
+#disable-next-line outputs-should-not-contain-secrets // May not be declared as secure as otherwise the output is empty and we cannot test against it. Instead obscuring and cutting the value to make it unusable
+output obscuredRegistrationToken string = guid(substring(testDeployment.outputs.registrationToken, 5))

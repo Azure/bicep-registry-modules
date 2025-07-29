@@ -1,10 +1,5 @@
 # Azure Synapse Analytics `[Microsoft.Synapse/privateLinkHubs]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Synapse Analytics (Private Link Hub).
 
 ## Navigation
@@ -22,8 +17,8 @@ This module deploys an Azure Synapse Analytics (Private Link Hub).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Synapse/privateLinkHubs` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/privateLinkHubs) |
 
 ## Usage examples
@@ -51,10 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
   name: 'privateLinkHubDeployment'
   params: {
-    // Required parameters
     name: 'splhmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -71,13 +63,8 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "splhmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -93,10 +80,7 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/synapse/private-link-hub:<version>'
 
-// Required parameters
 param name = 'splhmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -340,7 +324,6 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
     // Required parameters
     name: 'splhwaf001'
     // Non-required parameters
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -385,9 +368,6 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
       "value": "splhwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -432,7 +412,6 @@ using 'br/public:avm/res/synapse/private-link-hub:<version>'
 // Required parameters
 param name = 'splhwaf001'
 // Non-required parameters
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -568,7 +547,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -821,9 +800,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -844,7 +823,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1060,6 +1039,19 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-tags>any_other_property<) | string | A tag key-value pair. |
+
+### Parameter: `tags.>Any_other_property<`
+
+A tag key-value pair.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
@@ -1076,8 +1068,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

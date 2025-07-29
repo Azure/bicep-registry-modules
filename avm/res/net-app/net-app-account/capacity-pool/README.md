@@ -14,8 +14,8 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -252,10 +252,10 @@ List of volumes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-volumesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-volumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-volumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-volumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
-| [`zone`](#parameter-volumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -278,7 +278,15 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`throughputMibps`](#parameter-volumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-volumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+
+### Parameter: `volumes.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `volumes.name`
 
@@ -297,13 +305,6 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 ### Parameter: `volumes.usageThreshold`
 
 Maximum storage quota allowed for a file system in bytes.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `volumes.zone`
-
-The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
 
 - Required: Yes
 - Type: int
@@ -399,7 +400,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-volumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`replicationSchedule`](#parameter-volumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
@@ -408,6 +408,7 @@ Replication properties.
 | [`remotePath`](#parameter-volumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
 | [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
 | [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-volumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `volumes.dataProtection.replication.endpointType`
 
@@ -420,21 +421,6 @@ Indicates whether the local volume is the source or destination for the Volume R
   [
     'dst'
     'src'
-  ]
-  ```
-
-### Parameter: `volumes.dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
   ]
   ```
 
@@ -487,6 +473,21 @@ The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
+
+### Parameter: `volumes.dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `volumes.dataProtection.snapshot`
 
@@ -870,6 +871,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `volumes.throughputMibps`
+
+The throughput in MiBps for the NetApp account.
+
+- Required: No
+- Type: int
 
 ### Parameter: `volumes.volumeType`
 

@@ -101,6 +101,10 @@ module testDeployment '../../../main.bicep' = [
       }
       evaluationFrequency: 'PT5M'
       queryTimeRange: 'PT5M'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
       roleAssignments: [
         {
           name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "542037632528730428"
+      "version": "0.36.177.2456",
+      "templateHash": "13177747660527689400"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host."
@@ -361,19 +361,23 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
       "items": {
         "type": "int"
       },
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "allowedValues": [
         1,
         2,
         3
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
       }
     }
   },
@@ -424,7 +428,7 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "zones": "[if(equals(parameters('skuName'), 'Developer'), createArray(), map(parameters('zones'), lambda('zone', string(lambdaVariables('zone')))))]",
+      "zones": "[if(equals(parameters('skuName'), 'Developer'), createArray(), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))))]",
       "properties": "[union(createObject('scaleUnits', if(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Developer')), 2, parameters('scaleUnits')), 'ipConfigurations', if(equals(parameters('skuName'), 'Developer'), createArray(), createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), if(not(parameters('enablePrivateOnlyBastion')), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))))), if(equals(parameters('skuName'), 'Developer'), createObject('virtualNetwork', createObject('id', parameters('virtualNetworkResourceId'))), createObject()), if(or(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Standard')), equals(parameters('skuName'), 'Premium')), createObject('enableKerberos', parameters('enableKerberos')), createObject()), if(or(equals(parameters('skuName'), 'Standard'), equals(parameters('skuName'), 'Premium')), createObject('enableTunneling', if(equals(parameters('skuName'), 'Standard'), true(), if(parameters('enableSessionRecording'), false(), true())), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()), if(equals(parameters('skuName'), 'Premium'), createObject('enableSessionRecording', parameters('enableSessionRecording'), 'enablePrivateOnlyBastion', parameters('enablePrivateOnlyBastion')), createObject()))]",
       "dependsOn": [
         "publicIPAddress"
@@ -546,7 +550,7 @@
             "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'zones'), if(greater(length(parameters('zones')), 0), parameters('zones'), null()))]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'zones'), if(not(empty(parameters('availabilityZones'))), parameters('availabilityZones'), null()))]"
           }
         },
         "template": {

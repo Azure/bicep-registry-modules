@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
           createMode: 'Secondary'
           sourceDatabaseResourceId: nestedDependencies.outputs.databaseResourceId
           zoneRedundant: false
+          availabilityZone: -1
         }
       ]
       tags: {

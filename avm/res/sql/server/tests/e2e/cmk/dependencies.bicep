@@ -1,18 +1,26 @@
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Managed Identity for the database to create.')
+param databaseIdentityName string
+
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource dbManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: databaseIdentityName
+  location: location
+}
+
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -29,14 +37,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2024-11-01' = {
     name: 'keyServerEncryptionKey'
     properties: {
       kty: 'RSA'
     }
   }
 
-  resource dbKey 'keys@2022-07-01' = {
+  resource dbKey 'keys@2024-11-01' = {
     name: 'keyDatabaseEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -58,14 +66,15 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 resource dbKeyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::dbKey.id}-${location}-${managedIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
+  name: guid('msi-${keyVault::dbKey.id}-${location}-${dbManagedIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
   scope: keyVault::dbKey
   properties: {
-    principalId: managedIdentity.properties.principalId
+    principalId: dbManagedIdentity.properties.principalId
+    // Key Vault Crypto Service Encryption User
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-    ) // Key Vault Crypto Service Encryption User
+    )
     principalType: 'ServicePrincipal'
   }
 }
@@ -76,16 +85,22 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 @description('The resource ID of the created managed identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
-@description('The URL of the created Key Vault Encryption Key.')
+@description('The principal ID of the created database managed identity.')
+output databaseIdentityPrincipalId string = dbManagedIdentity.properties.principalId
+
+@description('The resource ID of the created database managed identity.')
+output databaseIdentityResourceId string = dbManagedIdentity.id
+
+@description('The URL of the created Server Encryption Key.')
 output keyVaultEncryptionKeyUrl string = keyVault::key.properties.keyUriWithVersion
 
-@description('The name of the created Key Vault Encryption Key.')
-output keyVaultKeyName string = keyVault::key.name
-
-@description('The URL of the created Key Vault Database Encryption Key.')
+@description('The URL of the created Database Encryption Key.')
 output keyVaultDatabaseEncryptionKeyUrl string = keyVault::dbKey.properties.keyUriWithVersion
 
-@description('The name of the created Key Vault Database Encryption Key.')
+@description('The name of the created Server Encryption Key.')
+output keyVaultKeyName string = keyVault::key.name
+
+@description('The name of the created Database Encryption Key.')
 output keyVaultDatabaseKeyName string = keyVault::dbKey.name
 
 @description('The name of the created Key Vault.')

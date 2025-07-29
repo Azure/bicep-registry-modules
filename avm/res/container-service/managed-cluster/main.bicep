@@ -61,6 +61,18 @@ param loadBalancerSku string = 'standard'
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
 
+@description('Optional. The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports.')
+param allocatedOutboundPorts int = 0
+
+@description('Optional. Desired outbound flow idle timeout in minutes.')
+param idleTimeoutInMinutes int = 30
+
+@description('Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules.')
+param outboundPublicIPResourceIds string[]?
+
+@description('Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules.')
+param outboundPublicIPPrefixResourceIds string[]?
+
 @description('Optional. The type of the managed inbound Load Balancer BackendPool.')
 @allowed([
   'NodeIP'
@@ -499,7 +511,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -559,12 +571,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
   properties: {
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
-      count: profile.count ?? 1
+      count: profile.?count ?? 1
       availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             #disable-next-line use-resource-id-functions // Not possible to reference as nested
-            sourceResourceId: profile.sourceResourceId
+            sourceResourceId: profile.?sourceResourceId
           }
         : null
       enableAutoScaling: profile.?enableAutoScaling ?? false
@@ -736,6 +748,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
       loadBalancerProfile: {
+        allocatedOutboundPorts: allocatedOutboundPorts
+        idleTimeoutInMinutes: idleTimeoutInMinutes
         managedOutboundIPs: managedOutboundIPCount != 0
           ? {
               count: managedOutboundIPCount
@@ -743,6 +757,21 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
           : null
         effectiveOutboundIPs: []
         backendPoolType: backendPoolType
+        outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
+          ? {
+              publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
+                id: id
+              })
+            }
+          : null
+
+        outboundIPs: !empty(outboundPublicIPResourceIds)
+          ? {
+              publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
+                id: id
+              })
+            }
+          : null
       }
     }
     publicNetworkAccess: publicNetworkAccess
@@ -887,7 +916,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
 
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
   for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfiguration-${index}'
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceCfg-${index}'
     params: {
       name: maintenanceConfiguration!.name
       maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
