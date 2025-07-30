@@ -109,19 +109,20 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      connections: [
-        {
-          name: 'connection'
-          category: 'ApiKey'
-          target: 'https://example.com'
-          connectionProperties: {
-            authType: 'ApiKey'
-            credentials: {
-              key: 'key'
-            }
-          }
-        }
-      ]
+      // Currently unable to create both a connection and a private endpoint in the same deployment.
+      // connections: [
+      //   {
+      //     name: 'connection'
+      //     category: 'ApiKey'
+      //     target: 'https://example.com'
+      //     connectionProperties: {
+      //       authType: 'ApiKey'
+      //       credentials: {
+      //         key: 'key'
+      //       }
+      //     }
+      //   }
+      // ]
       datastores: [
         {
           name: 'datastore'
