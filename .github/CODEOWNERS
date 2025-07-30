@@ -26,9 +26,6 @@
 /avm/ptn/azd/container-app-upsert/ @Azure/avm-ptn-azd-containerappupsert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-apps-stack/ @Azure/avm-ptn-azd-containerappsstack-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/insights-dashboard/ @Azure/avm-ptn-azd-insightsdashboard-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/ml-ai-environment/ @Azure/avm-ptn-azd-mlaienvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/ml-hub-dependencies/ @Azure/avm-ptn-azd-mlhubdependencies-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/ml-project/ @Azure/avm-ptn-azd-mlproject-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/monitoring/ @Azure/avm-ptn-azd-monitoring-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/data/private-analytical-workspace/ @Azure/avm-ptn-data-privateanalyticalworkspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/deployment-script/import-image-to-acr/ @Azure/avm-ptn-deploymentscript-importimagetoacr-module-owners-bicep @Azure/avm-module-reviewers-bicep
