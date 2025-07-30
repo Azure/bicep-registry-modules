@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/workspace/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Updated to latest avm-common-types, enabling custom notes on locks
+- Updated API version of workspace resource to `2025-03-01-preview`
+
+### Breaking Changes
+
+- Changed behavior of `publicNetworkAccess` to automatically set `Disabled` if private endpoints are provided - unless the `publicNetworkAccess` value is set explicitely
+
 ## 0.8.0
 
 ### Changes
