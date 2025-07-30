@@ -59,20 +59,21 @@ resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' 
   kind: 'StorageV2'
 }
 
-module aiHub '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-aiHub'
-  params: {
-    name: aiHubName
-    location: location
-    associatedApplicationInsightsResourceId: applicationInsights.id
-    associatedKeyVaultResourceId: keyVault.id
-    associatedStorageAccountResourceId: storageAccount.id
-    sku: 'Basic'
-    kind: 'Hub'
-    workspaceHubConfig: {
-      additionalWorkspaceStorageAccounts: [secondaryStorageAccount.id]
-      defaultWorkspaceResourceGroup: resourceGroup().id
-    }
+resource aiHub 'Microsoft.MachineLearningServices/workspaces@2024-10-01-preview' = {
+  name: aiHubName
+  location: location
+  sku: {
+    name: 'Basic'
+    tier: 'Basic'
+  }
+  kind: 'Hub'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    storageAccount: storageAccount.id
+    keyVault: keyVault.id
+    applicationInsights: applicationInsights.id
   }
 }
 
@@ -89,4 +90,4 @@ output secondaryStorageAccountResourceId string = secondaryStorageAccount.id
 output keyVaultResourceId string = keyVault.id
 
 @description('The resource ID of the created AI Hub.')
-output aiHubResourceId string = aiHub.outputs.resourceId
+output aiHubResourceId string = aiHub.id
