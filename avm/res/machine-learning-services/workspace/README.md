@@ -634,19 +634,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         sku: 'Basic'
       }
     ]
-    connections: [
-      {
-        category: 'ApiKey'
-        connectionProperties: {
-          authType: 'ApiKey'
-          credentials: {
-            key: 'key'
-          }
-        }
-        name: 'connection'
-        target: 'https://example.com'
-      }
-    ]
     datastores: [
       {
         name: 'datastore'
@@ -719,6 +706,18 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneGroup: {
+          name: 'group2'
+          privateDnsZoneGroupConfigs: [
+            {
+              name: 'config2'
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     provisionNetworkNow: true
@@ -813,21 +812,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
             "vmSize": "STANDARD_DS11_V2"
           },
           "sku": "Basic"
-        }
-      ]
-    },
-    "connections": {
-      "value": [
-        {
-          "category": "ApiKey",
-          "connectionProperties": {
-            "authType": "ApiKey",
-            "credentials": {
-              "key": "key"
-            }
-          },
-          "name": "connection",
-          "target": "https://example.com"
         }
       ]
     },
@@ -930,6 +914,18 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "name": "group2",
+            "privateDnsZoneGroupConfigs": [
+              {
+                "name": "config2",
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -1024,19 +1020,6 @@ param computes = [
     sku: 'Basic'
   }
 ]
-param connections = [
-  {
-    category: 'ApiKey'
-    connectionProperties: {
-      authType: 'ApiKey'
-      credentials: {
-        key: 'key'
-      }
-    }
-    name: 'connection'
-    target: 'https://example.com'
-  }
-]
 param datastores = [
   {
     name: 'datastore'
@@ -1109,6 +1092,18 @@ param privateEndpoints = [
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+  }
+  {
+    privateDnsZoneGroup: {
+      name: 'group2'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'config2'
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
   }
 ]
 param provisionNetworkNow = true
