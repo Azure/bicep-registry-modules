@@ -209,6 +209,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       }
     }
     // Non-required parameters
+    adminPassword: '<adminPassword>'
     location: '<location>'
   }
 }
@@ -270,6 +271,9 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       }
     },
     // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -319,6 +323,7 @@ param storageProfile = {
   }
 }
 // Non-required parameters
+param adminPassword = '<adminPassword>'
 param location = '<location>'
 ```
 
@@ -342,8 +347,11 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adminPassword`](#parameter-adminpassword) | securestring | The password of arc vm. If it is provided, it will be used for the admin account in osProfile. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`httpProxy`](#parameter-httpproxy) | securestring | The HTTP proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | HTTP proxy configuration. |
+| [`httpsProxy`](#parameter-httpsproxy) | securestring | The HTTPS proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile configuration. |
@@ -390,6 +398,13 @@ Storage profile configuration.
 - Required: Yes
 - Type: object
 
+### Parameter: `adminPassword`
+
+The password of arc vm. If it is provided, it will be used for the admin account in osProfile.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -398,6 +413,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `httpProxy`
+
+The HTTP proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `httpProxyConfig`
 
 HTTP proxy configuration.
@@ -405,6 +427,13 @@ HTTP proxy configuration.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `httpsProxy`
+
+The HTTPS proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration.
+
+- Required: No
+- Type: securestring
 
 ### Parameter: `location`
 
