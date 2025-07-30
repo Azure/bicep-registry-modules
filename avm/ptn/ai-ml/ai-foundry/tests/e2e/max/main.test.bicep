@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
       sku: 'S0'
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
+        location: enforcedLocation
         project: {
           name: 'projcustom${workloadName}'
           displayName: 'Custom Project for ${workloadName}'

@@ -455,6 +455,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryConfiguration: {
       accountName: '<accountName>'
       allowProjectManagement: true
+      location: '<location>'
       networking: {
         aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
         cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
@@ -571,6 +572,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "accountName": "<accountName>",
         "allowProjectManagement": true,
+        "location": "<location>",
         "networking": {
           "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
           "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
@@ -707,6 +709,7 @@ param baseName = '<baseName>'
 param aiFoundryConfiguration = {
   accountName: '<accountName>'
   allowProjectManagement: true
+  location: '<location>'
   networking: {
     aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
     cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
