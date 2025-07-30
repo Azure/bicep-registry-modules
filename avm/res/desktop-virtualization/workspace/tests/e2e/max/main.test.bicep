@@ -65,7 +65,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      applicationGroupReferences: []
+      applicationGroupReferences: [
+        nestedDependencies.outputs.applicationGroupResourceId
+      ]
       friendlyName: 'AVD Workspace'
       publicNetworkAccess: 'Disabled'
       diagnosticSettings: [

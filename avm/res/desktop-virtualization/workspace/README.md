@@ -108,7 +108,9 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     // Required parameters
     name: 'dvwsmax001'
     // Non-required parameters
-    applicationGroupReferences: []
+    applicationGroupReferences: [
+      '<applicationGroupResourceId>'
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -254,7 +256,9 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     },
     // Non-required parameters
     "applicationGroupReferences": {
-      "value": []
+      "value": [
+        "<applicationGroupResourceId>"
+      ]
     },
     "diagnosticSettings": {
       "value": [
@@ -412,7 +416,9 @@ using 'br/public:avm/res/desktop-virtualization/workspace:<version>'
 // Required parameters
 param name = 'dvwsmax001'
 // Non-required parameters
-param applicationGroupReferences = []
+param applicationGroupReferences = [
+  '<applicationGroupResourceId>'
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
