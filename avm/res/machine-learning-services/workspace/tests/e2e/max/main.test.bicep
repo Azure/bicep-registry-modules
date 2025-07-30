@@ -109,19 +109,20 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      connections: [
-        {
-          name: 'connection'
-          category: 'ApiKey'
-          target: 'https://example.com'
-          connectionProperties: {
-            authType: 'ApiKey'
-            credentials: {
-              key: 'key'
-            }
-          }
-        }
-      ]
+      // Currently unable to create both a connection and a private endpoint in the same deployment.
+      // connections: [
+      //   {
+      //     name: 'connection'
+      //     category: 'ApiKey'
+      //     target: 'https://example.com'
+      //     connectionProperties: {
+      //       authType: 'ApiKey'
+      //       credentials: {
+      //         key: 'key'
+      //       }
+      //     }
+      //   }
+      // ]
       datastores: [
         {
           name: 'datastore'
@@ -179,6 +180,18 @@ module testDeployment '../../../main.bicep' = [
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
             Role: 'DeploymentValidation'
+          }
+        }
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneGroup: {
+            name: 'group2'
+            privateDnsZoneGroupConfigs: [
+              {
+                name: 'config2'
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
           }
         }
       ]
