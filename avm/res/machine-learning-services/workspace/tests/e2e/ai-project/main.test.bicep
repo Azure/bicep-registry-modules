@@ -42,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}2'
-    aiHubName: '${namePrefix}${serviceShort}hub001'
+    aiHubName: 'dep${namePrefix}${serviceShort}hub001'
     location: resourceLocation
   }
 }
