@@ -1,21 +1,21 @@
-@maxLength(44)
-@description('Required. The name of the Cosmos DB.')
+@maxLength(60)
+@description('Required. The name of the AI Search resource.')
 param name string
 
-@description('Required. The location for the Cosmos DB.')
+@description('Required. The location for the AI Search resource.')
 param location string
 
-@description('Optional. The full resource ID of an existing Cosmos DB to use instead of creating a new one.')
+@description('Optional. The full resource ID of an existing AI Search resource to use instead of creating a new one.')
 param existingResourceId string?
 
 @description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
 param privateEndpointSubnetId string?
 
-@description('Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints.')
+@description('Optional. The resource ID of the private DNS zone for the AI Search resource to establish private endpoints.')
 param privateDnsZoneId string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
-@description('Optional. Specifies the role assignments for the Cosmos DB.')
+@description('Optional. Specifies the role assignments for the AI Search resource.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -31,28 +31,36 @@ var existingName = getResourceName(existingResourceId, existingResourceParts)
 var existingSubscriptionId = getSubscriptionId(existingResourceParts)
 var existingResourceGroupName = getResourceGroupName(existingResourceParts)
 
-resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = if (!empty(existingResourceId)) {
+resource existingSearchService 'Microsoft.Search/searchServices@2025-05-01' existing = if (!empty(existingResourceId)) {
   name: existingName
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
 var privateNetworkingEnabled = !empty(privateDnsZoneId) && !empty(privateEndpointSubnetId)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (empty(existingResourceId)) {
-  name: take('avm.res.document-db.database-account.${name}', 64)
+module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (empty(existingResourceId)) {
+  name: take('avm.res.search.search-service.${name}', 64)
   params: {
     name: name
-    enableTelemetry: enableTelemetry
-    automaticFailover: true
-    disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuthentication: true
     location: location
-    minimumTlsVersion: 'Tls12'
-    defaultConsistencyLevel: 'Session'
-    networkRestrictions: {
-      networkAclBypass: 'AzureServices'
-      publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
+    enableTelemetry: enableTelemetry
+    cmkEnforcement: 'Unspecified'
+    managedIdentities: {
+      systemAssigned: true
     }
+    publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
+    disableLocalAuth: privateNetworkingEnabled
+    authOptions: privateNetworkingEnabled
+      ? null
+      : {
+          aadOrApiKey: {
+            aadAuthFailureMode: 'http401WithBearerChallenge'
+          }
+        }
+    sku: 'standard'
+    partitionCount: 1
+    replicaCount: 3
+    roleAssignments: roleAssignments
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
@@ -63,24 +71,27 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (em
                 }
               ]
             }
-            service: 'Sql'
             subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
-    roleAssignments: roleAssignments
     tags: tags
   }
 }
 
-@description('Name of the Cosmos DB.')
-output name string = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
+@description('Name of the AI Search resource.')
+output name string = empty(existingResourceId) ? aiSearch!.outputs.name : existingSearchService.name
 
-@description('Resource ID of the Cosmos DB.')
-output resourceId string = empty(existingResourceId) ? cosmosDb!.outputs.resourceId : existingCosmosDb.id
+@description('Resource ID of the AI Search resource.')
+output resourceId string = empty(existingResourceId) ? aiSearch!.outputs.resourceId : existingSearchService.id
 
-@description('Subscription ID of the Cosmos DB.')
+@description('Subscription ID of the AI Search resource.')
 output subscriptionId string = empty(existingResourceId) ? subscription().subscriptionId : existingSubscriptionId
 
-@description('Resource Group Name of the Cosmos DB.')
+@description('Resource Group Name of the AI Search resource.')
 output resourceGroupName string = empty(existingResourceId) ? resourceGroup().name : existingResourceGroupName
+
+@description('System assigned managed identity principal ID of the AI Search resource.')
+output systemAssignedMIPrincipalId string? = empty(existingResourceId)
+  ? aiSearch!.outputs.systemAssignedMIPrincipalId!
+  : ''

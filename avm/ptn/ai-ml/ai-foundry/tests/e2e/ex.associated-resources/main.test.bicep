@@ -1,6 +1,6 @@
 targetScope = 'subscription'
-metadata name = 'WAF-aligned'
-metadata description = 'Creates an AI Foundry account and project with Standard Agent Services with private networking.'
+metadata name = 'Create with Associated Resources'
+metadata description = 'Creates an AI Foundry account and project with Standard Agent Services.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 var enforcedLocation = 'australiaeast'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fndrywaf'
+param serviceShort string = 'fndryres'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -24,19 +24,6 @@ param namePrefix string = '#_namePrefix_#'
 // Setting min length to 12 to prevent min-char warnings on the test deployment.
 // These warnings cannot be disabled due to AVM processes not able to parse the # characer.
 var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
-
-// ============ //
-// Dependencies //
-// ============ //
-
-module dependencies 'dependencies.bicep' = {
-  name: take('module.dependencies.${workloadName}', 64)
-  scope: resourceGroup
-  params: {
-    workloadName: workloadName
-    location: enforcedLocation
-  }
-}
 
 // General resources
 // =================
@@ -57,26 +44,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
-      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
-      aiFoundryConfiguration: {
-        networking: {
-          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
-        }
-      }
-      storageAccountConfiguration: {
-        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
-      }
-      aiSearchConfiguration: {
-        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
-      }
-      keyVaultConfiguration: {
-        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
-      }
-      cosmosDbConfiguration: {
-        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
-      }
       aiModelDeployments: [
         {
           name: 'gpt-4.1'

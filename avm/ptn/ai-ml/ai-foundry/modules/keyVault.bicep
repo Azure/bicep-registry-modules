@@ -1,21 +1,21 @@
-@maxLength(44)
-@description('Required. The name of the Cosmos DB.')
+@maxLength(24)
+@description('Required. The name of the Key Vault.')
 param name string
 
-@description('Required. The location for the Cosmos DB.')
+@description('Required. The location for the Key Vault.')
 param location string
 
-@description('Optional. The full resource ID of an existing Cosmos DB to use instead of creating a new one.')
+@description('Optional. The full resource ID of an existing Key Vault to use instead of creating a new one.')
 param existingResourceId string?
 
 @description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
 param privateEndpointSubnetId string?
 
-@description('Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints.')
+@description('Optional. The resource ID of the private DNS zone for the Key Vault to establish private endpoints.')
 param privateDnsZoneId string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
-@description('Optional. Specifies the role assignments for the Cosmos DB.')
+@description('Optional. Specifies the role assignments for the Key Vault.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -31,28 +31,31 @@ var existingName = getResourceName(existingResourceId, existingResourceParts)
 var existingSubscriptionId = getSubscriptionId(existingResourceParts)
 var existingResourceGroupName = getResourceGroupName(existingResourceParts)
 
-resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = if (!empty(existingResourceId)) {
+resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(existingResourceId)) {
   name: existingName
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
 var privateNetworkingEnabled = !empty(privateDnsZoneId) && !empty(privateEndpointSubnetId)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (empty(existingResourceId)) {
-  name: take('avm.res.document-db.database-account.${name}', 64)
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (empty(existingResourceId)) {
+  name: take('avm.res.key-vault.vault.${name}', 64)
   params: {
     name: name
-    enableTelemetry: enableTelemetry
-    automaticFailover: true
-    disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuthentication: true
     location: location
-    minimumTlsVersion: 'Tls12'
-    defaultConsistencyLevel: 'Session'
-    networkRestrictions: {
-      networkAclBypass: 'AzureServices'
-      publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
+    tags: tags
+    enableTelemetry: enableTelemetry
+    publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
+    networkAcls: {
+      defaultAction: privateNetworkingEnabled ? 'Deny' : 'Allow'
     }
+    enableVaultForDeployment: true
+    enableVaultForDiskEncryption: true
+    enableVaultForTemplateDeployment: true
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 7
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
@@ -63,24 +66,23 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (em
                 }
               ]
             }
-            service: 'Sql'
+            service: 'vault'
             subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
     roleAssignments: roleAssignments
-    tags: tags
   }
 }
 
-@description('Name of the Cosmos DB.')
-output name string = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
+@description('Name of the Key Vault.')
+output name string = empty(existingResourceId) ? keyVault!.outputs.name : existingKeyVault.name
 
-@description('Resource ID of the Cosmos DB.')
-output resourceId string = empty(existingResourceId) ? cosmosDb!.outputs.resourceId : existingCosmosDb.id
+@description('Resource ID of the Key Vault.')
+output resourceId string = empty(existingResourceId) ? keyVault!.outputs.resourceId : existingKeyVault.id
 
-@description('Subscription ID of the Cosmos DB.')
+@description('Subscription ID of the Key Vault.')
 output subscriptionId string = empty(existingResourceId) ? subscription().subscriptionId : existingSubscriptionId
 
-@description('Resource Group Name of the Cosmos DB.')
+@description('Resource Group Name of the Key Vault.')
 output resourceGroupName string = empty(existingResourceId) ? resourceGroup().name : existingResourceGroupName
