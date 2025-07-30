@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "842542113815064644"
+      "templateHash": "487506207879251917"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -3498,7 +3498,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "1258941422348619854"
+              "templateHash": "5323710470278052006"
             }
           },
           "definitions": {
@@ -3578,6 +3578,103 @@
               }
             }
           },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "getResourceGroupName": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 4), parameters('parts')[4], resourceGroup().name)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Group Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceName": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(and(and(not(empty(parameters('resourceId'))), contains(parameters('resourceId'), '/')), not(empty(parameters('parts')))), last(parameters('parts')), coalesce(parameters('resourceId'), ''))]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceParts": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    }
+                  ],
+                  "output": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "value": "[split(coalesce(parameters('resourceId'), ''), '/')]"
+                  },
+                  "metadata": {
+                    "description": "Splits Resource ID into its components.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getSubscriptionId": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 2), parameters('parts')[2], subscription().subscriptionId)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Subscription ID from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "name": {
               "type": "string",
@@ -3642,10 +3739,10 @@
             }
           },
           "variables": {
-            "existingResourceParts": "[split(coalesce(parameters('existingResourceId'), ''), '/')]",
-            "existingName": "[if(and(and(not(empty(parameters('existingResourceId'))), contains(parameters('existingResourceId'), '/')), not(empty(variables('existingResourceParts')))), last(variables('existingResourceParts')), parameters('existingResourceId'))]",
-            "existingSubscriptionId": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 2)), variables('existingResourceParts')[2], subscription().subscriptionId)]",
-            "existingResourceGroupName": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 4)), variables('existingResourceParts')[4], resourceGroup().name)]",
+            "existingResourceParts": "[__bicep.getResourceParts(parameters('existingResourceId'))]",
+            "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
+            "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
+            "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
             "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
           },
           "resources": {
@@ -7084,7 +7181,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12484276173529580313"
+              "templateHash": "13008140373557698561"
             }
           },
           "definitions": {
@@ -7164,6 +7261,103 @@
               }
             }
           },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "getResourceGroupName": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 4), parameters('parts')[4], resourceGroup().name)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Group Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceName": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(and(and(not(empty(parameters('resourceId'))), contains(parameters('resourceId'), '/')), not(empty(parameters('parts')))), last(parameters('parts')), coalesce(parameters('resourceId'), ''))]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceParts": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    }
+                  ],
+                  "output": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "value": "[split(coalesce(parameters('resourceId'), ''), '/')]"
+                  },
+                  "metadata": {
+                    "description": "Splits Resource ID into its components.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getSubscriptionId": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 2), parameters('parts')[2], subscription().subscriptionId)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Subscription ID from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "name": {
               "type": "string",
@@ -7228,10 +7422,10 @@
             }
           },
           "variables": {
-            "existingResourceParts": "[split(coalesce(parameters('existingResourceId'), ''), '/')]",
-            "existingName": "[if(and(and(not(empty(parameters('existingResourceId'))), contains(parameters('existingResourceId'), '/')), not(empty(variables('existingResourceParts')))), last(variables('existingResourceParts')), parameters('existingResourceId'))]",
-            "existingSubscriptionId": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 2)), variables('existingResourceParts')[2], subscription().subscriptionId)]",
-            "existingResourceGroupName": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 4)), variables('existingResourceParts')[4], resourceGroup().name)]",
+            "existingResourceParts": "[__bicep.getResourceParts(parameters('existingResourceId'))]",
+            "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
+            "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
+            "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
             "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
           },
           "resources": {
@@ -9548,7 +9742,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "10632236873976186784"
+              "templateHash": "3576940628426633844"
             }
           },
           "definitions": {
@@ -9628,6 +9822,103 @@
               }
             }
           },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "getResourceGroupName": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 4), parameters('parts')[4], resourceGroup().name)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Group Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceName": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(and(and(not(empty(parameters('resourceId'))), contains(parameters('resourceId'), '/')), not(empty(parameters('parts')))), last(parameters('parts')), coalesce(parameters('resourceId'), ''))]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceParts": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    }
+                  ],
+                  "output": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "value": "[split(coalesce(parameters('resourceId'), ''), '/')]"
+                  },
+                  "metadata": {
+                    "description": "Splits Resource ID into its components.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getSubscriptionId": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 2), parameters('parts')[2], subscription().subscriptionId)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Subscription ID from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "name": {
               "type": "string",
@@ -9698,10 +9989,10 @@
             }
           },
           "variables": {
-            "existingResourceParts": "[split(coalesce(parameters('existingResourceId'), ''), '/')]",
-            "existingName": "[if(and(and(not(empty(parameters('existingResourceId'))), contains(parameters('existingResourceId'), '/')), not(empty(variables('existingResourceParts')))), last(variables('existingResourceParts')), parameters('existingResourceId'))]",
-            "existingSubscriptionId": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 2)), variables('existingResourceParts')[2], subscription().subscriptionId)]",
-            "existingResourceGroupName": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 4)), variables('existingResourceParts')[4], resourceGroup().name)]",
+            "existingResourceParts": "[__bicep.getResourceParts(parameters('existingResourceId'))]",
+            "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
+            "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
+            "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
             "privateNetworkingEnabled": "[and(not(empty(parameters('blobPrivateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
           },
           "resources": {
@@ -15638,7 +15929,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "12214597487707185584"
+              "templateHash": "9645204336568866409"
             }
           },
           "definitions": {
@@ -15718,6 +16009,103 @@
               }
             }
           },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "getResourceGroupName": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 4), parameters('parts')[4], resourceGroup().name)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Group Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceName": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(and(and(not(empty(parameters('resourceId'))), contains(parameters('resourceId'), '/')), not(empty(parameters('parts')))), last(parameters('parts')), coalesce(parameters('resourceId'), ''))]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Resource Name from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getResourceParts": {
+                  "parameters": [
+                    {
+                      "type": "string",
+                      "nullable": true,
+                      "name": "resourceId"
+                    }
+                  ],
+                  "output": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "value": "[split(coalesce(parameters('resourceId'), ''), '/')]"
+                  },
+                  "metadata": {
+                    "description": "Splits Resource ID into its components.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                },
+                "getSubscriptionId": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "name": "parts"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[if(greater(length(parameters('parts')), 2), parameters('parts')[2], subscription().subscriptionId)]"
+                  },
+                  "metadata": {
+                    "description": "Extracts the Subscription ID from a Resource ID.",
+                    "__bicep_imported_from!": {
+                      "sourceTemplate": "parseResourceIdFunctions.bicep"
+                    }
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "name": {
               "type": "string",
@@ -15782,10 +16170,10 @@
             }
           },
           "variables": {
-            "existingResourceParts": "[split(coalesce(parameters('existingResourceId'), ''), '/')]",
-            "existingName": "[if(and(and(not(empty(parameters('existingResourceId'))), contains(parameters('existingResourceId'), '/')), not(empty(variables('existingResourceParts')))), last(variables('existingResourceParts')), parameters('existingResourceId'))]",
-            "existingSubscriptionId": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 2)), variables('existingResourceParts')[2], subscription().subscriptionId)]",
-            "existingResourceGroupName": "[if(and(not(empty(parameters('existingResourceId'))), greater(length(variables('existingResourceParts')), 4)), variables('existingResourceParts')[4], resourceGroup().name)]",
+            "existingResourceParts": "[__bicep.getResourceParts(parameters('existingResourceId'))]",
+            "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
+            "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
+            "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
             "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
           },
           "resources": {

@@ -24,16 +24,12 @@ param enableTelemetry bool = true
 @description('Optional. Specifies the resource tags for all the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
-var existingResourceParts = split(existingResourceId ?? '', '/')
-var existingName = !empty(existingResourceId) && contains(existingResourceId!, '/') && !empty(existingResourceParts)
-  ? last(existingResourceParts)
-  : existingResourceId!
-var existingSubscriptionId = !empty(existingResourceId) && length(existingResourceParts) > 2
-  ? existingResourceParts[2]
-  : subscription().subscriptionId
-var existingResourceGroupName = !empty(existingResourceId) && length(existingResourceParts) > 4
-  ? existingResourceParts[4]
-  : resourceGroup().name
+import { getResourceParts, getResourceName, getSubscriptionId, getResourceGroupName } from 'parseResourceIdFunctions.bicep'
+
+var existingResourceParts = getResourceParts(existingResourceId)
+var existingName = getResourceName(existingResourceId, existingResourceParts)
+var existingSubscriptionId = getSubscriptionId(existingResourceParts)
+var existingResourceGroupName = getResourceGroupName(existingResourceParts)
 
 resource existingSearchService 'Microsoft.Search/searchServices@2025-05-01' existing = if (!empty(existingResourceId)) {
   name: existingName
