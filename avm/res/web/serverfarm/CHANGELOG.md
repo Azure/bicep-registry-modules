@@ -10,7 +10,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Support for Flexible Consumption SKU
 - Documentation Enhancements
 - Consistency Improvements
-- New Test Cases
 
 ## 0.4.1
 
