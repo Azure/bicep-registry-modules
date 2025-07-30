@@ -227,7 +227,7 @@ module k8scluster 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    clusterName: '${namePrefix}${serviceShort}001'
+    clusterName: pci.outputs.name
     clusterExtensionName: '${namePrefix}${serviceShort}001'
   }
 }
