@@ -11,7 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Changed behavior of `publicNetworkAccess` to automatically set `Disabled` if private endpoints are provided - unless the `publicNetworkAccess` value is set explicitely
+- Changed behavior of `publicNetworkAccess` to automatically set `Disabled` if private endpoints are provided - unless the `publicNetworkAccess` value is set explicitly
 
 ## 0.8.0
 
