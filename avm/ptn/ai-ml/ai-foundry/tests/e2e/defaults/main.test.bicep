@@ -12,7 +12,7 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 // Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'australiaeast'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndrymin'
@@ -20,8 +20,10 @@ param serviceShort string = 'fndrymin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Used to generate unique names for resources to avoid soft-delete conflicts.')
-param utcValue string = utcNow()
+// Setting max length to 12 to stay within bounds of baseName length constraints.
+// Setting min length to 12 to prevent min-char warnings on the test deployment.
+// These warnings cannot be disabled due to AVM processes not able to parse the # characer.
+var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 
 // ============ //
 // Dependencies //
@@ -44,11 +46,21 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'basic${substring(uniqueString(subscription().id, enforcedLocation, utcValue), 0, 3)}' // Use time-based uniqueness to avoid soft-delete conflicts
-      aiFoundryType: 'Basic' // Basic deployment - minimal resources only
-      userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
-      contentSafetyEnabled: false // Set to true or false as required
-      // Note: vmAdminPasswordOrKey not needed for Basic deployment (no VM deployed)
+      baseName: workloadName
+      aiModelDeployments: [
+        {
+          name: 'gpt-4.1'
+          model: {
+            name: 'gpt-4.1'
+            format: 'OpenAI'
+            version: '2025-04-14'
+          }
+          sku: {
+            name: 'GlobalStandard'
+            capacity: 1
+          }
+        }
+      ]
     }
   }
 ]
