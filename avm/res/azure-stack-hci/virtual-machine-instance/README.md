@@ -209,6 +209,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       }
     }
     // Non-required parameters
+    adminPassword: '<adminPassword>'
     location: '<location>'
   }
 }
@@ -270,6 +271,9 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       }
     },
     // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -319,6 +323,7 @@ param storageProfile = {
   }
 }
 // Non-required parameters
+param adminPassword = '<adminPassword>'
 param location = '<location>'
 ```
 
@@ -342,6 +347,7 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adminPassword`](#parameter-adminpassword) | securestring | The password of arc vm. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | HTTP proxy configuration. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -389,6 +395,13 @@ Storage profile configuration.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `adminPassword`
+
+The password of arc vm.
+
+- Required: No
+- Type: securestring
 
 ### Parameter: `enableTelemetry`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11275965365560506019"
+      "templateHash": "9898978719093265994"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
@@ -184,6 +184,13 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The password of arc vm."
+      }
     }
   },
   "variables": {
@@ -250,7 +257,7 @@
         },
         "httpProxyConfig": "[if(empty(parameters('httpProxyConfig')), null(), parameters('httpProxyConfig'))]",
         "networkProfile": "[parameters('networkProfile')]",
-        "osProfile": "[parameters('osProfile')]",
+        "osProfile": "[union(parameters('osProfile'), createObject('adminPassword', parameters('adminPassword')))]",
         "securityProfile": "[if(empty(parameters('securityProfile')), null(), parameters('securityProfile'))]",
         "storageProfile": "[parameters('storageProfile')]"
       },

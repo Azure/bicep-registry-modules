@@ -37,6 +37,10 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@secure()
+@description('Optional. The password of arc vm.')
+param adminPassword string?
+
 // ============== //
 // Resources      //
 // ============== //
@@ -120,7 +124,12 @@ resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances
     }
     httpProxyConfig: empty(httpProxyConfig) ? null : httpProxyConfig
     networkProfile: networkProfile
-    osProfile: osProfile
+    osProfile: union(
+      osProfile,
+      {
+        adminPassword: adminPassword
+      }
+    )
     securityProfile: empty(securityProfile) ? null : securityProfile
     storageProfile: storageProfile
   }
