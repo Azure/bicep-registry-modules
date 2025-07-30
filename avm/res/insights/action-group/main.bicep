@@ -52,7 +52,7 @@ param azureFunctionReceivers array?
 param armRoleReceivers array?
 
 @description('Optional. The list of incident receivers that are part of this action group.')
-param incidentReceivers resourceInput<'Microsoft.Insights/actionGroups@2023-01-01'>.properties.incidentReceivers?
+param incidentReceivers resourceInput<'Microsoft.Insights/actionGroups@2024-10-01-preview'>.properties.incidentReceivers?
 
 @description('Optional. Tags of the resource.')
 param tags object?
