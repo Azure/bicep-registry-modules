@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmlinmax'
+param serviceShort string = 'cvmlimax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -206,7 +206,7 @@ module testDeployment '../../../main.bicep' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
-    zone: 1
+    availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -369,7 +369,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
 }

@@ -18,7 +18,7 @@ This module deploys an App Service Plan.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Web/serverfarms` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/serverfarms) |
+| `Microsoft.Web/serverfarms` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/serverfarms) |
 
 ## Usage examples
 
@@ -29,8 +29,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/serverfarm:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Flexible Consumption](#example-2-flexible-consumption)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using default parameter set_
 
@@ -85,7 +86,142 @@ param name = 'wsfmin001'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Flexible Consumption_
+
+This instance deploys the module in a flexible consumption app service plan.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  name: 'serverfarmDeployment'
+  params: {
+    // Required parameters
+    name: 'wsffcp001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSettingwsffcp'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    reserved: true
+    skuName: 'FC1'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsffcp001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSettingwsffcp",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "reserved": {
+      "value": true
+    },
+    "skuName": {
+      "value": "FC1"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsffcp001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSettingwsffcp'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param reserved = true
+param skuName = 'FC1'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -308,7 +444,7 @@ param zoneRedundant = true
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. Note - whilst this test is WAF aligned, zoneRedundant is set to false to avoid temporary AVM environment challenges. It is highly recommended that users of this module set the property value to true.
 
@@ -466,7 +602,7 @@ param zoneRedundant = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appServiceEnvironmentId`](#parameter-appserviceenvironmentid) | string | The Resource ID of the App Service Environment to use for the App Service Plan. |
+| [`appServiceEnvironmentResourceId`](#parameter-appserviceenvironmentresourceid) | string | The Resource ID of the App Service Environment to use for the App Service Plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Enable/Disable ElasticScaleEnabled App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -499,7 +635,7 @@ Defaults to false when creating Windows/app App Service Plan. Required if creati
 - Type: bool
 - Default: `[equals(parameters('kind'), 'linux')]`
 
-### Parameter: `appServiceEnvironmentId`
+### Parameter: `appServiceEnvironmentResourceId`
 
 The Resource ID of the App Service Environment to use for the App Service Plan.
 
@@ -644,7 +780,7 @@ Kind of server OS.
   [
     'app'
     'elastic'
-    'functionApp'
+    'functionapp'
     'linux'
     'windows'
   ]
@@ -671,6 +807,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -690,6 +827,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -901,7 +1045,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

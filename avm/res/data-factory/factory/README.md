@@ -921,6 +921,7 @@ param tags = {
 | [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`purviewResourceId`](#parameter-purviewresourceid) | string | Purview Account resource identifier. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1925,6 +1926,13 @@ Whether or not public network access is allowed for this resource. For security 
     'Enabled'
   ]
   ```
+
+### Parameter: `purviewResourceId`
+
+Purview Account resource identifier.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 

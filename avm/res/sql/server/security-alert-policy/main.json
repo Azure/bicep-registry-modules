@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "15348652978067640813"
+      "version": "0.36.177.2456",
+      "templateHash": "5044173542671495897"
     },
     "name": "Azure SQL Server Security Alert Policies",
     "description": "This module deploys an Azure SQL Server Security Alert Policy."

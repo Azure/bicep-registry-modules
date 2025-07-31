@@ -17,10 +17,11 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
+| `Microsoft.CognitiveServices/accounts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts) |
+| `Microsoft.CognitiveServices/accounts/commitmentPlans` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -1713,6 +1714,7 @@ param tags = {
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
 | [`allowProjectManagement`](#parameter-allowprojectmanagement) | bool | Enable/Disable project management feature for AI Foundry. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
+| [`commitmentPlans`](#parameter-commitmentplans) | array | Commitment plans to deploy for the cognitive services account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1804,6 +1806,113 @@ The API properties for special APIs.
 
 - Required: No
 - Type: object
+
+### Parameter: `commitmentPlans`
+
+Commitment plans to deploy for the cognitive services account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRenew`](#parameter-commitmentplansautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
+| [`current`](#parameter-commitmentplanscurrent) | object | The current commitment configuration. |
+| [`hostingModel`](#parameter-commitmentplanshostingmodel) | string | The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web). |
+| [`planType`](#parameter-commitmentplansplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`commitmentPlanGuid`](#parameter-commitmentplanscommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
+| [`next`](#parameter-commitmentplansnext) | object | The configuration of the next commitment period, if scheduled. |
+
+### Parameter: `commitmentPlans.autoRenew`
+
+Whether the plan should auto-renew at the end of the current commitment period.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `commitmentPlans.current`
+
+The current commitment configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-commitmentplanscurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
+| [`tier`](#parameter-commitmentplanscurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
+
+### Parameter: `commitmentPlans.current.count`
+
+The number of committed instances (e.g., number of containers or cores).
+
+- Required: Yes
+- Type: int
+
+### Parameter: `commitmentPlans.current.tier`
+
+The tier of the commitment plan (e.g., T1, T2).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `commitmentPlans.hostingModel`
+
+The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `commitmentPlans.planType`
+
+The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `commitmentPlans.commitmentPlanGuid`
+
+The unique identifier of an existing commitment plan to update. Set to null to create a new plan.
+
+- Required: No
+- Type: string
+
+### Parameter: `commitmentPlans.next`
+
+The configuration of the next commitment period, if scheduled.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-commitmentplansnextcount) | int | The number of committed instances for the next period. |
+| [`tier`](#parameter-commitmentplansnexttier) | string | The tier for the next commitment period. |
+
+### Parameter: `commitmentPlans.next.count`
+
+The number of committed instances for the next period.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `commitmentPlans.next.tier`
+
+The tier for the next commitment period.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `customerManagedKey`
 
@@ -2181,6 +2290,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2200,6 +2310,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2425,6 +2542,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2444,6 +2562,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2869,6 +2994,7 @@ SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' t
     'C2'
     'C3'
     'C4'
+    'DC0'
     'F0'
     'F1'
     'S'
@@ -2922,6 +3048,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
