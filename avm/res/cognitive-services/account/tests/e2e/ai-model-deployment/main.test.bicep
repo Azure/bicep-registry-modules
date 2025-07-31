@@ -12,6 +12,7 @@ metadata description = 'This instance deploys the module with the AI model deplo
 param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
+#disable-next-line no-unused-params
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
@@ -19,6 +20,9 @@ param serviceShort string = 'csad'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
+import { enforcedLocation } from '../../shared/constants.bicep'
 
 // ============ //
 // Dependencies //
@@ -28,7 +32,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -39,11 +43,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}-ai'
     params: {
       name: '${namePrefix}${serviceShort}002'
       kind: 'AIServices'
-      location: resourceLocation
+      location: enforcedLocation
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
