@@ -33,18 +33,206 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
-- [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
-- [Storing keys of service in key vault](#example-3-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-6-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-7-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-10-waf-aligned)
+- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
+- [Storing keys of service in key vault](#example-4-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-7-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-8-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-11-waf-aligned)
 
-### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
+
+This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadpa003'
+    // Non-required parameters
+    customSubDomainName: 'xcsadpaai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    location: '<location>'
+    networkInjections: {
+      scenario: 'agent'
+      subnetResourceId: '<subnetResourceId>'
+      useMicrosoftManagedNetwork: false
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadpa003"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadpaai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkInjections": {
+      "value": {
+        "scenario": "agent",
+        "subnetResourceId": "<subnetResourceId>",
+        "useMicrosoftManagedNetwork": false
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              },
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadpa003'
+// Non-required parameters
+param customSubDomainName = 'xcsadpaai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param location = '<location>'
+param networkInjections = {
+  scenario: 'agent'
+  subnetResourceId: '<subnetResourceId>'
+  useMicrosoftManagedNetwork: false
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 2: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -214,7 +402,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 2: _Using `AIServices` with `deployments` in parameter set_
+### Example 3: _Using `AIServices` with `deployments` in parameter set_
 
 This instance deploys the module with the AI model deployment feature.
 
@@ -332,7 +520,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Storing keys of service in key vault_
+### Example 4: _Storing keys of service in key vault_
 
 This instance deploys the module and stores its keys in a key vault.
 
@@ -423,7 +611,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -492,7 +680,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -506,9 +694,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: 'accountDeployment'
   params: {
     // Required parameters
-    kind: 'Face'
+    kind: 'AIServices'
     name: 'csamax001'
     // Non-required parameters
+    allowProjectManagement: true
     customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
@@ -556,6 +745,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           ignoreMissingVnetServiceEndpoint: false
         }
       ]
+    }
+    networkInjections: {
+      scenario: 'agent'
+      subnetResourceId: '<subnetResourceId>'
+      useMicrosoftManagedNetwork: false
     }
     privateEndpoints: [
       {
@@ -646,12 +840,15 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "Face"
+      "value": "AIServices"
     },
     "name": {
       "value": "csamax001"
     },
     // Non-required parameters
+    "allowProjectManagement": {
+      "value": true
+    },
     "customSubDomainName": {
       "value": "xcsamax"
     },
@@ -710,6 +907,13 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
             "ignoreMissingVnetServiceEndpoint": false
           }
         ]
+      }
+    },
+    "networkInjections": {
+      "value": {
+        "scenario": "agent",
+        "subnetResourceId": "<subnetResourceId>",
+        "useMicrosoftManagedNetwork": false
       }
     },
     "privateEndpoints": {
@@ -808,9 +1012,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
-param kind = 'Face'
+param kind = 'AIServices'
 param name = 'csamax001'
 // Non-required parameters
+param allowProjectManagement = true
 param customSubDomainName = 'xcsamax'
 param diagnosticSettings = [
   {
@@ -858,6 +1063,11 @@ param networkAcls = {
       ignoreMissingVnetServiceEndpoint: false
     }
   ]
+}
+param networkInjections = {
+  scenario: 'agent'
+  subnetResourceId: '<subnetResourceId>'
+  useMicrosoftManagedNetwork: false
 }
 param privateEndpoints = [
   {
@@ -935,7 +1145,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 7: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -1096,7 +1306,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 7: _As Speech Service_
+### Example 8: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -1265,7 +1475,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1374,7 +1584,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1492,7 +1702,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1726,6 +1936,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`migrationToken`](#parameter-migrationtoken) | securestring | Resource migration token. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
+| [`networkInjections`](#parameter-networkinjections) | object | Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
@@ -2362,6 +2573,54 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
+
+### Parameter: `networkInjections`
+
+Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`scenario`](#parameter-networkinjectionsscenario) | string | The scenario for the network injection. |
+| [`subnetResourceId`](#parameter-networkinjectionssubnetresourceid) | string | The Resource ID of the subnet on the Virtual Network on which to inject. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`useMicrosoftManagedNetwork`](#parameter-networkinjectionsusemicrosoftmanagednetwork) | bool | Whether to use Microsoft Managed Network. Defaults to false. |
+
+### Parameter: `networkInjections.scenario`
+
+The scenario for the network injection.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'agent'
+    'none'
+  ]
+  ```
+
+### Parameter: `networkInjections.subnetResourceId`
+
+The Resource ID of the subnet on the Virtual Network on which to inject.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkInjections.useMicrosoftManagedNetwork`
+
+Whether to use Microsoft Managed Network. Defaults to false.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `privateEndpoints`
 

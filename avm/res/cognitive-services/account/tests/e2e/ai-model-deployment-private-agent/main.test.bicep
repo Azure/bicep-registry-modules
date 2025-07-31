@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using `OpenAI` and `deployments` in parameter set with private endpoint'
-metadata description = 'This instance deploys the module with the AI model deployment feature and private endpoint.'
+metadata name = 'Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection'
+metadata description = 'This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csoai'
+param serviceShort string = 'csadpa'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -49,10 +49,10 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-oai'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
     params: {
-      name: '${namePrefix}${serviceShort}002'
-      kind: 'OpenAI'
+      name: '${namePrefix}${serviceShort}003'
+      kind: 'AIServices'
       location: resourceLocation
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
@@ -69,6 +69,11 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      networkInjections: {
+        scenario: 'agent'
+        subnetResourceId: nestedDependencies.outputs.agentSubnetResourceId
+        useMicrosoftManagedNetwork: false
+      }
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {
@@ -76,6 +81,9 @@ module testDeployment '../../../main.bicep' = [
             privateDnsZoneGroupConfigs: [
               {
                 privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneOpenAIResourceId
               }
             ]
           }

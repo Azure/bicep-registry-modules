@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -65,9 +65,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      kind: 'Face'
+      kind: 'AIServices'
       customSubDomainName: '${namePrefix}x${serviceShort}'
       location: resourceLocation
+      allowProjectManagement: true
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -107,6 +108,11 @@ module testDeployment '../../../main.bicep' = [
             ignoreMissingVnetServiceEndpoint: false
           }
         ]
+      }
+      networkInjections: {
+        scenario: 'agent'
+        subnetResourceId: nestedDependencies.outputs.agentSubnetResourceId
+        useMicrosoftManagedNetwork: false
       }
       publicNetworkAccess: 'Disabled'
       roleAssignments: [
@@ -189,9 +195,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
