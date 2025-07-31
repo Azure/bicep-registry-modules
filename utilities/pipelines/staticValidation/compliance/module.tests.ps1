@@ -1553,7 +1553,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
             # the second condition is for local testing only, as, after committing to GitHub, the first condition picks up the version
-            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath).Count -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
                 # The module will be published
                 $expectedModuleVersion = $moduleTargetVersion
             } else {
@@ -1563,31 +1563,13 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
-            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
 
-            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
             # check for the presence of the `## $expectedModuleVersion` section
-            # $changelogSection | Should -BeIn $sections -Because "the `## $expectedModuleVersion` section must be in the changelog"
-            if ($changelogSection -notin $sections) {
-                $warningMessage = "The `## $expectedModuleVersion` section must be in the changelog"
-                Write-Warning $warningMessage
+            "## $expectedModuleVersion" | Should -BeIn $sections -Because "the `## $expectedModuleVersion` section must be in the changelog"
 
-                Write-Output @{
-                    Warning = $warningMessage
-                }
-            }
-
-            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
             # only one version section should be present
-            # $changelogSection.Count | Should -BeExactly 1 -Because "the `## $expectedModuleVersion` section should be in the changelog only once"
-            if ($changelogSection.Count -ne 1) {
-                $warningMessage = "The `## $expectedModuleVersion` section should be in the changelog only once"
-                Write-Warning $warningMessage
-
-                Write-Output @{
-                    Warning = $warningMessage
-                }
-            }
+            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
+            $changelogSection.Count | Should -BeExactly 1 -Because "the `## $expectedModuleVersion` section should be in the changelog only once"
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` file''s sections must be sorted in a decending order.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
