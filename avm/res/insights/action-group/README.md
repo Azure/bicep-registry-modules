@@ -242,21 +242,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
         }
       ]
     },
-    "incidentReceivers": {
-      "value": [
-        {
-          "connection": {
-            "id": "0",
-            "name": "MyConnectionName"
-          },
-          "incidentManagementService": "ServiceNow",
-          "mappings": {
-            "CustomProperty": "Allowed"
-          },
-          "name": "MyIncidentReceiver"
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -291,20 +276,6 @@ param emailReceivers = [
   {
     emailAddress: 'test.user2@testcompany.com'
     name: 'TestUser2'
-    useCommonAlertSchema: true
-  }
-]
-param incidentReceivers = [
-  {
-    connection: {
-      id: 'TestId',
-      name: 'TestName'
-    },
-    incidentManagementService: 'TestIncidentReceiverManagementService',
-    mappings: {
-      CustomProperty: 'TestCustomProperty'
-    },
-    name: 'TestIncidentReceiver'
     useCommonAlertSchema: true
   }
 ]
@@ -456,7 +427,6 @@ param tags = {
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventHubReceivers`](#parameter-eventhubreceivers) | array | The list of Event Hub receivers that are part of this action group. |
-| [`incidentReceivers`](#parameter-incidentreceivers) | array | The list of incident receivers that are part of this action group. | 
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -535,13 +505,6 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `eventHubReceivers`
 
 The list of Event Hub receivers that are part of this action group.
-
-- Required: No
-- Type: array
-
-### Parameter: `incidentReceivers`
-
-The list of incident receivers that are part of this action group.
 
 - Required: No
 - Type: array
@@ -734,7 +697,7 @@ The list of webhook receivers that are part of this action group.
 
 - Required: No
 - Type: array
-  
+
 ## Outputs
 
 | Output | Type | Description |
