@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "9577580862088206504"
+      "version": "0.36.177.2456",
+      "templateHash": "11484064782357517234"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -286,7 +286,7 @@
       ],
       "nullable": true,
       "metadata": {
-        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
+        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
       }
     },
     "isAcceleratedNetworkSupported": {
@@ -384,11 +384,14 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+        },
         "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
         "description": "Optional. Tags for all the image."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {

@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
         {
           metricCategories:[
             {
-              category: 'allMetrics'
+              category: 'AllMetrics'
             }
           ]
           logCategoriesAndGroups: []

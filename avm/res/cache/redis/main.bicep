@@ -99,7 +99,16 @@ param tenantSettings object = {}
 param zoneRedundant bool = true
 
 @description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
-param zones int[] = [1, 2, 3]
+@allowed([1, 2, 3])
+param availabilityZones int[] = [1, 2, 3]
+
+@description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.')
+@allowed([
+  'Automatic'
+  'NoZones'
+  'UserDefined'
+])
+param zonalAllocationPolicy string?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -129,8 +138,10 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 var enableReferencedModulesTelemetry = false
 
-var availabilityZones = skuName == 'Premium'
-  ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
+var zones = skuName == 'Premium'
+  ? zoneRedundant
+      ? !empty(availabilityZones) ? availabilityZones : pickZones('Microsoft.Cache', 'redis', location, 3)
+      : []
   : []
 
 var formattedUserAssignedIdentities = reduce(
@@ -221,8 +232,9 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     staticIP: !empty(staticIP) ? staticIP : null
     subnetId: !empty(subnetResourceId) ? subnetResourceId : null
     tenantSettings: tenantSettings
+    zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
   }
-  zones: availabilityZones
+  zones: zones
 }
 
 // Deploy access policies
@@ -310,7 +322,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(

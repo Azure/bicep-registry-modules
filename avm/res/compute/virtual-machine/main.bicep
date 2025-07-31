@@ -121,14 +121,14 @@ param availabilitySetResourceId string = ''
 @description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
 param galleryApplications vmGalleryApplicationType[]?
 
-@description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  0
+  -1
   1
   2
   3
 ])
-param zone int
+param availabilityZone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -210,12 +210,14 @@ param extensionNvidiaGpuDriverWindows object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
+@secure()
+#disable-next-line secure-parameter-default
 param extensionHostPoolRegistration object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
 param extensionGuestConfigurationExtension object = {
   enabled: false
 }
@@ -315,6 +317,24 @@ param winRMListeners winRMListenerType[]?
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
+
+@description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
+param capacityReservationGroupResourceId string = ''
+
+@allowed([
+  'AllowAll'
+  'AllowPrivate'
+  'DenyAll'
+])
+@description('Optional. Policy for accessing the disk via network.')
+param networkAccessPolicy string = 'DenyAll'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Policy for controlling export on the disk.')
+param publicNetworkAccess string = 'Disabled'
 
 var enableReferencedModulesTelemetry = false
 
@@ -536,8 +556,12 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+      publicNetworkAccess: publicNetworkAccess
+      networkAccessPolicy: networkAccessPolicy
     }
-    zones: zone != 0 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS') ? array(string(zone)) : null
+    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
+      ? array(string(availabilityZone))
+      : null
     tags: dataDisk.?tags ?? tags
   }
 ]
@@ -547,7 +571,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: zone != 0 ? array(string(zone)) : null
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null
   plan: plan
   properties: {
     hardwareProfile: {
@@ -635,6 +659,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+    capacityReservation: !empty(capacityReservationGroupResourceId)
+      ? {
+          capacityReservationGroup: {
+            id: capacityReservationGroupResourceId
+          }
+        }
+      : null
     diagnosticsProfile: {
       bootDiagnostics: {
         enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnostics

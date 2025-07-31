@@ -1,5 +1,10 @@
 # Azure Virtual Desktop Host Pool `[Microsoft.DesktopVirtualization/hostPools]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Virtual Desktop Host Pool
 
 ## Navigation
@@ -19,8 +24,8 @@ This module deploys an Azure Virtual Desktop Host Pool
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DesktopVirtualization/hostPools` | [2024-04-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2024-04-03/hostPools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -47,10 +52,7 @@ This instance deploys the module with the minimum set of required parameters.
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
   name: 'hostPoolDeployment'
   params: {
-    // Required parameters
     name: 'dvhpmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -67,13 +69,8 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dvhpmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -89,10 +86,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 ```bicep-params
 using 'br/public:avm/res/desktop-virtualization/host-pool:<version>'
 
-// Required parameters
 param name = 'dvhpmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -533,7 +527,6 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -570,9 +563,6 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -605,7 +595,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -882,6 +871,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -901,6 +891,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1124,6 +1121,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -1143,6 +1141,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1593,6 +1598,7 @@ Do not provide a value! This date value is used to generate a registration token
 | `location` | string | The location of the host pool. |
 | `name` | string | The name of the host pool. |
 | `privateEndpoints` | array | The private endpoints of the host pool. |
+| `registrationToken` | securestring | The registration token of the host pool. |
 | `resourceGroupName` | string | The name of the resource group the host pool was created in. |
 | `resourceId` | string | The resource ID of the host pool. |
 
@@ -1602,8 +1608,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/serverfarm/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- API Version Updates
+- Support for Flexible Consumption SKU
+- Documentation enhancements
+- Consistency improvements
+- Updated avm-common-types references to latest version `0.6.0`, enabling custom notes on locks
+
+### Breaking Changes
+
+- Renamed parameter `appServiceEnvironmentId` to `appServiceEnvironmentResourceId`
+
 ## 0.4.1
 
 ### Changes

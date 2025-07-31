@@ -9,6 +9,7 @@
 /avm/ptn/alz/empty/ @Azure/avm-ptn-alz-empty-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app-service-lza/hosting-environment/ @Azure/avm-ptn-appservicelza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app/container-job-toolkit/ @Azure/avm-ptn-app-containerjobtoolkit-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/app/iaas-vm-cosmosdb-tier4/ @Azure/avm-ptn-app-iaasvmcosmosdbtier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/pim-role-assignment/ @Azure/avm-ptn-authorization-pimroleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-exemption/ @Azure/avm-ptn-authorization-policyexemption-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -26,9 +27,6 @@
 /avm/ptn/azd/container-app-upsert/ @Azure/avm-ptn-azd-containerappupsert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-apps-stack/ @Azure/avm-ptn-azd-containerappsstack-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/insights-dashboard/ @Azure/avm-ptn-azd-insightsdashboard-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/ml-ai-environment/ @Azure/avm-ptn-azd-mlaienvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/ml-hub-dependencies/ @Azure/avm-ptn-azd-mlhubdependencies-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/ml-project/ @Azure/avm-ptn-azd-mlproject-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/monitoring/ @Azure/avm-ptn-azd-monitoring-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/data/private-analytical-workspace/ @Azure/avm-ptn-data-privateanalyticalworkspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/deployment-script/import-image-to-acr/ @Azure/avm-ptn-deploymentscript-importimagetoacr-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -62,6 +60,7 @@
 /avm/res/azure-stack-hci/marketplace-gallery-image/ @Azure/avm-res-azurestackhci-marketplacegalleryimage-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/network-interface/ @Azure/avm-res-azurestackhci-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/virtual-hard-disk/ @Azure/avm-res-azurestackhci-virtualharddisk-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/virtual-machine-instance/ @Azure/avm-res-azurestackhci-virtualmachineinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis-enterprise/ @Azure/avm-res-cache-redisenterprise-module-owners-bicep @Azure/avm-module-reviewers-bicep

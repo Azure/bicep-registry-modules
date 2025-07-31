@@ -12,7 +12,7 @@ This module deploys an Azure Virtual Desktop Application Group Application.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2024-04-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2024-04-03/applicationGroups/applications) |
+| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2025-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/applicationGroups/applications) |
 
 ## Parameters
 
