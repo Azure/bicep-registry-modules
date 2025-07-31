@@ -799,12 +799,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: 'db64fe2f-3995-4ae0-86ef-97511d5b84e3'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
@@ -969,12 +963,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "db64fe2f-3995-4ae0-86ef-97511d5b84e3",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
@@ -1116,12 +1104,6 @@ param privateEndpoints = [
 ]
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
-  {
-    name: 'db64fe2f-3995-4ae0-86ef-97511d5b84e3'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
   {
     name: '<name>'
     principalId: '<principalId>'
