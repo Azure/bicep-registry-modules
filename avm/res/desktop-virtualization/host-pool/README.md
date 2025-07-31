@@ -22,7 +22,7 @@ This module deploys an Azure Virtual Desktop Host Pool
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/hostPools` | [2024-04-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2024-04-03/hostPools) |
+| `Microsoft.DesktopVirtualization/hostPools` | [2025-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/hostPools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
@@ -139,6 +139,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    directUDP: 'Enabled'
     enableTelemetry: true
     friendlyName: 'AVDv2'
     hostPoolType: 'Pooled'
@@ -148,6 +149,8 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedPrivateUDP: 'Enabled'
+    managementType: 'Automated'
     maxSessionLimit: 99999
     personalDesktopAssignmentType: 'Automatic'
     privateEndpoints: [
@@ -173,6 +176,8 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
       }
     ]
     publicNetworkAccess: 'Disabled'
+    publicUDP: 'Enabled'
+    relayUDP: 'Enabled'
     roleAssignments: [
       {
         name: '52c43567-917f-4c56-8c9b-6cadeef37b51'
@@ -274,6 +279,9 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
         }
       ]
     },
+    "directUDP": {
+      "value": "Enabled"
+    },
     "enableTelemetry": {
       "value": true
     },
@@ -294,6 +302,12 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "managedPrivateUDP": {
+      "value": "Enabled"
+    },
+    "managementType": {
+      "value": "Automated"
     },
     "maxSessionLimit": {
       "value": 99999
@@ -327,6 +341,12 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     },
     "publicNetworkAccess": {
       "value": "Disabled"
+    },
+    "publicUDP": {
+      "value": "Enabled"
+    },
+    "relayUDP": {
+      "value": "Enabled"
     },
     "roleAssignments": {
       "value": [
@@ -423,6 +443,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param directUDP = 'Enabled'
 param enableTelemetry = true
 param friendlyName = 'AVDv2'
 param hostPoolType = 'Pooled'
@@ -432,6 +453,8 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param managedPrivateUDP = 'Enabled'
+param managementType = 'Automated'
 param maxSessionLimit = 99999
 param personalDesktopAssignmentType = 'Automatic'
 param privateEndpoints = [
@@ -457,6 +480,8 @@ param privateEndpoints = [
   }
 ]
 param publicNetworkAccess = 'Disabled'
+param publicUDP = 'Enabled'
+param relayUDP = 'Enabled'
 param roleAssignments = [
   {
     name: '52c43567-917f-4c56-8c9b-6cadeef37b51'
@@ -621,17 +646,22 @@ param tags = {
 | [`customRdpProperty`](#parameter-customrdpproperty) | string | Host Pool RDP properties. |
 | [`description`](#parameter-description) | string | Description of the scaling plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`directUDP`](#parameter-directudp) | string | Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the scaling plan. |
 | [`hostPoolType`](#parameter-hostpooltype) | string | Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled. |
 | [`loadBalancerType`](#parameter-loadbalancertype) | string | Type of load balancer algorithm. |
 | [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedPrivateUDP`](#parameter-managedprivateudp) | string | Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
+| [`managementType`](#parameter-managementtype) | string | The type of management for this hostpool. Note: If set to `Automated`, no registrationToken is returned by the resource. |
 | [`maxSessionLimit`](#parameter-maxsessionlimit) | int | Maximum number of sessions. |
 | [`personalDesktopAssignmentType`](#parameter-personaldesktopassignmenttype) | string | Set the type of assignment for a Personal Host Pool type. |
 | [`preferredAppGroupType`](#parameter-preferredappgrouptype) | string | The type of preferred application group type, default to Desktop Application Group. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Set public network access. |
+| [`publicUDP`](#parameter-publicudp) | string | Where direct UDP connectivity is established between the client and the session host via public network using Simple Traversal Underneath NAT (STUN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
+| [`relayUDP`](#parameter-relayudp) | string | Where indirect UDP connectivity is established between the client and the session host via public network using Traversal Using Relay NAT (TURN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
 | [`ring`](#parameter-ring) | int | The ring number of HostPool. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ssoadfsAuthority`](#parameter-ssoadfsauthority) | string | URL to customer ADFS server for signing WVD SSO certificates. |
@@ -804,6 +834,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `directUDP`
+
+Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -901,6 +939,22 @@ Specify the notes of the lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedPrivateUDP`
+
+Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+
+### Parameter: `managementType`
+
+The type of management for this hostpool. Note: If set to `Automated`, no registrationToken is returned by the resource.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
 
 ### Parameter: `maxSessionLimit`
 
@@ -1378,13 +1432,28 @@ Set public network access.
   ]
   ```
 
+### Parameter: `publicUDP`
+
+Where direct UDP connectivity is established between the client and the session host via public network using Simple Traversal Underneath NAT (STUN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+
+### Parameter: `relayUDP`
+
+Where indirect UDP connectivity is established between the client and the session host via public network using Traversal Using Relay NAT (TURN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+
 ### Parameter: `ring`
 
 The ring number of HostPool.
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `roleAssignments`
 
@@ -1598,7 +1667,7 @@ Do not provide a value! This date value is used to generate a registration token
 | `location` | string | The location of the host pool. |
 | `name` | string | The name of the host pool. |
 | `privateEndpoints` | array | The private endpoints of the host pool. |
-| `registrationToken` | securestring | The registration token of the host pool. |
+| `registrationToken` | securestring | The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null. |
 | `resourceGroupName` | string | The name of the resource group the host pool was created in. |
 | `resourceId` | string | The resource ID of the host pool. |
 
