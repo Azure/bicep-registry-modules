@@ -317,7 +317,7 @@
         "voiceReceivers": "[parameters('voiceReceivers')]",
         "logicAppReceivers": "[parameters('logicAppReceivers')]",
         "azureFunctionReceivers": "[parameters('azureFunctionReceivers')]",
-        "armRoleReceivers": "[parameters('armRoleReceivers')]"
+        "armRoleReceivers": "[parameters('armRoleReceivers')]",
         "incidentReceivers": "[parameters('incidentReceivers')]"
       }
     },
