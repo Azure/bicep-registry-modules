@@ -294,17 +294,18 @@ param emailReceivers = [
     useCommonAlertSchema: true
   }
 ]
-param incidentReceivers: [
+param incidentReceivers = [
   {
     connection: {
       id: 'TestId',
-      name: 'TestConnectionName'
+      name: 'TestName'
     },
-    incidentManagementService: 'ServiceNow',
+    incidentManagementService: 'TestIncidentReceiverManagementService',
     mappings: {
-      CustomProperty: 'CustomPropertyValue'
+      CustomProperty: 'TestCustomProperty'
     },
-    name: 'MyIncidentReceiver'
+    name: 'TestIncidentReceiver'
+    useCommonAlertSchema: true
   }
 ]
 param location = 'global'
@@ -455,6 +456,7 @@ param tags = {
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventHubReceivers`](#parameter-eventhubreceivers) | array | The list of Event Hub receivers that are part of this action group. |
+| [`incidentReceivers`](#parameter-incidentreceivers) | array | The list of incident receivers that are part of this action group. | 
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -464,7 +466,6 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`voiceReceivers`](#parameter-voicereceivers) | array | The list of voice receivers that are part of this action group. |
 | [`webhookReceivers`](#parameter-webhookreceivers) | array | The list of webhook receivers that are part of this action group. |
-| [`incidentReceivers`](#parameter-incidentreceivers) | array | The list of incident receivers that are part of this action group. | 
 
 ### Parameter: `groupShortName`
 
@@ -534,6 +535,13 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `eventHubReceivers`
 
 The list of Event Hub receivers that are part of this action group.
+
+- Required: No
+- Type: array
+
+### Parameter: `incidentReceivers`
+
+The list of incident receivers that are part of this action group.
 
 - Required: No
 - Type: array
@@ -727,13 +735,6 @@ The list of webhook receivers that are part of this action group.
 - Required: No
 - Type: array
   
-### Parameter: `incidentReceivers`
-
-The list of incident receivers that are part of this action group.
-
-- Required: No
-- Type: array
-
 ## Outputs
 
 | Output | Type | Description |
