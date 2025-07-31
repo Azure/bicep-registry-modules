@@ -65,6 +65,19 @@ module testDeployment '../../../main.bicep' = [
           useCommonAlertSchema: true
         }
       ]
+      incidentReceivers: [
+        {
+          connection: {
+            id: 'TestConnectionId'
+            name: 'TestConnectionName'
+          }
+          incidentManagementService: 'TestIndentManagementService'
+          mappings: {
+            customizedProperty: 'TestCustomProperty'
+          }
+          name: 'TestName'
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
