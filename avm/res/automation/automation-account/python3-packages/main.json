@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "15014564193136078174"
+      "version": "0.34.44.8038",
+      "templateHash": "12103650118627176533"
     },
     "name": "Automation Account Python 3 Packages",
     "description": "This module deploys a Python3 Package in the Automation Account."
