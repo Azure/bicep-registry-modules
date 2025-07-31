@@ -763,11 +763,27 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         ]
         ipConfigurations: [
           {
-            name: 'myIPconfig'
+            name: 'myIPconfigDefault'
             properties: {
               groupId: 'account'
               memberName: 'default'
               privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfigSecondary'
+            properties: {
+              groupId: 'account'
+              memberName: 'secondary'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'myIPconfigThird'
+            properties: {
+              groupId: 'account'
+              memberName: 'third'
+              privateIPAddress: '10.0.0.12'
             }
           }
         ]
@@ -923,11 +939,27 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           ],
           "ipConfigurations": [
             {
-              "name": "myIPconfig",
+              "name": "myIPconfigDefault",
               "properties": {
                 "groupId": "account",
                 "memberName": "default",
                 "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfigSecondary",
+              "properties": {
+                "groupId": "account",
+                "memberName": "secondary",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "myIPconfigThird",
+              "properties": {
+                "groupId": "account",
+                "memberName": "third",
+                "privateIPAddress": "10.0.0.12"
               }
             }
           ],
@@ -1069,11 +1101,27 @@ param privateEndpoints = [
     ]
     ipConfigurations: [
       {
-        name: 'myIPconfig'
+        name: 'myIPconfigDefault'
         properties: {
           groupId: 'account'
           memberName: 'default'
           privateIPAddress: '10.0.0.10'
+        }
+      }
+      {
+        name: 'myIPconfigSecondary'
+        properties: {
+          groupId: 'account'
+          memberName: 'secondary'
+          privateIPAddress: '10.0.0.11'
+        }
+      }
+      {
+        name: 'myIPconfigThird'
+        properties: {
+          groupId: 'account'
+          memberName: 'third'
+          privateIPAddress: '10.0.0.12'
         }
       }
     ]
