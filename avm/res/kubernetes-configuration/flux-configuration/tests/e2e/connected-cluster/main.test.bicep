@@ -244,7 +244,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
-      clusterName: nestedDependencies.outputs.clusterName
+      clusterName: pci.outputs.name
       clusterType: 'connectedCluster'
       namespace: 'flux-system'
       scope: 'cluster'
