@@ -210,7 +210,7 @@ module pci 'br/public:avm/res/hybrid-container-service/provisioned-cluster-insta
     azLocalInit
   ]
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}01'
     customLocationResourceId: customLocation.id
     keyVaultName: nestedDependencies.outputs.keyVaultName
     cloudProviderProfile: {
