@@ -697,7 +697,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'AIServices'
     name: 'csamax001'
     // Non-required parameters
-    allowProjectManagement: true
+    allowProjectManagement: false
     customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
@@ -841,7 +841,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "allowProjectManagement": {
-      "value": true
+      "value": false
     },
     "customSubDomainName": {
       "value": "xcsamax"
@@ -1003,7 +1003,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'AIServices'
 param name = 'csamax001'
 // Non-required parameters
-param allowProjectManagement = true
+param allowProjectManagement = false
 param customSubDomainName = 'xcsamax'
 param diagnosticSettings = [
   {
