@@ -32,7 +32,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
@@ -49,7 +48,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
   }
 }
 
@@ -171,5 +169,10 @@ module testDeployment '../../../main.bicep' = {
         }
       ]
     }
+    directUDP: 'Enabled'
+    managedPrivateUDP: 'Enabled'
+    publicUDP: 'Enabled'
+    relayUDP: 'Enabled'
+    managementType: 'Automated'
   }
 }
