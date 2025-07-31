@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using `AIServices` with `deployments` in parameter set and private endpoints'
-metadata description = 'This instance deploys the module with the AI model deployment feature and private endpoint.'
+metadata name = 'Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection'
+metadata description = 'This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.'
 
 // ========== //
 // Parameters //
@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csadp'
+param serviceShort string = 'csadpa'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -73,6 +73,11 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      networkInjections: {
+        scenario: 'agent'
+        subnetResourceId: nestedDependencies.outputs.agentSubnetResourceId
+        useMicrosoftManagedNetwork: false
+      }
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {

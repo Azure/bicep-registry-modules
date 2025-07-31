@@ -76,6 +76,9 @@ param customSubDomainName string?
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object?
 
+@description('Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.')
+param networkInjections networkInjectionType?
+
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
@@ -338,6 +341,16 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
           ipRules: networkAcls.?ipRules ?? []
         }
       : null
+    #disable-next-line BCP036
+    networkInjections: !empty(networkInjections)
+      ? [
+          {
+            scenario: networkInjections.?scenario
+            subnetArmId: networkInjections.?subnetResourceId
+            useMicrosoftManagedNetwork: networkInjections.?useMicrosoftManagedNetwork ?? false
+          }
+        ]
+      : null
     publicNetworkAccess: publicNetworkAccess != null
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
@@ -406,6 +419,7 @@ resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/
   }
 ]
 
+#disable-next-line use-recent-api-versions
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -700,4 +714,17 @@ type commitmentPlanType = {
     @description('Required. The tier for the next commitment period.')
     tier: string
   }?
+}
+
+@export()
+@description('Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.')
+type networkInjectionType = {
+  @description('Required. The scenario for the network injection.')
+  scenario: 'agent' | 'none'
+
+  @description('Required. The Resource ID of the subnet on the Virtual Network on which to inject.')
+  subnetResourceId: string
+
+  @description('Optional. Whether to use Microsoft Managed Network. Defaults to false.')
+  useMicrosoftManagedNetwork: bool?
 }
