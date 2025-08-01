@@ -47,7 +47,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdmin001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -71,7 +71,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdmin001"
@@ -101,7 +101,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdmin001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -126,7 +126,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdimg001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -151,7 +151,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdimg001"
@@ -184,7 +184,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdimg001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -210,7 +210,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdimp001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -236,7 +236,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdimp001"
@@ -272,7 +272,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdimp001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -620,7 +620,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -663,14 +663,14 @@ param tags = {
 
 ### Parameter: `availabilityZone`
 
-If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
 - Required: Yes
 - Type: int
 - Allowed:
   ```Bicep
   [
-    0
+    -1
     1
     2
     3

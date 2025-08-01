@@ -17,19 +17,13 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
-| `Microsoft.CognitiveServices/accounts/capabilityHosts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/capabilityHosts) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
-| `Microsoft.CognitiveServices/accounts/projects` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/projects) |
-| `Microsoft.CognitiveServices/accounts/projects/connections` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/projects/connections) |
-| `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
-| `Microsoft.Compute/virtualMachines/extensions` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines/extensions) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
+| `Microsoft.CognitiveServices/accounts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts) |
+| `Microsoft.CognitiveServices/accounts/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/capabilityHosts) |
+| `Microsoft.CognitiveServices/accounts/commitmentPlans` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments) |
+| `Microsoft.CognitiveServices/accounts/projects` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects) |
+| `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/capabilityHosts) |
+| `Microsoft.CognitiveServices/accounts/projects/connections` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/connections) |
 | `Microsoft.DocumentDB/databaseAccounts` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts) |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases) |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs) |
@@ -38,40 +32,18 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases/containers) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
-| `Microsoft.Insights/dataCollectionRuleAssociations` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations) |
-| `Microsoft.Insights/dataCollectionRules` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `microsoft.insights/diagnosticSettings` | [2016-09-01](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2016-09-01/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys) |
 | `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
-| `Microsoft.Maintenance/maintenanceConfigurations` | [2023-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-10-01-preview/maintenanceConfigurations) |
-| `Microsoft.Network/bastionHosts` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/bastionHosts) |
-| `Microsoft.Network/natGateways` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/natGateways) |
-| `Microsoft.Network/networkInterfaces` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/networkInterfaces) |
-| `Microsoft.Network/networkSecurityGroups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/networkSecurityGroups) |
-| `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
-| `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
-| `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
-| `Microsoft.Network/privateDnsZones/CNAME` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME) |
-| `Microsoft.Network/privateDnsZones/MX` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX) |
-| `Microsoft.Network/privateDnsZones/PTR` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR) |
-| `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
-| `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
-| `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/publicIPAddresses` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/publicIPAddresses) |
-| `Microsoft.Network/publicIPAddresses` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/publicIPAddresses) |
-| `Microsoft.Network/virtualNetworks` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/virtualNetworks) |
 | `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
 | `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
@@ -96,7 +68,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Create with Associated Resources](#example-2-create-with-associated-resources)
+- [Bring Your Own Resources](#example-3-bring-your-own-resources)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -112,11 +87,22 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
     // Required parameters
-    aiFoundryType: 'Basic'
-    contentSafetyEnabled: false
-    name: '<name>'
+    baseName: '<baseName>'
     // Non-required parameters
-    userObjectId: '00000000-0000-0000-0000-000000000000'
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
   }
 }
 ```
@@ -134,18 +120,25 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "aiFoundryType": {
-      "value": "Basic"
-    },
-    "contentSafetyEnabled": {
-      "value": false
-    },
-    "name": {
-      "value": "<name>"
+    "baseName": {
+      "value": "<baseName>"
     },
     // Non-required parameters
-    "userObjectId": {
-      "value": "00000000-0000-0000-0000-000000000000"
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
     }
   }
 }
@@ -162,19 +155,30 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
 // Required parameters
-param aiFoundryType = 'Basic'
-param contentSafetyEnabled = false
-param name = '<name>'
+param baseName = '<baseName>'
 // Non-required parameters
-param userObjectId = '00000000-0000-0000-0000-000000000000'
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
 ```
 
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Create with Associated Resources_
 
-Creates an AI Foundry account and project with Standard Agent Services in a network.
+Creates an AI Foundry account and project with Standard Agent Services.
 
 
 <details>
@@ -186,14 +190,23 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
     // Required parameters
-    aiFoundryType: 'StandardPrivate'
-    contentSafetyEnabled: true
-    name: '<name>'
+    baseName: '<baseName>'
     // Non-required parameters
-    aiModelDeployments: []
-    userObjectId: '00000000-0000-0000-0000-000000000000'
-    vmAdminPasswordOrKey: '$tart12345'
-    vmSize: 'Standard_DS4_v2'
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    includeAssociatedResources: true
   }
 }
 ```
@@ -211,27 +224,28 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "aiFoundryType": {
-      "value": "StandardPrivate"
-    },
-    "contentSafetyEnabled": {
-      "value": true
-    },
-    "name": {
-      "value": "<name>"
+    "baseName": {
+      "value": "<baseName>"
     },
     // Non-required parameters
     "aiModelDeployments": {
-      "value": []
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
     },
-    "userObjectId": {
-      "value": "00000000-0000-0000-0000-000000000000"
-    },
-    "vmAdminPasswordOrKey": {
-      "value": "$tart12345"
-    },
-    "vmSize": {
-      "value": "Standard_DS4_v2"
+    "includeAssociatedResources": {
+      "value": true
     }
   }
 }
@@ -248,14 +262,725 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
 // Required parameters
-param aiFoundryType = 'StandardPrivate'
-param contentSafetyEnabled = true
-param name = '<name>'
+param baseName = '<baseName>'
 // Non-required parameters
-param aiModelDeployments = []
-param userObjectId = '00000000-0000-0000-0000-000000000000'
-param vmAdminPasswordOrKey = '$tart12345'
-param vmSize = 'Standard_DS4_v2'
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param includeAssociatedResources = true
+```
+
+</details>
+<p>
+
+### Example 3: _Bring Your Own Resources_
+
+Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    aiSearchConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+    cosmosDbConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+    includeAssociatedResources: true
+    keyVaultConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+    storageAccountConfiguration: {
+      existingResourceId: '<existingResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "aiSearchConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    },
+    "cosmosDbConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    },
+    "includeAssociatedResources": {
+      "value": true
+    },
+    "keyVaultConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    },
+    "storageAccountConfiguration": {
+      "value": {
+        "existingResourceId": "<existingResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param aiSearchConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+param cosmosDbConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+param includeAssociatedResources = true
+param keyVaultConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+param storageAccountConfiguration = {
+  existingResourceId: '<existingResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiFoundryConfiguration: {
+      accountName: '<accountName>'
+      allowProjectManagement: true
+      location: '<location>'
+      networking: {
+        aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+        cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+        openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+      }
+      project: {
+        desc: 'This is a custom project for testing.'
+        displayName: '<displayName>'
+        name: '<name>'
+      }
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+        }
+      ]
+    }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    aiSearchConfiguration: {
+      name: '<name>'
+      privateDnsZoneId: '<privateDnsZoneId>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Search Index Data Contributor'
+        }
+      ]
+    }
+    baseUniqueName: '<baseUniqueName>'
+    cosmosDbConfiguration: {
+      name: '<name>'
+      privateDnsZoneId: '<privateDnsZoneId>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Cosmos DB Account Reader Role'
+        }
+      ]
+    }
+    includeAssociatedResources: true
+    keyVaultConfiguration: {
+      name: '<name>'
+      privateDnsZoneId: '<privateDnsZoneId>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Key Vault Secrets User'
+        }
+      ]
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: '<name>'
+    }
+    privateEndpointSubnetId: '<privateEndpointSubnetId>'
+    sku: 'S0'
+    storageAccountConfiguration: {
+      blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+      containerName: 'my-foundry-proj-data'
+      name: '<name>'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        }
+      ]
+    }
+    tags: {
+      Environment: 'Example'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiFoundryConfiguration": {
+      "value": {
+        "accountName": "<accountName>",
+        "allowProjectManagement": true,
+        "location": "<location>",
+        "networking": {
+          "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
+          "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
+          "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>"
+        },
+        "project": {
+          "desc": "This is a custom project for testing.",
+          "displayName": "<displayName>",
+          "name": "<name>"
+        },
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Cognitive Services OpenAI User"
+          }
+        ]
+      }
+    },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "aiSearchConfiguration": {
+      "value": {
+        "name": "<name>",
+        "privateDnsZoneId": "<privateDnsZoneId>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Search Index Data Contributor"
+          }
+        ]
+      }
+    },
+    "baseUniqueName": {
+      "value": "<baseUniqueName>"
+    },
+    "cosmosDbConfiguration": {
+      "value": {
+        "name": "<name>",
+        "privateDnsZoneId": "<privateDnsZoneId>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Cosmos DB Account Reader Role"
+          }
+        ]
+      }
+    },
+    "includeAssociatedResources": {
+      "value": true
+    },
+    "keyVaultConfiguration": {
+      "value": {
+        "name": "<name>",
+        "privateDnsZoneId": "<privateDnsZoneId>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Key Vault Secrets User"
+          }
+        ]
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "<name>"
+      }
+    },
+    "privateEndpointSubnetId": {
+      "value": "<privateEndpointSubnetId>"
+    },
+    "sku": {
+      "value": "S0"
+    },
+    "storageAccountConfiguration": {
+      "value": {
+        "blobPrivateDnsZoneId": "<blobPrivateDnsZoneId>",
+        "containerName": "my-foundry-proj-data",
+        "name": "<name>",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Storage Blob Data Contributor"
+          }
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Example",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiFoundryConfiguration = {
+  accountName: '<accountName>'
+  allowProjectManagement: true
+  location: '<location>'
+  networking: {
+    aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+    cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+    openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+  }
+  project: {
+    desc: 'This is a custom project for testing.'
+    displayName: '<displayName>'
+    name: '<name>'
+  }
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+    }
+  ]
+}
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param aiSearchConfiguration = {
+  name: '<name>'
+  privateDnsZoneId: '<privateDnsZoneId>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Search Index Data Contributor'
+    }
+  ]
+}
+param baseUniqueName = '<baseUniqueName>'
+param cosmosDbConfiguration = {
+  name: '<name>'
+  privateDnsZoneId: '<privateDnsZoneId>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Cosmos DB Account Reader Role'
+    }
+  ]
+}
+param includeAssociatedResources = true
+param keyVaultConfiguration = {
+  name: '<name>'
+  privateDnsZoneId: '<privateDnsZoneId>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Key Vault Secrets User'
+    }
+  ]
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: '<name>'
+}
+param privateEndpointSubnetId = '<privateEndpointSubnetId>'
+param sku = 'S0'
+param storageAccountConfiguration = {
+  blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+  containerName: 'my-foundry-proj-data'
+  name: '<name>'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+    }
+  ]
+}
+param tags = {
+  Environment: 'Example'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
+
+Creates an AI Foundry account and project with Standard Agent Services with private networking.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiFoundryConfiguration: {
+      networking: {
+        aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+        cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+        openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+      }
+    }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
+        }
+        name: 'gpt-4.1'
+        sku: {
+          capacity: 1
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+    aiSearchConfiguration: {
+      privateDnsZoneId: '<privateDnsZoneId>'
+    }
+    cosmosDbConfiguration: {
+      privateDnsZoneId: '<privateDnsZoneId>'
+    }
+    includeAssociatedResources: true
+    keyVaultConfiguration: {
+      privateDnsZoneId: '<privateDnsZoneId>'
+    }
+    privateEndpointSubnetId: '<privateEndpointSubnetId>'
+    storageAccountConfiguration: {
+      blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiFoundryConfiguration": {
+      "value": {
+        "networking": {
+          "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
+          "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
+          "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>"
+        }
+      }
+    },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
+          },
+          "name": "gpt-4.1",
+          "sku": {
+            "capacity": 1,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    },
+    "aiSearchConfiguration": {
+      "value": {
+        "privateDnsZoneId": "<privateDnsZoneId>"
+      }
+    },
+    "cosmosDbConfiguration": {
+      "value": {
+        "privateDnsZoneId": "<privateDnsZoneId>"
+      }
+    },
+    "includeAssociatedResources": {
+      "value": true
+    },
+    "keyVaultConfiguration": {
+      "value": {
+        "privateDnsZoneId": "<privateDnsZoneId>"
+      }
+    },
+    "privateEndpointSubnetId": {
+      "value": "<privateEndpointSubnetId>"
+    },
+    "storageAccountConfiguration": {
+      "value": {
+        "blobPrivateDnsZoneId": "<blobPrivateDnsZoneId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiFoundryConfiguration = {
+  networking: {
+    aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
+    cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
+    openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+  }
+}
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
+    }
+    name: 'gpt-4.1'
+    sku: {
+      capacity: 1
+      name: 'GlobalStandard'
+    }
+  }
+]
+param aiSearchConfiguration = {
+  privateDnsZoneId: '<privateDnsZoneId>'
+}
+param cosmosDbConfiguration = {
+  privateDnsZoneId: '<privateDnsZoneId>'
+}
+param includeAssociatedResources = true
+param keyVaultConfiguration = {
+  privateDnsZoneId: '<privateDnsZoneId>'
+}
+param privateEndpointSubnetId = '<privateEndpointSubnetId>'
+param storageAccountConfiguration = {
+  blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+}
 ```
 
 </details>
@@ -267,57 +992,241 @@ param vmSize = 'Standard_DS4_v2'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiFoundryType`](#parameter-aifoundrytype) | string | Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate. |
-| [`contentSafetyEnabled`](#parameter-contentsafetyenabled) | bool | Whether to include Azure AI Content Safety in the deployment. |
-| [`name`](#parameter-name) | string | Name of the resource to create. |
+| [`baseName`](#parameter-basename) | string | A friendly application/environment name to serve as the "base" when using the default naming for all resources in this deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aiFoundryConfiguration`](#parameter-aifoundryconfiguration) | object | Custom configuration for the AI Foundry. |
 | [`aiModelDeployments`](#parameter-aimodeldeployments) | array | Specifies the OpenAI deployments to create. |
-| [`allowedIpAddress`](#parameter-allowedipaddress) | string | IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed. |
-| [`cosmosDatabases`](#parameter-cosmosdatabases) | array | List of Cosmos DB databases to create. |
+| [`aiSearchConfiguration`](#parameter-aisearchconfiguration) | object | Custom configuration for the AI Search resource. |
+| [`baseUniqueName`](#parameter-baseuniquename) | string | A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name. |
+| [`cosmosDbConfiguration`](#parameter-cosmosdbconfiguration) | object | Custom configuration for the Cosmos DB Account. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableVmMonitoring`](#parameter-enablevmmonitoring) | bool | Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM. |
-| [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
-| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
-| [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
-| [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
-| [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters. |
-| [`vmAdminUsername`](#parameter-vmadminusername) | string | Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. |
-| [`vmSize`](#parameter-vmsize) | string | Specifies the size of the jump-box Virtual Machine. |
+| [`includeAssociatedResources`](#parameter-includeassociatedresources) | bool | Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false. |
+| [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Custom configuration for the Key Vault. |
+| [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
+| [`lock`](#parameter-lock) | object | The lock settings of the AI resources. |
+| [`privateEndpointSubnetId`](#parameter-privateendpointsubnetid) | string | The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints. |
+| [`sku`](#parameter-sku) | string | SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
+| [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. |
 
-### Parameter: `aiFoundryType`
+### Parameter: `baseName`
 
-Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.
+A friendly application/environment name to serve as the "base" when using the default naming for all resources in this deployment.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration`
+
+Custom configuration for the AI Foundry.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accountName`](#parameter-aifoundryconfigurationaccountname) | string | The name of the AI Foundry account. |
+| [`allowProjectManagement`](#parameter-aifoundryconfigurationallowprojectmanagement) | bool | Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true. |
+| [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
+| [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
+| [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
+| [`roleAssignments`](#parameter-aifoundryconfigurationroleassignments) | array | Role assignments to apply to the AI Foundry resource when creating it. |
+
+### Parameter: `aiFoundryConfiguration.accountName`
+
+The name of the AI Foundry account.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.allowProjectManagement`
+
+Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `aiFoundryConfiguration.location`
+
+The location of the AI Foundry account. Will default to the resource group location if not specified.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking`
+
+Values to establish private networking for the AI Foundry account and project.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aiServicesPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingaiservicesprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
+| [`cognitiveServicesPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
+| [`openAiPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the OpenAI account. |
+
+### Parameter: `aiFoundryConfiguration.networking.aiServicesPrivateDnsZoneId`
+
+The Resource ID of the Private DNS Zone for the Azure AI Services account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.cognitiveServicesPrivateDnsZoneId`
+
+The Resource ID of the Private DNS Zone for the Azure AI Services account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.openAiPrivateDnsZoneId`
+
+The Resource ID of the Private DNS Zone for the OpenAI account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.project`
+
+AI Foundry default project.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`desc`](#parameter-aifoundryconfigurationprojectdesc) | string | The description of the AI Foundry project. |
+| [`displayName`](#parameter-aifoundryconfigurationprojectdisplayname) | string | The friendly/display name of the AI Foundry project. |
+| [`name`](#parameter-aifoundryconfigurationprojectname) | string | The name of the AI Foundry project. |
+
+### Parameter: `aiFoundryConfiguration.project.desc`
+
+The description of the AI Foundry project.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.project.displayName`
+
+The friendly/display name of the AI Foundry project.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.project.name`
+
+The name of the AI Foundry project.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments`
+
+Role assignments to apply to the AI Foundry resource when creating it.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-aifoundryconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aifoundryconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-aifoundryconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aifoundryconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aifoundryconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aifoundryconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aifoundryconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-aifoundryconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
   [
-    'Basic'
-    'StandardPrivate'
-    'StandardPublic'
+    '2.0'
   ]
   ```
 
-### Parameter: `contentSafetyEnabled`
+### Parameter: `aiFoundryConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
 
-Whether to include Azure AI Content Safety in the deployment.
+The Resource Id of the delegated managed identity resource.
 
-- Required: Yes
-- Type: bool
-
-### Parameter: `name`
-
-Name of the resource to create.
-
-- Required: Yes
+- Required: No
 - Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `aiModelDeployments`
 
@@ -456,53 +1365,46 @@ The version upgrade option.
 - Required: No
 - Type: string
 
-### Parameter: `allowedIpAddress`
+### Parameter: `aiSearchConfiguration`
 
-IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `cosmosDatabases`
-
-List of Cosmos DB databases to create.
+Custom configuration for the AI Search resource.
 
 - Required: No
-- Type: array
-- Default: `[]`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cosmosdatabasesname) | string | Name of the database . |
+- Type: object
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-cosmosdatabasesautoscalesettingsmaxthroughput) | int | Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
-| [`containers`](#parameter-cosmosdatabasescontainers) | array | Set of containers to deploy in the database. |
-| [`throughput`](#parameter-cosmosdatabasesthroughput) | int | Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400. |
+| [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
+| [`privateDnsZoneId`](#parameter-aisearchconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `cosmosDatabases.name`
+### Parameter: `aiSearchConfiguration.existingResourceId`
 
-Name of the database .
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cosmosDatabases.autoscaleSettingsMaxThroughput`
-
-Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
 
 - Required: No
-- Type: int
+- Type: string
 
-### Parameter: `cosmosDatabases.containers`
+### Parameter: `aiSearchConfiguration.name`
 
-Set of containers to deploy in the database.
+Name to be used when creating the resource. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiSearchConfiguration.privateDnsZoneId`
+
+The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiSearchConfiguration.roleAssignments`
+
+Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.
 
 - Required: No
 - Type: array
@@ -511,177 +1413,233 @@ Set of containers to deploy in the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-cosmosdatabasescontainersname) | string | Name of the container. |
-| [`paths`](#parameter-cosmosdatabasescontainerspaths) | array | List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1. |
+| [`principalId`](#parameter-aisearchconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aisearchconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`analyticalStorageTtl`](#parameter-cosmosdatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
-| [`autoscaleSettingsMaxThroughput`](#parameter-cosmosdatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level. |
-| [`conflictResolutionPolicy`](#parameter-cosmosdatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
-| [`defaultTtl`](#parameter-cosmosdatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
-| [`indexingPolicy`](#parameter-cosmosdatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
-| [`kind`](#parameter-cosmosdatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
-| [`throughput`](#parameter-cosmosdatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
-| [`uniqueKeyPolicyKeys`](#parameter-cosmosdatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
-| [`version`](#parameter-cosmosdatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
+| [`condition`](#parameter-aisearchconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aisearchconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aisearchconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aisearchconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aisearchconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-aisearchconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `cosmosDatabases.containers.name`
+### Parameter: `aiSearchConfiguration.roleAssignments.principalId`
 
-Name of the container.
+The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `cosmosDatabases.containers.paths`
+### Parameter: `aiSearchConfiguration.roleAssignments.roleDefinitionIdOrName`
 
-List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
-- Type: array
+- Type: string
 
-### Parameter: `cosmosDatabases.containers.analyticalStorageTtl`
+### Parameter: `aiSearchConfiguration.roleAssignments.condition`
 
-Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.
-
-- Required: No
-- Type: int
-
-### Parameter: `cosmosDatabases.containers.autoscaleSettingsMaxThroughput`
-
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
-- Type: int
-- MaxValue: 1000000
+- Type: string
 
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy`
+### Parameter: `aiSearchConfiguration.roleAssignments.conditionVersion`
 
-The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `aiSearchConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiSearchConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiSearchConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiSearchConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `baseUniqueName`
+
+A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name.
+
+- Required: No
+- Type: string
+- Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('baseName')), 0, 5)]`
+
+### Parameter: `cosmosDbConfiguration`
+
+Custom configuration for the Cosmos DB Account.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
+| [`privateDnsZoneId`](#parameter-cosmosdbconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+
+### Parameter: `cosmosDbConfiguration.existingResourceId`
+
+Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.name`
+
+Name to be used when creating the resource. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.privateDnsZoneId`
+
+The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.roleAssignments`
+
+Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: array
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`mode`](#parameter-cosmosdatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
+| [`principalId`](#parameter-cosmosdbconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-cosmosdbconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`conflictResolutionPath`](#parameter-cosmosdatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
-| [`conflictResolutionProcedure`](#parameter-cosmosdatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.mode`
-
-Indicates the conflict resolution mode.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Custom'
-    'LastWriterWins'
-  ]
-  ```
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
-
-The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
-
-- Required: No
-- Type: string
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
-
-The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
-
-- Required: No
-- Type: string
-
-### Parameter: `cosmosDatabases.containers.defaultTtl`
-
-Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
-
-- Required: No
-- Type: int
-- MinValue: -1
-- MaxValue: 2147483647
-
-### Parameter: `cosmosDatabases.containers.indexingPolicy`
-
-Indexing policy of the container.
-
-- Required: No
-- Type: object
-
-### Parameter: `cosmosDatabases.containers.kind`
-
-Default to Hash. Indicates the kind of algorithm used for partitioning.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Hash'
-    'MultiHash'
-  ]
-  ```
-
-### Parameter: `cosmosDatabases.containers.throughput`
-
-Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
-
-- Required: No
-- Type: int
-
-### Parameter: `cosmosDatabases.containers.uniqueKeyPolicyKeys`
-
-The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
-
-- Required: No
-- Type: array
-
-**Required parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`paths`](#parameter-cosmosdatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
+| [`condition`](#parameter-cosmosdbconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-cosmosdbconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-cosmosdbconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-cosmosdbconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-cosmosdbconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-cosmosdbconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `cosmosDatabases.containers.uniqueKeyPolicyKeys.paths`
+### Parameter: `cosmosDbConfiguration.roleAssignments.principalId`
 
-List of paths must be unique for each document in the Azure Cosmos DB service.
+The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
-- Type: array
+- Type: string
 
-### Parameter: `cosmosDatabases.containers.version`
+### Parameter: `cosmosDbConfiguration.roleAssignments.roleDefinitionIdOrName`
 
-Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
-- Type: int
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
-    1
-    2
+    '2.0'
   ]
   ```
 
-### Parameter: `cosmosDatabases.throughput`
+### Parameter: `cosmosDbConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
 
-Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
-- Type: int
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -691,109 +1649,399 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableVmMonitoring`
+### Parameter: `includeAssociatedResources`
 
-Enable VM monitoring with data collection rules. Only effective if logAnalyticsWorkspaceResourceId is provided.
+Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false.
 
 - Required: No
 - Type: bool
 - Default: `False`
 
+### Parameter: `keyVaultConfiguration`
+
+Custom configuration for the Key Vault.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`existingResourceId`](#parameter-keyvaultconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`name`](#parameter-keyvaultconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
+| [`privateDnsZoneId`](#parameter-keyvaultconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`roleAssignments`](#parameter-keyvaultconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+
+### Parameter: `keyVaultConfiguration.existingResourceId`
+
+Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.name`
+
+Name to be used when creating the resource. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.privateDnsZoneId`
+
+The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments`
+
+Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-keyvaultconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keyvaultconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-keyvaultconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keyvaultconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keyvaultconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keyvaultconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-keyvaultconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-keyvaultconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `keyVaultConfiguration.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `keyVaultConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all Resources. Defaults to the location of the resource group.
 
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `logAnalyticsWorkspaceResourceId`
+### Parameter: `lock`
 
-Resource ID of an existing Log Analytics workspace for VM monitoring. If provided, data collection rules will be created for the VM.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `networkAcls`
-
-A collection of rules governing the accessibility from specific network locations.
+The lock settings of the AI resources.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-  }
-  ```
 
-### Parameter: `projectName`
+**Optional parameters**
 
-Name of the AI Foundry project.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}proj', parameters('name'))]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpointSubnetId`
+
+The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints.
+
+- Required: No
+- Type: string
+
+### Parameter: `sku`
+
+SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+
+- Required: No
+- Type: string
+- Default: `'S0'`
+- Allowed:
+  ```Bicep
+  [
+    'C2'
+    'C3'
+    'C4'
+    'DC0'
+    'F0'
+    'F1'
+    'S'
+    'S0'
+    'S1'
+    'S10'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+    'S9'
+  ]
+  ```
+
+### Parameter: `storageAccountConfiguration`
+
+Custom configuration for the Storage Account.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`blobPrivateDnsZoneId`](#parameter-storageaccountconfigurationblobprivatednszoneid) | string | The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`containerName`](#parameter-storageaccountconfigurationcontainername) | string | The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created. |
+| [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
+| [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
+| [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+
+### Parameter: `storageAccountConfiguration.blobPrivateDnsZoneId`
+
+The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.containerName`
+
+The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.existingResourceId`
+
+Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.name`
+
+Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments`
+
+Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-storageaccountconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-storageaccountconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-storageaccountconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-storageaccountconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-storageaccountconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-storageaccountconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-storageaccountconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-storageaccountconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `storageAccountConfiguration.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `storageAccountConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `tags`
 
-Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.
+Specifies the resource tags for all the resources.
 
 - Required: No
 - Type: object
 - Default: `{}`
 
-### Parameter: `userObjectId`
-
-Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.
-
-- Required: No
-- Type: string
-- Default: `[deployer().objectId]`
-
-### Parameter: `vmAdminPasswordOrKey`
-
-Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
-### Parameter: `vmAdminUsername`
-
-Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.
-
-- Required: No
-- Type: string
-- Default: `[take(format('{0}vmuser', parameters('name')), 20)]`
-
-### Parameter: `vmSize`
-
-Specifies the size of the jump-box Virtual Machine.
-
-- Required: No
-- Type: string
-- Default: `'Standard_DS4_v2'`
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `azureAiProjectName` | string | Name of the deployed Azure AI Project. |
-| `azureAiSearchName` | string | Name of the deployed Azure AI Search service. |
-| `azureAiServicesName` | string | Name of the deployed Azure AI Services account. |
-| `azureBastionName` | string | Name of the deployed Azure Bastion host. |
-| `azureContainerRegistryName` | string | Name of the deployed Azure Container Registry. |
-| `azureCosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
-| `azureKeyVaultName` | string | Name of the deployed Azure Key Vault. |
-| `azureStorageAccountName` | string | Name of the deployed Azure Storage Account. |
-| `azureVirtualNetworkName` | string | Name of the deployed Azure Virtual Network. |
-| `azureVirtualNetworkSubnetName` | string | Name of the deployed Azure Virtual Network Subnet. |
-| `azureVmResourceId` | string | Resource ID of the deployed Azure VM. |
-| `azureVmUsername` | string | Username for the deployed Azure VM. |
+| `aiProjectName` | string | Name of the deployed Azure AI Project. |
+| `aiSearchName` | string | Name of the deployed Azure AI Search service. |
+| `aiServicesName` | string | Name of the deployed Azure AI Services account. |
+| `cosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
+| `keyVaultName` | string | Name of the deployed Azure Key Vault. |
 | `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
+| `storageAccountName` | string | Name of the deployed Azure Storage Account. |
 
 ## Cross-referenced modules
 
@@ -801,14 +2049,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.12.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.0` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
-| `br/public:avm/res/search/search-service:0.10.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.23.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/search/search-service:0.11.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.25.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "14391172757164137455"
+      "version": "0.36.177.2456",
+      "templateHash": "13289514560179544051"
     },
     "name": "Azd Azure Machine Learning Dependencies",
-    "description": "Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
+    "description": "DEPRECATED - Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -14750,7 +14750,7 @@
           "dashboardName": {
             "value": "[parameters('applicationInsightsDashboardName')]"
           },
-          "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-loganalytics', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId), createObject('value', ''))]",
+          "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), createObject('value', reference('logAnalytics').outputs.resourceId.value), createObject('value', ''))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -22412,14 +22412,14 @@
       "metadata": {
         "description": "The resource ID of the loganalytics workspace."
       },
-      "value": "[if(not(empty(parameters('logAnalyticsName'))), listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-loganalytics', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId, '')]"
+      "value": "[if(not(empty(parameters('logAnalyticsName'))), reference('logAnalytics').outputs.resourceId.value, '')]"
     },
     "logAnalyticsWorkspaceName": {
       "type": "string",
       "metadata": {
         "description": "The name of the loganalytics workspace."
       },
-      "value": "[if(not(empty(parameters('logAnalyticsName'))), listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-loganalytics', uniqueString(deployment().name, parameters('location')))), '2022-09-01').name, '')]"
+      "value": "[if(not(empty(parameters('logAnalyticsName'))), reference('logAnalytics').outputs.name.value, '')]"
     },
     "cognitiveServicesResourceId": {
       "type": "string",

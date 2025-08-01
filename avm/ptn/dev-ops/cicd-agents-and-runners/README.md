@@ -27,14 +27,14 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
 | `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/taskRuns` | [2019-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2019-06-01-preview/registries/taskRuns) |
-| `Microsoft.ContainerRegistry/registries/tasks` | [2019-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2019-06-01-preview/registries/tasks) |
+| `Microsoft.ContainerRegistry/registries/taskRuns` | [2025-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-03-01-preview/registries/taskRuns) |
+| `Microsoft.ContainerRegistry/registries/tasks` | [2025-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-03-01-preview/registries/tasks) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
-| `Microsoft.Network/natGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/natGateways) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
+| `Microsoft.Network/natGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/natGateways) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
 | `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
@@ -45,38 +45,38 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
-| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/publicIPPrefixes` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes) |
+| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
-| `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
-| `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts/blobServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -247,6 +247,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     location: '<location>'
+    logAnalyticsReplicationRegion: 'westus2'
     privateNetworking: false
   }
 }
@@ -292,6 +293,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "location": {
       "value": "<location>"
     },
+    "logAnalyticsReplicationRegion": {
+      "value": "westus2"
+    },
     "privateNetworking": {
       "value": false
     }
@@ -327,6 +331,7 @@ param selfHostedConfig = {
 }
 // Non-required parameters
 param location = '<location>'
+param logAnalyticsReplicationRegion = 'westus2'
 param privateNetworking = false
 ```
 
@@ -357,6 +362,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       virtualNetworkName: 'vnet-aca'
     }
     selfHostedConfig: {
+      azureContainerAppTarget: {
+        resources: {
+          cpu: '1'
+          memory: '2Gi'
+        }
+      }
       githubOrganization: 'githHubOrganization'
       githubRepository: 'dummyRepo'
       personalAccessToken: '<personalAccessToken>'
@@ -364,6 +375,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     location: '<location>'
+    logAnalyticsReplicationRegion: 'westus2'
     privateNetworking: false
   }
 }
@@ -399,6 +411,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "selfHostedConfig": {
       "value": {
+        "azureContainerAppTarget": {
+          "resources": {
+            "cpu": "1",
+            "memory": "2Gi"
+          }
+        },
         "githubOrganization": "githHubOrganization",
         "githubRepository": "dummyRepo",
         "personalAccessToken": "<personalAccessToken>",
@@ -408,6 +426,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "logAnalyticsReplicationRegion": {
+      "value": "westus2"
     },
     "privateNetworking": {
       "value": false
@@ -437,6 +458,12 @@ param networkingConfiguration = {
   virtualNetworkName: 'vnet-aca'
 }
 param selfHostedConfig = {
+  azureContainerAppTarget: {
+    resources: {
+      cpu: '1'
+      memory: '2Gi'
+    }
+  }
   githubOrganization: 'githHubOrganization'
   githubRepository: 'dummyRepo'
   personalAccessToken: '<personalAccessToken>'
@@ -444,6 +471,7 @@ param selfHostedConfig = {
 }
 // Non-required parameters
 param location = '<location>'
+param logAnalyticsReplicationRegion = 'westus2'
 param privateNetworking = false
 ```
 
@@ -628,7 +656,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     selfHostedConfig: {
       azureContainerInstanceTarget: {
         cpu: 1
-        memoryInGB: 2
+        memoryInGB: '2'
         numberOfInstances: 3
         sku: 'Standard'
       }
@@ -682,7 +710,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       "value": {
         "azureContainerInstanceTarget": {
           "cpu": 1,
-          "memoryInGB": 2,
+          "memoryInGB": "2",
           "numberOfInstances": 3,
           "sku": "Standard"
         },
@@ -732,7 +760,7 @@ param networkingConfiguration = {
 param selfHostedConfig = {
   azureContainerInstanceTarget: {
     cpu: 1
-    memoryInGB: 2
+    memoryInGB: '2'
     numberOfInstances: 3
     sku: 'Standard'
   }
@@ -889,6 +917,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
+      acrDeploymentScriptSubnetName: 'acr-deployment-script-subnet'
       computeNetworking: {
         computeNetworkType: 'azureContainerInstance'
         containerInstanceSubnetName: 'aci-subnet'
@@ -940,6 +969,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
+        "acrDeploymentScriptSubnetName": "acr-deployment-script-subnet",
         "computeNetworking": {
           "computeNetworkType": "azureContainerInstance",
           "containerInstanceSubnetName": "aci-subnet"
@@ -991,6 +1021,7 @@ param computeTypes = [
 ]
 param namingPrefix = '<namingPrefix>'
 param networkingConfiguration = {
+  acrDeploymentScriptSubnetName: 'acr-deployment-script-subnet'
   computeNetworking: {
     computeNetworkType: 'azureContainerInstance'
     containerInstanceSubnetName: 'aci-subnet'
@@ -1039,15 +1070,16 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
+      acrDeploymentScriptSubnetName: 'acr-ds-subnet'
       computeNetworking: {
         computeNetworkType: 'azureContainerApp'
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
         containerInstanceSubnetName: 'aci-subnet'
-        deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
       }
       containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+      deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
       natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
       natGatewayResourceId: '<natGatewayResourceId>'
       networkType: 'useExisting'
@@ -1089,15 +1121,16 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
+        "acrDeploymentScriptSubnetName": "acr-ds-subnet",
         "computeNetworking": {
           "computeNetworkType": "azureContainerApp",
           "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
           "containerAppSubnetName": "aca-subnet",
-          "containerInstanceSubnetName": "aci-subnet",
-          "deploymentScriptPrivateDnsZoneResourceId": "<deploymentScriptPrivateDnsZoneResourceId>"
+          "containerInstanceSubnetName": "aci-subnet"
         },
         "containerRegistryPrivateDnsZoneResourceId": "<containerRegistryPrivateDnsZoneResourceId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
+        "deploymentScriptPrivateDnsZoneResourceId": "<deploymentScriptPrivateDnsZoneResourceId>",
         "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
         "natGatewayResourceId": "<natGatewayResourceId>",
         "networkType": "useExisting",
@@ -1139,15 +1172,16 @@ param computeTypes = [
 ]
 param namingPrefix = '<namingPrefix>'
 param networkingConfiguration = {
+  acrDeploymentScriptSubnetName: 'acr-ds-subnet'
   computeNetworking: {
     computeNetworkType: 'azureContainerApp'
     containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
     containerAppSubnetName: 'aca-subnet'
     containerInstanceSubnetName: 'aci-subnet'
-    deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
   }
   containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
   containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+  deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
   natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
   natGatewayResourceId: '<natGatewayResourceId>'
   networkType: 'useExisting'
@@ -1299,9 +1333,11 @@ param privateNetworking = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | The availability zone to be used for the supported resources. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`logAnalyticsReplicationRegion`](#parameter-loganalyticsreplicationregion) | string | The Azure region to replicate the Log Analytics workspace to. If not specified, replication is disabled. |
 | [`privateNetworking`](#parameter-privatenetworking) | bool | Whether to use private or public networking for the Azure Container Registry. |
 
 ### Parameter: `computeTypes`
@@ -1357,6 +1393,8 @@ To use this variant, set the property `networkType` to `createNew`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`acrDeploymentScriptSubnetName`](#parameter-networkingconfigurationnetworktype-createnewacrdeploymentscriptsubnetname) | string | The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used. |
+| [`acrDeploymentScriptSubnetPrefix`](#parameter-networkingconfigurationnetworktype-createnewacrdeploymentscriptsubnetprefix) | string | The subnet address prefix for the acr deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used. |
 | [`containerAppDeploymentScriptSubnetName`](#parameter-networkingconfigurationnetworktype-createnewcontainerappdeploymentscriptsubnetname) | string | The subnet name for the container app deployment script. Only required if private networking is used. If not provided, a default name will be used. |
 | [`containerAppDeploymentScriptSubnetPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerappdeploymentscriptsubnetprefix) | string | The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used. |
 | [`containerAppSubnetAddressPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerappsubnetaddressprefix) | string | The container app subnet CIDR in the created virtual network. If not provided, a default subnet prefix will be used. |
@@ -1396,6 +1434,20 @@ The network type. This can be either createNew or useExisting.
 The virtual network name of the created virtual network.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.acrDeploymentScriptSubnetName`
+
+The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.acrDeploymentScriptSubnetPrefix`
+
+The subnet address prefix for the acr deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used.
+
+- Required: No
 - Type: string
 
 ### Parameter: `networkingConfiguration.networkType-createNew.containerAppDeploymentScriptSubnetName`
@@ -1498,6 +1550,7 @@ To use this variant, set the property `networkType` to `useExisting`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`acrDeploymentScriptSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingacrdeploymentscriptsubnetname) | string | The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used. |
 | [`computeNetworking`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworking) | object | The compute type networking type. |
 | [`containerRegistryPrivateEndpointSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcontainerregistryprivateendpointsubnetname) | string | The subnet name for the container registry private endpoint. |
 | [`networkType`](#parameter-networkingconfigurationnetworktype-useexistingnetworktype) | string | The network type. This can be either createNew or useExisting. |
@@ -1508,8 +1561,16 @@ To use this variant, set the property `networkType` to `useExisting`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerRegistryPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcontainerregistryprivatednszoneresourceid) | string | The container registry private DNS zone Id. If not provided, a new private DNS zone will be created. |
+| [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used. |
 | [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewaypublicipaddressresourceid) | string | The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
 | [`natGatewayResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewayresourceid) | string | The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created. |
+
+### Parameter: `networkingConfiguration.networkType-useExisting.acrDeploymentScriptSubnetName`
+
+The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking`
 
@@ -1544,7 +1605,6 @@ To use this variant, set the property `computeNetworkType` to `azureContainerApp
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately. |
-| [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. |
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.computeNetworkType`
 
@@ -1576,13 +1636,6 @@ The existing network container app subnet name. This is required for Container A
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.containerInstanceSubnetName`
 
 The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.
-
-- Required: No
-- Type: string
-
-### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.deploymentScriptPrivateDnsZoneResourceId`
-
-The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.
 
 - Required: No
 - Type: string
@@ -1649,6 +1702,13 @@ The existing virtual network resource Id.
 ### Parameter: `networkingConfiguration.networkType-useExisting.containerRegistryPrivateDnsZoneResourceId`
 
 The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.deploymentScriptPrivateDnsZoneResourceId`
+
+The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.
 
 - Required: No
 - Type: string
@@ -1844,7 +1904,7 @@ The GitHub runner Azure Container instance configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cpu`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetcpu) | int | The Azure Container Instance container cpu. |
-| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetmemoryingb) | int | The Azure Container Instance container memory. |
+| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetmemoryingb) | string | The Azure Container Instance container memory. |
 | [`numberOfInstances`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetnumberofinstances) | int | The number of the Azure Container Instances to deploy. |
 | [`port`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetport) | int | The Azure Container Instance container port. |
 | [`sku`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetsku) | string | The Azure Container Instance Sku name. |
@@ -1861,7 +1921,7 @@ The Azure Container Instance container cpu.
 The Azure Container Instance container memory.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.numberOfInstances`
 
@@ -2128,7 +2188,7 @@ The GitHub runner Azure Container instance configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cpu`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetcpu) | int | The Azure Container Instance container cpu. |
-| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetmemoryingb) | int | The Azure Container Instance container memory. |
+| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetmemoryingb) | string | The Azure Container Instance container memory. |
 | [`numberOfInstances`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetnumberofinstances) | int | The number of the Azure Container Instances to deploy. |
 | [`port`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetport) | int | The Azure Container Instance container port. |
 | [`sku`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetsku) | string | The Azure Container Instance Sku name. |
@@ -2145,7 +2205,7 @@ The Azure Container Instance container cpu.
 The Azure Container Instance container memory.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.numberOfInstances`
 
@@ -2189,6 +2249,14 @@ The target pipelines queue length.
 - Required: No
 - Type: string
 
+### Parameter: `availabilityZone`
+
+The availability zone to be used for the supported resources.
+
+- Required: No
+- Type: int
+- Default: `-1`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2211,6 +2279,14 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `logAnalyticsReplicationRegion`
+
+The Azure region to replicate the Log Analytics workspace to. If not specified, replication is disabled.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `privateNetworking`
 
@@ -2235,18 +2311,17 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/app/job:0.6.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.10.2` | Remote reference |
-| `br/public:avm/res/container-instance/container-group:0.2.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
+| `br/public:avm/res/container-instance/container-group:0.6.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
-| `br/public:avm/res/network/nat-gateway:1.2.2` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.6.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.11.1` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.3.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.13.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
+| `br/public:avm/res/network/nat-gateway:1.4.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
 
 ## Data Collection
 

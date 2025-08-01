@@ -41,20 +41,20 @@ param currentAppSettings {
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
-      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount!.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     }
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? {
           AzureWebJobsStorage__accountName: storageAccount.name
-          AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob
-          AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue
-          AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table
+          AzureWebJobsStorage__blobServiceUri: storageAccount!.properties.primaryEndpoints.blob
+          AzureWebJobsStorage__queueServiceUri: storageAccount!.properties.primaryEndpoints.queue
+          AzureWebJobsStorage__tableServiceUri: storageAccount!.properties.primaryEndpoints.table
         }
       : {}
 
 var appInsightsValues = !empty(applicationInsightResourceId)
   ? {
-      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
+      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights!.properties.ConnectionString
     }
   : {}
 
@@ -65,7 +65,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   scope: resourceGroup(split(applicationInsightResourceId!, '/')[2], split(applicationInsightResourceId!, '/')[4])
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split(storageAccountResourceId!, '/'))
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }

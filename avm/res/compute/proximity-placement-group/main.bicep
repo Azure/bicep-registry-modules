@@ -25,8 +25,14 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Tags of the proximity placement group resource.')
 param tags object?
 
-@description('Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.')
-param zones array?
+@description('Required. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param availabilityZone int
 
 @description('Optional. Describes colocation status of the Proximity Placement Group.')
 param colocationStatus object?
@@ -85,7 +91,7 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   name: name
   location: location
   tags: tags
-  zones: zones
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null // If expecting an array
   properties: {
     proximityPlacementGroupType: type
     colocationStatus: colocationStatus

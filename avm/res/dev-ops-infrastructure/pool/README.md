@@ -33,6 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
+- [Week Days Schema](#example-5-week-days-schema)
 
 ### Example 1: _All Week Schema_
 
@@ -914,6 +915,173 @@ param subnetResourceId = '<subnetResourceId>'
 </details>
 <p>
 
+### Example 5: _Week Days Schema_
+
+This instance deploys the module using an Week Days Scheme for the manual scaling prediction configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
+  name: 'poolDeployment'
+  params: {
+    // Required parameters
+    agentProfile: {
+      kind: 'Stateless'
+      resourcePredictions: {
+        daysData: {
+          weekDaysScheme: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
+          }
+        }
+        timeZone: 'UTC'
+      }
+      resourcePredictionsProfile: {
+        kind: 'Manual'
+      }
+    }
+    concurrency: 1
+    devCenterProjectResourceId: '<devCenterProjectResourceId>'
+    fabricProfileSkuName: 'Standard_DS2_v2'
+    images: [
+      {
+        wellKnownImageName: 'windows-2022/latest'
+      }
+    ]
+    name: 'mdpwkd001'
+    organizationProfile: {
+      kind: 'AzureDevOps'
+      organizations: [
+        {
+          url: '<url>'
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "agentProfile": {
+      "value": {
+        "kind": "Stateless",
+        "resourcePredictions": {
+          "daysData": {
+            "weekDaysScheme": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
+            }
+          },
+          "timeZone": "UTC"
+        },
+        "resourcePredictionsProfile": {
+          "kind": "Manual"
+        }
+      }
+    },
+    "concurrency": {
+      "value": 1
+    },
+    "devCenterProjectResourceId": {
+      "value": "<devCenterProjectResourceId>"
+    },
+    "fabricProfileSkuName": {
+      "value": "Standard_DS2_v2"
+    },
+    "images": {
+      "value": [
+        {
+          "wellKnownImageName": "windows-2022/latest"
+        }
+      ]
+    },
+    "name": {
+      "value": "mdpwkd001"
+    },
+    "organizationProfile": {
+      "value": {
+        "kind": "AzureDevOps",
+        "organizations": [
+          {
+            "url": "<url>"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictions: {
+    daysData: {
+      weekDaysScheme: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
+      }
+    }
+    timeZone: 'UTC'
+  }
+  resourcePredictionsProfile: {
+    kind: 'Manual'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_DS2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpwkd001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      url: '<url>'
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1050,6 +1218,7 @@ The number of agents needed at a specific time.
 | [`thursday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
 | [`tuesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
 | [`wednesday`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
+| [`weekDaysScheme`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysscheme) | object | A schema to apply to weekdays (Monday to Friday). Overrules daily configurations. |
 
 ### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.allWeekScheme`
 
@@ -1379,6 +1548,50 @@ The time at which the agents are needed.
 - Required: Yes
 - Type: string
 
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.weekDaysScheme`
+
+A schema to apply to weekdays (Monday to Friday). Overrules daily configurations.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysschemeendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysschemeendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysschemestartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statefulresourcepredictionsdaysdataweekdaysschemestarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.weekDaysScheme.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.weekDaysScheme.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.weekDaysScheme.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateful.resourcePredictions.daysData.weekDaysScheme.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `agentProfile.kind-Stateful.resourcePredictionsProfile`
 
 Determines how the stand-by scheme should be provided.
@@ -1536,6 +1749,7 @@ The number of agents needed at a specific time.
 | [`thursday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatathursday) | object | The number of agents needed at a specific time for Thursday. |
 | [`tuesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatatuesday) | object | The number of agents needed at a specific time for Tuesday. |
 | [`wednesday`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdatawednesday) | object | The number of agents needed at a specific time for Wednesday. |
+| [`weekDaysScheme`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysscheme) | object | A schema to apply to weekdays (Monday to Friday). Overrules daily configurations. |
 
 ### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.allWeekScheme`
 
@@ -1859,6 +2073,50 @@ The number of agents needed at the start time.
 - Type: int
 
 ### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.wednesday.startTime`
+
+The time at which the agents are needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.weekDaysScheme`
+
+A schema to apply to weekdays (Monday to Friday). Overrules daily configurations.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysschemeendagentcount) | int | The number of agents needed at the end time. |
+| [`endTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysschemeendtime) | string | The time at which the agents are no longer needed. |
+| [`startAgentCount`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysschemestartagentcount) | int | The number of agents needed at the start time. |
+| [`startTime`](#parameter-agentprofilekind-statelessresourcepredictionsdaysdataweekdaysschemestarttime) | string | The time at which the agents are needed. |
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.weekDaysScheme.endAgentCount`
+
+The number of agents needed at the end time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.weekDaysScheme.endTime`
+
+The time at which the agents are no longer needed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.weekDaysScheme.startAgentCount`
+
+The number of agents needed at the start time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentProfile.kind-Stateless.resourcePredictions.daysData.weekDaysScheme.startTime`
 
 The time at which the agents are needed.
 

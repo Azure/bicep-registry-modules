@@ -1,0 +1,86 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.177.2456",
+      "templateHash": "17826526974982250438"
+    },
+    "name": "DBforMySQL Flexible Server Configurations",
+    "description": "This module deploys a DBforMySQL Flexible Server Configuration."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the configuration."
+      }
+    },
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "source": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "system-default",
+        "user-override"
+      ],
+      "metadata": {
+        "description": "Optional. Source of the configuration."
+      }
+    },
+    "value": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Value of the configuration."
+      }
+    }
+  },
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "configuration": {
+      "type": "Microsoft.DBforMySQL/flexibleServers/configurations",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+      "properties": {
+        "source": "[parameters('source')]",
+        "value": "[parameters('value')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed configuration."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/configurations', parameters('flexibleServerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name of the deployed configuration."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
