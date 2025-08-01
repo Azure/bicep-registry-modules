@@ -297,7 +297,7 @@ module cosmosdbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.
 
 // Redis Cache
 
-module redis 'br/public:avm/res/cache/redis:0.15.0' = {
+module redis 'br/public:avm/res/cache/redis:0.16.1' = {
   name: 'redis-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-redis-${suffix}'

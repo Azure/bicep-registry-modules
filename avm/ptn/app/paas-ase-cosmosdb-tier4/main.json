@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "524612181226857290"
+      "templateHash": "12099423287853631622"
     },
     "name": "PaaS ASE with CosmosDB Tier 4",
     "description": "Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration."
@@ -18557,8 +18557,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "8918490447623034451"
+              "version": "0.36.177.2456",
+              "templateHash": "15125409893909150676"
             },
             "name": "Redis Cache",
             "description": "This module deploys a Redis Cache."
@@ -19463,7 +19463,7 @@
                 "description": "Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter."
               }
             },
-            "zones": {
+            "availabilityZones": {
               "type": "array",
               "items": {
                 "type": "int"
@@ -19473,8 +19473,25 @@
                 2,
                 3
               ],
+              "allowedValues": [
+                1,
+                2,
+                3
+              ],
               "metadata": {
                 "description": "Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed."
+              }
+            },
+            "zonalAllocationPolicy": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Automatic",
+                "NoZones",
+                "UserDefined"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies how availability zones are allocated to the Redis cache. \"Automatic\" enables zone redundancy and Azure will automatically select zones. \"UserDefined\" will select availability zones passed in by you using the \"availabilityZones\" parameter. \"NoZones\" will produce a non-zonal cache. Only applicable when zoneRedundant is true."
               }
             },
             "privateEndpoints": {
@@ -19555,7 +19572,7 @@
               }
             ],
             "enableReferencedModulesTelemetry": false,
-            "availabilityZones": "[if(equals(parameters('skuName'), 'Premium'), if(parameters('zoneRedundant'), if(not(empty(parameters('zones'))), parameters('zones'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 3)), createArray()), createArray())]",
+            "zones": "[if(equals(parameters('skuName'), 'Premium'), if(parameters('zoneRedundant'), if(not(empty(parameters('availabilityZones'))), parameters('availabilityZones'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 3)), createArray()), createArray())]",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
@@ -19572,7 +19589,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.cache-redis.{0}.{1}', replace('0.15.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.cache-redis.{0}.{1}', replace('0.16.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -19612,9 +19629,10 @@
                 },
                 "staticIP": "[if(not(empty(parameters('staticIP'))), parameters('staticIP'), null())]",
                 "subnetId": "[if(not(empty(parameters('subnetResourceId'))), parameters('subnetResourceId'), null())]",
-                "tenantSettings": "[parameters('tenantSettings')]"
+                "tenantSettings": "[parameters('tenantSettings')]",
+                "zonalAllocationPolicy": "[if(and(equals(parameters('skuName'), 'Premium'), parameters('zoneRedundant')), parameters('zonalAllocationPolicy'), null())]"
               },
-              "zones": "[variables('availabilityZones')]"
+              "zones": "[variables('zones')]"
             },
             "redis_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -19723,8 +19741,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "13609785947140216347"
+                      "version": "0.36.177.2456",
+                      "templateHash": "18365093303814967998"
                     },
                     "name": "Redis Cache Access Policy",
                     "description": "This module deploys an access policy for Redis Cache."
@@ -19824,8 +19842,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "12395156794668549654"
+                      "version": "0.36.177.2456",
+                      "templateHash": "10082088536827762989"
                     },
                     "name": "Redis Cache Access Policy Assignment",
                     "description": "This module deploys an access policy assignment for Redis Cache."
@@ -19967,8 +19985,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15954548978129725136"
+                      "version": "0.34.44.8038",
+                      "templateHash": "12389807800450456797"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -20377,7 +20395,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20395,7 +20413,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -20483,8 +20501,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "5440815542537978381"
+                              "version": "0.34.44.8038",
+                              "templateHash": "13997305779829540948"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -20556,12 +20574,12 @@
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -20625,7 +20643,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
@@ -20695,8 +20713,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "12292111119668711176"
+                      "version": "0.36.177.2456",
+                      "templateHash": "1446936391553152650"
                     },
                     "name": "Redis Cache Firewall Rules",
                     "description": "This module creates a firewall rule for Redis Cache."
@@ -20798,8 +20816,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "5558624137817822490"
+                      "version": "0.36.177.2456",
+                      "templateHash": "13435626421395447274"
                     },
                     "name": "Redis Cache Linked Servers",
                     "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -20924,8 +20942,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "1586204151956272516"
+                      "version": "0.36.177.2456",
+                      "templateHash": "3544094571587756877"
                     }
                   },
                   "definitions": {
@@ -20954,7 +20972,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -20977,7 +20995,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     }
@@ -21003,7 +21021,7 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2022-07-01",
+                      "apiVersion": "2024-12-01-preview",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secrets": {
@@ -21012,7 +21030,7 @@
                         "count": "[length(parameters('secretsToSet'))]"
                       },
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-12-01-preview",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
                       "properties": {
                         "value": "[parameters('secretsToSet')[copyIndex()].value]"
