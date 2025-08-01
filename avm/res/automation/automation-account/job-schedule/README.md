@@ -12,7 +12,7 @@ This module deploys an Azure Automation Account Job Schedule.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
+| `Microsoft.Automation/automationAccounts/jobSchedules` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/jobSchedules) |
 
 ## Parameters
 

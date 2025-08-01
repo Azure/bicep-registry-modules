@@ -12,7 +12,7 @@ This module deploys an Azure Automation Account Variable.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/variables` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/variables) |
+| `Microsoft.Automation/automationAccounts/variables` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables) |
 
 ## Parameters
 
