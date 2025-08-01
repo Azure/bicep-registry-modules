@@ -27,6 +27,7 @@ This module deploys an Azure Automation Account.
 | `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
 | `Microsoft.Automation/automationAccounts/schedules` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules) |
 | `Microsoft.Automation/automationAccounts/variables` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables) |
+| `Microsoft.Automation/automationAccounts/webhooks` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
@@ -407,6 +408,17 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         value: '\'TestEncryptedValue\''
       }
     ]
+    webhooks: [
+      {
+        expiryTime: '9999-12-31T13:00'
+        name: 'TestWebhook'
+        parameters: {
+          param1: 'value1'
+          param2: 'value2'
+        }
+        runbookName: 'TestRunbook'
+      }
+    ]
   }
 }
 ```
@@ -664,6 +676,19 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           "value": "\"TestEncryptedValue\""
         }
       ]
+    },
+    "webhooks": {
+      "value": [
+        {
+          "expiryTime": "9999-12-31T13:00",
+          "name": "TestWebhook",
+          "parameters": {
+            "param1": "value1",
+            "param2": "value2"
+          },
+          "runbookName": "TestRunbook"
+        }
+      ]
     }
   }
 }
@@ -879,6 +904,17 @@ param variables = [
     description: 'TestEncryptedDescription'
     name: 'TestEncryptedVariable'
     value: '\'TestEncryptedValue\''
+  }
+]
+param webhooks = [
+  {
+    expiryTime: '9999-12-31T13:00'
+    name: 'TestWebhook'
+    parameters: {
+      param1: 'value1'
+      param2: 'value2'
+    }
+    runbookName: 'TestRunbook'
   }
 ]
 ```
@@ -1387,6 +1423,7 @@ param variables = [
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
 | [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. |
+| [`webhooks`](#parameter-webhooks) | array | List of webhooks to be created in the automation account. |
 
 ### Parameter: `name`
 
@@ -2543,6 +2580,14 @@ Tags of the Automation Account resource.
 ### Parameter: `variables`
 
 List of variables to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `webhooks`
+
+List of webhooks to be created in the automation account.
 
 - Required: No
 - Type: array

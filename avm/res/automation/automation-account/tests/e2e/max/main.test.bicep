@@ -265,6 +265,17 @@ module testDeployment '../../../main.bicep' = [
           value: '\'TestEncryptedValue\''
         }
       ]
+      webhooks: [
+        {
+          name: 'TestWebhook'
+          runbookName: 'TestRunbook'
+          expiryTime: '9999-12-31T13:00'
+          parameters: {
+            param1: 'value1'
+            param2: 'value2'
+          }
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
