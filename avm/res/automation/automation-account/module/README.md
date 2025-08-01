@@ -12,7 +12,7 @@ This module deploys an Azure Automation Account Module.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
+| `Microsoft.Automation/automationAccounts/modules` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/modules) |
 
 ## Parameters
 

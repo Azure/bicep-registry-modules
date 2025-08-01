@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8975888996446289345"
+      "version": "0.36.177.2456",
+      "templateHash": "11387966519041126601"
     },
     "name": "Automation Account Python 2 Packages",
     "description": "This module deploys a Python2 Package in the Automation Account."
@@ -49,7 +49,7 @@
     "automationAccount": {
       "existing": true,
       "type": "Microsoft.Automation/automationAccounts",
-      "apiVersion": "2022-08-08",
+      "apiVersion": "2024-10-23",
       "name": "[parameters('automationAccountName')]"
     },
     "python2package": {

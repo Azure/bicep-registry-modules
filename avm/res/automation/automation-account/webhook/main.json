@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "3137138750937982114"
+      "version": "0.36.177.2456",
+      "templateHash": "7239657967522750396"
     },
     "name": "Automation Account Webhook",
     "description": "This module deploys an Azure Automation Account Webhook."
