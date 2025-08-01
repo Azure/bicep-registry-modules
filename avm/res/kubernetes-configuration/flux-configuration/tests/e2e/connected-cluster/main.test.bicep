@@ -227,9 +227,12 @@ module k8scluster 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    clusterName: pci.outputs.name
+    clusterName: '${namePrefix}${serviceShort}01'
     clusterExtensionName: '${namePrefix}${serviceShort}001'
   }
+  dependsOn: [
+    pci
+  ]
 }
 
 // ============== //
@@ -244,7 +247,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
-      clusterName: pci.outputs.name
+      clusterName: '${namePrefix}${serviceShort}01'
       clusterType: 'connectedCluster'
       namespace: 'flux-system'
       scope: 'cluster'
