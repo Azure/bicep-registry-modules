@@ -18,6 +18,7 @@ param virtualMachineName string
 
 var addressPrefix = '10.0.0.0/16'
 
+#disable-next-line use-recent-api-versions
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
   location: location
@@ -38,11 +39,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+#disable-next-line use-recent-api-versions
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: managedIdentityName
   location: location
 }
 
+#disable-next-line use-recent-api-versions
 resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, 'Contributor', managedIdentity.id)
   scope: resourceGroup()
@@ -56,7 +59,8 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+#disable-next-line use-recent-api-versions
+resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: sshDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -77,7 +81,8 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
   ]
 }
 
-resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
+#disable-next-line use-recent-api-versions
+resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-11-01' = {
   name: sshKeyName
   location: location
   properties: {
@@ -85,7 +90,8 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.10.1' = {
+#disable-next-line use-recent-api-versions
+module vm 'br/public:avm/res/compute/virtual-machine:0.16.0' = {
   name: '${uniqueString(deployment().name, location)}-virtualMachine'
   params: {
     location: location
@@ -97,7 +103,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.10.1' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    zone: 0
+    availabilityZone: -1
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -131,11 +137,13 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.10.1' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+#disable-next-line use-recent-api-versions
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.siterecovery.windowsazure.com'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  #disable-next-line use-recent-api-versions
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {

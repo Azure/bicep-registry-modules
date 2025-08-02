@@ -30,16 +30,25 @@ param kind string
 @description('Optional. The resource ID of the app service plan to use for the slot.')
 param serverFarmResourceId string?
 
+@description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
+param managedEnvironmentResourceId string?
+
 @description('Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
 
 @description('Optional. If client affinity is enabled.')
 param clientAffinityEnabled bool = true
 
+@description('Optional. To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true.')
+param clientAffinityProxyEnabled bool = true
+
+@description('Optional. To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false.')
+param clientAffinityPartitioningEnabled bool = false
+
 @description('Optional. The resource ID of the app service environment to use for this resource.')
 param appServiceEnvironmentResourceId string?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -50,7 +59,7 @@ param keyVaultAccessIdentityResourceId string?
 param storageAccountRequired bool = false
 
 @description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.')
-param virtualNetworkSubnetId string?
+param virtualNetworkSubnetResourceId string?
 
 @description('Optional. The site config object.')
 param siteConfig resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.siteConfig = {
@@ -66,22 +75,22 @@ param configs configType[]?
 @description('Optional. The extensions configuration.')
 param extensions object[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Configuration details for private endpoints.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.tags?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -140,14 +149,8 @@ param redundancyMode string = 'None'
 @description('Optional. The site publishing credential policy names which are associated with the site slot.')
 param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 
-@description('Optional. To enable accessing content over virtual network.')
-param vnetContentShareEnabled bool = false
-
-@description('Optional. To enable pulling image over Virtual Network.')
-param vnetImagePullEnabled bool = false
-
-@description('Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.')
-param vnetRouteAllEnabled bool = false
+@description('Optional. The outbound VNET routing configuration for the site.')
+param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2024-11-01'>.properties.outboundVnetRouting?
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?
@@ -207,6 +210,11 @@ var builtInRoleNames = {
   )
 }
 
+// List of site kinds that support managed environment
+var managedEnvironmentSupportedKinds = [
+  'functionapp,linux,container,azurecontainerapps'
+]
+
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
     roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
@@ -218,11 +226,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource app 'Microsoft.Web/sites@2024-04-01' existing = {
+resource app 'Microsoft.Web/sites@2024-11-01' existing = {
   name: appName
 }
 
-resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
+resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
   name: name
   parent: app
   location: location
@@ -230,8 +238,13 @@ resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
   tags: tags
   identity: identity
   properties: {
-    serverFarmId: serverFarmResourceId
+    managedEnvironmentId: !empty(managedEnvironmentResourceId) ? managedEnvironmentResourceId : null
+    serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && (!empty(app.properties.managedEnvironmentId) || !empty(managedEnvironmentResourceId))
+      ? null
+      : serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled
+    clientAffinityProxyEnabled: clientAffinityProxyEnabled
+    clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled
     httpsOnly: httpsOnly
     hostingEnvironmentProfile: !empty(appServiceEnvironmentResourceId)
       ? {
@@ -240,7 +253,7 @@ resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
       : null
     storageAccountRequired: storageAccountRequired
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
-    virtualNetworkSubnetId: virtualNetworkSubnetId
+    virtualNetworkSubnetId: virtualNetworkSubnetResourceId
     siteConfig: siteConfig
     functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
@@ -255,11 +268,9 @@ resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
     hyperV: hyperV
     publicNetworkAccess: publicNetworkAccess
     redundancyMode: redundancyMode
-    vnetContentShareEnabled: vnetContentShareEnabled
-    vnetImagePullEnabled: vnetImagePullEnabled
-    vnetRouteAllEnabled: vnetRouteAllEnabled
     dnsConfiguration: dnsConfiguration
     autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
+    outboundVnetRouting: outboundVnetRouting
   }
 }
 
@@ -322,9 +333,9 @@ resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock 
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: slot
 }

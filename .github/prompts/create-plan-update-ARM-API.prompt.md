@@ -1,13 +1,13 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runInTerminal2', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
+tools: ['changes', 'codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'runTests', 'editFiles', 'new', 'runCommands', 'runTasks', 'microsoft.docs.mcp', 'github', 'Microsoft Docs']
 ---
 
 # AI Agent Task: ARM API Version Update Analysis
 
 ## 1. Objective
-As an AI agent, your task is to analyze an Azure Verified Module (AVM) Bicep file to identify resources with outdated ARM API versions. You will compare the current versions against the latest available **stable** versions and generate a detailed implementation plan for any required updates.
+As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files, including in child folders, that make up a module to identify resources with outdated ARM API versions. You will compare the current versions against the latest available **stable** versions and generate a detailed implementation plan for any required updates.
 
 **This is a planning task only. Do not modify any files.**
 

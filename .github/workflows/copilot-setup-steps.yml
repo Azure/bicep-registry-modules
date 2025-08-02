@@ -31,17 +31,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install PowerShell modules for AVM validation
-        uses: azure/powershell@v2
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Install required PowerShell modules for AVM testing
-            Install-Module -Name Pester -Force -AllowClobber -Scope CurrentUser -RequiredVersion '5.6.1'
-            Install-Module -Name PSRule.Rules.Azure -Force -AllowClobber -Scope CurrentUser
-
-            # Verify installations
-            Get-Module -ListAvailable Az, Pester, PSRule.Rules.Azure
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
 
       - name: Validate AVM tools setup
         uses: azure/powershell@v2
