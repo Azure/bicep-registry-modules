@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
+model: Claude Sonnet 4
 tools: ['changes', 'codebase', 'fetch', 'githubRepo', 'problems', 'search', 'searchResults', 'fileSearch', 'textSearch', 'listDirectory', 'readFile', 'Microsoft Docs', 'microsoft.docs.mcp']
 ---
 
