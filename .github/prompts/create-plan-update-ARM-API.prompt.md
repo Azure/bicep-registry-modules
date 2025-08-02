@@ -1,19 +1,20 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
-tools: ['changes', 'codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'runTests', 'editFiles', 'new', 'runCommands', 'runTasks', 'microsoft.docs.mcp', 'github', 'Microsoft Docs']
+tools: ['changes', 'codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'runTests', 'editFiles', 'fileSearch', 'textSearch', 'listDirectory', 'readFile', 'new', 'runCommands', 'runTasks', 'Microsoft Docs', 'microsoft.docs.mcp']
 ---
 
 # AI Agent Task: ARM API Version Update Analysis
 
 ## 1. Objective
-As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files, including in child folders, that make up a module to identify resources with outdated ARM API versions. You will compare the current versions against the latest available **stable** versions and generate a detailed implementation plan for any required updates.
+As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files starting with ${file}, including in child folders of ${fileDirname}, that make up a module to identify resources with outdated ARM API versions. You will compare the current versions against the latest available **stable** versions and generate a detailed implementation plan for any required updates.
 
 **This is a planning task only. Do not modify any files.**
 
 ## 2. Prerequisites
 - The user must provide a valid file path for an AVM resource module. The path must follow the pattern: `avm/res/{provider}/{resource}/main.bicep`.
 - If the path is invalid or missing, **STOP** and ask the user for a correct one.
+- Before generating AVM Bicep code, always use `fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt`. Use LLM documentation index to `fetch` relevant documentation for the specific resources and patterns you are working with.
 
 ## 3. Execution Flow
 

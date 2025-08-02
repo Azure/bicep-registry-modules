@@ -5,6 +5,20 @@ applyTo: "**/*.bicep"
 
 # Bicep with AVM Best Practices for AI Code Generation
 
+Azure Verified Modules (AVM) provides and define the single definition of what a good Infrastructure as Code (IaC) module is.
+
+## Documentation (Always Review)
+
+Before generating AVM Bicep code, always use `fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt`. Use LLM documentation index to `fetch` relevant documentation for the specific resources and patterns you are working with.
+
+## After Making Changes
+
+After making changes to any Bicep code, you must always run the [tools/Set-AVMModule.ps1](tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files.
+
+```powershell
+Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
+```
+
 ## Required File Structure
 
 ### 1. Metadata Block (Always First)
