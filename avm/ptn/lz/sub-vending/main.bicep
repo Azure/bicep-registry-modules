@@ -539,3 +539,6 @@ output failedResourceProviders string = !empty(resourceProviders)
 output failedResourceProvidersFeatures string = !empty(resourceProviders)
   ? createSubscriptionResources.?outputs.failedFeatures ?? ''
   : ''
+
+@description('The name of the Virtual WAN Hub Connection.')
+output virtualWanHubConnectionName string = createSubscriptionResources.?outputs.virtualWanHubConnectionName ?? ''
