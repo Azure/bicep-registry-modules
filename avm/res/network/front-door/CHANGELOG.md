@@ -6,8 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-NOTE: This is the last published version and the module has since been deprecated.
-
+- NOTE: This is the last published version and the module has since been deprecated.
 - Initial version
 
 ### Breaking Changes
