@@ -9,7 +9,7 @@
       "templateHash": "2905036788725164172"
     },
     "name": "Azure Front Doors",
-    "description": "DEPRECATED - This module deploys an Azure Front Door."
+    "description": "This module deploys an Azure Front Door."
   },
   "definitions": {
     "diagnosticSettingFullType": {
