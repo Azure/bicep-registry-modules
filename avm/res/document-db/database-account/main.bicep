@@ -80,7 +80,7 @@ param serverVersion string = '4.2'
 param sqlDatabases sqlDatabaseType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
-param mongodbDatabases array?
+param mongodbDatabases mongodbDatabaseType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Apache Gremlin.')
 param gremlinDatabases array?
@@ -454,11 +454,12 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
   for mongodbDatabase in (mongodbDatabases ?? []): {
     name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
     params: {
-      databaseAccountName: databaseAccount.name
+      parentAccountName: databaseAccount.name
       name: mongodbDatabase.name
       tags: mongodbDatabase.?tags ?? tags
+      manualThroughput: mongodbDatabase.?manualThroughput
+      autoscaleMaxThroughput: mongodbDatabase.?autoscaleMaxThroughput
       collections: mongodbDatabase.?collections
-      throughput: mongodbDatabase.?throughput
     }
   }
 ]
@@ -745,6 +746,26 @@ type sqlDatabaseType = {
       paths: string[]
     }[]?
   }[]?
+}
+
+import { mongodbCollectionType } from 'mongodb-database/main.bicep'
+@export()
+@description('A collection within the database.')
+type mongodbDatabaseType = {
+  @description('Required. The name of the database.')
+  name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. The provisioned throughput assigned to the database.')
+  manualThroughput: int?
+
+  @description('Optional. The maximum throughput for the database when using autoscale.')
+  autoscaleMaxThroughput: int?
+
+  @description('Optional. The set of collections within the database.')
+  collections: mongodbCollectionType[]?
 }
 
 @export()

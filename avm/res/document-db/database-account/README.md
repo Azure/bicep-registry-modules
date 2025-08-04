@@ -685,184 +685,191 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           {
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
-                }
+                keys: [
+                  '_id'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
-                }
+                keys: [
+                  '$**'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    'car_id'
-                    'car_model'
-                  ]
-                }
-                options: {
-                  unique: true
-                }
+                keys: [
+                  'car_id'
+                  'car_model'
+                ]
+                unique: true
               }
               {
-                key: {
-                  keys: [
-                    '_ts'
-                  ]
-                }
-                options: {
-                  expireAfterSeconds: 2629746
-                }
+                keys: [
+                  '_ts'
+                ]
+                ttl: 2629746
               }
             ]
+            manualThroughput: 400
             name: 'car_collection'
-            shardKey: {
-              car_id: 'Hash'
-            }
-            throughput: 600
+            shardKeys: [
+              {
+                field: 'car_id'
+                type: 'Hash'
+              }
+            ]
           }
           {
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
-                }
+                keys: [
+                  '_id'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
-                }
+                keys: [
+                  '$**'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    'truck_id'
-                    'truck_model'
-                  ]
-                }
-                options: {
-                  unique: true
-                }
+                keys: [
+                  'truck_id'
+                  'truck_model'
+                ]
+                unique: true
               }
               {
-                key: {
-                  keys: [
-                    '_ts'
-                  ]
-                }
-                options: {
-                  expireAfterSeconds: 2629746
-                }
+                keys: [
+                  '_ts'
+                ]
+                ttl: 2629746
               }
             ]
             name: 'truck_collection'
-            shardKey: {
-              truck_id: 'Hash'
-            }
+            shardKeys: [
+              {
+                field: 'truck_id'
+                type: 'Hash'
+              }
+            ]
           }
         ]
+        manualThroughput: 600
         name: 'mdb-dddamng-001'
-        throughput: 800
       }
       {
         collections: [
           {
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
-                }
+                keys: [
+                  '_id'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
-                }
+                keys: [
+                  '$**'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    'bike_id'
-                    'bike_model'
-                  ]
-                }
-                options: {
-                  unique: true
-                }
+                keys: [
+                  'bike_id'
+                  'bike_model'
+                ]
+                unique: true
               }
               {
-                key: {
-                  keys: [
-                    '_ts'
-                  ]
-                }
-                options: {
-                  expireAfterSeconds: 2629746
-                }
+                keys: [
+                  '_ts'
+                ]
+                ttl: 2629746
               }
             ]
+            manualThroughput: 400
             name: 'bike_collection'
-            shardKey: {
-              bike_id: 'Hash'
-            }
+            shardKeys: [
+              {
+                field: 'bike_id'
+                type: 'Hash'
+              }
+            ]
           }
           {
+            autoscaleMaxThroughput: 1000
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
-                }
+                keys: [
+                  '_id'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
-                }
+                keys: [
+                  '$**'
+                ]
               }
               {
-                key: {
-                  keys: [
-                    'bicycle_id'
-                    'bicycle_model'
-                  ]
-                }
-                options: {
-                  unique: true
-                }
+                keys: [
+                  'bicycle_id'
+                  'bicycle_model'
+                ]
+                unique: true
               }
               {
-                key: {
-                  keys: [
-                    '_ts'
-                  ]
-                }
-                options: {
-                  expireAfterSeconds: 2629746
-                }
+                keys: [
+                  '_ts'
+                ]
+                ttl: 2629746
               }
             ]
             name: 'bicycle_collection'
-            shardKey: {
-              bicycle_id: 'Hash'
-            }
+            shardKeys: [
+              {
+                field: 'bicycle_id'
+                type: 'Hash'
+              }
+            ]
           }
         ]
         name: 'mdb-dddamng-002'
+      }
+      {
+        autoscaleMaxThroughput: 1000
+        collections: [
+          {
+            autoscaleMaxThroughput: 1000
+            indexes: [
+              {
+                keys: [
+                  '_id'
+                ]
+              }
+              {
+                keys: [
+                  '$**'
+                ]
+              }
+              {
+                keys: [
+                  'wheel_id'
+                  'wheel_model'
+                ]
+                unique: true
+              }
+              {
+                keys: [
+                  '_ts'
+                ]
+                ttl: 2629746
+              }
+            ]
+            name: 'wheel_collection'
+            shardKeys: [
+              {
+                field: 'wheel_id'
+                type: 'Hash'
+              }
+            ]
+          }
+        ]
+        name: 'mdb-dddamng-003'
       }
     ]
     zoneRedundant: false
@@ -894,184 +901,191 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             {
               "indexes": [
                 {
-                  "key": {
-                    "keys": [
-                      "_id"
-                    ]
-                  }
+                  "keys": [
+                    "_id"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "$**"
-                    ]
-                  }
+                  "keys": [
+                    "$**"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "car_id",
-                      "car_model"
-                    ]
-                  },
-                  "options": {
-                    "unique": true
-                  }
+                  "keys": [
+                    "car_id",
+                    "car_model"
+                  ],
+                  "unique": true
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "_ts"
-                    ]
-                  },
-                  "options": {
-                    "expireAfterSeconds": 2629746
-                  }
+                  "keys": [
+                    "_ts"
+                  ],
+                  "ttl": 2629746
                 }
               ],
+              "manualThroughput": 400,
               "name": "car_collection",
-              "shardKey": {
-                "car_id": "Hash"
-              },
-              "throughput": 600
+              "shardKeys": [
+                {
+                  "field": "car_id",
+                  "type": "Hash"
+                }
+              ]
             },
             {
               "indexes": [
                 {
-                  "key": {
-                    "keys": [
-                      "_id"
-                    ]
-                  }
+                  "keys": [
+                    "_id"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "$**"
-                    ]
-                  }
+                  "keys": [
+                    "$**"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "truck_id",
-                      "truck_model"
-                    ]
-                  },
-                  "options": {
-                    "unique": true
-                  }
+                  "keys": [
+                    "truck_id",
+                    "truck_model"
+                  ],
+                  "unique": true
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "_ts"
-                    ]
-                  },
-                  "options": {
-                    "expireAfterSeconds": 2629746
-                  }
+                  "keys": [
+                    "_ts"
+                  ],
+                  "ttl": 2629746
                 }
               ],
               "name": "truck_collection",
-              "shardKey": {
-                "truck_id": "Hash"
-              }
+              "shardKeys": [
+                {
+                  "field": "truck_id",
+                  "type": "Hash"
+                }
+              ]
             }
           ],
-          "name": "mdb-dddamng-001",
-          "throughput": 800
+          "manualThroughput": 600,
+          "name": "mdb-dddamng-001"
         },
         {
           "collections": [
             {
               "indexes": [
                 {
-                  "key": {
-                    "keys": [
-                      "_id"
-                    ]
-                  }
+                  "keys": [
+                    "_id"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "$**"
-                    ]
-                  }
+                  "keys": [
+                    "$**"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "bike_id",
-                      "bike_model"
-                    ]
-                  },
-                  "options": {
-                    "unique": true
-                  }
+                  "keys": [
+                    "bike_id",
+                    "bike_model"
+                  ],
+                  "unique": true
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "_ts"
-                    ]
-                  },
-                  "options": {
-                    "expireAfterSeconds": 2629746
-                  }
+                  "keys": [
+                    "_ts"
+                  ],
+                  "ttl": 2629746
                 }
               ],
+              "manualThroughput": 400,
               "name": "bike_collection",
-              "shardKey": {
-                "bike_id": "Hash"
-              }
+              "shardKeys": [
+                {
+                  "field": "bike_id",
+                  "type": "Hash"
+                }
+              ]
             },
             {
+              "autoscaleMaxThroughput": 1000,
               "indexes": [
                 {
-                  "key": {
-                    "keys": [
-                      "_id"
-                    ]
-                  }
+                  "keys": [
+                    "_id"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "$**"
-                    ]
-                  }
+                  "keys": [
+                    "$**"
+                  ]
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "bicycle_id",
-                      "bicycle_model"
-                    ]
-                  },
-                  "options": {
-                    "unique": true
-                  }
+                  "keys": [
+                    "bicycle_id",
+                    "bicycle_model"
+                  ],
+                  "unique": true
                 },
                 {
-                  "key": {
-                    "keys": [
-                      "_ts"
-                    ]
-                  },
-                  "options": {
-                    "expireAfterSeconds": 2629746
-                  }
+                  "keys": [
+                    "_ts"
+                  ],
+                  "ttl": 2629746
                 }
               ],
               "name": "bicycle_collection",
-              "shardKey": {
-                "bicycle_id": "Hash"
-              }
+              "shardKeys": [
+                {
+                  "field": "bicycle_id",
+                  "type": "Hash"
+                }
+              ]
             }
           ],
           "name": "mdb-dddamng-002"
+        },
+        {
+          "autoscaleMaxThroughput": 1000,
+          "collections": [
+            {
+              "autoscaleMaxThroughput": 1000,
+              "indexes": [
+                {
+                  "keys": [
+                    "_id"
+                  ]
+                },
+                {
+                  "keys": [
+                    "$**"
+                  ]
+                },
+                {
+                  "keys": [
+                    "wheel_id",
+                    "wheel_model"
+                  ],
+                  "unique": true
+                },
+                {
+                  "keys": [
+                    "_ts"
+                  ],
+                  "ttl": 2629746
+                }
+              ],
+              "name": "wheel_collection",
+              "shardKeys": [
+                {
+                  "field": "wheel_id",
+                  "type": "Hash"
+                }
+              ]
+            }
+          ],
+          "name": "mdb-dddamng-003"
         }
       ]
     },
@@ -1101,184 +1115,191 @@ param mongodbDatabases = [
       {
         indexes: [
           {
-            key: {
-              keys: [
-                '_id'
-              ]
-            }
+            keys: [
+              '_id'
+            ]
           }
           {
-            key: {
-              keys: [
-                '$**'
-              ]
-            }
+            keys: [
+              '$**'
+            ]
           }
           {
-            key: {
-              keys: [
-                'car_id'
-                'car_model'
-              ]
-            }
-            options: {
-              unique: true
-            }
+            keys: [
+              'car_id'
+              'car_model'
+            ]
+            unique: true
           }
           {
-            key: {
-              keys: [
-                '_ts'
-              ]
-            }
-            options: {
-              expireAfterSeconds: 2629746
-            }
+            keys: [
+              '_ts'
+            ]
+            ttl: 2629746
           }
         ]
+        manualThroughput: 400
         name: 'car_collection'
-        shardKey: {
-          car_id: 'Hash'
-        }
-        throughput: 600
+        shardKeys: [
+          {
+            field: 'car_id'
+            type: 'Hash'
+          }
+        ]
       }
       {
         indexes: [
           {
-            key: {
-              keys: [
-                '_id'
-              ]
-            }
+            keys: [
+              '_id'
+            ]
           }
           {
-            key: {
-              keys: [
-                '$**'
-              ]
-            }
+            keys: [
+              '$**'
+            ]
           }
           {
-            key: {
-              keys: [
-                'truck_id'
-                'truck_model'
-              ]
-            }
-            options: {
-              unique: true
-            }
+            keys: [
+              'truck_id'
+              'truck_model'
+            ]
+            unique: true
           }
           {
-            key: {
-              keys: [
-                '_ts'
-              ]
-            }
-            options: {
-              expireAfterSeconds: 2629746
-            }
+            keys: [
+              '_ts'
+            ]
+            ttl: 2629746
           }
         ]
         name: 'truck_collection'
-        shardKey: {
-          truck_id: 'Hash'
-        }
+        shardKeys: [
+          {
+            field: 'truck_id'
+            type: 'Hash'
+          }
+        ]
       }
     ]
+    manualThroughput: 600
     name: 'mdb-dddamng-001'
-    throughput: 800
   }
   {
     collections: [
       {
         indexes: [
           {
-            key: {
-              keys: [
-                '_id'
-              ]
-            }
+            keys: [
+              '_id'
+            ]
           }
           {
-            key: {
-              keys: [
-                '$**'
-              ]
-            }
+            keys: [
+              '$**'
+            ]
           }
           {
-            key: {
-              keys: [
-                'bike_id'
-                'bike_model'
-              ]
-            }
-            options: {
-              unique: true
-            }
+            keys: [
+              'bike_id'
+              'bike_model'
+            ]
+            unique: true
           }
           {
-            key: {
-              keys: [
-                '_ts'
-              ]
-            }
-            options: {
-              expireAfterSeconds: 2629746
-            }
+            keys: [
+              '_ts'
+            ]
+            ttl: 2629746
           }
         ]
+        manualThroughput: 400
         name: 'bike_collection'
-        shardKey: {
-          bike_id: 'Hash'
-        }
+        shardKeys: [
+          {
+            field: 'bike_id'
+            type: 'Hash'
+          }
+        ]
       }
       {
+        autoscaleMaxThroughput: 1000
         indexes: [
           {
-            key: {
-              keys: [
-                '_id'
-              ]
-            }
+            keys: [
+              '_id'
+            ]
           }
           {
-            key: {
-              keys: [
-                '$**'
-              ]
-            }
+            keys: [
+              '$**'
+            ]
           }
           {
-            key: {
-              keys: [
-                'bicycle_id'
-                'bicycle_model'
-              ]
-            }
-            options: {
-              unique: true
-            }
+            keys: [
+              'bicycle_id'
+              'bicycle_model'
+            ]
+            unique: true
           }
           {
-            key: {
-              keys: [
-                '_ts'
-              ]
-            }
-            options: {
-              expireAfterSeconds: 2629746
-            }
+            keys: [
+              '_ts'
+            ]
+            ttl: 2629746
           }
         ]
         name: 'bicycle_collection'
-        shardKey: {
-          bicycle_id: 'Hash'
-        }
+        shardKeys: [
+          {
+            field: 'bicycle_id'
+            type: 'Hash'
+          }
+        ]
       }
     ]
     name: 'mdb-dddamng-002'
+  }
+  {
+    autoscaleMaxThroughput: 1000
+    collections: [
+      {
+        autoscaleMaxThroughput: 1000
+        indexes: [
+          {
+            keys: [
+              '_id'
+            ]
+          }
+          {
+            keys: [
+              '$**'
+            ]
+          }
+          {
+            keys: [
+              'wheel_id'
+              'wheel_model'
+            ]
+            unique: true
+          }
+          {
+            keys: [
+              '_ts'
+            ]
+            ttl: 2629746
+          }
+        ]
+        name: 'wheel_collection'
+        shardKeys: [
+          {
+            field: 'wheel_id'
+            type: 'Hash'
+          }
+        ]
+      }
+    ]
+    name: 'mdb-dddamng-003'
   }
 ]
 param zoneRedundant = false
@@ -3645,6 +3666,175 @@ Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-mongodbdatabasesname) | string | The name of the database. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleMaxThroughput`](#parameter-mongodbdatabasesautoscalemaxthroughput) | int | The maximum throughput for the database when using autoscale. |
+| [`collections`](#parameter-mongodbdatabasescollections) | array | The set of collections within the database. |
+| [`manualThroughput`](#parameter-mongodbdatabasesmanualthroughput) | int | The provisioned throughput assigned to the database. |
+| [`tags`](#parameter-mongodbdatabasestags) | object | Tags of the resource. |
+
+### Parameter: `mongodbDatabases.name`
+
+The name of the database.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mongodbDatabases.autoscaleMaxThroughput`
+
+The maximum throughput for the database when using autoscale.
+
+- Required: No
+- Type: int
+
+### Parameter: `mongodbDatabases.collections`
+
+The set of collections within the database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-mongodbdatabasescollectionsname) | string | The name of the collection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleMaxThroughput`](#parameter-mongodbdatabasescollectionsautoscalemaxthroughput) | int | The maximum throughput for the collection when using autoscale. |
+| [`indexes`](#parameter-mongodbdatabasescollectionsindexes) | array | The indexes to create for the collection. |
+| [`manualThroughput`](#parameter-mongodbdatabasescollectionsmanualthroughput) | int | The provisioned standard throughput assigned to the collection. |
+| [`shardKeys`](#parameter-mongodbdatabasescollectionsshardkeys) | array | The set of shard keys to use for the collection. |
+| [`tags`](#parameter-mongodbdatabasescollectionstags) | object | Tags for the resource. |
+
+### Parameter: `mongodbDatabases.collections.name`
+
+The name of the collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mongodbDatabases.collections.autoscaleMaxThroughput`
+
+The maximum throughput for the collection when using autoscale.
+
+- Required: No
+- Type: int
+
+### Parameter: `mongodbDatabases.collections.indexes`
+
+The indexes to create for the collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keys`](#parameter-mongodbdatabasescollectionsindexeskeys) | array | The fields to use for the index. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ttl`](#parameter-mongodbdatabasescollectionsindexesttl) | int | The time-to-live (TTL) for documents in the index, in seconds. |
+| [`unique`](#parameter-mongodbdatabasescollectionsindexesunique) | bool | Indicator for whether the index is unique. |
+
+### Parameter: `mongodbDatabases.collections.indexes.keys`
+
+The fields to use for the index.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `mongodbDatabases.collections.indexes.ttl`
+
+The time-to-live (TTL) for documents in the index, in seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `mongodbDatabases.collections.indexes.unique`
+
+Indicator for whether the index is unique.
+
+- Required: No
+- Type: bool
+
+### Parameter: `mongodbDatabases.collections.manualThroughput`
+
+The provisioned standard throughput assigned to the collection.
+
+- Required: No
+- Type: int
+
+### Parameter: `mongodbDatabases.collections.shardKeys`
+
+The set of shard keys to use for the collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`field`](#parameter-mongodbdatabasescollectionsshardkeysfield) | string | The field to use for the shard key. |
+| [`type`](#parameter-mongodbdatabasescollectionsshardkeystype) | string | The type of the shard key. Defaults to "Hash". Note that "Hash" is the only supported type at this time. |
+
+### Parameter: `mongodbDatabases.collections.shardKeys.field`
+
+The field to use for the shard key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mongodbDatabases.collections.shardKeys.type`
+
+The type of the shard key. Defaults to "Hash". Note that "Hash" is the only supported type at this time.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+  ]
+  ```
+
+### Parameter: `mongodbDatabases.collections.tags`
+
+Tags for the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `mongodbDatabases.manualThroughput`
+
+The provisioned throughput assigned to the database.
+
+- Required: No
+- Type: int
+
+### Parameter: `mongodbDatabases.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `networkRestrictions`
 
