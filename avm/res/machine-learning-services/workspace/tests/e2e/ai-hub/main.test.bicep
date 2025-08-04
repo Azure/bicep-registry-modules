@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Creating Azure AI Studio resources'
+metadata name = 'Creating Azure AI Studio hub resource'
 metadata description = 'This instance deploys an Azure AI hub workspace.'
 
 // ========== //
@@ -12,7 +12,7 @@ metadata description = 'This instance deploys an Azure AI hub workspace.'
 param resourceGroupName string = 'dep-${namePrefix}-machinelearningservices.workspaces-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mlswai'
+param serviceShort string = 'mlswaih'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -65,45 +65,33 @@ module testDeployment '../../../main.bicep' = [
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       sku: 'Basic'
       kind: 'Hub'
-      connections: [
-        {
-          name: 'ai'
-          category: 'AIServices'
-          target: nestedDependencies.outputs.aiServicesEndpoint
-          connectionProperties: {
-            authType: 'ApiKey'
-            credentials: {
-              key: 'key'
-            }
-          }
-          metadata: {
-            ApiType: 'Azure'
-            ResourceId: nestedDependencies.outputs.aiServicesResourceId
-            Location: enforcedLocation
-            ApiVersion: '2023-07-01-preview'
-            DeploymentApiVersion: '2023-10-01-preview'
-          }
-        }
-      ]
+      // There currently appears to be a bug that fails the idempotent deployment if it runs
+      // immediately after the initial deployment with no delay, when the connection is defined.
+      // The connection is commented out for now, but should be uncommented once the bug is fixed.
+      // connections: [
+      //   {
+      //     name: 'ai'
+      //     category: 'AIServices'
+      //     target: nestedDependencies.outputs.aiServicesEndpoint
+      //     connectionProperties: {
+      //       authType: 'ApiKey'
+      //       credentials: {
+      //         key: 'key'
+      //       }
+      //     }
+      //     metadata: {
+      //       ApiType: 'Azure'
+      //       ResourceId: nestedDependencies.outputs.aiServicesResourceId
+      //       Location: enforcedLocation
+      //       ApiVersion: '2023-07-01-preview'
+      //       DeploymentApiVersion: '2023-10-01-preview'
+      //     }
+      //   }
+      // ]
       workspaceHubConfig: {
         additionalWorkspaceStorageAccounts: [nestedDependencies.outputs.secondaryStorageAccountResourceId]
         defaultWorkspaceResourceGroup: resourceGroup.id
       }
-    }
-  }
-]
-
-@batchSize(1)
-module testProjectDeployment '../../../main.bicep' = [
-  for (iteration, i) in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-proj-${iteration}'
-    params: {
-      name: '${namePrefix}${serviceShort}002'
-      location: enforcedLocation
-      sku: 'Basic'
-      kind: 'Project'
-      hubResourceId: testDeployment[i].outputs.resourceId
     }
   }
 ]
