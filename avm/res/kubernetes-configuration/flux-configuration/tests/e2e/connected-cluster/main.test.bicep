@@ -21,7 +21,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module aks 'aks.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
-      clusterName: '${namePrefix}${serviceShort}01'
+      clusterName: nestedDependencies.outputs.clusterName
       clusterType: 'connectedCluster'
       namespace: 'flux-system'
       scope: 'cluster'
@@ -64,8 +64,5 @@ module testDeployment '../../../main.bicep' = [
         }
       }
     }
-    dependsOn: [
-      aks
-    ]
   }
 ]

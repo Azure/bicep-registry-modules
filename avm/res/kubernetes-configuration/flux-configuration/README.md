@@ -44,7 +44,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
   name: 'fluxConfigurationDeployment'
   params: {
     // Required parameters
-    clusterName: 'kcfccc01'
+    clusterName: '<clusterName>'
     kustomizations: {
       unified: {
         path: './cluster-manifests'
@@ -84,7 +84,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
   "parameters": {
     // Required parameters
     "clusterName": {
-      "value": "kcfccc01"
+      "value": "<clusterName>"
     },
     "kustomizations": {
       "value": {
@@ -138,7 +138,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 using 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>'
 
 // Required parameters
-param clusterName = 'kcfccc01'
+param clusterName = '<clusterName>'
 param kustomizations = {
   unified: {
     path: './cluster-manifests'
