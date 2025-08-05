@@ -57,27 +57,27 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
-      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
+      privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
         createCapabilityHosts: true
         networking: {
-          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
-          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
+          agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneResourceId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneResourceId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
       }
       storageAccountConfiguration: {
-        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
+        blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
       }
       aiSearchConfiguration: {
-        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
       }
       keyVaultConfiguration: {
-        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
       }
       cosmosDbConfiguration: {
-        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
       }
       aiModelDeployments: [
         {

@@ -480,10 +480,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       createCapabilityHosts: true
       location: '<location>'
       networking: {
-        agentServiceSubnetId: '<agentServiceSubnetId>'
-        aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
-        cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
-        openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+        agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
+        aiServicesPrivateDnsZoneResourceId: '<aiServicesPrivateDnsZoneResourceId>'
+        cognitiveServicesPrivateDnsZoneResourceId: '<cognitiveServicesPrivateDnsZoneResourceId>'
+        openAiPrivateDnsZoneResourceId: '<openAiPrivateDnsZoneResourceId>'
       }
       project: {
         desc: 'This is a custom project for testing.'
@@ -514,7 +514,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     ]
     aiSearchConfiguration: {
       name: '<name>'
-      privateDnsZoneId: '<privateDnsZoneId>'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -526,7 +526,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     baseUniqueName: '<baseUniqueName>'
     cosmosDbConfiguration: {
       name: '<name>'
-      privateDnsZoneId: '<privateDnsZoneId>'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -538,7 +538,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     includeAssociatedResources: true
     keyVaultConfiguration: {
       name: '<name>'
-      privateDnsZoneId: '<privateDnsZoneId>'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -552,10 +552,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       kind: 'CanNotDelete'
       name: '<name>'
     }
-    privateEndpointSubnetId: '<privateEndpointSubnetId>'
+    privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
     sku: 'S0'
     storageAccountConfiguration: {
-      blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+      blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
       containerName: 'my-foundry-proj-data'
       name: '<name>'
       roleAssignments: [
@@ -599,10 +599,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         "createCapabilityHosts": true,
         "location": "<location>",
         "networking": {
-          "agentServiceSubnetId": "<agentServiceSubnetId>",
-          "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
-          "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
-          "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>"
+          "agentServiceSubnetResourceId": "<agentServiceSubnetResourceId>",
+          "aiServicesPrivateDnsZoneResourceId": "<aiServicesPrivateDnsZoneResourceId>",
+          "cognitiveServicesPrivateDnsZoneResourceId": "<cognitiveServicesPrivateDnsZoneResourceId>",
+          "openAiPrivateDnsZoneResourceId": "<openAiPrivateDnsZoneResourceId>"
         },
         "project": {
           "desc": "This is a custom project for testing.",
@@ -637,7 +637,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "aiSearchConfiguration": {
       "value": {
         "name": "<name>",
-        "privateDnsZoneId": "<privateDnsZoneId>",
+        "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
         "roleAssignments": [
           {
             "principalId": "<principalId>",
@@ -653,7 +653,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "cosmosDbConfiguration": {
       "value": {
         "name": "<name>",
-        "privateDnsZoneId": "<privateDnsZoneId>",
+        "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
         "roleAssignments": [
           {
             "principalId": "<principalId>",
@@ -669,7 +669,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "keyVaultConfiguration": {
       "value": {
         "name": "<name>",
-        "privateDnsZoneId": "<privateDnsZoneId>",
+        "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
         "roleAssignments": [
           {
             "principalId": "<principalId>",
@@ -688,15 +688,15 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         "name": "<name>"
       }
     },
-    "privateEndpointSubnetId": {
-      "value": "<privateEndpointSubnetId>"
+    "privateEndpointSubnetResourceId": {
+      "value": "<privateEndpointSubnetResourceId>"
     },
     "sku": {
       "value": "S0"
     },
     "storageAccountConfiguration": {
       "value": {
-        "blobPrivateDnsZoneId": "<blobPrivateDnsZoneId>",
+        "blobPrivateDnsZoneResourceId": "<blobPrivateDnsZoneResourceId>",
         "containerName": "my-foundry-proj-data",
         "name": "<name>",
         "roleAssignments": [
@@ -738,10 +738,10 @@ param aiFoundryConfiguration = {
   createCapabilityHosts: true
   location: '<location>'
   networking: {
-    agentServiceSubnetId: '<agentServiceSubnetId>'
-    aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
-    cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
-    openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+    agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
+    aiServicesPrivateDnsZoneResourceId: '<aiServicesPrivateDnsZoneResourceId>'
+    cognitiveServicesPrivateDnsZoneResourceId: '<cognitiveServicesPrivateDnsZoneResourceId>'
+    openAiPrivateDnsZoneResourceId: '<openAiPrivateDnsZoneResourceId>'
   }
   project: {
     desc: 'This is a custom project for testing.'
@@ -772,7 +772,7 @@ param aiModelDeployments = [
 ]
 param aiSearchConfiguration = {
   name: '<name>'
-  privateDnsZoneId: '<privateDnsZoneId>'
+  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -784,7 +784,7 @@ param aiSearchConfiguration = {
 param baseUniqueName = '<baseUniqueName>'
 param cosmosDbConfiguration = {
   name: '<name>'
-  privateDnsZoneId: '<privateDnsZoneId>'
+  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -796,7 +796,7 @@ param cosmosDbConfiguration = {
 param includeAssociatedResources = true
 param keyVaultConfiguration = {
   name: '<name>'
-  privateDnsZoneId: '<privateDnsZoneId>'
+  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -810,10 +810,10 @@ param lock = {
   kind: 'CanNotDelete'
   name: '<name>'
 }
-param privateEndpointSubnetId = '<privateEndpointSubnetId>'
+param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
 param sku = 'S0'
 param storageAccountConfiguration = {
-  blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+  blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
   containerName: 'my-foundry-proj-data'
   name: '<name>'
   roleAssignments: [
@@ -853,10 +853,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryConfiguration: {
       createCapabilityHosts: true
       networking: {
-        agentServiceSubnetId: '<agentServiceSubnetId>'
-        aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
-        cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
-        openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+        agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
+        aiServicesPrivateDnsZoneResourceId: '<aiServicesPrivateDnsZoneResourceId>'
+        cognitiveServicesPrivateDnsZoneResourceId: '<cognitiveServicesPrivateDnsZoneResourceId>'
+        openAiPrivateDnsZoneResourceId: '<openAiPrivateDnsZoneResourceId>'
       }
     }
     aiModelDeployments: [
@@ -874,18 +874,18 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       }
     ]
     aiSearchConfiguration: {
-      privateDnsZoneId: '<privateDnsZoneId>'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
     cosmosDbConfiguration: {
-      privateDnsZoneId: '<privateDnsZoneId>'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
     includeAssociatedResources: true
     keyVaultConfiguration: {
-      privateDnsZoneId: '<privateDnsZoneId>'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
-    privateEndpointSubnetId: '<privateEndpointSubnetId>'
+    privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
     storageAccountConfiguration: {
-      blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+      blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
     }
   }
 }
@@ -912,10 +912,10 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "createCapabilityHosts": true,
         "networking": {
-          "agentServiceSubnetId": "<agentServiceSubnetId>",
-          "aiServicesPrivateDnsZoneId": "<aiServicesPrivateDnsZoneId>",
-          "cognitiveServicesPrivateDnsZoneId": "<cognitiveServicesPrivateDnsZoneId>",
-          "openAiPrivateDnsZoneId": "<openAiPrivateDnsZoneId>"
+          "agentServiceSubnetResourceId": "<agentServiceSubnetResourceId>",
+          "aiServicesPrivateDnsZoneResourceId": "<aiServicesPrivateDnsZoneResourceId>",
+          "cognitiveServicesPrivateDnsZoneResourceId": "<cognitiveServicesPrivateDnsZoneResourceId>",
+          "openAiPrivateDnsZoneResourceId": "<openAiPrivateDnsZoneResourceId>"
         }
       }
     },
@@ -937,12 +937,12 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "aiSearchConfiguration": {
       "value": {
-        "privateDnsZoneId": "<privateDnsZoneId>"
+        "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
       }
     },
     "cosmosDbConfiguration": {
       "value": {
-        "privateDnsZoneId": "<privateDnsZoneId>"
+        "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
       }
     },
     "includeAssociatedResources": {
@@ -950,15 +950,15 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "keyVaultConfiguration": {
       "value": {
-        "privateDnsZoneId": "<privateDnsZoneId>"
+        "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
       }
     },
-    "privateEndpointSubnetId": {
-      "value": "<privateEndpointSubnetId>"
+    "privateEndpointSubnetResourceId": {
+      "value": "<privateEndpointSubnetResourceId>"
     },
     "storageAccountConfiguration": {
       "value": {
-        "blobPrivateDnsZoneId": "<blobPrivateDnsZoneId>"
+        "blobPrivateDnsZoneResourceId": "<blobPrivateDnsZoneResourceId>"
       }
     }
   }
@@ -981,10 +981,10 @@ param baseName = '<baseName>'
 param aiFoundryConfiguration = {
   createCapabilityHosts: true
   networking: {
-    agentServiceSubnetId: '<agentServiceSubnetId>'
-    aiServicesPrivateDnsZoneId: '<aiServicesPrivateDnsZoneId>'
-    cognitiveServicesPrivateDnsZoneId: '<cognitiveServicesPrivateDnsZoneId>'
-    openAiPrivateDnsZoneId: '<openAiPrivateDnsZoneId>'
+    agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
+    aiServicesPrivateDnsZoneResourceId: '<aiServicesPrivateDnsZoneResourceId>'
+    cognitiveServicesPrivateDnsZoneResourceId: '<cognitiveServicesPrivateDnsZoneResourceId>'
+    openAiPrivateDnsZoneResourceId: '<openAiPrivateDnsZoneResourceId>'
   }
 }
 param aiModelDeployments = [
@@ -1002,18 +1002,18 @@ param aiModelDeployments = [
   }
 ]
 param aiSearchConfiguration = {
-  privateDnsZoneId: '<privateDnsZoneId>'
+  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
 param cosmosDbConfiguration = {
-  privateDnsZoneId: '<privateDnsZoneId>'
+  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
 param includeAssociatedResources = true
 param keyVaultConfiguration = {
-  privateDnsZoneId: '<privateDnsZoneId>'
+  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
-param privateEndpointSubnetId = '<privateEndpointSubnetId>'
+param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
 param storageAccountConfiguration = {
-  blobPrivateDnsZoneId: '<blobPrivateDnsZoneId>'
+  blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
 }
 ```
 
@@ -1042,7 +1042,7 @@ param storageAccountConfiguration = {
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Custom configuration for the Key Vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the AI resources. |
-| [`privateEndpointSubnetId`](#parameter-privateendpointsubnetid) | string | The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints. |
+| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints. |
 | [`sku`](#parameter-sku) | string | SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. |
@@ -1112,38 +1112,38 @@ Values to establish private networking for the AI Foundry account and project.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiServicesPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingaiservicesprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
-| [`cognitiveServicesPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
-| [`openAiPrivateDnsZoneId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneid) | string | The Resource ID of the Private DNS Zone for the OpenAI account. |
+| [`aiServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingaiservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
+| [`cognitiveServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
+| [`openAiPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the OpenAI account. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`agentServiceSubnetId`](#parameter-aifoundryconfigurationnetworkingagentservicesubnetid) | string | The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true. |
+| [`agentServiceSubnetResourceId`](#parameter-aifoundryconfigurationnetworkingagentservicesubnetresourceid) | string | The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true. |
 
-### Parameter: `aiFoundryConfiguration.networking.aiServicesPrivateDnsZoneId`
-
-The Resource ID of the Private DNS Zone for the Azure AI Services account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiFoundryConfiguration.networking.cognitiveServicesPrivateDnsZoneId`
+### Parameter: `aiFoundryConfiguration.networking.aiServicesPrivateDnsZoneResourceId`
 
 The Resource ID of the Private DNS Zone for the Azure AI Services account.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aiFoundryConfiguration.networking.openAiPrivateDnsZoneId`
+### Parameter: `aiFoundryConfiguration.networking.cognitiveServicesPrivateDnsZoneResourceId`
+
+The Resource ID of the Private DNS Zone for the Azure AI Services account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.openAiPrivateDnsZoneResourceId`
 
 The Resource ID of the Private DNS Zone for the OpenAI account.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aiFoundryConfiguration.networking.agentServiceSubnetId`
+### Parameter: `aiFoundryConfiguration.networking.agentServiceSubnetResourceId`
 
 The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true.
 
@@ -1433,7 +1433,7 @@ Custom configuration for the AI Search resource.
 | :-- | :-- | :-- |
 | [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
-| [`privateDnsZoneId`](#parameter-aisearchconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`privateDnsZoneResourceId`](#parameter-aisearchconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
 | [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
 ### Parameter: `aiSearchConfiguration.existingResourceId`
@@ -1450,9 +1450,9 @@ Name to be used when creating the resource. This is ignored if an existingResour
 - Required: No
 - Type: string
 
-### Parameter: `aiSearchConfiguration.privateDnsZoneId`
+### Parameter: `aiSearchConfiguration.privateDnsZoneResourceId`
 
-The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
 
 - Required: No
 - Type: string
@@ -1575,7 +1575,7 @@ Custom configuration for the Cosmos DB Account.
 | :-- | :-- | :-- |
 | [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
-| [`privateDnsZoneId`](#parameter-cosmosdbconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`privateDnsZoneResourceId`](#parameter-cosmosdbconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
 | [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
 ### Parameter: `cosmosDbConfiguration.existingResourceId`
@@ -1592,9 +1592,9 @@ Name to be used when creating the resource. This is ignored if an existingResour
 - Required: No
 - Type: string
 
-### Parameter: `cosmosDbConfiguration.privateDnsZoneId`
+### Parameter: `cosmosDbConfiguration.privateDnsZoneResourceId`
 
-The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
 
 - Required: No
 - Type: string
@@ -1725,7 +1725,7 @@ Custom configuration for the Key Vault.
 | :-- | :-- | :-- |
 | [`existingResourceId`](#parameter-keyvaultconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-keyvaultconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
-| [`privateDnsZoneId`](#parameter-keyvaultconfigurationprivatednszoneid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`privateDnsZoneResourceId`](#parameter-keyvaultconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
 | [`roleAssignments`](#parameter-keyvaultconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
 ### Parameter: `keyVaultConfiguration.existingResourceId`
@@ -1742,9 +1742,9 @@ Name to be used when creating the resource. This is ignored if an existingResour
 - Required: No
 - Type: string
 
-### Parameter: `keyVaultConfiguration.privateDnsZoneId`
+### Parameter: `keyVaultConfiguration.privateDnsZoneResourceId`
 
-The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
 
 - Required: No
 - Type: string
@@ -1898,7 +1898,7 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpointSubnetId`
+### Parameter: `privateEndpointSubnetResourceId`
 
 The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints.
 
@@ -1947,15 +1947,15 @@ Custom configuration for the Storage Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`blobPrivateDnsZoneId`](#parameter-storageaccountconfigurationblobprivatednszoneid) | string | The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided. |
+| [`blobPrivateDnsZoneResourceId`](#parameter-storageaccountconfigurationblobprivatednszoneresourceid) | string | The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
 | [`containerName`](#parameter-storageaccountconfigurationcontainername) | string | The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created. |
 | [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
-### Parameter: `storageAccountConfiguration.blobPrivateDnsZoneId`
+### Parameter: `storageAccountConfiguration.blobPrivateDnsZoneResourceId`
 
-The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided.
+The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
 
 - Required: No
 - Type: string

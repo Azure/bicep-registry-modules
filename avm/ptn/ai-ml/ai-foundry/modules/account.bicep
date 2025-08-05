@@ -30,8 +30,8 @@ param sku string = 'S0'
 @description('Required. Whether to allow project management in AI Foundry. This is required to enable the AI Foundry UI and project management features.')
 param allowProjectManagement bool
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
-param privateEndpointSubnetId string?
+@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceIds\' to establish private endpoints.')
+param privateEndpointSubnetResourceId string?
 
 @description('Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints.')
 param agentSubnetResourceId string?
@@ -65,7 +65,7 @@ var privateDnsZoneResourceIdValues = [
     privateDnsZoneResourceId: id
   }
 ]
-var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetId)
+var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetResourceId)
 
 module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.0' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
@@ -101,7 +101,7 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.0' = {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: privateDnsZoneResourceIdValues
             }
-            subnetResourceId: privateEndpointSubnetId!
+            subnetResourceId: privateEndpointSubnetResourceId!
           }
         ]
       : []

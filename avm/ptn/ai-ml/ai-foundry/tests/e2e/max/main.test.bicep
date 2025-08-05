@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = [
       baseUniqueName: substring(uniqueString(subscription().id, resourceGroup.name, serviceShort), 0, 5)
       location: enforcedLocation
       includeAssociatedResources: true
-      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
+      privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       sku: 'S0'
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
@@ -73,10 +73,10 @@ module testDeployment '../../../main.bicep' = [
         }
         allowProjectManagement: true
         networking: {
-          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
-          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
+          agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneResourceId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneResourceId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
         roleAssignments: [
           {
@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
       }
       keyVaultConfiguration: {
         name: 'kvcustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -100,7 +100,7 @@ module testDeployment '../../../main.bicep' = [
       storageAccountConfiguration: {
         name: 'stcustom${workloadName}'
         containerName: 'my-foundry-proj-data'
-        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
+        blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -111,7 +111,7 @@ module testDeployment '../../../main.bicep' = [
       }
       cosmosDbConfiguration: {
         name: 'cosmoscustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -122,7 +122,7 @@ module testDeployment '../../../main.bicep' = [
       }
       aiSearchConfiguration: {
         name: 'srchcustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
