@@ -5,7 +5,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-kubernetesconfiguration.fluxconfigurations-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-kc.fluxconfigurations-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -27,7 +27,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     clusterName: '${namePrefix}${serviceShort}01'
     clusterExtensionName: '${namePrefix}${serviceShort}001'
-    clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
     location: resourceLocation
   }
 }

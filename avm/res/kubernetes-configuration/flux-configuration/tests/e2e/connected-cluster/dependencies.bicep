@@ -7,19 +7,20 @@ param clusterName string
 @description('Required. The name of the AKS cluster extension to create.')
 param clusterExtensionName string
 
-@description('Required. The name of the AKS cluster nodes resource group to create.')
-param clusterNodeResourceGroupName string
-
-resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
-  name: clusterName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    dnsPrefix: clusterName
-    nodeResourceGroup: clusterNodeResourceGroupName
-    agentPoolProfiles: [
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.0' = {
+  name: '${uniqueString(deployment().name, location)}-managedCluster'
+  scope: resourceGroup()
+  params: {
+    name: clusterName
+    kubernetesVersion: '1.32.6'
+    publicNetworkAccess: 'Enabled'
+    azurePolicyEnabled: false
+    disableLocalAccounts: false
+    managedIdentities: {
+      systemAssigned: true
+    }
+    aadProfile: null
+    primaryAgentPoolProfiles: [
       {
         name: 'agentpool'
         count: 1
@@ -27,58 +28,65 @@ resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
         osType: 'Linux'
         mode: 'System'
         availabilityZones: [
-          '1'
+          1
         ]
       }
     ]
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: 'temp-${clusterName}'
-  location: location
-}
-
-resource aksContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, managedIdentity.id, 'Azure Kubernetes Service Contributor Role')
-  scope: cluster
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8'
-    ) // Azure Kubernetes Service Contributor Role
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource arcContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, managedIdentity.id, 'Kubernetes Cluster - Azure Arc Onboarding Role')
+module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   scope: resourceGroup()
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '34e09817-6cbe-4d01-b1a2-e0eac5743d41'
-    ) // Kubernetes Cluster - Azure Arc Onboarding Role
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
+  name: 'mi-${clusterName}'
+  params: {
+    location: location
+    name: 'mi-${clusterName}'
   }
 }
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: '${clusterName}-connect-script'
-  location: location
-  kind: 'AzureCLI'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
+module roleAssignment 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+  scope: resourceGroup()
+  name: 'roleAssignment-${clusterName}'
+  params: {
+    location: location
+    name: 'roleAssignment-${clusterName}'
+    roleAssignments: [
+      {
+        principalId: createManagedIdentityForDeploymentScript.outputs.principalId
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8'
+        ) // Azure Kubernetes Service Contributor Role
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: createManagedIdentityForDeploymentScript.outputs.principalId
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          '34e09817-6cbe-4d01-b1a2-e0eac5743d41'
+        ) // Kubernetes Cluster - Azure Arc Onboarding Role
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
-  properties: {
+}
+
+module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: '${clusterName}-connect-aks-script'
+  params: {
+    name: '${clusterName}-connect-aks-script'
+    kind: 'AzureCLI'
     azCliVersion: '2.50.0'
-    timeout: 'PT60M'
+    cleanupPreference: 'Always'
+    location: location
     retentionInterval: 'P1D'
+    timeout: 'PT1H'
+    runOnce: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        createManagedIdentityForDeploymentScript.outputs.resourceId
+      ]
+    }
     environmentVariables: [
       {
         name: 'SUBSCRIPTION_ID'
@@ -100,14 +108,16 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       # Get AKS credentials
       az aks get-credentials --resource-group "$RESOURCE_GROUP_NAME" --name "$CLUSTER_NAME" --overwrite-existing
 
+      # Use kubelogin plugin for authentication
+      kubelogin convert-kubeconfig -l azurecli
+
       # Connect cluster to Azure Arc
       az connectedk8s connect --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME"
     '''
   }
   dependsOn: [
-    cluster
-    aksContributorRoleAssignment
-    arcContributorRoleAssignment
+    managedCluster
+    roleAssignment
   ]
 }
 
