@@ -79,17 +79,30 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     azCliVersion: '2.50.0'
     timeout: 'PT60M'
     retentionInterval: 'P1D'
+    environmentVariables: [
+      {
+        name: 'SUBSCRIPTION_ID'
+        value: subscription().subscriptionId
+      }
+      {
+        name: 'RESOURCE_GROUP_NAME'
+        value: resourceGroup().name
+      }
+      {
+        name: 'CLUSTER_NAME'
+        value: clusterName
+      }
+    ]
     scriptContent: '''
       # Set subscription
-      az account set --subscription ${subscriptionId}
+      az account set --subscription "$SUBSCRIPTION_ID"
 
       # Get AKS credentials
-      az aks get-credentials --resource-group ${resourceGroupName} --name ${clusterName} --overwrite-existing
+      az aks get-credentials --resource-group "$RESOURCE_GROUP_NAME" --name "$CLUSTER_NAME" --overwrite-existing
 
       # Connect cluster to Azure Arc
-      az connectedk8s connect --name ${clusterName} --resource-group ${resourceGroupName}
+      az connectedk8s connect --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME"
     '''
-    arguments: '-subscriptionId "${subscription().id}" -resourceGroupName "${resourceGroup().name}" -clusterName "${clusterName}"'
   }
   dependsOn: [
     cluster
