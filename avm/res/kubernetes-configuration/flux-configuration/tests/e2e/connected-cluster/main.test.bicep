@@ -27,7 +27,8 @@ module aks 'aks.bicep' = {
   params: {
     clusterName: '${namePrefix}${serviceShort}01'
     clusterExtensionName: '${namePrefix}${serviceShort}001'
-    clusterNodeResourceGroupName: resourceGroupName
+    clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
+    location: enforcedLocation
   }
 }
 
