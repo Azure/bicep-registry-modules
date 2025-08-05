@@ -17,20 +17,21 @@ This module deploys an Azure Automation Account.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automation/automationAccounts` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts) |
+| `Microsoft.Automation/automationAccounts` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts) |
 | `Microsoft.Automation/automationAccounts/credentials` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials) |
-| `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
-| `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
+| `Microsoft.Automation/automationAccounts/jobSchedules` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/jobSchedules) |
+| `Microsoft.Automation/automationAccounts/modules` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/modules) |
 | `Microsoft.Automation/automationAccounts/powerShell72Modules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules) |
 | `Microsoft.Automation/automationAccounts/python2Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages) |
 | `Microsoft.Automation/automationAccounts/python3Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages) |
 | `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
-| `Microsoft.Automation/automationAccounts/schedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/schedules) |
-| `Microsoft.Automation/automationAccounts/variables` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/variables) |
+| `Microsoft.Automation/automationAccounts/schedules` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules) |
+| `Microsoft.Automation/automationAccounts/variables` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables) |
+| `Microsoft.Automation/automationAccounts/webhooks` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 
 ## Usage examples
@@ -407,6 +408,17 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         value: '\'TestEncryptedValue\''
       }
     ]
+    webhooks: [
+      {
+        expiryTime: '9999-12-31T13:00'
+        name: 'TestWebhook'
+        parameters: {
+          param1: 'value1'
+          param2: 'value2'
+        }
+        runbookName: 'TestRunbook'
+      }
+    ]
   }
 }
 ```
@@ -664,6 +676,19 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           "value": "\"TestEncryptedValue\""
         }
       ]
+    },
+    "webhooks": {
+      "value": [
+        {
+          "expiryTime": "9999-12-31T13:00",
+          "name": "TestWebhook",
+          "parameters": {
+            "param1": "value1",
+            "param2": "value2"
+          },
+          "runbookName": "TestRunbook"
+        }
+      ]
     }
   }
 }
@@ -879,6 +904,17 @@ param variables = [
     description: 'TestEncryptedDescription'
     name: 'TestEncryptedVariable'
     value: '\'TestEncryptedValue\''
+  }
+]
+param webhooks = [
+  {
+    expiryTime: '9999-12-31T13:00'
+    name: 'TestWebhook'
+    parameters: {
+      param1: 'value1'
+      param2: 'value2'
+    }
+    runbookName: 'TestRunbook'
   }
 ]
 ```
@@ -1387,6 +1423,7 @@ param variables = [
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
 | [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. |
+| [`webhooks`](#parameter-webhooks) | array | List of webhooks to be created in the automation account. |
 
 ### Parameter: `name`
 
@@ -2548,6 +2585,14 @@ List of variables to be created in the automation account.
 - Type: array
 - Default: `[]`
 
+### Parameter: `webhooks`
+
+List of webhooks to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ## Outputs
 
 | Output | Type | Description |
@@ -2565,7 +2610,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
