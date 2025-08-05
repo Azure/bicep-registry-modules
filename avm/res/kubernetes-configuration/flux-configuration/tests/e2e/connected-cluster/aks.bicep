@@ -34,12 +34,46 @@ resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
   }
 }
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'temp-${clusterName}'
+  location: location
+}
+
+resource aksContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, managedIdentity.id, 'Azure Kubernetes Service Contributor Role')
+  scope: cluster
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8'
+    ) // Azure Kubernetes Service Contributor Role
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource arcContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, managedIdentity.id, 'Kubernetes Cluster - Azure Arc Onboarding Role')
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '34e09817-6cbe-4d01-b1a2-e0eac5743d41'
+    ) // Kubernetes Cluster - Azure Arc Onboarding Role
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: '${clusterName}-connect-script'
   location: location
   kind: 'AzureCLI'
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
   properties: {
     azCliVersion: '2.50.0'
@@ -59,6 +93,8 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   dependsOn: [
     cluster
+    aksContributorRoleAssignment
+    arcContributorRoleAssignment
   ]
 }
 
