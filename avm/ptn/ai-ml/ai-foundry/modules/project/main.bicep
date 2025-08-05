@@ -117,6 +117,11 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
 
   resource capabilityHost 'capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
     name: '${name}-cap-host'
+    dependsOn: [
+      storageConnection
+      searchConnection
+      cosmosConnection
+    ]
     properties: {
       capabilityHostKind: 'Agents'
       vectorStoreConnections: ['${aiSearch.name}']

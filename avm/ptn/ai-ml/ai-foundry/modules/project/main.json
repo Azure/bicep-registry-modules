@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14411275675618163081"
+      "templateHash": "3591638498304357131"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -290,7 +290,10 @@
         "tags": "[parameters('tags')]"
       },
       "dependsOn": [
-        "project"
+        "project",
+        "project::cosmosConnection",
+        "project::searchConnection",
+        "project::storageConnection"
       ]
     },
     "foundryAccount": {
