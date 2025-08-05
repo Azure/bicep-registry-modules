@@ -51,9 +51,6 @@ param aiModelDeployments deploymentType[] = []
 @description('Optional. List of private DNS zone resource IDs to use for the AI Foundry resource. This is required when using private endpoints.')
 param privateDnsZoneResourceIds string[]?
 
-@description('Required. Where to create the capability host for the Foundry Account.')
-param createCapabilityHost bool
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -107,20 +104,6 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.0' = {
       : []
     enableTelemetry: enableTelemetry
     roleAssignments: roleAssignments
-  }
-}
-
-resource accountReference 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
-  name: name
-  dependsOn: [foundryAccount]
-}
-
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: '${name}-cap-host'
-  parent: accountReference
-  properties: {
-    capabilityHostKind: 'Agents'
-    tags: tags
   }
 }
 

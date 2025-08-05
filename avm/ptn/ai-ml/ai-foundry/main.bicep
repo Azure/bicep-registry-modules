@@ -113,7 +113,6 @@ module foundryAccount 'modules/account.bicep' = {
     sku: sku
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     aiModelDeployments: aiModelDeployments
-    createCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     agentSubnetResourceId: aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId
     privateDnsZoneResourceIds: !empty(privateEndpointSubnetResourceId) && !empty(aiFoundryConfiguration.?networking)

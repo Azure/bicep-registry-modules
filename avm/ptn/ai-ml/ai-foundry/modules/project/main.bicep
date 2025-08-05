@@ -70,77 +70,31 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
     description: !empty(desc) ? desc : name
   }
   tags: tags
+}
 
-  resource storageConnection 'connections@2025-06-01' = if (!empty(storageAccountConnection)) {
-    name: storageAccount.name
-    properties: {
-      category: 'AzureBlob'
-      target: storageAccount!.properties.primaryEndpoints.blob
-      authType: 'AAD'
-      metadata: {
-        ApiType: 'Azure'
-        ResourceId: storageAccount.id
-        location: storageAccount!.location
-        AccountName: storageAccount!.name
-        ContainerName: storageAccountConnection!.containerName
-      }
-    }
-  }
-
-  resource searchConnection 'connections@2025-06-01' = if (!empty(aiSearchConnection)) {
-    name: aiSearch.name
-    properties: {
-      category: 'CognitiveSearch'
-      target: 'https://${aiSearch!.name}.search.windows.net/'
-      authType: 'AAD'
-      metadata: {
-        ApiType: 'Azure'
-        ResourceId: aiSearch!.id
-        location: aiSearch!.location
-      }
-    }
-  }
-
-  resource cosmosConnection 'connections@2025-06-01' = if (!empty(cosmosDbConnection)) {
-    name: cosmosDb.name
-    properties: {
-      category: 'CosmosDB'
-      target: cosmosDb!.properties.documentEndpoint
-      authType: 'AAD'
-      metadata: {
-        ApiType: 'Azure'
-        ResourceId: cosmosDb!.id
-        location: cosmosDb!.location
-      }
-    }
-  }
-
-  resource capabilityHost 'capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
-    name: '${name}-cap-host'
-    dependsOn: [
-      storageConnection
-      searchConnection
-      cosmosConnection
-    ]
-    properties: {
-      capabilityHostKind: 'Agents'
-      vectorStoreConnections: ['${aiSearch.name}']
-      storageConnections: ['${storageAccount.name}']
-      threadStorageConnections: ['${cosmosDb.name}']
-      tags: tags
-    }
+module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
+  name: take('module.project.role-assign.cosmosDb.${name}', 64)
+  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
+  params: {
+    cosmosDbName: cosmosDb.name
+    projectIdentityPrincipalId: project.identity.principalId
   }
 }
 
-resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
+resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(cosmosDbConnection)) {
+  name: cosmosDb.name
+  parent: project
+  dependsOn: [cosmosDbRoleAssignments]
   properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
-      ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+    category: 'CosmosDB'
+    target: cosmosDb!.properties.documentEndpoint
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: cosmosDb!.id
+      location: cosmosDb!.location
+    }
   }
-  scope: project
 }
 
 module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
@@ -149,7 +103,24 @@ module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = i
   params: {
     storageAccountName: storageAccount.name
     projectIdentityPrincipalId: project.identity.principalId
-    containerName: storageAccountConnection!.containerName
+  }
+}
+
+resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(storageAccountConnection)) {
+  name: storageAccount.name
+  parent: project
+  dependsOn: [storageAccountRoleAssignments, cosmosDbConnectionResource]
+  properties: {
+    category: 'AzureBlob'
+    target: storageAccount!.properties.primaryEndpoints.blob
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: storageAccount.id
+      location: storageAccount!.location
+      AccountName: storageAccount!.name
+      ContainerName: storageAccountConnection!.containerName
+    }
   }
 }
 
@@ -162,6 +133,55 @@ module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(ai
   }
 }
 
+resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(aiSearchConnection)) {
+  name: aiSearch.name
+  parent: project
+  dependsOn: [
+    aiSearchRoleAssignments
+    storageAccountConnectionResource
+    cosmosDbConnectionResource
+  ]
+  properties: {
+    category: 'CognitiveSearch'
+    target: 'https://${aiSearch!.name}.search.windows.net/'
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: aiSearch!.id
+      location: aiSearch!.location
+    }
+  }
+}
+
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
+  name: '${name}-cap-host'
+  parent: project
+  dependsOn: [
+    storageAccountConnectionResource
+    aiSearchConnectionResource
+    cosmosDbConnectionResource
+  ]
+  properties: {
+    capabilityHostKind: 'Agents'
+    vectorStoreConnections: ['${aiSearch.name}']
+    storageConnections: ['${storageAccount.name}']
+    threadStorageConnections: ['${cosmosDb.name}']
+    tags: tags
+  }
+}
+
+resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: project
+  dependsOn: [capabilityHost]
+}
+
 #disable-next-line BCP053
 var internalId = project.properties.internalId
 var workspacePart1 = length(internalId) >= 8 ? substring(internalId, 0, 8) : ''
@@ -172,14 +192,26 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
-module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
-  name: take('module.project.role-assign.cosmosDb.${name}', 64)
+module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection)) {
+  name: take('module.project.role-assign.cosmosDbDataPlane.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
+  dependsOn: [capabilityHost, cosmosDbRoleAssignments]
   params: {
     cosmosDbName: cosmosDb.name
     projectIdentityPrincipalId: project.identity.principalId
     projectWorkspaceId: projectWorkspaceId
-    includeSqlRoleAssignments: createCapabilityHostResource
+  }
+}
+
+module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection)) {
+  name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+  dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]
+  params: {
+    storageAccountName: storageAccount.name
+    projectIdentityPrincipalId: project.identity.principalId
+    containerName: storageAccountConnection!.containerName
+    projectWorkspaceId: projectWorkspaceId
   }
 }
 
