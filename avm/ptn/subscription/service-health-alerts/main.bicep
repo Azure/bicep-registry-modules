@@ -208,11 +208,15 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
       name: alert.?serviceHealthAlert ?? serviceHealthAlertsMap[i].alertName
       conditions: filter(serviceHealthAlertsMap, alertMap => alertMap.serviceHealthAlert == alert.?serviceHealthAlert)[0].condition.allOf
       alertDescription: alert.?alertDescription ?? serviceHealthAlertsMap[i].serviceHealthAlert
-      actions: !empty(alert.?actionGroup)
+      actions: !empty(alert.?actionGroup) && empty(alert.?actionGroup.?existingActionGroupResourceId ?? '')
         ? [
             createActionGroups[i].?outputs.resourceId
           ]
-        : null
+        : !empty(alert.?actionGroup.?existingActionGroupResourceId ?? '')
+            ? [
+                alert.?actionGroup.?existingActionGroupResourceId
+              ]
+            : null
       enabled: alert.?isEnabled ?? true
       location: 'Global'
       tags: tags
