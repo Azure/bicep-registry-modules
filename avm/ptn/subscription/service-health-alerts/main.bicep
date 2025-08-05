@@ -210,7 +210,7 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
       alertDescription: alert.?alertDescription ?? serviceHealthAlertsMap[i].serviceHealthAlert
       actions: !empty(alert.?actionGroup)
         ? [
-            createActionGroups[i].outputs.resourceId
+            createActionGroups[i].?outputs.resourceId
           ]
         : null
       enabled: alert.?isEnabled ?? true
@@ -223,7 +223,7 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
 ]
 
 module createActionGroups 'br/public:avm/res/insights/action-group:0.7.0' = [
-  for alert in serviceHealthAlerts: if (!empty(alert.?actionGroup)) {
+  for alert in serviceHealthAlerts: if (!empty(alert.?actionGroup) && empty(alert.?actionGroup.?existingActionGroupResourceId ?? '')) {
     scope: resourceGroup(subscriptionId, serviceHealthAlertsResourceGroupName)
     dependsOn: [
       alertsResourceGroup
@@ -258,7 +258,7 @@ module createActionGroups 'br/public:avm/res/insights/action-group:0.7.0' = [
 @description('The resource IDs of the created alerts.')
 output alertsResourceIds array = [
   for (alert, i) in serviceHealthAlerts: {
-    alertResourceId: createServiceHealthAlerts[i].outputs.resourceId
+    alertResourceId: createServiceHealthAlerts[i].?outputs.resourceId
   }
 ]
 
@@ -266,7 +266,7 @@ output alertsResourceIds array = [
 output actionGroupResourceIds array = [
   for (actionGroup, i) in serviceHealthAlerts: (!empty(actionGroup.?actionGroup))
     ? {
-        actionGroupResourceId: createActionGroups[i].outputs.resourceId
+        actionGroupResourceId: createActionGroups[i].?outputs.resourceId
       }
     : null
 ]
@@ -299,10 +299,13 @@ type serviceHealthAlertType = {
 
 type actionGroupType = {
   @description('Required. The name of the action group.')
-  name: string
+  name: string?
 
   @description('Optional. The short name of the action group. Max length is 12 characters.')
   groupShortName: string?
+
+  @description('Optional. The resource Id of an existing action group.')
+  existingActionGroupResourceId: string?
 
   @description('Required. Flag to enable or disable the action group.')
   enabled: bool

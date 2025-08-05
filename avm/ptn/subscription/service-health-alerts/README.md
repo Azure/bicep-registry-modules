@@ -31,6 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Deploying multiple service health alerts.](#example-1-deploying-multiple-service-health-alerts)
 - [Using only defaults.](#example-2-using-only-defaults)
+- [Deploying multiple service health alerts with an existing action group.](#example-3-deploying-multiple-service-health-alerts-with-an-existing-action-group)
 
 ### Example 1: _Deploying multiple service health alerts._
 
@@ -65,9 +66,9 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
           enabled: true
           name: 'actionGroup-ashalt'
         }
-        alertDescription: 'Resource Health Unhealthy'
+        alertDescription: 'Service Health Incident'
         isEnabled: true
-        serviceHealthAlert: 'Resource Health Unhealthy'
+        serviceHealthAlert: 'Service Health Incident'
       }
     ]
     serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
@@ -113,9 +114,9 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
             "enabled": true,
             "name": "actionGroup-ashalt"
           },
-          "alertDescription": "Resource Health Unhealthy",
+          "alertDescription": "Service Health Incident",
           "isEnabled": true,
-          "serviceHealthAlert": "Resource Health Unhealthy"
+          "serviceHealthAlert": "Service Health Incident"
         }
       ]
     },
@@ -159,9 +160,9 @@ param serviceHealthAlerts = [
       enabled: true
       name: 'actionGroup-ashalt'
     }
-    alertDescription: 'Resource Health Unhealthy'
+    alertDescription: 'Service Health Incident'
     isEnabled: true
-    serviceHealthAlert: 'Resource Health Unhealthy'
+    serviceHealthAlert: 'Service Health Incident'
   }
 ]
 param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
@@ -232,6 +233,136 @@ using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
 param enableTelemetry = true
 param location = '<location>'
+param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
+### Example 3: _Deploying multiple service health alerts with an existing action group._
+
+This instance deploys the module with the maximum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
+  name: 'serviceHealthAlertsDeployment'
+  params: {
+    enableTelemetry: true
+    location: '<location>'
+    serviceHealthAlerts: [
+      {
+        actionGroup: {
+          enabled: true
+          existingActionGroupResourceId: '<existingActionGroupResourceId>'
+        }
+        alertDescription: 'Service Health Advisory'
+        isEnabled: true
+        serviceHealthAlert: 'Service Health Advisory'
+      }
+      {
+        actionGroup: {
+          enabled: true
+          existingActionGroupResourceId: '<existingActionGroupResourceId>'
+        }
+        alertDescription: 'Service Health Incident'
+        isEnabled: true
+        serviceHealthAlert: 'Service Health Incident'
+      }
+    ]
+    serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "serviceHealthAlerts": {
+      "value": [
+        {
+          "actionGroup": {
+            "enabled": true,
+            "existingActionGroupResourceId": "<existingActionGroupResourceId>"
+          },
+          "alertDescription": "Service Health Advisory",
+          "isEnabled": true,
+          "serviceHealthAlert": "Service Health Advisory"
+        },
+        {
+          "actionGroup": {
+            "enabled": true,
+            "existingActionGroupResourceId": "<existingActionGroupResourceId>"
+          },
+          "alertDescription": "Service Health Incident",
+          "isEnabled": true,
+          "serviceHealthAlert": "Service Health Incident"
+        }
+      ]
+    },
+    "serviceHealthAlertsResourceGroupName": {
+      "value": "<serviceHealthAlertsResourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
+
+param enableTelemetry = true
+param location = '<location>'
+param serviceHealthAlerts = [
+  {
+    actionGroup: {
+      enabled: true
+      existingActionGroupResourceId: '<existingActionGroupResourceId>'
+    }
+    alertDescription: 'Service Health Advisory'
+    isEnabled: true
+    serviceHealthAlert: 'Service Health Advisory'
+  }
+  {
+    actionGroup: {
+      enabled: true
+      existingActionGroupResourceId: '<existingActionGroupResourceId>'
+    }
+    alertDescription: 'Service Health Incident'
+    isEnabled: true
+    serviceHealthAlert: 'Service Health Incident'
+  }
+]
 param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
 param subscriptionId = '<subscriptionId>'
 ```
@@ -381,6 +512,7 @@ The action group to use for the alert.
 | [`azureFunctionReceivers`](#parameter-servicehealthalertsactiongroupazurefunctionreceivers) | array | The list of Azure function receivers for the action group. |
 | [`emailReceivers`](#parameter-servicehealthalertsactiongroupemailreceivers) | array | The list of email receivers for the action group. |
 | [`eventHubReceivers`](#parameter-servicehealthalertsactiongroupeventhubreceivers) | array | The list of event hub receivers for the action group. |
+| [`existingActionGroupResourceId`](#parameter-servicehealthalertsactiongroupexistingactiongroupresourceid) | string | The resource Id of an existing action group. |
 | [`groupShortName`](#parameter-servicehealthalertsactiongroupgroupshortname) | string | The short name of the action group. Max length is 12 characters. |
 | [`incidentReceivers`](#parameter-servicehealthalertsactiongroupincidentreceivers) | array | The list of incident receivers for the action group. |
 | [`itsmReceivers`](#parameter-servicehealthalertsactiongroupitsmreceivers) | array | The list of ITSM receivers for the action group. |
@@ -400,7 +532,7 @@ Flag to enable or disable the action group.
 
 The name of the action group.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.armRoleReceivers`
@@ -752,6 +884,13 @@ Flag to use common alert schema.
 
 - Required: No
 - Type: bool
+
+### Parameter: `serviceHealthAlerts.actionGroup.existingActionGroupResourceId`
+
+The resource Id of an existing action group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.groupShortName`
 
