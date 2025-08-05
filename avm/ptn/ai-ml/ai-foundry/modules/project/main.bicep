@@ -153,10 +153,21 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
   }
 }
 
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
+  name: '${accountName}-cap-host'
+  parent: foundryAccount
+  dependsOn: [project]
+  properties: {
+    capabilityHostKind: 'Agents'
+    tags: tags
+  }
+}
+
 resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
   name: '${name}-cap-host'
   parent: project
   dependsOn: [
+    accountCapabilityHost
     storageAccountConnectionResource
     aiSearchConnectionResource
     cosmosDbConnectionResource

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7826873416555937017"
+      "templateHash": "12300198246634280367"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20141,7 +20141,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "10803165924144623955"
+              "templateHash": "17674100148000039424"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20459,6 +20459,19 @@
                 "storageAccountConnectionResource"
               ]
             },
+            "accountCapabilityHost": {
+              "condition": "[variables('createCapabilityHostResource')]",
+              "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}', parameters('accountName'), format('{0}-cap-host', parameters('accountName')))]",
+              "properties": {
+                "capabilityHostKind": "Agents",
+                "tags": "[parameters('tags')]"
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
             "capabilityHost": {
               "condition": "[variables('createCapabilityHostResource')]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
@@ -20478,6 +20491,7 @@
                 "tags": "[parameters('tags')]"
               },
               "dependsOn": [
+                "accountCapabilityHost",
                 "aiSearchConnectionResource",
                 "cosmosDbConnectionResource",
                 "project",
