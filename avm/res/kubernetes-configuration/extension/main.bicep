@@ -13,6 +13,13 @@ param clusterName string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@allowed([
+  'managedCluster'
+  'connectedCluster'
+])
+@description('Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.')
+param clusterType string = 'managedCluster'
+
 @description('Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension.')
 @secure()
 param configurationProtectedSettings object?
@@ -59,45 +66,58 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = if (clusterType == 'managedCluster') {
   name: clusterName
 }
 
-resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
+// Arc-enabled Connected Cluster resource reference
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = if (clusterType == 'connectedCluster') {
+  name: clusterName
+}
+
+var extensionProperties = {
+  autoUpgradeMinorVersion: !empty(version) ? false : true
+  configurationProtectedSettings: configurationProtectedSettings
+  configurationSettings: configurationSettings
+  extensionType: extensionType
+  releaseTrain: releaseTrain
+  scope: {
+    cluster: !empty(releaseNamespace ?? '')
+      ? {
+          releaseNamespace: releaseNamespace
+        }
+      : null
+    namespace: !empty(targetNamespace ?? '')
+      ? {
+          targetNamespace: targetNamespace
+        }
+      : null
+  }
+  version: version
+}
+
+resource extensionManaged 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = if (clusterType == 'managedCluster') {
   name: name
   scope: managedCluster
-  properties: {
-    autoUpgradeMinorVersion: !empty(version) ? false : true
-    configurationProtectedSettings: configurationProtectedSettings
-    configurationSettings: configurationSettings
-    extensionType: extensionType
-    releaseTrain: releaseTrain
-    scope: {
-      cluster: !empty(releaseNamespace ?? '')
-        ? {
-            releaseNamespace: releaseNamespace
-          }
-        : null
-      namespace: !empty(targetNamespace ?? '')
-        ? {
-            targetNamespace: targetNamespace
-          }
-        : null
-    }
-    version: version
-  }
+  properties: extensionProperties
+}
+
+resource extensionConnected 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = if (clusterType == 'connectedCluster') {
+  name: name
+  scope: connectedCluster
+  properties: extensionProperties
 }
 
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1' = [
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
+    name: '${uniqueString(deployment().name, location)}-Cluster-FluxConfiguration${index}'
     params: {
       enableTelemetry: enableReferencedModulesTelemetry
-      clusterName: managedCluster.name
+      clusterName: clusterName
       scope: fluxConfiguration.scope
       namespace: fluxConfiguration.namespace
       sourceKind: contains(fluxConfiguration, 'gitRepository') ? 'GitRepository' : 'Bucket'
-      name: fluxConfiguration.?name ?? toLower('${managedCluster.name}-fluxconfiguration${index}')
+      name: fluxConfiguration.?name ?? toLower('${clusterName}-fluxconfiguration${index}')
       bucket: fluxConfiguration.?bucket
       configurationProtectedSettings: fluxConfiguration.?configurationProtectedSettings
       gitRepository: fluxConfiguration.?gitRepository
@@ -105,16 +125,17 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       suspend: fluxConfiguration.?suspend
     }
     dependsOn: [
-      extension
+      extensionManaged
+      extensionConnected
     ]
   }
 ]
 
 @description('The name of the extension.')
-output name string = extension.name
+output name string = clusterType == 'managedCluster' ? extensionManaged.name : extensionConnected.name
 
 @description('The resource ID of the extension.')
-output resourceId string = extension.id
+output resourceId string = clusterType == 'managedCluster' ? extensionManaged.id : extensionConnected.id
 
 @description('The name of the resource group the extension was deployed into.')
 output resourceGroupName string = resourceGroup().name
