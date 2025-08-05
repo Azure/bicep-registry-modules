@@ -500,7 +500,6 @@ The action group to use for the alert.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-servicehealthalertsactiongroupenabled) | bool | Flag to enable or disable the action group. |
-| [`name`](#parameter-servicehealthalertsactiongroupname) | string | The name of the action group. |
 
 **Optional parameters**
 
@@ -517,6 +516,7 @@ The action group to use for the alert.
 | [`incidentReceivers`](#parameter-servicehealthalertsactiongroupincidentreceivers) | array | The list of incident receivers for the action group. |
 | [`itsmReceivers`](#parameter-servicehealthalertsactiongroupitsmreceivers) | array | The list of ITSM receivers for the action group. |
 | [`logicAppReceivers`](#parameter-servicehealthalertsactiongrouplogicappreceivers) | array | The list of logic app receivers for the action group. |
+| [`name`](#parameter-servicehealthalertsactiongroupname) | string | The name of the action group. |
 | [`smsReceivers`](#parameter-servicehealthalertsactiongroupsmsreceivers) | array | The list of SMS receivers for the action group. |
 | [`voiceReceivers`](#parameter-servicehealthalertsactiongroupvoicereceivers) | array | The list of voice receivers for the action group. |
 | [`webhookReceivers`](#parameter-servicehealthalertsactiongroupwebhookreceivers) | array | The list of webhook receivers for the action group. |
@@ -527,13 +527,6 @@ Flag to enable or disable the action group.
 
 - Required: Yes
 - Type: bool
-
-### Parameter: `serviceHealthAlerts.actionGroup.name`
-
-The name of the action group.
-
-- Required: No
-- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.armRoleReceivers`
 
@@ -1085,6 +1078,13 @@ Flag to use common alert schema.
 
 - Required: No
 - Type: bool
+
+### Parameter: `serviceHealthAlerts.actionGroup.name`
+
+The name of the action group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers`
 

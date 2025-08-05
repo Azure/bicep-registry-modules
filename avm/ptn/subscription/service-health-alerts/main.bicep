@@ -302,7 +302,7 @@ type serviceHealthAlertType = {
 }
 
 type actionGroupType = {
-  @description('Required. The name of the action group.')
+  @description('Optional. The name of the action group.')
   name: string?
 
   @description('Optional. The short name of the action group. Max length is 12 characters.')
