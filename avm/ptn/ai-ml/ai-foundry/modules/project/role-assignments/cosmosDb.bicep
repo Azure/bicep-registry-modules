@@ -7,8 +7,8 @@ param projectIdentityPrincipalId string
 @description('Required. The project workspace ID.')
 param projectWorkspaceId string
 
-@description('Required. Whether to create a capability host for the project.')
-param createCapabilityHost bool
+@description('Required. Whether to create SQL role assignments for the project to Cosmos DB.')
+param includeSqlRoleAssignments bool
 
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: cosmosDbName
@@ -31,7 +31,7 @@ resource cosmosDBOperatorRoleAssignment 'Microsoft.Authorization/roleAssignments
   }
 }
 
-var cosmosContainerNameSuffixes = createCapabilityHost
+var cosmosContainerNameSuffixes = includeSqlRoleAssignments
   ? [
       'thread-message-store'
       'system-thread-message-store'
@@ -39,7 +39,7 @@ var cosmosContainerNameSuffixes = createCapabilityHost
     ]
   : []
 
-var cosmosDefaultSqlRoleDefinitionId = createCapabilityHost
+var cosmosDefaultSqlRoleDefinitionId = includeSqlRoleAssignments
   ? resourceId(
       'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions',
       cosmosDbName,

@@ -18,8 +18,8 @@ param location string = resourceGroup().location
 @description('Required. Name of the existing parent Foundry Account resource.')
 param accountName string
 
-@description('Required. Include the capability host for the Foundry project.')
-param includeCapabilityHost bool
+@description('Required. Where to create the capability host for the Foundry project. Requires associated resource connections to be provided.')
+param createCapabilityHost bool
 
 @description('Optional. Azure Cosmos DB connection for the project.')
 param cosmosDbConnection azureConnectionType?
@@ -55,6 +55,8 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   name: cosmosDbConnection!.resourceName
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
+
+var createCapabilityHostResource = createCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   name: name
@@ -112,28 +114,16 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
       }
     }
   }
-}
 
-var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
-
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: take('${accountName}-cap-host', 64)
-  parent: foundryAccount
-  properties: {
-    capabilityHostKind: 'Agents'
-    tags: tags
-  }
-}
-
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: take('${name}-cap-host', 64)
-  parent: project
-  properties: {
-    capabilityHostKind: 'Agents'
-    vectorStoreConnections: ['${aiSearch.name}']
-    storageConnections: ['${storageAccount.name}']
-    threadStorageConnections: ['${cosmosDb.name}']
-    tags: tags
+  resource capabilityHost 'capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
+    name: '${name}-cap-host'
+    properties: {
+      capabilityHostKind: 'Agents'
+      vectorStoreConnections: ['${aiSearch.name}']
+      storageConnections: ['${storageAccount.name}']
+      threadStorageConnections: ['${cosmosDb.name}']
+      tags: tags
+    }
   }
 }
 
@@ -180,14 +170,11 @@ var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-
 module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
   name: take('module.project.role-assign.cosmosDb.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
-  dependsOn: [
-    projectCapabilityHost
-  ]
   params: {
     cosmosDbName: cosmosDb.name
     projectIdentityPrincipalId: project.identity.principalId
     projectWorkspaceId: projectWorkspaceId
-    createCapabilityHost: createCapabilityHost
+    includeSqlRoleAssignments: createCapabilityHostResource
   }
 }
 

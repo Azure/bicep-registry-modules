@@ -33,6 +33,9 @@ param allowProjectManagement bool
 @description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
 param privateEndpointSubnetId string?
 
+@description('Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints.')
+param agentSubnetResourceId string?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Specifies the role assignments for the AI Foundry resource.')
 param roleAssignments roleAssignmentType[]?
@@ -48,6 +51,9 @@ param aiModelDeployments deploymentType[] = []
 @description('Optional. List of private DNS zone resource IDs to use for the AI Foundry resource. This is required when using private endpoints.')
 param privateDnsZoneResourceIds string[]?
 
+@description('Required. Where to create the capability host for the Foundry Account.')
+param createCapabilityHost bool
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -61,7 +67,7 @@ var privateDnsZoneResourceIdValues = [
 ]
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetId)
 
-module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
+module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.0' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
   params: {
     name: name
@@ -82,6 +88,13 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
       defaultAction: privateNetworkingEnabled ? 'Deny' : 'Allow'
       bypass: 'AzureServices'
     }
+    networkInjections: privateNetworkingEnabled && !empty(agentSubnetResourceId)
+      ? {
+          scenario: 'agent'
+          subnetResourceId: agentSubnetResourceId!
+          useMicrosoftManagedNetwork: false
+        }
+      : null
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
@@ -94,6 +107,20 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
       : []
     enableTelemetry: enableTelemetry
     roleAssignments: roleAssignments
+  }
+}
+
+resource accountReference 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+  name: name
+  dependsOn: [foundryAccount]
+}
+
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
+  name: '${name}-cap-host'
+  parent: accountReference
+  properties: {
+    capabilityHostKind: 'Agents'
+    tags: tags
   }
 }
 

@@ -59,7 +59,9 @@ module testDeployment '../../../main.bicep' = [
       includeAssociatedResources: true
       privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
+        createCapabilityHosts: true
         networking: {
+          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
           aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
           openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
           cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId

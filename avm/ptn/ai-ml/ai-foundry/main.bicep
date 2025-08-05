@@ -113,7 +113,9 @@ module foundryAccount 'modules/account.bicep' = {
     sku: sku
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     aiModelDeployments: aiModelDeployments
+    createCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
     privateEndpointSubnetId: privateEndpointSubnetId
+    agentSubnetResourceId: aiFoundryConfiguration.?networking.?agentServiceSubnetId
     privateDnsZoneResourceIds: !empty(privateEndpointSubnetId) && !empty(aiFoundryConfiguration.?networking)
       ? [
           aiFoundryConfiguration!.networking!.cognitiveServicesPrivateDnsZoneId!
@@ -231,7 +233,7 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    includeCapabilityHost: false // aiFoundryConfiguration.?createAIAgentService ?? false
+    createCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
     storageAccountConnection: includeAssociatedResources
       ? {
           storageAccountName: storageAccount!.outputs.name
@@ -326,8 +328,8 @@ type foundryConfigurationType = {
   @description('Optional. The location of the AI Foundry account. Will default to the resource group location if not specified.')
   location: string?
 
-  // @description('Optional. Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, \'networking.agentServiceSubnetId\' is required. Defaults to false.')
-  // createAIAgentService: bool?
+  @description('Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if \'includeAssociatedResources\' is true. Defaults to false.')
+  createCapabilityHosts: bool?
 
   @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
   allowProjectManagement: bool?
@@ -345,8 +347,8 @@ type foundryConfigurationType = {
 @export()
 @description('Values to establish private networking for the AI Foundry service.')
 type foundryNetworkConfigurationType = {
-  // @description('Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if \'createAIAgentService\' is true.')
-  // agentServiceSubnetId: string?
+  @description('Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if \'createAIAgentService\' is true.')
+  agentServiceSubnetId: string?
 
   @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
   cognitiveServicesPrivateDnsZoneId: string

@@ -15,7 +15,6 @@ Creates an AI Foundry project and any associated Azure service connections.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/capabilityHosts) |
 | `Microsoft.CognitiveServices/accounts/projects` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects) |
 | `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/capabilityHosts) |
 | `Microsoft.CognitiveServices/accounts/projects/connections` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/connections) |
@@ -28,7 +27,7 @@ Creates an AI Foundry project and any associated Azure service connections.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-accountname) | string | Name of the existing parent Foundry Account resource. |
-| [`includeCapabilityHost`](#parameter-includecapabilityhost) | bool | Include the capability host for the Foundry project. |
+| [`createCapabilityHost`](#parameter-createcapabilityhost) | bool | Where to create the capability host for the Foundry project. Requires associated resource connections to be provided. |
 | [`name`](#parameter-name) | string | The name of the AI Foundry project. |
 
 **Optional parameters**
@@ -51,9 +50,9 @@ Name of the existing parent Foundry Account resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `includeCapabilityHost`
+### Parameter: `createCapabilityHost`
 
-Include the capability host for the Foundry project.
+Where to create the capability host for the Foundry project. Requires associated resource connections to be provided.
 
 - Required: Yes
 - Type: bool

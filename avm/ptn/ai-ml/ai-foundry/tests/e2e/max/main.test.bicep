@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = [
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
         location: enforcedLocation
+        createCapabilityHosts: true
         project: {
           name: 'projcustom${workloadName}'
           displayName: 'Custom Project for ${workloadName}'
@@ -72,6 +73,7 @@ module testDeployment '../../../main.bicep' = [
         }
         allowProjectManagement: true
         networking: {
+          agentServiceSubnetId: dependencies.outputs.subnetAgentResourceId
           aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
           openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
           cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId

@@ -44,6 +44,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
+      aiFoundryConfiguration: {
+        createCapabilityHosts: true
+      }
       aiModelDeployments: [
         {
           name: 'gpt-4.1'

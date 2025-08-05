@@ -63,6 +63,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
+      aiFoundryConfiguration: {
+        createCapabilityHosts: true
+      }
       keyVaultConfiguration: {
         existingResourceId: dependencies.outputs.keyVaultResourceId
       }

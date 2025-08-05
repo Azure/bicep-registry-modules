@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "5779099274369994275"
+      "version": "0.37.4.10188",
+      "templateHash": "14411275675618163081"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -160,10 +160,10 @@
         "description": "Required. Name of the existing parent Foundry Account resource."
       }
     },
-    "includeCapabilityHost": {
+    "createCapabilityHost": {
       "type": "bool",
       "metadata": {
-        "description": "Required. Include the capability host for the Foundry project."
+        "description": "Required. Where to create the capability host for the Foundry project. Requires associated resource connections to be provided."
       }
     },
     "cosmosDbConnection": {
@@ -206,7 +206,7 @@
     }
   },
   "variables": {
-    "createCapabilityHost": "[and(and(and(parameters('includeCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
+    "createCapabilityHostResource": "[and(and(and(parameters('createCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
   },
   "resources": {
     "project::storageConnection": {
@@ -271,6 +271,28 @@
         "project"
       ]
     },
+    "project::capabilityHost": {
+      "condition": "[variables('createCapabilityHostResource')]",
+      "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('{0}-cap-host', parameters('name')))]",
+      "properties": {
+        "capabilityHostKind": "Agents",
+        "vectorStoreConnections": [
+          "[format('{0}', parameters('aiSearchConnection').resourceName)]"
+        ],
+        "storageConnections": [
+          "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
+        ],
+        "threadStorageConnections": [
+          "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
+        ],
+        "tags": "[parameters('tags')]"
+      },
+      "dependsOn": [
+        "project"
+      ]
+    },
     "foundryAccount": {
       "existing": true,
       "type": "Microsoft.CognitiveServices/accounts",
@@ -318,38 +340,6 @@
       },
       "tags": "[parameters('tags')]"
     },
-    "accountCapabilityHost": {
-      "condition": "[variables('createCapabilityHost')]",
-      "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-      "apiVersion": "2025-06-01",
-      "name": "[format('{0}/{1}', parameters('accountName'), take(format('{0}-cap-host', parameters('accountName')), 64))]",
-      "properties": {
-        "capabilityHostKind": "Agents",
-        "tags": "[parameters('tags')]"
-      }
-    },
-    "projectCapabilityHost": {
-      "condition": "[variables('createCapabilityHost')]",
-      "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-      "apiVersion": "2025-06-01",
-      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), take(format('{0}-cap-host', parameters('name')), 64))]",
-      "properties": {
-        "capabilityHostKind": "Agents",
-        "vectorStoreConnections": [
-          "[format('{0}', parameters('aiSearchConnection').resourceName)]"
-        ],
-        "storageConnections": [
-          "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
-        ],
-        "threadStorageConnections": [
-          "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
-        ],
-        "tags": "[parameters('tags')]"
-      },
-      "dependsOn": [
-        "project"
-      ]
-    },
     "projectLock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
@@ -393,8 +383,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "14857766193027518802"
+              "version": "0.37.4.10188",
+              "templateHash": "3874620192547794605"
             }
           },
           "parameters": {
@@ -475,8 +465,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "2870377621592243437"
+              "version": "0.37.4.10188",
+              "templateHash": "13253222899830410134"
             }
           },
           "parameters": {
@@ -545,8 +535,8 @@
           "projectWorkspaceId": {
             "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
           },
-          "createCapabilityHost": {
-            "value": "[variables('createCapabilityHost')]"
+          "includeSqlRoleAssignments": {
+            "value": "[variables('createCapabilityHostResource')]"
           }
         },
         "template": {
@@ -555,8 +545,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "652092725147825793"
+              "version": "0.37.4.10188",
+              "templateHash": "6340914738402585142"
             }
           },
           "parameters": {
@@ -578,16 +568,16 @@
                 "description": "Required. The project workspace ID."
               }
             },
-            "createCapabilityHost": {
+            "includeSqlRoleAssignments": {
               "type": "bool",
               "metadata": {
-                "description": "Required. Whether to create a capability host for the project."
+                "description": "Required. Whether to create SQL role assignments for the project to Cosmos DB."
               }
             }
           },
           "variables": {
-            "cosmosContainerNameSuffixes": "[if(parameters('createCapabilityHost'), createArray('thread-message-store', 'system-thread-message-store', 'agent-entity-store'), createArray())]",
-            "cosmosDefaultSqlRoleDefinitionId": "[if(parameters('createCapabilityHost'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDbName'), '00000000-0000-0000-0000-000000000002'), '')]"
+            "cosmosContainerNameSuffixes": "[if(parameters('includeSqlRoleAssignments'), createArray('thread-message-store', 'system-thread-message-store', 'agent-entity-store'), createArray())]",
+            "cosmosDefaultSqlRoleDefinitionId": "[if(parameters('includeSqlRoleAssignments'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDbName'), '00000000-0000-0000-0000-000000000002'), '')]"
           },
           "resources": [
             {
@@ -622,8 +612,7 @@
         }
       },
       "dependsOn": [
-        "project",
-        "projectCapabilityHost"
+        "project"
       ]
     }
   },
