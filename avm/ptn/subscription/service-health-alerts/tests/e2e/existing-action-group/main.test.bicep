@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionId: subscriptionId
     serviceHealthAlertsResourceGroupName: resourceGroup.name
+    location: resourceLocation
     serviceHealthAlerts: [
       {
         serviceHealthAlert: 'Service Health Advisory'

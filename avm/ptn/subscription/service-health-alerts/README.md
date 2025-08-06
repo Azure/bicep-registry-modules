@@ -253,6 +253,7 @@ This instance deploys the module with a reference to an existing action group.
 module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
   name: 'serviceHealthAlertsDeployment'
   params: {
+    location: '<location>'
     serviceHealthAlerts: [
       {
         actionGroup: {
@@ -291,6 +292,9 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "location": {
+      "value": "<location>"
+    },
     "serviceHealthAlerts": {
       "value": [
         {
@@ -333,6 +337,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
 ```bicep-params
 using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
+param location = '<location>'
 param serviceHealthAlerts = [
   {
     actionGroup: {
