@@ -44,7 +44,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${namePrefix}'
   params: {
     subscriptionId: subscriptionId
-    location: resourceLocation
     serviceHealthAlertsResourceGroupName: dependencies.outputs.resourceGroupName
     serviceHealthAlerts: [
       {
