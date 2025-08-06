@@ -66,6 +66,5 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
-    enableTelemetry: true
   }
 }
