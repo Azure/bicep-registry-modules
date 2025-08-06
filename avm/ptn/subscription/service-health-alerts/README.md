@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Deploying multiple service health alerts.](#example-1-deploying-multiple-service-health-alerts)
 - [Using only defaults.](#example-2-using-only-defaults)
-- [Deploying multiple service health alerts with an existing action group.](#example-3-deploying-multiple-service-health-alerts-with-an-existing-action-group)
+- [Existing-Action-Group](#example-3-existing-action-group)
 
 ### Example 1: _Deploying multiple service health alerts._
 
@@ -240,10 +240,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 3: _Deploying multiple service health alerts with an existing action group._
-
-This instance deploys the module with a reference to an existing action group.
-
+### Example 3: _Existing-Action-Group_
 
 <details>
 

@@ -1,6 +1,3 @@
-@description('Required. The location where all resources will be deployed.')
-param location string = resourceGroup().location
-
 @description('Required. The name of the action group to create.')
 param actionGroupName string
 
@@ -8,7 +5,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:0.7.0' = {
   params: {
     name: actionGroupName
     groupShortName: take(actionGroupName, 12)
-    location: location
     enabled: true
   }
 }
