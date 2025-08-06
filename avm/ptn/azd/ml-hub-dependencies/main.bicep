@@ -265,9 +265,8 @@ param semanticSearch string = 'disabled'
 ])
 param searchServiceSku string = 'standard'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
-param managedIdentities managedIdentityAllType?
+param managedIdentities managedIdentitiesType?
 
 @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD).')
 param allowSharedKeyAccess bool = false
