@@ -1,7 +1,7 @@
 # Azd Azure Machine Learning Dependencies `[Azd/MlHubDependencies]`
 
 > ⚠️THIS MODULE IS DEPRECATED.⚠️
-> 
+>
 > - It will no longer receive any updates.
 > - The module can still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
 > - It is recommended to migrate to a replacement/alternative version of the module, if available.
@@ -918,7 +918,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
 | `br/public:avm/res/search/search-service:0.10.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.19.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
