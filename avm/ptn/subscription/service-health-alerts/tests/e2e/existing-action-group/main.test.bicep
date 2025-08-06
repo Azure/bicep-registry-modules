@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Deploying multiple service health alerts with an existing action group.'
-metadata description = 'This instance deploys the module with the maximum set of required parameters.'
+metadata description = 'This instance deploys the module with a reference to an existing action group.'
 
 // ========== //
 // Parameters //
