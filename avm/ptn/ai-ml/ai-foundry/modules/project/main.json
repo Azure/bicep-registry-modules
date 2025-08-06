@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17674100148000039424"
+      "templateHash": "8675293175169315830"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -274,7 +274,8 @@
       "dependsOn": [
         "cosmosDb",
         "cosmosDbRoleAssignments",
-        "project"
+        "project",
+        "waitForProjectScript"
       ]
     },
     "storageAccountConnectionResource": {
@@ -298,7 +299,8 @@
         "cosmosDbConnectionResource",
         "project",
         "storageAccount",
-        "storageAccountRoleAssignments"
+        "storageAccountRoleAssignments",
+        "waitForProjectScript"
       ]
     },
     "aiSearchConnectionResource": {
@@ -321,7 +323,8 @@
         "aiSearchRoleAssignments",
         "cosmosDbConnectionResource",
         "project",
-        "storageAccountConnectionResource"
+        "storageAccountConnectionResource",
+        "waitForProjectScript"
       ]
     },
     "accountCapabilityHost": {
@@ -334,7 +337,8 @@
         "tags": "[parameters('tags')]"
       },
       "dependsOn": [
-        "project"
+        "project",
+        "waitForConnectionsScript"
       ]
     },
     "capabilityHost": {
@@ -360,7 +364,8 @@
         "aiSearchConnectionResource",
         "cosmosDbConnectionResource",
         "project",
-        "storageAccountConnectionResource"
+        "storageAccountConnectionResource",
+        "waitForConnectionsScript"
       ]
     },
     "projectLock": {
@@ -375,6 +380,78 @@
       },
       "dependsOn": [
         "capabilityHost",
+        "project"
+      ]
+    },
+    "waitForProjectScript": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('script-wait-proj-{0}', parameters('name'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "seconds": {
+            "value": 10
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "12025359460129072426"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the deployment script."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Location for the deployment script."
+              }
+            },
+            "seconds": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Sleep/wait time for the deployment script in seconds."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "kind": "AzurePowerShell",
+              "properties": {
+                "azPowerShellVersion": "az10.0",
+                "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
+                "timeout": "P1D",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
         "project"
       ]
     },
@@ -438,7 +515,8 @@
         }
       },
       "dependsOn": [
-        "project"
+        "project",
+        "waitForProjectScript"
       ]
     },
     "storageAccountRoleAssignments": {
@@ -501,7 +579,8 @@
         }
       },
       "dependsOn": [
-        "project"
+        "project",
+        "waitForProjectScript"
       ]
     },
     "aiSearchRoleAssignments": {
@@ -575,7 +654,84 @@
         }
       },
       "dependsOn": [
-        "project"
+        "project",
+        "waitForProjectScript"
+      ]
+    },
+    "waitForConnectionsScript": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('script-wait-conns-{0}', parameters('name'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "seconds": {
+            "value": 60
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "12025359460129072426"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the deployment script."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Location for the deployment script."
+              }
+            },
+            "seconds": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Sleep/wait time for the deployment script in seconds."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "kind": "AzurePowerShell",
+              "properties": {
+                "azPowerShellVersion": "az10.0",
+                "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
+                "timeout": "P1D",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "aiSearchConnectionResource",
+        "cosmosDbConnectionResource",
+        "project",
+        "storageAccountConnectionResource",
+        "waitForProjectScript"
       ]
     },
     "cosmosDbSqlRoleAssignments": {
