@@ -1,3 +1,3 @@
 @export()
 @description('Enforced location for all tests.')
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'australiaeast'

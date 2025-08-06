@@ -94,13 +94,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4.1'
+        name: 'gpt-4o'
         sku: {
           capacity: 1
-          name: 'GlobalStandard'
+          name: 'Standard'
         }
       }
     ]
@@ -130,13 +130,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4.1",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 1,
-            "name": "GlobalStandard"
+            "name": "Standard"
           }
         }
       ]
@@ -162,13 +162,13 @@ param aiModelDeployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4.1'
+    name: 'gpt-4o'
     sku: {
       capacity: 1
-      name: 'GlobalStandard'
+      name: 'Standard'
     }
   }
 ]
@@ -200,13 +200,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4.1'
+        name: 'gpt-4o'
         sku: {
           capacity: 1
-          name: 'GlobalStandard'
+          name: 'Standard'
         }
       }
     ]
@@ -242,13 +242,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4.1",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 1,
-            "name": "GlobalStandard"
+            "name": "Standard"
           }
         }
       ]
@@ -280,13 +280,13 @@ param aiModelDeployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4.1'
+    name: 'gpt-4o'
     sku: {
       capacity: 1
-      name: 'GlobalStandard'
+      name: 'Standard'
     }
   }
 ]
@@ -319,13 +319,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4.1'
+        name: 'gpt-4o'
         sku: {
           capacity: 1
-          name: 'GlobalStandard'
+          name: 'Standard'
         }
       }
     ]
@@ -373,13 +373,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4.1",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 1,
-            "name": "GlobalStandard"
+            "name": "Standard"
           }
         }
       ]
@@ -431,13 +431,13 @@ param aiModelDeployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4.1'
+    name: 'gpt-4o'
     sku: {
       capacity: 1
-      name: 'GlobalStandard'
+      name: 'Standard'
     }
   }
 ]
@@ -503,13 +503,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4.1'
+        name: 'gpt-4o'
         sku: {
           capacity: 1
-          name: 'GlobalStandard'
+          name: 'Standard'
         }
       }
     ]
@@ -624,13 +624,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4.1",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 1,
-            "name": "GlobalStandard"
+            "name": "Standard"
           }
         }
       ]
@@ -761,13 +761,13 @@ param aiModelDeployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4.1'
+    name: 'gpt-4o'
     sku: {
       capacity: 1
-      name: 'GlobalStandard'
+      name: 'Standard'
     }
   }
 ]
@@ -864,13 +864,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4.1'
+        name: 'gpt-4o'
         sku: {
           capacity: 1
-          name: 'GlobalStandard'
+          name: 'Standard'
         }
       }
     ]
@@ -925,13 +925,13 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4.1",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 1,
-            "name": "GlobalStandard"
+            "name": "Standard"
           }
         }
       ]
@@ -992,13 +992,13 @@ param aiModelDeployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4.1'
+    name: 'gpt-4o'
     sku: {
       capacity: 1
-      name: 'GlobalStandard'
+      name: 'Standard'
     }
   }
 ]

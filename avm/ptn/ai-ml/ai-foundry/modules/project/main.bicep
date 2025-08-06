@@ -78,7 +78,7 @@ module waitForProjectScript 'waitDeploymentScript.bicep' = {
   params: {
     name: 'script-wait-proj-${name}'
     location: location
-    seconds: 10
+    seconds: 60
   }
 }
 
@@ -179,7 +179,7 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
   params: {
     name: 'script-wait-conns-${name}'
     location: location
-    seconds: 60
+    seconds: 180
   }
 }
 
