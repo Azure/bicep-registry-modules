@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying multiple service health alerts.'
-metadata description = 'This instance deploys the module with the maximum set of required parameters.'
+metadata name = 'Deploying multiple service health alerts with an existing action group.'
+metadata description = 'This instance deploys the module with a reference to an existing action group.'
 
 // ========== //
 // Parameters //
@@ -18,7 +18,7 @@ param subscriptionId string = subscription().subscriptionId
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashalt'
+param serviceShort string = 'asheact'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -32,6 +32,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    actionGroupName: 'dep-${serviceShort}-${namePrefix}-action-group'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -40,31 +48,27 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${namePrefix}'
   params: {
     subscriptionId: subscriptionId
-    location: resourceLocation
     serviceHealthAlertsResourceGroupName: resourceGroup.name
+    location: resourceLocation
     serviceHealthAlerts: [
+      {
+        serviceHealthAlert: 'Service Health Advisory'
+        alertDescription: 'Service Health Advisory'
+        isEnabled: true
+        actionGroup: {
+          enabled: true
+          existingActionGroupResourceId: nestedDependencies.outputs.actionGroupResourceId
+        }
+      }
       {
         serviceHealthAlert: 'Service Health Incident'
         alertDescription: 'Service Health Incident'
         isEnabled: true
         actionGroup: {
-          name: 'actionGroup-${namePrefix}-${serviceShort}'
           enabled: true
-          emailReceivers: [
-            {
-              name: 'emailReceiver-${namePrefix}-${serviceShort}'
-              emailAddress: 'admin@contoso.com'
-            }
-          ]
-          armRoleReceivers: [
-            {
-              name: 'armRoleReceiverOwner-${namePrefix}-${serviceShort}'
-              roleId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' // Owner role
-            }
-          ]
+          existingActionGroupResourceId: nestedDependencies.outputs.actionGroupResourceId
         }
       }
     ]
-    enableTelemetry: true
   }
 }
