@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${namePrefix}'
   params: {
     subscriptionId: subscriptionId
-    serviceHealthAlertsResourceGroupName: resourceGroupName
+    serviceHealthAlertsResourceGroupName: resourceGroup.name
     serviceHealthAlerts: [
       {
         serviceHealthAlert: 'Service Health Advisory'
