@@ -212,7 +212,7 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
         ? [
             createActionGroups[i].?outputs.resourceId
           ]
-        : !empty(alert.?actionGroup.?existingActionGroupResourceId ?? '')
+        : !empty(alert.?actionGroup.?existingActionGroupResourceId)
             ? [
                 alert.?actionGroup.?existingActionGroupResourceId
               ]
