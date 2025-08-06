@@ -227,7 +227,7 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
 ]
 
 module createActionGroups 'br/public:avm/res/insights/action-group:0.7.0' = [
-  for alert in serviceHealthAlerts: if (!empty(alert.?actionGroup) && empty(alert.?actionGroup.?existingActionGroupResourceId ?? '')) {
+  for alert in serviceHealthAlerts: if (!empty(alert.?actionGroup) && empty(alert.?actionGroup.?existingActionGroupResourceId)) {
     scope: resourceGroup(subscriptionId, serviceHealthAlertsResourceGroupName)
     dependsOn: [
       alertsResourceGroup
