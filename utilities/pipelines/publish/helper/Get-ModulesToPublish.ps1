@@ -33,7 +33,7 @@ function Get-ModifiedFileList {
 
     $modifiedFiles = $diff | Get-Item -Force
 
-    return $ModifiedFiles
+    return $modifiedFiles
 }
 
 <#
