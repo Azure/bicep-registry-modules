@@ -12,7 +12,7 @@ This module deploys a CDN Profile Endpoint Origin.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Cdn/profiles/endpoints/origins` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2021-06-01/profiles/endpoints/origins) |
+| `Microsoft.Cdn/profiles/endpoints/origins` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints/origins) |
 
 ## Parameters
 

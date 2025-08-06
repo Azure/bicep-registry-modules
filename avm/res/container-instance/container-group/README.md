@@ -78,7 +78,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     }
-    location: '<location>'
   }
 }
 ```
@@ -134,9 +133,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           }
         ]
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -184,7 +180,6 @@ param ipAddress = {
     }
   ]
 }
-param location = '<location>'
 ```
 
 </details>
@@ -269,11 +264,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           protocol: 'Tcp'
         }
       ]
-    }
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
     }
     managedIdentities: {
       systemAssigned: true
@@ -374,15 +364,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         ]
       }
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -472,11 +453,6 @@ param ipAddress = {
     }
   ]
 }
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -533,7 +509,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     }
-    location: '<location>'
   }
 }
 ```
@@ -589,9 +564,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           }
         ]
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -639,7 +611,6 @@ param ipAddress = {
     }
   ]
 }
-param location = '<location>'
 ```
 
 </details>
@@ -752,6 +723,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    logAnalytics: {
+      logType: 'ContainerInstanceLogs'
+      workspaceResourceId: '<workspaceResourceId>'
     }
     managedIdentities: {
       systemAssigned: true
@@ -887,6 +862,12 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "name": "myCustomLockName"
       }
     },
+    "logAnalytics": {
+      "value": {
+        "logType": "ContainerInstanceLogs",
+        "workspaceResourceId": "<workspaceResourceId>"
+      }
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -1011,6 +992,10 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param logAnalytics = {
+  logType: 'ContainerInstanceLogs'
+  workspaceResourceId: '<workspaceResourceId>'
+}
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -1106,11 +1091,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
       type: 'Private'
-    }
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
     }
     subnets: [
       {
@@ -1208,15 +1188,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "type": "Private"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "subnets": {
       "value": [
         {
@@ -1305,11 +1276,6 @@ param ipAddress = {
   ]
   type: 'Private'
 }
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param subnets = [
   {
     subnetResourceId: '<subnetResourceId>'
@@ -1395,7 +1361,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     }
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1487,9 +1452,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         ]
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1573,7 +1535,6 @@ param ipAddress = {
     }
   ]
 }
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1606,6 +1567,7 @@ param tags = {
 | [`ipAddress`](#parameter-ipaddress) | object | The IP address type of the container group. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`logAnalytics`](#parameter-loganalytics) | object | The log analytics diagnostic information for a container group. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`osType`](#parameter-ostype) | string | The operating system type required by the containers in the container group. - Windows or Linux. |
 | [`priority`](#parameter-priority) | string | The priority of the container group. |
@@ -2659,6 +2621,54 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `logAnalytics`
+
+The log analytics diagnostic information for a container group.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logType`](#parameter-loganalyticslogtype) | string | The log type to be used. |
+| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The workspace resource ID for log analytics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-loganalyticsmetadata) | object | Metadata for log analytics. |
+
+### Parameter: `logAnalytics.logType`
+
+The log type to be used.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ContainerInsights'
+    'ContainerInstanceLogs'
+  ]
+  ```
+
+### Parameter: `logAnalytics.workspaceResourceId`
+
+The workspace resource ID for log analytics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `logAnalytics.metadata`
+
+Metadata for log analytics.
+
+- Required: No
+- Type: object
 
 ### Parameter: `managedIdentities`
 

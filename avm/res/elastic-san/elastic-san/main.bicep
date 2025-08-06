@@ -20,9 +20,14 @@ param volumeGroups volumeGroupType[]?
 ])
 param sku string = 'Premium_ZRS'
 
-@sys.description('Conditional. Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
-@sys.allowed([1, 2, 3])
-param availabilityZone int?
+@sys.description('Conditional. Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param availabilityZone int
 
 @sys.minValue(1)
 @sys.maxValue(400) // Documentation says 400 in some regions, 100 in others
@@ -63,12 +68,12 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 // Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
-var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
+var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != -1 ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
 
 // For Premium_ZRS all zones are utilized - no need to specify the zone
 // For Premium_LRS only one zone is utilized - needs to be specified
 // ZRS is only available in France Central, North Europe, West Europe and West US 2.
-var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != null ? ['${availabilityZone}'] : null) : null
+var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != -1 ? array(string(availabilityZone)) : null) : null
 
 // Summarize the total number of virtual network rules across all volume groups.
 var totalVirtualNetworkRules = reduce(
@@ -193,6 +198,7 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       elasticSanName: elasticSan.name
       name: volumeGroup.name
       location: location
+      enforceDataIntegrityCheckForIscsi: volumeGroup.?enforceDataIntegrityCheckForIscsi
       volumes: volumeGroup.?volumes
       virtualNetworkRules: volumeGroup.?virtualNetworkRules
       managedIdentities: volumeGroup.?managedIdentities
@@ -264,6 +270,7 @@ output volumeGroups volumeGroupOutputType[] = [
     resourceId: elasticSan_volumeGroups[i].outputs.resourceId
     name: elasticSan_volumeGroups[i].outputs.name
     location: elasticSan_volumeGroups[i].outputs.location
+    enforceDataIntegrityCheckForIscsi: elasticSan_volumeGroups[i].outputs.enforceDataIntegrityCheckForIscsi
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
     systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.?systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
@@ -314,6 +321,9 @@ type volumeGroupOutputType = {
 
   @sys.description('The resource group of the deployed Elastic SAN Volume Group.')
   resourceGroupName: string
+
+  @sys.description('The configuration indicating whether the Data Integrity Check is enabled or not.')
+  enforceDataIntegrityCheckForIscsi: bool
 
   @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
   systemAssignedMIPrincipalId: string?

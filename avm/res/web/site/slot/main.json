@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "13466865676700354567"
+      "version": "0.36.177.2456",
+      "templateHash": "2467503612762973649"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -3562,7 +3562,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -3604,7 +3604,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -3645,7 +3645,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -3767,7 +3767,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -3792,12 +3792,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -3825,7 +3832,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -3967,7 +3974,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -4042,7 +4049,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -4094,6 +4101,13 @@
         "description": "Optional. The resource ID of the app service plan to use for the slot."
       }
     },
+    "managedEnvironmentResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app."
+      }
+    },
     "httpsOnly": {
       "type": "bool",
       "defaultValue": true,
@@ -4106,6 +4120,20 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. If client affinity is enabled."
+      }
+    },
+    "clientAffinityProxyEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. Default is true."
+      }
+    },
+    "clientAffinityPartitioningEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. To enable client affinity partitioning using CHIPS cookies, this will add the partitioned property to the affinity cookies; false to stop sending partitioned affinity cookies. Default is false."
       }
     },
     "appServiceEnvironmentResourceId": {
@@ -4136,7 +4164,7 @@
         "description": "Optional. Checks if Customer provided storage account is required."
       }
     },
-    "virtualNetworkSubnetId": {
+    "virtualNetworkSubnetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -4201,10 +4229,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2024-04-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "roleAssignments": {
       "type": "array",
@@ -4339,26 +4370,15 @@
         "description": "Optional. The site publishing credential policy names which are associated with the site slot."
       }
     },
-    "vnetContentShareEnabled": {
-      "type": "bool",
-      "defaultValue": false,
+    "outboundVnetRouting": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. To enable accessing content over virtual network."
-      }
-    },
-    "vnetImagePullEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. To enable pulling image over Virtual Network."
-      }
-    },
-    "vnetRouteAllEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2024-11-01#properties/properties/properties/outboundVnetRouting"
+        },
+        "description": "Optional. The outbound VNET routing configuration for the site."
+      },
+      "nullable": true
     },
     "hybridConnectionRelays": {
       "type": "array",
@@ -4414,31 +4434,37 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
       "Web Plan Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')]",
       "Website Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]"
-    }
+    },
+    "managedEnvironmentSupportedKinds": [
+      "functionapp,linux,container,azurecontainerapps"
+    ]
   },
   "resources": {
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('appName')]"
     },
     "slot": {
       "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "serverFarmId": "[parameters('serverFarmResourceId')]",
+        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+        "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), or(not(empty(reference('app').managedEnvironmentId)), not(empty(parameters('managedEnvironmentResourceId'))))), null(), parameters('serverFarmResourceId'))]",
         "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
+        "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
+        "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",
         "httpsOnly": "[parameters('httpsOnly')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('id', parameters('appServiceEnvironmentResourceId')), null())]",
         "storageAccountRequired": "[parameters('storageAccountRequired')]",
         "keyVaultReferenceIdentity": "[parameters('keyVaultAccessIdentityResourceId')]",
-        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]",
+        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetResourceId')]",
         "siteConfig": "[parameters('siteConfig')]",
         "functionAppConfig": "[parameters('functionAppConfig')]",
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
@@ -4453,12 +4479,13 @@
         "hyperV": "[parameters('hyperV')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "redundancyMode": "[parameters('redundancyMode')]",
-        "vnetContentShareEnabled": "[parameters('vnetContentShareEnabled')]",
-        "vnetImagePullEnabled": "[parameters('vnetImagePullEnabled')]",
-        "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]",
         "dnsConfiguration": "[parameters('dnsConfiguration')]",
-        "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]"
-      }
+        "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
+        "outboundVnetRouting": "[parameters('outboundVnetRouting')]"
+      },
+      "dependsOn": [
+        "app"
+      ]
     },
     "slot_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -4468,7 +4495,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "slot"
@@ -4573,8 +4600,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "17422611495851182862"
+              "version": "0.36.177.2456",
+              "templateHash": "1983411224633209730"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -4697,8 +4724,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "5548719650419041948"
+              "version": "0.36.177.2456",
+              "templateHash": "17747975671959926329"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -4737,13 +4764,13 @@
               "name": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
               "properties": {
                 "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
-                "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
+                "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2024-01-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2024-01-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
                 "relayName": "[split(parameters('hybridConnectionResourceId'), '/')[10]]",
                 "relayArmUri": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
-                "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[0]]",
-                "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[1])]",
+                "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2024-01-01').userMetadata)[0].value, ':')[0]]",
+                "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2024-01-01').userMetadata)[0].value, ':')[1])]",
                 "sendKeyName": "[parameters('sendKeyName')]",
-                "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2021-11-01').primaryKey]"
+                "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2024-01-01').primaryKey]"
               }
             }
           ],
@@ -4820,8 +4847,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11175158984109206374"
+              "version": "0.36.177.2456",
+              "templateHash": "16144301784822003794"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -4920,7 +4947,7 @@
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-01-01",
               "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
               "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -4935,7 +4962,7 @@
               "type": "Microsoft.Web/sites/slots/config",
               "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
-              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
               "dependsOn": [
                 "applicationInsights",
                 "storageAccount"
@@ -5008,8 +5035,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "9136609319642165290"
+              "version": "0.36.177.2456",
+              "templateHash": "6698755633989137714"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -5894,14 +5921,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('slot', '2024-04-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('slot', '2024-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('slot', '2024-04-01', 'full').location]"
+      "value": "[reference('slot', '2024-11-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",

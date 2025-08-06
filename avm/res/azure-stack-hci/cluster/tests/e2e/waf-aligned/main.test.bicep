@@ -5,7 +5,7 @@ metadata description = 'This test deploys an Azure VM to host a 2 node switched 
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-azure-stack-hci.cluster-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.cluster-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ashcwaf'
@@ -71,111 +71,113 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   }
 }
 
-module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
-  scope: resourceGroup
-  params: {
-    name: nestedDependencies.outputs.clusterName
-    deploymentUser: 'deployUser'
-    deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
-    localAdminUser: 'Administrator'
-    localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    servicePrincipalId: arbDeploymentAppId
-    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: hciResourceProviderObjectId
-    deploymentSettings: {
-      customLocationName: '${namePrefix}${serviceShort}-location'
-      clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
-      clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: '192.168.1.1'
-      deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-      dnsServers: ['192.168.1.254']
-      domainFqdn: 'jumpstart.local'
-      domainOUPath: nestedDependencies.outputs.domainOUPath
-      startingIPAddress: '192.168.1.55'
-      endingIPAddress: '192.168.1.65'
-      enableStorageAutoIp: true
-      keyVaultName: nestedDependencies.outputs.keyVaultName
-      networkIntents: [
-        {
-          adapter: [
-            'FABRIC'
-            'FABRIC2'
-          ]
-          name: 'ManagementCompute'
-          overrideAdapterProperty: true
-          adapterPropertyOverrides: {
-            jumboPacket: '9014'
-            networkDirect: 'Disabled'
-            networkDirectTechnology: 'iWARP'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}-${iteration}'
+    scope: resourceGroup
+    params: {
+      name: nestedDependencies.outputs.clusterName
+      deploymentUser: 'deployUser'
+      deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
+      localAdminUser: 'Administrator'
+      localAdminPassword: arbLocalAdminAndDeploymentUserPass
+      servicePrincipalId: arbDeploymentAppId
+      servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+      hciResourceProviderObjectId: hciResourceProviderObjectId
+      deploymentSettings: {
+        customLocationName: '${namePrefix}${serviceShort}-location'
+        clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
+        clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
+        defaultGateway: '192.168.1.1'
+        deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
+        dnsServers: ['192.168.1.254']
+        domainFqdn: 'jumpstart.local'
+        domainOUPath: nestedDependencies.outputs.domainOUPath
+        startingIPAddress: '192.168.1.55'
+        endingIPAddress: '192.168.1.65'
+        enableStorageAutoIp: true
+        keyVaultName: nestedDependencies.outputs.keyVaultName
+        networkIntents: [
+          {
+            adapter: [
+              'FABRIC'
+              'FABRIC2'
+            ]
+            name: 'ManagementCompute'
+            overrideAdapterProperty: true
+            adapterPropertyOverrides: {
+              jumboPacket: '9014'
+              networkDirect: 'Disabled'
+              networkDirectTechnology: 'iWARP'
+            }
+            overrideQosPolicy: false
+            qosPolicyOverrides: {
+              bandwidthPercentageSMB: '50'
+              priorityValue8021ActionCluster: '7'
+              priorityValue8021ActionSMB: '3'
+            }
+            overrideVirtualSwitchConfiguration: false
+            virtualSwitchConfigurationOverrides: {
+              enableIov: 'true'
+              loadBalancingAlgorithm: 'Dynamic'
+            }
+            trafficType: [
+              'Management'
+              'Compute'
+            ]
           }
-          overrideQosPolicy: false
-          qosPolicyOverrides: {
-            bandwidthPercentageSMB: '50'
-            priorityValue8021ActionCluster: '7'
-            priorityValue8021ActionSMB: '3'
+          {
+            adapter: [
+              'StorageA'
+              'StorageB'
+            ]
+            name: 'Storage'
+            overrideAdapterProperty: true
+            adapterPropertyOverrides: {
+              jumboPacket: '9014'
+              networkDirect: 'Disabled'
+              networkDirectTechnology: 'iWARP'
+            }
+            overrideQosPolicy: true
+            qosPolicyOverrides: {
+              bandwidthPercentageSMB: '50'
+              priorityValue8021ActionCluster: '7'
+              priorityValue8021ActionSMB: '3'
+            }
+            overrideVirtualSwitchConfiguration: false
+            virtualSwitchConfigurationOverrides: {
+              enableIov: 'true'
+              loadBalancingAlgorithm: 'Dynamic'
+            }
+            trafficType: ['Storage']
           }
-          overrideVirtualSwitchConfiguration: false
-          virtualSwitchConfigurationOverrides: {
-            enableIov: 'true'
-            loadBalancingAlgorithm: 'Dynamic'
+        ]
+        storageConnectivitySwitchless: false
+        storageNetworks: [
+          {
+            name: 'Storage1Network'
+            adapterName: 'StorageA'
+            vlan: '711'
           }
-          trafficType: [
-            'Management'
-            'Compute'
-          ]
-        }
-        {
-          adapter: [
-            'StorageA'
-            'StorageB'
-          ]
-          name: 'Storage'
-          overrideAdapterProperty: true
-          adapterPropertyOverrides: {
-            jumboPacket: '9014'
-            networkDirect: 'Disabled'
-            networkDirectTechnology: 'iWARP'
+          {
+            name: 'Storage2Network'
+            adapterName: 'StorageB'
+            vlan: '712'
           }
-          overrideQosPolicy: true
-          qosPolicyOverrides: {
-            bandwidthPercentageSMB: '50'
-            priorityValue8021ActionCluster: '7'
-            priorityValue8021ActionSMB: '3'
-          }
-          overrideVirtualSwitchConfiguration: false
-          virtualSwitchConfigurationOverrides: {
-            enableIov: 'true'
-            loadBalancingAlgorithm: 'Dynamic'
-          }
-          trafficType: ['Storage']
-        }
-      ]
-      storageConnectivitySwitchless: false
-      storageNetworks: [
-        {
-          name: 'Storage1Network'
-          adapterName: 'StorageA'
-          vlan: '711'
-        }
-        {
-          name: 'Storage2Network'
-          adapterName: 'StorageB'
-          vlan: '712'
-        }
-      ]
-      subnetMask: '255.255.255.0'
-      driftControlEnforced: true
-      smbSigningEnforced: true
-      smbClusterEncryption: true
-      sideChannelMitigationEnforced: true
-      bitlockerBootVolume: true
-      bitlockerDataVolumes: true
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+        ]
+        subnetMask: '255.255.255.0'
+        driftControlEnforced: true
+        smbSigningEnforced: true
+        smbClusterEncryption: true
+        sideChannelMitigationEnforced: true
+        bitlockerBootVolume: true
+        bitlockerDataVolumes: true
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}
+]

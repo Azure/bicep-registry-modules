@@ -15,7 +15,7 @@ This module deploys a Container App Job.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
+| `Microsoft.App/jobs` | [2025-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/jobs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -327,14 +327,14 @@ module job 'br/public:avm/res/app/job:<version>' = {
       parallelism: 1
       replicaCompletionCount: 1
       scale: {
-        maxExecutions: 1
+        maxExecutions: 10
         minExecutions: 1
         pollingInterval: 55
         rules: [
           {
             auth: [
               {
-                secretRef: 'connectionString'
+                secretRef: 'connection-string'
                 triggerParameter: 'connection'
               }
             ]
@@ -342,7 +342,31 @@ module job 'br/public:avm/res/app/job:<version>' = {
               queueName: '<queueName>'
               storageAccountResourceId: '<storageAccountResourceId>'
             }
-            name: 'queue'
+            name: 'queue-connectionstring'
+            type: 'azure-queue'
+          }
+          {
+            auth: []
+            identity: '<identity>'
+            metadata: {
+              accountName: '<accountName>'
+              cloud: 'AzurePublicCloud'
+              queueLength: '2'
+              queueName: '<queueName>'
+            }
+            name: 'queue-identity-user'
+            type: 'azure-queue'
+          }
+          {
+            auth: []
+            identity: 'system'
+            metadata: {
+              accountName: '<accountName>'
+              cloud: 'AzurePublicCloud'
+              queueLength: '2'
+              queueName: '<queueName>'
+            }
+            name: 'queue-identity-system'
             type: 'azure-queue'
           }
         ]
@@ -492,14 +516,14 @@ module job 'br/public:avm/res/app/job:<version>' = {
         "parallelism": 1,
         "replicaCompletionCount": 1,
         "scale": {
-          "maxExecutions": 1,
+          "maxExecutions": 10,
           "minExecutions": 1,
           "pollingInterval": 55,
           "rules": [
             {
               "auth": [
                 {
-                  "secretRef": "connectionString",
+                  "secretRef": "connection-string",
                   "triggerParameter": "connection"
                 }
               ],
@@ -507,7 +531,31 @@ module job 'br/public:avm/res/app/job:<version>' = {
                 "queueName": "<queueName>",
                 "storageAccountResourceId": "<storageAccountResourceId>"
               },
-              "name": "queue",
+              "name": "queue-connectionstring",
+              "type": "azure-queue"
+            },
+            {
+              "auth": [],
+              "identity": "<identity>",
+              "metadata": {
+                "accountName": "<accountName>",
+                "cloud": "AzurePublicCloud",
+                "queueLength": "2",
+                "queueName": "<queueName>"
+              },
+              "name": "queue-identity-user",
+              "type": "azure-queue"
+            },
+            {
+              "auth": [],
+              "identity": "system",
+              "metadata": {
+                "accountName": "<accountName>",
+                "cloud": "AzurePublicCloud",
+                "queueLength": "2",
+                "queueName": "<queueName>"
+              },
+              "name": "queue-identity-system",
               "type": "azure-queue"
             }
           ]
@@ -663,14 +711,14 @@ param eventTriggerConfig = {
   parallelism: 1
   replicaCompletionCount: 1
   scale: {
-    maxExecutions: 1
+    maxExecutions: 10
     minExecutions: 1
     pollingInterval: 55
     rules: [
       {
         auth: [
           {
-            secretRef: 'connectionString'
+            secretRef: 'connection-string'
             triggerParameter: 'connection'
           }
         ]
@@ -678,7 +726,31 @@ param eventTriggerConfig = {
           queueName: '<queueName>'
           storageAccountResourceId: '<storageAccountResourceId>'
         }
-        name: 'queue'
+        name: 'queue-connectionstring'
+        type: 'azure-queue'
+      }
+      {
+        auth: []
+        identity: '<identity>'
+        metadata: {
+          accountName: '<accountName>'
+          cloud: 'AzurePublicCloud'
+          queueLength: '2'
+          queueName: '<queueName>'
+        }
+        name: 'queue-identity-user'
+        type: 'azure-queue'
+      }
+      {
+        auth: []
+        identity: 'system'
+        metadata: {
+          accountName: '<accountName>'
+          cloud: 'AzurePublicCloud'
+          queueLength: '2'
+          queueName: '<queueName>'
+        }
+        name: 'queue-identity-system'
         type: 'azure-queue'
       }
     ]
@@ -1454,6 +1526,7 @@ Scaling rules for the job.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auth`](#parameter-eventtriggerconfigscalerulesauth) | array | Authentication secrets for the scale rule. |
+| [`identity`](#parameter-eventtriggerconfigscalerulesidentity) | string | The resource ID of a user-assigned managed identity that is assigned to the Container App, or "system" for system-assigned identity. |
 
 ### Parameter: `eventTriggerConfig.scale.rules.metadata`
 
@@ -1518,6 +1591,13 @@ Name of the secret from which to pull the auth params.
 Trigger Parameter that uses the secret.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `eventTriggerConfig.scale.rules.identity`
+
+The resource ID of a user-assigned managed identity that is assigned to the Container App, or "system" for system-assigned identity.
+
+- Required: No
 - Type: string
 
 ### Parameter: `eventTriggerConfig.scale.maxExecutions`

@@ -82,6 +82,9 @@ output devCenterResourceId string = devCenter.id
 @description('The resource ID of the created DevCenter Project.')
 output devCenterProjectResourceId string = devCenterProject.id
 
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
+
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 

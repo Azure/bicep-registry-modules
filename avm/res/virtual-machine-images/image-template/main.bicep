@@ -18,14 +18,11 @@ param vmSize string = 'Standard_D2s_v3'
 @description('Optional. Specifies the size of OS disk.')
 param osDiskSizeGB int = 128
 
-@description('Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.')
-param subnetResourceId string?
-
 @description('Required. Image source definition in object format.')
-param imageSource object
+param imageSource resourceInput<'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01'>.properties.source
 
 @description('Optional. Customization steps to be run when building the VM image.')
-param customizationSteps array?
+param customizationSteps resourceInput<'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01'>.properties.customize?
 
 @description('Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn\'t exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\'t exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.')
 param stagingResourceGroupResourceId string?
@@ -35,7 +32,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01'>.tags?
 
 @description('Generated. Do not provide a value! This date is used to generate a unique image template name.')
 param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
@@ -51,7 +48,7 @@ param roleAssignments roleAssignmentType[]?
 param distributions distributionType[]
 
 @description('Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.')
-param vmUserAssignedIdentities array = []
+param vmUserAssignedIdentities string[] = []
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Required. The managed identity definition for this resource.')
@@ -89,7 +86,10 @@ param errorHandlingOnCustomizerError string = 'cleanup'
 param errorHandlingOnValidationError string = 'cleanup'
 
 @description('Optional. Tags that will be applied to the resource group and/or resources created by the service.')
-param managedResourceTags object?
+param managedResourceTags resourceInput<'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01'>.properties.managedResourceTags?
+
+@description('Optional. Optional configuration of the virtual network to use to deploy the build VM and validation VM in. Omit if no specific virtual network needs to be used.')
+param vnetConfig vnetConfigType?
 
 var identity = {
   type: 'UserAssigned'
@@ -156,9 +156,11 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
       vmSize: vmSize
       osDiskSizeGB: osDiskSizeGB
       userAssignedIdentities: vmUserAssignedIdentities
-      vnetConfig: !empty(subnetResourceId)
+      vnetConfig: !empty(vnetConfig)
         ? {
-            subnetId: subnetResourceId
+            subnetId: vnetConfig.?subnetResourceId
+            containerInstanceSubnetId: vnetConfig.?containerInstanceSubnetResourceId
+            proxyVmSize: vnetConfig.?proxyVmSize
           }
         : null
     }
@@ -386,4 +388,17 @@ type validationProcessType = {
 
   @description('Optional. If this field is set to true, the image specified in the \'source\' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image.')
   sourceValidationOnly: bool?
+}
+
+@export()
+@description('The type for the virtual network configuration.')
+type vnetConfigType = {
+  @description('Optional. Resource id of a pre-existing subnet on which the build VM and validation VM will be deployed.')
+  subnetResourceId: string?
+
+  @description('Optional. Resource id of a pre-existing subnet on which Azure Container Instance will be deployed for Isolated Builds. This field may be specified only if subnetResourceId is also specified and must be on the same Virtual Network as the subnet specified in subnetResourceId.')
+  containerInstanceSubnetResourceId: string?
+
+  @description('Optional. Size of the proxy virtual machine used to pass traffic to the build VM and validation VM. This must not be specified if containerInstanceSubnetResourceId is specified because no proxy virtual machine is deployed in that case. Omit or specify empty string to use the default (Standard_A1_v2).')
+  proxyVmSize: string?
 }

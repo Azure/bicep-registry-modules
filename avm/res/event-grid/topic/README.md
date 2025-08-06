@@ -17,11 +17,11 @@ This module deploys an Event Grid Topic.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/topics` | [2021-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2021-06-01-preview/topics) |
-| `Microsoft.EventGrid/topics/eventSubscriptions` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/topics/eventSubscriptions) |
+| `Microsoft.EventGrid/topics` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics) |
+| `Microsoft.EventGrid/topics/eventSubscriptions` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics/eventSubscriptions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -37,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the minimum set of required parameters while demonstrating managed identity delivery and private endpoints.
 
 
 <details>
@@ -51,7 +51,44 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     // Required parameters
     name: 'egtmin001'
     // Non-required parameters
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        name: 'egtmin001'
+      }
+    ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'topic'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
   }
 }
 ```
@@ -73,8 +110,53 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": "egtmin001"
     },
     // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "name": "egtmin001"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "topic",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     }
   }
 }
@@ -93,7 +175,44 @@ using 'br/public:avm/res/event-grid/topic:<version>'
 // Required parameters
 param name = 'egtmin001'
 // Non-required parameters
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    name: 'egtmin001'
+  }
+]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
 ```
 
 </details>
@@ -115,6 +234,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     // Required parameters
     name: 'egtmax001'
     // Non-required parameters
+    dataResidencyBoundary: 'WithinRegion'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -131,12 +251,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     ]
     eventSubscriptions: [
       {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
           }
         }
         eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -147,7 +273,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
         name: 'egtmax001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -158,11 +284,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         ipMask: '40.74.28.0/23'
       }
     ]
+    inputSchema: 'CloudEventSchemaV1_0'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -184,6 +317,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
+        service: 'topic'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -199,9 +333,11 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
             }
           ]
         }
+        service: 'topic'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
@@ -247,6 +383,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": "egtmax001"
     },
     // Non-required parameters
+    "dataResidencyBoundary": {
+      "value": "WithinRegion"
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -266,12 +405,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     "eventSubscriptions": {
       "value": [
         {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
             }
           },
           "eventDeliverySchema": "CloudEventSchemaV1_0",
@@ -282,7 +427,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           },
           "name": "egtmax001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -296,6 +441,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
       ]
     },
+    "inputSchema": {
+      "value": "CloudEventSchemaV1_0"
+    },
     "location": {
       "value": "<location>"
     },
@@ -304,6 +452,16 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "minimumTlsVersionAllowed": {
+      "value": "1.2"
     },
     "privateEndpoints": {
       "value": [
@@ -327,6 +485,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
+          "service": "topic",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -342,9 +501,13 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
               }
             ]
           },
+          "service": "topic",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "roleAssignments": {
       "value": [
@@ -391,6 +554,7 @@ using 'br/public:avm/res/event-grid/topic:<version>'
 // Required parameters
 param name = 'egtmax001'
 // Non-required parameters
+param dataResidencyBoundary = 'WithinRegion'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -407,12 +571,18 @@ param diagnosticSettings = [
 ]
 param eventSubscriptions = [
   {
-    destination: {
-      endpointType: 'StorageQueue'
-      properties: {
-        queueMessageTimeToLiveInSeconds: 86400
-        queueName: '<queueName>'
-        resourceId: '<resourceId>'
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
       }
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -423,7 +593,7 @@ param eventSubscriptions = [
     }
     name: 'egtmax001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -434,11 +604,18 @@ param inboundIpRules = [
     ipMask: '40.74.28.0/23'
   }
 ]
+param inputSchema = 'CloudEventSchemaV1_0'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -460,6 +637,7 @@ param privateEndpoints = [
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    service: 'topic'
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -475,9 +653,11 @@ param privateEndpoints = [
         }
       ]
     }
+    service: 'topic'
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
     name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
@@ -539,12 +719,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     ]
     eventSubscriptions: [
       {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
           }
         }
         eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -555,7 +741,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
         name: 'egtwaf001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -565,6 +751,11 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     privateEndpoints: [
       {
@@ -584,6 +775,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -629,12 +821,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     "eventSubscriptions": {
       "value": [
         {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
             }
           },
           "eventDeliverySchema": "CloudEventSchemaV1_0",
@@ -645,7 +843,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           },
           "name": "egtwaf001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -661,6 +859,13 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "privateEndpoints": {
@@ -682,6 +887,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           }
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "tags": {
       "value": {
@@ -723,12 +931,18 @@ param diagnosticSettings = [
 ]
 param eventSubscriptions = [
   {
-    destination: {
-      endpointType: 'StorageQueue'
-      properties: {
-        queueMessageTimeToLiveInSeconds: 86400
-        queueName: '<queueName>'
-        resourceId: '<resourceId>'
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
       }
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -739,7 +953,7 @@ param eventSubscriptions = [
     }
     name: 'egtwaf001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -749,6 +963,11 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param privateEndpoints = [
   {
@@ -768,6 +987,7 @@ param privateEndpoints = [
     }
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -790,14 +1010,21 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataResidencyBoundary`](#parameter-dataresidencyboundary) | string | Data residency boundary for the topic. Controls where event data can be stored and processed. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
+| [`eventTypeInfo`](#parameter-eventtypeinfo) | object | Event type information for the topic. Used to define custom event types. |
+| [`extendedLocation`](#parameter-extendedlocation) | object | Extended location for the topic (e.g., Edge Zones). |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
+| [`inputSchema`](#parameter-inputschema) | string | This determines the format that Event Grid should expect for incoming events published to the topic. |
+| [`inputSchemaMapping`](#parameter-inputschemamapping) | object | Input schema mapping for custom event schema. This is the full mapping object including fields and default values. |
+| [`kind`](#parameter-kind) | string | The kind of topic resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`minimumTlsVersionAllowed`](#parameter-minimumtlsversionallowed) | string | Minimum TLS version of the publisher allowed to publish to this topic. For security reasons, it is recommended to use TLS 1.2. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -809,6 +1036,20 @@ The name of the Event Grid Topic.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `dataResidencyBoundary`
+
+Data residency boundary for the topic. Controls where event data can be stored and processed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'WithinGeopair'
+    'WithinRegion'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -978,7 +1219,124 @@ Event subscriptions to deploy.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-eventsubscriptionsname) | string | The name of the event subscription. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-eventsubscriptionsdestination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterDestination`](#parameter-eventsubscriptionsdeadletterdestination) | object | Dead Letter Destination. |
+| [`deadLetterWithResourceIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentity) | object | Dead Letter with Resource Identity Configuration. |
+| [`deliveryWithResourceIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentity) | object | Delivery with Resource Identity Configuration. |
+| [`eventDeliverySchema`](#parameter-eventsubscriptionseventdeliveryschema) | string | The event delivery schema for the event subscription. |
+| [`expirationTimeUtc`](#parameter-eventsubscriptionsexpirationtimeutc) | string | The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ). |
+| [`filter`](#parameter-eventsubscriptionsfilter) | object | The filter for the event subscription. |
+| [`labels`](#parameter-eventsubscriptionslabels) | array | The list of user defined labels. |
+| [`retryPolicy`](#parameter-eventsubscriptionsretrypolicy) | object | The retry policy for events. |
+
+### Parameter: `eventSubscriptions.name`
+
+The name of the event subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventSubscriptions.destination`
+
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterDestination`
+
+Dead Letter Destination.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity`
+
+Dead Letter with Resource Identity Configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity`
+
+Delivery with Resource Identity Configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.eventDeliverySchema`
+
+The event delivery schema for the event subscription.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CloudEventSchemaV1_0'
+    'CustomInputSchema'
+    'EventGridEvent'
+    'EventGridSchema'
+  ]
+  ```
+
+### Parameter: `eventSubscriptions.expirationTimeUtc`
+
+The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.filter`
+
+The filter for the event subscription.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.labels`
+
+The list of user defined labels.
+
+- Required: No
+- Type: array
+
+### Parameter: `eventSubscriptions.retryPolicy`
+
+The retry policy for events.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventTypeInfo`
+
+Event type information for the topic. Used to define custom event types.
+
+- Required: No
+- Type: object
+
+### Parameter: `extendedLocation`
+
+Extended location for the topic (e.g., Edge Zones).
+
+- Required: No
+- Type: object
 
 ### Parameter: `inboundIpRules`
 
@@ -987,6 +1345,44 @@ This can be used to restrict traffic from specific IPs instead of all IPs. Note:
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `inputSchema`
+
+This determines the format that Event Grid should expect for incoming events published to the topic.
+
+- Required: No
+- Type: string
+- Default: `'EventGridSchema'`
+- Allowed:
+  ```Bicep
+  [
+    'CloudEventSchemaV1_0'
+    'CustomEventSchema'
+    'EventGridSchema'
+  ]
+  ```
+
+### Parameter: `inputSchemaMapping`
+
+Input schema mapping for custom event schema. This is the full mapping object including fields and default values.
+
+- Required: No
+- Type: object
+
+### Parameter: `kind`
+
+The kind of topic resource.
+
+- Required: No
+- Type: string
+- Default: `'Azure'`
+- Allowed:
+  ```Bicep
+  [
+    'Azure'
+    'AzureArc'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -1059,6 +1455,22 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `minimumTlsVersionAllowed`
+
+Minimum TLS version of the publisher allowed to publish to this topic. For security reasons, it is recommended to use TLS 1.2.
+
+- Required: No
+- Type: string
+- Default: `'1.2'`
+- Allowed:
+  ```Bicep
+  [
+    '1.0'
+    '1.1'
+    '1.2'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -1618,7 +2030,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

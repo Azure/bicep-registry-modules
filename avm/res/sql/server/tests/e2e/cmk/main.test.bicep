@@ -12,8 +12,7 @@ metadata description = 'This instance deploys the module with Customer-Managed-K
 param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-// param resourceLocation string = deployment().location
-var resourceLocation = 'eastasia'
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sscmk'
@@ -42,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    databaseIdentityName: 'dep-${namePrefix}-msidb-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -76,6 +76,29 @@ module testDeployment '../../../main.bicep' = [
         keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
         autoRotationEnabled: true
       }
+      databases: [
+        {
+          name: '${namePrefix}-${serviceShort}-db'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.databaseIdentityResourceId
+            ]
+          }
+          customerManagedKey: {
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            keyName: nestedDependencies.outputs.keyVaultDatabaseKeyName
+            keyVersion: last(split(nestedDependencies.outputs.keyVaultDatabaseEncryptionKeyUrl, '/'))
+            autoRotationEnabled: true
+          }
+          sku: {
+            name: 'Basic'
+            tier: 'Basic'
+          }
+          maxSizeBytes: 2147483648
+          zoneRedundant: false
+          availabilityZone: -1
+        }
+      ]
     }
   }
 ]

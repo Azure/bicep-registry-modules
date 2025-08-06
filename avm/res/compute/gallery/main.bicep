@@ -41,13 +41,13 @@ param roleAssignments roleAssignmentType[]?
   }
   '''
 })
-param tags object?
+param tags resourceInput<'Microsoft.Compute/galleries@2024-03-03'>.tags?
 
 @sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
-param sharingProfile object?
+param sharingProfile resourceInput<'Microsoft.Compute/galleries@2024-03-03'>.properties.sharingProfile?
 
 @sys.description('Optional. Soft deletion policy of the gallery.')
-param softDeletePolicy object?
+param softDeletePolicy resourceInput<'Microsoft.Compute/galleries@2024-03-03'>.properties.softDeletePolicy?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -209,7 +209,7 @@ output name string = gallery.name
 output location string = gallery.location
 
 @sys.description('The resource ids of the deployed images.')
-output imageResourceIds array = [
+output imageResourceIds string[] = [
   for index in range(0, length(images ?? [])): galleries_images[index].outputs.resourceId
 ]
 
@@ -217,7 +217,7 @@ output imageResourceIds array = [
 //   Definitions   //
 // =============== //
 
-import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
+import { identifierType, purchasePlanType, resourceRangeType } from 'image/main.bicep'
 @export()
 @sys.description('The type of an image.')
 type imageType = {
@@ -228,6 +228,9 @@ type imageType = {
 
   @sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
   description: string?
+
+  @sys.description('Optional. Tags for all the image.')
+  tags: resourceInput<'Microsoft.Compute/galleries/images@2024-03-03'>.tags?
 
   @sys.description('Optional. Must be set to true if the gallery image features are being updated.')
   allowUpdateImage: bool?
@@ -250,7 +253,7 @@ type imageType = {
   @sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
   hyperVGeneration: ('V1' | 'V2')?
 
-  @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.')
+  @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, \'TrustedLaunch\' is required.')
   securityType: (
     | 'Standard'
     | 'ConfidentialVM'
@@ -325,5 +328,5 @@ type applicationType = {
   customActions: customActionType[]?
 
   @sys.description('Optional. Tags for all resources.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Compute/galleries/applications@2024-03-03'>.tags?
 }

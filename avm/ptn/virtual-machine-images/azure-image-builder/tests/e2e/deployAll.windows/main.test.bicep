@@ -36,7 +36,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       deploymentsToPerform: iteration == 'init' ? 'All' : 'Only base' // Restricting to only infra on re-run as we don't want to back 2 images but only test idempotency
       resourceGroupName: resourceGroupName
-      imageTemplateResourceGroupName: '' // Setting to empty as a custom staging resource group currently fails the creation of a windows image for an unknown reason
+      imageTemplateResourceGroupName: '' // Setting to empty to test a path without a dedicated build resource group
       location: resourceLocation
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName

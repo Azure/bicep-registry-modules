@@ -1,4 +1,4 @@
-# Azure Cosmos DB for MongoDB (vCore) cluster user `[Microsoft.DocumentDB/mongoClusters]`
+# Azure Cosmos DB for MongoDB (vCore) cluster user `[Microsoft.DocumentDB/mongoClusters/users]`
 
 This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication.
 
@@ -12,7 +12,7 @@ This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DocumentDB/mongoClusters/users` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/mongoClusters) |
+| `Microsoft.DocumentDB/mongoClusters/users` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-01-preview/mongoClusters/users) |
 
 ## Parameters
 

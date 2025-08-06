@@ -18,7 +18,7 @@ This module deploys a Storage Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
@@ -629,6 +629,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock note.'
     }
     managedIdentities: {
       systemAssigned: true
@@ -1180,7 +1181,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock note."
       }
     },
     "managedIdentities": {
@@ -1731,6 +1733,7 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock note.'
 }
 param managedIdentities = {
   systemAssigned: true
@@ -3384,7 +3387,7 @@ param tags = {
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
-| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
+| [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
 | [`localUsers`](#parameter-localusers) | array | Local users to deploy for SFTP authentication. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -3400,7 +3403,7 @@ param tags = {
 | [`sasExpirationAction`](#parameter-sasexpirationaction) | string | The SAS expiration action. Allowed values are Block and Log. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
+| [`skuName`](#parameter-skuname) | string | Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage. |
 | [`supportsHttpsTrafficOnly`](#parameter-supportshttpstrafficonly) | bool | Allows HTTPS traffic only to storage service if sets to true. |
 | [`tableServices`](#parameter-tableservices) | object | Table service and tables to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -3435,7 +3438,6 @@ If true, enables Hierarchical Namespace for the storage account. Required if ena
 
 - Required: No
 - Type: bool
-- Default: `False`
 
 ### Parameter: `allowBlobPublicAccess`
 
@@ -3585,10 +3587,9 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -3619,42 +3620,6 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups`
-
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
-
-Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -3698,7 +3663,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of the diagnostic setting.
+The name of diagnostic setting.
 
 - Required: No
 - Type: string
@@ -3805,7 +3770,7 @@ Type of Storage Account to create.
 
 ### Parameter: `largeFileSharesState`
 
-Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
+Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).
 
 - Required: No
 - Type: string
@@ -3967,6 +3932,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -3986,6 +3952,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4318,6 +4291,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -4337,6 +4311,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4777,7 +4758,7 @@ The connectionString2 secret name to create.
 
 ### Parameter: `skuName`
 
-Storage Account Sku Name.
+Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.
 
 - Required: No
 - Type: string
@@ -4787,12 +4768,18 @@ Storage Account Sku Name.
   [
     'Premium_LRS'
     'Premium_ZRS'
+    'PremiumV2_LRS'
+    'PremiumV2_ZRS'
     'Standard_GRS'
     'Standard_GZRS'
     'Standard_LRS'
     'Standard_RAGRS'
     'Standard_RAGZRS'
     'Standard_ZRS'
+    'StandardV2_GRS'
+    'StandardV2_GZRS'
+    'StandardV2_LRS'
+    'StandardV2_ZRS'
   ]
   ```
 
@@ -4832,8 +4819,8 @@ Tags of the resource.
 | `privateEndpoints` | array | The private endpoints of the Storage Account. |
 | `resourceGroupName` | string | The resource group of the deployed storage account. |
 | `resourceId` | string | The resource ID of the deployed storage account. |
+| `secondaryAccessKey` | securestring | The secondary access key of the storage account. |
 | `secondaryConnectionString` | securestring | The secondary connection string of the storage account. |
-| `secondayAccessKey` | securestring | The secondary access key of the storage account. |
 | `serviceEndpoints` | object | All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
@@ -4844,7 +4831,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

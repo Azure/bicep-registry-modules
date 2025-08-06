@@ -185,7 +185,7 @@ var alzCustomPolicySetDefsJson = [
   }
 ]
 
-var managementGroupCustomRoleDefinitions = [
+var managementGroupCustomPolicyDefinitions = [
   for policy in alzCustomPolicyDefsJson: {
     name: policy.name
     properties: {
@@ -292,7 +292,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      managementGroupCustomPolicyDefinitions: managementGroupCustomRoleDefinitions
+      managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
       managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
     }
   }

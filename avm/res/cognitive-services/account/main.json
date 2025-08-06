@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "9655178964283118758"
+      "version": "0.36.177.2456",
+      "templateHash": "5404723217434785240"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -227,6 +227,113 @@
         "description": "The type of the secrets exported to the provided Key Vault."
       }
     },
+    "commitmentPlanType": {
+      "type": "object",
+      "properties": {
+        "autoRenew": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether the plan should auto-renew at the end of the current commitment period."
+          }
+        },
+        "current": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The number of committed instances (e.g., number of containers or cores)."
+              }
+            },
+            "tier": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tier of the commitment plan (e.g., T1, T2)."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The current commitment configuration."
+          }
+        },
+        "hostingModel": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web)."
+          }
+        },
+        "planType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON)."
+          }
+        },
+        "commitmentPlanGuid": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of an existing commitment plan to update. Set to null to create a new plan."
+          }
+        },
+        "next": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The number of committed instances for the next period."
+              }
+            },
+            "tier": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tier for the next commitment period."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The configuration of the next commitment period, if scheduled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a disconnected container commitment plan."
+      }
+    },
+    "networkInjectionType": {
+      "type": "object",
+      "properties": {
+        "scenario": {
+          "type": "string",
+          "allowedValues": [
+            "agent",
+            "none"
+          ],
+          "metadata": {
+            "description": "Required. The scenario for the network injection."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Resource ID of the subnet on the Virtual Network on which to inject."
+          }
+        },
+        "useMicrosoftManagedNetwork": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to use Microsoft Managed Network. Defaults to false."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -249,7 +356,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -291,7 +398,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -332,7 +439,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -361,7 +468,7 @@
       "metadata": {
         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -398,7 +505,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -520,7 +627,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -545,12 +652,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -578,7 +692,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -720,7 +834,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -795,7 +909,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -811,7 +925,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -875,7 +989,8 @@
         "S6",
         "S7",
         "S8",
-        "S9"
+        "S9",
+        "DC0"
       ],
       "metadata": {
         "description": "Optional. SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
@@ -921,6 +1036,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
+      }
+    },
+    "networkInjections": {
+      "$ref": "#/definitions/networkInjectionType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
       }
     },
     "privateEndpoints": {
@@ -1015,10 +1137,13 @@
     },
     "userOwnedStorage": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.CognitiveServices/accounts@2025-04-01-preview#properties/properties/properties/userOwnedStorage"
+        },
         "description": "Optional. The storage accounts for this resource."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
@@ -1056,6 +1181,16 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Enable/Disable project management feature for AI Foundry."
+      }
+    },
+    "commitmentPlans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/commitmentPlanType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Commitment plans to deploy for the cognitive services account."
       }
     }
   },
@@ -1108,7 +1243,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1137,7 +1272,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1153,7 +1288,7 @@
     },
     "cognitiveService": {
       "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "identity": "[variables('identity')]",
@@ -1166,6 +1301,7 @@
         "allowProjectManagement": "[parameters('allowProjectManagement')]",
         "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
+        "networkInjections": "[if(not(empty(parameters('networkInjections'))), createArray(createObject('scenario', tryGet(parameters('networkInjections'), 'scenario'), 'subnetArmId', tryGet(parameters('networkInjections'), 'subnetResourceId'), 'useMicrosoftManagedNetwork', coalesce(tryGet(parameters('networkInjections'), 'useMicrosoftManagedNetwork'), false()))), null())]",
         "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
         "apiProperties": "[parameters('apiProperties')]",
@@ -1174,7 +1310,7 @@
         "migrationToken": "[parameters('migrationToken')]",
         "restore": "[parameters('restore')]",
         "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
-        "userOwnedStorage": "[parameters('userOwnedStorage')]",
+        "userOwnedStorage": "[if(not(empty(parameters('userOwnedStorage'))), parameters('userOwnedStorage'), null())]",
         "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
       },
       "dependsOn": [
@@ -1191,7 +1327,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
       "properties": {
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
@@ -1211,8 +1347,21 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
+      "dependsOn": [
+        "cognitiveService"
+      ]
+    },
+    "cognitiveService_commitmentPlans": {
+      "copy": {
+        "name": "cognitiveService_commitmentPlans",
+        "count": "[length(coalesce(parameters('commitmentPlans'), createArray()))]"
+      },
+      "type": "Microsoft.CognitiveServices/accounts/commitmentPlans",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}', coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].hostingModel, coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].planType))]",
+      "properties": "[coalesce(parameters('commitmentPlans'), createArray())[copyIndex()]]",
       "dependsOn": [
         "cognitiveService"
       ]
@@ -2054,7 +2203,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key2)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-06-01').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-06-01').key2)), createArray()))]"
           }
         },
         "template": {
@@ -2064,8 +2213,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1200612323329026557"
+              "version": "0.36.177.2456",
+              "templateHash": "3723512518520185794"
             }
           },
           "definitions": {
@@ -2143,7 +2292,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -2152,7 +2301,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -2227,14 +2376,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('cognitiveService', '2025-04-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('cognitiveService', '2025-06-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('cognitiveService', '2025-04-01-preview', 'full').location]"
+      "value": "[reference('cognitiveService', '2025-06-01', 'full').location]"
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
