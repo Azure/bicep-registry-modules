@@ -24,7 +24,7 @@ param serviceShort string = 'ashact'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
-// nestedDependencies//
+// Dependencies //
 // ============ //
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
@@ -32,7 +32,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies './dependencies.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
