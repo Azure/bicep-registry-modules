@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
-metadata name = 'WAF-aligned (Resource Group scope)'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using only defaults (Management Group scope)'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'arargwaf'
+param serviceShort string = 'aramgmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -29,7 +29,7 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
@@ -37,9 +37,10 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
     location: resourceLocation
   }
 }
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: az.resourceGroup(subscriptionId, resourceGroupName)
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-${serviceShort}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
@@ -53,14 +54,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../mg-scope/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+    roleDefinitionIdOrName: 'Resource Policy Contributor'
     principalType: 'ServicePrincipal'
     location: resourceLocation
-    subscriptionId: subscriptionId
-    resourceGroupName: resourceGroup.outputs.name
   }
 }

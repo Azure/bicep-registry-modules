@@ -87,8 +87,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
                     versionFileExists                  = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule            = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
-                    isMultiScopeParentModule           = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                    isMultiScopeChildModule            = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeParentModule           = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                 }
             }
         }
@@ -181,8 +181,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                         moduleType               = $moduleType
                         isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         versionFileExists        = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                        isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
-
+                        isMultiScopeChildModule  = $moduleFolderPath -match '[\/|\\](rg|sub|mg)\-scope$'
                     }
                 }
             }
@@ -223,7 +222,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.isMultiScopeParentModule }) {
 
             param(
                 [string] $moduleFolderPath
@@ -233,7 +232,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
 
             param(
                 [string] $moduleFolderPath
@@ -247,6 +246,54 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
             $defaultsFolder | Should -Not -BeNullOrEmpty
+        }
+
+        # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
+        It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*waf-aligned `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+            $wafAlignedFolders = (Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned').Name
+
+            $multiScopeModuleFolders = (Get-ChildItem -Path $moduleFolderPath -Filter '*-scope' -Directory).Name
+            $expectedFolders = $multiScopeModuleFolders | ForEach-Object { "$_*.waf-aligned" }
+
+            $missingFolders = @()
+            foreach ($expectedFolder in $expectedFolders) {
+                $matchingFolderExists = $wafAlignedFolders | Where-Object {
+                    $_ -like $expectedFolder
+                }
+                if (-not $matchingFolderExists) {
+                    $missingFolders += $expectedFolder
+                }
+            }
+
+            $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*waf-aligned] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
+        }
+
+        # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
+        It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*defaults `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+            $wafAlignedFolders = (Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults').Name
+
+            $multiScopeModuleFolders = (Get-ChildItem -Path $moduleFolderPath -Filter '*-scope' -Directory).Name
+            $expectedFolders = $multiScopeModuleFolders | ForEach-Object { "$_*.defaults" }
+
+            $missingFolders = @()
+            foreach ($expectedFolder in $expectedFolders) {
+                $matchingFolderExists = $wafAlignedFolders | Where-Object {
+                    $_ -like $expectedFolder
+                }
+                if (-not $matchingFolderExists) {
+                    $missingFolders += $expectedFolder
+                }
+            }
+
+            $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*defaults] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
         }
 
         It '[<moduleFolderName>] Top-level module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
@@ -576,7 +623,7 @@ Describe 'Module tests' -Tag 'Module' {
                     isTopLevelModule         = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType               = $moduleType
                     versionFileExists        = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeChildModule  = $moduleFolderPath -match '[\/|\\](rg|sub|mg)\-scope$'
                     isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
 
                 }
@@ -1976,15 +2023,39 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                         $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
                         $deploymentTestFileTestCases += @{
-                            testName                = Split-Path (Split-Path $testFilePath) -Leaf
-                            testFilePath            = $testFilePath
-                            testFileContent         = $testFileContent
-                            compiledTestFileContent = $builtTestFileMap[$testFilePath]
-                            moduleFolderName        = $resourceTypeIdentifier
-                            moduleType              = $moduleType
+                            testName                 = Split-Path (Split-Path $testFilePath) -Leaf
+                            testFilePath             = $testFilePath
+                            testFileContent          = $testFileContent
+                            compiledTestFileContent  = $builtTestFileMap[$testFilePath]
+                            moduleFolderName         = $resourceTypeIdentifier
+                            moduleType               = $moduleType
+                            isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         }
                     }
                 }
+            }
+        }
+
+        It '[<moduleFolderName>] Multi-scope module test cases must directly reference the multi-scoped module they are validating.' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $testFilePath
+            )
+
+            $matchesRegex = $testFilePath -match '.+[\\|\/](mg\-scope|sub\-scope|rg\-scope).*'
+            if ($matchesRegex) {
+                $expectedScope = $matches[1]
+                $testFileContent = Get-Content -Path $testFilePath
+                $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = .*[\[|\{]$") | ForEach-Object { $_.LineNumber - 1 })[0]
+
+                if (-not $testIndex) {
+                    throw ('Unable to identify the test deployment (module testDeployment) in test file [{0}]' -f $testFilePath)
+                }
+
+                $testFileContent[$testIndex] | Should -Match ("^module testDeployment '\.\..*\/$($expectedScope -replace '-', '\-')\/.*main.bicep' = .*[\[|\{]$") -Because 'multi-scope test cases must directly reference the multi-scope module they are validating (e.g., "module testDeployment ''../../rg-scope/main.bicep''").'
+            } else {
+                throw "The test case was unable to identify the scope in path [$testFilePath]."
             }
         }
 

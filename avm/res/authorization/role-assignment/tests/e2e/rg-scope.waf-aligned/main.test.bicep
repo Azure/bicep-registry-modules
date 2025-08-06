@@ -1,7 +1,7 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
-metadata name = 'Using large parameter set (Subscription scope)'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'WAF-aligned (Resource Group scope)'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'arasubmax'
+param serviceShort string = 'arargwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -29,15 +29,11 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
-  scope: subscription('${subscriptionId}')
-  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
-  params: {
-    name: resourceGroupName
-    location: resourceLocation
-  }
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
 }
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -54,14 +50,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../rg-scope/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
+  scope: resourceGroup
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Reader'
-    description: 'Role Assignment (subscription scope)'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11' // AcrDelete
     principalType: 'ServicePrincipal'
-    location: resourceLocation
-    subscriptionId: subscriptionId
   }
 }

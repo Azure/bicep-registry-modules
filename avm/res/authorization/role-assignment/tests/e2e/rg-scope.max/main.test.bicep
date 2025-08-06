@@ -1,7 +1,7 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
-metadata name = 'WAF-aligned (Subscription scope)'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using large parameter set (Resource Group scope)'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'arasubwaf'
+param serviceShort string = 'arargmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -29,14 +29,9 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
-  scope: subscription('${subscriptionId}')
-  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
-  params: {
-    name: resourceGroupName
-    location: resourceLocation
-  }
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -55,16 +50,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../rg-scope/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
+  scope: resourceGroup
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    )
+    roleDefinitionIdOrName: 'Reader'
+    description: 'Role Assignment (resource group scope)'
     principalType: 'ServicePrincipal'
-    location: resourceLocation
-    subscriptionId: subscriptionId
   }
 }
