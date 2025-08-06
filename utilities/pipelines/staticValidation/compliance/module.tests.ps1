@@ -232,6 +232,23 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
+
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+
+            # only one Domain-Services instance can be provisioned in a tenant and only one test (the waf-aligned) is possible.
+            if ($moduleFolderName.Equals('res/aad/domain-service')) {
+                Set-ItResult -Skipped -Because 'only one instance of the Domain-Service can be deployed at a time, and as such, also only one test can exist at a time.'
+                return
+            }
+
+            $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
+            $defaultsFolder | Should -Not -BeNullOrEmpty
+        }
+
         # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
         It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*waf-aligned `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
 
@@ -254,22 +271,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
 
             $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*waf-aligned] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
-        }
-
-        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
-
-            param(
-                [string] $moduleFolderPath
-            )
-
-            # only one Domain-Services instance can be provisioned in a tenant and only one test (the waf-aligned) is possible.
-            if ($moduleFolderName.Equals('res/aad/domain-service')) {
-                Set-ItResult -Skipped -Because 'only one instance of the Domain-Service can be deployed at a time, and as such, also only one test can exist at a time.'
-                return
-            }
-
-            $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
-            $defaultsFolder | Should -Not -BeNullOrEmpty
         }
 
         # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
