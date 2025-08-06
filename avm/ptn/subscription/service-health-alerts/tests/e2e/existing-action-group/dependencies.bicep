@@ -15,7 +15,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
 }
 
 module actionGroup 'br/public:avm/res/insights/action-group:0.7.0' = {
-  scope: resourceGroup(rg.name)
+  scope: rg
   params: {
     name: actionGroupName
     groupShortName: take(actionGroupName, 12)
@@ -23,6 +23,8 @@ module actionGroup 'br/public:avm/res/insights/action-group:0.7.0' = {
   }
 }
 
+@description('The name of the created resource group for the dependency resources.')
 output resourceGroupName string = rg.name
-output actionGroupName string = actionGroup.outputs.name
+
+@description('The resource Id of the created action group.')
 output actionGroupResourceId string = actionGroup.outputs.resourceId
