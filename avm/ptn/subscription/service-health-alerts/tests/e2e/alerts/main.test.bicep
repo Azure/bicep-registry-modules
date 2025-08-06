@@ -27,12 +27,9 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-module dependencies './dependencies.bicep' = {
-  scope: subscription(subscriptionId)
-  params: {
-    resourceGroupName: resourceGroupName
-    location: resourceLocation
-  }
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: resourceLocation
 }
 
 // ============== //
@@ -44,7 +41,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionId: subscriptionId
     location: resourceLocation
-    serviceHealthAlertsResourceGroupName: dependencies.outputs.resourceGroupName
+    serviceHealthAlertsResourceGroupName: resourceGroup.name
     serviceHealthAlerts: [
       {
         serviceHealthAlert: 'Service Health Incident'

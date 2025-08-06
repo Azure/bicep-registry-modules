@@ -24,15 +24,12 @@ param serviceShort string = 'ashmin'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
-// Dependencies //
+// General resources //
 // ============ //
 
-module dependencies './dependencies.bicep' = {
-  scope: subscription(subscriptionId)
-  params: {
-    resourceGroupName: resourceGroupName
-    location: resourceLocation
-  }
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: resourceLocation
 }
 
 // ============== //
@@ -44,7 +41,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionId: subscriptionId
     location: resourceLocation
-    serviceHealthAlertsResourceGroupName: dependencies.outputs.resourceGroupName
+    serviceHealthAlertsResourceGroupName: resourceGroup.name
     enableTelemetry: true
   }
 }
