@@ -6,11 +6,6 @@ metadata description = 'This instance deploys the module with the minimum set of
 // ========== //
 // Parameters //
 // ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-ash-${namePrefix}-${serviceShort}-rg'
-
 @description('Required. The subscription ID to deploy service health alerts to. If not provided, the current subscription will be used.')
 param subscriptionId string = subscription().subscriptionId
 
