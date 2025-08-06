@@ -15,7 +15,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
 }
 
 module actionGroup 'br/public:avm/res/insights/action-group:0.7.0' = {
-  scope: resourceGroup(rg.name)
+  scope: rg
   params: {
     name: actionGroupName
     groupShortName: take(actionGroupName, 12)
