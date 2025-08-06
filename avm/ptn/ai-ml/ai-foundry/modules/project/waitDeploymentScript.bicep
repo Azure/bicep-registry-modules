@@ -12,7 +12,7 @@ resource waitScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   location: location
   kind: 'AzurePowerShell'
   properties: {
-    azPowerShellVersion: 'az10.0'
+    azPowerShellVersion: '11.0'
     scriptContent: 'Write-Host "Waiting for ${seconds} seconds..." ; Start-Sleep -Seconds ${seconds}; Write-Host "Wait complete."'
     timeout: 'P1D'
     cleanupPreference: 'OnSuccess'

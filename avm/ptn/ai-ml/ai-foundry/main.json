@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1245084359903085231"
+      "templateHash": "12417480027786627402"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20141,7 +20141,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8675293175169315830"
+              "templateHash": "15056443466405511968"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20545,7 +20545,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "12025359460129072426"
+                      "templateHash": "5513090580956885107"
                     }
                   },
                   "parameters": {
@@ -20576,7 +20576,7 @@
                       "location": "[parameters('location')]",
                       "kind": "AzurePowerShell",
                       "properties": {
-                        "azPowerShellVersion": "az10.0",
+                        "azPowerShellVersion": "11.0",
                         "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
                         "timeout": "P1D",
                         "cleanupPreference": "OnSuccess",
@@ -20820,7 +20820,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "12025359460129072426"
+                      "templateHash": "5513090580956885107"
                     }
                   },
                   "parameters": {
@@ -20851,7 +20851,7 @@
                       "location": "[parameters('location')]",
                       "kind": "AzurePowerShell",
                       "properties": {
-                        "azPowerShellVersion": "az10.0",
+                        "azPowerShellVersion": "11.0",
                         "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
                         "timeout": "P1D",
                         "cleanupPreference": "OnSuccess",
