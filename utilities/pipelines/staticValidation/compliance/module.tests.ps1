@@ -232,7 +232,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
-
         It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
 
             param(
