@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using probes'
+metadata description = 'This instance deploys the module with container probes.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-azd-acrcontainerapp-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'acamin'
+param serviceShort string = 'aca#_namePrefix_#'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -53,6 +53,23 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       containerAppsEnvironmentName: nestedDependencies.outputs.containerAppsEnvironmentName
       location: resourceLocation
+      containerProbes: [
+        {
+          type: 'Liveness'
+          httpGet: {
+            path: '/health'
+            port: 8080
+            httpHeaders: [
+              {
+                name: 'Custom-Header'
+                value: 'Awesome'
+              }
+            ]
+          }
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        }
+      ]
     }
   }
 ]
