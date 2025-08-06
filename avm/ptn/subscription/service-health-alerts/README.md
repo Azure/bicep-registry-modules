@@ -187,7 +187,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
   params: {
     enableTelemetry: true
     location: '<location>'
-    serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
+    serviceHealthAlertsResourceGroupName: 'dep-ash-ashmin-rg'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -212,7 +212,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
       "value": "<location>"
     },
     "serviceHealthAlertsResourceGroupName": {
-      "value": "<serviceHealthAlertsResourceGroupName>"
+      "value": "dep-ash-ashmin-rg"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -233,7 +233,7 @@ using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
 param enableTelemetry = true
 param location = '<location>'
-param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
+param serviceHealthAlertsResourceGroupName = 'dep-ash-ashmin-rg'
 param subscriptionId = '<subscriptionId>'
 ```
 
