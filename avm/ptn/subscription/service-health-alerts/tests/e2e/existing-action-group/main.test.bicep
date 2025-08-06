@@ -37,7 +37,6 @@ module nestedDependencies './dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     actionGroupName: 'dep-${serviceShort}-${namePrefix}-action-group'
-    location: resourceLocation
   }
 }
 
