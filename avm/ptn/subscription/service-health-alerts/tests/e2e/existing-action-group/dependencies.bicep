@@ -6,7 +6,8 @@ param resourceGroupName string
 @description('Required. The location where all resources will be deployed.')
 param location string = deployment().location
 
-param actionGroupName string = 'actg-${uniqueString(resourceGroupName,location)}'
+@description('Required. The name of the action group to create.')
+param actionGroupName string
 
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
