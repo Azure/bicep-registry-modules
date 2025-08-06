@@ -1,30 +1,17 @@
-targetScope = 'subscription'
-
-@description('Required. The name of the Resource Group.')
-param resourceGroupName string
-
 @description('Required. The location where all resources will be deployed.')
-param location string = deployment().location
+param location string = resourceGroup().location
 
 @description('Required. The name of the action group to create.')
 param actionGroupName string
 
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
-  name: resourceGroupName
-  location: location
-}
-
 module actionGroup 'br/public:avm/res/insights/action-group:0.7.0' = {
-  scope: rg
   params: {
     name: actionGroupName
     groupShortName: take(actionGroupName, 12)
+    location: location
     enabled: true
   }
 }
-
-@description('The name of the created resource group for the dependency resources.')
-output resourceGroupName string = rg.name
 
 @description('The resource Id of the created action group.')
 output actionGroupResourceId string = actionGroup.outputs.resourceId

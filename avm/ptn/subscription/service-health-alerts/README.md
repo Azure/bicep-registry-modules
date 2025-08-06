@@ -242,7 +242,7 @@ param subscriptionId = '<subscriptionId>'
 
 ### Example 3: _Deploying multiple service health alerts with an existing action group._
 
-This instance deploys the module with the maximum set of required parameters.
+This instance deploys the module with a reference to an existing action group.
 
 
 <details>
@@ -253,8 +253,6 @@ This instance deploys the module with the maximum set of required parameters.
 module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
   name: 'serviceHealthAlertsDeployment'
   params: {
-    enableTelemetry: true
-    location: '<location>'
     serviceHealthAlerts: [
       {
         actionGroup: {
@@ -293,12 +291,6 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
     "serviceHealthAlerts": {
       "value": [
         {
@@ -341,8 +333,6 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
 ```bicep-params
 using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
-param enableTelemetry = true
-param location = '<location>'
 param serviceHealthAlerts = [
   {
     actionGroup: {

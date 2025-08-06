@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5211356061803350752"
+      "templateHash": "17564877189215869776"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -1436,7 +1436,7 @@
           "alertDescription": {
             "value": "[coalesce(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'alertDescription'), variables('serviceHealthAlertsMap')[copyIndex()].serviceHealthAlert)]"
           },
-          "actions": "[if(and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'), ''))), createObject('value', createArray(tryGet(if(and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'), ''))), reference(format('createActionGroups[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'))), if(not(empty(coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'), ''))), createObject('value', createArray(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'))), createObject('value', null())))]",
+          "actions": "[if(and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'))), createObject('value', createArray(tryGet(if(and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'))), reference(format('createActionGroups[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'))), if(not(empty(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'))), createObject('value', createArray(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'))), createObject('value', null())))]",
           "enabled": {
             "value": "[coalesce(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'isEnabled'), true())]"
           },
@@ -1797,7 +1797,7 @@
         "name": "createActionGroups",
         "count": "[length(parameters('serviceHealthAlerts'))]"
       },
-      "condition": "[and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'), '')))]",
+      "condition": "[and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('createActionGroups-{0}-{1}', copyIndex(), uniqueString('createActionGroups', deployment().name))]",
@@ -2273,7 +2273,7 @@
       },
       "copy": {
         "count": "[length(parameters('serviceHealthAlerts'))]",
-        "input": "[if(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), createObject('actionGroupResourceId', tryGet(if(and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(coalesce(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'), ''))), reference(format('createActionGroups[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value')), null())]"
+        "input": "[if(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), createObject('actionGroupResourceId', tryGet(if(and(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), empty(tryGet(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'), 'existingActionGroupResourceId'))), reference(format('createActionGroups[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value')), null())]"
       }
     }
   }

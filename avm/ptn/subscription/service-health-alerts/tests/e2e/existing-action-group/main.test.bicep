@@ -24,13 +24,18 @@ param serviceShort string = 'ashact'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
-// Dependencies //
+// nestedDependencies//
 // ============ //
 
-module dependencies './dependencies.bicep' = {
-  scope: subscription(subscriptionId)
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
+module nestedDependencies './dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    resourceGroupName: resourceGroupName
     actionGroupName: 'dep-${serviceShort}-${namePrefix}-action-group'
     location: resourceLocation
   }
@@ -44,7 +49,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${namePrefix}'
   params: {
     subscriptionId: subscriptionId
-    serviceHealthAlertsResourceGroupName: dependencies.outputs.resourceGroupName
+    serviceHealthAlertsResourceGroupName: resourceGroupName
     serviceHealthAlerts: [
       {
         serviceHealthAlert: 'Service Health Advisory'
@@ -52,7 +57,7 @@ module testDeployment '../../../main.bicep' = {
         isEnabled: true
         actionGroup: {
           enabled: true
-          existingActionGroupResourceId: dependencies.outputs.actionGroupResourceId
+          existingActionGroupResourceId: nestedDependencies.outputs.actionGroupResourceId
         }
       }
       {
@@ -61,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
         isEnabled: true
         actionGroup: {
           enabled: true
-          existingActionGroupResourceId: dependencies.outputs.actionGroupResourceId
+          existingActionGroupResourceId: nestedDependencies.outputs.actionGroupResourceId
         }
       }
     ]
