@@ -271,6 +271,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $defaultsFolder | Should -Not -BeNullOrEmpty
         }
 
+        # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
         It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*defaults `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
 
             param(
