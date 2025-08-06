@@ -31,6 +31,7 @@ module dependencies './dependencies.bicep' = {
   scope: subscription(subscriptionId)
   params: {
     resourceGroupName: resourceGroupName
+    actionGroupName: 'dep-${serviceShort}-${namePrefix}-action-group'
     location: resourceLocation
   }
 }
