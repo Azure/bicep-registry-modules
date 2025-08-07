@@ -20,7 +20,7 @@ param dataCollectionRuleVMInsightsName string
 @description('Required. The name of the data collection rule for Change Tracking.')
 param dataCollectionRuleChangeTrackingName string
 
-@description('The name of the data collection rule for Microsoft Defender for SQL.')
+@description('Required. The name of the data collection rule for Microsoft Defender for SQL.')
 param dataCollectionRuleMDFCSQLName string
 
 @description('Optional. Tags for all Resources in the solution.')

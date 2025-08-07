@@ -1,4 +1,4 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
@@ -7,14 +7,39 @@ metadata description = 'This instance deploys the module with the minimum set of
 // Parameters //
 // ========== //
 
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-alz.ama-${serviceShort}-rg'
+
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = resourceGroup().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'alzamamin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// ============== //
+// Dependencies //
+// ============== //
+
+module dependencies './dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
+  scope: resourceGroup
+  params: {
+    lawName: 'dep${namePrefix}law${serviceShort}'
+  }
+}
+
+// ============== //
+// General resources
+// ============== //
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
 
 // ============== //
 // Test Execution //
@@ -24,6 +49,7 @@ param namePrefix string = '#_namePrefix_#'
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    scope: resourceGroup
     params: {
       dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-${namePrefix}${serviceShort}'
       dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-${namePrefix}${serviceShort}'
