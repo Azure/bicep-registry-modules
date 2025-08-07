@@ -78,7 +78,7 @@ module waitForProjectScript 'waitDeploymentScript.bicep' = {
   params: {
     name: 'script-wait-proj-${name}'
     location: location
-    seconds: 60
+    seconds: 30
   }
 }
 
@@ -179,17 +179,7 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
   params: {
     name: 'script-wait-conns-${name}'
     location: location
-    seconds: 180
-  }
-}
-
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
-  name: '${accountName}-cap-host'
-  parent: foundryAccount
-  dependsOn: [project, waitForConnectionsScript]
-  properties: {
-    capabilityHostKind: 'Agents'
-    tags: tags
+    seconds: 90
   }
 }
 
@@ -197,7 +187,6 @@ resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilit
   name: '${name}-cap-host'
   parent: project
   dependsOn: [
-    accountCapabilityHost
     waitForConnectionsScript
     storageAccountConnectionResource
     aiSearchConnectionResource

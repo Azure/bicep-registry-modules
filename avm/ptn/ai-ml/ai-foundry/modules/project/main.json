@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15685488963762340518"
+      "templateHash": "2561937805471375568"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -327,20 +327,6 @@
         "waitForProjectScript"
       ]
     },
-    "accountCapabilityHost": {
-      "condition": "[variables('createCapabilityHostResource')]",
-      "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-      "apiVersion": "2025-06-01",
-      "name": "[format('{0}/{1}', parameters('accountName'), format('{0}-cap-host', parameters('accountName')))]",
-      "properties": {
-        "capabilityHostKind": "Agents",
-        "tags": "[parameters('tags')]"
-      },
-      "dependsOn": [
-        "project",
-        "waitForConnectionsScript"
-      ]
-    },
     "capabilityHost": {
       "condition": "[variables('createCapabilityHostResource')]",
       "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
@@ -360,7 +346,6 @@
         "tags": "[parameters('tags')]"
       },
       "dependsOn": [
-        "accountCapabilityHost",
         "aiSearchConnectionResource",
         "cosmosDbConnectionResource",
         "project",
@@ -400,7 +385,7 @@
             "value": "[parameters('location')]"
           },
           "seconds": {
-            "value": 60
+            "value": 30
           }
         },
         "template": {
@@ -675,7 +660,7 @@
             "value": "[parameters('location')]"
           },
           "seconds": {
-            "value": 180
+            "value": 90
           }
         },
         "template": {
