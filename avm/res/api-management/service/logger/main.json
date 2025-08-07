@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13044725911661445483"
+      "version": "0.37.4.10188",
+      "templateHash": "2717790604893444159"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
@@ -64,7 +64,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/loggers",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "credentials": "[parameters('credentials')]",

@@ -28,11 +28,11 @@ param targetResourceId string
 @sys.description('Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger.')
 param credentials object
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource loggers 'Microsoft.ApiManagement/service/loggers@2022-08-01' = {
+resource loggers 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
   name: name
   parent: service
   properties: {

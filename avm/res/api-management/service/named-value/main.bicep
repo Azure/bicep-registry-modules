@@ -8,7 +8,7 @@ param apiManagementServiceName string
 param displayName string
 
 @description('Optional. KeyVault location details of the namedValue.')
-param keyVault object = {}
+param keyVault keyVaultContractType?
 
 @description('Required. Named value Name.')
 param name string
@@ -25,11 +25,11 @@ param value string = newGuid()
 
 var keyVaultEmpty = empty(keyVault)
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource namedValue 'Microsoft.ApiManagement/service/namedValues@2022-08-01' = {
+resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-05-01' = {
   name: name
   parent: service
   properties: {
@@ -49,3 +49,14 @@ output name string = namedValue.name
 
 @description('The resource group the named value was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// ================ //
+// Definitions      //
+// ================ //
+
+type keyVaultContractType = {
+  @description('Optional. Key vault secret identifier for fetching secret. Providing a versioned secret will prevent auto-refresh. This requires API Management service to be configured with aka.ms/apimmsi.')
+  secretIdentifier: string?
+  @description('Optional. Null for SystemAssignedIdentity or Client Id for UserAssignedIdentity , which will be used to access key vault secret.')
+  identityClientId: string?
+}
