@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "13939702786676880377"
+      "version": "0.37.4.10188",
+      "templateHash": "12425873657166193731"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."

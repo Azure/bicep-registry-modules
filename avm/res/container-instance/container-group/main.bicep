@@ -188,8 +188,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       ? {
           logAnalytics: {
             logType: logAnalytics!.logType
-            workspaceId: law.properties.customerId
-            workspaceKey: law.listKeys().primarySharedKey
+            workspaceId: law!.properties.customerId
+            workspaceKey: law!.listKeys().primarySharedKey
             #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
             workspaceResourceId: logAnalytics!.?workspaceResourceId
             metadata: logAnalytics!.?metadata
@@ -199,12 +199,12 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
     encryptionProperties: !empty(customerManagedKey)
       ? {
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
-          vaultBaseUrl: cMKKeyVault.properties.vaultUri
+          vaultBaseUrl: cMKKeyVault!.properties.vaultUri
           keyName: customerManagedKey!.keyName
           // FYI: Key Rotation is not (yet) supported by the RP
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
             ? customerManagedKey!.keyVersion!
-            : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+            : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
         }
       : null
     imageRegistryCredentials: imageRegistryCredentials
