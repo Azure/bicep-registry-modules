@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2561937805471375568"
+      "templateHash": "7578451746432146862"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -242,6 +242,16 @@
       "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
       "name": "[parameters('cosmosDbConnection').resourceName]"
     },
+    "accountCapabilityHost": {
+      "condition": "[variables('createCapabilityHostResource')]",
+      "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}', parameters('accountName'), format('{0}-cap-host', parameters('accountName')))]",
+      "properties": {
+        "capabilityHostKind": "Agents",
+        "tags": "[parameters('tags')]"
+      }
+    },
     "project": {
       "type": "Microsoft.CognitiveServices/accounts/projects",
       "apiVersion": "2025-06-01",
@@ -254,7 +264,11 @@
         "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), parameters('name'))]",
         "description": "[if(not(empty(parameters('desc'))), parameters('desc'), parameters('name'))]"
       },
-      "tags": "[parameters('tags')]"
+      "tags": "[parameters('tags')]",
+      "dependsOn": [
+        "accountCapabilityHost",
+        "waitForAccountCapHostScript"
+      ]
     },
     "cosmosDbConnectionResource": {
       "condition": "[not(empty(parameters('cosmosDbConnection')))]",
@@ -346,6 +360,7 @@
         "tags": "[parameters('tags')]"
       },
       "dependsOn": [
+        "accountCapabilityHost",
         "aiSearchConnectionResource",
         "cosmosDbConnectionResource",
         "project",
@@ -368,6 +383,79 @@
         "project"
       ]
     },
+    "waitForAccountCapHostScript": {
+      "condition": "[variables('createCapabilityHostResource')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('module.project.waitDeploymentScript.waitForAcctCapHost.{0}', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('script-wait-acct-cap-host-{0}', parameters('name'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "seconds": {
+            "value": 60
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "5513090580956885107"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the deployment script."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Location for the deployment script."
+              }
+            },
+            "seconds": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Sleep/wait time for the deployment script in seconds."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "kind": "AzurePowerShell",
+              "properties": {
+                "azPowerShellVersion": "11.0",
+                "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
+                "timeout": "P1D",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "accountCapabilityHost"
+      ]
+    },
     "waitForProjectScript": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -385,7 +473,7 @@
             "value": "[parameters('location')]"
           },
           "seconds": {
-            "value": 30
+            "value": 60
           }
         },
         "template": {
@@ -660,7 +748,7 @@
             "value": "[parameters('location')]"
           },
           "seconds": {
-            "value": 90
+            "value": 120
           }
         },
         "template": {
