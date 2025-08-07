@@ -5239,6 +5239,7 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 | `subscriptionAcceptOwnershipUrl` | string | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants. |
 | `subscriptionId` | string | The Subscription ID that has been created or provided. |
 | `subscriptionResourceId` | string | The Subscription Resource ID that has been created or provided. |
+| `virtualWanHubConnectionName` | string | The name of the Virtual WAN Hub Connection. |
 
 ## Cross-referenced modules
 
