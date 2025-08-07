@@ -194,8 +194,7 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-#disable-next-line use-recent-api-versions
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
   name: '${name}-cap-host'
   parent: project
   dependsOn: [
