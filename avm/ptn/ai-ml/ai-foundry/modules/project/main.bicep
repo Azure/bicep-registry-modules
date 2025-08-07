@@ -58,29 +58,9 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
 
 var createCapabilityHostResource = createCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
-  name: '${accountName}-cap-host'
-  parent: foundryAccount
-  properties: {
-    capabilityHostKind: 'Agents'
-    tags: tags
-  }
-}
-
-module waitForAccountCapHostScript 'waitDeploymentScript.bicep' = if (createCapabilityHostResource) {
-  name: take('module.project.waitDeploymentScript.waitForAcctCapHost.${name}', 64)
-  dependsOn: [accountCapabilityHost]
-  params: {
-    name: 'script-wait-acct-cap-host-${name}'
-    location: location
-    seconds: 60
-  }
-}
-
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   name: name
   parent: foundryAccount
-  dependsOn: [accountCapabilityHost, waitForAccountCapHostScript]
   location: location
   identity: {
     type: 'SystemAssigned'
@@ -203,7 +183,19 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
   }
 }
 
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
+#disable-next-line use-recent-api-versions
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
+  name: '${accountName}-cap-host'
+  parent: foundryAccount
+  dependsOn: [project, waitForConnectionsScript]
+  properties: {
+    capabilityHostKind: 'Agents'
+    tags: tags
+  }
+}
+
+#disable-next-line use-recent-api-versions
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
   name: '${name}-cap-host'
   parent: project
   dependsOn: [
