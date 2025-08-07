@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "16289812864199382767"
+      "version": "0.37.4.10188",
+      "templateHash": "17530837688616554318"
     },
     "name": "Microsoft Entra Domain Services",
     "description": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance."
@@ -152,7 +152,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -177,12 +177,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -257,7 +264,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -426,6 +433,17 @@
         "description": "Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC."
       }
     },
+    "syncOnPremSamAccountName": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID."
+      }
+    },
     "notifyDcAdmins": {
       "type": "string",
       "defaultValue": "Enabled",
@@ -559,7 +577,7 @@
     },
     "domainservice": {
       "type": "Microsoft.AAD/domainServices",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -585,7 +603,8 @@
           "syncNtlmPasswords": "[parameters('syncNtlmPasswords')]",
           "syncOnPremPasswords": "[parameters('syncOnPremPasswords')]",
           "kerberosRc4Encryption": "[parameters('kerberosRc4Encryption')]",
-          "kerberosArmoring": "[parameters('kerberosArmoring')]"
+          "kerberosArmoring": "[parameters('kerberosArmoring')]",
+          "syncOnPremSamAccountName": "[parameters('syncOnPremSamAccountName')]"
         },
         "sku": "[parameters('sku')]",
         "syncScope": "[parameters('syncScope')]"
@@ -696,7 +715,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('domainservice', '2022-12-01', 'full').location]"
+      "value": "[reference('domainservice', '2025-06-01', 'full').location]"
     }
   }
 }

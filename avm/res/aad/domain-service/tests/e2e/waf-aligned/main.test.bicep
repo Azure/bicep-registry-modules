@@ -119,6 +119,7 @@ module testDeployment '../../../main.bicep' = {
         subnetId: nestedDependencies.outputs.replicaSubnetResourceId
       }
     ]
+    syncOnPremSamAccountName: 'Disabled'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

@@ -16,7 +16,7 @@ This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.AAD/domainServices` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2022-12-01/domainServices) |
+| `Microsoft.AAD/domainServices` | [2025-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2025-06-01/domainServices) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -89,6 +89,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         subnetId: '<subnetId>'
       }
     ]
+    syncOnPremSamAccountName: 'Disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -177,6 +178,9 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         }
       ]
     },
+    "syncOnPremSamAccountName": {
+      "value": "Disabled"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -243,6 +247,7 @@ param replicaSets = [
     subnetId: '<subnetId>'
   }
 ]
+param syncOnPremSamAccountName = 'Disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -292,6 +297,7 @@ param tags = {
 | [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise. |
 | [`syncNtlmPasswords`](#parameter-syncntlmpasswords) | string | The value is to enable synchronized users to use NTLM authentication. |
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
+| [`syncOnPremSamAccountName`](#parameter-synconpremsamaccountname) | string | Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID. |
 | [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
@@ -602,6 +608,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -621,6 +628,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -856,6 +870,20 @@ The value is to enable on-premises users to authenticate against managed domain.
   ]
   ```
 
+### Parameter: `syncOnPremSamAccountName`
+
+Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `syncScope`
 
 All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.
@@ -915,7 +943,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 

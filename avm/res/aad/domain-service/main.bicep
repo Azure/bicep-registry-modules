@@ -112,6 +112,13 @@ param kerberosRc4Encryption string = 'Disabled'
 ])
 param kerberosArmoring string = 'Enabled'
 
+@description('Optional. Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param syncOnPremSamAccountName string?
+
 @description('Optional. The value is to notify the DC Admins.')
 @allowed([
   'Enabled'
@@ -144,7 +151,7 @@ param ldaps string = 'Enabled'
 @allowed(['All', 'CloudOnly'])
 param syncScope string = 'All'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -159,11 +166,11 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType[]?
 
@@ -216,7 +223,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
+resource domainservice 'Microsoft.AAD/domainServices@2025-06-01' = {
   name: name
   location: location
   tags: tags
@@ -243,6 +250,7 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
       syncOnPremPasswords: syncOnPremPasswords
       kerberosRc4Encryption: kerberosRc4Encryption
       kerberosArmoring: kerberosArmoring
+      syncOnPremSamAccountName: syncOnPremSamAccountName
     }
     sku: sku
     syncScope: syncScope

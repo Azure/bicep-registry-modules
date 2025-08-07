@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Updated API version to `2025-06-01`
+- added `syncOnPremSamAccountName` property
+- Updated `avm-common-types` to `0.6.0`
+
+### Breaking Changes
+
+- None
+
 ## 0.4.0
 
 ### Changes
