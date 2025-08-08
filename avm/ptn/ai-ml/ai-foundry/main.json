@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10418384813839235115"
+      "templateHash": "4690386198479740287"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20115,7 +20115,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2245621885598872470"
+              "templateHash": "4737909973169484475"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20457,15 +20457,6 @@
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
-                "vectorStoreConnections": [
-                  "[format('{0}', parameters('aiSearchConnection').resourceName)]"
-                ],
-                "storageConnections": [
-                  "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
-                ],
-                "threadStorageConnections": [
-                  "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
-                ],
                 "tags": "[parameters('tags')]"
               },
               "dependsOn": [
