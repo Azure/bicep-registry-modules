@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7427869826758534329"
+      "version": "0.37.4.10188",
+      "templateHash": "4559399698425164626"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -90,7 +90,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/products",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
@@ -132,8 +132,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6881101310103461222"
+              "version": "0.37.4.10188",
+              "templateHash": "1820392748388153129"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -161,7 +161,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/products/apis",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             }
           ],
@@ -221,8 +221,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7173352386317054073"
+              "version": "0.37.4.10188",
+              "templateHash": "13354622082484874271"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -250,7 +250,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/products/groups",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             }
           ],

@@ -5,11 +5,32 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8157254408403610295"
+      "version": "0.37.4.10188",
+      "templateHash": "14606053087996807880"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
+  },
+  "definitions": {
+    "keyVaultContractType": {
+      "type": "object",
+      "properties": {
+        "secretIdentifier": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Key vault secret identifier for fetching secret. Providing a versioned secret will prevent auto-refresh. This requires API Management service to be configured with aka.ms/apimmsi."
+          }
+        },
+        "identityClientId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Null for SystemAssignedIdentity or Client Id for UserAssignedIdentity , which will be used to access key vault secret."
+          }
+        }
+      }
+    }
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -25,8 +46,8 @@
       }
     },
     "keyVault": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/keyVaultContractType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. KeyVault location details of the namedValue."
       }
@@ -66,12 +87,12 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "namedValue": {
       "type": "Microsoft.ApiManagement/service/namedValues",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "tags": "[parameters('tags')]",

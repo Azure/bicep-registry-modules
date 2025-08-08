@@ -207,7 +207,6 @@ output resourceGroupName string = resourceGroup().name
 import * as operationTypes from 'operation/main.bicep'
 
 @export()
-@sys.description('The type of an operation.')
 type operationType = {
   @sys.description('Required. The name of the policy.')
   name: string
@@ -238,7 +237,6 @@ type operationType = {
 }
 
 @export()
-@sys.description('The type of a policy.')
 type policyType = {
   @sys.description('Optional. The name of the policy.')
   name: string?
@@ -251,7 +249,6 @@ type policyType = {
 }
 
 @export()
-@sys.description('The type of a diagnostic configuration.')
 type diagnosticType = {
   @sys.description('Required. The name of the logger.')
   loggerName: string
