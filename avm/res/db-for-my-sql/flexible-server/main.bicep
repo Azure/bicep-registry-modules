@@ -4,7 +4,7 @@ metadata description = 'This module deploys a DBforMySQL Flexible Server.'
 @description('Required. The name of the MySQL flexible server.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 

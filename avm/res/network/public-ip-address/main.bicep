@@ -39,7 +39,7 @@ param dnsSettings dnsSettingsType?
 @description('Optional. The list of tags associated with the public IP address.')
 param ipTags ipTagType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 

@@ -1,5 +1,7 @@
 # Changelog
-- None
+
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
+
 ## 0.10.0
 
 ### Changes
@@ -9,10 +11,6 @@
 ### Breaking Changes
 
 - None
-
-# Changelog
-
-The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
 ## 0.9.1
 

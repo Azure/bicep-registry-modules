@@ -13,7 +13,7 @@ param enableTelemetry bool = true
 @description('Optional. Resource tags.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
