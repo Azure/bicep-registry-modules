@@ -223,39 +223,6 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   dependsOn: [capabilityHost]
 }
 
-#disable-next-line BCP053
-var internalId = project.properties.internalId
-var workspacePart1 = length(internalId) >= 8 ? substring(internalId, 0, 8) : ''
-var workspacePart2 = length(internalId) >= 12 ? substring(internalId, 8, 4) : ''
-var workspacePart3 = length(internalId) >= 16 ? substring(internalId, 12, 4) : ''
-var workspacePart4 = length(internalId) >= 20 ? substring(internalId, 16, 4) : ''
-var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : ''
-
-var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
-
-module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection)) {
-  name: take('module.project.role-assign.cosmosDbDataPlane.${name}', 64)
-  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
-  dependsOn: [capabilityHost, cosmosDbRoleAssignments]
-  params: {
-    cosmosDbName: cosmosDb.name
-    projectIdentityPrincipalId: project.identity.principalId
-    projectWorkspaceId: projectWorkspaceId
-  }
-}
-
-module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection)) {
-  name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
-  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
-  dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]
-  params: {
-    storageAccountName: storageAccount.name
-    projectIdentityPrincipalId: project.identity.principalId
-    containerName: storageAccountConnection!.containerName
-    projectWorkspaceId: projectWorkspaceId
-  }
-}
-
 @description('Name of the deployed Azure Resource Group.')
 output resourceGroupName string = resourceGroup().name
 
