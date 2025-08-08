@@ -185,7 +185,7 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
 
 #disable-next-line use-recent-api-versions
 resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
-  name: '${accountName}-cap-host'
+  name: 'chagent${replace(accountName, '-', '')}'
   parent: foundryAccount
   dependsOn: [project, waitForConnectionsScript]
   properties: {
@@ -194,8 +194,9 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHostResource) {
-  name: '${name}-cap-host'
+#disable-next-line use-recent-api-versions
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
+  name: 'chagent${replace(name, '-', '')}'
   parent: project
   dependsOn: [
     accountCapabilityHost
