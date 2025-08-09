@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12054426509476980309"
+      "version": "0.37.4.10188",
+      "templateHash": "9112614450599546803"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic."
@@ -346,12 +346,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -658,7 +665,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "topic"
@@ -719,8 +726,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "555281083108037724"
+              "version": "0.37.4.10188",
+              "templateHash": "11299480501104004717"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -872,8 +879,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "10194470716819672897"
+              "version": "0.37.4.10188",
+              "templateHash": "11356879982775009479"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -1331,8 +1338,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "18396329421177385677"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9713131709782171972"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."

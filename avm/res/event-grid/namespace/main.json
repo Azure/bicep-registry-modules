@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "2939616996668303951"
+      "version": "0.37.4.10188",
+      "templateHash": "9385376695308873257"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace."
@@ -74,6 +74,36 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a private endpoint output."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -328,12 +358,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -469,7 +506,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -860,7 +897,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "namespace"
@@ -1729,8 +1766,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "7479174639466514472"
+              "version": "0.37.4.10188",
+              "templateHash": "8402491098990294727"
             },
             "name": "Eventgrid Namespace Topics",
             "description": "This module deploys an Eventgrid Namespace Topic."
@@ -1757,12 +1794,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -1952,7 +1996,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "topic"
@@ -2023,8 +2067,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "9175880743294904029"
+                      "version": "0.37.4.10188",
+                      "templateHash": "6912102295544286536"
                     },
                     "name": "Event Subscriptions",
                     "description": "This module deploys an Event Subscription."
@@ -2321,8 +2365,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "9180559400189977195"
+              "version": "0.37.4.10188",
+              "templateHash": "7580731575936338475"
             },
             "name": "Eventgrid Namespace CA Certificates",
             "description": "This module deploys an Eventgrid Namespace CA Certificate."
@@ -2447,8 +2491,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "14360840402916250050"
+              "version": "0.37.4.10188",
+              "templateHash": "17896748272172958464"
             },
             "name": "Eventgrid Namespace Clients",
             "description": "This module deploys an Eventgrid Namespace Client."
@@ -2609,8 +2653,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "5725786157373922536"
+              "version": "0.37.4.10188",
+              "templateHash": "12699543355413851983"
             },
             "name": "Eventgrid Namespace Client Groups",
             "description": "This module deploys an Eventgrid Namespace Client Group."
@@ -2726,8 +2770,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10007381676427939232"
+              "version": "0.37.4.10188",
+              "templateHash": "9414974327869240862"
             },
             "name": "Eventgrid Namespace Topic Spaces",
             "description": "This module deploys an Eventgrid Namespace Topic Space."
@@ -2980,8 +3024,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13638008475417624766"
+              "version": "0.37.4.10188",
+              "templateHash": "11640556590963236053"
             },
             "name": "Eventgrid Namespace Permissions Bindings",
             "description": "This module deploys an Eventgrid Namespace Permission Binding."

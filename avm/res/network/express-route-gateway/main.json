@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "3314478573253003022"
+      "version": "0.37.4.10188",
+      "templateHash": "5666938566663839803"
     },
     "name": "Express Route Gateways",
     "description": "This module deploys an Express Route Gateway."
@@ -274,7 +274,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "expressRouteGateway"

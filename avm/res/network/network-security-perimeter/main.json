@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "3744759178927565445"
+      "version": "0.37.4.10188",
+      "templateHash": "8689087116258482410"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -531,7 +531,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "networkSecurityPerimeter"
@@ -622,8 +622,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "18183393498532860472"
+              "version": "0.37.4.10188",
+              "templateHash": "2698570580676716716"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile."
@@ -812,8 +812,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "5803193043229403363"
+                      "version": "0.37.4.10188",
+                      "templateHash": "4536438853756942736"
                     },
                     "name": "Network Security Perimeter Access Rule",
                     "description": "This module deploys a Network Security Perimeter Access Rule."

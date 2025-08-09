@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "2359877667721853675"
+      "version": "0.37.4.10188",
+      "templateHash": "6022065985894532423"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -164,12 +164,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -435,7 +442,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "virtualHub"
@@ -471,8 +478,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13466688747209126073"
+              "version": "0.37.4.10188",
+              "templateHash": "11716665095992864669"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -588,8 +595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11078107057030391561"
+              "version": "0.37.4.10188",
+              "templateHash": "7675791404779267399"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -705,8 +712,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5214703706417305741"
+              "version": "0.37.4.10188",
+              "templateHash": "16811682233679900193"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."

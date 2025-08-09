@@ -6111,6 +6111,7 @@ The lock settings of the public IP address.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-nicconfigurationsipconfigurationspipconfigurationlockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-nicconfigurationsipconfigurationspipconfigurationlockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-nicconfigurationsipconfigurationspipconfigurationlocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.lock.kind`
 
@@ -6130,6 +6131,13 @@ Specify the type of lock.
 ### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -6624,6 +6632,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-nicconfigurationslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-nicconfigurationslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-nicconfigurationslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `nicConfigurations.lock.kind`
 
@@ -6643,6 +6652,13 @@ Specify the type of lock.
 ### Parameter: `nicConfigurations.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `nicConfigurations.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -7772,6 +7788,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -7791,6 +7808,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -8282,6 +8306,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 

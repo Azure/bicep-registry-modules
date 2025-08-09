@@ -22,7 +22,7 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -223,9 +223,9 @@ resource azureBastion_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: azureBastion
 }

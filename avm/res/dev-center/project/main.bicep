@@ -18,7 +18,7 @@ param location string = resourceGroup().location
 @sys.description('Optional. Resource tags to apply to the project.')
 param tags resourceInput<'Microsoft.DevCenter/projects@2025-02-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -213,9 +213,9 @@ resource project_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lo
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: project
 }

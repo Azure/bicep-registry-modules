@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8106198446742632452"
+      "version": "0.37.4.10188",
+      "templateHash": "4794897345984374488"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone."
@@ -602,12 +602,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -876,7 +883,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "privateDnsZone"
@@ -944,8 +951,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "18243374258187942664"
+              "version": "0.37.4.10188",
+              "templateHash": "3195631864074971570"
             },
             "name": "Private DNS Zone A record",
             "description": "This module deploys a Private DNS Zone A record."
@@ -1199,8 +1206,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "7322684246075092047"
+              "version": "0.37.4.10188",
+              "templateHash": "5833950762721795656"
             },
             "name": "Private DNS Zone AAAA record",
             "description": "This module deploys a Private DNS Zone AAAA record."
@@ -1454,8 +1461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5264706240021075859"
+              "version": "0.37.4.10188",
+              "templateHash": "1893643189534963300"
             },
             "name": "Private DNS Zone CNAME record",
             "description": "This module deploys a Private DNS Zone CNAME record."
@@ -1709,8 +1716,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13758189936483275969"
+              "version": "0.37.4.10188",
+              "templateHash": "283263287418951685"
             },
             "name": "Private DNS Zone MX record",
             "description": "This module deploys a Private DNS Zone MX record."
@@ -1964,8 +1971,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11955164584650609753"
+              "version": "0.37.4.10188",
+              "templateHash": "5342032678842397172"
             },
             "name": "Private DNS Zone PTR record",
             "description": "This module deploys a Private DNS Zone PTR record."
@@ -2219,8 +2226,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14626715835033259725"
+              "version": "0.37.4.10188",
+              "templateHash": "13860594638157710124"
             },
             "name": "Private DNS Zone SOA record",
             "description": "This module deploys a Private DNS Zone SOA record."
@@ -2474,8 +2481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "6510442308165042737"
+              "version": "0.37.4.10188",
+              "templateHash": "5438765113587319625"
             },
             "name": "Private DNS Zone SRV record",
             "description": "This module deploys a Private DNS Zone SRV record."
@@ -2729,8 +2736,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "170623042781622569"
+              "version": "0.37.4.10188",
+              "templateHash": "7197745056492400228"
             },
             "name": "Private DNS Zone TXT record",
             "description": "This module deploys a Private DNS Zone TXT record."
@@ -2987,8 +2994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "725891200086243555"
+              "version": "0.37.4.10188",
+              "templateHash": "1696107524989049281"
             },
             "name": "Private DNS Zone Virtual Network Link",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."

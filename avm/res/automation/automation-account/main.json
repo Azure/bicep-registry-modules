@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "9083703481249465928"
+      "version": "0.37.4.10188",
+      "templateHash": "17603713850274926910"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -203,6 +203,36 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a Python 2 or 3 module configuration."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -494,12 +524,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -634,7 +671,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -1079,7 +1116,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "automationAccount"
@@ -1185,8 +1222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11751030350149954719"
+              "version": "0.37.4.10188",
+              "templateHash": "13108480772176269913"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential."
@@ -1311,8 +1348,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "9576530677729438395"
+              "version": "0.37.4.10188",
+              "templateHash": "11026784119283901076"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module."
@@ -1455,8 +1492,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13129404855956123817"
+              "version": "0.37.4.10188",
+              "templateHash": "12925078808010720965"
             },
             "name": "Automation Account Powershell72 Modules",
             "description": "This module deploys a Powershell72 Module in the Automation Account."
@@ -1596,8 +1633,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15014564193136078174"
+              "version": "0.37.4.10188",
+              "templateHash": "5460542404203464613"
             },
             "name": "Automation Account Python 3 Packages",
             "description": "This module deploys a Python3 Package in the Automation Account."
@@ -1729,8 +1766,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "16980916539234955640"
+              "version": "0.37.4.10188",
+              "templateHash": "8495167034992643388"
             },
             "name": "Automation Account Python 2 Packages",
             "description": "This module deploys a Python2 Package in the Automation Account."
@@ -1873,8 +1910,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11705630216496638038"
+              "version": "0.37.4.10188",
+              "templateHash": "15697291385132604043"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule."
@@ -2057,8 +2094,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10169307559274055693"
+              "version": "0.37.4.10188",
+              "templateHash": "1019687553311113763"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook."
@@ -2260,8 +2297,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11677465828786147318"
+              "version": "0.37.4.10188",
+              "templateHash": "8698511353077779177"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule."
@@ -2391,8 +2428,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13698153900064404767"
+              "version": "0.37.4.10188",
+              "templateHash": "17684856766018700093"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable."
@@ -2505,8 +2542,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "5999265821918307382"
+              "version": "0.37.4.10188",
+              "templateHash": "10618294377187916179"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."

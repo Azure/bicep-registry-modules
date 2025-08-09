@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "2975135934210648196"
+      "version": "0.37.4.10188",
+      "templateHash": "2758055186210119164"
     },
     "name": "Dev Center Project",
     "description": "This module deploys a Dev Center Project."
@@ -361,12 +361,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -815,7 +822,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "project"
@@ -895,8 +902,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "2947154870216849436"
+              "version": "0.37.4.10188",
+              "templateHash": "9550866564792325950"
             },
             "name": "Dev Center Project Environment Type",
             "description": "This module deploys a Dev Center Project Environment Type."
@@ -1282,8 +1289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "15199668707642182217"
+              "version": "0.37.4.10188",
+              "templateHash": "433073557934850804"
             },
             "name": "Dev Center Project Catalog",
             "description": "This module deploys a Dev Center Project Catalog."
@@ -1509,8 +1516,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "12919519496313854576"
+              "version": "0.37.4.10188",
+              "templateHash": "14928563872879747689"
             },
             "name": "Dev Center Project Pool",
             "description": "This module deploys a Dev Center Project Pool."
@@ -1840,8 +1847,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "13472426796772435774"
+                      "version": "0.37.4.10188",
+                      "templateHash": "5009641776593761457"
                     },
                     "name": "Dev Center Project Pool Schedule",
                     "description": "This module deploys a Dev Center Project Pool Schedule."

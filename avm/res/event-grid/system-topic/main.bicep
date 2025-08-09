@@ -27,7 +27,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID).')
 param externalResourceRoleAssignments externalResourceRoleAssignmentType[] = []
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -167,9 +167,9 @@ resource systemTopic_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: systemTopic
 }
@@ -245,7 +245,9 @@ output resourceId string = systemTopic.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = (managedIdentities.?systemAssigned ?? false) ? systemTopic.identity.principalId : null
+output systemAssignedMIPrincipalId string? = (managedIdentities.?systemAssigned ?? false)
+  ? systemTopic.identity.principalId
+  : null
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
@@ -254,36 +256,35 @@ output location string = systemTopic.location
 // Definitions      //
 // ================ //
 
-
 @description('Event subscription configuration.')
 type eventSubscriptionType = {
   @description('Required. The name of the event subscription.')
   name: string
-  
+
   @description('Optional. Dead Letter Destination.')
   deadLetterDestination: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deadLetterDestination?
-  
+
   @description('Optional. Dead Letter with Resource Identity Configuration.')
   deadLetterWithResourceIdentity: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deadLetterWithResourceIdentity?
-  
+
   @description('Optional. Delivery with Resource Identity Configuration.')
   deliveryWithResourceIdentity: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deliveryWithResourceIdentity?
-  
+
   @description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.')
   destination: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.destination?
-  
+
   @description('Optional. The event delivery schema for the event subscription.')
   eventDeliverySchema: 'CloudEventSchemaV1_0' | 'CustomInputSchema' | 'EventGridSchema' | 'EventGridEvent'?
-  
+
   @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
   expirationTimeUtc: string?
-  
+
   @description('Optional. The filter for the event subscription.')
   filter: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.filter?
-  
+
   @description('Optional. The list of user defined labels.')
   labels: string[]?
-  
+
   @description('Optional. The retry policy for events.')
   retryPolicy: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.retryPolicy?
 }
@@ -292,13 +293,13 @@ type eventSubscriptionType = {
 type externalResourceRoleAssignmentType = {
   @description('Required. The resource ID of the target resource to assign permissions to.')
   resourceId: string
-  
+
   @description('Required. The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".')
   roleDefinitionId: string
-  
+
   @description('Optional. Description of the role assignment.')
   description: string?
-  
+
   @description('Optional. Name of the role for logging purposes.')
   roleName: string?
 }

@@ -75,7 +75,7 @@ param storageAccountResourceId string = ''
 @description('Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; \'PT30M\' - 30 minutes; \'P5D\' - 5 days; \'P1Y\' 1 year.')
 param timeout string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -204,9 +204,9 @@ resource deploymentScript_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: deploymentScript
 }

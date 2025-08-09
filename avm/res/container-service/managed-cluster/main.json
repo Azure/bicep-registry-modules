@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "6181717056890837435"
+      "version": "0.37.4.10188",
+      "templateHash": "8481635523348951759"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -678,12 +678,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1923,7 +1930,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "managedCluster"
@@ -2044,8 +2051,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "2040378203872905050"
+              "version": "0.37.4.10188",
+              "templateHash": "15214623384404752025"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2240,8 +2247,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "15335448253202727588"
+              "version": "0.37.4.10188",
+              "templateHash": "7002414833582441484"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."

@@ -3247,6 +3247,7 @@ The lock settings of the database.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-databaseslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-databaseslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-databaseslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `databases.lock.kind`
 
@@ -3266,6 +3267,13 @@ Specify the type of lock.
 ### Parameter: `databases.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3621,6 +3629,7 @@ The lock settings of the elastic pool.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-elasticpoolslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-elasticpoolslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-elasticpoolslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `elasticPools.lock.kind`
 
@@ -3640,6 +3649,13 @@ Specify the type of lock.
 ### Parameter: `elasticPools.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4196,6 +4212,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -4215,6 +4232,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -5118,6 +5142,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 

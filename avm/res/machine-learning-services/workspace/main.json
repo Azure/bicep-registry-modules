@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "2830755729519775074"
+      "version": "0.37.4.10188",
+      "templateHash": "15810322506934397366"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -488,6 +488,36 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for the workspace connection."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1508,12 +1538,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1649,7 +1686,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -2159,7 +2196,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "workspace"
@@ -2289,8 +2326,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "4274081592342795983"
+              "version": "0.37.4.10188",
+              "templateHash": "15706519372996640102"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2555,8 +2592,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "11050242102011513557"
+              "version": "0.37.4.10188",
+              "templateHash": "11346810785468226802"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3376,8 +3413,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "10767049507832713221"
+              "version": "0.37.4.10188",
+              "templateHash": "2277213146580993632"
             },
             "name": "Machine Learning Services Workspaces Datastores",
             "description": "This module creates a datastore in a Machine Learning Services workspace."

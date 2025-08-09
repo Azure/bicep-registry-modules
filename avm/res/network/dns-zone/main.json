@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "13694499984980659314"
+      "version": "0.37.4.10188",
+      "templateHash": "2065387594679425058"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone."
@@ -655,12 +655,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -949,7 +956,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "dnsZone"
@@ -1020,8 +1027,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13050408210894589328"
+              "version": "0.37.4.10188",
+              "templateHash": "5026279280007094983"
             },
             "name": "Public DNS Zone A record",
             "description": "This module deploys a Public DNS Zone A record."
@@ -1290,8 +1297,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "15089066645661427475"
+              "version": "0.37.4.10188",
+              "templateHash": "2748900065004285432"
             },
             "name": "Public DNS Zone AAAA record",
             "description": "This module deploys a Public DNS Zone AAAA record."
@@ -1560,8 +1567,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2517212374743712090"
+              "version": "0.37.4.10188",
+              "templateHash": "5142825308540303411"
             },
             "name": "Public DNS Zone CNAME record",
             "description": "This module deploys a Public DNS Zone CNAME record."
@@ -1827,8 +1834,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8441284361954821444"
+              "version": "0.37.4.10188",
+              "templateHash": "3393436638697023524"
             },
             "name": "Public DNS Zone CAA record",
             "description": "This module deploys a Public DNS Zone CAA record."
@@ -2086,8 +2093,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3558727736610302576"
+              "version": "0.37.4.10188",
+              "templateHash": "17779168723779207363"
             },
             "name": "Public DNS Zone MX record",
             "description": "This module deploys a Public DNS Zone MX record."
@@ -2345,8 +2352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14315870150258270228"
+              "version": "0.37.4.10188",
+              "templateHash": "10962424111379918307"
             },
             "name": "Public DNS Zone NS record",
             "description": "This module deploys a Public DNS Zone NS record."
@@ -2604,8 +2611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3147345432559843017"
+              "version": "0.37.4.10188",
+              "templateHash": "7201937208415110444"
             },
             "name": "Public DNS Zone PTR record",
             "description": "This module deploys a Public DNS Zone PTR record."
@@ -2863,8 +2870,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17514835811263769713"
+              "version": "0.37.4.10188",
+              "templateHash": "17076908036865534680"
             },
             "name": "Public DNS Zone SOA record",
             "description": "This module deploys a Public DNS Zone SOA record."
@@ -3122,8 +3129,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11224367300955558445"
+              "version": "0.37.4.10188",
+              "templateHash": "7871045549350355190"
             },
             "name": "Public DNS Zone SRV record",
             "description": "This module deploys a Public DNS Zone SRV record."
@@ -3381,8 +3388,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "1999603597680394703"
+              "version": "0.37.4.10188",
+              "templateHash": "2083060047866599227"
             },
             "name": "Public DNS Zone TXT record",
             "description": "This module deploys a Public DNS Zone TXT record."

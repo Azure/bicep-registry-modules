@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "4200691528774458966"
+      "version": "0.37.4.10188",
+      "templateHash": "8151752607724978292"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -234,7 +241,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "networkWatcher"
@@ -308,8 +315,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "4843839658644031164"
+              "version": "0.37.4.10188",
+              "templateHash": "2206194770324933365"
             },
             "name": "Network Watchers Connection Monitors",
             "description": "This module deploys a Network Watcher Connection Monitor."
@@ -483,8 +490,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "152927297469547499"
+              "version": "0.37.4.10188",
+              "templateHash": "4382296144989494023"
             },
             "name": "NSG Flow Logs",
             "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"

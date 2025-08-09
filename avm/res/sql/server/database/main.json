@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "12896402749829057992"
+      "version": "0.37.4.10188",
+      "templateHash": "12287712179409148457"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -302,12 +302,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -807,7 +814,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "database"
@@ -843,8 +850,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15971526819734030405"
+              "version": "0.37.4.10188",
+              "templateHash": "16409308766047346265"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -954,8 +961,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "4683357092417411572"
+              "version": "0.37.4.10188",
+              "templateHash": "14473382343475213230"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."

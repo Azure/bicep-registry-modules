@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "9610133962890939296"
+      "version": "0.37.4.10188",
+      "templateHash": "14944902911494147621"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -502,12 +502,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1257,7 +1264,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "flexibleServer"
@@ -1359,8 +1366,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "7607100665392844680"
+              "version": "0.37.4.10188",
+              "templateHash": "3420942288215794383"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1466,8 +1473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "11759054215682586729"
+              "version": "0.37.4.10188",
+              "templateHash": "9004997780351658128"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1574,8 +1581,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "11105219403461345447"
+              "version": "0.37.4.10188",
+              "templateHash": "17006457634218723566"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1690,8 +1697,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "17826526974982250438"
+              "version": "0.37.4.10188",
+              "templateHash": "16815086506589257787"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1797,8 +1804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "2980081786222066300"
+              "version": "0.37.4.10188",
+              "templateHash": "10605175316669845349"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."

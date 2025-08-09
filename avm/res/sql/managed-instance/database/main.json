@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16462212043812771881"
+      "version": "0.37.4.10188",
+      "templateHash": "3436334209733513098"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
@@ -208,12 +208,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -388,7 +395,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "database"
@@ -456,8 +463,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11456772619785800996"
+              "version": "0.37.4.10188",
+              "templateHash": "18353580000350015212"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -568,8 +575,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4471544038808802530"
+              "version": "0.37.4.10188",
+              "templateHash": "2796342803840468382"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "3706129844626626036"
+      "version": "0.37.4.10188",
+      "templateHash": "4805082130769567335"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
@@ -643,12 +643,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1244,7 +1251,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "lab"
@@ -1315,8 +1322,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "6830177169160833613"
+              "version": "0.37.4.10188",
+              "templateHash": "8445856704861775730"
             },
             "name": "DevTest Lab Virtual Networks",
             "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines."
@@ -1592,8 +1599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "9670645583410999867"
+              "version": "0.37.4.10188",
+              "templateHash": "8873903756685797283"
             },
             "name": "DevTest Lab Policy Sets Policies",
             "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings."
@@ -1770,8 +1777,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "44867339593492653"
+              "version": "0.37.4.10188",
+              "templateHash": "13883158783796437346"
             },
             "name": "DevTest Lab Schedules",
             "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -2067,8 +2074,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11014266698746418553"
+              "version": "0.37.4.10188",
+              "templateHash": "1103267499871744968"
             },
             "name": "DevTest Lab Notification Channels",
             "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks."
@@ -2245,8 +2252,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17170824417365300700"
+              "version": "0.37.4.10188",
+              "templateHash": "4678850000249407168"
             },
             "name": "DevTest Lab Artifact Sources",
             "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services."
@@ -2462,8 +2469,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2470950542253630216"
+              "version": "0.37.4.10188",
+              "templateHash": "12382238122958060703"
             },
             "name": "DevTest Lab Costs",
             "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold."

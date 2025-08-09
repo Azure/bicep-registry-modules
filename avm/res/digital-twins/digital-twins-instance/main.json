@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "17768721428681200332"
+      "version": "0.37.4.10188",
+      "templateHash": "14318517820879159771"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance."
@@ -95,6 +95,36 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a Digital Twin Endpoint."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -658,12 +688,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -799,7 +836,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -1097,7 +1134,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "digitalTwinsInstance"
@@ -1197,8 +1234,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "5468659950690400320"
+              "version": "0.37.4.10188",
+              "templateHash": "14876407425711128241"
             },
             "name": "Digital Twins Instance Endpoint",
             "description": "This module deploys a Digital Twins Instance Endpoint."

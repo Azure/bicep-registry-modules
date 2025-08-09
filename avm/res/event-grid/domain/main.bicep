@@ -44,7 +44,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -174,7 +174,6 @@ module domain_topics 'topic/main.bicep' = [
   }
 ]
 
-
 // Event subscriptions
 module domain_eventSubscriptions 'event-subscription/main.bicep' = [
   for (eventSubscription, index) in (eventSubscriptions ?? []): {
@@ -199,9 +198,9 @@ resource domain_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: domain
 }

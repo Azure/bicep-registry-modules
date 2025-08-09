@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "12281968743662330122"
+      "version": "0.37.4.10188",
+      "templateHash": "8535348604194400110"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -175,6 +175,36 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for identities that can be used for Microsoft Entra ID authentication."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -429,12 +459,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -542,7 +579,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -961,8 +998,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "5604823715912874222"
+              "version": "0.37.4.10188",
+              "templateHash": "18376976676908849774"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster."
@@ -1067,8 +1104,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "10063376243141070937"
+              "version": "0.37.4.10188",
+              "templateHash": "18000115424463780925"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
             "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."

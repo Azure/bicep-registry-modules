@@ -70,7 +70,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
@@ -284,9 +284,9 @@ resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: dataFactory
 }
