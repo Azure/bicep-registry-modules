@@ -26,9 +26,6 @@ resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
         vmSize: 'Standard_DS2_v2'
         osType: 'Linux'
         mode: 'System'
-        availabilityZones: [
-          '1'
-        ]
       }
     ]
   }
