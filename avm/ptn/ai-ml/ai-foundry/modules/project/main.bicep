@@ -242,17 +242,18 @@ module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = i
   }
 }
 
-module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection)) {
-  name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
-  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
-  dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]
-  params: {
-    storageAccountName: storageAccount.name
-    projectIdentityPrincipalId: project.identity.principalId
-    containerName: storageAccountConnection!.containerName
-    projectWorkspaceId: projectWorkspaceId
-  }
-}
+// TEMP REMOVAL
+// module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection)) {
+//   name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
+//   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+//   dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]
+//   params: {
+//     storageAccountName: storageAccount.name
+//     projectIdentityPrincipalId: project.identity.principalId
+//     containerName: storageAccountConnection!.containerName
+//     projectWorkspaceId: projectWorkspaceId
+//   }
+// }
 
 @description('Name of the deployed Azure Resource Group.')
 output resourceGroupName string = resourceGroup().name
