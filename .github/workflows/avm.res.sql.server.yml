@@ -32,6 +32,7 @@ on:
       - "avm/res/sql/server/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

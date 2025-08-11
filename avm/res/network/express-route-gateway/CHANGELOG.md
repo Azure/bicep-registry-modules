@@ -10,6 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Use resource derived types for tags.
 - Leverage shared user defined types for lock and roleAssignments input parameters.
 - Updated ReadMe with AzAdvertizer reference
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes
 

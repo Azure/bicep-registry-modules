@@ -45,7 +45,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
   name: 'expressRouteGatewayDeployment'
   params: {
     // Required parameters
-    name: 'nergmin001'
+    name: 'nergmin002'
     virtualHubId: '<virtualHubId>'
     // Non-required parameters
     location: '<location>'
@@ -67,7 +67,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nergmin001"
+      "value": "nergmin002"
     },
     "virtualHubId": {
       "value": "<virtualHubId>"
@@ -91,7 +91,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 using 'br/public:avm/res/network/express-route-gateway:<version>'
 
 // Required parameters
-param name = 'nergmin001'
+param name = 'nergmin002'
 param virtualHubId = '<virtualHubId>'
 // Non-required parameters
 param location = '<location>'
