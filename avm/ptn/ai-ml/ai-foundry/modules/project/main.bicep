@@ -118,7 +118,8 @@ module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = i
   }
 }
 
-resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(storageAccountConnection)) {
+#disable-next-line use-recent-api-versions
+resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(storageAccountConnection)) {
   name: storageAccount.name
   parent: project
   dependsOn: [waitForProjectScript, storageAccountRoleAssignments, cosmosDbConnectionResource]
@@ -130,8 +131,6 @@ resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/
       ApiType: 'Azure'
       ResourceId: storageAccount.id
       location: storageAccount!.location
-      AccountName: storageAccount!.name
-      ContainerName: storageAccountConnection!.containerName
     }
   }
 }

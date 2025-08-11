@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15222395077882723034"
+      "templateHash": "4952902438705914647"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20115,7 +20115,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "12135893772000975835"
+              "templateHash": "13699302464765178452"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20390,7 +20390,7 @@
             "storageAccountConnectionResource": {
               "condition": "[not(empty(parameters('storageAccountConnection')))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
+              "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').storageAccountName)]",
               "properties": {
                 "category": "AzureBlob",
@@ -20399,9 +20399,7 @@
                 "metadata": {
                   "ApiType": "Azure",
                   "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').storageAccountName)]",
-                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-                  "AccountName": "[parameters('storageAccountConnection').storageAccountName]",
-                  "ContainerName": "[parameters('storageAccountConnection').containerName]"
+                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]"
                 }
               },
               "dependsOn": [
