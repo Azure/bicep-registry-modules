@@ -131,6 +131,8 @@ resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/
       ApiType: 'Azure'
       ResourceId: storageAccount.id
       location: storageAccount!.location
+      AccountName: storageAccount!.name
+      ContainerName: storageAccountConnection!.containerName
     }
   }
 }
