@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added support for workspace replication
 - Updated API versions
 - Implemented strong typing for the `tags` parameter
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

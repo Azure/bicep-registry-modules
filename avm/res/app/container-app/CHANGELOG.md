@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for diagnostic settings with Event Hub, Storage Account, and Log Analytics Workspace.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Regenerate main.json with latest bicep version 0.36.177.2456
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

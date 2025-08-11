@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added bgpPeeringAddress property to bgpSettingsType 
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

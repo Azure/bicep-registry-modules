@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added allowed set `[1,2,3]` to `availabilityZones` parameter.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

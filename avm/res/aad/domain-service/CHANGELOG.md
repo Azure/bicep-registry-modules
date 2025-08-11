@@ -12,6 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Resource provider updates
 - `Tags` property not an object anymore
 - Rebranding to Microsoft Entra
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

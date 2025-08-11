@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - `tags` parameters are now properly typed instead of using `object` type.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

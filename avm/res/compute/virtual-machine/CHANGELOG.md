@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - The `capacityReservationGroupId, extensionGuestConfigurationExtension, networkAccessPolicy (disk), publicNetworkAccess (disk)` parameters were added.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
