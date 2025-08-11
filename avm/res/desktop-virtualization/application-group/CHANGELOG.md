@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/application-group/CHANGELOG.md).
 
+## 0.4.1
+
+### Changes
+
+- Upgraded the referenced `avm-common-types` module versions, enabling custom notes on locks
+- Updated diverse API versions
+
+### Breaking Changes
+
+- None
+
 ## 0.4.0
 
 ### Changes

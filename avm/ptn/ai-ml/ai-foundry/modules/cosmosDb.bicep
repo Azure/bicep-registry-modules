@@ -1,84 +1,86 @@
-@description('Name of the Cosmos DB Account.')
+@maxLength(44)
+@description('Required. The name of the Cosmos DB.')
 param name string
 
-@description('Specifies the location for all the Azure resources.')
+@description('Required. The location for the Cosmos DB.')
 param location string
 
-@description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+@description('Optional. The full resource ID of an existing Cosmos DB to use instead of creating a new one.')
+param existingResourceId string?
 
-@description('Resource ID of the virtual network to link the private DNS zones.')
-param virtualNetworkResourceId string
+@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
+param privateEndpointSubnetId string?
 
-@description('Resource ID of the subnet for the private endpoint.')
-param virtualNetworkSubnetResourceId string
+@description('Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints.')
+param privateDnsZoneId string?
 
-@description('Specifies whether network isolation is enabled. This will create a private endpoint for the Cosmos DB Account and link the private DNS zone.')
-param networkIsolation bool = true
-
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Array of role assignments to create.')
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. Specifies the role assignments for the Cosmos DB.')
 param roleAssignments roleAssignmentType[]?
-
-import { sqlDatabaseType } from 'br/public:avm/res/document-db/database-account:0.15.0'
-@description('Optional. List of Cosmos DB databases to deploy.')
-param databases sqlDatabaseType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
-  name: 'private-dns-cosmosdb-deployment'
-  params: {
-    name: 'privatelink.documents.azure.com'
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: virtualNetworkResourceId
-      }
-    ]
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
+@description('Optional. Specifies the resource tags for all the resources.')
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+
+import { getResourceParts, getResourceName, getSubscriptionId, getResourceGroupName } from 'parseResourceIdFunctions.bicep'
+
+var existingResourceParts = getResourceParts(existingResourceId)
+var existingName = getResourceName(existingResourceId, existingResourceParts)
+var existingSubscriptionId = getSubscriptionId(existingResourceParts)
+var existingResourceGroupName = getResourceGroupName(existingResourceParts)
+
+resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = if (!empty(existingResourceId)) {
+  name: existingName
+  scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
-var nameFormatted = toLower(name)
+var privateNetworkingEnabled = !empty(privateDnsZoneId) && !empty(privateEndpointSubnetId)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
-  name: take('${nameFormatted}-cosmosdb-deployment', 64)
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (empty(existingResourceId)) {
+  name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
-    name: nameFormatted
+    name: name
     enableTelemetry: enableTelemetry
     automaticFailover: true
-    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
     location: location
     minimumTlsVersion: 'Tls12'
     defaultConsistencyLevel: 'Session'
     networkRestrictions: {
-      networkAclBypass: 'None'
-      publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
+      networkAclBypass: 'AzureServices'
+      publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
     }
-    privateEndpoints: networkIsolation
+    privateEndpoints: privateNetworkingEnabled
       ? [
           {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                  privateDnsZoneResourceId: privateDnsZoneId!
                 }
               ]
             }
             service: 'Sql'
-            subnetResourceId: virtualNetworkSubnetResourceId
+            subnetResourceId: privateEndpointSubnetId!
           }
         ]
       : []
-    sqlDatabases: databases
     roleAssignments: roleAssignments
     tags: tags
   }
 }
 
-output resourceId string = cosmosDb.outputs.resourceId
-output cosmosDBname string = cosmosDb.outputs.name
+@description('Name of the Cosmos DB.')
+output name string = empty(existingResourceId) ? cosmosDb!.outputs.name : existingCosmosDb.name
+
+@description('Resource ID of the Cosmos DB.')
+output resourceId string = empty(existingResourceId) ? cosmosDb!.outputs.resourceId : existingCosmosDb.id
+
+@description('Subscription ID of the Cosmos DB.')
+output subscriptionId string = empty(existingResourceId) ? subscription().subscriptionId : existingSubscriptionId
+
+@description('Resource Group Name of the Cosmos DB.')
+output resourceGroupName string = empty(existingResourceId) ? resourceGroup().name : existingResourceGroupName

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Added support for `networkInjections` to supply private networking options for agent services
+
+### Breaking Changes
+
+- None
+
+
 ## 0.12.0
 
 ### Changes

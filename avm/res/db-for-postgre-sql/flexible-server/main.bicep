@@ -379,6 +379,9 @@ module flexibleServer_databases 'database/main.bicep' = [
       collation: database.?collation
       charset: database.?charset
     }
+    dependsOn: [
+      flexibleServer_roleAssignments
+    ]
   }
 ]
 

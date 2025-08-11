@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.3.7
+
+### Changes
+
+- Added tag assignments to resource groups
+- Added output for virtual WAN hub connection name
+
+### Breaking Changes
+
+- None
+
+## 0.3.6
+
+### Changes
+
+- Fixed bug where delegation if specified not applied to created subnets
+
+### Breaking Changes
+
+- None
+
 ## 0.3.5
 
 ### Changes

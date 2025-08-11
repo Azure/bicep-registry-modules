@@ -79,7 +79,7 @@ param preferredAppGroupType string = 'Desktop'
 param startVMOnConnect bool = false
 
 @sys.description('Optional. The session host configuration for updating agent, monitoring agent, and stack component.')
-param agentUpdate object = {
+param agentUpdate resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.agentUpdate = {
   type: 'Scheduled'
   useSessionHostLocalTime: true
   maintenanceWindows: [
@@ -91,7 +91,7 @@ param agentUpdate object = {
 }
 
 @sys.description('Optional. The ring number of HostPool.')
-param ring int = -1
+param ring int?
 
 @sys.description('Optional. URL to customer ADFS server for signing WVD SSO certificates.')
 param ssoadfsAuthority string?
@@ -114,6 +114,21 @@ param ssoClientSecretKeyVaultPath string?
 #disable-next-line secure-secrets-in-params
 param ssoSecretType string?
 
+@sys.description('Optional. Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.')
+param managedPrivateUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.managedPrivateUDP = 'Default'
+
+@sys.description('Optional. Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.')
+param directUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.directUDP = 'Default'
+
+@sys.description('Optional. Where direct UDP connectivity is established between the client and the session host via public network using Simple Traversal Underneath NAT (STUN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.')
+param publicUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.publicUDP = 'Default'
+
+@sys.description('Optional. Where indirect UDP connectivity is established between the client and the session host via public network using Traversal Using Relay NAT (TURN) protocol.<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections.')
+param relayUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.relayUDP = 'Default'
+
+@sys.description('Optional. The type of management for this hostpool. Note: If set to `Automated`, no registrationToken is returned by the resource.')
+param managementType resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.managementType = 'Standard'
+
 @sys.description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.DesktopVirtualization/hostPools@2024-04-03'>.tags?
 
@@ -135,28 +150,85 @@ param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
-  Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-  Contributor: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-  Reader: '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
-  'Role Based Access Control Administrator': '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  'User Access Administrator': '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  'Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/ca6382a4-1721-4bcf-a114-ff0c70227b6b'
-  'Desktop Virtualization Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/86240b0e-9422-4c43-887b-b61143f32ba8'
-  'Desktop Virtualization Application Group Reader': '/providers/Microsoft.Authorization/roleDefinitions/aebf23d0-b568-4e86-b8f9-fe83a2c6ab55'
-  'Desktop Virtualization Contributor': '/providers/Microsoft.Authorization/roleDefinitions/082f0a83-3be5-4ba1-904c-961cca79b387'
-  'Desktop Virtualization Host Pool Contributor': '/providers/Microsoft.Authorization/roleDefinitions/e307426c-f9b6-4e81-87de-d99efb3c32bc'
-  'Desktop Virtualization Host Pool Reader': '/providers/Microsoft.Authorization/roleDefinitions/ceadfde2-b300-400a-ab7b-6143895aa822'
-  'Desktop Virtualization Power On Off Contributor': '/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e'
-  'Desktop Virtualization Reader': '/providers/Microsoft.Authorization/roleDefinitions/49a72310-ab8d-41df-bbb0-79b649203868'
-  'Desktop Virtualization Session Host Operator': '/providers/Microsoft.Authorization/roleDefinitions/2ad6aaab-ead9-4eaa-8ac5-da422f562408'
-  'Desktop Virtualization User': '/providers/Microsoft.Authorization/roleDefinitions/1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63'
-  'Desktop Virtualization User Session Operator': '/providers/Microsoft.Authorization/roleDefinitions/ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6'
-  'Desktop Virtualization Virtual Machine Contributor': '/providers/Microsoft.Authorization/roleDefinitions/a959dbd1-f747-45e3-8ba6-dd80f235f97c'
-  'Desktop Virtualization Workspace Contributor': '/providers/Microsoft.Authorization/roleDefinitions/21efdde3-836f-432b-bf3d-3e8e734d4b2b'
-  'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
-  'Managed Application Contributor Role': '/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e'
-  'Managed Application Operator Role': '/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae'
-  'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Application Group Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ca6382a4-1721-4bcf-a114-ff0c70227b6b'
+  )
+  'Desktop Virtualization Application Group Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '86240b0e-9422-4c43-887b-b61143f32ba8'
+  )
+  'Desktop Virtualization Application Group Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'aebf23d0-b568-4e86-b8f9-fe83a2c6ab55'
+  )
+  'Desktop Virtualization Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '082f0a83-3be5-4ba1-904c-961cca79b387'
+  )
+  'Desktop Virtualization Host Pool Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e307426c-f9b6-4e81-87de-d99efb3c32bc'
+  )
+  'Desktop Virtualization Host Pool Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ceadfde2-b300-400a-ab7b-6143895aa822'
+  )
+  'Desktop Virtualization Power On Off Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '40c5ff49-9181-41f8-ae61-143b0e78555e'
+  )
+  'Desktop Virtualization Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '49a72310-ab8d-41df-bbb0-79b649203868'
+  )
+  'Desktop Virtualization Session Host Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2ad6aaab-ead9-4eaa-8ac5-da422f562408'
+  )
+  'Desktop Virtualization User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63'
+  )
+  'Desktop Virtualization User Session Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6'
+  )
+  'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a959dbd1-f747-45e3-8ba6-dd80f235f97c'
+  )
+  'Desktop Virtualization Workspace Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '21efdde3-836f-432b-bf3d-3e8e734d4b2b'
+  )
+  'Desktop Virtualization Workspace Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
+  )
+  'Managed Application Contributor Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '641177b8-a67a-45b9-a033-47bc880bb21e'
+  )
+  'Managed Application Operator Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'c7393b34-138c-406f-901b-d8cf2b17e6ae'
+  )
+  'Managed Applications Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b9331d33-8a36-4f8c-b097-4f54124fdb44'
+  )
 }
 
 var formattedRoleAssignments = [
@@ -192,7 +264,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -208,18 +280,25 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
     loadBalancerType: loadBalancerType
     startVMOnConnect: startVMOnConnect
     validationEnvironment: validationEnvironment
-    registrationInfo: {
-      expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
-      token: null
-      registrationTokenOperation: 'Update'
-    }
+    registrationInfo: !empty(tokenValidityLength) && managementType == 'Standard'
+      ? {
+          expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
+          token: null
+          registrationTokenOperation: 'Update'
+        }
+      : null
     vmTemplate: !empty(vmTemplate) ? string(vmTemplate) : null
     agentUpdate: agentUpdate
-    ring: ring != -1 ? ring : null
+    ring: ring
     ssoadfsAuthority: ssoadfsAuthority
     ssoClientId: ssoClientId
     ssoClientSecretKeyVaultPath: ssoClientSecretKeyVaultPath
     ssoSecretType: ssoSecretType
+    managedPrivateUDP: managedPrivateUDP
+    directUDP: directUDP
+    publicUDP: publicUDP
+    relayUDP: relayUDP
+    managementType: managementType
   }
 }
 
@@ -351,8 +430,8 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @secure()
-@sys.description('The registration token of the host pool.')
-output registrationToken string = hostPool.properties.registrationInfo.token
+@sys.description('The registration token of the host pool. ONLY has a value if `managementType` is set to `Standard, otherwise null.')
+output registrationToken string? = managementType == 'Standard' ? hostPool.properties.registrationInfo.token : null
 
 // =============== //
 //   Definitions   //
