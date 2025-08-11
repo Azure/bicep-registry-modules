@@ -125,7 +125,7 @@ function Set-ResourceTypesSection {
             }
 
             $AzAdvertizerUrl = 'https://www.azadvertizer.net/azresourcetypes/{0}.html' -f $resourceTypeObject.type.ToLower().Replace('/', '_')
-            $SectionContent += ('| `{0}` | {1} | <ul><li>[AzAdvertizer]({3})</li><li>[Template reference]({2})</li></ul> |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl, $AzAdvertizerUrl)
+            $SectionContent += ('| `{0}` | {1} | <ul style="padding-left: 0px;"><li>[AzAdvertizer]({3})</li><li>[Template reference]({2})</li></ul> |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl, $AzAdvertizerUrl)
         }
         $ProgressPreference = 'Continue'
         $VerbosePreference = 'Continue'
