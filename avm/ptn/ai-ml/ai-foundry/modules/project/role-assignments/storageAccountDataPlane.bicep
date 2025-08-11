@@ -24,23 +24,15 @@ resource storageBlobDataOwnerRoleDefinition 'Microsoft.Authorization/roleDefinit
 // The latest version of the storage account connection requires specifying a container name
 // while it was not required in previous versions.
 // To be safe, this is adding role assignments for both the provided container name and the
-// project workspace id as a container name.
-var containersForRoleAssignment = [
-  containerName
-  projectWorkspaceId
-]
-
-@batchSize(1)
-resource storageAccountCustomContainerDataOwnerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (container, i) in containersForRoleAssignment: {
-    scope: storageAccount
-    name: guid(storageAccount.id, storageBlobDataOwnerRoleDefinition.id, storageAccountName, container)
-    properties: {
-      principalId: projectIdentityPrincipalId
-      roleDefinitionId: storageBlobDataOwnerRoleDefinition.id
-      principalType: 'ServicePrincipal'
-      conditionVersion: '2.0'
-      condition: '((!(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read\'})  AND  !(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action\'}) AND  !(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write\'}) ) OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase \'${container}\'))'
-    }
+// project workspace id as a container name (in the condition statement).
+resource storageAccountCustomContainerDataOwnerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: storageAccount
+  name: guid(storageAccount.id, storageBlobDataOwnerRoleDefinition.id, storageAccountName)
+  properties: {
+    principalId: projectIdentityPrincipalId
+    roleDefinitionId: storageBlobDataOwnerRoleDefinition.id
+    principalType: 'ServicePrincipal'
+    conditionVersion: '2.0'
+    condition: '((!(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read\'})) AND !(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action\'})) AND !(ActionMatches{\'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write\'}))) OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase \'${projectWorkspaceId}\' AND @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringLikeIgnoreCase \'*-azureml-agent\') OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase \'${containerName}\'))'
   }
-]
+}
