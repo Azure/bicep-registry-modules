@@ -19,10 +19,10 @@ The templates are run towards the tenant where the Azure resources you want to d
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ManagedServices/registrationAssignments` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2022-10-01/registrationAssignments) |
-| `Microsoft.ManagedServices/registrationDefinitions` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2022-10-01/registrationDefinitions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ManagedServices/registrationAssignments` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedservices_registrationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2022-10-01/registrationAssignments)</li></ul> |
+| `Microsoft.ManagedServices/registrationDefinitions` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedservices_registrationdefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2022-10-01/registrationDefinitions)</li></ul> |
 
 ## Usage examples
 
