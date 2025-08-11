@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5742056938388197083"
+      "templateHash": "15504645369127595383"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -259,7 +259,7 @@
     "cosmosDbConnectionResource": {
       "condition": "[not(empty(parameters('cosmosDbConnection')))]",
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('cosmosDbConnection').resourceName)]",
       "properties": {
         "category": "CosmosDB",
@@ -306,7 +306,7 @@
     "aiSearchConnectionResource": {
       "condition": "[not(empty(parameters('aiSearchConnection')))]",
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('aiSearchConnection').resourceName)]",
       "properties": {
         "category": "CognitiveSearch",
@@ -348,6 +348,12 @@
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
       "properties": {
         "capabilityHostKind": "Agents",
+        "threadStorageConnections": [
+          "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
+        ],
+        "vectorStoreConnections": [
+          "[format('{0}', parameters('aiSearchConnection').resourceName)]"
+        ],
         "storageConnections": [
           "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
         ],
@@ -355,6 +361,8 @@
       },
       "dependsOn": [
         "accountCapabilityHost",
+        "aiSearchConnectionResource",
+        "cosmosDbConnectionResource",
         "project",
         "storageAccountConnectionResource",
         "waitForConnectionsScript"

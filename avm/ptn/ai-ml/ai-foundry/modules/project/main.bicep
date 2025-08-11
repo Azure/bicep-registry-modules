@@ -92,7 +92,8 @@ module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(co
   }
 }
 
-resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(cosmosDbConnection)) {
+#disable-next-line use-recent-api-versions
+resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(cosmosDbConnection)) {
   name: cosmosDb.name
   parent: project
   dependsOn: [waitForProjectScript, cosmosDbRoleAssignments]
@@ -147,7 +148,8 @@ module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(ai
   }
 }
 
-resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(aiSearchConnection)) {
+#disable-next-line use-recent-api-versions
+resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(aiSearchConnection)) {
   name: aiSearch.name
   parent: project
   dependsOn: [
@@ -205,6 +207,8 @@ resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilit
   ]
   properties: {
     capabilityHostKind: 'Agents'
+    threadStorageConnections: ['${cosmosDbConnectionResource.name}']
+    vectorStoreConnections: ['${aiSearchConnectionResource.name}']
     storageConnections: ['${storageAccountConnectionResource.name}']
     tags: tags
   }

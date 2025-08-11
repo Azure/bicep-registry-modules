@@ -129,43 +129,43 @@ module foundryAccount 'modules/account.bicep' = {
   }
 }
 
-// module keyVault 'modules/keyVault.bicep' = if (includeAssociatedResources) {
-//   name: take('module.keyVault.${resourcesName}', 64)
-//   params: {
-//     existingResourceId: keyVaultConfiguration.?existingResourceId
-//     name: take(
-//       !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
-//         ? keyVaultConfiguration!.name!
-//         : 'kv${resourcesName}',
-//       24
-//     )
-//     location: location
-//     tags: tags
-//     enableTelemetry: enableTelemetry
-//     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
-//     privateDnsZoneResourceId: keyVaultConfiguration.?privateDnsZoneResourceId
-//     roleAssignments: keyVaultConfiguration.?roleAssignments
-//   }
-// }
+module keyVault 'modules/keyVault.bicep' = if (includeAssociatedResources) {
+  name: take('module.keyVault.${resourcesName}', 64)
+  params: {
+    existingResourceId: keyVaultConfiguration.?existingResourceId
+    name: take(
+      !empty(keyVaultConfiguration) && !empty(keyVaultConfiguration.?name)
+        ? keyVaultConfiguration!.name!
+        : 'kv${resourcesName}',
+      24
+    )
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateDnsZoneResourceId: keyVaultConfiguration.?privateDnsZoneResourceId
+    roleAssignments: keyVaultConfiguration.?roleAssignments
+  }
+}
 
-// module aiSearch 'modules/aiSearch.bicep' = if (includeAssociatedResources) {
-//   name: take('module.aiSearch.${resourcesName}', 64)
-//   params: {
-//     existingResourceId: aiSearchConfiguration.?existingResourceId
-//     name: take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
-//     location: location
-//     tags: tags
-//     enableTelemetry: enableTelemetry
-//     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
-//     privateDnsZoneResourceId: aiSearchConfiguration.?privateDnsZoneResourceId
-//     roleAssignments: aiSearchConfiguration.?roleAssignments
-//   }
-// }
+module aiSearch 'modules/aiSearch.bicep' = if (includeAssociatedResources) {
+  name: take('module.aiSearch.${resourcesName}', 64)
+  params: {
+    existingResourceId: aiSearchConfiguration.?existingResourceId
+    name: take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateDnsZoneResourceId: aiSearchConfiguration.?privateDnsZoneResourceId
+    roleAssignments: aiSearchConfiguration.?roleAssignments
+  }
+}
 
 module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedResources) {
   name: take('module.storageAccount.${resourcesName}', 64)
   #disable-next-line no-unnecessary-dependson
-  //dependsOn: [aiSearch]
+  dependsOn: [aiSearch]
   params: {
     existingResourceId: storageAccountConfiguration.?existingResourceId
     name: take(
@@ -190,39 +190,38 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
-      ] //,
-      // empty(aiSearchConfiguration.?existingResourceId)
-      //   ? [
-      //       {
-      //         principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
-      //         principalType: 'ServicePrincipal'
-      //         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-      //       }
-      //     ]
-      //   : []
+      ],
+      empty(aiSearchConfiguration.?existingResourceId)
+        ? [
+            {
+              principalId: aiSearch!.outputs.systemAssignedMIPrincipalId!
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+            }
+          ]
+        : []
     )
   }
 }
 
-// module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
-//   name: take('module.cosmosDb.${resourcesName}', 64)
-//   params: {
-//     existingResourceId: cosmosDbConfiguration.?existingResourceId
-//     name: take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
-//     location: location
-//     tags: tags
-//     enableTelemetry: enableTelemetry
-//     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
-//     privateDnsZoneResourceId: cosmosDbConfiguration.?privateDnsZoneResourceId
-//     roleAssignments: cosmosDbConfiguration.?roleAssignments
-//   }
-// }
+module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
+  name: take('module.cosmosDb.${resourcesName}', 64)
+  params: {
+    existingResourceId: cosmosDbConfiguration.?existingResourceId
+    name: take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateDnsZoneResourceId: cosmosDbConfiguration.?privateDnsZoneResourceId
+    roleAssignments: cosmosDbConfiguration.?roleAssignments
+  }
+}
 
 module foundryProject 'modules/project/main.bicep' = {
   name: take('module.project.main.${projectName}', 64)
   #disable-next-line no-unnecessary-dependson
-  //dependsOn: [storageAccount, aiSearch, cosmosDb, keyVault]
-  dependsOn: [storageAccount]
+  dependsOn: [storageAccount, aiSearch, cosmosDb, keyVault]
   params: {
     name: projectName
     desc: !empty(aiFoundryConfiguration.?project.?desc)
@@ -242,20 +241,20 @@ module foundryProject 'modules/project/main.bicep' = {
           containerName: storageAccount!.outputs.containerName
         }
       : null
-    // aiSearchConnection: includeAssociatedResources
-    //   ? {
-    //       resourceName: aiSearch!.outputs.name
-    //       subscriptionId: aiSearch!.outputs.subscriptionId
-    //       resourceGroupName: aiSearch!.outputs.resourceGroupName
-    //     }
-    //   : null
-    // cosmosDbConnection: includeAssociatedResources
-    //   ? {
-    //       resourceName: cosmosDb!.outputs.name
-    //       subscriptionId: cosmosDb!.outputs.subscriptionId
-    //       resourceGroupName: cosmosDb!.outputs.resourceGroupName
-    //     }
-    //   : null
+    aiSearchConnection: includeAssociatedResources
+      ? {
+          resourceName: aiSearch!.outputs.name
+          subscriptionId: aiSearch!.outputs.subscriptionId
+          resourceGroupName: aiSearch!.outputs.resourceGroupName
+        }
+      : null
+    cosmosDbConnection: includeAssociatedResources
+      ? {
+          resourceName: cosmosDb!.outputs.name
+          subscriptionId: cosmosDb!.outputs.subscriptionId
+          resourceGroupName: cosmosDb!.outputs.resourceGroupName
+        }
+      : null
     tags: tags
     lock: lock
   }
@@ -264,14 +263,14 @@ module foundryProject 'modules/project/main.bicep' = {
 @description('Name of the deployed Azure Resource Group.')
 output resourceGroupName string = resourceGroup().name
 
-// @description('Name of the deployed Azure Key Vault.')
-// output keyVaultName string = includeAssociatedResources ? keyVault!.outputs.name : ''
+@description('Name of the deployed Azure Key Vault.')
+output keyVaultName string = includeAssociatedResources ? keyVault!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
 output aiServicesName string = foundryAccount.outputs.name
 
-// @description('Name of the deployed Azure AI Search service.')
-// output aiSearchName string = includeAssociatedResources ? aiSearch!.outputs.name : ''
+@description('Name of the deployed Azure AI Search service.')
+output aiSearchName string = includeAssociatedResources ? aiSearch!.outputs.name : ''
 
 @description('Name of the deployed Azure AI Project.')
 output aiProjectName string = foundryProject.outputs.name
@@ -279,8 +278,8 @@ output aiProjectName string = foundryProject.outputs.name
 @description('Name of the deployed Azure Storage Account.')
 output storageAccountName string = includeAssociatedResources ? storageAccount!.outputs.name : ''
 
-// @description('Name of the deployed Azure Cosmos DB account.')
-// output cosmosAccountName string = includeAssociatedResources ? cosmosDb!.outputs.name : ''
+@description('Name of the deployed Azure Cosmos DB account.')
+output cosmosAccountName string = includeAssociatedResources ? cosmosDb!.outputs.name : ''
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 
