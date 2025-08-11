@@ -33,6 +33,7 @@ on:
       - "avm/res/sql/instance-pool/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
