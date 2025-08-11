@@ -95,7 +95,7 @@ import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -319,9 +319,9 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: workspace
 }
@@ -679,15 +679,10 @@ type sqlPoolType = {
   recoverableDatabaseResourceId: string?
 
   @description('Optional. The storage account type to use for the SQL pool.')
-  storageAccountType: (
-    | 'GRS'
-    | 'LRS'
-    | 'ZRS')?
+  storageAccountType: ('GRS' | 'LRS' | 'ZRS')?
 
   @description('Optional. Enable database transparent data encryption.')
-  transparentDataEncryption: (
-    | 'Enabled'
-    | 'Disabled')?
+  transparentDataEncryption: ('Enabled' | 'Disabled')?
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?

@@ -1,5 +1,5 @@
 metadata name = 'Azure Front Doors'
-metadata description = 'This module deploys an Azure Front Door.'
+metadata description = 'DEPRECATED - This module deploys an Azure Front Door.'
 
 @description('Required. The name of the frontDoor.')
 @minLength(5)
