@@ -231,6 +231,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Enabled'
+    defaultDataCollectionRuleResourceId: '<defaultDataCollectionRuleResourceId>'
     savedSearches: [
       {
         category: 'VDC Saved Searches'
@@ -2612,6 +2613,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`features`](#parameter-features) | object | The workspace features. |
 | [`forceCmkForQuery`](#parameter-forcecmkforquery) | bool | Indicates whether customer managed storage is mandatory for query management. |
+| [`defaultDataCollectionRuleResourceId`](#parameter-defaultDataCollectionRuleResourceId) | string | The resource ID of the default Data Collection Rule to use for this workspace. |
 | [`gallerySolutions`](#parameter-gallerysolutions) | array | List of gallerySolutions to be created in the log analytics workspace. |
 | [`linkedServices`](#parameter-linkedservices) | array | List of services to be linked. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -3105,6 +3107,13 @@ Flag that describes if we want to remove the data after 30 days.
 
 - Required: No
 - Type: bool
+
+### Parameter: `defaultDataCollectionRuleResourceId`
+
+The resource ID of the default Data Collection Rule to use for this workspace.
+
+- Required: No
+- Type: string
 
 ### Parameter: `forceCmkForQuery`
 

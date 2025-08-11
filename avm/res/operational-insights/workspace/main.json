@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13983309349104101401"
+      "templateHash": "1141450595918624353"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -1171,6 +1171,13 @@
         "description": "Optional. Indicates whether customer managed storage is mandatory for query management."
       }
     },
+    "defaultDataCollectionRuleResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource ID of the default Data Collection Rule to use for this workspace."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -1277,7 +1284,8 @@
         "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
         "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
         "forceCmkForQuery": "[parameters('forceCmkForQuery')]",
-        "replication": "[parameters('replication')]"
+        "replication": "[parameters('replication')]",
+        "defaultDataCollectionRuleResourceId": "[parameters('defaultDataCollectionRuleResourceId')]"
       },
       "identity": "[variables('identity')]"
     },
