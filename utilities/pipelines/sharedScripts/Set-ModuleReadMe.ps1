@@ -97,7 +97,7 @@ function Set-ResourceTypesSection {
     } else {
         # Process content
         $SectionContent = [System.Collections.ArrayList]@(
-            '| Resource Type | API Version | AzAdvertizer |',
+            '| Resource Type | API Version | References |',
             '| :-- | :-- | :-- |'
         )
 
@@ -125,7 +125,7 @@ function Set-ResourceTypesSection {
             }
 
             $AzAdvertizerUrl = 'https://www.azadvertizer.net/azresourcetypes/{0}.html' -f $resourceTypeObject.type.ToLower().Replace('/', '_')
-            $SectionContent += ('| `{0}` | [{1}]({2}) | [{0}]({3}) |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl, $AzAdvertizerUrl)
+            $SectionContent += ('| `{0}` | {1} | - [AzAdvertizer]({3}) <br/>- [Template reference]({2}) |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl, $AzAdvertizerUrl)
         }
         $ProgressPreference = 'Continue'
         $VerbosePreference = 'Continue'
