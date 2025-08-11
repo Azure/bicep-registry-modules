@@ -3039,6 +3039,7 @@ The kind of data collection rule.
 | [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
 | [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+| [`WorkspaceTransforms`](#variant-datacollectionrulepropertieskind-workspacetransforms) | The type for the properties of the 'WorkspaceTransforms' data collection rule. |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
 The type for the properties of the 'Linux' data collection rule.
@@ -3420,6 +3421,59 @@ The resource ID of the data collection endpoint that this rule can be used with.
 - Type: string
 
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-WorkspaceTransforms`
+The type for the properties of the 'WorkspaceTransforms' data collection rule.
+
+To use this variant, set the property `kind` to `WorkspaceTransforms`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-workspacetransformsdataflows) | array | The specification of data flows. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-workspacetransformsdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-workspacetransformskind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-workspacetransformsdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'WorkspaceTransforms'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.description`
 
 Description of the data collection rule.
 
