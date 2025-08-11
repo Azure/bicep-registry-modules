@@ -204,8 +204,6 @@ resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilit
   ]
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: ['${aiSearchConnectionResource.name}']
-    storageConnections: ['${storageAccountConnectionResource.name}']
     threadStorageConnections: ['${cosmosDbConnectionResource.name}']
     tags: tags
   }
