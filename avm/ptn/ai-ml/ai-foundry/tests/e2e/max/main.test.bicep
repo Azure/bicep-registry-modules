@@ -61,10 +61,10 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       includeAssociatedResources: true
       privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
-      sku: 'S0'
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
         location: enforcedLocation
+        sku: 'S0'
         createCapabilityHosts: true
         project: {
           name: 'projcustom${workloadName}'

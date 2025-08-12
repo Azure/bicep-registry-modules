@@ -510,6 +510,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
           roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
         }
       ]
+      sku: 'S0'
     }
     aiModelDeployments: [
       {
@@ -566,7 +567,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       name: '<name>'
     }
     privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
-    sku: 'S0'
     storageAccountConfiguration: {
       blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
       name: '<name>'
@@ -627,7 +627,8 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
             "principalType": "ServicePrincipal",
             "roleDefinitionIdOrName": "Cognitive Services OpenAI User"
           }
-        ]
+        ],
+        "sku": "S0"
       }
     },
     "aiModelDeployments": {
@@ -703,9 +704,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "privateEndpointSubnetResourceId": {
       "value": "<privateEndpointSubnetResourceId>"
     },
-    "sku": {
-      "value": "S0"
-    },
     "storageAccountConfiguration": {
       "value": {
         "blobPrivateDnsZoneResourceId": "<blobPrivateDnsZoneResourceId>",
@@ -766,6 +764,7 @@ param aiFoundryConfiguration = {
       roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
     }
   ]
+  sku: 'S0'
 }
 param aiModelDeployments = [
   {
@@ -822,7 +821,6 @@ param lock = {
   name: '<name>'
 }
 param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
-param sku = 'S0'
 param storageAccountConfiguration = {
   blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
   name: '<name>'
@@ -1057,7 +1055,6 @@ param storageAccountConfiguration = {
 | [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the AI resources. |
 | [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints. |
-| [`sku`](#parameter-sku) | string | SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. |
 
@@ -1086,6 +1083,7 @@ Custom configuration for the AI Foundry.
 | [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
 | [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
 | [`roleAssignments`](#parameter-aifoundryconfigurationroleassignments) | array | Role assignments to apply to the AI Foundry resource when creating it. |
+| [`sku`](#parameter-aifoundryconfigurationsku) | string | SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. Defaults to 'S0'. |
 
 ### Parameter: `aiFoundryConfiguration.accountName`
 
@@ -1294,6 +1292,36 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `aiFoundryConfiguration.sku`
+
+SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. Defaults to 'S0'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'C2'
+    'C3'
+    'C4'
+    'DC0'
+    'F0'
+    'F1'
+    'S'
+    'S0'
+    'S1'
+    'S10'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+    'S9'
   ]
   ```
 
@@ -1918,37 +1946,6 @@ The Resource ID of the subnet to establish Private Endpoint(s). If provided, pri
 
 - Required: No
 - Type: string
-
-### Parameter: `sku`
-
-SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
-
-- Required: No
-- Type: string
-- Default: `'S0'`
-- Allowed:
-  ```Bicep
-  [
-    'C2'
-    'C3'
-    'C4'
-    'DC0'
-    'F0'
-    'F1'
-    'S'
-    'S0'
-    'S1'
-    'S10'
-    'S2'
-    'S3'
-    'S4'
-    'S5'
-    'S6'
-    'S7'
-    'S8'
-    'S9'
-  ]
-  ```
 
 ### Parameter: `storageAccountConfiguration`
 

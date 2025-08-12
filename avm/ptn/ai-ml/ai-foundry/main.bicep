@@ -13,29 +13,6 @@ param baseUniqueName string = substring(uniqueString(subscription().id, resource
 @description('Optional. Location for all Resources. Defaults to the location of the resource group.')
 param location string = resourceGroup().location
 
-@description('Optional. SKU of the AI Foundry / Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
-@allowed([
-  'C2'
-  'C3'
-  'C4'
-  'F0'
-  'F1'
-  'S'
-  'S0'
-  'S1'
-  'S10'
-  'S2'
-  'S3'
-  'S4'
-  'S5'
-  'S6'
-  'S7'
-  'S8'
-  'S9'
-  'DC0'
-])
-param sku string = 'S0'
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -110,7 +87,7 @@ module foundryAccount 'modules/account.bicep' = {
   params: {
     name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
-    sku: sku
+    sku: !empty(aiFoundryConfiguration.?sku) ? aiFoundryConfiguration!.sku! : 'S0'
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     aiModelDeployments: aiModelDeployments
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
@@ -319,6 +296,28 @@ type foundryConfigurationType = {
 
   @description('Optional. The location of the AI Foundry account. Will default to the resource group location if not specified.')
   location: string?
+
+  @description('Optional. SKU of the AI Foundry / Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region. Defaults to \'S0\'.')
+  sku:
+    | null
+    | 'C2'
+    | 'C3'
+    | 'C4'
+    | 'F0'
+    | 'F1'
+    | 'S'
+    | 'S0'
+    | 'S1'
+    | 'S10'
+    | 'S2'
+    | 'S3'
+    | 'S4'
+    | 'S5'
+    | 'S6'
+    | 'S7'
+    | 'S8'
+    | 'S9'
+    | 'DC0'
 
   @description('Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if \'includeAssociatedResources\' is true. Defaults to false.')
   createCapabilityHosts: bool?

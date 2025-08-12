@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15331282894548146276"
+      "templateHash": "7754562330429145632"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -107,6 +107,33 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The location of the AI Foundry account. Will default to the resource group location if not specified."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "C2",
+            "C3",
+            "C4",
+            "DC0",
+            "F0",
+            "F1",
+            "S",
+            "S0",
+            "S1",
+            "S10",
+            "S2",
+            "S3",
+            "S4",
+            "S5",
+            "S6",
+            "S7",
+            "S8",
+            "S9"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. Defaults to 'S0'."
           }
         },
         "createCapabilityHosts": {
@@ -455,33 +482,6 @@
         "description": "Optional. Location for all Resources. Defaults to the location of the resource group."
       }
     },
-    "sku": {
-      "type": "string",
-      "defaultValue": "S0",
-      "allowedValues": [
-        "C2",
-        "C3",
-        "C4",
-        "F0",
-        "F1",
-        "S",
-        "S0",
-        "S1",
-        "S10",
-        "S2",
-        "S3",
-        "S4",
-        "S5",
-        "S6",
-        "S7",
-        "S8",
-        "S9",
-        "DC0"
-      ],
-      "metadata": {
-        "description": "Optional. SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
-      }
-    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -603,9 +603,7 @@
         "parameters": {
           "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
           "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
-          "sku": {
-            "value": "[parameters('sku')]"
-          },
+          "sku": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'sku'))), createObject('value', parameters('aiFoundryConfiguration').sku), createObject('value', 'S0'))]",
           "allowProjectManagement": {
             "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'allowProjectManagement'), true())]"
           },
