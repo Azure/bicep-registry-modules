@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15504645369127595383"
+      "templateHash": "13875742171060966873"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -244,7 +244,7 @@
     },
     "project": {
       "type": "Microsoft.CognitiveServices/accounts/projects",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "identity": {
@@ -284,15 +284,13 @@
       "apiVersion": "2025-04-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').storageAccountName)]",
       "properties": {
-        "category": "AzureBlob",
+        "category": "AzureStorageAccount",
         "target": "[reference('storageAccount').primaryEndpoints.blob]",
         "authType": "AAD",
         "metadata": {
           "ApiType": "Azure",
           "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').storageAccountName)]",
-          "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-          "AccountName": "[parameters('storageAccountConnection').storageAccountName]",
-          "ContainerName": "[parameters('storageAccountConnection').containerName]"
+          "location": "[reference('storageAccount', '2025-01-01', 'full').location]"
         }
       },
       "dependsOn": [
@@ -472,7 +470,7 @@
             "value": "[parameters('cosmosDbConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -536,7 +534,7 @@
             "value": "[parameters('storageAccountConnection').storageAccountName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -600,7 +598,7 @@
             "value": "[parameters('aiSearchConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -751,7 +749,7 @@
             "value": "[parameters('cosmosDbConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
           },
           "projectWorkspaceId": {
             "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
@@ -838,7 +836,7 @@
             "value": "[parameters('storageAccountConnection').storageAccountName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
           },
           "containerName": {
             "value": "[parameters('storageAccountConnection').containerName]"

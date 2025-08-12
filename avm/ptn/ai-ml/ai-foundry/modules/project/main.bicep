@@ -58,7 +58,8 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
 
 var createCapabilityHostResource = createCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
+#disable-next-line use-recent-api-versions
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
   name: name
   parent: foundryAccount
   location: location
@@ -125,15 +126,13 @@ resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/
   parent: project
   dependsOn: [waitForProjectScript, storageAccountRoleAssignments, cosmosDbConnectionResource]
   properties: {
-    category: 'AzureBlob'
+    category: 'AzureStorageAccount'
     target: storageAccount!.properties.primaryEndpoints.blob
     authType: 'AAD'
     metadata: {
       ApiType: 'Azure'
       ResourceId: storageAccount.id
       location: storageAccount!.location
-      AccountName: storageAccount!.name
-      ContainerName: storageAccountConnection!.containerName
     }
   }
 }
