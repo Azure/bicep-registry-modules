@@ -17,13 +17,6 @@ resource storageBlobDataOwnerRoleDefinition 'Microsoft.Authorization/roleDefinit
   scope: resourceGroup()
 }
 
-// NOTE: (obsolete, see next NOTE) it is unsure if the project workspace id container name is required here
-// The latest version of the storage account connection requires specifying a container name
-// while it was not required in previous versions.
-// To be safe, this is adding role assignments for both the provided container name and the
-// project workspace id as a container name (in the condition statement).
-
-// NOTE: assigning role to the entire storage account for now to get around condition formatting issues
 resource storageAccountCustomContainerDataOwnerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: storageAccount
   name: guid(storageAccount.id, storageBlobDataOwnerRoleDefinition.id, storageAccountName)
@@ -31,5 +24,22 @@ resource storageAccountCustomContainerDataOwnerRoleAssignment 'Microsoft.Authori
     principalId: projectIdentityPrincipalId
     roleDefinitionId: storageBlobDataOwnerRoleDefinition.id
     principalType: 'ServicePrincipal'
+    // NOTE: doing a string replace here because multi-line strings do not support string interpolation
+    condition: replace(
+      '''
+      (
+        (
+          !(ActionMatches{'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read'})
+          AND  !(ActionMatches{'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action'})
+          AND  !(ActionMatches{'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write'})
+        )
+        OR
+        (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase '#projectWorkspaceId#'
+        AND @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringLikeIgnoreCase '*-azureml-agent')
+      )
+      ''',
+      '#projectWorkspaceId#',
+      projectWorkspaceId
+    )
   }
 }
