@@ -64,7 +64,7 @@ function Get-GitDiff {
         '--diff-filter=AM'
     )
     if ($PathOnly) {
-        $diffInput += @('--name-only')
+        $diffInput += '--name-only'
     }
 
     if ($inUpstream -and $currentBranch -eq 'main') {
@@ -76,7 +76,7 @@ function Get-GitDiff {
     }
 
     if ($PathFilter) {
-        $diffInput += @($PathFilter)
+        $diffInput += $PathFilter
     }
 
     $diff = git diff $diffInput
