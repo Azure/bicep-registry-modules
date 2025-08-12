@@ -32,6 +32,10 @@ param containerMinReplicas int = 2
 @description('Optional. The name of the container.')
 param containerName string = 'main'
 
+import { containerAppProbeType } from 'br/public:avm/ptn/azd/acr-container-app:0.2.0'
+@description('Optional. List of probes for the container.')
+param containerProbes containerAppProbeType[]?
+
 @description('Optional. The name of the container registry.')
 param containerRegistryName string = ''
 
@@ -64,9 +68,9 @@ param identityName string = ''
 @description('Optional. The name of the container image.')
 param imageName string = ''
 
+import { secretType } from 'br/public:avm/res/app/container-app:0.18.1'
 @description('Optional. The secrets required for the container.')
-@secure()
-param secrets object = {}
+param secrets secretType[]?
 
 @description('Optional. The environment variables for the container.')
 param env environmentType[]?
@@ -108,11 +112,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource existingApp 'Microsoft.App/containerApps@2023-05-02-preview' existing = if (exists) {
+resource existingApp 'Microsoft.App/containerApps@2025-01-01' existing = if (exists) {
   name: name
 }
 
-module app 'br/public:avm/ptn/azd/acr-container-app:0.1.1' = {
+module app 'br/public:avm/ptn/azd/acr-container-app:0.2.0' = {
   name: '${uniqueString(deployment().name, location)}-container-app-update'
   params: {
     name: name
@@ -123,6 +127,7 @@ module app 'br/public:avm/ptn/azd/acr-container-app:0.1.1' = {
     ingressEnabled: ingressEnabled
     containerName: containerName
     containerAppsEnvironmentName: containerAppsEnvironmentName
+    containerProbes: containerProbes
     containerRegistryName: containerRegistryName
     containerRegistryHostSuffix: containerRegistryHostSuffix
     containerCpuCoreCount: containerCpuCoreCount
@@ -135,7 +140,7 @@ module app 'br/public:avm/ptn/azd/acr-container-app:0.1.1' = {
     secrets: secrets
     external: external
     env: env
-    imageName: !empty(imageName) ? imageName : exists ? existingApp.properties.template.containers[0].image : ''
+    imageName: !empty(imageName) ? imageName : exists ? existingApp!.properties.template.containers[0].image : ''
     targetPort: targetPort
     serviceBinds: serviceBinds
     principalId: !empty(identityName) && !empty(containerRegistryName) ? identityPrincipalId : ''
