@@ -33,6 +33,12 @@ Optional. The number of parallel threads to use for the generation.
 .PARAMETER SkipVersionCheck
 Optional. Do not check for the latest Bicep CLI version.
 
+.PARAMETER InvokeForDiff
+Optional. Build files only for those modules who's files have changed (based on diff of branch to origin/main)
+
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
@@ -60,8 +66,14 @@ function Set-AVMModule {
         [Parameter(Mandatory = $true)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter(ParameterSetName = 'Recurse', Mandatory = $false)]
         [switch] $Recurse,
+
+        [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
+        [switch] $InvokeForDiff,
+
+        [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipBuild,
@@ -94,7 +106,10 @@ function Set-AVMModule {
         }
     }
 
-    if ($Recurse) {
+    if ($InvokeForDiff) {
+        $diff = git diff --name-only 'origin/main'
+        $relevantTemplatePaths = $diff | Where-Object { $_ -like 'main.bicep' } | ForEach-Object { Join-Path $repoRoot $_ }
+    } elseif ($Recurse) {
         $childInput = @{
             Path    = $resolvedPath
             Recurse = $Recurse
