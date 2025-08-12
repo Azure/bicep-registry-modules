@@ -132,9 +132,10 @@ function Set-AVMModule {
 
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     foreach ($path in $relevantTemplatePaths) {
-        if (-not $SkipFileAndFolderSetup -and (($path -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
-            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$path]", 'Setup')) {
-                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $path
+        $folderPath = Split-Path $path
+        if (-not $SkipFileAndFolderSetup -and (($folderPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
+            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$folderPath]", 'Setup')) {
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $folderPath
             }
         }
     }
