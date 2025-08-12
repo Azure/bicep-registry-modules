@@ -79,7 +79,7 @@ function Get-TemplateFileToPublish {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
     $modifiedModuleFiles = (Get-GitDiff -PathFilter $ModuleFolderPath -PathOnly -Verbose).FullName
-    Write-Verbose ('Found [{0}] modified files in path [{1}]' -f $modifiedModuleFiles.Count, $PathFilter) -Verbose
+    Write-Verbose ('Found [{0}] modified files in path [{1}]' -f $modifiedModuleFiles.Count, $ModuleFolderPath) -Verbose
 
     # Only include `main.json' / 'version.json' files
     $relevantPaths = @()
