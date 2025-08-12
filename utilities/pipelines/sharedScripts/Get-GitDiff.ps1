@@ -60,9 +60,9 @@ function Get-GitDiff {
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
     if ($inUpstream -and $currentBranch -eq 'main') {
-        Write-Verbose 'Currently in upstream [main]. Fetching changes against [main^-1].' -Verbose
+        Write-Verbose 'Currently in upstream [main]. Fetching changes against [main^-1].'
     } else {
-        Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.')) -Verbose
+        Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.'))
     }
 
     $diffInput = @(

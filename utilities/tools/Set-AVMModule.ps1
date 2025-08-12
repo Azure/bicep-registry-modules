@@ -125,6 +125,11 @@ function Set-AVMModule {
         }
     }
 
+    if ($relevantTemplatePaths.Count -eq 0) {
+        Write-Verbose 'No relevant template paths found.' -Verbose
+        return
+    }
+
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     foreach ($path in $relevantTemplatePaths) {
         if (-not $SkipFileAndFolderSetup -and (($path -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
