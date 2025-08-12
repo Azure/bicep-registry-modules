@@ -58,6 +58,11 @@ For the [key-vault\vault] module or any of its children, build only the Bicep mo
 Set-AVMModule -ModuleFolderPath 'C:\avm\res' -Recurse
 
 For all modules in path [C:\avm\res], build the Bicep module template & generate the ReadMe.
+
+.EXAMPLE
+Set-AVMModule -InvokeForDiff
+
+For all modules that have been changed, build the Bicep module template & generate the ReadMe.
 #>
 function Set-AVMModule {
 
@@ -98,17 +103,12 @@ function Set-AVMModule {
     . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
 
     if ($InvokeForDiff) {
-        $diff = git diff --name-only 'origin/main'
+        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-ModifiedFileList.ps1')
+
+        $diff = Get-ModifiedFileList
         $relevantTemplatePaths = $diff | Where-Object { $_ -like 'main.bicep' } | ForEach-Object { Join-Path $repoRoot $_ }
     } else {
         $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
-
-        # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
-        if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
-            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
-                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
-            }
-        }
 
         if ($Recurse) {
             $childInput = @{
@@ -125,6 +125,16 @@ function Set-AVMModule {
             $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
         }
     }
+
+    # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
+    foreach ($path in $relevantTemplatePaths) {
+        if (-not $SkipFileAndFolderSetup -and (($path -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
+            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$path]", 'Setup')) {
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $path
+            }
+        }
+    }
+
     if (-not $SkipVersionCheck) {
 
         # Get latest release from Azure/Bicep repository
