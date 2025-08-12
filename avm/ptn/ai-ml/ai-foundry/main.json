@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5094832686301208448"
+      "templateHash": "9318804839007065339"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20087,7 +20087,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "201416696972162643"
+              "templateHash": "15621505475407768211"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20892,7 +20892,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "6687211819392966693"
+                      "templateHash": "12946450716069874852"
                     }
                   },
                   "parameters": {
@@ -20925,6 +20925,7 @@
                         "principalId": "[parameters('projectIdentityPrincipalId')]",
                         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
                         "principalType": "ServicePrincipal",
+                        "conditionVersion": "2.0",
                         "condition": "[replace('      (\n        (\n          !(ActionMatches{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read''})\n          AND  !(ActionMatches{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action''})\n          AND  !(ActionMatches{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write''})\n        )\n        OR\n        (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase ''#projectWorkspaceId#''\n        AND @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringLikeIgnoreCase ''*-azureml-agent'')\n      )\n      ', '#projectWorkspaceId#', parameters('projectWorkspaceId'))]"
                       }
                     }

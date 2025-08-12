@@ -24,6 +24,7 @@ resource storageAccountCustomContainerDataOwnerRoleAssignment 'Microsoft.Authori
     principalId: projectIdentityPrincipalId
     roleDefinitionId: storageBlobDataOwnerRoleDefinition.id
     principalType: 'ServicePrincipal'
+    conditionVersion: '2.0'
     // NOTE: doing a string replace here because multi-line strings do not support string interpolation
     condition: replace(
       '''
