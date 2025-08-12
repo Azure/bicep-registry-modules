@@ -13,19 +13,12 @@ param clusterName string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@allowed([
-  'managedCluster'
-  'connectedCluster'
-])
-@description('Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.')
-param clusterType string = 'managedCluster'
-
 @description('Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension.')
 @secure()
-param configurationProtectedSettings resourceInput<'Microsoft.KubernetesConfiguration/extensions@2024-11-01'>.properties.configurationProtectedSettings?
+param configurationProtectedSettings object?
 
 @description('Optional. Configuration settings, as name-value pairs for configuring this extension.')
-param configurationSettings resourceInput<'Microsoft.KubernetesConfiguration/extensions@2024-11-01'>.properties.configurationSettings?
+param configurationSettings object?
 
 @description('Required. Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.')
 param extensionType string
@@ -66,49 +59,36 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = if (clusterType == 'managedCluster') {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = {
   name: clusterName
 }
 
-// Arc-enabled Connected Cluster resource reference
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = if (clusterType == 'connectedCluster') {
-  name: clusterName
-}
-
-var fluxProperties = {
-  autoUpgradeMinorVersion: !empty(version) ? false : true
-  configurationProtectedSettings: configurationProtectedSettings
-  configurationSettings: configurationSettings
-  extensionType: extensionType
-  releaseTrain: releaseTrain
-  scope: {
-    cluster: !empty(releaseNamespace ?? '')
-      ? {
-          releaseNamespace: releaseNamespace
-        }
-      : null
-    namespace: !empty(targetNamespace ?? '')
-      ? {
-          targetNamespace: targetNamespace
-        }
-      : null
-  }
-  version: version
-}
-
-resource managedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'managedCluster') {
+resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
   name: name
   scope: managedCluster
-  properties: fluxProperties
+  properties: {
+    autoUpgradeMinorVersion: !empty(version) ? false : true
+    configurationProtectedSettings: configurationProtectedSettings
+    configurationSettings: configurationSettings
+    extensionType: extensionType
+    releaseTrain: releaseTrain
+    scope: {
+      cluster: !empty(releaseNamespace ?? '')
+        ? {
+            releaseNamespace: releaseNamespace
+          }
+        : null
+      namespace: !empty(targetNamespace ?? '')
+        ? {
+            targetNamespace: targetNamespace
+          }
+        : null
+    }
+    version: version
+  }
 }
 
-resource connectedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'connectedCluster') {
-  name: name
-  scope: connectedCluster
-  properties: fluxProperties
-}
-
-module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.8' = [
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1' = [
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
     params: {
