@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13696644605107953285"
+      "templateHash": "16562185646515156881"
     },
     "name": "Azd ACR Linked Container App",
     "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -211,6 +211,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "The type for a container app probe."
       }
     },

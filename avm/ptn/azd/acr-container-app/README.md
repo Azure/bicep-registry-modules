@@ -118,7 +118,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
   params: {
     // Required parameters
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
-    name: 'aca#_namePrefix_#001'
+    name: 'acaprb001'
     // Non-required parameters
     containerProbes: [
       {
@@ -159,7 +159,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
       "value": "<containerAppsEnvironmentName>"
     },
     "name": {
-      "value": "aca#_namePrefix_#001"
+      "value": "acaprb001"
     },
     // Non-required parameters
     "containerProbes": {
@@ -200,7 +200,7 @@ using 'br/public:avm/ptn/azd/acr-container-app:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
-param name = 'aca#_namePrefix_#001'
+param name = 'acaprb001'
 // Non-required parameters
 param containerProbes = [
   {
