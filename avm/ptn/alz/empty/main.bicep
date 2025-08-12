@@ -253,7 +253,7 @@ module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.0' = [
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.1' = [
   for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
