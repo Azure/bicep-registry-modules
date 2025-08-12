@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated resource provider versions
 - Updated az cli version in the deployment script
 - Added min and max length to the ACR name property
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

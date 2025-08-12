@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added tag assignments to resource groups
 - Added output for virtual WAN hub connection name
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
