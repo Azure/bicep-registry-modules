@@ -74,7 +74,6 @@ function Get-GitDiff {
     $diff = git diff $diffInput
 
     if ($PathOnly) {
-        Write-Verbose ('Found [{0}] modified files {1}' -f $diff.Count, ($PathFilter ? "in path [$PathFilter]": '')) -Verbose
         return $diff | Get-Item -Force
     }
 
