@@ -58,7 +58,7 @@ function Publish-ModuleFromPathToPBR {
     }
 
     Write-Verbose ($modulesToPublishList | ConvertTo-Json | Out-String) -Verbose
-    throw 'End'
+    return 'End'
 
     # 2. Iterate on the modules qualifying for publishing
     foreach ($moduleToPublish in $modulesToPublishList) {
