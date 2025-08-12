@@ -44,16 +44,16 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-// Role assignment for AKS Cluster Admin access
-resource roleAssignmentAKSClusterAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, createManagedIdentityForDeploymentScript.name, '0ab0b1a8-8adf-4205-889b-70dd5c9a7b71')
+// Role assignment for AKS Cluster Contributor access
+resource roleAssignmentAKSClusterContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, createManagedIdentityForDeploymentScript.name, 'ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8')
   scope: resourceGroup()
   properties: {
     principalId: createManagedIdentityForDeploymentScript.outputs.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '0ab0b1a8-8adf-4205-889b-70dd5c9a7b71'
-    ) // Azure Kubernetes Service Cluster Admin Role
+      'ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8'
+    ) // Azure Kubernetes Service Contributor Role
     principalType: 'ServicePrincipal'
   }
 }
@@ -129,7 +129,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
   }
   dependsOn: [
     managedCluster
-    roleAssignmentAKSClusterAdmin
+    roleAssignmentAKSClusterContributor
     roleAssignmentArcOnboarding
     roleAssignmentContributor
   ]
