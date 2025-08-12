@@ -86,7 +86,7 @@ function Set-AVMModule {
         [Parameter(Mandatory = $false)]
         [switch] $SkipReadMe,
 
-        [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
+        [Parameter(Mandatory = $false)]
         [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
