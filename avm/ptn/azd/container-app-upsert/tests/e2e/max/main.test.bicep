@@ -93,6 +93,23 @@ module testDeployment '../../../main.bicep' = [
           secretRef: 'keyvaultstoredsecret'
         }
       ]
+      containerProbes: [
+        {
+          type: 'Liveness'
+          httpGet: {
+            path: '/health'
+            port: 8080
+            httpHeaders: [
+              {
+                name: 'Custom-Header'
+                value: 'Awesome'
+              }
+            ]
+          }
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        }
+      ]
       exists: true
     }
   }

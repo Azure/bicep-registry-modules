@@ -120,6 +120,23 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
     name: '<name>'
     // Non-required parameters
+    containerProbes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
     containerRegistryName: '<containerRegistryName>'
     daprEnabled: true
     env: [
@@ -177,6 +194,25 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
       "value": "<name>"
     },
     // Non-required parameters
+    "containerProbes": {
+      "value": [
+        {
+          "httpGet": {
+            "httpHeaders": [
+              {
+                "name": "Custom-Header",
+                "value": "Awesome"
+              }
+            ],
+            "path": "/health",
+            "port": 8080
+          },
+          "initialDelaySeconds": 3,
+          "periodSeconds": 3,
+          "type": "Liveness"
+        }
+      ]
+    },
     "containerRegistryName": {
       "value": "<containerRegistryName>"
     },
@@ -250,6 +286,23 @@ using 'br/public:avm/ptn/azd/container-app-upsert:<version>'
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
 param name = '<name>'
 // Non-required parameters
+param containerProbes = [
+  {
+    httpGet: {
+      httpHeaders: [
+        {
+          name: 'Custom-Header'
+          value: 'Awesome'
+        }
+      ]
+      path: '/health'
+      port: 8080
+    }
+    initialDelaySeconds: 3
+    periodSeconds: 3
+    type: 'Liveness'
+  }
+]
 param containerRegistryName = '<containerRegistryName>'
 param daprEnabled = true
 param env = [
