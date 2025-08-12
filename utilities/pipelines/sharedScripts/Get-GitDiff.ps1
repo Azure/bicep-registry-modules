@@ -59,26 +59,18 @@ function Get-GitDiff {
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
-    # Note: Fetches only the name of the modified files
-    $diffInput = @(
-        '--diff-filter=AM'
-    )
-    if ($PathOnly) {
-        $diffInput += '--name-only'
-    }
-
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in upstream [main]. Fetching changes against [main^-1].' -Verbose
-        $diffInput += 'upstream/main^'
     } else {
         Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.')) -Verbose
-        $diffInput += 'upstream/main'
     }
 
-    if ($PathFilter) {
-        $diffInput += $PathFilter
-    }
-
+    $diffInput = @(
+        '--diff-filter=AM',
+        ($PathOnly ? '--name-only' : $null),
+        (($inUpstream -and $currentBranch -eq 'main') ? 'upstream/main^' : 'upstream/main'),
+        $PathFilter
+    ) | Where-Object { $_ }
     $diff = git diff $diffInput
 
     if ($NameOnly) {
