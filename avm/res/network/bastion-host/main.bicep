@@ -22,7 +22,7 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -69,13 +69,13 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU.')
+@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
 @allowed([
   1
   2
   3
 ])
-param zones int[] = [] // Availability Zones are currently in preview and only available in certain regions, therefore the default is an empty array.
+param availabilityZones int[] = [1, 2, 3]
 
 var enableReferencedModulesTelemetry = false
 
@@ -170,7 +170,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if 
     skuName: publicIPAddressObject.?skuName
     skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: publicIPAddressObject.?zones ?? (length(zones) > 0 ? zones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
+    zones: publicIPAddressObject.?zones ?? (!empty(availabilityZones) ? availabilityZones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
   }
 }
 
@@ -215,7 +215,7 @@ resource azureBastion 'Microsoft.Network/bastionHosts@2024-05-01' = {
   sku: {
     name: skuName
   }
-  zones: skuName == 'Developer' ? [] : map(zones, zone => string(zone))
+  zones: skuName == 'Developer' ? [] : map(availabilityZones, zone => '${zone}')
   properties: bastionpropertiesVar
 }
 
@@ -223,9 +223,9 @@ resource azureBastion_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: azureBastion
 }

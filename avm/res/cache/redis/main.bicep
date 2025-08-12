@@ -7,7 +7,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Redis cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -99,7 +99,16 @@ param tenantSettings object = {}
 param zoneRedundant bool = true
 
 @description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
-param zones int[] = [1, 2, 3]
+@allowed([1, 2, 3])
+param availabilityZones int[] = [1, 2, 3]
+
+@description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.')
+@allowed([
+  'Automatic'
+  'NoZones'
+  'UserDefined'
+])
+param zonalAllocationPolicy string?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -129,8 +138,10 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 var enableReferencedModulesTelemetry = false
 
-var availabilityZones = skuName == 'Premium'
-  ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
+var zones = skuName == 'Premium'
+  ? zoneRedundant
+      ? !empty(availabilityZones) ? availabilityZones : pickZones('Microsoft.Cache', 'redis', location, 3)
+      : []
   : []
 
 var formattedUserAssignedIdentities = reduce(
@@ -221,31 +232,36 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     staticIP: !empty(staticIP) ? staticIP : null
     subnetId: !empty(subnetResourceId) ? subnetResourceId : null
     tenantSettings: tenantSettings
+    zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
   }
-  zones: availabilityZones
+  zones: zones
 }
 
-resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-11-01' = [
-  for policy in accessPolicies: {
-    name: policy.name
-    parent: redis
-    properties: {
+// Deploy access policies
+module redis_accessPolicies 'access-policy/main.bicep' = [
+  for (policy, index) in accessPolicies: {
+    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
+    params: {
+      redisCacheName: redis.name
+      name: policy.name
       permissions: policy.permissions
     }
   }
 ]
 
-resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-11-01' = [
-  for assignment in accessPolicyAssignments: {
-    name: assignment.objectId
-    parent: redis
-    properties: {
+// Deploy access policy assignments
+module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
+  for (assignment, index) in accessPolicyAssignments: {
+    name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
+    params: {
+      redisCacheName: redis.name
+      name: assignment.?name
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
     }
     dependsOn: [
-      redis_accessPolicies
+      redis_accessPolicies // Ensure policies exist before assigning them
     ]
   }
 ]
@@ -254,9 +270,9 @@ resource redis_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: redis
 }
@@ -306,7 +322,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -523,6 +539,8 @@ type accessPolicyType = {
 }
 
 type accessPolicyAssignmentType = {
+  @description('Optional. The name of the Access Policy Assignment.')
+  name: string?
   @description('Required. Object id to which the access policy will be assigned.')
   objectId: string
   @description('Required. Alias for the target object id.')

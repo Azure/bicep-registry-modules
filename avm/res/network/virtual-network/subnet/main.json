@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "1989433230243572453"
+      "version": "0.32.4.45862",
+      "templateHash": "6928993269407282230"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -108,6 +108,16 @@
         "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
       }
     },
+    "ipamPoolPrefixAllocations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty."
+      }
+    },
     "networkSecurityGroupResourceId": {
       "type": "string",
       "nullable": true,
@@ -195,7 +205,7 @@
       ],
       "nullable": true,
       "metadata": {
-        "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
+        "description": "Optional. Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty."
       }
     },
     "applicationGatewayIPConfigurations": {
@@ -221,6 +231,13 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -241,6 +258,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "virtualNetwork": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
@@ -249,7 +286,7 @@
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
         "copy": [
@@ -263,6 +300,7 @@
         ],
         "addressPrefix": "[parameters('addressPrefix')]",
         "addressPrefixes": "[parameters('addressPrefixes')]",
+        "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
         "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
@@ -333,6 +371,13 @@
         "description": "List of address prefixes for the subnet."
       },
       "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefixes'), createArray())]"
+    },
+    "ipamPoolPrefixAllocations": {
+      "type": "array",
+      "metadata": {
+        "description": "The IPAM pool prefix allocations for the subnet."
+      },
+      "value": "[coalesce(tryGet(reference('subnet'), 'ipamPoolPrefixAllocations'), createArray())]"
     }
   }
 }

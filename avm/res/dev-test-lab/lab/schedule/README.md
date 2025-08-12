@@ -130,8 +130,8 @@ The notification settings for the schedule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`emailRecipient`](#parameter-notificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty. |
-| [`webHookUrl`](#parameter-notificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
+| [`emailRecipient`](#parameter-notificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty. |
+| [`webhookUrl`](#parameter-notificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
 
 **Optional parameters**
 
@@ -143,12 +143,12 @@ The notification settings for the schedule.
 
 ### Parameter: `notificationSettings.emailRecipient`
 
-The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.
+The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty.
 
 - Required: No
 - Type: string
 
-### Parameter: `notificationSettings.webHookUrl`
+### Parameter: `notificationSettings.webhookUrl`
 
 The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.
 

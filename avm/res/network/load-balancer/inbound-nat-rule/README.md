@@ -63,8 +63,6 @@ The name of the frontend IP address to set for the inbound NAT rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 65535
 
 ### Parameter: `name`
 
@@ -72,8 +70,6 @@ The name of the inbound NAT rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 65535
 
 ### Parameter: `frontendPort`
 
@@ -99,8 +95,6 @@ The name of the parent load balancer. Required if the template is used in a stan
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 65534
 
 ### Parameter: `backendAddressPoolName`
 
@@ -109,8 +103,6 @@ Name of the backend address pool.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 0
-- MaxValue: 65534
 
 ### Parameter: `enableFloatingIP`
 
@@ -119,8 +111,6 @@ Configures a virtual machine's endpoint for the floating IP capability required 
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 65534
 
 ### Parameter: `enableTcpReset`
 
@@ -129,8 +119,6 @@ Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connectio
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 65534
 
 ### Parameter: `idleTimeoutInMinutes`
 
@@ -139,8 +127,6 @@ The timeout for the TCP idle connection. The value can be set between 4 and 30 m
 - Required: No
 - Type: int
 - Default: `4`
-- MinValue: 0
-- MaxValue: 65534
 
 ### Parameter: `protocol`
 
@@ -157,8 +143,6 @@ The transport protocol for the endpoint.
     'Udp'
   ]
   ```
-- MinValue: 0
-- MaxValue: 65534
 
 ### Parameter: `frontendPortRangeEnd`
 

@@ -179,7 +179,7 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_D2s_v3'
       adminPassword: password
-      zone: 2
+      availabilityZone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
       backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
       backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -312,10 +312,6 @@ module testDeployment '../../../main.bicep' = [
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
       }
       proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
       roleAssignments: [

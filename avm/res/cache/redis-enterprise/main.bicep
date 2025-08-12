@@ -1,5 +1,5 @@
-metadata name = 'Redis Enterprise and Azure Managed Redis (Preview)'
-metadata description = 'This module deploys a Redis Enterprise or Azure Managed Redis (Preview) cache.'
+metadata name = 'Redis Enterprise and Azure Managed Redis'
+metadata description = 'This module deploys a Redis Enterprise or Azure Managed Redis cache.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Location for all resources.')
@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -31,7 +31,7 @@ param customerManagedKey customerManagedKeyType?
   'Enabled'
   'Disabled'
 ])
-@description('Optional. Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. HIGH AVAILABILITY IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-high-availability) FOR CLARIFICATION.')
+@description('Optional. Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.')
 param highAvailability string = 'Enabled'
 
 @allowed([
@@ -109,8 +109,8 @@ param capacity int = 2
   'MemoryOptimized_M1500'
   'MemoryOptimized_M2000'
 ])
-@description('Optional. The type of cluster to deploy. Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-overview#tiers-and-skus-at-a-glance) FOR CLARIFICATION.')
-param skuName string = 'Enterprise_E5'
+@description('Optional. The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION.')
+param skuName string = 'Balanced_B5'
 
 @allowed([
   1
@@ -118,7 +118,7 @@ param skuName string = 'Enterprise_E5'
   3
 ])
 @description('Optional. The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.')
-param zones int[] = [
+param availabilityZones int[] = [
   1
   2
   3
@@ -153,7 +153,7 @@ var isAmr = startsWith(skuName, 'Balanced') || startsWith(skuName, 'ComputeOptim
 ) || startsWith(skuName, 'MemoryOptimized')
 var isEnterprise = startsWith(skuName, 'Enterprise') || startsWith(skuName, 'EnterpriseFlash')
 
-var availabilityZones = isEnterprise ? map(zones, zone => string(zone)) : []
+var zones = isEnterprise ? map(availabilityZones, zone => string(zone)) : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -240,7 +240,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
+resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -268,7 +268,7 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
     capacity: isEnterprise ? capacity : null
     name: skuName
   }
-  zones: !empty(availabilityZones) ? availabilityZones : null
+  zones: !empty(zones) ? zones : null
 }
 
 module redisCluster_database 'database/main.bicep' = {
@@ -295,9 +295,9 @@ resource redisCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: redisCluster
 }
@@ -340,9 +340,9 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-redisEnterprise-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -414,6 +414,12 @@ output databaseResourceId string = redisCluster_database.outputs.resourceId
 @description('The name of the resource group the Redis resource was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The Redis host name.')
+output hostName string = redisCluster.properties.hostName
+
+@description('The Redis port.')
+output port int = redisCluster_database.outputs.port
+
 @description('The Redis endpoint.')
 output endpoint string = redisCluster_database.outputs.endpoint
 
@@ -447,14 +453,14 @@ type databaseType = {
   @description('Optional. Name of the database.')
   name: ('default')?
 
-  @description('Optional. Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.')
+  @description('Optional. Allow authentication via access keys.')
   accessKeysAuthentication: ('Disabled' | 'Enabled')?
 
   @description('Optional. Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols.')
   clientProtocol: ('Encrypted' | 'Plaintext')?
 
   @description('Optional. Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering).')
-  clusteringPolicy: ('EnterpriseCluster' | 'OSSCluster')?
+  clusteringPolicy: ('EnterpriseCluster' | 'NoCluster' | 'OSSCluster')?
 
   @description('Optional. Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades).')
   deferUpgrade: ('Deferred' | 'NotDeferred')?
@@ -484,7 +490,7 @@ type databaseType = {
   @description('Optional. The persistence settings of the service.')
   persistence: persistenceType?
 
-  @description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.')
+  @description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.')
   accessPolicyAssignments: accessPolicyAssignmentType[]?
 
   @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')

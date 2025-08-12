@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,8 +35,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
 }
 
@@ -44,23 +44,55 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var availabilityZones = [1, 2]
+var iterations = ['init', 'idem']
+
+var testConfigurations = flatten(map(
+  availabilityZones,
+  zone =>
+    map(iterations, iter => {
+      iteration: iter
+      availabilityZone: zone
+    })
+))
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for config in testConfigurations: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${config.iteration}-${config.availabilityZone}'
     params: {
       location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}001-${config.availabilityZone}'
+      availabilityZone: config.availabilityZone
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      logAnalytics: {
+        logType: 'ContainerInstanceLogs'
+        workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      }
       containers: [
         {
-          name: '${namePrefix}-az-aci-x-001'
+          name: '${namePrefix}-az-aci-x-1-${config.availabilityZone}'
           properties: {
-            command: []
+            command: [
+              '/bin/sh'
+              '-c'
+              'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
+            ]
+            readinessProbe: {
+              exec: {
+                command: [
+                  'cat'
+                  '/tmp/ready'
+                ]
+              }
+              initialDelaySeconds: 10
+              periodSeconds: 5
+              failureThreshold: 3
+            }
             environmentVariables: [
               {
                 name: 'CLIENT_ID'
@@ -95,7 +127,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: '${namePrefix}-az-aci-x-002'
+          name: '${namePrefix}-az-aci-x-2-${config.availabilityZone}'
           properties: {
             command: []
             environmentVariables: []
@@ -115,16 +147,19 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddressPorts: [
-        {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-      ]
+      ipAddress: {
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+        ]
+      }
+      // TODO Add volumes
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

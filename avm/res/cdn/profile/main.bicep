@@ -46,23 +46,27 @@ param ruleSets ruleSetType[] = []
 param afdEndpoints afdEndpointType[] = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
-param securityPolicies securityPolicyType = []
+param securityPolicies securityPolicyType[] = []
 
 @description('Optional. Endpoint tags.')
 param tags object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -123,7 +127,7 @@ var identity = !empty(managedIdentities)
   : null
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -141,7 +145,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' = {
   name: name
   location: location
   identity: identity
@@ -158,9 +162,9 @@ resource profile_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lo
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: profile
 }
@@ -235,7 +239,7 @@ module profile_secrets 'secret/main.bicep' = [
   }
 ]
 
-module profile_customDomains 'customdomain/main.bicep' = [
+module profile_customDomains 'custom-domain/main.bicep' = [
   for (customDomain, index) in customDomains: {
     name: '${uniqueString(deployment().name)}-CustomDomain-${index}'
     dependsOn: [
@@ -251,11 +255,13 @@ module profile_customDomains 'customdomain/main.bicep' = [
       minimumTlsVersion: customDomain.?minimumTlsVersion
       preValidatedCustomDomainResourceId: customDomain.?preValidatedCustomDomainResourceId
       secretName: customDomain.?secretName
+      cipherSuiteSetType: customDomain.?cipherSuiteSetType
+      customizedCipherSuiteSet: customDomain.?customizedCipherSuiteSet
     }
   }
 ]
 
-module profile_originGroups 'origingroup/main.bicep' = [
+module profile_originGroups 'origin-group/main.bicep' = [
   for (origingroup, index) in originGroups: {
     name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
@@ -270,7 +276,7 @@ module profile_originGroups 'origingroup/main.bicep' = [
   }
 ]
 
-module profile_ruleSets 'ruleset/main.bicep' = [
+module profile_ruleSets 'rule-set/main.bicep' = [
   for (ruleSet, index) in ruleSets: {
     name: '${uniqueString(deployment().name)}-Profile-RuleSet-${index}'
     params: {
@@ -281,7 +287,7 @@ module profile_ruleSets 'ruleset/main.bicep' = [
   }
 ]
 
-module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
+module profile_afdEndpoints 'afd-endpoint/main.bicep' = [
   for (afdEndpoint, index) in afdEndpoints: {
     name: '${uniqueString(deployment().name)}-Profile-AfdEndpoint-${index}'
     dependsOn: [
@@ -301,7 +307,7 @@ module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
   }
 ]
 
-module profile_securityPolicies 'securityPolicies/main.bicep' = [
+module profile_securityPolicies 'security-policy/main.bicep' = [
   for (securityPolicy, index) in securityPolicies: {
     name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
     dependsOn: [
@@ -345,7 +351,7 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
 
 @description('The list of records required for custom domains validation.')
-output dnsValidation dnsValidationType[] = [
+output dnsValidation dnsValidationOutputType[] = [
   for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
 ]
 
@@ -358,23 +364,13 @@ output frontDoorEndpointHostNames array = [
 //   Definitions   //
 // =============== //
 
-import { afdEndpointType } from 'afdEndpoint/main.bicep'
-import { customDomainType } from 'customdomain/main.bicep'
-import { originGroupType } from 'origingroup/main.bicep'
-import { originType } from 'origingroup//origin/main.bicep'
-import { associationsType } from 'securityPolicies/main.bicep'
-import { ruleSetType } from 'ruleset/main.bicep'
-import { ruleType } from 'ruleset/rule/main.bicep'
-import { dnsValidationType } from 'customdomain/main.bicep'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
+import { afdEndpointType } from 'afd-endpoint/main.bicep'
+import { customDomainType, dnsValidationOutputType } from 'custom-domain/main.bicep'
+import { originGroupType } from 'origin-group/main.bicep'
+import { originType } from 'origin-group/origin/main.bicep'
+import { associationsType } from 'security-policy/main.bicep'
+import { ruleSetType } from 'rule-set/main.bicep'
+import { ruleType } from 'rule-set/rule/main.bicep'
 
 @export()
 type securityPolicyType = {
@@ -382,42 +378,8 @@ type securityPolicyType = {
   name: string
 
   @description('Required. Domain names and URL patterns to match with this association.')
-  associations: associationsType
+  associations: associationsType[]
 
   @description('Required. Resource ID of WAF policy.')
   wafPolicyResourceId: string
-}[]
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+}

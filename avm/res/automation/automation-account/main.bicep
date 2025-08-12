@@ -51,9 +51,6 @@ param linkedWorkspaceResourceId string = ''
 @description('Optional. List of gallerySolutions to be created in the linked log analytics workspace.')
 param gallerySolutions gallerySolutionType[]?
 
-@description('Optional. List of softwareUpdateConfigurations to be created in the automation account.')
-param softwareUpdateConfigurations array = []
-
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
   ''
@@ -77,7 +74,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -399,56 +396,13 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
   }
 ]
 
-module automationAccount_softwareUpdateConfigurations 'software-update-configuration/main.bicep' = [
-  for (softwareUpdateConfiguration, index) in softwareUpdateConfigurations: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-SwUpdateConfig-${index}'
-    params: {
-      name: softwareUpdateConfiguration.name
-      automationAccountName: automationAccount.name
-      frequency: softwareUpdateConfiguration.frequency
-      operatingSystem: softwareUpdateConfiguration.operatingSystem
-      rebootSetting: softwareUpdateConfiguration.rebootSetting
-      azureVirtualMachines: softwareUpdateConfiguration.?azureVirtualMachines
-      excludeUpdates: softwareUpdateConfiguration.?excludeUpdates
-      expiryTime: softwareUpdateConfiguration.?expiryTime
-      expiryTimeOffsetMinutes: softwareUpdateConfiguration.?expiryTimeOffsetMinute
-      includeUpdates: softwareUpdateConfiguration.?includeUpdates
-      interval: softwareUpdateConfiguration.?interval
-      isEnabled: softwareUpdateConfiguration.?isEnabled
-      maintenanceWindow: softwareUpdateConfiguration.?maintenanceWindow
-      monthDays: softwareUpdateConfiguration.?monthDays
-      monthlyOccurrences: softwareUpdateConfiguration.?monthlyOccurrences
-      nextRun: softwareUpdateConfiguration.?nextRun
-      nextRunOffsetMinutes: softwareUpdateConfiguration.?nextRunOffsetMinutes
-      nonAzureComputerNames: softwareUpdateConfiguration.?nonAzureComputerNames
-      nonAzureQueries: softwareUpdateConfiguration.?nonAzureQueries
-      postTaskParameters: softwareUpdateConfiguration.?postTaskParameters
-      postTaskSource: softwareUpdateConfiguration.?postTaskSource
-      preTaskParameters: softwareUpdateConfiguration.?preTaskParameters
-      preTaskSource: softwareUpdateConfiguration.?preTaskSource
-      scheduleDescription: softwareUpdateConfiguration.?scheduleDescription
-      scopeByLocations: softwareUpdateConfiguration.?scopeByLocations
-      scopeByResources: softwareUpdateConfiguration.?scopeByResources
-      scopeByTags: softwareUpdateConfiguration.?scopeByTags
-      scopeByTagsOperation: softwareUpdateConfiguration.?scopeByTagsOperation
-      startTime: softwareUpdateConfiguration.?startTime
-      timeZone: softwareUpdateConfiguration.?timeZone
-      updateClassifications: softwareUpdateConfiguration.?updateClassifications
-      weekDays: softwareUpdateConfiguration.?weekDays
-    }
-    dependsOn: [
-      automationAccount_solutions
-    ]
-  }
-]
-
 resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: automationAccount
 }
@@ -484,7 +438,7 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
 
 module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-automationAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-automationAccount-pe-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

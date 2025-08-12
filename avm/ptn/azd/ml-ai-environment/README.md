@@ -1,6 +1,12 @@
 # Azd Azure Machine Learning Environment `[Azd/MlAiEnvironment]`
 
-Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.
+> ⚠️THIS MODULE IS DEPRECATED.⚠️
+> 
+> - It will no longer receive any updates.
+> - The module can still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
+> - It is recommended to migrate to a replacement/alternative version of the module, if available.
+
+DEPRECATED - Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
 
@@ -482,8 +488,6 @@ The Azure Search connection name.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `tags`
 
@@ -491,8 +495,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 12
 - Example:
   ```Bicep
   {
@@ -507,8 +509,6 @@ The User Assigned Identity resource name.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `searchServiceName`
 
@@ -517,8 +517,6 @@ The Azure Search resource name. Required if the parameter searchServiceName is n
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 12
 
 ## Outputs
 

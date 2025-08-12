@@ -53,7 +53,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -67,12 +67,11 @@ param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Disabled'
   'Enabled'
   'SecuredByPerimeter'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -85,7 +84,7 @@ param networkRuleSets networkRuleSetType?
 param disableLocalAuth bool = true
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ServiceBus/namespaces@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -196,7 +195,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   name: name
   location: location
   tags: tags
@@ -226,8 +225,8 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
                 : null
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
-              keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.?keyVersion
+              keyVersion: !empty(customerManagedKey.?keyVersion)
+                ? customerManagedKey!.keyVersion!
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -341,9 +340,9 @@ resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' = i
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: serviceBusNamespace
 }
@@ -379,7 +378,7 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
 
 module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PEP-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -480,6 +479,34 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @description('The endpoint of the deployed service bus namespace.')
 output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndpoint
+
+@secure()
+@description('The primary connection string of the service bus namespace.')
+output primaryConnectionString string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryConnectionString
+
+@secure()
+@description('The secondary connection string of the service bus namespace.')
+output secondaryConnectionString string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryConnectionString
+
+@secure()
+@description('The primary key of the service bus namespace.')
+output primaryKey string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryKey
+
+@secure()
+@description('The secondary key of the service bus namespace.')
+output secondaryKey string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryKey
 
 // =============== //
 //   Definitions   //

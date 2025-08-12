@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Virtual Network Rule.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/virtualNetworkRules) |
+| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/virtualNetworkRules) |
 
 ## Parameters
 
@@ -21,7 +21,7 @@ This module deploys an Azure SQL Server Virtual Network Rule.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Server Virtual Network Rule. |
-| [`virtualNetworkSubnetId`](#parameter-virtualnetworksubnetid) | string | The resource ID of the virtual network subnet. |
+| [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | The resource ID of the virtual network subnet. |
 
 **Conditional parameters**
 
@@ -42,7 +42,7 @@ The name of the Server Virtual Network Rule.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkSubnetId`
+### Parameter: `virtualNetworkSubnetResourceId`
 
 The resource ID of the virtual network subnet.
 

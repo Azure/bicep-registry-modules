@@ -13,19 +13,21 @@ param location string = 'global'
 param enableTelemetry bool = true
 
 @description('Optional. Endpoint tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Communication/emailServices@2023-04-01'>.tags?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Required. The location where the communication service stores its data at rest.')
 param dataLocation string
 
 @description('Optional. The domains to deploy into this namespace.')
-param domains array?
+param domains domainType[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -105,9 +107,9 @@ resource email_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: email
 }
@@ -145,45 +147,43 @@ output resourceGroupName string = resourceGroup().name
 output location string = email.location
 
 @description('The list of the email domain resource ids.')
-output domainResourceIds array = [for (domain, index) in (domains ?? []): email_domains[index].outputs.resourceId]
+output domainResourceIds string[] = [for (domain, index) in (domains ?? []): email_domains[index].outputs.resourceId]
 
 @description('The list of the email domain names.')
-output domainNamess array = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
+output domainNames string[] = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
 
-// ================ //
-// Definitions      //
-// ================ //
+// =========== //
+// Definitions //
+// =========== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+import { senderUsernameType } from 'domain/main.bicep'
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+@export()
+@description('The type of domain to create.')
+type domainType = {
+  @minLength(1)
+  @maxLength(253)
+  @description('Required. Name of the domain to create.')
+  name: string
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+  @description('Optional. Location for all Resources.')
+  location: string?
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. Endpoint tags.')
+  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Optional. Describes how the Domain resource is being managed.')
+  domainManagement: ('AzureManaged' | 'CustomerManaged' | 'CustomerManagedInExchangeOnline')?
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Optional. Describes whether user engagement tracking is enabled or disabled.')
+  userEngagementTracking: ('Enabled' | 'Disabled')?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Optional. The domains to deploy into this namespace.')
+  senderUsernames: senderUsernameType[]?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+}

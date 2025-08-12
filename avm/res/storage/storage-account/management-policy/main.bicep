@@ -6,14 +6,14 @@ metadata description = 'This module deploys a Storage Account Management Policy.
 param storageAccountName string
 
 @description('Required. The Storage Account ManagementPolicies Rules.')
-param rules array
+param rules resourceInput<'Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01'>.properties.policy.rules
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
 
 // lifecycle policy
-resource managementPolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2023-01-01' = {
+resource managementPolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01' = {
   name: 'default'
   parent: storageAccount
   properties: {

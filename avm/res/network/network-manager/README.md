@@ -62,8 +62,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         '<id>'
       ]
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -90,10 +88,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "<id>"
         ]
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -116,8 +110,6 @@ param networkManagerScopes = {
     '<id>'
   ]
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -1140,7 +1132,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       ]
     }
     // Non-required parameters
-    location: '<location>'
     networkManagerScopeAccesses: [
       'SecurityAdmin'
     ]
@@ -1177,9 +1168,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       }
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "networkManagerScopeAccesses": {
       "value": [
         "SecurityAdmin"
@@ -1214,7 +1202,6 @@ param networkManagerScopes = {
   ]
 }
 // Non-required parameters
-param location = '<location>'
 param networkManagerScopeAccesses = [
   'SecurityAdmin'
 ]
@@ -1564,6 +1551,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1583,6 +1571,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2162,8 +2157,6 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.description`
 
@@ -2171,8 +2164,6 @@ A description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinationPortRanges`
 
@@ -2180,8 +2171,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations`
 
@@ -2189,8 +2178,6 @@ The destnations filter can be an IP Address or a service tag. Each filter contai
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 **Required parameters**
 
@@ -2205,8 +2192,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations.addressPrefixType`
 
@@ -2221,8 +2206,6 @@ Address prefix type.
     'ServiceTag'
   ]
   ```
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.sourcePortRanges`
 
@@ -2230,8 +2213,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources`
 
@@ -2239,8 +2220,6 @@ The source filter can be an IP Address or a service tag. Each filter contains th
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 **Required parameters**
 
@@ -2255,8 +2234,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources.addressPrefixType`
 
@@ -2271,8 +2248,6 @@ Address prefix type.
     'ServiceTag'
   ]
   ```
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `tags`
 
@@ -2297,6 +2272,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 

@@ -73,8 +73,6 @@ All event subscriptions to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `inputSchema`
 
@@ -83,8 +81,6 @@ This determines the format that is expected for incoming events published to the
 - Required: No
 - Type: string
 - Default: `'CloudEventSchemaV1_0'`
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `lock`
 
@@ -92,8 +88,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 7
 
 **Optional parameters**
 
@@ -101,6 +95,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -116,8 +111,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `lock.name`
 
@@ -125,8 +118,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 7
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `publisherType`
 
@@ -135,8 +133,6 @@ Publisher type of the namespace topic.
 - Required: No
 - Type: string
 - Default: `'Custom'`
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments`
 
@@ -144,8 +140,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 7
 - Roles configurable by name:
   - `'Azure Resource Notifications System Topics Subscriber'`
   - `'Contributor'`
@@ -185,8 +179,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -194,8 +186,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.condition`
 
@@ -203,8 +193,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -218,8 +206,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -227,8 +213,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.description`
 
@@ -236,8 +220,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.name`
 
@@ -245,8 +227,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 7
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -264,8 +244,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 7
 
 ## Outputs
 
@@ -282,3 +260,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |

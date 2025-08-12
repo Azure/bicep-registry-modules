@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "18024083037530918442"
+      "version": "0.36.177.2456",
+      "templateHash": "6263459494167295460"
     },
     "name": "Sender Usernames",
     "description": "This module deploys an Sender"

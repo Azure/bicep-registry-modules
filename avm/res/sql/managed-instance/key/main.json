@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4882070616166685102"
+      "version": "0.33.93.31351",
+      "templateHash": "6745429343908730706"
     },
     "name": "SQL Managed Instance Keys",
     "description": "This module deploys a SQL Managed Instance Key."
@@ -36,27 +37,33 @@
     },
     "uri": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
       }
     }
   },
   "variables": {
-    "splittedKeyUri": "[split(parameters('uri'), '/')]",
+    "splittedKeyUri": "[split(coalesce(parameters('uri'), ''), '/')]",
     "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
   },
-  "resources": [
-    {
+  "resources": {
+    "managedInstance": {
+      "existing": true,
+      "type": "Microsoft.Sql/managedInstances",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[parameters('managedInstanceName')]"
+    },
+    "key": {
       "type": "Microsoft.Sql/managedInstances/keys",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[format('{0}/{1}', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",
         "uri": "[parameters('uri')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

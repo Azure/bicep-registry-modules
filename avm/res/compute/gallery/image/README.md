@@ -7,6 +7,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -52,7 +53,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`purchasePlan`](#parameter-purchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. |
+| [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required. |
 | [`tags`](#parameter-tags) | object | Tags for all the image. |
 | [`vCPUs`](#parameter-vcpus) | object | Describes the resource range (1-128 CPU cores). |
 
@@ -445,7 +446,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `securityType`
 
-The security type of the image. Requires a hyperVGeneration V2.
+The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required.
 
 - Required: No
 - Type: string
@@ -519,3 +520,11 @@ The minimum number of the resource.
 | `name` | string | The name of the image. |
 | `resourceGroupName` | string | The resource group the image was deployed into. |
 | `resourceId` | string | The resource ID of the image. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

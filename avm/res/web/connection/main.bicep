@@ -82,7 +82,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. The status of the connection.')
 param statuses object[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -95,7 +95,7 @@ param lock lockType?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Web/connections@2016-06-01'>.tags?
 
 @description('Optional. Links to test the API connection.')
 param testLinks object[]?
@@ -169,9 +169,9 @@ resource connection_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: connection
 }

@@ -17,8 +17,9 @@ Creates an Azure Container Registry and an Azure Container Apps environment.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
-| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
+| `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
@@ -28,8 +29,8 @@ Creates an Azure Container Registry and an Azure Container Apps environment.
 | `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -57,7 +58,7 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
     // Required parameters
     containerAppsEnvironmentName: 'acaszrcae001'
     containerRegistryName: 'acaszrcr001'
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     // Non-required parameters
     acrSku: 'Standard'
     dockerBridgeCidr: '172.16.0.1/28'
@@ -99,8 +100,8 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
     "containerRegistryName": {
       "value": "acaszrcr001"
     },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
+    "logAnalyticsWorkspaceName": {
+      "value": "<logAnalyticsWorkspaceName>"
     },
     // Non-required parameters
     "acrSku": {
@@ -157,7 +158,7 @@ using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
 // Required parameters
 param containerAppsEnvironmentName = 'acaszrcae001'
 param containerRegistryName = 'acaszrcr001'
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 // Non-required parameters
 param acrSku = 'Standard'
 param dockerBridgeCidr = '172.16.0.1/28'
@@ -189,7 +190,7 @@ param zoneRedundant = true
 | :-- | :-- | :-- |
 | [`containerAppsEnvironmentName`](#parameter-containerappsenvironmentname) | string | Name of the Container Apps Managed Environment. |
 | [`containerRegistryName`](#parameter-containerregistryname) | string | Name of the Azure Container Registry. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
+| [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | Existing Log Analytics Workspace name. |
 
 **Conditional parameters**
 
@@ -231,9 +232,9 @@ Name of the Azure Container Registry.
 - Required: Yes
 - Type: string
 
-### Parameter: `logAnalyticsWorkspaceResourceId`
+### Parameter: `logAnalyticsWorkspaceName`
 
-Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
+Existing Log Analytics Workspace name.
 
 - Required: Yes
 - Type: string
@@ -390,8 +391,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/app/managed-environment:0.7.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.4.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 
 ## Data Collection
 

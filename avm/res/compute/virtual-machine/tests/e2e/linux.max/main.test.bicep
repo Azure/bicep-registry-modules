@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmlinmax'
+param serviceShort string = 'cvmlimax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -112,6 +112,11 @@ module testDeployment '../../../main.bicep' = {
                 2
                 3
               ]
+              diagnosticSettings: [
+                {
+                  workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+                }
+              ]
               roleAssignments: [
                 {
                   name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
@@ -201,7 +206,7 @@ module testDeployment '../../../main.bicep' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
-    zone: 1
+    availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -234,6 +239,7 @@ module testDeployment '../../../main.bicep' = {
     encryptionAtHost: false
     extensionCustomScriptConfig: {
       enabled: true
+      name: 'myCustomScript'
       fileData: [
         {
           storageAccountId: nestedDependencies.outputs.storageAccountResourceId
@@ -251,6 +257,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionDependencyAgentConfig: {
       enabled: true
+      name: 'myDependencyAgent'
       enableAMA: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -278,6 +285,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionAadJoinConfig: {
       enabled: true
+      name: 'myAADLogin'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -286,6 +294,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionDSCConfig: {
       enabled: false
+      name: 'myDesiredStateConfiguration'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -294,6 +303,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionMonitoringAgentConfig: {
       enabled: true
+      name: 'myMonitoringAgent'
       dataCollectionRuleAssociations: [
         {
           name: 'SendMetricsToLAW'
@@ -308,6 +318,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
+      name: 'myNetworkWatcherAgent'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -358,7 +369,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
 }

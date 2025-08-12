@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Required. Resource ID of Container Apps Environment.')
 param environmentResourceId string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -179,7 +179,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-job.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -197,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource job 'Microsoft.App/jobs@2024-03-01' = {
+resource job 'Microsoft.App/jobs@2025-02-02-preview' = {
   name: name
   tags: tags
   location: location
@@ -227,9 +227,9 @@ resource job_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: job
 }
@@ -557,6 +557,9 @@ type jobScaleType = {
       @description('Required. Trigger Parameter that uses the secret.')
       triggerParameter: string
     }[]?
+
+    @description('Optional. The resource ID of a user-assigned managed identity that is assigned to the Container App, or "system" for system-assigned identity.')
+    identity: string?
 
     @description('Required. Metadata properties to describe the scale rule.')
     @metadata({

@@ -197,6 +197,32 @@ function Set-ParametersSection {
 
 <#
 .SYNOPSIS
+Reformat a given string to a markdown-compatible header reference
+
+.DESCRIPTION
+This function removes characters that are not part of a markdown header and adds a header reference to the front
+
+.PARAMETER StringToFormat
+Mandatory. The string to format
+
+.EXAMPLE
+Get-MarkdownHeaderReferenceFormattedString 'Parameter: dataCollectionRuleProperties.kind-AgentSettings.description'
+
+The given string is reformatted to: '#parameter-datacollectionrulepropertieskind-agentsettingsdescription'.
+#>
+function Get-MarkdownHeaderReferenceFormattedString {
+
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [string] $StringToFormat
+    )
+
+    return ('#{0}' -f ($StringToFormat -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:|\.', '').ToLower())
+}
+
+<#
+.SYNOPSIS
 Update parts of the 'parameters' section of the given readme file, if user defined types are used
 
 .DESCRIPTION
@@ -211,9 +237,6 @@ Optional. Hashtable of the user defined properties
 .PARAMETER ParentName
 Optional. Name of the parameter, that has the user defined types
 
-.PARAMETER ParentIdentifierLink
-Optional. Link of the parameter, that has the user defined types
-
 .PARAMETER ColumnsInOrder
 Optional. The order of parameter categories to show in the readme parameters section.
 
@@ -223,7 +246,7 @@ Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -ColumnsInOr
 Top-level invocation. Will start from the TemplateFile's parameters object and recursively crawl through all children. Tables will be ordered by 'Required' first and 'Optional' after.
 
 .EXAMPLE
-Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings' -ParentIdentifierLink '#parameter-diagnosticsettings'
+Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings'
 
 Child-level invocation during recursion.
 
@@ -240,9 +263,6 @@ function Set-DefinitionSection {
 
         [Parameter(Mandatory = $false)]
         [string] $ParentName,
-
-        [Parameter(Mandatory = $false)]
-        [string] $ParentIdentifierLink,
 
         [Parameter(Mandatory = $false)]
         [string[]] $ColumnsInOrder = @('Required', 'Conditional', 'Optional', 'Generated')
@@ -263,6 +283,7 @@ function Set-DefinitionSection {
         if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
             $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
             Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+            return
         }
     } else {
         $descriptions = $Properties.Values.metadata.description
@@ -273,6 +294,7 @@ function Set-DefinitionSection {
         if ($paramsWithoutCategory = $Properties.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
             $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
             Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+            return
         }
     }
 
@@ -313,7 +335,7 @@ function Set-DefinitionSection {
 
             $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
             $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
-            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() :  ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
+            $paramIdentifierLink = Get-MarkdownHeaderReferenceFormattedString $paramHeader
 
             # definition type (if any)
             if ($parameter.Keys -contains '$ref') {
@@ -385,7 +407,7 @@ function Set-DefinitionSection {
                     $formattedDefaultValue = @(
                         '- Default:',
                         '  ```Bicep',
-                ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
                         '  ```'
                     )
                 }
@@ -415,7 +437,7 @@ function Set-DefinitionSection {
                     $formattedAllowedValues = @(
                         '- Allowed:',
                         '  ```Bicep',
-                ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
                         '  ```'
                     )
                 }
@@ -424,11 +446,16 @@ function Set-DefinitionSection {
             }
 
             # add MinValue and maxValue to the description
-            if ($parameter.ContainsKey('minValue')) {
+            if ($parameter.Keys -contains 'minValue') {
                 $formattedMinValue = "- MinValue: $($parameter['minValue'])"
+            } else {
+                $formattedMinValue = $null # Reset value for future iterations
             }
-            if ($parameter.ContainsKey('maxValue')) {
+
+            if ($parameter.Keys -contains 'maxValue') {
                 $formattedMaxValue = "- MaxValue: $($parameter['maxValue'])"
+            } else {
+                $formattedMaxValue = $null # Reset value for future iterations
             }
 
             # Special case for 'roleAssignments' parameter
@@ -482,17 +509,18 @@ function Set-DefinitionSection {
             # ===============
             $listSectionContent += @(
                 $paramHeader,
-            ($parameter.ContainsKey('metadata') ? '' : $null),
+                ($parameter.ContainsKey('metadata') ? '' : $null),
                 $description
-            ($parameter.ContainsKey('metadata') ? '' : $null),
-            ('- Required: {0}' -f $isRequired),
-            ('- Type: {0}' -f $type),
-            ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
-            ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
-            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
+                ($parameter.ContainsKey('metadata') ? '' : $null),
+                ('- Required: {0}' -f $isRequired),
+                ('- Type: {0}' -f $type),
+                ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+                ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
+                ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
+                (($definition.discriminator.propertyName) ? ('- Discriminator: `{0}`' -f $definition.discriminator.propertyName) : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -503,27 +531,75 @@ function Set-DefinitionSection {
                 if ($definition.Keys -contains 'items' -and ($definition.items.properties.Keys -or $definition.items.additionalProperties.Keys)) {
                     if ($definition.items.properties.Keys) {
                         $childProperties = $definition.items.properties
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                     if ($definition.items.additionalProperties.Keys) {
                         $childProperties = $definition.items.additionalProperties
                         $formattedProperties = @{ '>Any_other_property<' = $childProperties }
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
-                } elseif ($definition.type -eq 'object' -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
+                } elseif ($definition.type -in @('object', 'secureObject') -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
                     if ($definition.properties.Keys) {
                         $childProperties = $definition.properties
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                     if ($definition.additionalProperties.Keys) {
                         $childProperties = $definition.additionalProperties
                         $formattedProperties = @{ '>Any_other_property<' = $childProperties }
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
+                } elseif ($definition.type -in @('object', 'secureObject') -and $definition.keys -contains 'discriminator') {
+                    <#
+                    Discriminator type. E.g.,
+
+                    @discriminator('kind')
+                    type mainType = subTypeA | subTypeB | subTypeC
+                    #>
+
+                    $variantTableSectionContent += @(
+                        '<h4>The available variants are:</h4>',
+                        ''
+                        '| Variant | Description |',
+                        '| :-- | :-- |'
+                    )
+
+                    $variantContent = @()
+                    foreach ($typeVariantName in $definition.discriminator.mapping.Keys) {
+                        $typeVariant = $definition.discriminator.mapping[$typeVariantName]
+                        $resolvedTypeVariant = $TemplateFileContent.definitions[(Split-Path $typeVariant.'$ref' -Leaf)]
+                        $variantDescription = ($resolvedTypeVariant.metadata.description ?? '').Replace("`r`n", '<p>').Replace("`n", '<p>')
+
+                        $variantIdentifier = '{0}.{1}-{2}' -f $paramIdentifier, $definition.discriminator.propertyName, $typeVariantName
+                        $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
+                        $variantIdentifierLink = Get-MarkdownHeaderReferenceFormattedString $variantIdentifierHeader
+
+                        $variantContent += @(
+                            $variantIdentifierHeader,
+                            $variantDescription,
+                            '',
+                            ('To use this variant, set the property `{0}` to `{1}`.' -f $definition.discriminator.propertyName, $typeVariantName),
+                            ''
+                        )
+
+                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} |' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
+
+                        $definitionSectionInputObject = @{
+                            TemplateFileContent = $TemplateFileContent
+                            Properties          = $resolvedTypeVariant.properties
+                            ParentName          = $variantIdentifier
+                            ColumnsInOrder      = $ColumnsInOrder
+                        }
+                        $sectionContent = Set-DefinitionSection @definitionSectionInputObject
+                        $variantContent += $sectionContent
+                    }
+
+                    $variantTableSectionContent += ''
+                    $listSectionContent += $variantTableSectionContent
+                    $listSectionContent += $variantContent
                 }
             }
         }
@@ -1151,7 +1227,7 @@ function ConvertTo-FormattedJSONParameterObject {
         [regex]$pattern = '^\s*\"{0}([0-9a-zA-Z_]+):'
         $line = $pattern.replace($line, '"$1":', 1)
 
-        # [2.5] Syntax: Replace Bicep resource ID references
+        # [2.5] Syntax: Replace DSL-specific syntax
         $mayHaveValue = $line -match '^\s*.+?:\s+'
         if ($mayHaveValue) {
 
@@ -1161,7 +1237,7 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
             $isLineWithObjectPropertyReferenceValue = $lineValue -match '(?<=[^"])\b\.\b(?=[^"]*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
-            $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}'
+            $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*(?<!\\)\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}', but NOT "abc: \${xyz}"
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
             $isLineWithFunction = $lineValue -match '^[a-zA-Z0-9]+\(.+' # e.g., split(something) or loadFileAsBase64("./test.pfx")
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
@@ -1215,7 +1291,7 @@ function ConvertTo-FormattedJSONParameterObject {
             }
         } else {
             if ($line -notlike '*"*"*' -and $line -like '*.*') {
-                # In case of a array value like '[ \n -> resourceGroupResources.outputs.managedIdentityPrincipalId <- \n ]' we'll only show "<managedIdentityPrincipalId>""
+                # In case of a array value like '[ \n -> resourceGroupResources.outputs.managedIdentityPrincipalId <- \n ]' we'll only show "<managedIdentityPrincipalId>"
                 $line = '"<{0}>"' -f $line.Split('.')[-1].Trim()
             } elseif ($line -match '^\s*[a-zA-Z]+\s*$') {
                 # If there is simply only a value such as a variable reference, we'll wrap it as a string to replace. For example a reference of a variable `addressPrefix` will be replaced with `"<addressPrefix>"`
@@ -1226,6 +1302,10 @@ function ConvertTo-FormattedJSONParameterObject {
             }
         }
 
+        # Escape characters that would be invalid in JSON
+        $line = $line -replace '\\\$', '\\$' # Replace "abc: \${xzy}" with "abc: \\${xzy}"
+
+        # Overwrite value
         $paramInJSONFormatArray[$index] = $line
     }
 
@@ -1341,6 +1421,7 @@ function ConvertTo-FormattedBicep {
             $line = $line -replace ',$', '' # Update any [xyz: abc,xyz,] to [xyz: abc,xyz]
             $line = $line -replace "'(\w+)':", '$1:' # Update any  ['xyz': xyz] to [xyz: xyz]
             $line = $line -replace "'(.+.getSecret\('.+'\))'", '$1' # Update any  [xyz: 'xyz.GetSecret()'] to [xyz: xyz.GetSecret()]
+            $line = $line -replace '\\\\\$', '\$' # Replace JSON-escaped "\\${aValue}" with Bicep counterpart "\${aValue}"
             $line
         }
         $bicepParamsArray = $bicepParamsArray[1..($bicepParamsArray.count - 2)]
@@ -1400,6 +1481,15 @@ Optional. A switch to control whether or not to add a ARM-JSON-Parameter file ex
 .PARAMETER addBicep
 Optional. A switch to control whether or not to add a Bicep usage example. Defaults to true.
 
+.PARAMETER addBicepParametersFile
+Optional. A switch to control whether or not to add a Bicep parameter file usage example. Defaults to true.
+
+.PARAMETER IsMultiScopeParentModule
+Optional. A switch to control whether or not the module is a multi-scope parent module. Defaults to false.
+
+.PARAMETER IsMultiScopeChildModule
+Optional. A switch to control whether or not the module is a multi-scope child module. Defaults to false.
+
 .EXAMPLE
 Set-UsageExamplesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
 
@@ -1421,6 +1511,12 @@ function Set-UsageExamplesSection {
         [Parameter(Mandatory = $true)]
         [object[]] $ReadMeFileContent,
 
+        [Parameter(Mandatory = $true)]
+        [bool] $IsMultiScopeParentModule,
+
+        [Parameter(Mandatory = $true)]
+        [bool] $IsMultiScopeChildModule,
+
         [Parameter(Mandatory = $false)]
         [bool] $addJson = $true,
 
@@ -1433,6 +1529,20 @@ function Set-UsageExamplesSection {
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Usage examples'
     )
+
+    if ($IsMultiScopeParentModule) {
+        $SectionContent = @(
+            "**Note**: This is a multi-scoped module. This means, you will find the 'Usage Examples' in the documentation of the correspondingly scoped child modules:"
+        )
+        $multiScopeChildModules = (Get-ChildItem -Path $ModuleRoot -Filter '*-scope' -Directory).Name
+        $multiScopeChildModules | ForEach-Object {
+            $SectionContent += ('- `/{0}/README.md`' -f $_)
+        }
+        if ($PSCmdlet.ShouldProcess('Original file with new template references content', 'Merge')) {
+            return Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -ContentType 'nextH2'
+        }
+        return $ReadMeFileContent
+    }
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
     $targetVersion = '<version>'
@@ -1461,11 +1571,17 @@ function Set-UsageExamplesSection {
         $moduleNameCamelCase = $specialConversionHash[$moduleName]
     } else {
         # Convert moduleName from kebab-case to camelCase
-        $First, $Rest = $moduleName -Split '-', 2
-        $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -Replace '-'
+        $First, $Rest = $moduleName -split '-', 2
+        $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
     }
-
-    $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
+    if ($isMultiScopeChildModule) {
+        $scopedModuleFolderName = Split-Path -Path $ModuleRoot -Leaf
+        $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+            $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
+        }
+    } else {
+        $testFilePaths = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
+    }
 
     if ($TemplateFileContent.parameters.Count -gt 0) {
         $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
@@ -1538,6 +1654,18 @@ function Set-UsageExamplesSection {
             )
         }
 
+        # If the deployment of the test is skipped, add a note
+        $e2eIgnoreFilePath = Join-Path (Split-Path -Path $testFilePath -Parent) '.e2eignore'
+        if (Test-Path $e2eIgnoreFilePath) {
+            $e2eIgnoreContent = (Get-Content $e2eIgnoreFilePath) -join "`n"
+            $testFilesContent += @(
+                '> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:',
+                '```text',
+                $e2eIgnoreContent.Trim(),
+                '```'
+            )
+        }
+
         # ------------------------- #
         #   Prepare Bicep to JSON   #
         # ------------------------- #
@@ -1578,9 +1706,9 @@ function Set-UsageExamplesSection {
                     $paramsEndIndex = $paramsStartIndex
                     do {
                         $paramsEndIndex++
-                    } while ($rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}" -and
-                        $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}\]" -and
-                        $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\]" -and
+                    } while ($rawBicepExample[$paramsEndIndex] -notmatch "^\s{$paramsIndent}\}" -and
+                        $rawBicepExample[$paramsEndIndex] -notmatch "^\s{$paramsIndent}\}\]" -and
+                        $rawBicepExample[$paramsEndIndex] -notmatch "^\s{$paramsIndent}\]" -and
                         $paramsEndIndex -lt $rawBicepExample.Count)
 
                     if ($paramsEndIndex -eq $rawBicepExample.Count) {
@@ -1874,10 +2002,16 @@ function Initialize-ReadMe {
         }
     } else {
         # Non-resource modules always need a custom identifier
-        $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -Split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
-        $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
-        $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
+        $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
+        $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -replace '[^0-9A-Z]', ' ')) -replace ' '
+        $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -replace '[^0-9A-Z]', ' ')) -replace ' '
         $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
+    }
+
+    # Deprecation file existing?
+    $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
+    if (Test-Path $deprecatedModuleFilePath) {
+        $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
     }
 
     # Orphaned readme existing?
@@ -1895,6 +2029,8 @@ function Initialize-ReadMe {
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
+        ((Test-Path $deprecatedModuleFilePath) ? $deprecatedModuleFileContent : $null),
+        ((Test-Path $deprecatedModuleFilePath) ? '' : $null),
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
         ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),
@@ -2037,6 +2173,13 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
+    # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
+    # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
+    $scopedModuleSeparator = '\/(rg|sub|mg)\-scope$'
+    if ($fullModuleIdentifier -match $scopedModuleSeparator) {
+        $fullModuleIdentifier = ($fullModuleIdentifier -split $scopedModuleSeparator)[0]
+    }
+
     # ===================== #
     #   Preparation steps   #
     # ===================== #
@@ -2084,15 +2227,22 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
-    $hasTests = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
+    $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
+    $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
+
+    # If it's multi-scope child module, we need to check if its parent has tests
+    $hasTests = (Get-ChildItem -Path ($isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
+
     if ($SectionsToRefresh -contains 'Usage examples' -and $hasTests) {
         # Handle [Usage examples] section
         # ===================================
         $inputObject = @{
-            ModuleRoot           = $ModuleRoot
-            FullModuleIdentifier = $fullModuleIdentifier
-            ReadMeFileContent    = $readMeFileContent
-            TemplateFileContent  = $templateFileContent
+            ModuleRoot               = $ModuleRoot
+            FullModuleIdentifier     = $fullModuleIdentifier
+            ReadMeFileContent        = $readMeFileContent
+            TemplateFileContent      = $templateFileContent
+            IsMultiScopeParentModule = $isMultiScopeParentModule
+            IsMultiScopeChildModule  = $isMultiScopeChildModule
         }
         $readMeFileContent = Set-UsageExamplesSection @inputObject
     }

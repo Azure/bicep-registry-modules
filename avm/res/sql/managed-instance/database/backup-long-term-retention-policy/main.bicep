@@ -1,14 +1,21 @@
 metadata name = 'SQL Managed Instance Database Backup Long-Term Retention Policies'
 metadata description = 'This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy.'
 
-@description('Required. The name of the Long Term Retention backup policy. For example "default".')
-param name string
+@description('Optional. The name of the Long Term Retention backup policy.')
+param name string = 'default'
 
 @description('Conditional. The name of the parent managed instance database. Required if the template is used in a standalone deployment.')
 param databaseName string
 
 @description('Conditional. The name of the parent managed instance. Required if the template is used in a standalone deployment.')
 param managedInstanceName string
+
+@allowed([
+  'Archive'
+  'Hot'
+])
+@description('Optional. The BackupStorageAccessTier for the LTR backups.')
+param backupStorageAccessTier string = 'Hot'
 
 @description('Optional. The week of year to take the yearly backup in an ISO 8601 format.')
 param weekOfYear int = 5
@@ -22,18 +29,19 @@ param monthlyRetention string = 'P1Y'
 @description('Optional. The yearly retention policy for an LTR backup in an ISO 8601 format.')
 param yearlyRetention string = 'P5Y'
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2022-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 
-  resource managedInstaceDatabase 'databases@2022-05-01-preview' existing = {
+  resource managedInstaceDatabase 'databases@2024-05-01-preview' existing = {
     name: databaseName
   }
 }
 
-resource backupLongTermRetentionPolicy 'Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies@2022-05-01-preview' = {
+resource backupLongTermRetentionPolicy 'Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies@2024-05-01-preview' = {
   name: name
   parent: managedInstance::managedInstaceDatabase
   properties: {
+    backupStorageAccessTier: backupStorageAccessTier
     monthlyRetention: monthlyRetention
     weeklyRetention: weeklyRetention
     weekOfYear: weekOfYear

@@ -21,11 +21,11 @@ var privateDnsZoneConfigsVar = [
   }
 ]
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' existing = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' existing = {
   name: privateEndpointName
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
   name: name
   parent: privateEndpoint
   properties: {

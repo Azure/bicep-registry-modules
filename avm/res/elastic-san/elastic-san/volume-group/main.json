@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "8975197813336500895"
+      "version": "0.37.4.10188",
+      "templateHash": "13918108802980359112"
     },
     "name": "Elastic SAN Volume Groups",
     "description": "This module deploys an Elastic SAN Volume Group."
@@ -187,6 +187,36 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -431,12 +461,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -572,7 +609,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -688,6 +725,13 @@
         "description": "Optional. Location for all resources."
       }
     },
+    "enforceDataIntegrityCheckForIscsi": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A boolean indicating whether or not Data Integrity Check is enabled."
+      }
+    },
     "volumes": {
       "type": "array",
       "items": {
@@ -767,7 +811,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -775,14 +819,14 @@
     "elasticSan": {
       "existing": true,
       "type": "Microsoft.ElasticSan/elasticSans",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('elasticSanName')]"
     },
     "cMKKeyVault": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -791,25 +835,26 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "volumeGroup": {
       "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('name'))]",
       "identity": "[variables('identity')]",
       "properties": {
+        "enforceDataIntegrityCheckForIscsi": "[parameters('enforceDataIntegrityCheckForIscsi')]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), 'EncryptionAtRestWithCustomerManagedKey', 'EncryptionAtRestWithPlatformKey')]",
         "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())]",
         "networkAcls": "[if(not(empty(variables('networkRules'))), createObject('virtualNetworkRules', variables('networkRules')), null())]",
         "protocolType": "Iscsi"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "cMKKeyVault",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "volumeGroup_volumes": {
@@ -852,8 +897,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11635704021988875359"
+              "version": "0.37.4.10188",
+              "templateHash": "6826370632282051811"
             },
             "name": "Elastic SAN Volumes",
             "description": "This module deploys an Elastic SAN Volume."
@@ -1017,8 +1062,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6701978252436416407"
+                      "version": "0.37.4.10188",
+                      "templateHash": "17691850760452491066"
                     },
                     "name": "Elastic SAN Volume Snapshots",
                     "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -1989,7 +2034,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group."
       },
-      "value": "[tryGet(tryGet(reference('volumeGroup', '2023-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('volumeGroup', '2024-05-01', 'full'), 'identity'), 'principalId')]"
+    },
+    "enforceDataIntegrityCheckForIscsi": {
+      "type": "bool",
+      "metadata": {
+        "description": "A boolean indicating whether or not Data Integrity Check is enabled or not."
+      },
+      "value": "[reference('volumeGroup').enforceDataIntegrityCheckForIscsi]"
     },
     "volumes": {
       "type": "array",

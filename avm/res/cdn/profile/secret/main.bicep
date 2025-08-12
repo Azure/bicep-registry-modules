@@ -29,11 +29,11 @@ param subjectAlternativeNames array = []
 @description('Optional. Indicates whether to use the latest version of the secret.')
 param useLatestVersion bool = false
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource secret 'Microsoft.Cdn/profiles/secrets@2023-05-01' = {
+resource secret 'Microsoft.Cdn/profiles/secrets@2025-04-15' = {
   name: name
   parent: profile
   properties: {

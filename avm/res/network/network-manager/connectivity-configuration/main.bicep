@@ -14,7 +14,7 @@ param name string
 param description string = ''
 
 @sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
-param appliesToGroups appliesToGroupsType
+param appliesToGroups appliesToGroupType[]
 
 @allowed([
   'HubAndSpoke'
@@ -24,7 +24,7 @@ param appliesToGroups appliesToGroupsType
 param connectivityTopology string
 
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
-param hubs hubsType
+param hubs hubType[]?
 
 @sys.description('Optional. Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke".')
 param deleteExistingPeering bool = false
@@ -42,9 +42,9 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
   properties: {
     appliesToGroups: map(appliesToGroups, (group) => {
       groupConnectivity: group.groupConnectivity
-      isGlobal: string(group.isGlobal) ?? 'false'
+      isGlobal: string(group.?isGlobal ?? false)
       networkGroupId: any(group.networkGroupResourceId)
-      useHubGateway: string(group.useHubGateway) ?? 'false'
+      useHubGateway: string(group.?useHubGateway ?? false)
     })
     connectivityTopology: connectivityTopology
     deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
@@ -68,7 +68,8 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
-type appliesToGroupsType = {
+@sys.description('The type of an applies to group.')
+type appliesToGroupType = {
   @sys.description('Required. Group connectivity type.')
   groupConnectivity: ('DirectlyConnected' | 'None')
 
@@ -80,13 +81,14 @@ type appliesToGroupsType = {
 
   @sys.description('Optional. Flag if use hub gateway.')
   useHubGateway: bool?
-}[]
+}
 
 @export()
-type hubsType = {
+@sys.description('The type of a hub.')
+type hubType = {
   @sys.description('Required. Resource Id of the hub.')
   resourceId: string
 
   @sys.description('Required. Resource type of the hub.')
   resourceType: 'Microsoft.Network/virtualNetworks'
-}[]?
+}

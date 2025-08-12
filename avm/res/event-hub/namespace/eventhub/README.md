@@ -15,7 +15,7 @@ This module deploys an Event Hub Namespace Event Hub.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventHub/namespaces/eventhubs` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2022-10-01-preview/namespaces/eventhubs) |
+| `Microsoft.EventHub/namespaces/eventhubs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs) |
 | `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 
@@ -52,7 +52,8 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`messageRetentionInDays`](#parameter-messageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
 | [`partitionCount`](#parameter-partitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
 | [`retentionDescriptionCleanupPolicy`](#parameter-retentiondescriptioncleanuppolicy) | string | Retention cleanup policy. Enumerates the possible values for cleanup policy. |
-| [`retentionDescriptionRetentionTimeInHours`](#parameter-retentiondescriptionretentiontimeinhours) | int | Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue. |
+| [`retentionDescriptionEnabled`](#parameter-retentiondescriptionenabled) | bool | A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored. |
+| [`retentionDescriptionRetentionTimeInHours`](#parameter-retentiondescriptionretentiontimeinhours) | int | Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue. |
 | [`retentionDescriptionTombstoneRetentionTimeInHours`](#parameter-retentiondescriptiontombstoneretentiontimeinhours) | int | Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`status`](#parameter-status) | string | Enumerates the possible values for the status of the Event Hub. |
@@ -173,8 +174,6 @@ A value that indicates whether to Skip Empty Archives.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 10485760
-- MaxValue: 524288000
 
 ### Parameter: `consumergroups`
 
@@ -190,8 +189,6 @@ The consumer groups to create in this event hub instance.
     }
   ]
   ```
-- MinValue: 10485760
-- MaxValue: 524288000
 
 ### Parameter: `lock`
 
@@ -199,8 +196,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 10485760
-- MaxValue: 524288000
 
 **Optional parameters**
 
@@ -208,6 +203,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -223,8 +219,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 10485760
-- MaxValue: 524288000
 
 ### Parameter: `lock.name`
 
@@ -232,8 +226,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 10485760
-- MaxValue: 524288000
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `messageRetentionInDays`
 
@@ -243,7 +242,7 @@ Number of days to retain the events for this Event Hub, value should be 1 to 7 d
 - Type: int
 - Default: `1`
 - MinValue: 1
-- MaxValue: 7
+- MaxValue: 90
 
 ### Parameter: `partitionCount`
 
@@ -269,18 +268,24 @@ Retention cleanup policy. Enumerates the possible values for cleanup policy.
     'Delete'
   ]
   ```
-- MinValue: 1
-- MaxValue: 32
+
+### Parameter: `retentionDescriptionEnabled`
+
+A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `retentionDescriptionRetentionTimeInHours`
 
-Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.
+Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.
 
 - Required: No
 - Type: int
 - Default: `1`
 - MinValue: 1
-- MaxValue: 168
+- MaxValue: 2160
 
 ### Parameter: `retentionDescriptionTombstoneRetentionTimeInHours`
 
@@ -290,7 +295,7 @@ Retention cleanup policy. Number of hours to retain the tombstone markers of a c
 - Type: int
 - Default: `1`
 - MinValue: 1
-- MaxValue: 168
+- MaxValue: 2160
 
 ### Parameter: `roleAssignments`
 
@@ -298,8 +303,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 168
 - Roles configurable by name:
   - `'Azure Event Hubs Data Owner'`
   - `'Azure Event Hubs Data Receiver'`
@@ -334,8 +337,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -343,8 +344,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.condition`
 
@@ -352,8 +351,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -367,8 +364,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -376,8 +371,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.description`
 
@@ -385,8 +378,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.name`
 
@@ -394,8 +385,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -413,8 +402,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 168
 
 ### Parameter: `status`
 
@@ -437,8 +424,6 @@ Enumerates the possible values for the status of the Event Hub.
     'Unknown'
   ]
   ```
-- MinValue: 1
-- MaxValue: 168
 
 ## Outputs
 
@@ -455,3 +440,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |

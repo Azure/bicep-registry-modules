@@ -1713,6 +1713,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1732,6 +1733,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2109,8 +2117,8 @@ The notification settings for the schedule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`emailRecipient`](#parameter-schedulesnotificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty. |
-| [`webHookUrl`](#parameter-schedulesnotificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
+| [`emailRecipient`](#parameter-schedulesnotificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty. |
+| [`webhookUrl`](#parameter-schedulesnotificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
 
 **Optional parameters**
 
@@ -2122,12 +2130,12 @@ The notification settings for the schedule.
 
 ### Parameter: `schedules.notificationSettings.emailRecipient`
 
-The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.
+The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty.
 
 - Required: No
 - Type: string
 
-### Parameter: `schedules.notificationSettings.webHookUrl`
+### Parameter: `schedules.notificationSettings.webhookUrl`
 
 The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.
 
@@ -2487,7 +2495,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

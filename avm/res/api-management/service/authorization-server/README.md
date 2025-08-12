@@ -42,11 +42,11 @@ This module deploys an API Management Service Authorization Server.
 | [`clientAuthenticationMethod`](#parameter-clientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
 | [`clientRegistrationEndpoint`](#parameter-clientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
 | [`defaultScope`](#parameter-defaultscope) | string | Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values. |
-| [`resourceOwnerPassword`](#parameter-resourceownerpassword) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password. |
+| [`resourceOwnerPassword`](#parameter-resourceownerpassword) | securestring | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password. |
 | [`resourceOwnerUsername`](#parameter-resourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
 | [`serverDescription`](#parameter-serverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
 | [`supportState`](#parameter-supportstate) | bool | If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security. |
-| [`tokenBodyParameters`](#parameter-tokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object. |
+| [`tokenBodyParameters`](#parameter-tokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties. |
 | [`tokenEndpoint`](#parameter-tokenendpoint) | string | OAuth token endpoint. Contains absolute URI to entity being referenced. |
 
 ### Parameter: `authorizationEndpoint`
@@ -83,6 +83,15 @@ Form of an authorization grant, which the client uses to request the access toke
 
 - Required: Yes
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'authorizationCode'
+    'clientCredentials'
+    'implicit'
+    'resourceOwnerPassword'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -158,7 +167,7 @@ Access token scope that is going to be requested by default. Can be overridden a
 Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `''`
 
 ### Parameter: `resourceOwnerUsername`
@@ -187,11 +196,32 @@ If true, authorization server will include state parameter from the authorizatio
 
 ### Parameter: `tokenBodyParameters`
 
-Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.
+Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties.
 
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokenbodyparametersname) | string | Body parameter name. |
+| [`value`](#parameter-tokenbodyparametersvalue) | string | Body parameter value. |
+
+### Parameter: `tokenBodyParameters.name`
+
+Body parameter name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokenBodyParameters.value`
+
+Body parameter value.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `tokenEndpoint`
 

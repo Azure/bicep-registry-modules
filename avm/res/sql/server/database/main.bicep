@@ -18,8 +18,14 @@ param sku databaseSkuType = {
 @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
 param autoPauseDelay int = -1
 
-@description('Optional. Specifies the availability zone the database is pinned to.')
-param availabilityZone '1' | '2' | '3' | 'NoPreference' = 'NoPreference'
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param availabilityZone int
 
 @description('Optional. Collation of the metadata catalog.')
 param catalogCollation string = 'DATABASE_DEFAULT'
@@ -42,12 +48,6 @@ param createMode
 
 @description('Optional. The resource ID of the elastic pool containing this database.')
 param elasticPoolResourceId string?
-
-@description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
-param encryptionProtector string?
-
-@description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
-param encryptionProtectorAutoRotation bool?
 
 @description('Optional. The Client id used for cross tenant per database CMK scenario.')
 @minLength(36)
@@ -129,10 +129,14 @@ param zoneRedundant bool = true
 // END OF DATABASE PROPERTIES
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Sql/servers/database@2023-08-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. The lock settings of the databse.')
+param lock lockType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -144,25 +148,63 @@ param backupShortTermRetentionPolicy shortTermBackupRetentionPolicyType?
 @description('Optional. The long term backup retention policy to create for the database.')
 param backupLongTermRetentionPolicy longTermBackupRetentionPolicyType?
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityOnlyUserAssignedType?
+
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition for database TDE.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
   name: name
   parent: server
   location: location
   tags: tags
   sku: sku
+  identity: identity
   properties: {
     autoPauseDelay: autoPauseDelay
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : 'NoPreference'
     catalogCollation: catalogCollation
     collation: collation
     createMode: createMode
     elasticPoolId: elasticPoolResourceId
-    encryptionProtector: encryptionProtector
-    encryptionProtectorAutoRotation: encryptionProtectorAutoRotation
+    encryptionProtector: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
+      : null
+    encryptionProtectorAutoRotation: customerManagedKey.?autoRotationEnabled
     federatedClientId: federatedClientId
     freeLimitExhaustionBehavior: freeLimitExhaustionBehavior
     highAvailabilityReplicaCount: highAvailabilityReplicaCount
@@ -194,7 +236,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
 
 resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    name: diagnosticSetting.?name ?? '${replace(name, ' ', '_')}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
       workspaceId: diagnosticSetting.?workspaceResourceId
@@ -221,8 +263,19 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
+resource database_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
+  }
+  scope: database
+}
+
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${name}-shBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
@@ -232,12 +285,10 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
 }
 
 module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = if (!empty(backupLongTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${name}-lgBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-lgBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
-    backupStorageAccessTier: backupLongTermRetentionPolicy.?backupStorageAccessTier
-    makeBackupsImmutable: backupLongTermRetentionPolicy.?makeBackupsImmutable
     weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
@@ -297,12 +348,6 @@ type shortTermBackupRetentionPolicyType = {
 @export()
 @description('The long-term backup retention policy for the database.')
 type longTermBackupRetentionPolicyType = {
-  @description('Optional. The BackupStorageAccessTier for the LTR backups.')
-  backupStorageAccessTier: 'Archive' | 'Hot'?
-
-  @description('Optional. The setting whether to make LTR backups immutable.')
-  makeBackupsImmutable: bool?
-
   @description('Optional. Monthly retention in ISO 8601 duration format.')
   monthlyRetention: string?
 

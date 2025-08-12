@@ -12,7 +12,7 @@ This module deploys a SQL Managed Instance Key.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/managedInstances/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/keys) |
+| `Microsoft.Sql/managedInstances/keys` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/keys) |
 
 ## Parameters
 
@@ -70,7 +70,6 @@ The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI o
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

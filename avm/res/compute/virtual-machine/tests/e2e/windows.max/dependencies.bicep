@@ -40,6 +40,9 @@ param dcrName string
 @description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
 param logAnalyticsWorkspaceResourceId string
 
+@description('Required. The name of the disk to create.')
+param preCreatedDiskName string
+
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
 
@@ -394,6 +397,25 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     ]
   }
 }
+
+resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = {
+  location: location
+  name: preCreatedDiskName
+  sku: {
+    name: 'Premium_LRS'
+  }
+  properties: {
+    diskSizeGB: 1024
+    creationData: {
+      createOption: 'Empty'
+    }
+    encryption: {
+      type: 'EncryptionAtRestWithPlatformKey'
+    }
+  }
+  zones: ['2'] // Should be set to the same zone as the VM
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -444,3 +466,9 @@ output proximityPlacementGroupResourceId string = proximityPlacementGroup.id
 
 @description('The resource ID of the created data collection rule.')
 output dataCollectionRuleResourceId string = dcr.id
+
+@description('The resource ID of the created data disk.')
+output preCreatedDataDiskResourceId string = dataDisk.id
+
+@description('The name of the created data disk.')
+output preCreatedDataDiskName string = dataDisk.name

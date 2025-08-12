@@ -22,7 +22,7 @@ This module deploys Azure SQL Server failover group.
 | :-- | :-- | :-- |
 | [`databases`](#parameter-databases) | array | List of databases in the failover group. |
 | [`name`](#parameter-name) | string | The name of the failover group. |
-| [`partnerServers`](#parameter-partnerservers) | array | List of the partner servers for the failover group. |
+| [`partnerServerResourceIds`](#parameter-partnerserverresourceids) | array | List of the partner server Resource Ids for the failover group. |
 | [`readWriteEndpoint`](#parameter-readwriteendpoint) | object | Read-write endpoint of the failover group instance. |
 | [`secondaryType`](#parameter-secondarytype) | string | Databases secondary type on partner server. |
 
@@ -53,9 +53,9 @@ The name of the failover group.
 - Required: Yes
 - Type: string
 
-### Parameter: `partnerServers`
+### Parameter: `partnerServerResourceIds`
 
-List of the partner servers for the failover group.
+List of the partner server Resource Ids for the failover group.
 
 - Required: Yes
 - Type: array

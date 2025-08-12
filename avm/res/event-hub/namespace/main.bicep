@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
-@description('Optional. The Event Hub\'s throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
+@description('Optional. The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
 @minValue(1)
 @maxValue(20)
 param skuCapacity int = 1
@@ -78,7 +78,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -98,7 +98,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -294,6 +294,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       partitionCount: eventHub.?partitionCount
       roleAssignments: eventHub.?roleAssignments
       status: eventHub.?status
+      retentionDescriptionEnabled: eventHub.?retentionDescriptionEnabled
       retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
       retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
       retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
@@ -315,10 +316,13 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
   }
 }
 
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -391,9 +395,9 @@ resource eventHubNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if 
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: eventHubNamespace
 }
@@ -495,12 +499,12 @@ output eventHubResourceIds string[] = [
 
 @description('The private endpoints of the eventspace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: eventHubNamespace_privateEndpoints[i].outputs.name
-    resourceId: eventHubNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: eventHubNamespace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: eventHubNamespace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: eventHubNamespace_privateEndpoints[index].outputs.name
+    resourceId: eventHubNamespace_privateEndpoints[index].outputs.resourceId
+    groupId: eventHubNamespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: eventHubNamespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -509,6 +513,34 @@ import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
+
+@secure()
+@description('The namespace\'s primary connection string.')
+output primaryConnectionString string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryConnectionString
+
+@secure()
+@description('The namespace\'s secondary connection string.')
+output secondaryConnectionString string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryConnectionString
+
+@secure()
+@description('The namespace\'s primary key.')
+output primaryKey string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryKey
+
+@secure()
+@description('The namespace\'s secondary key.')
+output secondaryKey string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryKey
 
 // =============== //
 //   Definitions   //
