@@ -73,7 +73,7 @@ function Get-GitDiff {
     ) | Where-Object { $_ }
     $diff = git diff $diffInput
 
-    if ($NameOnly) {
+    if ($PathOnly) {
         return $diff | Get-Item -Force
     }
 
