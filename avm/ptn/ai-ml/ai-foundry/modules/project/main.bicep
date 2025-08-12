@@ -73,9 +73,20 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   tags: tags
 }
 
+module waitForProjectScript 'waitDeploymentScript.bicep' = {
+  name: take('module.project.waitDeploymentScript.waitForProject.${name}', 64)
+  dependsOn: [project]
+  params: {
+    name: 'script-wait-proj-${name}'
+    location: location
+    seconds: 30
+  }
+}
+
 module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
   name: take('module.project.role-assign.cosmosDb.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
+  dependsOn: [waitForProjectScript]
   params: {
     cosmosDbName: cosmosDb.name
     projectIdentityPrincipalId: project.identity.principalId
@@ -86,7 +97,7 @@ module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(co
 resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(cosmosDbConnection)) {
   name: cosmosDb.name
   parent: project
-  dependsOn: [cosmosDbRoleAssignments]
+  dependsOn: [waitForProjectScript, cosmosDbRoleAssignments]
   properties: {
     category: 'CosmosDB'
     target: cosmosDb!.properties.documentEndpoint
@@ -102,6 +113,7 @@ resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projec
 module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
   name: take('module.project.role-assign.storageAccount.${name}', 64)
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+  dependsOn: [waitForProjectScript]
   params: {
     storageAccountName: storageAccount.name
     projectIdentityPrincipalId: project.identity.principalId
@@ -112,7 +124,7 @@ module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = i
 resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(storageAccountConnection)) {
   name: storageAccount.name
   parent: project
-  dependsOn: [storageAccountRoleAssignments, cosmosDbConnectionResource]
+  dependsOn: [waitForProjectScript, storageAccountRoleAssignments, cosmosDbConnectionResource]
   properties: {
     category: 'AzureStorageAccount'
     target: storageAccount!.properties.primaryEndpoints.blob
@@ -128,6 +140,7 @@ resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/
 module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(aiSearchConnection)) {
   name: take('module.project.role-assign.aiSearch.${name}', 64)
   scope: resourceGroup(aiSearchConnection!.subscriptionId, aiSearchConnection!.resourceGroupName)
+  dependsOn: [waitForProjectScript]
   params: {
     aiSearchName: aiSearch.name
     projectIdentityPrincipalId: project.identity.principalId
@@ -139,6 +152,7 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
   name: aiSearch.name
   parent: project
   dependsOn: [
+    waitForProjectScript
     aiSearchRoleAssignments
     storageAccountConnectionResource
     cosmosDbConnectionResource
@@ -155,11 +169,33 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
   }
 }
 
+module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
+  name: take('module.project.waitDeploymentScript.waitForConn.${name}', 64)
+  dependsOn: [
+    project
+    waitForProjectScript
+    cosmosDbConnectionResource
+    storageAccountConnectionResource
+    aiSearchConnectionResource
+  ]
+  params: {
+    name: 'script-wait-conns-${name}'
+    location: location
+    seconds: 60
+  }
+}
+
 #disable-next-line use-recent-api-versions
 resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
   name: 'chagent${replace(accountName, '-', '')}'
   parent: foundryAccount
-  dependsOn: [project, cosmosDbConnectionResource, storageAccountConnectionResource, aiSearchConnectionResource]
+  dependsOn: [
+    project
+    waitForConnectionsScript
+    cosmosDbConnectionResource
+    storageAccountConnectionResource
+    aiSearchConnectionResource
+  ]
   properties: {
     capabilityHostKind: 'Agents'
     tags: tags
