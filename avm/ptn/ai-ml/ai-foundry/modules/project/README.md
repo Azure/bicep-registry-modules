@@ -240,48 +240,40 @@ Storage Account connection for the project.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containerName`](#parameter-storageaccountconnectioncontainername) | string | Name of container in the Storage Account to use for the connections. |
-| [`resourceGroupName`](#parameter-storageaccountconnectionresourcegroupname) | string | The resource group name of the Storage Account. |
-| [`storageAccountName`](#parameter-storageaccountconnectionstorageaccountname) | string | The name of the Storage Account for the connection. |
-| [`subscriptionId`](#parameter-storageaccountconnectionsubscriptionid) | string | The subscription ID of the Storage Account. |
+| [`resourceGroupName`](#parameter-storageaccountconnectionresourcegroupname) | string | The resource group name of the resource. |
+| [`resourceName`](#parameter-storageaccountconnectionresourcename) | string | The resource name of the Azure resource for the connection. |
+| [`subscriptionId`](#parameter-storageaccountconnectionsubscriptionid) | string | The subscription ID of the resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-storageaccountconnectionname) | string | The name of the project connection. Will default to "<account>-<container>" if not provided. |
-
-### Parameter: `storageAccountConnection.containerName`
-
-Name of container in the Storage Account to use for the connections.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-storageaccountconnectionname) | string | The name of the project connection. Will default to the resource name if not provided. |
 
 ### Parameter: `storageAccountConnection.resourceGroupName`
 
-The resource group name of the Storage Account.
+The resource group name of the resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `storageAccountConnection.storageAccountName`
+### Parameter: `storageAccountConnection.resourceName`
 
-The name of the Storage Account for the connection.
+The resource name of the Azure resource for the connection.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountConnection.subscriptionId`
 
-The subscription ID of the Storage Account.
+The subscription ID of the resource.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountConnection.name`
 
-The name of the project connection. Will default to "<account>-<container>" if not provided.
+The name of the project connection. Will default to the resource name if not provided.
 
 - Required: No
 - Type: string

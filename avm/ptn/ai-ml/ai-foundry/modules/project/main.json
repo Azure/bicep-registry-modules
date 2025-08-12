@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13875742171060966873"
+      "templateHash": "12373907784931893901"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -44,46 +44,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "Type representing values to create an Azure connection to an AI Foundry project."
-      }
-    },
-    "storageAccountConnectionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the project connection. Will default to \"<account>-<container>\" if not provided."
-          }
-        },
-        "storageAccountName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Storage Account for the connection."
-          }
-        },
-        "containerName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of container in the Storage Account to use for the connections."
-          }
-        },
-        "subscriptionId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The subscription ID of the Storage Account."
-          }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource group name of the Storage Account."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Type representing values to create an Azure Storage Account connections to an AI Foundry project."
       }
     },
     "lockType": {
@@ -181,7 +141,7 @@
       }
     },
     "storageAccountConnection": {
-      "$ref": "#/definitions/storageAccountConnectionType",
+      "$ref": "#/definitions/azureConnectionType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Storage Account connection for the project."
@@ -222,7 +182,7 @@
       "apiVersion": "2025-01-01",
       "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
       "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
-      "name": "[parameters('storageAccountConnection').storageAccountName]"
+      "name": "[parameters('storageAccountConnection').resourceName]"
     },
     "aiSearch": {
       "condition": "[not(empty(parameters('aiSearchConnection')))]",
@@ -282,14 +242,14 @@
       "condition": "[not(empty(parameters('storageAccountConnection')))]",
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
       "apiVersion": "2025-04-01-preview",
-      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').storageAccountName)]",
+      "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').resourceName)]",
       "properties": {
         "category": "AzureStorageAccount",
         "target": "[reference('storageAccount').primaryEndpoints.blob]",
         "authType": "AAD",
         "metadata": {
           "ApiType": "Azure",
-          "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').storageAccountName)]",
+          "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').resourceName)]",
           "location": "[reference('storageAccount', '2025-01-01', 'full').location]"
         }
       },
@@ -353,7 +313,7 @@
           "[format('{0}', parameters('aiSearchConnection').resourceName)]"
         ],
         "storageConnections": [
-          "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
+          "[format('{0}', parameters('storageAccountConnection').resourceName)]"
         ],
         "tags": "[parameters('tags')]"
       },
@@ -398,7 +358,7 @@
             "value": "[parameters('location')]"
           },
           "seconds": {
-            "value": 60
+            "value": 30
           }
         },
         "template": {
@@ -531,7 +491,7 @@
         "mode": "Incremental",
         "parameters": {
           "storageAccountName": {
-            "value": "[parameters('storageAccountConnection').storageAccountName]"
+            "value": "[parameters('storageAccountConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
             "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
@@ -673,7 +633,7 @@
             "value": "[parameters('location')]"
           },
           "seconds": {
-            "value": 120
+            "value": 60
           }
         },
         "template": {
@@ -833,13 +793,10 @@
         "mode": "Incremental",
         "parameters": {
           "storageAccountName": {
-            "value": "[parameters('storageAccountConnection').storageAccountName]"
+            "value": "[parameters('storageAccountConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
             "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
-          },
-          "containerName": {
-            "value": "[parameters('storageAccountConnection').containerName]"
           },
           "projectWorkspaceId": {
             "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
@@ -852,7 +809,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7839602841753409078"
+              "templateHash": "7100600907976371064"
             }
           },
           "parameters": {
@@ -866,12 +823,6 @@
               "type": "string",
               "metadata": {
                 "description": "Required. The principal ID of the project identity."
-              }
-            },
-            "containerName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the blob container for the project."
               }
             },
             "projectWorkspaceId": {

@@ -175,9 +175,6 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    containerName: empty(storageAccountConfiguration.?containerName)
-      ? projectName
-      : storageAccountConfiguration!.containerName!
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     blobPrivateDnsZoneResourceId: storageAccountConfiguration.?blobPrivateDnsZoneResourceId
     roleAssignments: concat(
@@ -235,10 +232,9 @@ module foundryProject 'modules/project/main.bicep' = {
     createCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
     storageAccountConnection: includeAssociatedResources
       ? {
-          storageAccountName: storageAccount!.outputs.name
+          resourceName: storageAccount!.outputs.name
           subscriptionId: storageAccount!.outputs.subscriptionId
           resourceGroupName: storageAccount!.outputs.resourceGroupName
-          containerName: storageAccount!.outputs.containerName
         }
       : null
     aiSearchConnection: includeAssociatedResources
@@ -307,9 +303,6 @@ type storageAccountConfigurationType = {
 
   @description('Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.')
   name: string?
-
-  @description('Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.')
-  containerName: string?
 
   @description('Optional. The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
   blobPrivateDnsZoneResourceId: string?

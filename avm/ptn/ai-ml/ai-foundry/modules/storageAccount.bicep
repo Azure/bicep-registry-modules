@@ -14,9 +14,6 @@ param privateEndpointSubnetResourceId string?
 @description('Optional. The resource ID of the private DNS zone for the storage account blob service to establish private endpoints.')
 param blobPrivateDnsZoneResourceId string?
 
-@description('Required. Name of the blob container used when connecting via AI Foundry.')
-param containerName string
-
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Specifies the role assignments for the storage account.')
 param roleAssignments roleAssignmentType[]?
@@ -58,7 +55,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (e
       deleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
-      containers: [{ name: containerName }]
     }
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
@@ -96,6 +92,3 @@ output subscriptionId string = empty(existingResourceId) ? subscription().subscr
 
 @description('Resource Group Name of the Storage Account.')
 output resourceGroupName string = empty(existingResourceId) ? resourceGroup().name : existingResourceGroupName
-
-@description('Name of the blob container used when connecting via AI Foundry.')
-output containerName string = containerName

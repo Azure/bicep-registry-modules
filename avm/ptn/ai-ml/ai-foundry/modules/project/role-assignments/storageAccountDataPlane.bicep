@@ -4,9 +4,6 @@ param storageAccountName string
 @description('Required. The principal ID of the project identity.')
 param projectIdentityPrincipalId string
 
-@description('Required. The name of the blob container for the project.')
-param containerName string
-
 @description('Required. The project workspace ID.')
 param projectWorkspaceId string
 

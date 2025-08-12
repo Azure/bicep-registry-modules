@@ -99,7 +99,6 @@ module testDeployment '../../../main.bicep' = [
       }
       storageAccountConfiguration: {
         name: 'stcustom${workloadName}'
-        containerName: 'my-foundry-proj-data'
         blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {

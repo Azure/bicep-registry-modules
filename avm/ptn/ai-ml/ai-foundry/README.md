@@ -569,7 +569,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     sku: 'S0'
     storageAccountConfiguration: {
       blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
-      containerName: 'my-foundry-proj-data'
       name: '<name>'
       roleAssignments: [
         {
@@ -710,7 +709,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "storageAccountConfiguration": {
       "value": {
         "blobPrivateDnsZoneResourceId": "<blobPrivateDnsZoneResourceId>",
-        "containerName": "my-foundry-proj-data",
         "name": "<name>",
         "roleAssignments": [
           {
@@ -827,7 +825,6 @@ param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
 param sku = 'S0'
 param storageAccountConfiguration = {
   blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
-  containerName: 'my-foundry-proj-data'
   name: '<name>'
   roleAssignments: [
     {
@@ -1965,7 +1962,6 @@ Custom configuration for the Storage Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`blobPrivateDnsZoneResourceId`](#parameter-storageaccountconfigurationblobprivatednszoneresourceid) | string | The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
-| [`containerName`](#parameter-storageaccountconfigurationcontainername) | string | The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created. |
 | [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
 | [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
@@ -1973,13 +1969,6 @@ Custom configuration for the Storage Account.
 ### Parameter: `storageAccountConfiguration.blobPrivateDnsZoneResourceId`
 
 The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
-
-- Required: No
-- Type: string
-
-### Parameter: `storageAccountConfiguration.containerName`
-
-The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.
 
 - Required: No
 - Type: string

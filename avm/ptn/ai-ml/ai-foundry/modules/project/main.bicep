@@ -28,7 +28,7 @@ param cosmosDbConnection azureConnectionType?
 param aiSearchConnection azureConnectionType?
 
 @description('Optional. Storage Account connection for the project.')
-param storageAccountConnection storageAccountConnectionType?
+param storageAccountConnection azureConnectionType?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
@@ -42,7 +42,7 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existi
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountConnection)) {
-  name: storageAccountConnection!.storageAccountName
+  name: storageAccountConnection!.resourceName
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
 }
 
@@ -79,7 +79,7 @@ module waitForProjectScript 'waitDeploymentScript.bicep' = {
   params: {
     name: 'script-wait-proj-${name}'
     location: location
-    seconds: 60
+    seconds: 30
   }
 }
 
@@ -181,7 +181,7 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
   params: {
     name: 'script-wait-conns-${name}'
     location: location
-    seconds: 120
+    seconds: 60
   }
 }
 
@@ -253,7 +253,6 @@ module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDa
   params: {
     storageAccountName: storageAccount.name
     projectIdentityPrincipalId: project.identity.principalId
-    containerName: storageAccountConnection!.containerName
     projectWorkspaceId: projectWorkspaceId
   }
 }
@@ -286,24 +285,5 @@ type azureConnectionType = {
   subscriptionId: string
 
   @description('Required. The resource group name of the resource.')
-  resourceGroupName: string
-}
-
-@export()
-@description('Type representing values to create an Azure Storage Account connections to an AI Foundry project.')
-type storageAccountConnectionType = {
-  @description('Optional. The name of the project connection. Will default to "<account>-<container>" if not provided.')
-  name: string?
-
-  @description('Required. The name of the Storage Account for the connection.')
-  storageAccountName: string
-
-  @description('Required. Name of container in the Storage Account to use for the connections.')
-  containerName: string
-
-  @description('Required. The subscription ID of the Storage Account.')
-  subscriptionId: string
-
-  @description('Required. The resource group name of the Storage Account.')
   resourceGroupName: string
 }
