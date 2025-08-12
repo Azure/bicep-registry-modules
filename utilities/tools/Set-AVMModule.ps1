@@ -63,10 +63,10 @@ function Set-AVMModule {
 
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(ParameterSetName = 'Path', Mandatory = $true)]
         [string] $ModuleFolderPath,
 
-        [Parameter(ParameterSetName = 'Recurse', Mandatory = $false)]
+        [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
         [switch] $Recurse,
 
         [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
@@ -81,7 +81,7 @@ function Set-AVMModule {
         [Parameter(Mandatory = $false)]
         [switch] $SkipReadMe,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
         [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
@@ -97,33 +97,34 @@ function Set-AVMModule {
     # # Load helper scripts
     . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
 
-    $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
-
-    # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
-    if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
-        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
-            Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
-        }
-    }
-
     if ($InvokeForDiff) {
         $diff = git diff --name-only 'origin/main'
         $relevantTemplatePaths = $diff | Where-Object { $_ -like 'main.bicep' } | ForEach-Object { Join-Path $repoRoot $_ }
-    } elseif ($Recurse) {
-        $childInput = @{
-            Path    = $resolvedPath
-            Recurse = $Recurse
-            File    = $true
-            Filter  = 'main.bicep'
-        }
-        if ($Depth) {
-            $childInput.Depth = $Depth
-        }
-        $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
     } else {
-        $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
-    }
+        $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
 
+        # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
+        if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
+            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
+            }
+        }
+
+        if ($Recurse) {
+            $childInput = @{
+                Path    = $resolvedPath
+                Recurse = $Recurse
+                File    = $true
+                Filter  = 'main.bicep'
+            }
+            if ($Depth) {
+                $childInput.Depth = $Depth
+            }
+            $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
+        } else {
+            $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
+        }
+    }
     if (-not $SkipVersionCheck) {
 
         # Get latest release from Azure/Bicep repository
@@ -198,7 +199,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
     }
 
     # Using threading to speed up the process
-    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
+    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
                 $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
