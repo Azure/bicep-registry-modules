@@ -20,6 +20,14 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
         name: 'agents'
         properties: {
           addressPrefix: '10.0.0.0/23'
+          delegations: [
+            {
+              name: 'Microsoft.App/environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
         }
       }
       {
