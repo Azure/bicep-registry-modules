@@ -287,6 +287,11 @@ module testDeployment '../../../main.bicep' = [
               value: 'costCenter'
             }
             effect: {
+              value: 'Disabled'
+            }
+          }
+          parameterOverrides: {
+            effect: {
               value: 'Audit'
             }
           }

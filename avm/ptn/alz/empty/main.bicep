@@ -253,7 +253,7 @@ module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.4.0' = [
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.0' = [
   for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
@@ -273,6 +273,7 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
       userAssignedIdentityId: polAsi.?userAssignedIdentityId
       roleDefinitionIds: polAsi.?roleDefinitionIds
       parameters: polAsi.?parameters
+      parameterOverrides: polAsi.?parameterOverrides
       managementGroupId: createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
       nonComplianceMessages: polAsi.?nonComplianceMessages
       metadata: polAsi.?metadata
@@ -391,6 +392,9 @@ type policyAssignmentType = {
 
   @description('Optional. Parameters for the policy assignment if needed.')
   parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
+
+  @description('Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.')
+  parameterOverrides: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
 
   @description('Required. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions.')
   identity: 'SystemAssigned' | 'UserAssigned' | 'None'
