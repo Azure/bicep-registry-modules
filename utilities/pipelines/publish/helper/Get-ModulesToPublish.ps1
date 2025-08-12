@@ -78,11 +78,9 @@ function Get-TemplateFileToPublish {
 
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
-    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-    $modifiedFiles = Get-GitDiff -PathOnly -Verbose
-    Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
-    $modifiedModuleFiles = $modifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+    $modifiedModuleFiles = (Get-GitDiff -PathFilter $ModuleFolderPath -PathOnly -Verbose).FullName
 
+    # Only include `main.json' / 'version.json' files
     $relevantPaths = @()
     foreach ($modifiedFile in $modifiedModuleFiles) {
 
@@ -92,6 +90,7 @@ function Get-TemplateFileToPublish {
             }
         }
     }
+    Write-Verbose ('[{0}] files are relevant for publishing' -f $relevantPaths.Count) -Verbose
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
         Find-TemplateFile -Path $_ -Verbose
