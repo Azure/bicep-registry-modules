@@ -43,6 +43,9 @@ Mandatory. Paths to include in the search for the closest main.json file.
 .PARAMETER SkipNotVersionedModules
 Optional. Specify if filtering the list by returning only versioned modified modules.
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Get-TemplateFileToPublish -ModuleFolderPath ".\avm\storage\storage-account\"
 
@@ -73,12 +76,12 @@ function Get-TemplateFileToPublish {
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.Parent.Parent.FullName
     )
 
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-ModifiedFileList.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
     $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-    $ModifiedFiles = Get-ModifiedFileList -Verbose
+    $modifiedFiles = Get-GitDiff -PathOnly -Verbose
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
-    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+    $modifiedModuleFiles = $modifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
     $relevantPaths = @()
     foreach ($modifiedFile in $modifiedModuleFiles) {

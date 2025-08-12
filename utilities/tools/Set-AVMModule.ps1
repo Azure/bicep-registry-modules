@@ -103,10 +103,9 @@ function Set-AVMModule {
     . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
 
     if ($InvokeForDiff) {
-        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-ModifiedFileList.ps1')
+        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
-        $diff = Get-ModifiedFileList
-        $relevantTemplatePaths = $diff | Where-Object { $_ -like 'main.bicep' } | ForEach-Object { Join-Path $repoRoot $_ }
+        $relevantTemplatePaths = Get-GitDiff -PathOnly | Where-Object { $_ -like '*main.bicep' }
     } else {
         $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
 
