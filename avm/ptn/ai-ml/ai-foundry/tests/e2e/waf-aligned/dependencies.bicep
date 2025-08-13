@@ -13,13 +13,13 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   tags: tags
   properties: {
     addressSpace: {
-      addressPrefixes: ['10.0.0.0/20']
+      addressPrefixes: ['192.168.0.0/16']
     }
     subnets: [
       {
         name: 'agents'
         properties: {
-          addressPrefix: '10.0.0.0/23'
+          addressPrefix: '192.168.0.0/23'
           delegations: [
             {
               name: 'Microsoft.App/environments'
@@ -33,7 +33,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
       {
         name: 'private-endpoints'
         properties: {
-          addressPrefix: '10.0.2.0/23'
+          addressPrefix: '192.168.2.0/23'
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Disabled'
         }
