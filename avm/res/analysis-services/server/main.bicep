@@ -11,7 +11,7 @@ param skuName string = 'S0'
 param skuCapacity int = 1
 
 @description('Optional. The inbound firewall rules to define on the server. If not specified, firewall is disabled.')
-param firewallSettings object = {
+param firewallSettings resourceInput<'Microsoft.AnalysisServices/servers@2017-08-01'>.properties.ipV4FirewallSettings = {
   firewallRules: [
     {
       firewallRuleName: 'AllowFromAll'
