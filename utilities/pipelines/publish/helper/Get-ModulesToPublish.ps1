@@ -33,7 +33,7 @@ function Get-ModifiedFileList {
 
     $modifiedFiles = $diff | Get-Item -Force
     if ($modifiedFiles.Count -gt 0) {
-        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles | ConvertTo-Json | Out-String)) -Verbose
+        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
     } else {
         Write-Verbose 'No modified files found via `git diff`.' -Verbose
     }
