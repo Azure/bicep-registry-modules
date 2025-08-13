@@ -39,6 +39,7 @@ module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assi
     name: userAssignedIdentityName
     location: location
     tags: tags
+    enableTelemetry: false
   }
 }
 

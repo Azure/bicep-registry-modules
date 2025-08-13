@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9349040755340097053"
+      "templateHash": "13410122174499880029"
     },
     "name": "avm/ptn/alz/ama",
     "description": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones"
@@ -554,6 +554,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": false
           }
         },
         "template": {
