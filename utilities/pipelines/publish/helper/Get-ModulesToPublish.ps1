@@ -23,17 +23,89 @@ function Get-ModifiedFileList {
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
     # Note: Fetches only the name of the modified files
+    $diff = @()
+    $diffStrategy = ''
+    
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in upstream [main]. Fetching changes against [main^-1].' -Verbose
-        $diff = git diff --name-only --diff-filter=AM 'upstream/main^'
+        
+        # Strategy 1: Try upstream/main^ (original approach)
+        $diffStrategy = 'upstream/main^'
+        $diff = git diff --name-only --diff-filter=AM 'upstream/main^' 2>$null
+        
+        # Strategy 2: If no results, try HEAD^1 as fallback
+        if (-not $diff -or $diff.Count -eq 0) {
+            Write-Verbose 'No files found with upstream/main^, trying HEAD^1 as fallback.' -Verbose
+            $diffStrategy = 'HEAD^1'
+            $diff = git diff --name-only --diff-filter=AM 'HEAD^1' 2>$null
+        }
+        
+        # Strategy 3: If still no results, get the actual parent commit SHA and compare
+        if (-not $diff -or $diff.Count -eq 0) {
+            Write-Verbose 'No files found with HEAD^1, trying parent commit SHA as fallback.' -Verbose
+            $parentCommit = git rev-parse 'HEAD^1' 2>$null
+            if ($parentCommit) {
+                $diffStrategy = "parent commit $parentCommit"
+                $diff = git diff --name-only --diff-filter=AM $parentCommit 2>$null
+            }
+        }
+        
+        # Strategy 4: As last resort, compare against the previous commit from git log
+        if (-not $diff -or $diff.Count -eq 0) {
+            Write-Verbose 'No files found with parent commit SHA, trying previous commit from git log as final fallback.' -Verbose
+            $previousCommit = git log --format='%H' -n 2 --skip=1 2>$null | Select-Object -First 1
+            if ($previousCommit) {
+                $diffStrategy = "previous commit $previousCommit"
+                $diff = git diff --name-only --diff-filter=AM $previousCommit 2>$null
+            }
+        }
     } else {
         Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.')) -Verbose
-        $diff = git diff --name-only --diff-filter=AM 'upstream/main'
+        $diffStrategy = 'upstream/main'
+        $diff = git diff --name-only --diff-filter=AM 'upstream/main' 2>$null
+        
+        # Fallback for non-main branches if the primary strategy fails
+        if (-not $diff -or $diff.Count -eq 0) {
+            Write-Verbose 'No files found with upstream/main, trying origin/main as fallback.' -Verbose
+            $diffStrategy = 'origin/main'
+            $diff = git diff --name-only --diff-filter=AM 'origin/main' 2>$null
+        }
+    }
+    
+    # Filter out any empty lines or null values
+    $diff = $diff | Where-Object { $_ -and $_.Trim() -ne '' }
+    
+    # Log the strategy used and validate results
+    Write-Verbose "Git diff strategy used: $diffStrategy" -Verbose
+    if ($diff -and $diff.Count -gt 0) {
+        Write-Verbose "Raw git diff output (${diffStrategy}): [$($diff -join ', ')]" -Verbose
+    } else {
+        Write-Verbose "Warning: No files detected by git diff using strategy: $diffStrategy" -Verbose
+        
+        # Additional diagnostics to help debug the issue
+        $currentCommit = git rev-parse HEAD 2>$null
+        $upstreamMainCommit = git rev-parse upstream/main 2>$null
+        Write-Verbose "Current commit: $currentCommit" -Verbose
+        Write-Verbose "Upstream main commit: $upstreamMainCommit" -Verbose
+        
+        if ($currentCommit -eq $upstreamMainCommit) {
+            Write-Verbose "Warning: Current commit is the same as upstream/main. This might indicate a git state issue." -Verbose
+        }
     }
 
-    $modifiedFiles = $diff | Get-Item -Force
-    if ($modifiedFiles.Count -gt 0) {
-        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
+    $modifiedFiles = @()
+    if ($diff -and $diff.Count -gt 0) {
+        # Only process files that actually exist to avoid errors
+        $existingFiles = $diff | Where-Object { Test-Path $_ }
+        if ($existingFiles) {
+            $modifiedFiles = $existingFiles | Get-Item -Force
+        }
+        
+        if ($modifiedFiles.Count -gt 0) {
+            Write-Verbose ("[{0}] Modified files found using strategy '{1}':`n[{2}]" -f $modifiedFiles.Count, $diffStrategy, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
+        } else {
+            Write-Verbose "Warning: Git diff returned file paths, but none of the files exist on disk. Files from diff: [$($diff -join ', ')]" -Verbose
+        }
     } else {
         Write-Verbose 'No modified files found via `git diff`.' -Verbose
     }
