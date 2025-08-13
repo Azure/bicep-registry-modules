@@ -192,6 +192,8 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
   }
 }
 
+var createCapabilityHosts = (aiFoundryConfiguration.?createCapabilityHosts ?? false) && includeAssociatedResources
+
 module foundryProject 'modules/project/main.bicep' = {
   name: take('module.project.main.${projectName}', 64)
   #disable-next-line no-unnecessary-dependson
@@ -206,8 +208,8 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    createAccountCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources && empty(privateEndpointSubnetResourceId)
-    createProjectCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
+    createAccountCapabilityHost: false // forcing false because I don't know what's going on
+    createProjectCapabilityHost: createCapabilityHosts
     storageAccountConnection: includeAssociatedResources
       ? {
           resourceName: storageAccount!.outputs.name

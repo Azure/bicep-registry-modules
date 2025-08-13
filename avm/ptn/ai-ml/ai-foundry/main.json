@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1066959624685008459"
+      "templateHash": "17260379982716620215"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -568,7 +568,8 @@
   },
   "variables": {
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
-    "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]"
+    "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
+    "createCapabilityHosts": "[and(coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), false()), parameters('includeAssociatedResources'))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -20067,10 +20068,10 @@
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
           "createAccountCapabilityHost": {
-            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), and(and(false(), parameters('includeAssociatedResources')), empty(parameters('privateEndpointSubnetResourceId'))))]"
+            "value": false
           },
           "createProjectCapabilityHost": {
-            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), and(false(), parameters('includeAssociatedResources')))]"
+            "value": "[variables('createCapabilityHosts')]"
           },
           "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('storageAccount').outputs.name.value, 'subscriptionId', reference('storageAccount').outputs.subscriptionId.value, 'resourceGroupName', reference('storageAccount').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('aiSearch').outputs.name.value, 'subscriptionId', reference('aiSearch').outputs.subscriptionId.value, 'resourceGroupName', reference('aiSearch').outputs.resourceGroupName.value)), createObject('value', null()))]",
