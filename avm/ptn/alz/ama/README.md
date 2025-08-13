@@ -343,7 +343,6 @@ Tags for all Resources in the solution.
 | `dataCollectionRuleMDFCSQLResourceId` | string | The resource ID of the Data Collection Rule for Microsoft Defender for SQL. |
 | `dataCollectionRuleVMInsightsResourceId` | string | The resource ID of the Data Collection Rule for VM Insights. |
 | `resourceGroupName` | string | The resource group the deployment script was deployed into. |
-| `userAssignedIdentityResourceId` | string | The resource ID of the User Assigned Identity. |
 
 ## Cross-referenced modules
 

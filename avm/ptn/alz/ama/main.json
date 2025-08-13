@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15992582590664893032"
+      "templateHash": "9349040755340097053"
     },
     "name": "avm/ptn/alz/ama",
     "description": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones"
@@ -520,7 +520,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.alz.ama.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.alz-ama.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1017,13 +1017,6 @@
     }
   },
   "outputs": {
-    "userAssignedIdentityResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the User Assigned Identity."
-      },
-      "value": "[reference('userAssignedManagedIdentity').outputs.resourceId.value]"
-    },
     "dataCollectionRuleVMInsightsResourceId": {
       "type": "string",
       "metadata": {
