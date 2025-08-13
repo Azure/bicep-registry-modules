@@ -32,6 +32,11 @@ function Get-ModifiedFileList {
     }
 
     $modifiedFiles = $diff | Get-Item -Force
+    if ($modifiedFiles.Count -gt 0) {
+        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No modified files found via `git diff`.' -Verbose
+    }
 
     return $modifiedFiles
 }
@@ -111,6 +116,12 @@ function Get-TemplateFileToPublish {
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
     $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
+    if ($modifiedModuleFiles.Count -gt 0) {
+        Write-Verbose ("[{0}] Path-filtered files found:`n[{1}]" -f $modifiedModuleFiles.Count, ($modifiedModuleFiles | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No path-filtered files found.' -Verbose
+    }
+
     $relevantPaths = @()
     foreach ($modifiedFile in $modifiedModuleFiles) {
 
@@ -119,6 +130,12 @@ function Get-TemplateFileToPublish {
                 $relevantPaths += $modifiedFile
             }
         }
+    }
+
+    if ($relevantPaths.Count -gt 0) {
+        Write-Verbose ("[{0}] File-type-filtered files found:`n[{1}]" -f $relevantPaths.Count, ($relevantPaths | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No file-type-filtered files found.' -Verbose
     }
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
