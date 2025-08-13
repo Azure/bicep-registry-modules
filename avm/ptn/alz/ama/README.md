@@ -18,8 +18,8 @@ This modules deployes resources for Azure Monitoring Agent (AMA) to be used with
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/dataCollectionRules` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-04-01/dataCollectionRules) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
 
 ## Usage examples
 
@@ -31,7 +31,6 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using maximum parameters](#example-2-using-maximum-parameters)
-- [Using maximum parameters](#example-3-using-maximum-parameters)
 
 ### Example 1: _Using only defaults_
 
@@ -110,118 +109,6 @@ param userAssignedIdentityName = 'alz-ama-identity-alzamamin'
 <p>
 
 ### Example 2: _Using maximum parameters_
-
-This instance deploys the module with the maximum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module ama 'br/public:avm/ptn/alz/ama:<version>' = {
-  name: 'amaDeployment'
-  params: {
-    // Required parameters
-    dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamax'
-    dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamax'
-    dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamax'
-    logAnalyticsWorkspaceId: 'alz-ama-law-alzamamax'
-    userAssignedIdentityName: 'alz-ama-identity-alzamamax'
-    // Non-required parameters
-    location: '<location>'
-    lockConfig: {
-      kind: 'CanNotDelete'
-      name: 'lock-alzamamax'
-    }
-    tags: {
-      Env: 'test'
-      'hidden-title': 'This is visible in the resource name'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "dataCollectionRuleChangeTrackingName": {
-      "value": "alz-ama-dcr-ct-alzamamax"
-    },
-    "dataCollectionRuleMDFCSQLName": {
-      "value": "alz-ama-dcr-mdfc-sql-alzamamax"
-    },
-    "dataCollectionRuleVMInsightsName": {
-      "value": "alz-ama-dcr-vm-insights-alzamamax"
-    },
-    "logAnalyticsWorkspaceId": {
-      "value": "alz-ama-law-alzamamax"
-    },
-    "userAssignedIdentityName": {
-      "value": "alz-ama-identity-alzamamax"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lockConfig": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock-alzamamax"
-      }
-    },
-    "tags": {
-      "value": {
-        "Env": "test",
-        "hidden-title": "This is visible in the resource name"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/alz/ama:<version>'
-
-// Required parameters
-param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamax'
-param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamax'
-param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamax'
-param logAnalyticsWorkspaceId = 'alz-ama-law-alzamamax'
-param userAssignedIdentityName = 'alz-ama-identity-alzamamax'
-// Non-required parameters
-param location = '<location>'
-param lockConfig = {
-  kind: 'CanNotDelete'
-  name: 'lock-alzamamax'
-}
-param tags = {
-  Env: 'test'
-  'hidden-title': 'This is visible in the resource name'
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using maximum parameters_
 
 This instance deploys the module with the maximum set of required parameters.
 
@@ -464,7 +351,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
