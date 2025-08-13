@@ -113,6 +113,9 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     managementGroupCustomPolicySetDefinitions: '<managementGroupCustomPolicySetDefinitions>'
     managementGroupCustomRoleDefinitions: '<managementGroupCustomRoleDefinitions>'
     managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
+    managementGroupDoNotEnforcePolicyAssignments: [
+      'diag-activity-log-lz'
+    ]
     managementGroupExcludedPolicyAssignments: [
       'allowed-vm-skus-root'
     ]
@@ -210,6 +213,11 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     "managementGroupDisplayName": {
       "value": "AVM ALZ PTN Empty Max Test"
     },
+    "managementGroupDoNotEnforcePolicyAssignments": {
+      "value": [
+        "diag-activity-log-lz"
+      ]
+    },
     "managementGroupExcludedPolicyAssignments": {
       "value": [
         "allowed-vm-skus-root"
@@ -299,6 +307,9 @@ param managementGroupCustomPolicyDefinitions = '<managementGroupCustomPolicyDefi
 param managementGroupCustomPolicySetDefinitions = '<managementGroupCustomPolicySetDefinitions>'
 param managementGroupCustomRoleDefinitions = '<managementGroupCustomRoleDefinitions>'
 param managementGroupDisplayName = 'AVM ALZ PTN Empty Max Test'
+param managementGroupDoNotEnforcePolicyAssignments = [
+  'diag-activity-log-lz'
+]
 param managementGroupExcludedPolicyAssignments = [
   'allowed-vm-skus-root'
 ]
@@ -384,6 +395,7 @@ param managementGroupRoleAssignments = '<managementGroupRoleAssignments>'
 | [`managementGroupCustomPolicySetDefinitions`](#parameter-managementgroupcustompolicysetdefinitions) | array | Array of custom policy set definitions (initiatives) to create on the management group. |
 | [`managementGroupCustomRoleDefinitions`](#parameter-managementgroupcustomroledefinitions) | array | Array of custom role definitions to create on the management group. |
 | [`managementGroupDisplayName`](#parameter-managementgroupdisplayname) | string | The display name of the management group to create or update. If not specified, the management group name will be used. |
+| [`managementGroupDoNotEnforcePolicyAssignments`](#parameter-managementgroupdonotenforcepolicyassignments) | array | An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`. |
 | [`managementGroupExcludedPolicyAssignments`](#parameter-managementgroupexcludedpolicyassignments) | array | An array of policy assignment names (not display names) to prevent from being assigned (created/updated from a CRUD perspective) at all (not a policy exclusion (`notScope`) or exemption). This is useful if you want to exclude certain policy assignments from being created or updated by the module if included in the `managementGroupPolicyAssignments` parameter via other automation. |
 | [`managementGroupParentId`](#parameter-managementgroupparentid) | string | The parent ID of the management group to create or update. If not specified, the management group will be created at the root level of the tenant. Just provide the management group ID, not the full resource ID. |
 | [`managementGroupPolicyAssignments`](#parameter-managementgrouppolicyassignments) | array | Array of policy assignments to create on the management group. |
@@ -570,6 +582,14 @@ The display name of the management group to create or update. If not specified, 
 
 - Required: No
 - Type: string
+
+### Parameter: `managementGroupDoNotEnforcePolicyAssignments`
+
+An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `managementGroupExcludedPolicyAssignments`
 

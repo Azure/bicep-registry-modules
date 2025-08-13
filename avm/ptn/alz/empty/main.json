@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11937029948429186104"
+      "templateHash": "9757627341531481501"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
@@ -46,7 +46,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Authorization/policyAssignments@2022-06-01#properties/properties/properties/parameters"
+              "source": "Microsoft.Authorization/policyAssignments@2025-01-01#properties/properties/properties/parameters"
             },
             "description": "Optional. Parameters for the policy assignment if needed."
           },
@@ -56,7 +56,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Authorization/policyAssignments@2022-06-01#properties/properties/properties/parameters"
+              "source": "Microsoft.Authorization/policyAssignments@2025-01-01#properties/properties/properties/parameters"
             },
             "description": "Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module."
           },
@@ -634,6 +634,13 @@
         "description": "Optional. An array of policy assignment names (not display names) to prevent from being assigned (created/updated from a CRUD perspective) at all (not a policy exclusion (`notScope`) or exemption). This is useful if you want to exclude certain policy assignments from being created or updated by the module if included in the `managementGroupPolicyAssignments` parameter via other automation."
       }
     },
+    "managementGroupDoNotEnforcePolicyAssignments": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -1164,7 +1171,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforePolicyAssignments'), 0), not(empty(parameters('managementGroupPolicyAssignments'))))]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforePolicyAssignments'), 0), not(empty(variables('filteredManagementGroupPolicyAssignments'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgPolicyAssignmentsWait, copyIndex())]",
@@ -1221,9 +1228,7 @@
           "displayName": {
             "value": "[tryGet(coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray())[copyIndex()], 'displayName')]"
           },
-          "enforcementMode": {
-            "value": "[coalesce(tryGet(coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray())[copyIndex()], 'enforcementMode'), 'Default')]"
-          },
+          "enforcementMode": "[if(contains(parameters('managementGroupDoNotEnforcePolicyAssignments'), coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray())[copyIndex()].name), createObject('value', 'DoNotEnforce'), createObject('value', coalesce(tryGet(coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray())[copyIndex()], 'enforcementMode'), 'Default')))]",
           "identity": {
             "value": "[coalesce(tryGet(coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray())[copyIndex()], 'identity'), 'None')]"
           },

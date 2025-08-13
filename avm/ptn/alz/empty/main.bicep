@@ -65,6 +65,9 @@ param managementGroupPolicyAssignments policyAssignmentType[]?
 @description('Optional. An array of policy assignment names (not display names) to prevent from being assigned (created/updated from a CRUD perspective) at all (not a policy exclusion (`notScope`) or exemption). This is useful if you want to exclude certain policy assignments from being created or updated by the module if included in the `managementGroupPolicyAssignments` parameter via other automation.')
 param managementGroupExcludedPolicyAssignments array = []
 
+@description('Optional. An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`.')
+param managementGroupDoNotEnforcePolicyAssignments array = []
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -276,7 +279,9 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
       location: polAsi.?location ?? location
       description: polAsi.?description
       displayName: polAsi.?displayName
-      enforcementMode: polAsi.?enforcementMode ?? 'Default'
+      enforcementMode: contains(managementGroupDoNotEnforcePolicyAssignments, polAsi.name)
+        ? 'DoNotEnforce'
+        : polAsi.?enforcementMode ?? 'Default'
       identity: polAsi.?identity ?? 'None'
       userAssignedIdentityId: polAsi.?userAssignedIdentityId
       roleDefinitionIds: polAsi.?roleDefinitionIds

@@ -300,6 +300,9 @@ module testDeployment '../../../main.bicep' = [
       managementGroupExcludedPolicyAssignments: [
         'allowed-vm-skus-root'
       ]
+      managementGroupDoNotEnforcePolicyAssignments: [
+        'diag-activity-log-lz'
+      ]
       managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
       managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
     }
