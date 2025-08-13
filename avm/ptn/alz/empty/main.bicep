@@ -256,7 +256,7 @@ module mgCustomPolicySetDefinitions 'modules/policy-set-definitions.bicep' = if 
 // Policy Assignments Created on Management Group (Optional)
 @batchSize(1)
 module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
-  for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(managementGroupPolicyAssignments)) {
+  for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(filteredManagementGroupPolicyAssignments)) {
     name: '${deploymentNames.mgPolicyAssignmentsWait}-${index}'
   }
 ]
