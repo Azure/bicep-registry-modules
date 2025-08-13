@@ -79,10 +79,10 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.0' = {
     }
     deployments: aiModelDeployments
     customSubDomainName: name
-    disableLocalAuth: false
+    disableLocalAuth: privateNetworkingEnabled
     publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
     networkAcls: {
-      defaultAction: privateNetworkingEnabled ? 'Deny' : 'Allow'
+      defaultAction: 'Allow'
       bypass: 'AzureServices'
     }
     networkInjections: privateNetworkingEnabled && !empty(agentSubnetResourceId)

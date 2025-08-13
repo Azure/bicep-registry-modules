@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4639165233631432124"
+      "templateHash": "12420315146376224232"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -638,7 +638,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2248938255041113805"
+              "templateHash": "5810277639221407352"
             }
           },
           "definitions": {
@@ -1027,12 +1027,12 @@
                     "value": "[parameters('name')]"
                   },
                   "disableLocalAuth": {
-                    "value": false
+                    "value": "[variables('privateNetworkingEnabled')]"
                   },
                   "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
                     "value": {
-                      "defaultAction": "[if(variables('privateNetworkingEnabled'), 'Deny', 'Allow')]",
+                      "defaultAction": "Allow",
                       "bypass": "AzureServices"
                     }
                   },
