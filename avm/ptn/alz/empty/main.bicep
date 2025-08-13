@@ -399,10 +399,10 @@ type policyAssignmentType = {
   policyDefinitionId: string
 
   @description('Optional. Parameters for the policy assignment if needed.')
-  parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
+  parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2025-01-01'>.properties.parameters?
 
   @description('Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.')
-  parameterOverrides: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
+  parameterOverrides: resourceInput<'Microsoft.Authorization/policyAssignments@2025-01-01'>.properties.parameters?
 
   @description('Required. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions.')
   identity: 'SystemAssigned' | 'UserAssigned' | 'None'
