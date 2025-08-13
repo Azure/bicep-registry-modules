@@ -39,7 +39,7 @@ module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assi
     name: userAssignedIdentityName
     location: location
     tags: tags
-    enableTelemetry: false
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -462,6 +462,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // ============ //
 // Outputs      //
 // ============ //
+@description('The resource ID of the User Assigned Managed Identity.')
+output userAssignedManagedIdentityResourceId string = userAssignedManagedIdentity.outputs.resourceId
+
 @description('The resource ID of the Data Collection Rule for VM Insights.')
 output dataCollectionRuleVMInsightsResourceId string = dataCollectionRuleVMInsights.id
 
