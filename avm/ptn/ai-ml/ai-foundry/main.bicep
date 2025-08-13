@@ -206,7 +206,8 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    createCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
+    createAccountCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources && empty(privateEndpointSubnetResourceId)
+    createProjectCapabilityHost: aiFoundryConfiguration.?createCapabilityHosts ?? false && includeAssociatedResources
     storageAccountConnection: includeAssociatedResources
       ? {
           resourceName: storageAccount!.outputs.name

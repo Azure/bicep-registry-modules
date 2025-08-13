@@ -18,8 +18,11 @@ param location string = resourceGroup().location
 @description('Required. Name of the existing parent Foundry Account resource.')
 param accountName string
 
-@description('Required. Where to create the capability host for the Foundry project. Requires associated resource connections to be provided.')
-param createCapabilityHost bool
+@description('Required. Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided.')
+param createAccountCapabilityHost bool
+
+@description('Required. Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided.')
+param createProjectCapabilityHost bool
 
 @description('Optional. Azure Cosmos DB connection for the project.')
 param cosmosDbConnection azureConnectionType?
@@ -56,7 +59,8 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
-var createCapabilityHostResource = createCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+var _createProjectCapabilityHost = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+var _createAccountCapabilityHost = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
 #disable-next-line use-recent-api-versions
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
@@ -186,7 +190,7 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
 }
 
 #disable-next-line use-recent-api-versions
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (_createAccountCapabilityHost) {
   name: 'chagent${replace(accountName, '-', '')}'
   parent: foundryAccount
   dependsOn: [
@@ -203,7 +207,7 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
 }
 
 #disable-next-line use-recent-api-versions
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createCapabilityHostResource) {
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (_createProjectCapabilityHost) {
   name: 'chagent${replace(name, '-', '')}'
   parent: project
   dependsOn: [accountCapabilityHost]
@@ -238,7 +242,7 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
-module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection) && createCapabilityHostResource) {
+module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection) && _createProjectCapabilityHost) {
   name: take('module.project.role-assign.cosmosDbDataPlane.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
   dependsOn: [capabilityHost, cosmosDbRoleAssignments]
@@ -249,7 +253,7 @@ module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = i
   }
 }
 
-module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection) && createCapabilityHostResource) {
+module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection) && _createProjectCapabilityHost) {
   name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
   dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2156599057297358150"
+      "templateHash": "4974445772264752757"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20066,7 +20066,10 @@
           "location": {
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
-          "createCapabilityHost": {
+          "createAccountCapabilityHost": {
+            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), and(and(false(), parameters('includeAssociatedResources')), empty(parameters('privateEndpointSubnetResourceId'))))]"
+          },
+          "createProjectCapabilityHost": {
             "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), and(false(), parameters('includeAssociatedResources')))]"
           },
           "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('storageAccount').outputs.name.value, 'subscriptionId', reference('storageAccount').outputs.subscriptionId.value, 'resourceGroupName', reference('storageAccount').outputs.resourceGroupName.value)), createObject('value', null()))]",
@@ -20087,7 +20090,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "4170731741816788495"
+              "templateHash": "1334595058836594546"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20201,10 +20204,16 @@
                 "description": "Required. Name of the existing parent Foundry Account resource."
               }
             },
-            "createCapabilityHost": {
+            "createAccountCapabilityHost": {
               "type": "bool",
               "metadata": {
-                "description": "Required. Where to create the capability host for the Foundry project. Requires associated resource connections to be provided."
+                "description": "Required. Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided."
+              }
+            },
+            "createProjectCapabilityHost": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided."
               }
             },
             "cosmosDbConnection": {
@@ -20247,7 +20256,8 @@
             }
           },
           "variables": {
-            "createCapabilityHostResource": "[and(and(and(parameters('createCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
+            "_createProjectCapabilityHost": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
+            "_createAccountCapabilityHost": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
           },
           "resources": {
             "foundryAccount": {
@@ -20367,7 +20377,7 @@
               ]
             },
             "accountCapabilityHost": {
-              "condition": "[variables('createCapabilityHostResource')]",
+              "condition": "[variables('_createAccountCapabilityHost')]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
@@ -20384,7 +20394,7 @@
               ]
             },
             "capabilityHost": {
-              "condition": "[variables('createCapabilityHostResource')]",
+              "condition": "[variables('_createProjectCapabilityHost')]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
@@ -20776,7 +20786,7 @@
               ]
             },
             "cosmosDbSqlRoleAssignments": {
-              "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('createCapabilityHostResource'))]",
+              "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('_createProjectCapabilityHost'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('module.project.role-assign.cosmosDbDataPlane.{0}', parameters('name')), 64)]",
@@ -20863,7 +20873,7 @@
               ]
             },
             "storageAccountContainerRoleAssignments": {
-              "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('createCapabilityHostResource'))]",
+              "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('_createProjectCapabilityHost'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('module.project.role-assign.storageAccountDataPlane.{0}', parameters('name')), 64)]",

@@ -28,7 +28,8 @@ Creates an AI Foundry project and any associated Azure service connections.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-accountname) | string | Name of the existing parent Foundry Account resource. |
-| [`createCapabilityHost`](#parameter-createcapabilityhost) | bool | Where to create the capability host for the Foundry project. Requires associated resource connections to be provided. |
+| [`createAccountCapabilityHost`](#parameter-createaccountcapabilityhost) | bool | Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided. |
+| [`createProjectCapabilityHost`](#parameter-createprojectcapabilityhost) | bool | Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided. |
 | [`name`](#parameter-name) | string | The name of the AI Foundry project. |
 
 **Optional parameters**
@@ -51,9 +52,16 @@ Name of the existing parent Foundry Account resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `createCapabilityHost`
+### Parameter: `createAccountCapabilityHost`
 
-Where to create the capability host for the Foundry project. Requires associated resource connections to be provided.
+Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `createProjectCapabilityHost`
+
+Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided.
 
 - Required: Yes
 - Type: bool
