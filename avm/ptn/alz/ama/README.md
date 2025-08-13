@@ -49,7 +49,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamin'
     dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamin'
     dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamin'
-    logAnalyticsWorkspaceId: 'alz-ama-law-alzamamin'
+    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
     userAssignedIdentityName: 'alz-ama-identity-alzamamin'
   }
 }
@@ -78,7 +78,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
       "value": "alz-ama-dcr-vm-insights-alzamamin"
     },
     "logAnalyticsWorkspaceId": {
-      "value": "alz-ama-law-alzamamin"
+      "value": "<logAnalyticsWorkspaceId>"
     },
     "userAssignedIdentityName": {
       "value": "alz-ama-identity-alzamamin"
@@ -101,7 +101,7 @@ using 'br/public:avm/ptn/alz/ama:<version>'
 param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamin'
 param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamin'
 param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamin'
-param logAnalyticsWorkspaceId = 'alz-ama-law-alzamamin'
+param logAnalyticsWorkspaceId = '<logAnalyticsWorkspaceId>'
 param userAssignedIdentityName = 'alz-ama-identity-alzamamin'
 ```
 
@@ -125,7 +125,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamax'
     dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamax'
     dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamax'
-    logAnalyticsWorkspaceId: 'alz-ama-law-alzamamax'
+    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
     userAssignedIdentityName: 'alz-ama-identity-alzamamax'
     // Non-required parameters
     location: '<location>'
@@ -164,7 +164,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
       "value": "alz-ama-dcr-vm-insights-alzamamax"
     },
     "logAnalyticsWorkspaceId": {
-      "value": "alz-ama-law-alzamamax"
+      "value": "<logAnalyticsWorkspaceId>"
     },
     "userAssignedIdentityName": {
       "value": "alz-ama-identity-alzamamax"
@@ -203,7 +203,7 @@ using 'br/public:avm/ptn/alz/ama:<version>'
 param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamax'
 param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamax'
 param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamax'
-param logAnalyticsWorkspaceId = 'alz-ama-law-alzamamax'
+param logAnalyticsWorkspaceId = '<logAnalyticsWorkspaceId>'
 param userAssignedIdentityName = 'alz-ama-identity-alzamamax'
 // Non-required parameters
 param location = '<location>'
