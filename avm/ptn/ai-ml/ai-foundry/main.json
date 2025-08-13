@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17260379982716620215"
+      "templateHash": "9384336124599480748"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20068,7 +20068,7 @@
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
           "createAccountCapabilityHost": {
-            "value": false
+            "value": "[and(variables('createCapabilityHosts'), empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'agentServiceSubnetResourceId')))]"
           },
           "createProjectCapabilityHost": {
             "value": "[variables('createCapabilityHosts')]"

@@ -208,7 +208,7 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    createAccountCapabilityHost: false // forcing false because I don't know what's going on
+    createAccountCapabilityHost: (createCapabilityHosts && empty(aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId))
     createProjectCapabilityHost: createCapabilityHosts
     storageAccountConnection: includeAssociatedResources
       ? {
