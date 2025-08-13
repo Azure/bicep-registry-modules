@@ -154,13 +154,13 @@ var deploymentNames = {
 
 var filteredManagementGroupPolicyAssignments = filter(
   (managementGroupPolicyAssignments ?? []),
-  polAsi => !contains(polAsi.name, managementGroupExcludedPolicyAssignments)
+  polAsi => !contains(managementGroupExcludedPolicyAssignments, polAsi.name)
 )
 
 // Modules
 // Telemetry
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.alz-empty.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
