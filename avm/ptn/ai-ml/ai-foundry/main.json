@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4974445772264752757"
+      "templateHash": "1066959624685008459"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -20090,7 +20090,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1334595058836594546"
+              "templateHash": "11966251180500541400"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20256,8 +20256,8 @@
             }
           },
           "variables": {
-            "_createProjectCapabilityHost": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
-            "_createAccountCapabilityHost": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
+            "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
+            "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
           },
           "resources": {
             "foundryAccount": {
@@ -20377,7 +20377,7 @@
               ]
             },
             "accountCapabilityHost": {
-              "condition": "[variables('_createAccountCapabilityHost')]",
+              "condition": "[variables('createAccountCapabilityHostInternal')]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
@@ -20394,7 +20394,7 @@
               ]
             },
             "capabilityHost": {
-              "condition": "[variables('_createProjectCapabilityHost')]",
+              "condition": "[variables('createProjectCapabilityHostInternal')]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
@@ -20416,7 +20416,8 @@
                 "aiSearchConnectionResource",
                 "cosmosDbConnectionResource",
                 "project",
-                "storageAccountConnectionResource"
+                "storageAccountConnectionResource",
+                "waitForConnectionsScript"
               ]
             },
             "projectLock": {
@@ -20786,7 +20787,7 @@
               ]
             },
             "cosmosDbSqlRoleAssignments": {
-              "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('_createProjectCapabilityHost'))]",
+              "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('createProjectCapabilityHostInternal'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('module.project.role-assign.cosmosDbDataPlane.{0}', parameters('name')), 64)]",
@@ -20873,7 +20874,7 @@
               ]
             },
             "storageAccountContainerRoleAssignments": {
-              "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('_createProjectCapabilityHost'))]",
+              "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('createProjectCapabilityHostInternal'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('module.project.role-assign.storageAccountDataPlane.{0}', parameters('name')), 64)]",

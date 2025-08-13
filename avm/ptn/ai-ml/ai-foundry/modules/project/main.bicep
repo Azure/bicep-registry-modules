@@ -59,8 +59,8 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
-var _createProjectCapabilityHost = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
-var _createAccountCapabilityHost = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+var createProjectCapabilityHostInternal = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+var createAccountCapabilityHostInternal = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
 #disable-next-line use-recent-api-versions
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
@@ -190,7 +190,7 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
 }
 
 #disable-next-line use-recent-api-versions
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (_createAccountCapabilityHost) {
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createAccountCapabilityHostInternal) {
   name: 'chagent${replace(accountName, '-', '')}'
   parent: foundryAccount
   dependsOn: [
@@ -207,10 +207,13 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
 }
 
 #disable-next-line use-recent-api-versions
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (_createProjectCapabilityHost) {
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createProjectCapabilityHostInternal) {
   name: 'chagent${replace(name, '-', '')}'
   parent: project
-  dependsOn: [accountCapabilityHost]
+  dependsOn: [
+    accountCapabilityHost
+    waitForConnectionsScript
+  ]
   properties: {
     capabilityHostKind: 'Agents'
     threadStorageConnections: ['${cosmosDbConnectionResource.name}']
@@ -242,7 +245,7 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
-module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection) && _createProjectCapabilityHost) {
+module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection) && createProjectCapabilityHostInternal) {
   name: take('module.project.role-assign.cosmosDbDataPlane.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
   dependsOn: [capabilityHost, cosmosDbRoleAssignments]
@@ -253,7 +256,7 @@ module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = i
   }
 }
 
-module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection) && _createProjectCapabilityHost) {
+module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection) && createProjectCapabilityHostInternal) {
   name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
   dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]
