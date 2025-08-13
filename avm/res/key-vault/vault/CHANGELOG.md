@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/CHANGELOG.md).
 
+## 0.14.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Removed `''` from parameter set of `publicNetworkAccess` in favor of it being nullable.
+
 ## 0.13.1
 
 ### Changes
