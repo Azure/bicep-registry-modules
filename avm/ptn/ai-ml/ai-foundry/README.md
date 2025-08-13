@@ -87,7 +87,23 @@ Creates an AI Foundry account and project with Basic services.
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   name: 'aiFoundryDeployment'
   params: {
+    // Required parameters
     baseName: '<baseName>'
+    // Non-required parameters
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 1
+          name: 'Standard'
+        }
+      }
+    ]
   }
 }
 ```
@@ -104,8 +120,26 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "baseName": {
       "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 1,
+            "name": "Standard"
+          }
+        }
+      ]
     }
   }
 }
@@ -121,7 +155,23 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 
+// Required parameters
 param baseName = '<baseName>'
+// Non-required parameters
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 1
+      name: 'Standard'
+    }
+  }
+]
 ```
 
 </details>
@@ -146,6 +196,20 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryConfiguration: {
       createCapabilityHosts: true
     }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 1
+          name: 'Standard'
+        }
+      }
+    ]
     includeAssociatedResources: true
   }
 }
@@ -173,6 +237,22 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         "createCapabilityHosts": true
       }
     },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 1,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
     "includeAssociatedResources": {
       "value": true
     }
@@ -196,6 +276,20 @@ param baseName = '<baseName>'
 param aiFoundryConfiguration = {
   createCapabilityHosts: true
 }
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 1
+      name: 'Standard'
+    }
+  }
+]
 param includeAssociatedResources = true
 ```
 
@@ -221,6 +315,20 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryConfiguration: {
       createCapabilityHosts: true
     }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 1
+          name: 'Standard'
+        }
+      }
+    ]
     aiSearchConfiguration: {
       existingResourceId: '<existingResourceId>'
     }
@@ -259,6 +367,22 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "createCapabilityHosts": true
       }
+    },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 1,
+            "name": "Standard"
+          }
+        }
+      ]
     },
     "aiSearchConfiguration": {
       "value": {
@@ -303,6 +427,20 @@ param baseName = '<baseName>'
 param aiFoundryConfiguration = {
   createCapabilityHosts: true
 }
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 1
+      name: 'Standard'
+    }
+  }
+]
 param aiSearchConfiguration = {
   existingResourceId: '<existingResourceId>'
 }
@@ -362,6 +500,20 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       ]
       sku: 'S0'
     }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 1
+          name: 'Standard'
+        }
+      }
+    ]
     aiSearchConfiguration: {
       name: '<name>'
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
@@ -466,6 +618,22 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         ],
         "sku": "S0"
       }
+    },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 1,
+            "name": "Standard"
+          }
+        }
+      ]
     },
     "aiSearchConfiguration": {
       "value": {
@@ -586,6 +754,20 @@ param aiFoundryConfiguration = {
   ]
   sku: 'S0'
 }
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 1
+      name: 'Standard'
+    }
+  }
+]
 param aiSearchConfiguration = {
   name: '<name>'
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
@@ -673,6 +855,20 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         openAiPrivateDnsZoneResourceId: '<openAiPrivateDnsZoneResourceId>'
       }
     }
+    aiModelDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 1
+          name: 'Standard'
+        }
+      }
+    ]
     aiSearchConfiguration: {
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
@@ -718,6 +914,22 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
           "openAiPrivateDnsZoneResourceId": "<openAiPrivateDnsZoneResourceId>"
         }
       }
+    },
+    "aiModelDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 1,
+            "name": "Standard"
+          }
+        }
+      ]
     },
     "aiSearchConfiguration": {
       "value": {
@@ -771,6 +983,20 @@ param aiFoundryConfiguration = {
     openAiPrivateDnsZoneResourceId: '<openAiPrivateDnsZoneResourceId>'
   }
 }
+param aiModelDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 1
+      name: 'Standard'
+    }
+  }
+]
 param aiSearchConfiguration = {
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }

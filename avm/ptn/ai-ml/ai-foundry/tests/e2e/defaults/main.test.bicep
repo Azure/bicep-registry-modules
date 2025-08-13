@@ -47,20 +47,20 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       baseName: workloadName
-      // aiModelDeployments: [
-      //   {
-      //     name: 'gpt-4o'
-      //     model: {
-      //       format: 'OpenAI'
-      //       name: 'gpt-4o'
-      //       version: '2024-11-20'
-      //     }
-      //     sku: {
-      //       name: 'Standard'
-      //       capacity: 1
-      //     }
-      //   }
-      // ]
+      aiModelDeployments: [
+        {
+          name: 'gpt-4o'
+          model: {
+            format: 'OpenAI'
+            name: 'gpt-4o'
+            version: '2024-11-20'
+          }
+          sku: {
+            name: 'Standard'
+            capacity: 1
+          }
+        }
+      ]
     }
   }
 ]
