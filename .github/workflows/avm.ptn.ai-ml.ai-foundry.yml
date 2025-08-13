@@ -29,9 +29,10 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.ai-ml.ai-foundry.yml"
-      - "avm/ptn/ai-ml/**"
+      - "avm/ptn/ai-ml/ai-foundry/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
