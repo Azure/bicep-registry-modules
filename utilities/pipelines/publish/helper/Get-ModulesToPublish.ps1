@@ -35,7 +35,7 @@ function Get-ModifiedFileList {
     }
 
     if ($diff.Count -gt 0) {
-        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $diff.Count, ($diff.FullName | ConvertTo-Json | Out-String)) -Verbose
+        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $diff.Count, ($diff | ConvertTo-Json | Out-String)) -Verbose
     } else {
         Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
     }
