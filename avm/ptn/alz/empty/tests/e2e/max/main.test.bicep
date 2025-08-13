@@ -297,6 +297,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      managementGroupExcludedPolicyAssignments: [
+        'allowed-vm-skus-root'
+      ]
       managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
       managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
     }
