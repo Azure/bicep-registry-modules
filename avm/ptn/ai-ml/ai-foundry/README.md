@@ -340,7 +340,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryConfiguration: {
       accountName: '<accountName>'
       allowProjectManagement: true
-      createCapabilityHosts: false
+      createCapabilityHosts: true
       location: '<location>'
       networking: {
         agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
@@ -444,7 +444,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "accountName": "<accountName>",
         "allowProjectManagement": true,
-        "createCapabilityHosts": false,
+        "createCapabilityHosts": true,
         "location": "<location>",
         "networking": {
           "agentServiceSubnetResourceId": "<agentServiceSubnetResourceId>",
@@ -564,7 +564,7 @@ param baseName = '<baseName>'
 param aiFoundryConfiguration = {
   accountName: '<accountName>'
   allowProjectManagement: true
-  createCapabilityHosts: false
+  createCapabilityHosts: true
   location: '<location>'
   networking: {
     agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
@@ -665,7 +665,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     baseName: '<baseName>'
     // Non-required parameters
     aiFoundryConfiguration: {
-      createCapabilityHosts: false
+      createCapabilityHosts: true
       networking: {
         agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
         aiServicesPrivateDnsZoneResourceId: '<aiServicesPrivateDnsZoneResourceId>'
@@ -710,7 +710,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Non-required parameters
     "aiFoundryConfiguration": {
       "value": {
-        "createCapabilityHosts": false,
+        "createCapabilityHosts": true,
         "networking": {
           "agentServiceSubnetResourceId": "<agentServiceSubnetResourceId>",
           "aiServicesPrivateDnsZoneResourceId": "<aiServicesPrivateDnsZoneResourceId>",
@@ -763,7 +763,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param baseName = '<baseName>'
 // Non-required parameters
 param aiFoundryConfiguration = {
-  createCapabilityHosts: false
+  createCapabilityHosts: true
   networking: {
     agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
     aiServicesPrivateDnsZoneResourceId: '<aiServicesPrivateDnsZoneResourceId>'

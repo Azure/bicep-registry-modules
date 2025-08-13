@@ -13,6 +13,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   tags: tags
   properties: {
     addressSpace: {
+      // NOTE: Foundry currently requires an address space of 192.168.0.0/16 for agent vnet integration
       addressPrefixes: ['192.168.0.0/16']
     }
     subnets: [

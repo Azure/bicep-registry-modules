@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15621505475407768211"
+      "templateHash": "4170731741816788495"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -695,7 +695,7 @@
       ]
     },
     "cosmosDbSqlRoleAssignments": {
-      "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+      "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('createCapabilityHostResource'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('module.project.role-assign.cosmosDbDataPlane.{0}', parameters('name')), 64)]",
@@ -782,7 +782,7 @@
       ]
     },
     "storageAccountContainerRoleAssignments": {
-      "condition": "[not(empty(parameters('storageAccountConnection')))]",
+      "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('createCapabilityHostResource'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('module.project.role-assign.storageAccountDataPlane.{0}', parameters('name')), 64)]",
