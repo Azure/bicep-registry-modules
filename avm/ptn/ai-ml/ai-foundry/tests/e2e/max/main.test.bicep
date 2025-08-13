@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
         accountName: 'aifcustom${workloadName}'
         location: enforcedLocation
         sku: 'S0'
-        createCapabilityHosts: true
+        createCapabilityHosts: false
         project: {
           name: 'projcustom${workloadName}'
           displayName: 'Custom Project for ${workloadName}'
