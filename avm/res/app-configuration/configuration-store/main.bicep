@@ -137,7 +137,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.appconfiguration-configurationstore.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -155,7 +155,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -175,7 +175,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
+resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025-02-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -191,12 +191,12 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024
       ? {
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+              ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? cMKKeyVault::cMKKey.properties.keyUri
-                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                  ? cMKKeyVault::cMKKey.?properties.keyUri
+                  : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? cMKUserAssignedIdentity.properties.clientId
+              ? cMKUserAssignedIdentity.?properties.clientId
               : null
           }
         }
@@ -226,7 +226,7 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
     }
   }
 ]
-
+@batchSize(1)
 module configurationStore_replicas 'replica/main.bicep' = [
   for (replicaLocation, index) in (replicaLocations ?? []): {
     name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
