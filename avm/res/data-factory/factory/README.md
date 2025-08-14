@@ -1237,6 +1237,7 @@ List of Global Parameters for the factory.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `integrationRuntimes`
 
