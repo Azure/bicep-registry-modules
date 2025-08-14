@@ -33,7 +33,6 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -337,64 +336,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
 }
 param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
-```
-
-</details>
-<p>
-
-### Example 3: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>' = {
-  name: 'containerAppUpsertDeployment'
-  params: {
-    // Required parameters
-    name: 'acauwaf001'
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "acauwaf001"
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/azd/container-app-upsert:<version>'
-
-// Required parameters
-param name = 'acauwaf001'
-param location = '<location>'
 ```
 
 </details>

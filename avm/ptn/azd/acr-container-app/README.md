@@ -33,7 +33,6 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using probes](#example-2-using-probes)
-- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -220,64 +219,6 @@ param containerProbes = [
     type: 'Liveness'
   }
 ]
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 3: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
-  name: 'acrContainerAppDeployment'
-  params: {
-    // Required parameters
-    name: 'aacawaf001'
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "aacawaf001"
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/azd/acr-container-app:<version>'
-
-// Required parameters
-param name = 'aacawaf001'
 param location = '<location>'
 ```
 
