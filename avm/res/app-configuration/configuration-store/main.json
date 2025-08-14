@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "822106589267474553"
+      "templateHash": "8359336516518995900"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -871,6 +871,8 @@
       "App Compliance Automation Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ffc6bbe0-e443-4c3b-bf54-26581bb2f78e')]",
       "App Configuration Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b')]",
       "App Configuration Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')]",
+      "App Configuration Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '175b81b9-6e0d-490a-85e4-0d422273c10c')]",
+      "App Configuration Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fe86443c-f201-4fc4-9d2a-ac61149fbda0')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",

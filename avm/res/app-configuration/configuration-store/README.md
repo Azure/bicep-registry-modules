@@ -1778,6 +1778,8 @@ Array of role assignments to create.
   - `'App Compliance Automation Reader'`
   - `'App Configuration Data Owner'`
   - `'App Configuration Data Reader'`
+  - `'App Configuration Reader'`
+  - `'App Configuration Contributor'`
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
