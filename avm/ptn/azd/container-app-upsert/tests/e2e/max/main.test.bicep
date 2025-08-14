@@ -30,7 +30,7 @@ param myCustomContainerAppSecret string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -72,19 +72,17 @@ module testDeployment '../../../main.bicep' = [
       identityPrincipalId: nestedDependencies.outputs.managedIdentityPrincipalId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       daprEnabled: true
-      secrets: {
-        secureList: [
-          {
-            name: 'containerappstoredsecret'
-            value: myCustomContainerAppSecret
-          }
-          {
-            name: 'keyvaultstoredsecret'
-            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
-            identity: nestedDependencies.outputs.managedIdentityResourceId
-          }
-        ]
-      }
+      secrets: [
+        {
+          name: 'containerappstoredsecret'
+          value: myCustomContainerAppSecret
+        }
+        {
+          name: 'keyvaultstoredsecret'
+          keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+        }
+      ]
       env: [
         {
           name: 'ContainerAppStoredSecretName'
@@ -93,6 +91,23 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'ContainerAppKeyVaultStoredSecretName'
           secretRef: 'keyvaultstoredsecret'
+        }
+      ]
+      containerProbes: [
+        {
+          type: 'Liveness'
+          httpGet: {
+            path: '/health'
+            port: 8080
+            httpHeaders: [
+              {
+                name: 'Custom-Header'
+                value: 'Awesome'
+              }
+            ]
+          }
+          initialDelaySeconds: 3
+          periodSeconds: 3
         }
       ]
       exists: true
