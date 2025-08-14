@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12529452531542715083"
+      "templateHash": "822106589267474553"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -719,7 +719,9 @@
       "defaultValue": "Standard",
       "allowedValues": [
         "Free",
-        "Standard"
+        "Developer",
+        "Standard",
+        "Premium"
       ],
       "metadata": {
         "description": "Optional. Pricing tier of App Configuration."

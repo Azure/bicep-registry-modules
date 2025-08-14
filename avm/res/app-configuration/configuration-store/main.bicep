@@ -13,7 +13,9 @@ param managedIdentities managedIdentityAllType?
 
 @allowed([
   'Free'
+  'Developer'
   'Standard'
+  'Premium'
 ])
 @description('Optional. Pricing tier of App Configuration.')
 param sku string = 'Standard'

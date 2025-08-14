@@ -1884,7 +1884,9 @@ Pricing tier of App Configuration.
 - Allowed:
   ```Bicep
   [
+    'Developer'
     'Free'
+    'Premium'
     'Standard'
   ]
   ```
