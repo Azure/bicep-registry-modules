@@ -13,10 +13,10 @@ This module deploys Fabric capacities, which provide the compute resources for a
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2016-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2016-09-01/locks) |
-| `Microsoft.Fabric/capacities` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Fabric/2023-11-01/capacities) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2016-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2016-09-01/locks)</li></ul> |
+| `Microsoft.Fabric/capacities` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.fabric_capacities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Fabric/2023-11-01/capacities)</li></ul> |
 
 ## Usage examples
 

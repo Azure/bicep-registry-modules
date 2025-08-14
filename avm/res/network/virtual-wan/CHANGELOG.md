@@ -21,6 +21,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed unnecessary ternary expression from 'allowVnetToVnetTraffic'
 - Updated default parameter values to match product group recommendations
 - Updated userAssignedIdentities API version from 2018-11-30 to 2024-11-30 in test dependencies
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

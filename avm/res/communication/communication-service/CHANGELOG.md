@@ -17,6 +17,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added new `endpoint` output to expose the hostname/endpoint URI of the deployed Communication Service resource
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

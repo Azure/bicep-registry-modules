@@ -17,6 +17,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for `networkInjections` to supply private networking options for agent services
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

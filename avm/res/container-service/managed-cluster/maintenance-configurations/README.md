@@ -10,9 +10,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenanc
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2023-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations)</li></ul> |
 
 ## Parameters
 

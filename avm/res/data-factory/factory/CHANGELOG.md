@@ -18,6 +18,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added support for Purview Account integration via `purviewResourceId` parameter
 - Enhanced Data Factory configuration to include Purview connectivity when specified
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

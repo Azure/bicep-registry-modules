@@ -17,6 +17,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Allow static site custom domain validation method override
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

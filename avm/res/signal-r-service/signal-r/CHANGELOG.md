@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added support for `diagnosticSettings`
 - Added additional types for parameters
 - Updated `avm-commmon-types` to `0.6.0`, enabling the configuration of 'Notes' for locks
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

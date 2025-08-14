@@ -10,9 +10,9 @@ This module deploys a Hybrid Connection Authorization Rule.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Relay/namespaces/hybridConnections/authorizationRules` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Relay/2021-11-01/namespaces/hybridConnections/authorizationRules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Relay/namespaces/hybridConnections/authorizationRules` | 2021-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.relay_namespaces_hybridconnections_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Relay/2021-11-01/namespaces/hybridConnections/authorizationRules)</li></ul> |
 
 ## Parameters
 
