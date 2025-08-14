@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - handle existing deployment resources based on mode and state
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

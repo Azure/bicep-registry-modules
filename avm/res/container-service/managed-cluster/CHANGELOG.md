@@ -17,6 +17,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Adding load balancer configuration options
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

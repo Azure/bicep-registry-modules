@@ -10,9 +10,9 @@ This module deploys an App Configuration Replica.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.AppConfiguration/configurationStores/replicas` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/replicas) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.AppConfiguration/configurationStores/replicas` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores_replicas.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/replicas)</li></ul> |
 
 ## Parameters
 

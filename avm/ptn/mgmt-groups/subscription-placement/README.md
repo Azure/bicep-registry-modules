@@ -12,9 +12,9 @@ This module allows for placement of subscriptions to management groups.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Management/managementGroups/subscriptions` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Management/managementGroups/subscriptions` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_managementgroups_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions)</li></ul> |
 
 ## Usage examples
 

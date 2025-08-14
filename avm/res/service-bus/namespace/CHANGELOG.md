@@ -18,6 +18,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added secure outputs for the module's main resource's secrets (e.g., connection strings)
 - Small template improvements (e.g., removing redundant fallback values)
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

@@ -10,9 +10,9 @@ This module deploys an Azure Automation Account Module.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Automation/automationAccounts/modules` | 2022-08-08 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules)</li></ul> |
 
 ## Parameters
 
