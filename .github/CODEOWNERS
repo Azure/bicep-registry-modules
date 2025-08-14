@@ -6,6 +6,7 @@
 /avm/ptn/ai-ml/ai-foundry/ @Azure/avm-ptn-aiml-aifoundry-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/aca-lza/hosting-environment/ @Azure/avm-ptn-acalza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/ai-platform/baseline/ @Azure/avm-ptn-aiplatform-baseline-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/alz/ama/ @Azure/avm-ptn-alz-ama-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/alz/empty/ @Azure/avm-ptn-alz-empty-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app-service-lza/hosting-environment/ @Azure/avm-ptn-appservicelza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app/container-job-toolkit/ @Azure/avm-ptn-app-containerjobtoolkit-module-owners-bicep @Azure/avm-module-reviewers-bicep
