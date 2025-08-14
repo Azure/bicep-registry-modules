@@ -61,7 +61,7 @@ param gitLastCommitId string = ''
 param gitTenantId string = ''
 
 @description('Optional. List of Global Parameters for the factory.')
-param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.properties.globalParameters?
+param globalParameters object = {}
 
 @description('Optional. Purview Account resource identifier.')
 param purviewResourceId string?
@@ -208,7 +208,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
             : {}),
           {}
         )
-    globalParameters: globalParameters
+    globalParameters: !empty(globalParameters) ? globalParameters : null
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : null)
