@@ -5,7 +5,7 @@ metadata description = 'This module deploys an Azure Databricks Access Connector
 param name string
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Databricks/accessConnectors@2024-05-01'>.tags?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -88,7 +88,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource accessConnector 'Microsoft.Databricks/accessConnectors@2022-10-01-preview' = {
+resource accessConnector 'Microsoft.Databricks/accessConnectors@2024-05-01' = {
   name: name
   location: location
   tags: tags
