@@ -168,19 +168,19 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -230,12 +230,12 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
                   }
                 : null
               keyName: customerManagedKey!.keyName
-              keyVaultUri: cMKKeyVault.properties.vaultUri
+              keyVaultUri: cMKKeyVault!.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
                 ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
-                    : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
             }
           ]
           requireInfrastructureEncryption: requireInfrastructureEncryption
