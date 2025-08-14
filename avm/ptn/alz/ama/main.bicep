@@ -17,6 +17,10 @@ param logAnalyticsWorkspaceId string
 @description('Required. The name of the data collection rule for VM Insights.')
 param dataCollectionRuleVMInsightsName string
 
+@description('Optional. The experience for the VM Insights data collection rule.')
+@allowed(['PerfAndMap', 'PerfOnly'])
+param dataCollectionRuleVMInsightsExperience string = 'PerfAndMap'
+
 @description('Required. The name of the data collection rule for Change Tracking.')
 param dataCollectionRuleChangeTrackingName string
 
@@ -44,7 +48,7 @@ module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assi
 }
 
 #disable-next-line use-recent-api-versions
-resource dataCollectionRuleVMInsights 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
+resource dataCollectionRuleVMInsightsPerfAndMap 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (dataCollectionRuleVMInsightsExperience == 'PerfAndMap') {
   name: dataCollectionRuleVMInsightsName
   location: location
   tags: tags
@@ -103,9 +107,59 @@ resource dataCollectionRuleVMInsights 'Microsoft.Insights/dataCollectionRules@20
   }
 }
 
-resource dataCollectionRuleVMInsightsLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None') {
-  scope: dataCollectionRuleVMInsights
-  name: lockConfig.?name ?? '${dataCollectionRuleVMInsights.name}-lock'
+#disable-next-line use-recent-api-versions
+resource dataCollectionRuleVMInsightsPerfOnly 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (dataCollectionRuleVMInsightsExperience == 'PerfOnly') {
+  name: dataCollectionRuleVMInsightsName
+  location: location
+  tags: tags
+  properties: {
+    description: 'Data collection rule for VM Insights'
+    dataSources: {
+      performanceCounters: [
+       {
+         name: 'VMInsightsPerfCounters'
+         streams: [
+          'Microsoft-InsightsMetrics'
+         ]
+         counterSpecifiers: [
+          '\\VmInsights\\DetailedMetrics'
+         ]
+         samplingFrequencyInSeconds: 60
+       }
+      ]
+    }
+    destinations: {
+      logAnalytics: [
+        {
+          workspaceResourceId: logAnalyticsWorkspaceId
+          name: 'VMInsightsPerf-Logs-Dest'
+        }
+      ]
+    }
+    dataFlows: [
+      {
+        streams: [
+          'Microsoft-InsightsMetrics'
+        ]
+        destinations: [
+          'VMInsightsPerf-Logs-Dest'
+        ]
+      }
+    ]
+  }
+}
+
+resource dataCollectionRuleVMInsightsPerfandMapLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && dataCollectionRuleVMInsightsExperience == 'PerfAndMap') {
+  scope: dataCollectionRuleVMInsightsPerfAndMap
+  name: lockConfig.?name ?? '${dataCollectionRuleVMInsightsPerfAndMap.name}-lock'
+  properties: {
+    level: lockConfig.?kind ?? 'ReadOnly'
+  }
+}
+
+resource dataCollectionRuleVMInsightsPerfOnlyLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && dataCollectionRuleVMInsightsExperience == 'PerfOnly') {
+  scope: dataCollectionRuleVMInsightsPerfOnly
+  name: lockConfig.?name ?? '${dataCollectionRuleVMInsightsPerfOnly.name}-lock'
   properties: {
     level: lockConfig.?kind ?? 'ReadOnly'
   }
@@ -466,7 +520,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 output userAssignedManagedIdentityResourceId string = userAssignedManagedIdentity.outputs.resourceId
 
 @description('The resource ID of the Data Collection Rule for VM Insights.')
-output dataCollectionRuleVMInsightsResourceId string = dataCollectionRuleVMInsights.id
+output dataCollectionRuleVMInsightsResourceId string = dataCollectionRuleVMInsightsPerfAndMap.id
 
 @description('The resource ID of the Data Collection Rule for Change Tracking.')
 output dataCollectionRuleChangeTrackingResourceId string = dataCollectionRuleChangeTracking.id

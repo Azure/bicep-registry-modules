@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9544295790443027553"
+      "templateHash": "12414605149490888805"
     },
     "name": "avm/ptn/alz/ama",
     "description": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones"
@@ -76,6 +76,17 @@
         "description": "Required. The name of the data collection rule for VM Insights."
       }
     },
+    "dataCollectionRuleVMInsightsExperience": {
+      "type": "string",
+      "defaultValue": "PerfAndMap",
+      "allowedValues": [
+        "PerfAndMap",
+        "PerfOnly"
+      ],
+      "metadata": {
+        "description": "Optional. The experience for the VM Insights data collection rule."
+      }
+    },
     "dataCollectionRuleChangeTrackingName": {
       "type": "string",
       "metadata": {
@@ -104,7 +115,8 @@
     }
   },
   "resources": {
-    "dataCollectionRuleVMInsights": {
+    "dataCollectionRuleVMInsightsPerfAndMap": {
+      "condition": "[equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap')]",
       "type": "Microsoft.Insights/dataCollectionRules",
       "apiVersion": "2021-04-01",
       "name": "[parameters('dataCollectionRuleVMInsightsName')]",
@@ -164,8 +176,51 @@
         ]
       }
     },
-    "dataCollectionRuleVMInsightsLock": {
-      "condition": "[not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None'))]",
+    "dataCollectionRuleVMInsightsPerfOnly": {
+      "condition": "[equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('dataCollectionRuleVMInsightsName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Data collection rule for VM Insights",
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "name": "VMInsightsPerfCounters",
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ],
+              "counterSpecifiers": [
+                "\\VmInsights\\DetailedMetrics"
+              ],
+              "samplingFrequencyInSeconds": 60
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
+              "name": "VMInsightsPerf-Logs-Dest"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-InsightsMetrics"
+            ],
+            "destinations": [
+              "VMInsightsPerf-Logs-Dest"
+            ]
+          }
+        ]
+      }
+    },
+    "dataCollectionRuleVMInsightsPerfandMapLock": {
+      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
@@ -174,7 +229,20 @@
         "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
       },
       "dependsOn": [
-        "dataCollectionRuleVMInsights"
+        "dataCollectionRuleVMInsightsPerfAndMap"
+      ]
+    },
+    "dataCollectionRuleVMInsightsPerfOnlyLock": {
+      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly'))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
+      "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleVMInsightsName')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
+      },
+      "dependsOn": [
+        "dataCollectionRuleVMInsightsPerfOnly"
       ]
     },
     "dataCollectionRuleChangeTracking": {

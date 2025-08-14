@@ -236,6 +236,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataCollectionRuleVMInsightsExperience`](#parameter-datacollectionrulevminsightsexperience) | string | The experience for the VM Insights data collection rule. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location to deploy resources to. |
 | [`lockConfig`](#parameter-lockconfig) | object | The lock settings for all resources in the solution. |
@@ -275,6 +276,21 @@ The name of the User Assigned Identity utilized for Azure Monitoring Agent.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `dataCollectionRuleVMInsightsExperience`
+
+The experience for the VM Insights data collection rule.
+
+- Required: No
+- Type: string
+- Default: `'PerfAndMap'`
+- Allowed:
+  ```Bicep
+  [
+    'PerfAndMap'
+    'PerfOnly'
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
