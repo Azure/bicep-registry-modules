@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10340605731952055244"
+      "templateHash": "10019136897754556205"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -31,6 +31,9 @@
           },
           "Direct": {
             "$ref": "#/definitions/directDcrPropertiesType"
+          },
+          "WorkspaceTransforms": {
+            "$ref": "#/definitions/workspaceTransformsDcrPropertiesType"
           }
         }
       },
@@ -327,6 +330,42 @@
         "description": "The type for the properties of the 'Direct' data collection rule."
       }
     },
+    "workspaceTransformsDcrPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "WorkspaceTransforms"
+          ],
+          "metadata": {
+            "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "dataFlows": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The specification of data flows."
+          }
+        },
+        "destinations": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Specification of destinations that can be used in data flows."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the data collection rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'WorkspaceTransforms' data collection rule."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -537,7 +576,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(or(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), equals(parameters('dataCollectionRuleProperties').kind, 'Direct')), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
+    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(or(or(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), equals(parameters('dataCollectionRuleProperties').kind, 'Direct')), equals(parameters('dataCollectionRuleProperties').kind, 'WorkspaceTransforms')), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
   },
   "resources": {
     "avmTelemetry": {
