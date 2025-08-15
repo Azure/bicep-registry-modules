@@ -1,3 +1,6 @@
+@description('Optional. Name of the Application Insights resource.')
+param applicationInsightsName string = 'applicationInsights'
+
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
@@ -6,6 +9,12 @@ param locationRegion1 string = resourceGroup().location
 
 @description('Optional. The location to deploy resources to.')
 param locationRegion2 string = 'eastus2'
+
+@description('Optional. Name of the Log Analytics Workspace.')
+param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
+
+@description('Optional. Name of the Route Table.')
+param routeTableName string = 'apimRouteTableTest'
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -21,7 +30,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: 'logAnalyticsWorkspace'
+  name: logAnalyticsWorkspaceName
   location: locationRegion1
   tags: {
     Environment: 'Non-Prod'
@@ -38,7 +47,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'applicationInsights'
+  name: applicationInsightsName
   location: locationRegion1
   kind: 'web'
   properties: {
@@ -122,7 +131,7 @@ resource vnetRegion2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
 }
 
 resource routeTableRegion1 'Microsoft.Network/routeTables@2023-11-01' = {
-  name: 'apimRouteTableTest-${locationRegion1}'
+  name: '${routeTableName}-${locationRegion1}'
   location: locationRegion1
   properties: {
     disableBgpRoutePropagation: false
@@ -139,7 +148,7 @@ resource routeTableRegion1 'Microsoft.Network/routeTables@2023-11-01' = {
 }
 
 resource routeTableRegion2 'Microsoft.Network/routeTables@2023-11-01' = {
-  name: 'apimRouteTableTest-${locationRegion2}'
+  name: '${routeTableName}-${locationRegion2}'
   location: locationRegion2
   properties: {
     disableBgpRoutePropagation: false

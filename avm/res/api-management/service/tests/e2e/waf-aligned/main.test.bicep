@@ -7,19 +7,25 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apiswaf'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+@description('Optional. Name of the Application Insights resource.')
+param applicationInsightsName string = 'applicationInsights'
 
 @description('Optional. The secret to leverage for authorization server authentication.')
 @secure()
 param customSecret string = newGuid()
+
+@description('Optional. Name of the Log Analytics Workspace.')
+param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
+
+@description('Optional. Name of the Route Table.')
+param routeTableName string = 'apimRouteTableTest'
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'apiswaf'
 
 // Enforcing locations to not have conflicting availability zones
 @description('Optional. The primary location to deploy resources to.')
@@ -27,6 +33,9 @@ var enforcedLocation = 'ukSouth'
 
 @description('Optional. The secondary location to deploy resources to.')
 var secondaryEnforcedLocation = 'northeurope'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -43,11 +52,14 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    applicationInsightsName: applicationInsightsName
     lawReplicationRegion: secondaryEnforcedLocation
+    location: enforcedLocation
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    routeTableName: routeTableName
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 

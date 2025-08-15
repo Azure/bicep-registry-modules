@@ -1,11 +1,20 @@
+@description('Optional. Name of the Application Insights resource.')
+param applicationInsightsName string = 'applicationInsights'
+
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
 @description('Required. The location to deploy resources to.')
 param lawReplicationRegion string
 
+@description('Optional. Name of the Log Analytics Workspace.')
+param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
+
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
+
+@description('Optional. Name of the Route Table.')
+param routeTableName string = 'apimRouteTableTest'
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -21,7 +30,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
-  name: 'logAnalyticsWorkspace'
+  name: logAnalyticsWorkspaceName
   location: location
   tags: {
     Environment: 'Non-Prod'
@@ -42,7 +51,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'applicationInsights'
+  name: applicationInsightsName
   location: location
   kind: 'web'
   properties: {
@@ -212,7 +221,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
 }
 
 resource routeTable 'Microsoft.Network/routeTables@2023-11-01' = {
-  name: 'apimRouteTableTest-${location}'
+  name: '${routeTableName}-${location}'
   location: location
   properties: {
     disableBgpRoutePropagation: false
