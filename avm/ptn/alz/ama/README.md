@@ -13,13 +13,13 @@ This modules deployes resources for Azure Monitoring Agent (AMA) to be used with
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/dataCollectionRules` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-04-01/dataCollectionRules) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/dataCollectionRules` | 2021-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-04-01/dataCollectionRules)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 
 ## Usage examples
 
@@ -49,7 +49,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamin'
     dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamin'
     dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamin'
-    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     userAssignedIdentityName: 'alz-ama-identity-alzamamin'
   }
 }
@@ -77,8 +77,8 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     "dataCollectionRuleVMInsightsName": {
       "value": "alz-ama-dcr-vm-insights-alzamamin"
     },
-    "logAnalyticsWorkspaceId": {
-      "value": "<logAnalyticsWorkspaceId>"
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "userAssignedIdentityName": {
       "value": "alz-ama-identity-alzamamin"
@@ -101,7 +101,7 @@ using 'br/public:avm/ptn/alz/ama:<version>'
 param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamin'
 param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamin'
 param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamin'
-param logAnalyticsWorkspaceId = '<logAnalyticsWorkspaceId>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param userAssignedIdentityName = 'alz-ama-identity-alzamamin'
 ```
 
@@ -125,7 +125,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamax'
     dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamax'
     dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamax'
-    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     userAssignedIdentityName: 'alz-ama-identity-alzamamax'
     // Non-required parameters
     location: '<location>'
@@ -163,8 +163,8 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     "dataCollectionRuleVMInsightsName": {
       "value": "alz-ama-dcr-vm-insights-alzamamax"
     },
-    "logAnalyticsWorkspaceId": {
-      "value": "<logAnalyticsWorkspaceId>"
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "userAssignedIdentityName": {
       "value": "alz-ama-identity-alzamamax"
@@ -203,7 +203,7 @@ using 'br/public:avm/ptn/alz/ama:<version>'
 param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamax'
 param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamax'
 param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamax'
-param logAnalyticsWorkspaceId = '<logAnalyticsWorkspaceId>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param userAssignedIdentityName = 'alz-ama-identity-alzamamax'
 // Non-required parameters
 param location = '<location>'
@@ -229,7 +229,7 @@ param tags = {
 | [`dataCollectionRuleChangeTrackingName`](#parameter-datacollectionrulechangetrackingname) | string | The name of the data collection rule for Change Tracking. |
 | [`dataCollectionRuleMDFCSQLName`](#parameter-datacollectionrulemdfcsqlname) | string | The name of the data collection rule for Microsoft Defender for SQL. |
 | [`dataCollectionRuleVMInsightsName`](#parameter-datacollectionrulevminsightsname) | string | The name of the data collection rule for VM Insights. |
-| [`logAnalyticsWorkspaceId`](#parameter-loganalyticsworkspaceid) | string | The resource ID of the Log Analytics Workspace. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The resource ID of the Log Analytics Workspace. |
 | [`userAssignedIdentityName`](#parameter-userassignedidentityname) | string | The name of the User Assigned Identity utilized for Azure Monitoring Agent. |
 
 **Optional parameters**
@@ -263,7 +263,7 @@ The name of the data collection rule for VM Insights.
 - Required: Yes
 - Type: string
 
-### Parameter: `logAnalyticsWorkspaceId`
+### Parameter: `logAnalyticsWorkspaceResourceId`
 
 The resource ID of the Log Analytics Workspace.
 
