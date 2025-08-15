@@ -88,10 +88,13 @@ output resourceGroupName string = resourceGroup().name
 type backendCredentialsType = {
   @sys.description('Optional. Authorization header authentication.')
   authorization: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.credentials.authorization?
+  
   @sys.description('Optional. List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided.')
   certificate: string[]?
+  
   @sys.description('Optional. List of Client Certificate Ids.')
   certificateIds: string[]?
+  
   @sys.description('''
     Optional. Header Parameter description. Each property within header is an array of strings in the following format:
       {customized property}: [
@@ -99,6 +102,7 @@ type backendCredentialsType = {
       ]
   ''')
   header: object?
+  
   @sys.description('''
     Optional. Query Parameter description. Each property within query is an array of strings in the following format:
       {customized property}: [
@@ -112,10 +116,13 @@ type backendProxyType = {
   @secure()
   @sys.description('Optional. Password to connect to the WebProxy Server.')
   password: string?
+  
   @sys.description('Required. WebProxy Server AbsoluteUri property which includes the entire URI stored in the Uri instance, including all fragments and query strings.')
+  
   @sys.minLength(1)
   @sys.maxLength(2000)
   url: string
+  
   @sys.description('Optional. Username to connect to the WebProxy server.')
   username: string?
 }
@@ -123,14 +130,19 @@ type backendProxyType = {
 type backendServiceFabricClusterType = {
   @sys.description('Optional. The client certificate id for the management endpoint.')
   clientCertificateId: string?
+  
   @sys.description('Optional. The client certificate thumbprint for the management endpoint. Will be ignored if certificatesIds are provided.')
   clientCertificatethumbprint: string?
+  
   @sys.description('Required. The cluster management endpoint.')
   managementEndpoints: string[]
+  
   @sys.description('Optional. Maximum number of retries while attempting resolve the partition.')
   maxPartitionResolutionRetries: int?
+  
   @sys.description('Optional. Thumbprints of certificates cluster management service uses for tls communication.')
   serverCertificateThumbprints: string[]?
+  
   @sys.description('Optional. Server X509 Certificate Names Collection.')
   serverX509Names: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.properties.serviceFabricCluster.serverX509Names?
 }
@@ -138,6 +150,7 @@ type backendServiceFabricClusterType = {
 type backendTlsType = {
   @sys.description('Optional. Flag indicating whether SSL certificate chain validation should be done when using self-signed certificates for this backend host.')
   validateCertificateChain: bool?
+  
   @sys.description('Optional. Flag indicating whether SSL certificate name validation should be done when using self-signed certificates for this backend host.')
   validateCertificateName: bool?
 }
