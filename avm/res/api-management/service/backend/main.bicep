@@ -92,17 +92,19 @@ type backendCredentialsType = {
   certificate: string[]?
   @sys.description('Optional. List of Client Certificate Ids.')
   certificateIds: string[]?
-  // Each property within header is an array of strings in format
-  // {customized property}: [
-  //   'string'
-  // ]
-  @sys.description('Optional. Header Parameter description.')
+  @sys.description('''
+    Optional. Header Parameter description. Each property within header is an array of strings in the following format:
+      {customized property}: [
+        'string'
+      ]
+  ''')
   header: object?
-  // Each property within query is an array of strings in format
-  // {customized property}: [
-  //   'string'
-  // ]
-  @sys.description('Optional. Query Parameter description.')
+  @sys.description('''
+    Optional. Query Parameter description. Each property within query is an array of strings in the following format:
+      {customized property}: [
+        'string'
+      ]
+  ''')
   query: object?
 }
 
