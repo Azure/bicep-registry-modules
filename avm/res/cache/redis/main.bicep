@@ -89,7 +89,7 @@ param skuName string = 'Premium'
 param staticIP string?
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. A dictionary of tenant settings.')
 param tenantSettings resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.tenantSettings = {}

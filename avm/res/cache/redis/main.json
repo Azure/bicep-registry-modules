@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10789940705624230887"
+      "templateHash": "1975975895284011193"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -934,7 +934,7 @@
     },
     "subnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in."
       }

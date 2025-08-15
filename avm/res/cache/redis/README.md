@@ -2577,7 +2577,6 @@ The full resource ID of a subnet in a virtual network to deploy the Redis cache 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
