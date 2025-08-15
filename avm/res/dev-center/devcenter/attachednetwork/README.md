@@ -10,9 +10,9 @@ This module deploys a Dev Center Attached Network.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevCenter/devcenters/attachednetworks` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/attachednetworks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevCenter/devcenters/attachednetworks` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_attachednetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/attachednetworks)</li></ul> |
 
 ## Parameters
 

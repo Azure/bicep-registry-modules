@@ -10,9 +10,9 @@ This module deploys an Application Gateway for Containers Association
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ServiceNetworking/trafficControllers/associations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/associations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ServiceNetworking/trafficControllers/associations` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_associations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/associations)</li></ul> |
 
 ## Parameters
 

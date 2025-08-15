@@ -13,23 +13,23 @@ This module deploys an Azure Dev Center.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DevCenter/devcenters` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters) |
-| `Microsoft.DevCenter/devcenters/attachednetworks` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/attachednetworks) |
-| `Microsoft.DevCenter/devcenters/catalogs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/catalogs) |
-| `Microsoft.DevCenter/devcenters/devboxdefinitions` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/devboxdefinitions) |
-| `Microsoft.DevCenter/devcenters/environmentTypes` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/environmentTypes) |
-| `Microsoft.DevCenter/devcenters/galleries` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/galleries) |
-| `Microsoft.DevCenter/devcenters/projectPolicies` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/projectPolicies) |
-| `Microsoft.DevCenter/projects` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects) |
-| `Microsoft.DevCenter/projects/catalogs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/catalogs) |
-| `Microsoft.DevCenter/projects/environmentTypes` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/environmentTypes) |
-| `Microsoft.DevCenter/projects/pools` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/pools) |
-| `Microsoft.DevCenter/projects/pools/schedules` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/pools/schedules) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DevCenter/devcenters` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters)</li></ul> |
+| `Microsoft.DevCenter/devcenters/attachednetworks` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_attachednetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/attachednetworks)</li></ul> |
+| `Microsoft.DevCenter/devcenters/catalogs` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_catalogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/catalogs)</li></ul> |
+| `Microsoft.DevCenter/devcenters/devboxdefinitions` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_devboxdefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/devboxdefinitions)</li></ul> |
+| `Microsoft.DevCenter/devcenters/environmentTypes` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_environmenttypes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/environmentTypes)</li></ul> |
+| `Microsoft.DevCenter/devcenters/galleries` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_galleries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/galleries)</li></ul> |
+| `Microsoft.DevCenter/devcenters/projectPolicies` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_projectpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/projectPolicies)</li></ul> |
+| `Microsoft.DevCenter/projects` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects)</li></ul> |
+| `Microsoft.DevCenter/projects/catalogs` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_projects_catalogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/catalogs)</li></ul> |
+| `Microsoft.DevCenter/projects/environmentTypes` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_projects_environmenttypes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/environmentTypes)</li></ul> |
+| `Microsoft.DevCenter/projects/pools` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_projects_pools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/pools)</li></ul> |
+| `Microsoft.DevCenter/projects/pools/schedules` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_projects_pools_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/projects/pools/schedules)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
 
@@ -1163,7 +1163,7 @@ param projectPolicies = [
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`networkSettings`](#parameter-networksettings) | object | Network settings that will be enforced on network resources associated with the Dev Center. |
 | [`projectCatalogSettings`](#parameter-projectcatalogsettings) | object | Dev Center settings to be used when associating a project with a catalog. |
-| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
+| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources-specifically, SKUs, Images, and Network Connections-to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
 | [`projects`](#parameter-projects) | array | The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1871,7 +1871,7 @@ Whether project catalogs associated with projects in this dev center can be conf
 
 ### Parameter: `projectPolicies`
 
-Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
+Project policies provide a mechanism to restrict access to certain resources-specifically, SKUs, Images, and Network Connections-to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
 
 - Required: No
 - Type: array

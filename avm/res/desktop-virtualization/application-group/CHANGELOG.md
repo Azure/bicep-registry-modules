@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Upgraded the referenced `avm-common-types` module versions, enabling custom notes on locks
 - Updated diverse API versions
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

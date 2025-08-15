@@ -12,9 +12,9 @@ This module deploys a custom role definition to a Management Group.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleDefinitions` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-05-01-preview/roleDefinitions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleDefinitions` | 2022-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-05-01-preview/roleDefinitions)</li></ul> |
 
 ## Usage examples
 

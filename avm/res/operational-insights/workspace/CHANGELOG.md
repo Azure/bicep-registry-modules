@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/operational-insights/workspace/CHANGELOG.md).
 
+## 0.12.1
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes
@@ -9,6 +19,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added support for workspace replication
 - Updated API versions
 - Implemented strong typing for the `tags` parameter
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

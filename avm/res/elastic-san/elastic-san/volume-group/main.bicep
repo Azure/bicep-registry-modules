@@ -39,7 +39,7 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
