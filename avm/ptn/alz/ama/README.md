@@ -29,10 +29,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/alz/ama:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using maximum parameters](#example-2-using-maximum-parameters)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -46,8 +49,8 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamin'
     dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamin'
     dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamin'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     userAssignedIdentityName: 'alz-ama-identity-alzamamin'
-    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
   }
 }
 ```
@@ -74,11 +77,11 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     "dataCollectionRuleVMInsightsName": {
       "value": "alz-ama-dcr-vm-insights-alzamamin"
     },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "userAssignedIdentityName": {
       "value": "alz-ama-identity-alzamamin"
-    },
-    "logAnalyticsWorkspaceId": {
-      "value": "<logAnalyticsWorkspaceId>"
     }
   }
 }
@@ -98,14 +101,17 @@ using 'br/public:avm/ptn/alz/ama:<version>'
 param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamin'
 param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamin'
 param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamin'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param userAssignedIdentityName = 'alz-ama-identity-alzamamin'
-param logAnalyticsWorkspaceId = '<logAnalyticsWorkspaceId>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using maximum parameters_
+
+This instance deploys the module with the maximum set of required parameters.
+
 
 <details>
 
@@ -119,6 +125,7 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamax'
     dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-alzamamax'
     dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-alzamamax'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     userAssignedIdentityName: 'alz-ama-identity-alzamamax'
     // Non-required parameters
     location: '<location>'
@@ -126,7 +133,6 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
       kind: 'CanNotDelete'
       name: 'lock-alzamamax'
     }
-    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -157,6 +163,9 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
     "dataCollectionRuleVMInsightsName": {
       "value": "alz-ama-dcr-vm-insights-alzamamax"
     },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "userAssignedIdentityName": {
       "value": "alz-ama-identity-alzamamax"
     },
@@ -169,9 +178,6 @@ module ama 'br/public:avm/ptn/alz/ama:<version>' = {
         "kind": "CanNotDelete",
         "name": "lock-alzamamax"
       }
-    },
-    "logAnalyticsWorkspaceId": {
-      "value": "<logAnalyticsWorkspaceId>"
     },
     "tags": {
       "value": {
@@ -197,6 +203,7 @@ using 'br/public:avm/ptn/alz/ama:<version>'
 param dataCollectionRuleChangeTrackingName = 'alz-ama-dcr-ct-alzamamax'
 param dataCollectionRuleMDFCSQLName = 'alz-ama-dcr-mdfc-sql-alzamamax'
 param dataCollectionRuleVMInsightsName = 'alz-ama-dcr-vm-insights-alzamamax'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param userAssignedIdentityName = 'alz-ama-identity-alzamamax'
 // Non-required parameters
 param location = '<location>'
@@ -204,7 +211,6 @@ param lockConfig = {
   kind: 'CanNotDelete'
   name: 'lock-alzamamax'
 }
-param logAnalyticsWorkspaceId = '<logAnalyticsWorkspaceId>'
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
