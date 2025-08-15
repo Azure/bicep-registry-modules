@@ -17,6 +17,11 @@ resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' ex
   scope: resourceGroup()
 }
 
+resource locksContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '28bf596f-4eb7-45ce-b5bc-6cf482fec137' // Locks Contributor
+  scope: resourceGroup()
+}
+
 resource resourceGroupContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: resourceGroup()
   name: guid(scriptIdentity.id, contributorRole.id, resourceGroup().id)
@@ -27,9 +32,23 @@ resource resourceGroupContributorRoleAssignment 'Microsoft.Authorization/roleAss
   }
 }
 
+resource resourceGroupLocksContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: resourceGroup()
+  name: guid(scriptIdentity.id, locksContributorRole.id, resourceGroup().id)
+  properties: {
+    principalId: scriptIdentity.properties.principalId
+    roleDefinitionId: locksContributorRole.id
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource deleteAccountScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'script-purge-account-${accountName}'
   location: location
+  dependsOn: [
+    resourceGroupContributorRoleAssignment
+    resourceGroupLocksContributorRoleAssignment
+  ]
   kind: 'AzurePowerShell'
   identity: {
     type: 'UserAssigned'
