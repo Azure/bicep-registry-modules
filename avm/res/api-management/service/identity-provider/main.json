@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16285403450363255896"
+      "templateHash": "4821935483131793131"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider."
@@ -22,7 +22,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+        "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login."
       }
     },
     "authority": {

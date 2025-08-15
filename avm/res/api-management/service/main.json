@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10784277544859289739"
+      "templateHash": "15941708657910102476"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -782,6 +782,7 @@
         }
       },
       "metadata": {
+        "description": "The type of a diagnostic configuration.",
         "__bicep_imported_from!": {
           "sourceTemplate": "api/main.bicep"
         }
@@ -921,6 +922,7 @@
         }
       },
       "metadata": {
+        "description": "The type of an operation.",
         "__bicep_imported_from!": {
           "sourceTemplate": "api/main.bicep"
         }
@@ -957,6 +959,7 @@
         }
       },
       "metadata": {
+        "description": "The type of a policy.",
         "__bicep_imported_from!": {
           "sourceTemplate": "api/main.bicep"
         }
@@ -1248,7 +1251,7 @@
         "Internal"
       ],
       "metadata": {
-        "description": "Conditional. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only."
+        "description": "Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`."
       }
     },
     "diagnosticSettings": {
@@ -1656,7 +1659,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13765420013510348546"
+              "templateHash": "6071587045674566919"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -1738,7 +1741,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of an operation."
               }
             },
             "policyType": {
@@ -1772,7 +1776,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a policy."
               }
             },
             "diagnosticType": {
@@ -1881,7 +1886,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a diagnostic configuration."
               }
             },
             "_1.policyType": {
@@ -3472,7 +3478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "12851285703987749811"
+              "templateHash": "6140544618145424009"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend."
@@ -3515,14 +3521,14 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Header Parameter description."
+                    "description": "Optional. Header Parameter description. Each property within header is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n"
                   }
                 },
                 "query": {
                   "type": "object",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Query Parameter description."
+                    "description": "Optional. Query Parameter description. Each property within query is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n"
                   }
                 }
               }
@@ -3663,7 +3669,7 @@
             "apiManagementServiceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. Required if the template is used in a standalone deployment. The name of the parent API Management service."
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -4270,7 +4276,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16285403450363255896"
+              "templateHash": "4821935483131793131"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider."
@@ -4286,7 +4292,7 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+                "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login."
               }
             },
             "authority": {
@@ -4479,7 +4485,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2717790604893444159"
+              "templateHash": "901152320112902640"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger."
@@ -4525,13 +4531,13 @@
             "targetResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource)."
+                "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
               }
             },
             "credentials": {
               "type": "secureObject",
               "metadata": {
-                "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger."
+                "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
               }
             }
           },
@@ -4782,7 +4788,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13895935641835771685"
+              "templateHash": "11605058281900218723"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting."
@@ -4870,7 +4876,7 @@
             "apiManagementServiceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. Required if the template is used in a standalone deployment. The name of the parent API Management service."
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
               }
             },
             "name": {

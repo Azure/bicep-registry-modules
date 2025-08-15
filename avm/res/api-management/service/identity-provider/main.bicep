@@ -4,7 +4,7 @@ metadata description = 'This module deploys an API Management Service Identity P
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@description('Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string.')
+@description('Optional. List of Allowed Tenants when configuring Azure Active Directory login.')
 param allowedTenants array = []
 
 @description('Optional. OpenID Connect discovery endpoint hostname for AAD or AAD B2C.')

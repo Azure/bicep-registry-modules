@@ -28,7 +28,7 @@ This module deploys an API Management Service Backend.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | Required if the template is used in a standalone deployment. The name of the parent API Management service. |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -62,7 +62,7 @@ Runtime URL of the Backend.
 
 ### Parameter: `apiManagementServiceName`
 
-Required if the template is used in a standalone deployment. The name of the parent API Management service.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
@@ -101,8 +101,8 @@ Backend Credentials Contract Properties.
 | [`authorization`](#parameter-credentialsauthorization) | object | Authorization header authentication. |
 | [`certificate`](#parameter-credentialscertificate) | array | List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided. |
 | [`certificateIds`](#parameter-credentialscertificateids) | array | List of Client Certificate Ids. |
-| [`header`](#parameter-credentialsheader) | object | Header Parameter description. |
-| [`query`](#parameter-credentialsquery) | object | Query Parameter description. |
+| [`header`](#parameter-credentialsheader) | object | Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p> |
+| [`query`](#parameter-credentialsquery) | object | Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p> |
 
 ### Parameter: `credentials.authorization`
 
@@ -127,14 +127,14 @@ List of Client Certificate Ids.
 
 ### Parameter: `credentials.header`
 
-Header Parameter description.
+Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>
 
 - Required: No
 - Type: object
 
 ### Parameter: `credentials.query`
 
-Query Parameter description.
+Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>
 
 - Required: No
 - Type: object

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13895935641835771685"
+      "templateHash": "11605058281900218723"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting."
@@ -94,7 +94,7 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. Required if the template is used in a standalone deployment. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "name": {

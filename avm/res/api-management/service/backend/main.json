@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12851285703987749811"
+      "templateHash": "6140544618145424009"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -49,14 +49,14 @@
           "type": "object",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Header Parameter description."
+            "description": "Optional. Header Parameter description. Each property within header is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n"
           }
         },
         "query": {
           "type": "object",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Query Parameter description."
+            "description": "Optional. Query Parameter description. Each property within query is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n"
           }
         }
       }
@@ -197,7 +197,7 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. Required if the template is used in a standalone deployment. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "name": {

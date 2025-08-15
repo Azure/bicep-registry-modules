@@ -487,6 +487,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     roleAssignments: [
       {
+        name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
@@ -770,6 +776,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "6352c3e3-ac6b-43d5-ac43-1077ff373721",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
@@ -1018,6 +1030,12 @@ param products = [
   }
 ]
 param roleAssignments = [
+  {
+    name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
   {
     name: '<name>'
     principalId: '<principalId>'
@@ -1880,7 +1898,7 @@ param virtualNetworkType = 'None'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
-| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | Required if `subnetResourceId` is used and must be set to `External` or `Internal`. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. |
+| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
 
 **Optional parameters**
 
@@ -1954,7 +1972,7 @@ The scale units for this API Management service. Required if using Basic, Standa
 
 ### Parameter: `virtualNetworkType`
 
-Required if `subnetResourceId` is used and must be set to `External` or `Internal`. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only.
+The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.
 
 - Required: No
 - Type: string

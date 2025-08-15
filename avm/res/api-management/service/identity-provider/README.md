@@ -34,7 +34,7 @@ This module deploys an API Management Service Identity Provider.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. - string. |
+| [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. |
 | [`authority`](#parameter-authority) | string | OpenID Connect discovery endpoint hostname for AAD or AAD B2C. |
 | [`clientLibrary`](#parameter-clientlibrary) | string | The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider. |
 | [`passwordResetPolicyName`](#parameter-passwordresetpolicyname) | string | Password Reset Policy Name. Only applies to AAD B2C Identity Provider. |
@@ -76,7 +76,7 @@ Client secret of the Application in external Identity Provider, used to authenti
 
 ### Parameter: `allowedTenants`
 
-List of Allowed Tenants when configuring Azure Active Directory login. - string.
+List of Allowed Tenants when configuring Azure Active Directory login.
 
 - Required: No
 - Type: array

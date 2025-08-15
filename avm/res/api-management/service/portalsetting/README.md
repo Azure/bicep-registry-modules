@@ -27,7 +27,7 @@ This module deploys an API Management Service Portal Setting.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | Required if the template is used in a standalone deployment. The name of the parent API Management service. |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 
 ### Parameter: `name`
 
@@ -161,7 +161,7 @@ A base64-encoded validation key to validate, that a request is coming from Azure
 
 ### Parameter: `apiManagementServiceName`
 
-Required if the template is used in a standalone deployment. The name of the parent API Management service.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

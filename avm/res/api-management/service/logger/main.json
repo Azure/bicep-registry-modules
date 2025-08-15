@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2717790604893444159"
+      "templateHash": "901152320112902640"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
@@ -51,13 +51,13 @@
     "targetResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource)."
+        "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
       }
     },
     "credentials": {
       "type": "secureObject",
       "metadata": {
-        "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger."
+        "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
       }
     }
   },
