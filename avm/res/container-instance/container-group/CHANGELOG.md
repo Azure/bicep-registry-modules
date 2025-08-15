@@ -6,7 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Addressed warnings
+- Updated ReadMe with AzAdvertizer reference
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes
 

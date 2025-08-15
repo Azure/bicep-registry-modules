@@ -10,9 +10,9 @@ This module deploys a DBforMySQL Flexible Server Database.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DBforMySQL/flexibleServers/databases` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/databases) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DBforMySQL/flexibleServers/databases` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/databases)</li></ul> |
 
 ## Parameters
 

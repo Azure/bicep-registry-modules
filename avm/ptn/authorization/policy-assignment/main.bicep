@@ -19,6 +19,9 @@ param policyDefinitionId string
 @sys.description('Optional. Parameters for the policy assignment if needed.')
 param parameters object = {}
 
+@sys.description('Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.')
+param parameterOverrides object = {}
+
 @sys.description('Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning \'Modify\' policy definitions.')
 @allowed([
   'SystemAssigned'
@@ -82,6 +85,8 @@ param definitionVersion string?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var parametersMerged = union(parameters, parameterOverrides)
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
@@ -113,7 +118,7 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []
@@ -141,7 +146,7 @@ module policyAssignment_sub 'modules/subscription.bicep' = if (!empty(subscripti
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []
@@ -165,7 +170,7 @@ module policyAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceG
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []

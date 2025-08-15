@@ -12,10 +12,10 @@ This module deploys a Policy Assignment at a Management Group, Subscription or R
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/policyAssignments` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/policyAssignments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Usage examples
 
@@ -173,9 +173,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -299,10 +304,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -397,9 +409,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -573,9 +590,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -684,10 +706,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -781,9 +810,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -961,9 +995,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -1071,10 +1110,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -1165,9 +1211,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -1230,6 +1281,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | [`nonComplianceMessages`](#parameter-noncompliancemessages) | array | The messages that describe why a resource is non-compliant with the policy. |
 | [`notScopes`](#parameter-notscopes) | array | The policy excluded scopes. |
 | [`overrides`](#parameter-overrides) | array | The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition. |
+| [`parameterOverrides`](#parameter-parameteroverrides) | object | Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module. |
 | [`parameters`](#parameter-parameters) | object | Parameters for the policy assignment if needed. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The Target Scope for the Policy. The name of the resource group for the policy assignment. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
@@ -1384,6 +1436,14 @@ The policy property value override. Allows changing the effect of a policy defin
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `parameterOverrides`
+
+Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `parameters`
 

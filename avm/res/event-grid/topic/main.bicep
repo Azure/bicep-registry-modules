@@ -41,7 +41,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -214,9 +214,9 @@ resource topic_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: topic
 }
@@ -380,31 +380,31 @@ type privateEndpointOutputType = {
 type eventSubscriptionType = {
   @description('Required. The name of the event subscription.')
   name: string
-  
+
   @description('Optional. Dead Letter Destination.')
   deadLetterDestination: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deadLetterDestination?
-  
+
   @description('Optional. Dead Letter with Resource Identity Configuration.')
   deadLetterWithResourceIdentity: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deadLetterWithResourceIdentity?
-  
+
   @description('Optional. Delivery with Resource Identity Configuration.')
   deliveryWithResourceIdentity: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deliveryWithResourceIdentity?
-  
+
   @description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.')
   destination: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.destination?
-  
+
   @description('Optional. The event delivery schema for the event subscription.')
   eventDeliverySchema: ('CloudEventSchemaV1_0' | 'CustomInputSchema' | 'EventGridSchema' | 'EventGridEvent')?
-  
+
   @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
   expirationTimeUtc: string?
-  
+
   @description('Optional. The filter for the event subscription.')
   filter: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.filter?
-  
+
   @description('Optional. The list of user defined labels.')
   labels: string[]?
-  
+
   @description('Optional. The retry policy for events.')
   retryPolicy: resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.retryPolicy?
 }

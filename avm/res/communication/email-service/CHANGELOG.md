@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Upgraded references to `avm-common-types` (including support for lock 'Notes')
 - Added types to `domainResourceIds` & `domainNames` outputs
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
