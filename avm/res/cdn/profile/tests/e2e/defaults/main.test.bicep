@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
       location: resourceLocation
-      sku: 'Standard_Microsoft'
+      sku: 'Standard_AzureFrontDoor'
     }
   }
 ]
