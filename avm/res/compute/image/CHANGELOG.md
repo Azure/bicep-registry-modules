@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Initial version
 - Updated ReadMe with AzAdvertizer reference
+- Added type for `tags`, `dataDisks` & `extendedLocation` parameters
 
 ### Breaking Changes
 

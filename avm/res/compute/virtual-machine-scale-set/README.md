@@ -2910,7 +2910,6 @@ Specifies additional base-64 encoded XML formatted information that can be inclu
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `automaticRepairsPolicyEnabled`
 
@@ -2957,7 +2956,6 @@ The name of the boot diagnostic storage account. Provide this if you want to use
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `bootDiagnosticStorageAccountUri`
 
@@ -3318,11 +3316,9 @@ Specifies that the image or disk that is being used was licensed on-premises. Th
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Windows_Client'
     'Windows_Server'
   ]
@@ -3525,7 +3521,6 @@ Specifies information about the marketplace image used to create the virtual mac
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `prioritizeUnhealthyInstances`
 
@@ -3549,7 +3544,6 @@ Resource ID of a proximity placement group.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `publicKeys`
 
@@ -3792,7 +3786,6 @@ Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Po
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `ultraSSDEnabled`
 
