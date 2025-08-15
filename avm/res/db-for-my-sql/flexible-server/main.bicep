@@ -452,6 +452,7 @@ module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
