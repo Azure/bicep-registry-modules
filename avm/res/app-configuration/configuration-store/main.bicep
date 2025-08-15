@@ -51,7 +51,7 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 param keyValues array?
 
 @description('Optional. All Replicas to create.')
-param replicaLocations array?
+param replicaLocations replicaLocation[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -191,12 +191,12 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024
       ? {
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? cMKKeyVault::cMKKey.properties.keyUri
-                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? cMKUserAssignedIdentity.properties.clientId
+              ? cMKUserAssignedIdentity!.properties.clientId
               : null
           }
         }
@@ -232,8 +232,8 @@ module configurationStore_replicas 'replica/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
     params: {
       appConfigurationName: configurationStore.name
-      replicaLocation: replicaLocation
-      name: '${replicaLocation}replica'
+      replicaLocation: replicaLocation.replicaLocation
+      name: replicaLocation.?name
     }
   }
 ]
@@ -418,4 +418,14 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type for a replica location')
+type replicaLocation = {
+  @description('Required. Location of the replica.')
+  replicaLocation: string
+
+  @description('Optional. Name of the replica.')
+  name: string?
 }
