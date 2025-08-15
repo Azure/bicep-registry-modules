@@ -52,13 +52,13 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    applicationInsightsName: applicationInsightsName
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
     lawReplicationRegion: secondaryEnforcedLocation
     location: enforcedLocation
-    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-waflaw-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    routeTableName: routeTableName
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }

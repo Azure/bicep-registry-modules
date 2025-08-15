@@ -10,8 +10,8 @@ param locationRegion1 string = resourceGroup().location
 @description('Optional. The location to deploy resources to.')
 param locationRegion2 string = 'eastus2'
 
-@description('Optional. Name of the Log Analytics Workspace.')
-param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
+@description('Required. Resource ID of the Log Analytics Workspace.')
+param logAnalyticsWorkspaceId string
 
 @description('Optional. Name of the Route Table.')
 param routeTableName string = 'apimRouteTableTest'
@@ -29,30 +29,13 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: locationRegion1
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: logAnalyticsWorkspaceName
-  location: locationRegion1
-  tags: {
-    Environment: 'Non-Prod'
-    Role: 'DeploymentValidation'
-  }
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    sku: {
-      name: 'PerGB2018'
-    }
-  }
-}
-
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: locationRegion1
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
+    WorkspaceResourceId: logAnalyticsWorkspaceId
   }
 }
 

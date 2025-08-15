@@ -7,21 +7,12 @@ metadata description = 'This instance deploys the module with most of its featur
 // Parameters //
 // ========== //
 
-@description('Optional. Name of the Application Insights resource.')
-param applicationInsightsName string = 'applicationInsights'
-
-@description('Optional. Name of the Log Analytics Workspace.')
-param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
 @description('Optional. The location to deploy primary resources to.')
 param resourceLocation string = deployment().location
-
-@description('Optional. Name of the Route Table.')
-param routeTableName string = 'apimRouteTableTest'
 
 @description('Optional. Location to deploy secondary resources to for APIM additionalLocations.')
 param locationRegion2 string = 'westus'
@@ -51,12 +42,12 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    applicationInsightsName: applicationInsightsName
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     locationRegion1: resourceLocation
     locationRegion2: locationRegion2
-    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
-    routeTableName: routeTableName
+    logAnalyticsWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
