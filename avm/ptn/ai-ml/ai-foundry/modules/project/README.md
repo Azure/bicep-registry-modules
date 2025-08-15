@@ -7,7 +7,6 @@ Creates an AI Foundry project and any associated Azure service connections.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -15,11 +14,12 @@ Creates an AI Foundry project and any associated Azure service connections.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/capabilityHosts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/capabilityHosts)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/capabilityHosts)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/connections)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/capabilityHosts` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/capabilityHosts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/projects)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/projects/capabilityHosts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/projects/connections)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
 ## Parameters
 
@@ -28,7 +28,8 @@ Creates an AI Foundry project and any associated Azure service connections.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountName`](#parameter-accountname) | string | Name of the existing parent Foundry Account resource. |
-| [`includeCapabilityHost`](#parameter-includecapabilityhost) | bool | Include the capability host for the Foundry project. |
+| [`createAccountCapabilityHost`](#parameter-createaccountcapabilityhost) | bool | Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided. |
+| [`createProjectCapabilityHost`](#parameter-createprojectcapabilityhost) | bool | Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided. |
 | [`name`](#parameter-name) | string | The name of the AI Foundry project. |
 
 **Optional parameters**
@@ -51,9 +52,16 @@ Name of the existing parent Foundry Account resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `includeCapabilityHost`
+### Parameter: `createAccountCapabilityHost`
 
-Include the capability host for the Foundry project.
+Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `createProjectCapabilityHost`
+
+Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided.
 
 - Required: Yes
 - Type: bool
@@ -240,48 +248,40 @@ Storage Account connection for the project.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containerName`](#parameter-storageaccountconnectioncontainername) | string | Name of container in the Storage Account to use for the connections. |
-| [`resourceGroupName`](#parameter-storageaccountconnectionresourcegroupname) | string | The resource group name of the Storage Account. |
-| [`storageAccountName`](#parameter-storageaccountconnectionstorageaccountname) | string | The name of the Storage Account for the connection. |
-| [`subscriptionId`](#parameter-storageaccountconnectionsubscriptionid) | string | The subscription ID of the Storage Account. |
+| [`resourceGroupName`](#parameter-storageaccountconnectionresourcegroupname) | string | The resource group name of the resource. |
+| [`resourceName`](#parameter-storageaccountconnectionresourcename) | string | The resource name of the Azure resource for the connection. |
+| [`subscriptionId`](#parameter-storageaccountconnectionsubscriptionid) | string | The subscription ID of the resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-storageaccountconnectionname) | string | The name of the project connection. Will default to "<account>-<container>" if not provided. |
-
-### Parameter: `storageAccountConnection.containerName`
-
-Name of container in the Storage Account to use for the connections.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-storageaccountconnectionname) | string | The name of the project connection. Will default to the resource name if not provided. |
 
 ### Parameter: `storageAccountConnection.resourceGroupName`
 
-The resource group name of the Storage Account.
+The resource group name of the resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `storageAccountConnection.storageAccountName`
+### Parameter: `storageAccountConnection.resourceName`
 
-The name of the Storage Account for the connection.
+The resource name of the Azure resource for the connection.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountConnection.subscriptionId`
 
-The subscription ID of the Storage Account.
+The subscription ID of the resource.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountConnection.name`
 
-The name of the project connection. Will default to "<account>-<container>" if not provided.
+The name of the project connection. Will default to the resource name if not provided.
 
 - Required: No
 - Type: string
@@ -303,11 +303,3 @@ Tags to be applied to the resources.
 | `name` | string | Name of the Project. |
 | `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
 | `resourceId` | string | Resource ID of the Project. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |

@@ -8,11 +8,11 @@ param location string
 @description('Optional. The full resource ID of an existing AI Search resource to use instead of creating a new one.')
 param existingResourceId string?
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
-param privateEndpointSubnetId string?
+@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceId\' to establish private endpoints.')
+param privateEndpointSubnetResourceId string?
 
 @description('Optional. The resource ID of the private DNS zone for the AI Search resource to establish private endpoints.')
-param privateDnsZoneId string?
+param privateDnsZoneResourceId string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Specifies the role assignments for the AI Search resource.')
@@ -36,7 +36,7 @@ resource existingSearchService 'Microsoft.Search/searchServices@2025-05-01' exis
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
-var privateNetworkingEnabled = !empty(privateDnsZoneId) && !empty(privateEndpointSubnetId)
+var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
 module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (empty(existingResourceId)) {
   name: take('avm.res.search.search-service.${name}', 64)
@@ -67,11 +67,11 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (empty(exi
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: privateDnsZoneId!
+                  privateDnsZoneResourceId: privateDnsZoneResourceId!
                 }
               ]
             }
-            subnetResourceId: privateEndpointSubnetId!
+            subnetResourceId: privateEndpointSubnetResourceId!
           }
         ]
       : []

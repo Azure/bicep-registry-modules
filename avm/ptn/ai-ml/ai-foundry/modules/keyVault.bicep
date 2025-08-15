@@ -8,11 +8,11 @@ param location string
 @description('Optional. The full resource ID of an existing Key Vault to use instead of creating a new one.')
 param existingResourceId string?
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
-param privateEndpointSubnetId string?
+@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceId\' to establish private endpoints.')
+param privateEndpointSubnetResourceId string?
 
 @description('Optional. The resource ID of the private DNS zone for the Key Vault to establish private endpoints.')
-param privateDnsZoneId string?
+param privateDnsZoneResourceId string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Specifies the role assignments for the Key Vault.')
@@ -36,9 +36,9 @@ resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
-var privateNetworkingEnabled = !empty(privateDnsZoneId) && !empty(privateEndpointSubnetId)
+var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (empty(existingResourceId)) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.1' = if (empty(existingResourceId)) {
   name: take('avm.res.key-vault.vault.${name}', 64)
   params: {
     name: name
@@ -62,12 +62,12 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (empty(existingR
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: privateDnsZoneId!
+                  privateDnsZoneResourceId: privateDnsZoneResourceId!
                 }
               ]
             }
             service: 'vault'
-            subnetResourceId: privateEndpointSubnetId!
+            subnetResourceId: privateEndpointSubnetResourceId!
           }
         ]
       : []

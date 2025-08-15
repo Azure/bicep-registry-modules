@@ -4,12 +4,6 @@ param cosmosDbName string
 @description('Required. The principal ID of the project identity.')
 param projectIdentityPrincipalId string
 
-@description('Required. The project workspace ID.')
-param projectWorkspaceId string
-
-@description('Required. Whether to create a capability host for the project.')
-param createCapabilityHost bool
-
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: cosmosDbName
   scope: resourceGroup()
@@ -30,34 +24,3 @@ resource cosmosDBOperatorRoleAssignment 'Microsoft.Authorization/roleAssignments
     principalType: 'ServicePrincipal'
   }
 }
-
-var cosmosContainerNameSuffixes = createCapabilityHost
-  ? [
-      'thread-message-store'
-      'system-thread-message-store'
-      'agent-entity-store'
-    ]
-  : []
-
-var cosmosDefaultSqlRoleDefinitionId = createCapabilityHost
-  ? resourceId(
-      'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions',
-      cosmosDbName,
-      '00000000-0000-0000-0000-000000000002'
-    )
-  : ''
-
-resource cosmosDataRoleAssigment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2025-04-15' = [
-  for (containerSuffix, i) in cosmosContainerNameSuffixes: {
-    parent: cosmosDb
-    dependsOn: [
-      cosmosDBOperatorRoleAssignment
-    ]
-    name: guid(cosmosDefaultSqlRoleDefinitionId, cosmosDbName, containerSuffix)
-    properties: {
-      principalId: projectIdentityPrincipalId
-      roleDefinitionId: cosmosDefaultSqlRoleDefinitionId
-      scope: '${cosmosDb.id}/dbs/enterprise_memory/colls/${projectWorkspaceId}-${containerSuffix}'
-    }
-  }
-]

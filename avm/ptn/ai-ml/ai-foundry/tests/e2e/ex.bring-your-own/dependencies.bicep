@@ -7,8 +7,6 @@ param location string
 @description('Optional. Tags of the resources.')
 param tags object = {}
 
-var containerName = 'my-custom-project-data'
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: take('stbyor${workloadName}', 24)
   location: location
@@ -36,12 +34,6 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01
       days: 7
     }
   }
-}
-
-resource containerResource 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
-  name: containerName
-  parent: blobServices
-  properties: {}
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
