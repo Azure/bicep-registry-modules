@@ -248,28 +248,29 @@ module testDeployment '../../../main.bicep' = [
             validationKey: ''
           }
         }
-        // TODO: Uncomment when delegation is working properly
-        {
-          name: 'delegation'
-          properties: {
-            enabled: false
-            termsOfService: {
-              consentRequired: false
-              enabled: false
-              text: 'Terms of service text'
-            }
-            subscriptions: {
-              enabled: false
-            }
-            url: 'https://test.com'
-            userRegistration: {
-              enabled: false
-            }
-            validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
-            validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
-          }
-        }
+      // TODO: Uncomment when delegation is working properly
+      //   {
+      //     name: 'delegation'
+      //     properties: {
+      //       enabled: false
+      //       termsOfService: {
+      //         consentRequired: false
+      //         enabled: false
+      //         text: 'Terms of service text'
+      //       }
+      //       subscriptions: {
+      //         enabled: false
+      //       }
+      //       url: 'https://test.com'
+      //       userRegistration: {
+      //         enabled: false
+      //       }
+      //       validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
+      //       validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
+      //     }
+      //   }
       ]
+      // TODO: Uncomment when PEs are working properly
       // privateEndpoints: [
       //   {
       //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
