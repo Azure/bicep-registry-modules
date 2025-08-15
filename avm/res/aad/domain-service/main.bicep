@@ -39,11 +39,11 @@ param replicaSets replicaSetType[]?
 
 @description('Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days.')
 @secure()
-param pfxCertificate string = ''
+param pfxCertificate string?
 
 @description('Conditional. The password to decrypt the provided Secure LDAP certificate PFX file. Required if secure LDAP is enabled.')
 @secure()
-param pfxCertificatePassword string = ''
+param pfxCertificatePassword string?
 
 @metadata({
   example: '''
@@ -232,8 +232,8 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
     ldapsSettings: {
       externalAccess: externalAccess
       ldaps: ldaps
-      pfxCertificate: !empty(pfxCertificate) ? pfxCertificate : null
-      pfxCertificatePassword: !empty(pfxCertificatePassword) ? pfxCertificatePassword : null
+      pfxCertificate: pfxCertificate
+      pfxCertificatePassword: pfxCertificatePassword
     }
     replicaSets: replicaSets
     domainSecuritySettings: {

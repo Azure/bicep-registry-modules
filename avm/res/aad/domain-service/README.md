@@ -314,7 +314,6 @@ The certificate required to configure Secure LDAP. Should be a base64encoded rep
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `pfxCertificatePassword`
 
@@ -322,7 +321,6 @@ The password to decrypt the provided Secure LDAP certificate PFX file. Required 
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `additionalRecipients`
 
