@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "13291449813265878212"
+      "version": "0.37.4.10188",
+      "templateHash": "5344423200637077955"
     },
     "name": "App Configuration Replicas",
     "description": "This module deploys an App Configuration Replica."
@@ -33,7 +33,7 @@
   "resources": [
     {
       "type": "Microsoft.AppConfiguration/configurationStores/replicas",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-02-01-preview",
       "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
       "location": "[parameters('replicaLocation')]"
     }
