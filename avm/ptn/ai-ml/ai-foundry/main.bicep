@@ -208,6 +208,8 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
+    // NOTE: Only creating capability host for the Foundry Account if associated resources are included AND if the agent service subnet is NOT provided.
+    //       When injecting the agent subnet into the Foundry Account, the capability host seems to be automatically created.
     createAccountCapabilityHost: (createCapabilityHosts && empty(aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId))
     createProjectCapabilityHost: createCapabilityHosts
     storageAccountConnection: includeAssociatedResources

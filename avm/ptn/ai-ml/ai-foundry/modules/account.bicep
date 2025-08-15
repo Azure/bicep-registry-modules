@@ -85,6 +85,7 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.1' = {
       defaultAction: 'Allow'
       bypass: 'AzureServices'
     }
+    // NOTE: When supplying an agent subnet, the AI Foundry Account will automatically create a capability host for the agent service.
     networkInjections: privateNetworkingEnabled && !empty(agentSubnetResourceId)
       ? {
           scenario: 'agent'

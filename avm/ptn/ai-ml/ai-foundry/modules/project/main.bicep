@@ -59,10 +59,11 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
+// only create capability hosts if all the connection info is provided
 var createProjectCapabilityHostInternal = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 var createAccountCapabilityHostInternal = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-#disable-next-line use-recent-api-versions
+#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
   name: name
   parent: foundryAccount
@@ -77,6 +78,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   tags: tags
 }
 
+// NOTE: using a wait script to ensure the project is fully deployed before proceeding with role assignments and connections
 module waitForProjectScript 'waitDeploymentScript.bicep' = {
   name: take('module.project.waitDeploymentScript.waitForProject.${name}', 64)
   dependsOn: [project]
@@ -97,7 +99,7 @@ module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(co
   }
 }
 
-#disable-next-line use-recent-api-versions
+#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
 resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(cosmosDbConnection)) {
   name: cosmosDb.name
   parent: project
@@ -124,13 +126,13 @@ module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = i
   }
 }
 
-#disable-next-line use-recent-api-versions
+#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
 resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(storageAccountConnection)) {
   name: storageAccount.name
   parent: project
   dependsOn: [waitForProjectScript, storageAccountRoleAssignments, cosmosDbConnectionResource]
   properties: {
-    category: 'AzureStorageAccount'
+    category: 'AzureStorageAccount' // NOTE: The category 'AzureStorageAccount' works with the capability host but 'AzureBlob' does not seem to be supported.
     target: storageAccount!.properties.primaryEndpoints.blob
     authType: 'AAD'
     metadata: {
@@ -151,7 +153,7 @@ module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(ai
   }
 }
 
-#disable-next-line use-recent-api-versions
+#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
 resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(aiSearchConnection)) {
   name: aiSearch.name
   parent: project
@@ -173,6 +175,7 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
   }
 }
 
+// NOTE: using a wait script to ensure all connections are established before creating the capability host
 module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
   name: take('module.project.waitDeploymentScript.waitForConn.${name}', 64)
   dependsOn: [
@@ -189,9 +192,9 @@ module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
   }
 }
 
-#disable-next-line use-recent-api-versions
+#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
 resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createAccountCapabilityHostInternal) {
-  name: 'chagent${replace(accountName, '-', '')}'
+  name: 'chagent${replace(accountName, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: foundryAccount
   dependsOn: [
     project
@@ -206,9 +209,9 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-#disable-next-line use-recent-api-versions
+#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
 resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createProjectCapabilityHostInternal) {
-  name: 'chagent${replace(name, '-', '')}'
+  name: 'chagent${replace(name, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: project
   dependsOn: [
     accountCapabilityHost
@@ -235,6 +238,7 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   dependsOn: [capabilityHost]
 }
 
+// recreate the project workspace ID to target auto-generated containers and databases after capability host creation
 #disable-next-line BCP053
 var internalId = project.properties.internalId
 var workspacePart1 = length(internalId) >= 8 ? substring(internalId, 0, 8) : ''
@@ -245,6 +249,7 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
+// assign data-plane role assignments for databases automatically created by the capability host (via the project workspace ID)
 module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection) && createProjectCapabilityHostInternal) {
   name: take('module.project.role-assign.cosmosDbDataPlane.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
@@ -256,6 +261,7 @@ module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = i
   }
 }
 
+// assign data-plane role assignments for containers automatically created by the capability host (via the project workspace ID)
 module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection) && createProjectCapabilityHostInternal) {
   name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)

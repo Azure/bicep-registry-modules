@@ -11,6 +11,8 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   name: cosmosDbName
   scope: resourceGroup()
 }
+
+// NOTE: these are containers that are automatically created by the capability host for the project workspace
 var cosmosContainerNameSuffixes = [
   'thread-message-store'
   'system-thread-message-store'

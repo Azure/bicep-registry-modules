@@ -27,7 +27,6 @@ resource resourceGroupContributorRoleAssignment 'Microsoft.Authorization/roleAss
   }
 }
 
-#disable-next-line no-hardcoded-location
 resource deleteAccountScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'script-purge-account-${accountName}'
   location: location
@@ -65,14 +64,72 @@ resource deleteAccountScript 'Microsoft.Resources/deploymentScripts@2023-08-01' 
       [string]$ApiVersion = "2025-06-01"
     )
 
-    # Delete Cognitive Services project
-    Invoke-AzRestMethod -Method DELETE -Uri "${ArmEndpoint}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.CognitiveServices/accounts/$CognitiveServiceAccountName/projects/$ProjectName?api-version=$ApiVersion"
+    try {
+      # Remove locks from Cognitive Services project
+      Write-Host "Getting any locks Cognitive Services project ${ProjectName}..."
+      $projectLockUri = "${ArmEndpoint}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.CognitiveServices/accounts/$CognitiveServiceAccountName/projects/$ProjectName/providers/Microsoft.Authorization/locks?api-version=2016-09-01"
+      $projectLocks = (Invoke-AzRestMethod -Method GET -Uri $projectLockUri).Content | ConvertFrom-Json
+      if ($projectLocks.value) {
+          Write-Host "Found locks on Cognitive Services project ${ProjectName}:" -ForegroundColor Yellow
+          foreach ($lock in $projectLocks.value) {
+              Write-Host "Removing lock $($lock.id)..." -ForegroundColor Yellow
+              $lockId = $lock.id
+              Invoke-AzRestMethod -Method DELETE -Uri "${ArmEndpoint}${lockId}?api-version=2016-09-01"
+              Write-Host "Lock $($lock.id) removed successfully." -ForegroundColor Green
+          }
 
-    # Delete Cognitive Services account
-    Remove-AzCognitiveServicesAccount -ResourceGroupName $ResourceGroupName -Name $CognitiveServiceAccountName -Force
+          Write-Host "Waiting for locks to be removed..."
+          Start-Sleep -Seconds 10
+      } else {
+          Write-Host "No locks found on Cognitive Services project ${ProjectName}." -ForegroundColor Green
+      }
 
-    # Purge deleted Cognitive Services account
-    Invoke-AzRestMethod -Method DELETE -Uri "${ArmEndpoint}subscriptions/$SubscriptionId/providers/Microsoft.CognitiveServices/locations/$Location/resourceGroups/$ResourceGroupName/deletedAccounts/$CognitiveServiceAccountName?api-version=$ApiVersion"
+      # Remove locks from Cognitive Services account
+      Write-Host "Getting any locks on Cognitive Services account ${CognitiveServiceAccountName}..."
+      $accountLockUri = "${ArmEndpoint}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.CognitiveServices/accounts/$CognitiveServiceAccountName/providers/Microsoft.Authorization/locks?api-version=2016-09-01"
+      $accountLocks = (Invoke-AzRestMethod -Method GET -Uri $accountLockUri).Content | ConvertFrom-Json
+      if ($accountLocks.value) {
+          Write-Host "Found locks on Cognitive Services account ${CognitiveServiceAccountName}:" -ForegroundColor Yellow
+          foreach ($lock in $accountLocks.value) {
+              Write-Host "Removing lock $($lock.id)..." -ForegroundColor Yellow
+              $lockId = $lock.id
+              Invoke-AzRestMethod -Method DELETE -Uri "${ArmEndpoint}${lockId}?api-version=2016-09-01"
+              Write-Host "Lock $($lock.id) removed successfully." -ForegroundColor Green
+          }
+
+          Write-Host "Waiting for locks to be removed..."
+          Start-Sleep -Seconds 10
+      } else {
+          Write-Host "No locks found on Cognitive Services account ${CognitiveServiceAccountName}." -ForegroundColor Green
+      }
+
+      # Delete Cognitive Services project
+      Write-Host "Deleting Cognitive Services project ${ProjectName}..." -ForegroundColor Yellow
+      Invoke-AzRestMethod -Method DELETE -Uri "${ArmEndpoint}subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.CognitiveServices/accounts/$CognitiveServiceAccountName/projects/${ProjectName}?api-version=$ApiVersion"
+      Write-Host "Cognitive Services project ${ProjectName} deleted successfully." -ForegroundColor Green
+
+      Write-Host "Waiting for project to be removed..."
+      Start-Sleep -Seconds 5
+
+      # Delete Cognitive Services account
+      Write-Host "Deleting Cognitive Services account ${CognitiveServiceAccountName}..." -ForegroundColor Yellow
+      Remove-AzCognitiveServicesAccount -ResourceGroupName $ResourceGroupName -Name $CognitiveServiceAccountName -Force
+      Write-Host "Cognitive Services account ${CognitiveServiceAccountName} deleted successfully." -ForegroundColor Green
+
+      Write-Host "Waiting for account to be removed..."
+      Start-Sleep -Seconds 5
+
+      # Purge deleted Cognitive Services account
+      Write-Host "Purging deleted Cognitive Services account ${CognitiveServiceAccountName}..." -ForegroundColor Yellow
+      Invoke-AzRestMethod -Method DELETE -Uri "${ArmEndpoint}subscriptions/$SubscriptionId/providers/Microsoft.CognitiveServices/locations/$Location/resourceGroups/$ResourceGroupName/deletedAccounts/${CognitiveServiceAccountName}?api-version=$ApiVersion"
+      Write-Host "Cognitive Services account ${CognitiveServiceAccountName} purged successfully." -ForegroundColor Green
+
+      Write-Host "Purge operation completed successfully." -ForegroundColor Green
+    } catch {
+      Write-Host "ERROR: An error occurred while removing locking dependences:" -ForegroundColor Red
+      Write-Error $_
+      throw
+    }
     '''
     timeout: 'P1D'
     cleanupPreference: 'Always'
