@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13614707382868089910"
+      "templateHash": "17106927255460327488"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -3485,7 +3485,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6140544618145424009"
+              "templateHash": "8918167219469401776"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend."
@@ -3528,14 +3528,14 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Header Parameter description. Each property within header is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n"
+                    "description": "Optional. Header Parameter description. Each property within header is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n."
                   }
                 },
                 "query": {
                   "type": "object",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Query Parameter description. Each property within query is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n"
+                    "description": "Optional. Query Parameter description. Each property within query is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n."
                   }
                 }
               }

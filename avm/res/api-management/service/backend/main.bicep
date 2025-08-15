@@ -99,14 +99,14 @@ type backendCredentialsType = {
       {customized property}: [
         'string'
       ]
-  ''')
+  .''')
   header: object?
   
   @sys.description('''Optional. Query Parameter description. Each property within query is an array of strings in the following format:
       {customized property}: [
         'string'
       ]
-  ''')
+  .''')
   query: object?
 }
 

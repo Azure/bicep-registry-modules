@@ -101,8 +101,8 @@ Backend Credentials Contract Properties.
 | [`authorization`](#parameter-credentialsauthorization) | object | Authorization header authentication. |
 | [`certificate`](#parameter-credentialscertificate) | array | List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided. |
 | [`certificateIds`](#parameter-credentialscertificateids) | array | List of Client Certificate Ids. |
-| [`header`](#parameter-credentialsheader) | object | Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p> |
-| [`query`](#parameter-credentialsquery) | object | Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p> |
+| [`header`](#parameter-credentialsheader) | object | Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>. |
+| [`query`](#parameter-credentialsquery) | object | Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>. |
 
 ### Parameter: `credentials.authorization`
 
@@ -127,14 +127,14 @@ List of Client Certificate Ids.
 
 ### Parameter: `credentials.header`
 
-Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>
+Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>.
 
 - Required: No
 - Type: object
 
 ### Parameter: `credentials.query`
 
-Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>
+Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>.
 
 - Required: No
 - Type: object
