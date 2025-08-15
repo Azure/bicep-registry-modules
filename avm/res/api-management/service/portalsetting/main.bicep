@@ -1,7 +1,7 @@
 metadata name = 'API Management Service Portal Settings'
 metadata description = 'This module deploys an API Management Service Portal Setting.'
 
-@description('Conditional. Required if the template is used in a standalone deployment. The name of the parent API Management service.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
 @description('Required. Portal setting name.')

@@ -1,7 +1,7 @@
 metadata name = 'API Management Service Backends'
 metadata description = 'This module deploys an API Management Service Backend.'
 
-@sys.description('Conditional. Required if the template is used in a standalone deployment. The name of the parent API Management service.')
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
 @sys.description('Required. Backend Name.')
