@@ -249,26 +249,26 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         // TODO: Uncomment when delegation is working properly
-        // {
-        //   name: 'delegation'
-        //   properties: {
-        //     enabled: false
-        //     termsOfService: {
-        //       consentRequired: false
-        //       enabled: false
-        //       text: 'Terms of service text'
-        //     }
-        //     subscriptions: {
-        //       enabled: false
-        //     }
-        //     url: 'https://test.com'
-        //     userRegistration: {
-        //       enabled: false
-        //     }
-        //     validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
-        //     validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
-        //   }
-        // }
+        {
+          name: 'delegation'
+          properties: {
+            enabled: false
+            termsOfService: {
+              consentRequired: false
+              enabled: false
+              text: 'Terms of service text'
+            }
+            subscriptions: {
+              enabled: false
+            }
+            url: 'https://test.com'
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
+            validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
+          }
+        }
       ]
       // privateEndpoints: [
       //   {

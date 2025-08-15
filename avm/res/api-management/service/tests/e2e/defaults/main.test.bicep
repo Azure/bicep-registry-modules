@@ -44,6 +44,29 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      portalsettings: [
+        // TODO: Uncomment when delegation is working properly
+        {
+          name: 'delegation'
+          properties: {
+            enabled: false
+            termsOfService: {
+              consentRequired: false
+              enabled: false
+              text: 'Terms of service text'
+            }
+            subscriptions: {
+              enabled: false
+            }
+            url: 'https://test.com'
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
+            validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
+          }
+        }
+      ]
     }
   }
 ]
