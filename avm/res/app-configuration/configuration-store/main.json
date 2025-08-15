@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15449516720303417778"
+      "templateHash": "11824545499996169855"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -105,7 +105,7 @@
         "__bicep_export!": true
       }
     },
-    "replicaLocation": {
+    "replicaLocationType": {
       "type": "object",
       "properties": {
         "replicaLocation": {
@@ -809,7 +809,7 @@
     "replicaLocations": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/replicaLocation"
+        "$ref": "#/definitions/replicaLocationType"
       },
       "nullable": true,
       "metadata": {

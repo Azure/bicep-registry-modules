@@ -51,7 +51,7 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 param keyValues array?
 
 @description('Optional. All Replicas to create.')
-param replicaLocations replicaLocation[]?
+param replicaLocations replicaLocationType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -422,7 +422,7 @@ type privateEndpointOutputType = {
 
 @export()
 @description('The type for a replica location')
-type replicaLocation = {
+type replicaLocationType = {
   @description('Required. Location of the replica.')
   replicaLocation: string
 
