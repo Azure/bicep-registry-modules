@@ -78,6 +78,10 @@ The following section provides usage examples for the module, which were used to
 
 Creates an AI Foundry account and project with Basic services.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temp ignoring for faster testing.
+```
 
 <details>
 
@@ -181,6 +185,10 @@ param aiModelDeployments = [
 
 Creates an AI Foundry account and project with Standard Agent Services.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temp ignoring for faster testing.
+```
 
 <details>
 
@@ -300,6 +308,10 @@ param includeAssociatedResources = true
 
 Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temp ignoring for faster testing.
+```
 
 <details>
 
@@ -834,6 +846,10 @@ param tags = {
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temp ignoring for faster testing.
+```
 
 <details>
 
@@ -2092,7 +2108,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/cognitive-services/account:0.12.0` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.13.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.13.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.1` | Remote reference |
 | `br/public:avm/res/search/search-service:0.11.0` | Remote reference |

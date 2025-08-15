@@ -7,11 +7,37 @@ param projectName string
 @description('Required. Location for the Foundry account.')
 param location string
 
+resource scriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'id-script-purge-account-${accountName}'
+  location: location
+}
+
+resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+  scope: resourceGroup()
+}
+
+resource resourceGroupContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: resourceGroup()
+  name: guid(scriptIdentity.id, contributorRole.id, resourceGroup().id)
+  properties: {
+    principalId: scriptIdentity.properties.principalId
+    roleDefinitionId: contributorRole.id
+    principalType: 'ServicePrincipal'
+  }
+}
+
 #disable-next-line no-hardcoded-location
 resource deleteAccountScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'script-purge-account-${accountName}'
   location: location
   kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${scriptIdentity.id}': {}
+    }
+  }
   properties: {
     azPowerShellVersion: '11.0'
     arguments: '-SubscriptionId \'${subscription().subscriptionId}\' -ResourceGroupName \'${resourceGroup().name}\' -CognitiveServiceAccountName \'${accountName}\' -ProjectName \'${projectName}\' -Location \'${location}\' -ArmEndpoint \'${environment().resourceManager}\''

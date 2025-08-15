@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9384336124599480748"
+      "templateHash": "12928822399139621127"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -639,7 +639,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2195906619047909198"
+              "templateHash": "7176206729749411912"
             }
           },
           "definitions": {
@@ -1054,7 +1054,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "5730600826802676856"
+                      "templateHash": "18408784030873090876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -2300,7 +2300,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.13.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {

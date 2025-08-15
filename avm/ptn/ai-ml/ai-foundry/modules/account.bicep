@@ -64,7 +64,7 @@ var privateDnsZoneResourceIdValues = [
 ]
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetResourceId)
 
-module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.0' = {
+module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.1' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
   params: {
     name: name
