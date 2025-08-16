@@ -22,7 +22,7 @@ param administratorLogin string?
 param administratorLoginPassword string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
-param administrators array = []
+param administrators administratorType[]?
 
 @description('Required. The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3.')
 param skuName string
@@ -169,7 +169,7 @@ param version string = '8.0.21'
 param databases array = []
 
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
-param firewallRules array = []
+param firewallRules firewallRuleType[]?
 
 @description('Optional. The configurations to create in the server.')
 param configurations configurationType[]?
@@ -408,7 +408,7 @@ module flexibleServer_databases 'database/main.bicep' = [
 ]
 
 module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
-  for (firewallRule, index) in firewallRules: {
+  for (firewallRule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-MySQL-FirewallRules-${index}'
     params: {
       name: firewallRule.name
@@ -420,7 +420,7 @@ module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
 ]
 
 module flexibleServer_administrators 'administrator/main.bicep' = [
-  for (administrator, index) in administrators: {
+  for (administrator, index) in (administrators ?? []): {
     name: '${uniqueString(deployment().name, location)}-MySQL-Administrators-${index}'
     params: {
       flexibleServerName: flexibleServer.name
@@ -601,4 +601,33 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type of an administrator')
+type administratorType = {
+  @description('Required. SID (object ID) of the server administrator.')
+  sid: string
+
+  @description('Required. The resource ID of the identity used for AAD Authentication.')
+  identityResourceId: string
+
+  @description('Required. Login name of the server administrator.')
+  login: string
+
+  @description('Optional. The tenantId of the Active Directory administrator.')
+  tenantId: string?
+}
+
+@export()
+@description('The type of a firewall rule.')
+type firewallRuleType = {
+  @description('Required. The name of the PostgreSQL flexible server Firewall Rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  startIpAddress: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  endIpAddress: string
 }

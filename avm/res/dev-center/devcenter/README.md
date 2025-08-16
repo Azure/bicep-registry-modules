@@ -40,8 +40,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/dev-center/devcenter:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -96,7 +97,100 @@ param name = 'dcdcmin001'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
+  name: 'devcenterDeployment'
+  params: {
+    // Required parameters
+    name: 'accencr001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "accencr001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-center/devcenter:<version>'
+
+// Required parameters
+param name = 'accencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -879,7 +973,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -912,6 +1006,11 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
         syncType: 'Scheduled'
       }
     ]
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     devboxDefinitions: [
       {
         hibernateSupport: 'Enabled'
@@ -997,6 +1096,13 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
           "syncType": "Scheduled"
         }
       ]
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
     },
     "devboxDefinitions": {
       "value": [
@@ -1088,6 +1194,11 @@ param catalogs = [
     syncType: 'Scheduled'
   }
 ]
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
 param devboxDefinitions = [
   {
     hibernateSupport: 'Enabled'
@@ -1151,6 +1262,7 @@ param projectPolicies = [
 | :-- | :-- | :-- |
 | [`attachedNetworks`](#parameter-attachednetworks) | array | The attached networks to associate with the Dev Center. You can attach existing network connections to a dev center. You must attach a network connection to a dev center before you can use it in projects to create dev box pools. Network connections enable dev boxes to connect to existing virtual networks. The location, or Azure region, of the network connection determines where associated dev boxes are hosted. |
 | [`catalogs`](#parameter-catalogs) | array | The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`devboxDefinitions`](#parameter-devboxdefinitions) | array | The DevBox definitions to create in the Dev Center. A DevBox definition specifies the source operating system image and compute size, including CPU, memory, and storage. Dev Box definitions are used to create DevBox pools. |
 | [`devBoxProvisioningSettings`](#parameter-devboxprovisioningsettings) | object | Settings to be used in the provisioning of all Dev Boxes that belong to this dev center. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1163,7 +1275,7 @@ param projectPolicies = [
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`networkSettings`](#parameter-networksettings) | object | Network settings that will be enforced on network resources associated with the Dev Center. |
 | [`projectCatalogSettings`](#parameter-projectcatalogsettings) | object | Dev Center settings to be used when associating a project with a catalog. |
-| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources-specifically, SKUs, Images, and Network Connections-to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
+| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
 | [`projects`](#parameter-projects) | array | The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1350,6 +1462,63 @@ Resource tags to apply to the catalog.
 
 - Required: No
 - Type: object
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
 
 ### Parameter: `devboxDefinitions`
 
@@ -1871,7 +2040,7 @@ Whether project catalogs associated with projects in this dev center can be conf
 
 ### Parameter: `projectPolicies`
 
-Project policies provide a mechanism to restrict access to certain resources-specifically, SKUs, Images, and Network Connections-to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
+Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
 
 - Required: No
 - Type: array

@@ -13,7 +13,7 @@ param friendlyName string = name
 @sys.description('Optional. Time zone of the Scaling Plan. Defaults to UTC.')
 param timeZone string = 'UTC'
 
-@sys.description('Optional. Host pool type of the Scaling Plan.')
+@sys.description('Optional. Host pool type of the Scaling Plan. Defaults to \'Pooled\'.')
 @allowed([
   'Personal'
   'Pooled'

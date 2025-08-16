@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14944902911494147621"
+      "templateHash": "15790749644321977577"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -106,6 +106,67 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "administratorType": {
+      "type": "object",
+      "properties": {
+        "sid": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. SID (object ID) of the server administrator."
+          }
+        },
+        "identityResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the identity used for AAD Authentication."
+          }
+        },
+        "login": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Login name of the server administrator."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tenantId of the Active Directory administrator."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an administrator"
+      }
+    },
+    "firewallRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the PostgreSQL flexible server Firewall Rule."
+          }
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a firewall rule."
       }
     },
     "_1.lockType": {
@@ -804,7 +865,10 @@
     },
     "administrators": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/administratorType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Azure AD administrators when AAD authentication enabled."
       }
@@ -1049,7 +1113,10 @@
     },
     "firewallRules": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/firewallRuleType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
       }
@@ -1443,7 +1510,7 @@
     "flexibleServer_firewallRules": {
       "copy": {
         "name": "flexibleServer_firewallRules",
-        "count": "[length(parameters('firewallRules'))]"
+        "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1455,16 +1522,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('firewallRules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].name]"
           },
           "flexibleServerName": {
             "value": "[parameters('name')]"
           },
           "startIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].startIpAddress]"
           },
           "endIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].endIpAddress]"
           }
         },
         "template": {
@@ -1548,7 +1615,7 @@
     "flexibleServer_administrators": {
       "copy": {
         "name": "flexibleServer_administrators",
-        "count": "[length(parameters('administrators'))]"
+        "count": "[length(coalesce(parameters('administrators'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1563,16 +1630,16 @@
             "value": "[parameters('name')]"
           },
           "login": {
-            "value": "[parameters('administrators')[copyIndex()].login]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].login]"
           },
           "sid": {
-            "value": "[parameters('administrators')[copyIndex()].sid]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].sid]"
           },
           "identityResourceId": {
-            "value": "[parameters('administrators')[copyIndex()].identityResourceId]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].identityResourceId]"
           },
           "tenantId": {
-            "value": "[coalesce(tryGet(parameters('administrators')[copyIndex()], 'tenantId'), tenant().tenantId)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('administrators'), createArray())[copyIndex()], 'tenantId'), tenant().tenantId)]"
           }
         },
         "template": {

@@ -774,7 +774,7 @@ param tags = {
 | [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from Scaling Plan. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Scaling Plan. |
 | [`hostPoolReferences`](#parameter-hostpoolreferences) | array | Host pool references of the Scaling Plan. |
-| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. |
+| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. Defaults to 'Pooled'. |
 | [`location`](#parameter-location) | string | Location of the Scaling Plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -967,7 +967,7 @@ Is the scaling plan enabled for this hostpool. Defaults to `true`.
 
 ### Parameter: `hostPoolType`
 
-Host pool type of the Scaling Plan.
+Host pool type of the Scaling Plan. Defaults to 'Pooled'.
 
 - Required: No
 - Type: string
