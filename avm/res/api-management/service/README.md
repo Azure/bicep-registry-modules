@@ -20,21 +20,21 @@ This module deploys an API Management Service. The default deployment is set to 
 | `Microsoft.ApiManagement/service/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis)</li></ul> |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_diagnostics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics)</li></ul> |
 | `Microsoft.ApiManagement/service/apis/operations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_operations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations)</li></ul> |
-| `Microsoft.ApiManagement/service/apis/operations/policies` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_operations_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/operations/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/apis/operations/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_operations_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations/policies)</li></ul> |
 | `Microsoft.ApiManagement/service/apis/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/policies)</li></ul> |
 | `Microsoft.ApiManagement/service/apiVersionSets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apiversionsets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apiVersionSets)</li></ul> |
-| `Microsoft.ApiManagement/service/authorizationServers` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_authorizationservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/authorizationServers)</li></ul> |
-| `Microsoft.ApiManagement/service/backends` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_backends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/backends)</li></ul> |
-| `Microsoft.ApiManagement/service/caches` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_caches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/caches)</li></ul> |
-| `Microsoft.ApiManagement/service/identityProviders` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_identityproviders.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/identityProviders)</li></ul> |
-| `Microsoft.ApiManagement/service/loggers` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_loggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/loggers)</li></ul> |
-| `Microsoft.ApiManagement/service/namedValues` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_namedvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/namedValues)</li></ul> |
-| `Microsoft.ApiManagement/service/policies` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/policies)</li></ul> |
-| `Microsoft.ApiManagement/service/portalsettings` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_portalsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/portalsettings)</li></ul> |
-| `Microsoft.ApiManagement/service/products` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/products)</li></ul> |
-| `Microsoft.ApiManagement/service/products/apis` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/products/apis)</li></ul> |
-| `Microsoft.ApiManagement/service/products/groups` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_groups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/products/groups)</li></ul> |
-| `Microsoft.ApiManagement/service/subscriptions` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/subscriptions)</li></ul> |
+| `Microsoft.ApiManagement/service/authorizationServers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_authorizationservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/authorizationServers)</li></ul> |
+| `Microsoft.ApiManagement/service/backends` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_backends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/backends)</li></ul> |
+| `Microsoft.ApiManagement/service/caches` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_caches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/caches)</li></ul> |
+| `Microsoft.ApiManagement/service/identityProviders` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_identityproviders.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/identityProviders)</li></ul> |
+| `Microsoft.ApiManagement/service/loggers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_loggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/loggers)</li></ul> |
+| `Microsoft.ApiManagement/service/namedValues` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_namedvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/namedValues)</li></ul> |
+| `Microsoft.ApiManagement/service/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/portalsettings` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_portalsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/portalsettings)</li></ul> |
+| `Microsoft.ApiManagement/service/products` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products)</li></ul> |
+| `Microsoft.ApiManagement/service/products/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/apis)</li></ul> |
+| `Microsoft.ApiManagement/service/products/groups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_groups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/groups)</li></ul> |
+| `Microsoft.ApiManagement/service/subscriptions` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/subscriptions)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -295,7 +295,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         disableGateway: false
         location: '<location>'
-        publicIpAddressResourceId: '<publicIpAddressResourceId>'
         sku: {
           capacity: 1
           name: 'Premium'
@@ -430,19 +429,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'signin'
-        properties: {
-          enabled: false
-        }
-      }
-      {
         name: 'signup'
         properties: {
           enabled: false
-          termsOfService: {
-            consentRequired: false
+          subscriptions: {
             enabled: false
           }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
+        }
+      }
+      {
+        name: 'signin'
+        properties: {
+          enabled: false
+          subscriptions: {
+            enabled: false
+          }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
         }
       }
     ]
@@ -464,7 +485,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         subscriptionRequired: false
       }
     ]
-    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     roleAssignments: [
       {
         name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
@@ -497,7 +517,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkType: 'Internal'
+    virtualNetworkType: 'External'
   }
 }
 ```
@@ -530,7 +550,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "disableGateway": false,
           "location": "<location>",
-          "publicIpAddressResourceId": "<publicIpAddressResourceId>",
           "sku": {
             "capacity": 1,
             "name": "Premium"
@@ -695,19 +714,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "signin",
-          "properties": {
-            "enabled": false
-          }
-        },
-        {
           "name": "signup",
           "properties": {
             "enabled": false,
-            "termsOfService": {
-              "consentRequired": false,
+            "subscriptions": {
               "enabled": false
-            }
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
+          }
+        },
+        {
+          "name": "signin",
+          "properties": {
+            "enabled": false,
+            "subscriptions": {
+              "enabled": false
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
           }
         }
       ]
@@ -731,9 +772,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "subscriptionRequired": false
         }
       ]
-    },
-    "publicIpAddressResourceId": {
-      "value": "<publicIpAddressResourceId>"
     },
     "roleAssignments": {
       "value": [
@@ -776,7 +814,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     },
     "virtualNetworkType": {
-      "value": "Internal"
+      "value": "External"
     }
   }
 }
@@ -801,7 +839,6 @@ param additionalLocations = [
   {
     disableGateway: false
     location: '<location>'
-    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     sku: {
       capacity: 1
       name: 'Premium'
@@ -936,19 +973,41 @@ param policies = [
 ]
 param portalsettings = [
   {
-    name: 'signin'
-    properties: {
-      enabled: false
-    }
-  }
-  {
     name: 'signup'
     properties: {
       enabled: false
-      termsOfService: {
-        consentRequired: false
+      subscriptions: {
         enabled: false
       }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
+    }
+  }
+  {
+    name: 'signin'
+    properties: {
+      enabled: false
+      subscriptions: {
+        enabled: false
+      }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
     }
   }
 ]
@@ -970,7 +1029,6 @@ param products = [
     subscriptionRequired: false
   }
 ]
-param publicIpAddressResourceId = '<publicIpAddressResourceId>'
 param roleAssignments = [
   {
     name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
@@ -1003,7 +1061,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param virtualNetworkType = 'Internal'
+param virtualNetworkType = 'External'
 ```
 
 </details>
@@ -1245,19 +1303,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'signin'
-        properties: {
-          enabled: false
-        }
-      }
-      {
         name: 'signup'
         properties: {
           enabled: false
-          termsOfService: {
-            consentRequired: false
+          subscriptions: {
             enabled: false
           }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
+        }
+      }
+      {
+        name: 'signin'
+        properties: {
+          enabled: false
+          subscriptions: {
+            enabled: false
+          }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
         }
       }
     ]
@@ -1293,6 +1373,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkType: 'None'
   }
 }
 ```
@@ -1488,19 +1569,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "signin",
-          "properties": {
-            "enabled": false
-          }
-        },
-        {
           "name": "signup",
           "properties": {
             "enabled": false,
-            "termsOfService": {
-              "consentRequired": false,
+            "subscriptions": {
               "enabled": false
-            }
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
+          }
+        },
+        {
+          "name": "signin",
+          "properties": {
+            "enabled": false,
+            "subscriptions": {
+              "enabled": false
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
           }
         }
       ]
@@ -1542,6 +1645,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkType": {
+      "value": "None"
     }
   }
 }
@@ -1701,19 +1807,41 @@ param policies = [
 ]
 param portalsettings = [
   {
-    name: 'signin'
-    properties: {
-      enabled: false
-    }
-  }
-  {
     name: 'signup'
     properties: {
       enabled: false
-      termsOfService: {
-        consentRequired: false
+      subscriptions: {
         enabled: false
       }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
+    }
+  }
+  {
+    name: 'signin'
+    properties: {
+      enabled: false
+      subscriptions: {
+        enabled: false
+      }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
     }
   }
 ]
@@ -1749,6 +1877,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualNetworkType = 'None'
 ```
 
 </details>
@@ -1769,6 +1898,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
 
 **Optional parameters**
 
@@ -1802,14 +1932,14 @@ param tags = {
 | [`policies`](#parameter-policies) | array | Policies. |
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`products`](#parameter-products) | array | Products. |
-| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
+| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. Note: Cannot be set to "Disabled" during initial service creation - must be changed post-deployment. If not specified, defaults to "Enabled". |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
 
 ### Parameter: `name`
 
@@ -1839,6 +1969,22 @@ The scale units for this API Management service. Required if using Basic, Standa
 - Required: No
 - Type: int
 - Default: `3`
+
+### Parameter: `virtualNetworkType`
+
+The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+- Allowed:
+  ```Bicep
+  [
+    'External'
+    'Internal'
+    'None'
+  ]
+  ```
 
 ### Parameter: `additionalLocations`
 
@@ -3165,10 +3311,24 @@ Products.
 
 ### Parameter: `publicIpAddressResourceId`
 
-Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.
 
 - Required: No
 - Type: string
+
+### Parameter: `publicNetworkAccess`
+
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. Note: Cannot be set to "Disabled" during initial service creation - must be changed post-deployment. If not specified, defaults to "Enabled".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `restore`
 
@@ -3307,7 +3467,7 @@ The pricing tier of this API Management service.
 
 ### Parameter: `subnetResourceId`
 
-The full resource ID of a subnet in a virtual network to deploy the API Management service in.
+The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.
 
 - Required: No
 - Type: string
@@ -3325,22 +3485,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `virtualNetworkType`
-
-The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.
-
-- Required: No
-- Type: string
-- Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'External'
-    'Internal'
-    'None'
-  ]
-  ```
 
 ## Outputs
 

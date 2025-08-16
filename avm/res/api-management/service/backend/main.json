@@ -5,11 +5,193 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13471923779604074887"
+      "version": "0.37.4.10188",
+      "templateHash": "8918167219469401776"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
+  },
+  "definitions": {
+    "backendCredentialsType": {
+      "type": "object",
+      "properties": {
+        "authorization": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials/properties/authorization"
+            },
+            "description": "Optional. Authorization header authentication."
+          },
+          "nullable": true
+        },
+        "certificate": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided."
+          }
+        },
+        "certificateIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of Client Certificate Ids."
+          }
+        },
+        "header": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Header Parameter description. Each property within header is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n."
+          }
+        },
+        "query": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Query Parameter description. Each property within query is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n."
+          }
+        }
+      }
+    },
+    "backendProxyType": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Password to connect to the WebProxy Server."
+          }
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "metadata": {
+            "description": "Required. WebProxy Server AbsoluteUri property which includes the entire URI stored in the Uri instance, including all fragments and query strings."
+          }
+        },
+        "username": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Username to connect to the WebProxy server."
+          }
+        }
+      }
+    },
+    "backendServiceFabricClusterType": {
+      "type": "object",
+      "properties": {
+        "clientCertificateId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The client certificate id for the management endpoint."
+          }
+        },
+        "clientCertificatethumbprint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The client certificate thumbprint for the management endpoint. Will be ignored if certificatesIds are provided."
+          }
+        },
+        "managementEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The cluster management endpoint."
+          }
+        },
+        "maxPartitionResolutionRetries": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Maximum number of retries while attempting resolve the partition."
+          }
+        },
+        "serverCertificateThumbprints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Thumbprints of certificates cluster management service uses for tls communication."
+          }
+        },
+        "serverX509Names": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster/properties/serverX509Names"
+            },
+            "description": "Optional. Server X509 Certificate Names Collection."
+          },
+          "nullable": true
+        }
+      }
+    },
+    "backendTlsType": {
+      "type": "object",
+      "properties": {
+        "validateCertificateChain": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag indicating whether SSL certificate chain validation should be done when using self-signed certificates for this backend host."
+          }
+        },
+        "validateCertificateName": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag indicating whether SSL certificate name validation should be done when using self-signed certificates for this backend host."
+          }
+        }
+      }
+    },
+    "backendCircuitBreakerType": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker/properties/rules"
+            },
+            "description": "Optional. The rules for tripping the backend."
+          },
+          "nullable": true
+        }
+      }
+    },
+    "backendPoolType": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool/properties/services"
+            },
+            "description": "Optional. The list of backend entities belonging to a pool."
+          },
+          "nullable": true
+        }
+      }
+    }
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -25,7 +207,7 @@
       }
     },
     "credentials": {
-      "type": "object",
+      "$ref": "#/definitions/backendCredentialsType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Backend Credentials Contract Properties."
@@ -46,10 +228,10 @@
       }
     },
     "proxy": {
-      "type": "object",
+      "$ref": "#/definitions/backendProxyType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Backend Proxy Contract Properties."
+        "description": "Optional. Backend gateway Contract Properties."
       }
     },
     "resourceId": {
@@ -60,7 +242,7 @@
       }
     },
     "serviceFabricCluster": {
-      "type": "object",
+      "$ref": "#/definitions/backendServiceFabricClusterType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Backend Service Fabric Cluster Properties."
@@ -74,7 +256,7 @@
       }
     },
     "tls": {
-      "type": "object",
+      "$ref": "#/definitions/backendTlsType",
       "defaultValue": {
         "validateCertificateChain": false,
         "validateCertificateName": false
@@ -88,31 +270,59 @@
       "metadata": {
         "description": "Required. Runtime URL of the Backend."
       }
+    },
+    "circuitBreaker": {
+      "$ref": "#/definitions/backendCircuitBreakerType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Circuit Breaker Configuration."
+      }
+    },
+    "pool": {
+      "$ref": "#/definitions/backendPoolType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend pool configuration for load balancing."
+      }
+    },
+    "type": {
+      "type": "string",
+      "defaultValue": "Single",
+      "allowedValues": [
+        "Single",
+        "Pool"
+      ],
+      "metadata": {
+        "description": "Optional. Type of the backend. A backend can be either Single or Pool."
+      }
     }
   },
   "resources": {
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "backend": {
       "type": "Microsoft.ApiManagement/service/backends",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
-        "title": "[parameters('title')]",
+        "circuitBreaker": "[parameters('circuitBreaker')]",
+        "credentials": "[parameters('credentials')]",
         "description": "[parameters('description')]",
-        "resourceId": "[parameters('resourceId')]",
+        "pool": "[parameters('pool')]",
         "properties": {
           "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
         },
-        "credentials": "[parameters('credentials')]",
+        "protocol": "[parameters('protocol')]",
         "proxy": "[parameters('proxy')]",
+        "resourceId": "[parameters('resourceId')]",
+        "title": "[parameters('title')]",
         "tls": "[parameters('tls')]",
-        "url": "[parameters('url')]",
-        "protocol": "[parameters('protocol')]"
+        "type": "[parameters('type')]",
+        "url": "[parameters('url')]"
       }
     }
   },

@@ -7,19 +7,25 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apiswaf'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+@description('Optional. Name of the Application Insights resource.')
+param applicationInsightsName string = 'applicationInsights'
 
 @description('Optional. The secret to leverage for authorization server authentication.')
 @secure()
 param customSecret string = newGuid()
+
+@description('Optional. Name of the Log Analytics Workspace.')
+param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
+
+@description('Optional. Name of the Route Table.')
+param routeTableName string = 'apimRouteTableTest'
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'apiswaf'
 
 // Enforcing locations to not have conflicting availability zones
 @description('Optional. The primary location to deploy resources to.')
@@ -28,13 +34,16 @@ var enforcedLocation = 'ukSouth'
 @description('Optional. The secondary location to deploy resources to.')
 var secondaryEnforcedLocation = 'northeurope'
 
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -43,8 +52,14 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
+    lawReplicationRegion: secondaryEnforcedLocation
     location: enforcedLocation
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-waflaw-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
@@ -214,22 +229,73 @@ module testDeployment '../../../main.bicep' = [
       ]
       portalsettings: [
         {
-          name: 'signin'
-          properties: {
-            enabled: false
-          }
-        }
-        {
           name: 'signup'
           properties: {
             enabled: false
             termsOfService: {
-              consentRequired: false
+              consentRequired: true
+              enabled: true
+              text: 'Terms of service text'
+            }
+            subscriptions: {
               enabled: false
             }
+            url: ''
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: ''
+          }
+        }
+        {
+          name: 'signin'
+          properties: {
+            enabled: false
+            termsOfService: {
+              consentRequired: true
+              enabled: true
+              text: 'Terms of service text'
+            }
+            subscriptions: {
+              enabled: false
+            }
+            url: ''
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: ''
           }
         }
       ]
+      // privateEndpoints: [
+      //   {
+      //     service: 'Gateway'
+      //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      //         }
+      //       ]
+      //     }
+      //     tags: {
+      //       'hidden-title': 'This is visible in the resource name'
+      //       Environment: 'Non-Prod'
+      //       Role: 'DeploymentValidation'
+      //     }
+      //   }
+      //   {
+      //     service: 'Gateway'
+      //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      //         }
+      //       ]
+      //     }
+      //   }
+      // ]
       products: [
         {
           apis: [
@@ -257,6 +323,7 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'testArmSubscriptionAllApis'
         }
       ]
+      virtualNetworkType: 'None' // Required for private endpoints
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

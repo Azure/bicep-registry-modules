@@ -12,7 +12,7 @@ This module deploys an API Management Service Logger.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ApiManagement/service/loggers` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_loggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/loggers)</li></ul> |
+| `Microsoft.ApiManagement/service/loggers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_loggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/loggers)</li></ul> |
 
 ## Parameters
 
@@ -28,8 +28,8 @@ This module deploys an API Management Service Logger.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
-| [`credentials`](#parameter-credentials) | secureObject | Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. |
-| [`targetResourceId`](#parameter-targetresourceid) | string | Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). |
+| [`credentials`](#parameter-credentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub. |
+| [`targetResourceId`](#parameter-targetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
 
 **Optional parameters**
 
@@ -69,14 +69,14 @@ The name of the parent API Management service. Required if the template is used 
 
 ### Parameter: `credentials`
 
-Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger.
+The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub.
 
 - Required: Yes
 - Type: secureObject
 
 ### Parameter: `targetResourceId`
 
-Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource).
+Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.
 
 - Required: Yes
 - Type: string
