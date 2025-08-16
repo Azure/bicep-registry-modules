@@ -1327,7 +1327,7 @@ The pricing tier (defines a CDN provider, feature list and rate) of the CDN prof
     'Standard_AvgBandWidth_ChinaCdn'
     'Standard_AzureFrontDoor'
     'Standard_ChinaCdn'
-    'Standard_AzureFrontDoor'
+    'Standard_Microsoft'
     'StandardPlus_955BandWidth_ChinaCdn'
     'StandardPlus_AvgBandWidth_ChinaCdn'
     'StandardPlus_ChinaCdn'
