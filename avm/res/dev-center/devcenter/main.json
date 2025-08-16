@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14061938376876516568"
+      "templateHash": "487110088572628488"
     },
     "name": "Dev Center",
     "description": "This module deploys an Azure Dev Center."
@@ -1576,15 +1576,7 @@
         "displayName": "[parameters('displayName')]",
         "networkSettings": "[parameters('networkSettings')]",
         "projectCatalogSettings": "[parameters('projectCatalogSettings')]",
-        "encryption": {
-          "customerManagedKeyEncryption": {
-            "keyEncryptionKeyIdentity": {
-              "identityType": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')]",
-              "userAssignedIdentityResourceId": "[tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')]"
-            },
-            "keyEncryptionKeyUrl": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion))]"
-          }
-        }
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity'), 'userAssignedIdentityResourceId', tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), 'keyEncryptionKeyUrl', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]"
       },
       "dependsOn": [
         "cMKKeyVault::cMKKey"

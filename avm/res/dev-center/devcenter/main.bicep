@@ -179,21 +179,23 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
     displayName: displayName
     networkSettings: networkSettings
     projectCatalogSettings: projectCatalogSettings
-    encryption: {
-      customerManagedKeyEncryption: {
-        keyEncryptionKeyIdentity: {
-          identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-            ? 'userAssignedIdentity'
-            : 'systemAssignedIdentity'
-          userAssignedIdentityResourceId: customerManagedKey.?userAssignedIdentityResourceId
+    encryption: !empty(customerManagedKey)
+      ? {
+          customerManagedKeyEncryption: {
+            keyEncryptionKeyIdentity: {
+              identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                ? 'userAssignedIdentity'
+                : 'systemAssignedIdentity'
+              userAssignedIdentityResourceId: customerManagedKey.?userAssignedIdentityResourceId
+            }
+            keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+              : (customerManagedKey.?autoRotationEnabled ?? true)
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+          }
         }
-        keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
-          ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-          : (customerManagedKey.?autoRotationEnabled ?? true)
-              ? cMKKeyVault::cMKKey!.properties.keyUri
-              : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-      }
-    }
+      : null
   }
 }
 
