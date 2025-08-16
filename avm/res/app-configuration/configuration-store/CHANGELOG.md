@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app-configuration/configuration-store/CHANGELOG.md).
 
-## 0.7.1
+## 0.8.0
 
 ### Changes
 
@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Added type for replica location, enabling the specification of the replica name
 
 ## 0.7.0
 
