@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4390725653024630036"
+      "version": "0.37.4.10188",
+      "templateHash": "15443789687817772570"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions."
@@ -78,6 +78,9 @@
     },
     "thresholds": {
       "type": "array",
+      "items": {
+        "type": "int"
+      },
       "defaultValue": [
         50,
         75,
@@ -124,10 +127,13 @@
     },
     "filter": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Consumption/budgets@2024-08-01#properties/properties/properties/filter"
+        },
         "description": "Optional. The filter to use for restricting which resources are considered within the budget."
-      }
+      },
+      "nullable": true
     },
     "resourceGroupFilter": {
       "type": "array",

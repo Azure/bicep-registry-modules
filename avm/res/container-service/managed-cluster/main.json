@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8481635523348951759"
+      "templateHash": "14710395605405022452"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1573,10 +1573,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "diskEncryptionSetResourceId": {
       "type": "string",
@@ -1594,17 +1597,23 @@
     },
     "httpProxyConfig": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/properties/properties/httpProxyConfig"
+        },
         "description": "Optional. Configurations for provisioning the cluster with HTTP proxy servers."
-      }
+      },
+      "nullable": true
     },
     "identityProfile": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/properties/properties/identityProfile"
+        },
         "description": "Optional. Identities associated with the cluster."
-      }
+      },
+      "nullable": true
     },
     "kedaAddon": {
       "type": "bool",
@@ -2689,6 +2698,9 @@
           },
           "version": {
             "value": "[tryGet(parameters('fluxExtension'), 'version')]"
+          },
+          "targetNamespace": {
+            "value": "[tryGet(parameters('fluxExtension'), 'targetNamespace')]"
           }
         },
         "template": {
@@ -2698,12 +2710,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9966442976957263225"
+              "version": "0.33.93.31351",
+              "templateHash": "13174696940078832071"
             },
             "name": "Kubernetes Configuration Extensions",
-            "description": "This module deploys a Kubernetes Configuration Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Kubernetes Configuration Extension."
           },
           "parameters": {
             "name": {
@@ -2788,12 +2799,15 @@
               }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.5', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.6', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2848,7 +2862,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "enableTelemetry": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "clusterName": {
                     "value": "[parameters('clusterName')]"

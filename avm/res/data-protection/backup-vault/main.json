@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13982094037862453638"
+      "templateHash": "2267516043518101602"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -411,10 +411,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DataProtection/backupVaults@2025-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the backup vault resource."
-      }
+      },
+      "nullable": true
     },
     "dataStoreType": {
       "type": "string",
@@ -470,10 +473,13 @@
     },
     "featureSettings": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DataProtection/backupVaults@2025-07-01#properties/properties/properties/featureSettings"
+        },
         "description": "Optional. Feature settings for the backup vault."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {

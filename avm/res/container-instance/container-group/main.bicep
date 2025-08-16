@@ -31,13 +31,13 @@ param location string = resourceGroup().location
 param logAnalytics logAnalyticsType?
 
 @description('Optional. The DNS config information for a container group.')
-param dnsConfig dnsConfigType?
+param dnsConfig resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.dnsConfig?
 
 @description('Optional. A list of container definitions which will be executed before the application container starts.')
 param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.initContainers?
 
 @description('Optional. The subnets to use by the container group.')
-param subnets containerGroupSubnetIdType[]?
+param subnets containerGroupSubnetType[]?
 
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
 param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.volumes?
@@ -497,25 +497,12 @@ type ipAddressType = {
 
 @export()
 @description('The type for a container group subnet.')
-type containerGroupSubnetIdType = {
+type containerGroupSubnetType = {
   @description('Required. Resource ID of virtual network and subnet.')
   subnetResourceId: string
 
   @description('Optional. Friendly name for the subnet.')
   name: string?
-}
-
-@export()
-@description('The type for a DNS configuration.')
-type dnsConfigType = {
-  @description('Required. 	The DNS servers for the container group.')
-  nameServers: string[]
-
-  @description('Optional. The DNS options for the container group.')
-  options: string?
-
-  @description('Optional. The DNS search domains for hostname lookup in the container group.')
-  searchDomains: string?
 }
 
 // will be removed in future. For more information see https://learn.microsoft.com/en-us/azure/container-instances/container-instances-gpu

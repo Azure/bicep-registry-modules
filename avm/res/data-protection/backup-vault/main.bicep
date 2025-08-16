@@ -45,7 +45,7 @@ param softDeleteSettings softDeleteSettingType?
 param immutabilitySettingState string?
 
 @description('Optional. Tags of the backup vault resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DataProtection/backupVaults@2025-07-01'>.tags?
 
 @description('Optional. The datastore type to use. ArchiveStore does not support ZoneRedundancy.')
 @allowed([
@@ -77,7 +77,7 @@ param backupPolicies array?
 param backupInstances backupInstanceType[]?
 
 @description('Optional. Feature settings for the backup vault.')
-param featureSettings object?
+param featureSettings resourceInput<'Microsoft.DataProtection/backupVaults@2025-07-01'>.properties.featureSettings?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
