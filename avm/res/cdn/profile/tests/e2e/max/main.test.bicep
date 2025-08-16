@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
-      location: resourceLocation
+      location: 'global'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
