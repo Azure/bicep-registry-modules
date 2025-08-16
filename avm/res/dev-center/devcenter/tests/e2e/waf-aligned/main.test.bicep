@@ -16,6 +16,9 @@ param serviceShort string = 'dcdcwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 // Hardcoded because service not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'westeurope'
@@ -39,7 +42,8 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     devCenterNetworkConnectionName: 'dep-${namePrefix}-dcnc-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: enforcedLocation
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
 }
 
@@ -61,6 +65,11 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+      }
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       devboxDefinitions: [
         {

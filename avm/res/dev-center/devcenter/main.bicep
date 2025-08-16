@@ -40,8 +40,12 @@ param devBoxProvisioningSettings devBoxProvisioningSettingsType?
 @description('Optional. Network settings that will be enforced on network resources associated with the Dev Center.')
 param networkSettings networkSettingsType?
 
-@sys.description('Optional. The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments.')
+@description('Optional. The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments.')
 param catalogs catalogType[]?
+
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Dev Center settings to be used when associating a project with a catalog.')
 param projectCatalogSettings projectCatalogSettingsType?
@@ -134,6 +138,18 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res-devcenter-devcenter.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -163,6 +179,21 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
     displayName: displayName
     networkSettings: networkSettings
     projectCatalogSettings: projectCatalogSettings
+    encryption: {
+      customerManagedKeyEncryption: {
+        keyEncryptionKeyIdentity: {
+          identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? 'userAssignedIdentity'
+            : 'systemAssignedIdentity'
+          userAssignedIdentityResourceId: customerManagedKey.?userAssignedIdentityResourceId
+        }
+        keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+          : (customerManagedKey.?autoRotationEnabled ?? true)
+              ? cMKKeyVault::cMKKey!.properties.keyUri
+              : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+      }
+    }
   }
 }
 
