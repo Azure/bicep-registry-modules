@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "285274259524207122"
+      "templateHash": "13524403044325260342"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account."
@@ -778,9 +778,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
