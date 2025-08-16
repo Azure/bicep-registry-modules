@@ -20,7 +20,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -38,7 +38,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2024-11-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
