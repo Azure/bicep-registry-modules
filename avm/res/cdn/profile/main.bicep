@@ -49,7 +49,7 @@ param afdEndpoints afdEndpointType[] = []
 param securityPolicies securityPolicyType[] = []
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Cdn/profiles@2025-04-01'>.tags?
+param tags object?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -339,13 +339,13 @@ output profileType string = profile.type
 output location string = profile.location
 
 @description('The name of the CDN profile endpoint.')
-output endpointName string = !empty(endpointProperties) ? profile_endpoint!.outputs.name : ''
+output endpointName string = !empty(endpointProperties) ? profile_endpoint.outputs.name : ''
 
 @description('The resource ID of the CDN profile endpoint.')
-output endpointId string = !empty(endpointProperties) ? profile_endpoint!.outputs.resourceId : ''
+output endpointId string = !empty(endpointProperties) ? profile_endpoint.outputs.resourceId : ''
 
 @description('The uri of the CDN profile endpoint.')
-output uri string = !empty(endpointProperties) ? profile_endpoint!.outputs.uri : ''
+output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : ''
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
@@ -367,8 +367,10 @@ output frontDoorEndpointHostNames array = [
 import { afdEndpointType } from 'afd-endpoint/main.bicep'
 import { customDomainType, dnsValidationOutputType } from 'custom-domain/main.bicep'
 import { originGroupType } from 'origin-group/main.bicep'
+import { originType } from 'origin-group/origin/main.bicep'
 import { associationsType } from 'security-policy/main.bicep'
 import { ruleSetType } from 'rule-set/main.bicep'
+import { ruleType } from 'rule-set/rule/main.bicep'
 
 @export()
 type securityPolicyType = {

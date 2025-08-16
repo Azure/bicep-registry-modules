@@ -747,9 +747,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmin'
-    sku: 'Standard_AzureFrontDoor'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
-    location: 'global'
+    location: '<location>'
   }
 }
 ```
@@ -771,11 +771,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmin"
     },
     "sku": {
-      "value": "Standard_AzureFrontDoor"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
     "location": {
-      "value": "global"
+      "value": "<location>"
     }
   }
 }
@@ -793,9 +793,9 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmin'
-param sku = 'Standard_AzureFrontDoor'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
-param location = 'global'
+param location = '<location>'
 ```
 
 </details>
