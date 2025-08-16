@@ -51,9 +51,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
-      location: 'global'
+      location: resourceLocation
       originResponseTimeoutSeconds: 60
-      sku: 'Standard_AzureFrontDoor'
+      sku: 'Standard_Microsoft'
       endpointProperties: {
         originHostHeader: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
         contentTypesToCompress: [

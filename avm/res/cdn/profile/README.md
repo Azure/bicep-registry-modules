@@ -816,7 +816,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
-    sku: 'Standard_AzureFrontDoor'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -869,7 +869,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       ]
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
-    location: 'global'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -915,7 +915,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmax"
     },
     "sku": {
-      "value": "Standard_AzureFrontDoor"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -974,7 +974,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     },
     "location": {
-      "value": "global"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1022,7 +1022,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmax'
-param sku = 'Standard_AzureFrontDoor'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -1075,7 +1075,7 @@ param endpointProperties = {
   ]
   queryStringCachingBehavior: 'IgnoreQueryString'
 }
-param location = 'global'
+param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -1120,7 +1120,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'
-    sku: 'Standard_AzureFrontDoor'
+    sku: 'Standard_Microsoft'
     // Non-required parameters
     endpointProperties: {
       contentTypesToCompress: [
@@ -1152,7 +1152,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       ]
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
-    location: 'global'
+    location: '<location>'
     originResponseTimeoutSeconds: 60
   }
 }
@@ -1175,7 +1175,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpwaf"
     },
     "sku": {
-      "value": "Standard_AzureFrontDoor"
+      "value": "Standard_Microsoft"
     },
     // Non-required parameters
     "endpointProperties": {
@@ -1211,7 +1211,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     },
     "location": {
-      "value": "global"
+      "value": "<location>"
     },
     "originResponseTimeoutSeconds": {
       "value": 60
@@ -1232,7 +1232,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpwaf'
-param sku = 'Standard_AzureFrontDoor'
+param sku = 'Standard_Microsoft'
 // Non-required parameters
 param endpointProperties = {
   contentTypesToCompress: [
@@ -1264,7 +1264,7 @@ param endpointProperties = {
   ]
   queryStringCachingBehavior: 'IgnoreQueryString'
 }
-param location = 'global'
+param location = '<location>'
 param originResponseTimeoutSeconds = 60
 ```
 
