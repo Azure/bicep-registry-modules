@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10967346551115706860"
+      "templateHash": "17565260692645137311"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
@@ -292,10 +292,13 @@
     },
     "plan": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets@2024-07-01#properties/plan"
+        },
         "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
-      }
+      },
+      "nullable": true
     },
     "osDisk": {
       "type": "object",
@@ -355,7 +358,7 @@
     },
     "proximityPlacementGroupResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of a proximity placement group."
       }
@@ -394,11 +397,10 @@
     },
     "licenseType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Windows_Client",
-        "Windows_Server",
-        ""
+        "Windows_Server"
       ],
       "metadata": {
         "description": "Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system."
@@ -515,7 +517,7 @@
     },
     "bootDiagnosticStorageAccountName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account."
       }
@@ -721,17 +723,20 @@
     },
     "timeZone": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`."
       }
     },
     "additionalUnattendContent": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets@2024-07-01#properties/properties/properties/virtualMachineProfile/properties/osProfile/properties/windowsConfiguration/properties/additionalUnattendContent"
+        },
         "description": "Optional. Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object."
-      }
+      },
+      "nullable": true
     },
     "winRM": {
       "type": "object",
@@ -756,17 +761,23 @@
     },
     "secrets": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets@2024-07-01#properties/properties/properties/virtualMachineProfile/properties/osProfile/properties/secrets"
+        },
         "description": "Optional. Specifies set of certificates that should be installed onto the virtual machines in the scale set."
-      }
+      },
+      "defaultValue": []
     },
     "scheduledEventsProfile": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets@2024-07-01#properties/properties/properties/virtualMachineProfile/properties/scheduledEventsProfile"
+        },
         "description": "Optional. Specifies Scheduled Event related configurations."
-      }
+      },
+      "defaultValue": {}
     },
     "overprovision": {
       "type": "bool",
@@ -798,13 +809,16 @@
     },
     "scaleInPolicy": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets@2024-07-01#properties/properties/properties/scaleInPolicy"
+        },
+        "description": "Optional. Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in."
+      },
       "defaultValue": {
         "rules": [
           "Default"
         ]
-      },
-      "metadata": {
-        "description": "Optional. Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in."
       }
     },
     "skuName": {
@@ -841,10 +855,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -926,8 +943,8 @@
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
       "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
-      "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
-      "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
+      "timeZone": "[parameters('timeZone')]",
+      "additionalUnattendContent": "[parameters('additionalUnattendContent')]",
       "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM').listeners), null())]"
     },
     "accountSasProperties": {
@@ -1063,7 +1080,7 @@
             }
           },
           "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '2.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), if(and(contains(parameters('extensionHealthConfig'), 'protocol'), not(equals(parameters('extensionHealthConfig').protocol, 'tcp'))), '/', '')), 'intervalInSeconds', coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), 'numberOfProbes', coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1), 'gracePeriod', coalesce(tryGet(parameters('extensionHealthConfig'), 'gracePeriod'), 5)))))), null())]",
-          "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
+          "licenseType": "[parameters('licenseType')]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
           "billingProfile": "[if(and(not(empty(parameters('vmPriority'))), not(equals(null(), parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', parameters('maxPriceForLowPriorityVm')), null())]",
@@ -1083,13 +1100,13 @@
         "name": "[parameters('skuName')]",
         "capacity": "[parameters('skuCapacity')]"
       },
-      "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]"
+      "plan": "[parameters('plan')]"
     },
     "vmss_logAnalyticsWorkspace": {
       "condition": "[not(empty(parameters('monitoringWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2021-06-01",
+      "apiVersion": "2025-02-01",
       "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]]",
       "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))]"
@@ -1538,7 +1555,7 @@
           },
           "protectedSettings": {
             "value": {
-              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys('vmss_logAnalyticsWorkspace', '2021-06-01').primarySharedKey, '')]"
+              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys('vmss_logAnalyticsWorkspace', '2025-02-01').primarySharedKey, '')]"
             }
           }
         },

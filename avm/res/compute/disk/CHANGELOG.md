@@ -7,6 +7,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added type for `tags` parameter
+- Changed diverse parameter defaults from empty to null
 
 ### Breaking Changes
 

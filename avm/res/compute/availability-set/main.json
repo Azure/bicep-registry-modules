@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "671962159958130722"
+      "templateHash": "13645044102097209690"
     },
     "name": "Availability Sets",
     "description": "This module deploys an Availability Set."
@@ -186,10 +186,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/availabilitySets@2024-11-01#properties/tags"
+        },
         "description": "Optional. Tags of the availability set resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",

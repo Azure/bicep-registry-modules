@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3106672883286346461"
+      "version": "0.37.4.10188",
+      "templateHash": "12919108805298018528"
     },
     "name": "Images",
     "description": "This module deploys a Compute Image."
@@ -171,17 +171,23 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/images@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "extendedLocation": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/images@2024-07-01#properties/extendedLocation"
+        },
         "description": "Optional. The extended location of the Image."
-      }
+      },
+      "nullable": true
     },
     "sourceVirtualMachineResourceId": {
       "type": "string",
@@ -231,10 +237,13 @@
     },
     "dataDisks": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/images@2024-07-01#properties/properties/properties/storageProfile/properties/dataDisks"
+        },
         "description": "Optional. Specifies the parameters that are used to add a data disk to a virtual machine."
-      }
+      },
+      "defaultValue": []
     },
     "enableTelemetry": {
       "type": "bool",

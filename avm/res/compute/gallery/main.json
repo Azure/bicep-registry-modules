@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5978359879417628134"
+      "templateHash": "3073759071520140278"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -597,7 +597,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Description of the Azure Shared Image Gallery."
+        "description": "Optional. Description of the Azure Compute Gallery."
       }
     },
     "applications": {

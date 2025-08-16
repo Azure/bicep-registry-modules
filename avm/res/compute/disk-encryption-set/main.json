@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14682359014324746310"
+      "templateHash": "17215820594047132267"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
@@ -188,7 +188,7 @@
     },
     "keyVersion": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used."
       }
@@ -239,10 +239,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/diskEncryptionSets@2025-01-02#properties/tags"
+        },
         "description": "Optional. Tags of the disk encryption resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -279,7 +282,7 @@
     "keyVault::key": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2021-10-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]"
@@ -307,7 +310,7 @@
     "keyVault": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2021-10-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(parameters('keyVaultResourceId'), '/'))]"

@@ -940,7 +940,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applications`](#parameter-applications) | array | Applications to create. |
-| [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
+| [`description`](#parameter-description) | string | Description of the Azure Compute Gallery. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`images`](#parameter-images) | array | Images to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1260,7 +1260,7 @@ Tags for all resources.
 
 ### Parameter: `description`
 
-Description of the Azure Shared Image Gallery.
+Description of the Azure Compute Gallery.
 
 - Required: No
 - Type: string

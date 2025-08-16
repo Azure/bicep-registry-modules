@@ -15,7 +15,7 @@ param location string = resourceGroup().location
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@sys.description('Optional. Description of the Azure Shared Image Gallery.')
+@sys.description('Optional. Description of the Azure Compute Gallery.')
 param description string?
 
 @sys.description('Optional. Applications to create.')
