@@ -1,93 +1,82 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
-model: Claude Sonnet 4
-tools: ['changes', 'codebase', 'fetch', 'githubRepo', 'problems', 'search', 'searchResults', 'fileSearch', 'textSearch', 'listDirectory', 'readFile', 'Microsoft Docs', 'microsoft.docs.mcp']
+tools: ['codebase', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'searchResults', 'githubRepo', 'todos', 'runTests', 'search', 'runCommands', 'documentation']
 ---
 
-# AI Agent Task: ARM API Version Update Analysis
+# Analyze ARM API Version Updates for Resource Module
 
 ## 1. Objective
-As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files starting with ${file}, including in child folders of ${fileDirname}, that make up a module to identify resources with outdated ARM API versions. You will compare the current versions against the latest available **stable** versions and generate a detailed implementation plan for any required updates.
+As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files starting with `${file}`, including child folders of `${fileDirname}`, to identify resources with outdated ARM API versions. Compare current versions against latest **stable** versions and generate detailed implementation plans for required updates.
 
-**This is a planning task only. Do not modify any files.**
+> [!IMPORTANT]
+> This is a planning task only. Do not modify any files, unless the user asks you to.
 
 ## 2. Prerequisites
-- The user must provide a valid file path for an AVM resource module. The path must follow the pattern: `avm/res/{provider}/{resource}/main.bicep`.
-- If the path is invalid or missing, **STOP** and ask the user for a correct one.
-- Before generating AVM Bicep code, always use `fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt`. Use LLM documentation index to `fetch` relevant documentation for the specific resources and patterns you are working with.
 
-## 3. Execution Flow
+- Valid file path for AVM resource module following pattern: `avm/res/{provider}/{resource}/main.bicep`.
+- Module must exist in the workspace.
+- Access to `#fetch` tool for schema validation.
 
-### Step 3.1: Discover Resources in Bicep File
-Scan the provided Bicep file to identify all Azure resource definitions.
-- **Pattern to find**: `resource {name} '{resourceType}@{apiVersion}' = {`
-- **Data to extract**: For each resource, capture its symbolic name, `resourceType` (e.g., `Microsoft.Storage/storageAccounts`), and its current `apiVersion`.
-- **Output**: Create a complete inventory of all resources before proceeding.
+> [!CRITICAL]
+> If any prerequisites are not met, you must stop and inform the user clearly, indicating what they must do.
 
-### Step 3.2: Find the Latest Stable API Version
-For each discovered resource, you must find its latest **stable** API version by querying the official Microsoft Learn documentation.
+## 3. Tool Use
 
-- **Tool**: Use the `fetch` tool.
-- **URL Format**: `https://learn.microsoft.com/azure/templates/{resourceType}?pivots=deployment-language-bicep`
-- **Example**: For `Microsoft.Storage/storageAccounts`, the URL is `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`.
+- If the `#todos` tool is available, you must use that to track progress, updating it regularly.
 
-> [!IMPORTANT]
-> The `fetch` tool is the **only** approved method for this step. Do not use any other tool to find API versions, as they may provide inaccurate or non-stable versions.
+## 4. Execution Flow
 
-### Step 3.3: Compare Versions and Set Status
-Compare the `current` API version from the file with the `latest` stable version found in the documentation. Assign a status to each resource:
+Here is a ReAct-style Thought–Action–Observation execution flow that you MUST follow:
 
-- 🔄 **Update Available**: `latest` is newer than `current`.
-- ✅ **Current**: `current` and `latest` are identical.
-- 🟡 **Current (preview)**: `current` is a preview version (e.g., `2023-01-01-preview`), and `latest` is an older, stable version. No update is needed unless specified.
-- 🔍 **Investigation Needed**: `current` is newer than `latest`. This may indicate a documentation lag.
+- Thought: Validate file path and confirm module exists. Get AVM documentation index for compliance.
+  - Action: todos.write → Track progress; codebase.stat(path=${file}); fetch(url=`https://azure.github.io/Azure-Verified-Modules/llms.txt`)
+  - Observation: File exists and AVM documentation available (or not). If missing, stop and report per prerequisites.
 
-**CRITICAL**: You MUST create the summary table (Section 4.1) immediately after this step, before proceeding to schema analysis.
+- Thought: Discover all Azure resource definitions in the Bicep file and child modules.
+  - Action: codebase.search(pattern=`resource.*@.*=`) OR grep_search(query=`resource.*@.*=`, isRegexp=true, includePattern=${fileDirname}/**/*.bicep)
+  - Observation: Complete inventory of resources with symbolic names, resourceTypes, and current apiVersions.
 
-### Step 3.4: Analyze Schema for Required Updates
-**MANDATORY**: For EVERY resource with status `🔄 Update Available`, you MUST perform detailed schema analysis.
+- Thought: For each discovered resource, fetch latest stable API version from Microsoft Learn.
+  - Action: For each resource → fetch(url=`https://learn.microsoft.com/azure/templates/{resourceType}?pivots=deployment-language-bicep`)
+  - Observation: Latest stable API versions available for comparison.
 
-> [!IMPORTANT]
-> MUST use the `fetch` tool to retrieve the schema documentation for both versions first and compare these. Do not use any other method to analyze schema changes.
+- Thought: Compare current vs latest versions and categorize update status.
+  - Action: Analyze version differences; assign status: 🔄 Update Available, ✅ Current, 🟡 Current (preview), 🔍 Investigation Needed
+  - Observation: Status assigned to each resource with update priority.
 
-1.  **Fetch Current Version Schema**: Use the `fetch` tool to get the current API version documentation.
-    - **URL**: `https://learn.microsoft.com/azure/templates/{resourceType}/{currentApiVersion}/{resourceName}?pivots=deployment-language-bicep`
-2.  **Fetch Latest Version Schema**: Use the `fetch` tool to get the latest API version documentation.
-    - **URL**: `https://learn.microsoft.com/azure/templates/{resourceType}/{latestApiVersion}/{resourceName}?pivots=deployment-language-bicep`
-3.  **Compare Property Schemas**: Systematically compare the property definitions between versions.
-4.  **Categorize Changes**:
-    - ✅ **Non-breaking**: New optional properties, expanded allowed values.
-    - ⚠️ **Potentially breaking**: New required properties, changes to default values, restricted allowed values.
-    - ❌ **Breaking**: Removed properties, changes to property types, incompatible constraints.
+- Thought: Create summary table immediately before deeper analysis.
+  - Action: Compile summary table with all resources, current/latest versions, status, and complexity estimates
+  - Observation: Complete overview ready for detailed analysis phase.
 
-**CRITICAL**: Document specific property differences, not just general statements.
+- Thought: For resources needing updates, perform detailed schema analysis.
+  - Action: For each 🔄 resource → fetch current schema: `https://learn.microsoft.com/azure/templates/{resourceType}/{currentApiVersion}/{resourceName}?pivots=deployment-language-bicep`; fetch latest schema: `https://learn.microsoft.com/azure/templates/{resourceType}/{latestApiVersion}/{resourceName}?pivots=deployment-language-bicep`
+  - Observation: Detailed schema differences between current and latest versions available.
 
-### Step 3.5: Create Detailed Implementation Plans
-**MANDATORY**: For EVERY resource requiring updates, you MUST create the detailed change plan specified in Section 4.3.
+- Thought: Categorize schema changes and assess breaking change risk.
+  - Action: Compare property schemas; categorize as ✅ Non-breaking, ⚠️ Potentially breaking, ❌ Breaking
+  - Observation: Risk assessment completed with specific property changes documented.
 
-- **Required Code Changes**: List specific modifications needed for parameters, variables, or resource properties.
-- **Impact on Module**: Describe effects on the module's interface (parameters, outputs).
-- **Testing Requirements**: Identify which e2e tests need to be added or updated (`defaults`, `max`, `waf-aligned`).
-- **Complexity**: Estimate the migration effort (Low, Medium, High).
+- Thought: Create detailed implementation plans for each resource requiring updates.
+  - Action: think(thoughts=`Implementation plan for ${resourceName}: code changes, module impact, testing requirements, migration complexity`)
+  - Observation: Comprehensive implementation plan including specific steps and risk mitigation.
 
-**CRITICAL**: This section is mandatory and must follow the exact format specified in Section 4.3.
+- Thought: Produce final outputs with validation checklist.
+  - Action: Compile detailed change plans, validate completeness against checklist
+  - Observation: Complete analysis ready for user review and implementation.
 
-## 4. Output Format
+## 5. Output Format
 
 > [!CRITICAL]
 > You MUST produce ALL sections below in the EXACT format specified. Missing any section will result in an incomplete analysis.
 
-### 4.1. Summary Table (MANDATORY)
-**You MUST create this table immediately after Step 3.3, before proceeding to schema analysis.**
+### 5.1. Summary Table (MANDATORY)
 
 | Resource Name | Resource Type | Current API | Latest API | Status | Complexity | Breaking Changes |
 |---------------|---------------|-------------|------------|--------|------------|------------------|
 | `storageAccount` | `Microsoft.Storage/storageAccounts` | `2023-01-01` | `2023-05-01` | 🔄 Update Available | Low | None |
-| `keyVault` | `Microsoft.KeyVault/vaults` | `2023-02-01` | `2023-07-01` | ⚠️ Review Required | Medium | New required property |
 
-### 4.2. Status Icons (MANDATORY)
-**You MUST include this legend immediately after the summary table.**
+### 5.2. Status Icons
 
 - 🔄 **Update Available**: Newer stable version is available.
 - ✅ **Current**: Already on the latest stable version.
@@ -96,10 +85,9 @@ Compare the `current` API version from the file with the `latest` stable version
 - 🔍 **Investigation Needed**: Current version is newer than the latest documented stable version.
 - 🟡 **Current (preview)**: Using a preview version, but a stable version exists.
 
-### 4.3. Detailed Change Plans (MANDATORY)
-**You MUST create this section for EVERY resource with status 🔄 Update Available or ⚠️ Review Required.**
+### 5.3. Detailed Change Plans (MANDATORY)
 
-For each resource requiring an update, provide the following details in this EXACT format:
+For each resource requiring an update, provide the following details:
 
 #### Resource: {ResourceName}
 - **Current Version**: {currentApiVersion}
@@ -113,37 +101,31 @@ For each resource requiring an update, provide the following details in this EXA
 - ⚠️ **Behavioral**: Note specific changes in default values or resource behavior.
 
 **Implementation Plan:**
-1.  **Module Updates**: Detail specific required changes to parameters, variables, and outputs.
-2.  **Test Updates**: Specify which e2e test scenarios need modification (defaults/max/waf-aligned).
-3.  **Documentation**: Note specific required updates for the README file.
-4.  **Validation**: Mention any PSRule or linter considerations.
+1. **Module Updates**: Detail specific required changes to parameters, variables, and outputs.
+2. **Test Updates**: Specify which e2e test scenarios need modification (defaults/max/waf-aligned).
+3. **Documentation**: Note specific required updates for the README file.
+4. **Validation**: Mention any PSRule or linter considerations.
 
 **Risk Assessment:**
 - **Breaking Risk**: {Low | Medium | High} - with specific justification
 - **Migration Effort**: {Low | Medium | High} - with time estimate if possible
 - **Testing Complexity**: {Low | Medium | High} - with specific test scenarios needed
 
-> [!CRITICAL]
-> If you skip Section 4.3 or provide incomplete information, the analysis is considered failed.
-
-## 5. Execution Validation
+## 6. Execution Validation
 
 > [!CRITICAL]
 > Before completing your analysis, verify you have completed ALL of the following:
 
 ### Checklist for Complete Analysis:
-- [ ] **Step 3.1**: Discovered and listed ALL resources with their current API versions
-- [ ] **Step 3.2**: Fetched latest stable API versions for ALL discovered resources using `fetch` tool
-- [ ] **Step 3.3**: Compared versions and assigned status to ALL resources
-- [ ] **Output 4.1**: Created the complete summary table with ALL resources
-- [ ] **Output 4.2**: Included the status icons legend
-- [ ] **Step 3.4**: For EVERY resource with "Update Available" status, fetched BOTH current and latest schemas
-- [ ] **Step 3.4**: Performed detailed schema comparison for ALL resources requiring updates
-- [ ] **Output 4.3**: Created detailed change plans for EVERY resource requiring updates
-- [ ] **Step 3.5**: Provided implementation plans with specific code changes, testing requirements, and risk assessments
+- [ ] **Step 4**: Complete execution of all ReAct steps
+- [ ] **Step 5.1**: Summary table created with ALL resources and their status
+- [ ] **Step 5.2**: Status icons legend included
+- [ ] **Schema Analysis**: For EVERY resource with "Update Available" status, fetched BOTH current and latest schemas
+- [ ] **Step 5.3**: Created detailed change plans for EVERY resource requiring updates
+- [ ] **Implementation Plans**: Provided specific code changes, testing requirements, and risk assessments
 
 ### Failure Conditions:
-- **INCOMPLETE**: If you skip any mandatory section (4.1, 4.2, or 4.3)
+- **INCOMPLETE**: If you skip any mandatory section (5.1, 5.2, or 5.3)
 - **INSUFFICIENT**: If you don't fetch schemas for both current AND latest versions
 - **VAGUE**: If you provide general statements instead of specific property differences
 - **MISSING**: If you don't create detailed implementation plans for resources requiring updates
@@ -151,12 +133,8 @@ For each resource requiring an update, provide the following details in this EXA
 > [!WARNING]
 > If any of the above conditions are met, the analysis is considered incomplete and must be redone.
 
-## 6. Constraints
+## 7. Constraints
 - ⚠️ **No File Modifications**: This is a planning task only. Do not edit any files.
 - ⚠️ **AVM Compliance**: All recommendations must align with AVM specifications.
 - ⚠️ **Stable Versions Only**: Prioritize stable API versions unless a preview is explicitly required.
-
-## 6. Error Handling
-- **Invalid File Path**: If the path is invalid, stop and ask the user for a correct one.
-- **Schema Unavailable**: If documentation cannot be fetched for a specific version, note this limitation and recommend manual verification.
-- **Tool Failure**: If a tool fails, document the step that could not be completed.
+- ⚠️ **Schema Validation Required**: Use `fetch` tool only for API version and schema retrieval.
