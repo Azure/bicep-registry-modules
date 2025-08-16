@@ -87,8 +87,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
                     versionFileExists                  = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule            = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
-                    isMultiScopeParentModule           = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                    isMultiScopeChildModule            = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeParentModule           = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                 }
             }
         }
@@ -181,8 +181,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                         moduleType               = $moduleType
                         isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         versionFileExists        = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                        isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
-
+                        isMultiScopeChildModule  = $moduleFolderPath -match '[\/|\\](rg|sub|mg)\-scope$'
                     }
                 }
             }
@@ -223,7 +222,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.isMultiScopeParentModule }) {
 
             param(
                 [string] $moduleFolderPath
@@ -233,7 +232,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
 
             param(
                 [string] $moduleFolderPath
@@ -247,6 +246,54 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
             $defaultsFolder | Should -Not -BeNullOrEmpty
+        }
+
+        # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
+        It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*waf-aligned `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+            $wafAlignedFolders = (Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned').Name
+
+            $multiScopeModuleFolders = (Get-ChildItem -Path $moduleFolderPath -Filter '*-scope' -Directory).Name
+            $expectedFolders = $multiScopeModuleFolders | ForEach-Object { "$_*.waf-aligned" }
+
+            $missingFolders = @()
+            foreach ($expectedFolder in $expectedFolders) {
+                $matchingFolderExists = $wafAlignedFolders | Where-Object {
+                    $_ -like $expectedFolder
+                }
+                if (-not $matchingFolderExists) {
+                    $missingFolders += $expectedFolder
+                }
+            }
+
+            $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*waf-aligned] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
+        }
+
+        # Runs the test cases from the parent module's perspective for all multi-scoped child-modules
+        It '[<moduleFolderName>] Top-level multi-scoped module should contain a [` tests/e2e/*defaults `] folder for each scope.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+            $wafAlignedFolders = (Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults').Name
+
+            $multiScopeModuleFolders = (Get-ChildItem -Path $moduleFolderPath -Filter '*-scope' -Directory).Name
+            $expectedFolders = $multiScopeModuleFolders | ForEach-Object { "$_*.defaults" }
+
+            $missingFolders = @()
+            foreach ($expectedFolder in $expectedFolders) {
+                $matchingFolderExists = $wafAlignedFolders | Where-Object {
+                    $_ -like $expectedFolder
+                }
+                if (-not $matchingFolderExists) {
+                    $missingFolders += $expectedFolder
+                }
+            }
+
+            $missingFolders | Should -BeNullOrEmpty -Because ('multi-scoped modules must contain a [*defaults] folder for each scope. Missing folders: [{0}].' -f ($missingFolders -join ', '))
         }
 
         It '[<moduleFolderName>] Top-level module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
@@ -374,12 +421,21 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
                 $workflowFileName = Get-PipelineFileName -ResourceIdentifier $relativeModulePath
                 $workflowPath = Join-Path $workflowsFolderName $workflowFileName
 
-                $pipelineTestCases += @{
-                    relativeModulePath = $relativeModulePath
+                $pipelineTestCase = @{
+                    relativeModulePath = $relativeModulePath -replace '\\', '/'
                     moduleFolderName   = $resourceTypeIdentifier
                     workflowFileName   = $workflowFileName
                     workflowPath       = $workflowPath
+                    workflowFileExists = Test-Path $workflowPath
                 }
+
+                if (Test-Path $workflowPath) {
+                    $pipelineTestCase['envVariables'] = Get-WorkflowEnvVariablesAsObject -WorkflowPath $WorkflowPath
+                    $pipelineTestCase['pushTrigger'] = Get-WorkflowPushTriggerAsObject -WorkflowPath $WorkflowPath
+                    $pipelineTestCase['workflowDipatchTriggerDefaults'] = Get-WorkflowWorkflowDispatchTriggerInputsAsObject -WorkflowPath $WorkflowPath
+                }
+
+                $pipelineTestCases += $pipelineTestCase
             }
         }
     }
@@ -393,22 +449,173 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         Test-Path $WorkflowPath | Should -Be $true -Because "path [$WorkflowPath] should exist."
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have [workflowPath] environment variable with value [.github/workflows/<WorkflowFileName>].' -TestCases $pipelineTestCases {
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have expected environment variables.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
 
         param(
-            [string] $WorkflowPath,
-            [string] $WorkflowFileName
+            [hashtable] $EnvVariables
         )
 
-        if (-not (Test-Path $WorkflowPath)) {
-            Set-ItResult -Skipped -Because "Cannot test content of file in path [$WorkflowPath] as it does not exist."
+        $missingEnvironmentVariables = @('workflowPath', 'modulePath') | Where-Object { -not $EnvVariables.ContainsKey($_) }
+        $missingEnvironmentVariables.Count | Should -Be 0 -Because ('the number of missing environment variables should be 0, but got [{0}]' -f ($missingEnvironmentVariables -join ', '))
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have [workflowPath] environment variable with value [.github/workflows/<WorkflowFileName>].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [string] $WorkflowFileName,
+            [hashtable] $EnvVariables
+        )
+
+        $expectedEnvironmentVariable = 'workflowPath'
+        if (-not $EnvVariables.ContainsKey($expectedEnvironmentVariable)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the value of the environment variable [$expectedEnvironmentVariable] as it does not exist."
             return
         }
 
-        $environmentVariables = Get-WorkflowEnvVariablesAsObject -WorkflowPath $WorkflowPath
+        $EnvVariables[$expectedEnvironmentVariable] | Should -Be ".github/workflows/$workflowFileName"
+    }
 
-        $environmentVariables.Keys | Should -Contain 'workflowPath'
-        $environmentVariables['workflowPath'] | Should -Be ".github/workflows/$workflowFileName"
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have [modulePath] environment variable with value [<relativeModulePath>].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [string] $RelativeModulePath,
+            [hashtable] $EnvVariables
+        )
+
+        $expectedEnvironmentVariable = 'modulePath'
+        if (-not $EnvVariables.ContainsKey($expectedEnvironmentVariable)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the value of the environment variable [$expectedEnvironmentVariable] as it does not exist."
+            return
+        }
+
+        $EnvVariables[$expectedEnvironmentVariable] | Should -Be $RelativeModulePath
+    }
+
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have expected runtime parameters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $workflowDipatchTriggerDefaults
+        )
+
+        $expectedRuntimeParameters = @(
+            'customLocation',
+            'staticValidation',
+            'deploymentValidation',
+            'removeDeployment'
+        )
+
+        $missingRuntimeParameters = $expectedRuntimeParameters | Where-Object {
+            -not $workflowDipatchTriggerDefaults.ContainsKey($_)
+        }
+
+        $missingRuntimeParameters.Count | Should -Be 0 -Because ('the number of missing runtime parameters should be 0, but got [{0}]. Please refer to other module workflows for reference.' -f ($missingRuntimeParameters -join ', '))
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [staticValidation] runtime parameter should have a default value of [true].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $workflowDipatchTriggerDefaults
+        )
+
+        $expectedRuntimeParameter = 'staticValidation'
+        if (-not $workflowDipatchTriggerDefaults.ContainsKey($expectedRuntimeParameter)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the default value of the runtime parameter [$expectedRuntimeParameter] as it does not exist."
+            return
+        }
+
+        $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.default | Should -Be $true
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [deploymentValidation] runtime parameter should have a default value of [true].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $workflowDipatchTriggerDefaults
+        )
+
+        $expectedRuntimeParameter = 'deploymentValidation'
+        if (-not $workflowDipatchTriggerDefaults.ContainsKey($expectedRuntimeParameter)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the default value of the runtime parameter [$expectedRuntimeParameter] as it does not exist."
+            return
+        }
+
+        $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.default | Should -Be $true
+    }
+
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [customLocation] runtime parameter should not have a default value.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $workflowDipatchTriggerDefaults
+        )
+
+        $expectedRuntimeParameter = 'customLocation'
+        if (-not $workflowDipatchTriggerDefaults.ContainsKey($expectedRuntimeParameter)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the default value of the runtime parameter [$expectedRuntimeParameter] as it does not exist."
+            return
+        }
+
+        $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.Keys | Should -Not -Contain 'default' -Because 'the defaults of the workflow would apply to all test cases of the module. If you need to enforce a specific location, consider introducing a `var enforcedLocation = ''<aLocation>''` variable in the test cases to replace the `resourceLocation` parameter instead.'
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] Should have only the [main] branch as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $PushTrigger
+        )
+
+        $PushTrigger.branches.Count | Should -Be 1
+        $PushTrigger.branches | Should -Contain 'main'
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $PushTrigger
+        )
+
+        $expectedPushTriggerPathFilters = @(
+            '.github/actions/templates/avm-**',
+            '.github/workflows/avm.template.module.yml',
+            ".github/workflows/$WorkflowFileName",
+            "$RelativeModulePath/**",
+            'utilities/pipelines/**',
+            '!utilities/pipelines/platform/**',
+            '!*/**/child-module-publish-allowed-list.json',
+            '!*/**/README.md'
+        )
+
+        $missingPushTriggerPathFilters = $expectedPushTriggerPathFilters | Where-Object {
+            -not $PushTrigger.Paths.Contains($_)
+        }
+
+        $missingPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of missing push trigger path filters should be 0, but got [{0}].' -f ($missingPushTriggerPathFilters -join ', '))
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should only have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [hashtable] $PushTrigger
+        )
+
+        $expectedPushTriggerPathFilters = @(
+            '.github/actions/templates/avm-**',
+            '.github/workflows/avm.template.module.yml',
+            ".github/workflows/$WorkflowFileName",
+            "$RelativeModulePath/**",
+            'utilities/pipelines/**',
+            '!utilities/pipelines/platform/**',
+            '!*/**/child-module-publish-allowed-list.json',
+            '!*/**/README.md'
+        )
+
+        $excessPushTriggerPathFilters = $PushTrigger.Paths | Where-Object {
+            -not $expectedPushTriggerPathFilters.Contains($_)
+        }
+
+        $excessPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of excess push trigger path filters should be 0, but got [{0}].' -f ($excessPushTriggerPathFilters -join ', '))
     }
 }
 
@@ -576,7 +783,7 @@ Describe 'Module tests' -Tag 'Module' {
                     isTopLevelModule         = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType               = $moduleType
                     versionFileExists        = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeChildModule  = $moduleFolderPath -match '[\/|\\](rg|sub|mg)\-scope$'
                     isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
 
                 }
@@ -1553,7 +1760,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
             # the second condition is for local testing only, as, after committing to GitHub, the first condition picks up the version
-            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
+            if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath).Count -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
                 # The module will be published
                 $expectedModuleVersion = $moduleTargetVersion
             } else {
@@ -1563,31 +1770,13 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
-            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
 
-            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
             # check for the presence of the `## $expectedModuleVersion` section
-            # $changelogSection | Should -BeIn $sections -Because "the `## $expectedModuleVersion` section must be in the changelog"
-            if ($changelogSection -notin $sections) {
-                $warningMessage = "The `## $expectedModuleVersion` section must be in the changelog"
-                Write-Warning $warningMessage
+            "## $expectedModuleVersion" | Should -BeIn $sections -Because "the `## $expectedModuleVersion` section must be in the changelog"
 
-                Write-Output @{
-                    Warning = $warningMessage
-                }
-            }
-
-            # NOTE: Temporarily changing to only a warning instead of an error. Remove the if and uncomment the line containing the 'Should' to reenforce the test
             # only one version section should be present
-            # $changelogSection.Count | Should -BeExactly 1 -Because "the `## $expectedModuleVersion` section should be in the changelog only once"
-            if ($changelogSection.Count -ne 1) {
-                $warningMessage = "The `## $expectedModuleVersion` section should be in the changelog only once"
-                Write-Warning $warningMessage
-
-                Write-Output @{
-                    Warning = $warningMessage
-                }
-            }
+            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$expectedModuleVersion" }
+            $changelogSection.Count | Should -BeExactly 1 -Because "the `## $expectedModuleVersion` section should be in the changelog only once"
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` file''s sections must be sorted in a decending order.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
@@ -1994,15 +2183,39 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                         $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
                         $deploymentTestFileTestCases += @{
-                            testName                = Split-Path (Split-Path $testFilePath) -Leaf
-                            testFilePath            = $testFilePath
-                            testFileContent         = $testFileContent
-                            compiledTestFileContent = $builtTestFileMap[$testFilePath]
-                            moduleFolderName        = $resourceTypeIdentifier
-                            moduleType              = $moduleType
+                            testName                 = Split-Path (Split-Path $testFilePath) -Leaf
+                            testFilePath             = $testFilePath
+                            testFileContent          = $testFileContent
+                            compiledTestFileContent  = $builtTestFileMap[$testFilePath]
+                            moduleFolderName         = $resourceTypeIdentifier
+                            moduleType               = $moduleType
+                            isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         }
                     }
                 }
+            }
+        }
+
+        It '[<moduleFolderName>] Multi-scope module test cases must directly reference the multi-scoped module they are validating.' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.moduleType -eq 'res' -and $_.isMultiScopeParentModule }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $testFilePath
+            )
+
+            $matchesRegex = $testFilePath -match '.+[\\|\/](mg\-scope|sub\-scope|rg\-scope).*'
+            if ($matchesRegex) {
+                $expectedScope = $matches[1]
+                $testFileContent = Get-Content -Path $testFilePath
+                $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = .*[\[|\{]$") | ForEach-Object { $_.LineNumber - 1 })[0]
+
+                if (-not $testIndex) {
+                    throw ('Unable to identify the test deployment (module testDeployment) in test file [{0}]' -f $testFilePath)
+                }
+
+                $testFileContent[$testIndex] | Should -Match ("^module testDeployment '\.\..*\/$($expectedScope -replace '-', '\-')\/.*main.bicep' = .*[\[|\{]$") -Because 'multi-scope test cases must directly reference the multi-scope module they are validating (e.g., "module testDeployment ''../../rg-scope/main.bicep''").'
+            } else {
+                throw "The test case was unable to identify the scope in path [$testFilePath]."
             }
         }
 

@@ -26,7 +26,7 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -194,27 +194,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName ?? 'dummyKey'
   }
 }
 
 // Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
+resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
   name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
   }
 }
@@ -327,11 +327,11 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKKeyVault.properties.vaultUri
+                    keyVaultUri: cMKKeyVault!.properties.vaultUri
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion)
                       ? customerManagedKey!.?keyVersion!
-                      : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                      : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
                   }
                 }
               : null
@@ -339,14 +339,14 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
-                      ? cMKManagedDiskKeyVault.properties.vaultUri
-                      : cMKKeyVault.properties.vaultUri
+                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
+                      ? cMKManagedDiskKeyVault!.properties.vaultUri
+                      : cMKKeyVault!.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: last(split(
-                      (customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
-                        ? cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion
-                        : cMKKeyVault::cMKKey.properties.keyUriWithVersion,
+                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
+                        ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
+                        : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
                       '/'
                     ))
                   }
@@ -400,9 +400,9 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: workspace
 }
@@ -447,7 +447,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -511,7 +511,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -610,11 +610,11 @@ output privateEndpoints privateEndpointOutputType[] = [
 @description('The private endpoints of the Databricks Workspace Storage.')
 output storagePrivateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateStorageAccount == 'Enabled' ? storageAccountPrivateEndpoints ?? [] : []): {
-    name: storageAccount_storageAccountPrivateEndpoints[index].outputs.name
-    resourceId: storageAccount_storageAccountPrivateEndpoints[index].outputs.resourceId
-    groupId: storageAccount_storageAccountPrivateEndpoints[index].outputs.?groupId!
-    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[index].outputs.customDnsConfigs
-    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[index].outputs.networkInterfaceResourceIds
+    name: storageAccount_storageAccountPrivateEndpoints[index]!.outputs.name
+    resourceId: storageAccount_storageAccountPrivateEndpoints[index]!.outputs.resourceId
+    groupId: storageAccount_storageAccountPrivateEndpoints[index]!.outputs.?groupId!
+    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[index]!.outputs.customDnsConfigs
+    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[index]!.outputs.networkInterfaceResourceIds
   }
 ]
 

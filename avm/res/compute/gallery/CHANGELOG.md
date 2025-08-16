@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/gallery/CHANGELOG.md).
 
+## 0.9.4
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.3
 
 ### Changes
@@ -9,6 +19,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added note for a required setting for DevBox-supported images.
 - Added parameter types
 - Fix: Added missing tags passthrough to the `images` sub-resource
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

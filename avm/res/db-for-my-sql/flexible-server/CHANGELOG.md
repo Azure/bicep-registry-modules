@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-my-sql/flexible-server/CHANGELOG.md).
 
+## 0.9.1
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.0
 
 ### Changes
@@ -10,6 +20,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - New `configurations` parameter allows setting MySQL server configuration parameters directly through the module
 - Created new configuration child resource module at `configuration/main.bicep`
 - Added `configurationType` definition with proper typing for configuration parameters
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

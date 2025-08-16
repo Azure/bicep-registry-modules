@@ -10,9 +10,9 @@ This module deploys an Azure Automation Account Job Schedule.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Automation/automationAccounts/jobSchedules` | 2022-08-08 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_jobschedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules)</li></ul> |
 
 ## Parameters
 
