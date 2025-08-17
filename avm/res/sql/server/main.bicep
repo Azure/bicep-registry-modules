@@ -518,7 +518,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   }
 }
 
-module server_audit_settings 'audit-setting/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'auditing-settings/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
