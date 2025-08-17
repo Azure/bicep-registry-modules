@@ -333,8 +333,13 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       ]
     }
     replicaLocations: [
-      'centralus'
-      'westus'
+      {
+        name: 'mycentralusreplica'
+        replicaLocation: 'centralus'
+      }
+      {
+        replicaLocation: 'westus'
+      }
     ]
     roleAssignments: [
       {
@@ -457,8 +462,13 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "replicaLocations": {
       "value": [
-        "centralus",
-        "westus"
+        {
+          "name": "mycentralusreplica",
+          "replicaLocation": "centralus"
+        },
+        {
+          "replicaLocation": "westus"
+        }
       ]
     },
     "roleAssignments": {
@@ -567,8 +577,13 @@ param managedIdentities = {
   ]
 }
 param replicaLocations = [
-  'centralus'
-  'westus'
+  {
+    name: 'mycentralusreplica'
+    replicaLocation: 'centralus'
+  }
+  {
+    replicaLocation: 'westus'
+  }
 ]
 param roleAssignments = [
   {
@@ -618,7 +633,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     createMode: 'Default'
     enablePurgeProtection: false
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -674,9 +688,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     "enablePurgeProtection": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -728,7 +739,6 @@ param name = 'accpe001'
 // Non-required parameters
 param createMode = 'Default'
 param enablePurgeProtection = false
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -797,8 +807,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     ]
     replicaLocations: [
-      'centralus'
-      'westus'
+      {
+        replicaLocation: 'centralus'
+      }
+      {
+        replicaLocation: 'westus'
+      }
     ]
     softDeleteRetentionInDays: 1
     tags: {
@@ -857,8 +871,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "replicaLocations": {
       "value": [
-        "centralus",
-        "westus"
+        {
+          "replicaLocation": "centralus"
+        },
+        {
+          "replicaLocation": "westus"
+        }
       ]
     },
     "softDeleteRetentionInDays": {
@@ -907,8 +925,12 @@ param keyValues = [
   }
 ]
 param replicaLocations = [
-  'centralus'
-  'westus'
+  {
+    replicaLocation: 'centralus'
+  }
+  {
+    replicaLocation: 'westus'
+  }
 ]
 param softDeleteRetentionInDays = 1
 param tags = {
@@ -1766,6 +1788,32 @@ All Replicas to create.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`replicaLocation`](#parameter-replicalocationsreplicalocation) | string | Location of the replica. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicalocationsname) | string | Name of the replica. |
+
+### Parameter: `replicaLocations.replicaLocation`
+
+Location of the replica.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replicaLocations.name`
+
+Name of the replica.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
