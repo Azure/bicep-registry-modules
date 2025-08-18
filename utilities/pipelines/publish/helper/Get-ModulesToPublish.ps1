@@ -27,6 +27,7 @@ function Get-ModifiedFileList {
 
     # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
+        Write-Verbose 'Currently in upstream [main].' -Verbose
         $currentCommit = git rev-parse 'main' # Get the current main's commit
         $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
 
@@ -43,9 +44,10 @@ function Get-ModifiedFileList {
             $retryCount++
         }
 
-        Write-Verbose ('Currently in upstream [main]. Fetching changes of current commit [{0}] against [main^-1] [{1}].' -f $currentCommit.Substring(0, 7), $previousCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{0}] against [main^-1] [{1}].' -f $currentCommit.Substring(0, 7), $previousCommit.Substring(0, 7)) -Verbose
         $diff = git diff --name-only --diff-filter=AM $previousCommit
     } else {
+        Write-Verbose ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.') -Verbose
         $currentCommit = git rev-parse --short=8 'HEAD' # Get the current commit
         $currentUpstreamCommit = git rev-parse 'upstream/main' # Get the previous main's commit in upstream
 
@@ -61,7 +63,7 @@ function Get-ModifiedFileList {
             }
             $retryCount++
         }
-        Write-Verbose ('{0} Fetching changes of current commit [{1}] against upstream [main] [{2}]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.'), $currentCommit.Substring(0, 7), $currentUpstreamCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{1}] against upstream [main] [{2}]' -f $currentCommit.Substring(0, 7), $currentUpstreamCommit.Substring(0, 7)) -Verbose
         $diff = git diff --name-only --diff-filter=AM $currentUpstreamCommit
     }
 
