@@ -203,8 +203,8 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
               ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? cMKKeyVault::cMKKey.?properties.keyUri
-                  : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
               ? cMKUserAssignedIdentity.?properties.clientId
               : null
