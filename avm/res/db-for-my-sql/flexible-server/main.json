@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15790749644321977577"
+      "templateHash": "579393489518623293"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -106,67 +106,6 @@
       },
       "metadata": {
         "__bicep_export!": true
-      }
-    },
-    "administratorType": {
-      "type": "object",
-      "properties": {
-        "sid": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. SID (object ID) of the server administrator."
-          }
-        },
-        "identityResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the identity used for AAD Authentication."
-          }
-        },
-        "login": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Login name of the server administrator."
-          }
-        },
-        "tenantId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The tenantId of the Active Directory administrator."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of an administrator"
-      }
-    },
-    "firewallRuleType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the PostgreSQL flexible server Firewall Rule."
-          }
-        },
-        "startIpAddress": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
-          }
-        },
-        "endIpAddress": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of a firewall rule."
       }
     },
     "_1.lockType": {
@@ -865,10 +804,7 @@
     },
     "administrators": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/administratorType"
-      },
-      "nullable": true,
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. The Azure AD administrators when AAD authentication enabled."
       }
@@ -1113,10 +1049,7 @@
     },
     "firewallRules": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/firewallRuleType"
-      },
-      "nullable": true,
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
       }

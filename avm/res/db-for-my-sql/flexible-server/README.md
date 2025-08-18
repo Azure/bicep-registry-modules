@@ -1336,48 +1336,7 @@ The Azure AD administrators when AAD authentication enabled.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`identityResourceId`](#parameter-administratorsidentityresourceid) | string | The resource ID of the identity used for AAD Authentication. |
-| [`login`](#parameter-administratorslogin) | string | Login name of the server administrator. |
-| [`sid`](#parameter-administratorssid) | string | SID (object ID) of the server administrator. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`tenantId`](#parameter-administratorstenantid) | string | The tenantId of the Active Directory administrator. |
-
-### Parameter: `administrators.identityResourceId`
-
-The resource ID of the identity used for AAD Authentication.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `administrators.login`
-
-Login name of the server administrator.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `administrators.sid`
-
-SID (object ID) of the server administrator.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `administrators.tenantId`
-
-The tenantId of the Active Directory administrator.
-
-- Required: No
-- Type: string
+- Default: `[]`
 
 ### Parameter: `advancedThreatProtection`
 
@@ -1742,35 +1701,7 @@ The firewall rules to create in the MySQL flexible server.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
-| [`name`](#parameter-firewallrulesname) | string | The name of the PostgreSQL flexible server Firewall Rule. |
-| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
-
-### Parameter: `firewallRules.endIpAddress`
-
-The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `firewallRules.name`
-
-The name of the PostgreSQL flexible server Firewall Rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `firewallRules.startIpAddress`
-
-The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
-
-- Required: Yes
-- Type: string
+- Default: `[]`
 
 ### Parameter: `geoRedundantBackup`
 
