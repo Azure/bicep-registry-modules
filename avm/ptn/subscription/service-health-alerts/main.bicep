@@ -9,7 +9,7 @@ param location string = deployment().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -208,11 +208,15 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
       name: alert.?serviceHealthAlert ?? serviceHealthAlertsMap[i].alertName
       conditions: filter(serviceHealthAlertsMap, alertMap => alertMap.serviceHealthAlert == alert.?serviceHealthAlert)[0].condition.allOf
       alertDescription: alert.?alertDescription ?? serviceHealthAlertsMap[i].serviceHealthAlert
-      actions: !empty(alert.?actionGroup)
+      actions: !empty(alert.?actionGroup) && empty(alert.?actionGroup.?existingActionGroupResourceId)
         ? [
-            createActionGroups[i].outputs.resourceId
+            createActionGroups[i].?outputs.resourceId
           ]
-        : null
+        : !empty(alert.?actionGroup.?existingActionGroupResourceId)
+            ? [
+                alert.?actionGroup.?existingActionGroupResourceId
+              ]
+            : null
       enabled: alert.?isEnabled ?? true
       location: 'Global'
       tags: tags
@@ -223,7 +227,7 @@ module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:
 ]
 
 module createActionGroups 'br/public:avm/res/insights/action-group:0.7.0' = [
-  for alert in serviceHealthAlerts: if (!empty(alert.?actionGroup)) {
+  for alert in serviceHealthAlerts: if (!empty(alert.?actionGroup) && empty(alert.?actionGroup.?existingActionGroupResourceId)) {
     scope: resourceGroup(subscriptionId, serviceHealthAlertsResourceGroupName)
     dependsOn: [
       alertsResourceGroup
@@ -258,7 +262,7 @@ module createActionGroups 'br/public:avm/res/insights/action-group:0.7.0' = [
 @description('The resource IDs of the created alerts.')
 output alertsResourceIds array = [
   for (alert, i) in serviceHealthAlerts: {
-    alertResourceId: createServiceHealthAlerts[i].outputs.resourceId
+    alertResourceId: createServiceHealthAlerts[i].?outputs.resourceId
   }
 ]
 
@@ -266,7 +270,7 @@ output alertsResourceIds array = [
 output actionGroupResourceIds array = [
   for (actionGroup, i) in serviceHealthAlerts: (!empty(actionGroup.?actionGroup))
     ? {
-        actionGroupResourceId: createActionGroups[i].outputs.resourceId
+        actionGroupResourceId: createActionGroups[i].?outputs.resourceId
       }
     : null
 ]
@@ -298,11 +302,14 @@ type serviceHealthAlertType = {
 }
 
 type actionGroupType = {
-  @description('Required. The name of the action group.')
-  name: string
+  @description('Optional. The name of the action group.')
+  name: string?
 
   @description('Optional. The short name of the action group. Max length is 12 characters.')
   groupShortName: string?
+
+  @description('Optional. The resource Id of an existing action group.')
+  existingActionGroupResourceId: string?
 
   @description('Required. Flag to enable or disable the action group.')
   enabled: bool

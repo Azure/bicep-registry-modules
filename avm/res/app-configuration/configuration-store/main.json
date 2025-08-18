@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12168973636398460377"
+      "version": "0.37.4.10188",
+      "templateHash": "11824545499996169855"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -103,6 +103,58 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "replicaLocationType": {
+      "type": "object",
+      "properties": {
+        "replicaLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Location of the replica."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the replica."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a replica location"
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -401,12 +453,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -542,7 +601,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -749,6 +808,9 @@
     },
     "replicaLocations": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/replicaLocationType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. All Replicas to create."
@@ -919,7 +981,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "configurationStore"
@@ -1025,8 +1087,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8891144649996176363"
+              "version": "0.37.4.10188",
+              "templateHash": "10187580921118308711"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value."
@@ -1130,10 +1192,10 @@
             "value": "[parameters('name')]"
           },
           "replicaLocation": {
-            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()]]"
+            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()].replicaLocation]"
           },
           "name": {
-            "value": "[format('{0}replica', coalesce(parameters('replicaLocations'), createArray())[copyIndex()])]"
+            "value": "[tryGet(coalesce(parameters('replicaLocations'), createArray())[copyIndex()], 'name')]"
           }
         },
         "template": {
@@ -1142,8 +1204,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "14825535493137706311"
+              "version": "0.37.4.10188",
+              "templateHash": "8841827740888959251"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica."
@@ -1151,8 +1213,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "[format('{0}replica', parameters('replicaLocation'))]",
               "metadata": {
-                "description": "Required. Name of the replica."
+                "description": "Optional. Name of the replica."
               }
             },
             "appConfigurationName": {

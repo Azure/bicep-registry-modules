@@ -28,6 +28,7 @@ on:
       - "avm/ptn/finops-toolkit/finops-hub/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

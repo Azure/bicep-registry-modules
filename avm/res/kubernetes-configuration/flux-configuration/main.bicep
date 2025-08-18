@@ -13,35 +13,43 @@ param clusterName string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@allowed([
+  'managedCluster'
+  'connectedCluster'
+])
+@description('Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.')
+param clusterType string = 'managedCluster'
+
 @description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`.')
-param bucket object?
+param bucket resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.bucket?
 
 @description('Optional. Key-value pairs of protected configuration settings for the configuration.')
 @secure()
-param configurationProtectedSettings object?
+param configurationProtectedSettings resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
 
 @description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.')
-param gitRepository object?
+param gitRepository resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.gitRepository?
+
+@description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `OciRepository`.')
+param ociRepository resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.ociRepository?
+
+@description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `AzureBlob`.')
+param azureBlob resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.azureBlob?
 
 @description('Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
-param kustomizations object
+param kustomizations resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.kustomizations
 
 @description('Required. The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only.')
 param namespace string
 
-@allowed([
-  'cluster'
-  'namespace'
-])
 @description('Required. Scope at which the configuration will be installed.')
-param scope string
+param scope resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.scope
 
-@allowed([
-  'Bucket'
-  'GitRepository'
-])
 @description('Required. Source Kind to pull the configuration data from.')
-param sourceKind string
+param sourceKind resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.sourceKind
+
+@description('Optional. Reconciliation wait duration (ISO 8601 format).')
+param reconciliationWaitDuration resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.reconciliationWaitDuration?
 
 @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
 param suspend bool = false
@@ -65,30 +73,47 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-04-01' existing = if (clusterType == 'managedCluster') {
   name: clusterName
 }
 
-resource fluxConfiguration 'Microsoft.KubernetesConfiguration/fluxConfigurations@2023-05-01' = {
+// Arc-enabled Connected Cluster resource reference
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = if (clusterType == 'connectedCluster') {
+  name: clusterName
+}
+
+// Common flux configuration properties
+var fluxConfigProperties = {
+  scope: scope
+  namespace: namespace
+  sourceKind: sourceKind
+  suspend: suspend
+  reconciliationWaitDuration: reconciliationWaitDuration
+  gitRepository: gitRepository
+  azureBlob: azureBlob
+  bucket: bucket
+  configurationProtectedSettings: configurationProtectedSettings
+  ociRepository: ociRepository
+  kustomizations: kustomizations
+}
+
+resource fluxConfigurationManaged 'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01' = if (clusterType == 'managedCluster') {
   name: name
   scope: managedCluster
-  properties: {
-    bucket: bucket
-    configurationProtectedSettings: configurationProtectedSettings
-    gitRepository: gitRepository
-    kustomizations: kustomizations
-    namespace: namespace
-    scope: scope
-    sourceKind: sourceKind
-    suspend: suspend
-  }
+  properties: fluxConfigProperties
+}
+
+resource fluxConfigurationConnected 'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01' = if (clusterType == 'connectedCluster') {
+  scope: connectedCluster
+  name: name
+  properties: fluxConfigProperties
 }
 
 @description('The name of the flux configuration.')
-output name string = fluxConfiguration.name
+output name string = clusterType == 'managedCluster' ? fluxConfigurationManaged.name : fluxConfigurationConnected.name
 
 @description('The resource ID of the flux configuration.')
-output resourceId string = fluxConfiguration.id
+output resourceId string = clusterType == 'managedCluster' ? fluxConfigurationManaged.id : fluxConfigurationConnected.id
 
 @description('The name of the resource group the flux configuration was deployed into.')
 output resourceGroupName string = resourceGroup().name

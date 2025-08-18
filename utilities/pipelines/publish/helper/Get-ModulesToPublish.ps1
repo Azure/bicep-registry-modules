@@ -17,17 +17,38 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    $CurrentBranch = Get-GitBranchName
-    if ($CurrentBranch -eq 'main') {
-        Write-Verbose 'Gathering modified files from the pull request' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
-    } else {
-        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'origin/main'
-    }
-    $ModifiedFiles = $Diff | Get-Item -Force
+    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
+    Start-Sleep 5 # Wait for git to finish fetching
+    $currentBranch = Get-GitBranchName
+    $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
-    return $ModifiedFiles
+    # Note: Fetches only the name of the modified files
+    if ($inUpstream -and $currentBranch -eq 'main') {
+        $currentCommit = git rev-parse 'main' # Get the current main's commit
+        $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
+        Write-Verbose ('Currently in upstream [main]. Fetching changes of current commit [{0}] against [main^-1] [{1}].' -f $currentCommit.Substring(0, 7), $previousCommit.Substring(0, 7)) -Verbose
+        $diff = git diff --name-only --diff-filter=AM $currentCommit $previousCommit
+    } else {
+        Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.')) -Verbose
+        $diff = git diff --name-only --diff-filter=AM 'upstream/main'
+    }
+
+    if ($diff.Count -gt 0) {
+        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $diff.Count, ($diff | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
+    }
+
+    $modifiedFiles = $diff | Get-Item -Force
+
+    if ($modifiedFiles.Count -gt 0) {
+        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No modified files found via `git diff`.' -Verbose
+    }
+
+    return $modifiedFiles
 }
 
 <#
@@ -105,6 +126,12 @@ function Get-TemplateFileToPublish {
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
     $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
+    if ($modifiedModuleFiles.Count -gt 0) {
+        Write-Verbose ("[{0}] Path-filtered files found:`n[{1}]" -f $modifiedModuleFiles.Count, ($modifiedModuleFiles | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No path-filtered files found.' -Verbose
+    }
+
     $relevantPaths = @()
     foreach ($modifiedFile in $modifiedModuleFiles) {
 
@@ -113,6 +140,12 @@ function Get-TemplateFileToPublish {
                 $relevantPaths += $modifiedFile
             }
         }
+    }
+
+    if ($relevantPaths.Count -gt 0) {
+        Write-Verbose ("[{0}] File-type-filtered files found:`n[{1}]" -f $relevantPaths.Count, ($relevantPaths | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No file-type-filtered files found.' -Verbose
     }
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {

@@ -2,12 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/service-bus/namespace/CHANGELOG.md).
 
+## 0.15.1
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes
 
 - Added secure outputs for the module's main resource's secrets (e.g., connection strings)
 - Small template improvements (e.g., removing redundant fallback values)
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

@@ -13,9 +13,9 @@ This module deploys a Kubernetes Configuration Flux Configuration.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2023-05-01/fluxConfigurations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_fluxconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2025-04-01/fluxConfigurations)</li></ul> |
 
 ## Usage examples
 
@@ -26,10 +26,146 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/flux-configuration:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
+  name: 'fluxConfigurationDeployment'
+  params: {
+    // Required parameters
+    clusterName: '<clusterName>'
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
+    name: 'kcfccc001'
+    namespace: 'flux-system'
+    scope: 'cluster'
+    sourceKind: 'GitRepository'
+    // Non-required parameters
+    clusterType: 'connectedCluster'
+    gitRepository: {
+      repositoryRef: {
+        branch: 'main'
+      }
+      sshKnownHosts: ''
+      syncIntervalInSeconds: 300
+      timeoutInSeconds: 180
+      url: 'https://github.com/mspnp/aks-baseline'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterName": {
+      "value": "<clusterName>"
+    },
+    "kustomizations": {
+      "value": {
+        "unified": {
+          "path": "./cluster-manifests"
+        }
+      }
+    },
+    "name": {
+      "value": "kcfccc001"
+    },
+    "namespace": {
+      "value": "flux-system"
+    },
+    "scope": {
+      "value": "cluster"
+    },
+    "sourceKind": {
+      "value": "GitRepository"
+    },
+    // Non-required parameters
+    "clusterType": {
+      "value": "connectedCluster"
+    },
+    "gitRepository": {
+      "value": {
+        "repositoryRef": {
+          "branch": "main"
+        },
+        "sshKnownHosts": "",
+        "syncIntervalInSeconds": 300,
+        "timeoutInSeconds": 180,
+        "url": "https://github.com/mspnp/aks-baseline"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param kustomizations = {
+  unified: {
+    path: './cluster-manifests'
+  }
+}
+param name = 'kcfccc001'
+param namespace = 'flux-system'
+param scope = 'cluster'
+param sourceKind = 'GitRepository'
+// Non-required parameters
+param clusterType = 'connectedCluster'
+param gitRepository = {
+  repositoryRef: {
+    branch: 'main'
+  }
+  sshKnownHosts: ''
+  syncIntervalInSeconds: 300
+  timeoutInSeconds: 180
+  url: 'https://github.com/mspnp/aks-baseline'
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -159,7 +295,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -322,7 +458,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -484,16 +620,20 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureBlob`](#parameter-azureblob) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `AzureBlob`. |
 | [`bucket`](#parameter-bucket) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`. |
 | [`gitRepository`](#parameter-gitrepository) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`. |
+| [`ociRepository`](#parameter-ocirepository) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `OciRepository`. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`clusterType`](#parameter-clustertype) | string | The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster. |
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`reconciliationWaitDuration`](#parameter-reconciliationwaitduration) | string | Reconciliation wait duration (ISO 8601 format). |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
 ### Parameter: `clusterName`
@@ -530,13 +670,6 @@ Scope at which the configuration will be installed.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'cluster'
-    'namespace'
-  ]
-  ```
 
 ### Parameter: `sourceKind`
 
@@ -544,13 +677,13 @@ Source Kind to pull the configuration data from.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Bucket'
-    'GitRepository'
-  ]
-  ```
+
+### Parameter: `azureBlob`
+
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `AzureBlob`.
+
+- Required: No
+- Type: object
 
 ### Parameter: `bucket`
 
@@ -565,6 +698,28 @@ Parameters to reconcile to the GitRepository source kind type. Required if `sour
 
 - Required: No
 - Type: object
+
+### Parameter: `ociRepository`
+
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `OciRepository`.
+
+- Required: No
+- Type: object
+
+### Parameter: `clusterType`
+
+The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.
+
+- Required: No
+- Type: string
+- Default: `'managedCluster'`
+- Allowed:
+  ```Bicep
+  [
+    'connectedCluster'
+    'managedCluster'
+  ]
+  ```
 
 ### Parameter: `configurationProtectedSettings`
 
@@ -588,6 +743,13 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `reconciliationWaitDuration`
+
+Reconciliation wait duration (ISO 8601 format).
+
+- Required: No
+- Type: string
 
 ### Parameter: `suspend`
 

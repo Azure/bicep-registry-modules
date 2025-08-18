@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Enabled custom notes for locks.
+- Updated ReadMe with AzAdvertizer reference
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
