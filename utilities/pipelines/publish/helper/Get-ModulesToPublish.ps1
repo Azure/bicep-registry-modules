@@ -29,7 +29,7 @@ function Get-ModifiedFileList {
     # Note: Fetches only the name of the modified files
     if ($true) {
         Write-Verbose 'Currently in upstream [main].' -Verbose
-        $currentCommit = git rev-parse 'main' # Get the current main's commit
+        $currentCommit = git rev-parse --short=8 'HEAD' # Get the current commit (main)
         $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
 
         $retryCount = 0
