@@ -17,21 +17,28 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
+    Write-Verbose 'Adding upstream repository reference' -Verbose
+    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+    Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
+    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
+    Start-Sleep 5 # Wait for git to finish adding the remote
+
     # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
-        $currentCommit = git rev-parse 'main' # Get the current main's commit
-        $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
+        # if ($true) {
+        Write-Verbose 'Currently in the upstream branch [main].' -Verbose
+        $currentCommit = git rev-parse --short=7 'upstream/main' # Get the current commit (main)
+        $previousCommit = git rev-parse --short=7 'upstream/main^' # Get the previous main's commit in upstream
 
         $retryCount = 0
         while ($currentCommit -eq $previousCommit) {
             Write-Warning 'Current and previous commits are the same. Trying again'
             git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
             Start-Sleep 5 # Wait for git to finish fetching
-            $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
+            $previousCommit = git rev-parse --short=7 'upstream/main^' # Get the previous main's commit in upstream
 
             if ($retryCount -ge 5) {
                 throw 'Failed to get a different previous commit after 5 retries. Exiting.'
@@ -39,25 +46,26 @@ function Get-ModifiedFileList {
             $retryCount++
         }
 
-        Write-Verbose ('Currently in upstream [main]. Fetching changes of current commit [{0}] against [main^-1] [{1}].' -f $currentCommit.Substring(0, 7), $previousCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{0}] against [main^] [{1}].' -f $currentCommit, $previousCommit) -Verbose
         $diff = git diff --name-only --diff-filter=AM $previousCommit
     } else {
-        $currentCommit = git rev-parse --short=8 'HEAD' # Get the current commit
-        $currentUpstreamCommit = git rev-parse 'upstream/main' # Get the previous main's commit in upstream
+        Write-Verbose ('{0} branch [$currentBranch]' -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
+        $currentCommit = git rev-parse --short=7 'HEAD' # Get the current commit
+        $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get the previous main's commit in upstream
 
         $retryCount = 0
         while ($currentCommit -eq $currentUpstreamCommit) {
             Write-Warning 'Current and commit and upstream main are the same. Trying again'
             git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
             Start-Sleep 5 # Wait for git to finish fetching
-            $currentUpstreamCommit = git rev-parse 'upstream/main' # Get the previous main's commit in upstream
+            $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get the previous main's commit in upstream
 
             if ($retryCount -ge 5) {
                 throw 'Failed to get a different previous commit after 5 retries. Exiting.'
             }
             $retryCount++
         }
-        Write-Verbose ('{0} Fetching changes of current commit [{1}] against upstream [main] [{2}]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.'), $currentCommit.Substring(0, 7), $currentUpstreamCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
         $diff = git diff --name-only --diff-filter=AM $currentUpstreamCommit
     }
 
