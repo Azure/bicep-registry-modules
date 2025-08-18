@@ -38,10 +38,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    scope: subscription()
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
       displayName: 'Production Edge Site'
       siteDescription: 'Production edge site for region deployment'
       siteAddress: {

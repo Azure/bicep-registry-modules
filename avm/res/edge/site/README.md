@@ -1,6 +1,6 @@
 # Microsoft Edge Site `[Microsoft.Edge/sites]`
 
-This module deploys a Microsoft Edge Site.
+This module deploys a Microsoft Edge Site at subscription or resource group scope.
 
 ## Navigation
 
@@ -18,6 +18,7 @@ This module deploys a Microsoft Edge Site.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Edge/sites` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.edge_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Edge/2025-06-01/sites)</li></ul> |
+| `Microsoft.Resources/resourceGroups` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_resourcegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2024-03-01/resourceGroups)</li></ul> |
 
 ## Usage examples
 
@@ -46,6 +47,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
   params: {
     // Required parameters
     displayName: 'Test Edge Site'
+    location: '<location>'
     name: 'esmin001'
     siteAddress: {
       country: 'United States'
@@ -69,6 +71,9 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     // Required parameters
     "displayName": {
       "value": "Test Edge Site"
+    },
+    "location": {
+      "value": "<location>"
     },
     "name": {
       "value": "esmin001"
@@ -94,6 +99,7 @@ using 'br/public:avm/res/edge/site:<version>'
 
 // Required parameters
 param displayName = 'Test Edge Site'
+param location = '<location>'
 param name = 'esmin001'
 param siteAddress = {
   country: 'United States'
@@ -118,17 +124,18 @@ module site 'br/public:avm/res/edge/site:<version>' = {
   params: {
     // Required parameters
     displayName: 'Subscription-Scoped Edge Site'
+    location: '<location>'
     name: 'essub001'
     siteAddress: {
       country: 'United States'
     }
     // Non-required parameters
+    deploymentScope: 'subscription'
     labels: {
       deploymentScope: 'subscription'
       environment: 'test'
       region: 'west-us'
     }
-    location: '<location>'
     siteDescription: 'Edge site deployed at subscription scope'
   }
 }
@@ -150,6 +157,9 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     "displayName": {
       "value": "Subscription-Scoped Edge Site"
     },
+    "location": {
+      "value": "<location>"
+    },
     "name": {
       "value": "essub001"
     },
@@ -159,15 +169,15 @@ module site 'br/public:avm/res/edge/site:<version>' = {
       }
     },
     // Non-required parameters
+    "deploymentScope": {
+      "value": "subscription"
+    },
     "labels": {
       "value": {
         "deploymentScope": "subscription",
         "environment": "test",
         "region": "west-us"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "siteDescription": {
       "value": "Edge site deployed at subscription scope"
@@ -188,17 +198,18 @@ using 'br/public:avm/res/edge/site:<version>'
 
 // Required parameters
 param displayName = 'Subscription-Scoped Edge Site'
+param location = '<location>'
 param name = 'essub001'
 param siteAddress = {
   country: 'United States'
 }
 // Non-required parameters
+param deploymentScope = 'subscription'
 param labels = {
   deploymentScope: 'subscription'
   environment: 'test'
   region: 'west-us'
 }
-param location = '<location>'
 param siteDescription = 'Edge site deployed at subscription scope'
 ```
 
@@ -220,6 +231,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
   params: {
     // Required parameters
     displayName: 'Production Edge Site'
+    location: '<location>'
     name: 'eswaf001'
     siteAddress: {
       city: 'New York'
@@ -260,6 +272,9 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     // Required parameters
     "displayName": {
       "value": "Production Edge Site"
+    },
+    "location": {
+      "value": "<location>"
     },
     "name": {
       "value": "eswaf001"
@@ -308,6 +323,7 @@ using 'br/public:avm/res/edge/site:<version>'
 
 // Required parameters
 param displayName = 'Production Edge Site'
+param location = '<location>'
 param name = 'eswaf001'
 param siteAddress = {
   city: 'New York'
@@ -344,10 +360,17 @@ param siteDescription = 'Production edge site for region deployment'
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`siteAddress`](#parameter-siteaddress) | object | The physical address configuration of the site. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the resource group. Required when deploymentScope is "resourceGroup", optional when "subscription" (will be created if not provided). |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`deploymentScope`](#parameter-deploymentscope) | string | The scope at which to deploy the module. Valid values are "subscription" or "resourceGroup". |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`labels`](#parameter-labels) | object | Labels for the site. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -376,6 +399,28 @@ The physical address configuration of the site.
 - Required: Yes
 - Type: object
 
+### Parameter: `resourceGroupName`
+
+Name of the resource group. Required when deploymentScope is "resourceGroup", optional when "subscription" (will be created if not provided).
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentScope`
+
+The scope at which to deploy the module. Valid values are "subscription" or "resourceGroup".
+
+- Required: No
+- Type: string
+- Default: `'resourceGroup'`
+- Allowed:
+  ```Bicep
+  [
+    'resourceGroup'
+    'subscription'
+  ]
+  ```
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -395,9 +440,8 @@ Labels for the site.
 
 Location for all Resources.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `[deployment().location]`
 
 ### Parameter: `lock`
 
@@ -551,6 +595,7 @@ The description of the site.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
+| `resourceGroupName` | string | The name of the resource group. |
 | `resourceId` | string | The resource ID of the site. |
 
 ## Cross-referenced modules
