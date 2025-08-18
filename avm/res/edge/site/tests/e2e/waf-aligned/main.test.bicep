@@ -35,12 +35,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      resourceGroupName: resourceGroupName
       location: resourceLocation
       displayName: 'Production Edge Site'
       siteDescription: 'Production edge site for region deployment'
       siteAddress: {
         city: 'New York'
-        country: 'United States'
+        country: 'US'
         postalCode: '10001'
         stateOrProvince: 'New York'
         streetAddress1: '350 Fifth Avenue'

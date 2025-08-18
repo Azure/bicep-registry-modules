@@ -48,8 +48,10 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     location: '<location>'
     name: 'esmin001'
     siteAddress: {
-      country: 'United States'
+      country: 'US'
     }
+    // Non-required parameters
+    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -78,8 +80,12 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     },
     "siteAddress": {
       "value": {
-        "country": "United States"
+        "country": "US"
       }
+    },
+    // Non-required parameters
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     }
   }
 }
@@ -100,8 +106,10 @@ param displayName = 'Test Edge Site'
 param location = '<location>'
 param name = 'esmin001'
 param siteAddress = {
-  country: 'United States'
+  country: 'US'
 }
+// Non-required parameters
+param resourceGroupName = '<resourceGroupName>'
 ```
 
 </details>
@@ -125,15 +133,10 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     location: '<location>'
     name: 'essub001'
     siteAddress: {
-      country: 'United States'
+      country: 'US'
     }
     // Non-required parameters
     deploymentScope: 'subscription'
-    labels: {
-      deploymentScope: 'subscription'
-      environment: 'test'
-      region: 'west-us'
-    }
     siteDescription: 'Edge site deployed at subscription scope'
   }
 }
@@ -163,19 +166,12 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     },
     "siteAddress": {
       "value": {
-        "country": "United States"
+        "country": "US"
       }
     },
     // Non-required parameters
     "deploymentScope": {
       "value": "subscription"
-    },
-    "labels": {
-      "value": {
-        "deploymentScope": "subscription",
-        "environment": "test",
-        "region": "west-us"
-      }
     },
     "siteDescription": {
       "value": "Edge site deployed at subscription scope"
@@ -199,15 +195,10 @@ param displayName = 'Subscription-Scoped Edge Site'
 param location = '<location>'
 param name = 'essub001'
 param siteAddress = {
-  country: 'United States'
+  country: 'US'
 }
 // Non-required parameters
 param deploymentScope = 'subscription'
-param labels = {
-  deploymentScope: 'subscription'
-  environment: 'test'
-  region: 'west-us'
-}
 param siteDescription = 'Edge site deployed at subscription scope'
 ```
 
@@ -233,7 +224,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     name: 'eswaf001'
     siteAddress: {
       city: 'New York'
-      country: 'United States'
+      country: 'US'
       postalCode: '10001'
       stateOrProvince: 'New York'
       streetAddress1: '350 Fifth Avenue'
@@ -250,6 +241,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    resourceGroupName: '<resourceGroupName>'
     siteDescription: 'Production edge site for region deployment'
   }
 }
@@ -280,7 +272,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
     "siteAddress": {
       "value": {
         "city": "New York",
-        "country": "United States",
+        "country": "US",
         "postalCode": "10001",
         "stateOrProvince": "New York",
         "streetAddress1": "350 Fifth Avenue",
@@ -301,6 +293,9 @@ module site 'br/public:avm/res/edge/site:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     },
     "siteDescription": {
       "value": "Production edge site for region deployment"
@@ -325,7 +320,7 @@ param location = '<location>'
 param name = 'eswaf001'
 param siteAddress = {
   city: 'New York'
-  country: 'United States'
+  country: 'US'
   postalCode: '10001'
   stateOrProvince: 'New York'
   streetAddress1: '350 Fifth Avenue'
@@ -342,6 +337,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param resourceGroupName = '<resourceGroupName>'
 param siteDescription = 'Production edge site for region deployment'
 ```
 

@@ -35,10 +35,11 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      resourceGroupName: resourceGroupName
       location: resourceLocation
       displayName: 'Test Edge Site'
       siteAddress: {
-        country: 'United States'
+        country: 'US'
       }
     }
   }

@@ -31,12 +31,7 @@ module testDeployment '../../../main.bicep' = [
       displayName: 'Subscription-Scoped Edge Site'
       siteDescription: 'Edge site deployed at subscription scope'
       siteAddress: {
-        country: 'United States'
-      }
-      labels: {
-        environment: 'test'
-        deploymentScope: 'subscription'
-        region: 'west-us'
+        country: 'US'
       }
     }
   }
