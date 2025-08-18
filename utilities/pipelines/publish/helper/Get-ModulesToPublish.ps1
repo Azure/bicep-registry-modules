@@ -64,7 +64,7 @@ function Get-ModifiedFileList {
             }
             $retryCount++
         }
-        Write-Verbose ('Fetching changes of current commit [{1}] against upstream [main] [{2}]' -f $currentCommit.Substring(0, 7), $currentUpstreamCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit.Substring(0, 7), $currentUpstreamCommit.Substring(0, 7)) -Verbose
         $diff = git diff --name-only --diff-filter=AM $currentUpstreamCommit
     }
 
