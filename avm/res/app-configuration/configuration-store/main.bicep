@@ -206,7 +206,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
                   ? cMKKeyVault::cMKKey!.properties.keyUri
                   : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? cMKUserAssignedIdentity.?properties.clientId
+              ? cMKUserAssignedIdentity!.properties.clientId
               : null
           }
         }
