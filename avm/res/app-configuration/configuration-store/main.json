@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16278554129355210184"
+      "templateHash": "17783609764578034101"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -1211,7 +1211,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5344423200637077955"
+              "templateHash": "12609356088985615301"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica."
