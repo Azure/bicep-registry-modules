@@ -19,7 +19,7 @@ param name string
 @description('Required. Location for all Resources.')
 param location string
 
-@description('Conditional. Name of the resource group. Required if deploymentScope is "resourceGroup"')
+@description('Conditional. Name of the resource group. Required if deploymentScope is "resourceGroup".')
 param resourceGroupName string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -164,6 +164,3 @@ output name string = deploymentScope == 'subscription' ? site.name : siteAtResou
 
 @description('The location the resource was deployed into.')
 output location string = location
-
-@description('The name of the resource group.')
-output resourceGroupName string = deploymentScope == 'subscription' ? resourceGroup.name : resourceGroupName

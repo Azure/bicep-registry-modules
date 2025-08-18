@@ -364,7 +364,7 @@ param siteDescription = 'Production edge site for region deployment'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the resource group. Required if deploymentScope is "resourceGroup" |
+| [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the resource group. Required if deploymentScope is "resourceGroup". |
 
 **Optional parameters**
 
@@ -407,7 +407,7 @@ The physical address configuration of the site.
 
 ### Parameter: `resourceGroupName`
 
-Name of the resource group. Required if deploymentScope is "resourceGroup"
+Name of the resource group. Required if deploymentScope is "resourceGroup".
 
 - Required: No
 - Type: string
@@ -594,7 +594,6 @@ The description of the site.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
-| `resourceGroupName` | string | The name of the resource group. |
 | `resourceId` | string | The resource ID of the site. |
 
 ## Data Collection

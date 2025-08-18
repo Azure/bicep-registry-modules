@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16814461736174165856"
+      "templateHash": "7353981281739339128"
     },
     "name": "Microsoft Edge Site",
     "description": "This module deploys a Microsoft Edge Site at subscription or resource group scope."
@@ -146,7 +146,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Name of the resource group. Required if deploymentScope is \"resourceGroup\""
+        "description": "Conditional. Name of the resource group. Required if deploymentScope is \"resourceGroup\"."
       }
     },
     "enableTelemetry": {
@@ -451,13 +451,6 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[parameters('location')]"
-    },
-    "resourceGroupName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the resource group."
-      },
-      "value": "[if(equals(parameters('deploymentScope'), 'subscription'), parameters('resourceGroupName'), parameters('resourceGroupName'))]"
     }
   }
 }
