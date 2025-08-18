@@ -16,7 +16,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Added type for replica location, enabling the specification of the replica name
 
 ## 0.7.0
 

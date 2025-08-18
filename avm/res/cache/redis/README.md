@@ -2315,11 +2315,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -2331,7 +2329,6 @@ All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `redisVersion`
 
@@ -2573,7 +2570,6 @@ Static IP address. Optionally, may be specified when deploying a Redis cache ins
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `subnetResourceId`
 
@@ -2581,7 +2577,6 @@ The full resource ID of a subnet in a virtual network to deploy the Redis cache 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 

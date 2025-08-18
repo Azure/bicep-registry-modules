@@ -23,7 +23,7 @@ param lock lockType?
   }
   '''
 })
-param tags object?
+param tags resourceInput<'Microsoft.App/jobs@2025-02-02-preview'>.tags?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 @metadata({

@@ -363,7 +363,7 @@ param tags = {
 | [`containers`](#parameter-containers) | array | Custom container definitions. Only required if containerType is CustomContainer. |
 | [`cooldownPeriodInSeconds`](#parameter-cooldownperiodinseconds) | int | The cooldown period of a session in seconds. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`environmentId`](#parameter-environmentid) | string | Resource ID of the session pool's environment. |
+| [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of the session pool's environment. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -534,7 +534,7 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `environmentId`
+### Parameter: `environmentResourceId`
 
 Resource ID of the session pool's environment.
 

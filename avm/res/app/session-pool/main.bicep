@@ -53,10 +53,10 @@ param managedIdentities managedIdentityAllType?
 param managedIdentitySettings managedIdentitySettingType[]?
 
 @description('Optional. Resource ID of the session pool\'s environment.')
-param environmentId string?
+param environmentResourceId string?
 
 @description('Optional. Tags of the Automation Account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/sessionPools@2024-10-02-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -138,7 +138,7 @@ resource sessionPool 'Microsoft.App/sessionPools@2024-10-02-preview' = {
   identity: identity
   properties: {
     containerType: containerType
-    environmentId: environmentId
+    environmentId: environmentResourceId
     customContainerTemplate: containerType == 'CustomContainer'
       ? {
           containers: containers

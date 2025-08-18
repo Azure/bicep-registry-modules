@@ -13,8 +13,9 @@
   "parameters": {
     "name": {
       "type": "string",
+      "defaultValue": "[format('{0}replica', parameters('replicaLocation'))]",
       "metadata": {
-        "description": "Required. Name of the replica."
+        "description": "Optional. Name of the replica."
       }
     },
     "appConfigurationName": {

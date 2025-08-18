@@ -20,7 +20,6 @@ This module deploys an App Configuration Replica.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the replica. |
 | [`replicaLocation`](#parameter-replicalocation) | string | Location of the replica. |
 
 **Conditional parameters**
@@ -29,12 +28,11 @@ This module deploys an App Configuration Replica.
 | :-- | :-- | :-- |
 | [`appConfigurationName`](#parameter-appconfigurationname) | string | The name of the parent app configuration store. Required if the template is used in a standalone deployment. |
 
-### Parameter: `name`
+**Optional parameters**
 
-Name of the replica.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | Name of the replica. |
 
 ### Parameter: `replicaLocation`
 
@@ -49,6 +47,14 @@ The name of the parent app configuration store. Required if the template is used
 
 - Required: Yes
 - Type: string
+
+### Parameter: `name`
+
+Name of the replica.
+
+- Required: No
+- Type: string
+- Default: `[format('{0}replica', parameters('replicaLocation'))]`
 
 ## Outputs
 

@@ -60,7 +60,10 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       disableLocalAuth: disableLocalAuth
       createMode: 'Default'
-      replicaLocations: ['centralus', 'westus']
+      replicaLocations: [
+        { replicaLocation: 'centralus' }
+        { replicaLocation: 'westus' }
+      ]
       enablePurgeProtection: false //Only for Testing purposes. Waf Aligned is true
       diagnosticSettings: [
         {

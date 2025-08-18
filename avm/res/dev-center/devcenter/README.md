@@ -1163,7 +1163,7 @@ param projectPolicies = [
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`networkSettings`](#parameter-networksettings) | object | Network settings that will be enforced on network resources associated with the Dev Center. |
 | [`projectCatalogSettings`](#parameter-projectcatalogsettings) | object | Dev Center settings to be used when associating a project with a catalog. |
-| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources-specifically, SKUs, Images, and Network Connections-to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
+| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
 | [`projects`](#parameter-projects) | array | The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1871,7 +1871,7 @@ Whether project catalogs associated with projects in this dev center can be conf
 
 ### Parameter: `projectPolicies`
 
-Project policies provide a mechanism to restrict access to certain resources-specifically, SKUs, Images, and Network Connections-to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
+Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
 
 - Required: No
 - Type: array

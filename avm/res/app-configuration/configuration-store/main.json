@@ -105,6 +105,28 @@
         "__bicep_export!": true
       }
     },
+    "replicaLocationType": {
+      "type": "object",
+      "properties": {
+        "replicaLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Location of the replica."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the replica."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a replica location"
+      }
+    },
     "_1.lockType": {
       "type": "object",
       "properties": {
@@ -788,6 +810,9 @@
     },
     "replicaLocations": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/replicaLocationType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. All Replicas to create."
@@ -1173,10 +1198,10 @@
             "value": "[parameters('name')]"
           },
           "replicaLocation": {
-            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()]]"
+            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()].replicaLocation]"
           },
           "name": {
-            "value": "[format('{0}replica', coalesce(parameters('replicaLocations'), createArray())[copyIndex()])]"
+            "value": "[tryGet(coalesce(parameters('replicaLocations'), createArray())[copyIndex()], 'name')]"
           }
         },
         "template": {
@@ -1194,8 +1219,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "[format('{0}replica', parameters('replicaLocation'))]",
               "metadata": {
-                "description": "Required. Name of the replica."
+                "description": "Optional. Name of the replica."
               }
             },
             "appConfigurationName": {
