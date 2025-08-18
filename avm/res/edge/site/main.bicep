@@ -49,12 +49,6 @@ param lock lockType?
 // Resources      //
 // ============== //
 
-// Create resource group when deploying at subscription scope
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentScope == 'resourceGroup') {
-  name: resourceGroupName!
-  location: location
-}
-
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.edge-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'

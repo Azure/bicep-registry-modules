@@ -20,12 +20,6 @@ param namePrefix string = '#_namePrefix_#'
 // Test Execution //
 // ============== //
 
-// Create a resource group for the Edge Site
-resource testResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${namePrefix}${serviceShort}-rg'
-  location: resourceLocation
-}
-
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
