@@ -23,19 +23,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added type for replica location, enabling the specification of the replica name
 
-### Breaking Changes
-
-- Added type for replica location, enabling the specification of the replica name
-
-### Changes
-
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
-
-### Breaking Changes
-
-- None
-- Added type for replica location, enabling the specification of the replica name
-
 ## 0.7.0
 
 ### Changes
