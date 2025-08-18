@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1851459553845796686"
+      "templateHash": "15182921591715897732"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -169,7 +169,7 @@
       "apiVersion": "2024-01-01",
       "name": "[parameters('clusterName')]"
     },
-    "extensionManaged": {
+    "managedExtension": {
       "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
       "type": "Microsoft.KubernetesConfiguration/extensions",
       "apiVersion": "2024-11-01",
@@ -177,7 +177,7 @@
       "name": "[parameters('name')]",
       "properties": "[variables('extensionProperties')]"
     },
-    "extensionConnected": {
+    "connectedExtension": {
       "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
       "type": "Microsoft.KubernetesConfiguration/extensions",
       "apiVersion": "2024-11-01",
@@ -479,8 +479,8 @@
         }
       },
       "dependsOn": [
-        "extensionConnected",
-        "extensionManaged"
+        "connectedExtension",
+        "managedExtension"
       ]
     }
   },

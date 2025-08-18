@@ -96,13 +96,13 @@ var extensionProperties = {
   version: version
 }
 
-resource extensionManaged 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'managedCluster') {
+resource managedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'managedCluster') {
   name: name
   scope: managedCluster
   properties: extensionProperties
 }
 
-resource extensionConnected 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'connectedCluster') {
+resource connectedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'connectedCluster') {
   name: name
   scope: connectedCluster
   properties: extensionProperties
@@ -126,17 +126,17 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       suspend: fluxConfiguration.?suspend
     }
     dependsOn: [
-      extensionManaged
-      extensionConnected
+      managedExtension
+      connectedExtension
     ]
   }
 ]
 
 @description('The name of the extension.')
-output name string = clusterType == 'managedCluster' ? extensionManaged.name : extensionConnected.name
+output name string = clusterType == 'managedCluster' ? managedExtension.name : connectedExtension.name
 
 @description('The resource ID of the extension.')
-output resourceId string = clusterType == 'managedCluster' ? extensionManaged.id : extensionConnected.id
+output resourceId string = clusterType == 'managedCluster' ? managedExtension.id : connectedExtension.id
 
 @description('The name of the resource group the extension was deployed into.')
 output resourceGroupName string = resourceGroup().name
