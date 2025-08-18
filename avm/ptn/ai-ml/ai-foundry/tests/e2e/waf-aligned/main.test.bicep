@@ -20,8 +20,8 @@ param serviceShort string = 'fndrywaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. Whether to remove the locking dependency after deployment. Defaults to true.')
-param removeLockingDependencyAfterDeployment bool = true
+@description('Optional. Whether to remove the locking dependency after deployment. Defaults to false.')
+param removeLockingDependencyAfterDeployment bool = false
 
 // Setting max length to 12 to stay within bounds of baseName length constraints.
 // Setting min length to 12 to prevent min-char warnings on the test deployment.
