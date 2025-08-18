@@ -22,11 +22,12 @@ function Get-ModifiedFileList {
 
     Write-Verbose 'Adding upstream repository reference' -Verbose
     git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+    Start-Sleep 5 # Wait for git to finish adding the remote
     Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
     git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
 
     # Note: Fetches only the name of the modified files
-    if ($inUpstream -and $currentBranch -eq 'main') {
+    if ($true) {
         Write-Verbose 'Currently in upstream [main].' -Verbose
         $currentCommit = git rev-parse 'main' # Get the current main's commit
         $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
