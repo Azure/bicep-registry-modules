@@ -23,7 +23,6 @@ function Get-ModifiedFileList {
 
     # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
-
         $currentCommit = git rev-parse 'main' # Get the current main's commit
         $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
 
