@@ -201,7 +201,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
       ? {
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.keyVersion!}'
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
                   ? cMKKeyVault::cMKKey.?properties.keyUri
                   : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
