@@ -20,18 +20,16 @@ param sku string
 
 @allowed([
   'EdgeZone'
-  ''
 ])
 @description('Optional. Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created.')
-param edgeZone string = ''
+param edgeZone string?
 
 @allowed([
   'x64'
   'Arm64'
-  ''
 ])
 @description('Optional. CPU architecture supported by an OS disk.')
-param architecture string = ''
+param architecture string?
 
 @description('Optional. Set to true to enable bursting beyond the provisioned performance target of the disk.')
 param burstingEnabled bool = false
@@ -108,10 +106,9 @@ param optimizedForFrequentAttach bool = false
 @allowed([
   'Windows'
   'Linux'
-  ''
 ])
 @description('Optional. Sources of a disk creation.')
-param osType string = ''
+param osType string?
 
 @allowed([
   'Disabled'
@@ -141,7 +138,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the availability set resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/disks@2025-01-02'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -247,12 +244,12 @@ resource disk 'Microsoft.Compute/disks@2023-10-02' = {
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
     optimizedForFrequentAttach: optimizedForFrequentAttach
-    osType: !empty(osType) ? osType : any(null)
+    osType: osType
     publicNetworkAccess: publicNetworkAccess
     supportedCapabilities: !empty(osType)
       ? {
           acceleratedNetwork: acceleratedNetwork
-          architecture: !empty(architecture) ? architecture : null
+          architecture: architecture
         }
       : {}
   }

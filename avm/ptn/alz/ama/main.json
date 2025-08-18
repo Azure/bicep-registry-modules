@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12414605149490888805"
+      "templateHash": "11318652676217668274"
     },
     "name": "avm/ptn/alz/ama",
     "description": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones"
@@ -64,7 +64,7 @@
         "description": "Required. The name of the User Assigned Identity utilized for Azure Monitoring Agent."
       }
     },
-    "logAnalyticsWorkspaceId": {
+    "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the Log Analytics Workspace."
@@ -151,7 +151,7 @@
         "destinations": {
           "logAnalytics": [
             {
-              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
               "name": "VMInsightsPerf-Logs-Dest"
             }
           ]
@@ -202,7 +202,7 @@
         "destinations": {
           "logAnalytics": [
             {
-              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
               "name": "VMInsightsPerf-Logs-Dest"
             }
           ]
@@ -220,7 +220,7 @@
       }
     },
     "dataCollectionRuleVMInsightsPerfandMapLock": {
-      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap'))]",
+      "condition": "[and(and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name')))), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
@@ -233,7 +233,7 @@
       ]
     },
     "dataCollectionRuleVMInsightsPerfOnlyLock": {
-      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly'))]",
+      "condition": "[and(and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name')))), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
@@ -489,7 +489,7 @@
         "destinations": {
           "logAnalytics": [
             {
-              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
               "name": "Microsoft-CT-Dest"
             }
           ]
@@ -509,7 +509,7 @@
       }
     },
     "dataCollectionRuleChangeTrackingLock": {
-      "condition": "[not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None'))]",
+      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name'))))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleChangeTrackingName'))]",
@@ -550,7 +550,7 @@
         "destinations": {
           "logAnalytics": [
             {
-              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
               "name": "Microsoft-DefenderForSQL-Dest"
             }
           ]
@@ -572,7 +572,7 @@
       }
     },
     "dataCollectionRuleMDFCSQLLock": {
-      "condition": "[not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None'))]",
+      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name'))))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleMDFCSQLName'))]",

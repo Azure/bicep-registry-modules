@@ -40,7 +40,7 @@ param devBoxProvisioningSettings devBoxProvisioningSettingsType?
 @description('Optional. Network settings that will be enforced on network resources associated with the Dev Center.')
 param networkSettings networkSettingsType?
 
-@sys.description('Optional. The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments.')
+@description('Optional. The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments.')
 param catalogs catalogType[]?
 
 @description('Optional. Dev Center settings to be used when associating a project with a catalog.')

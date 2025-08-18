@@ -14,7 +14,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Communication/communicationServices@2025-05-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')

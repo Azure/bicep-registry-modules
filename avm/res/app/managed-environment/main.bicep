@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2024-10-02-preview'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')

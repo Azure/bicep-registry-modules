@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "13291449813265878212"
+      "version": "0.37.4.10188",
+      "templateHash": "8841827740888959251"
     },
     "name": "App Configuration Replicas",
     "description": "This module deploys an App Configuration Replica."
@@ -13,8 +13,9 @@
   "parameters": {
     "name": {
       "type": "string",
+      "defaultValue": "[format('{0}replica', parameters('replicaLocation'))]",
       "metadata": {
-        "description": "Required. Name of the replica."
+        "description": "Optional. Name of the replica."
       }
     },
     "appConfigurationName": {
