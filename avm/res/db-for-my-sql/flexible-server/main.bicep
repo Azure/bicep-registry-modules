@@ -408,7 +408,7 @@ module flexibleServer_databases 'database/main.bicep' = [
 ]
 
 module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
-  for (firewallRule, index) in (firewallRules ?? []): {
+  for (firewallRule, index) in firewallRules: {
     name: '${uniqueString(deployment().name, location)}-MySQL-FirewallRules-${index}'
     params: {
       name: firewallRule.name
@@ -420,7 +420,7 @@ module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
 ]
 
 module flexibleServer_administrators 'administrator/main.bicep' = [
-  for (administrator, index) in (administrators ?? []): {
+  for (administrator, index) in administrators: {
     name: '${uniqueString(deployment().name, location)}-MySQL-Administrators-${index}'
     params: {
       flexibleServerName: flexibleServer.name

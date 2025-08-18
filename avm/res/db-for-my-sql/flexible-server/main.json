@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "579393489518623293"
+      "templateHash": "14944902911494147621"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -1443,7 +1443,7 @@
     "flexibleServer_firewallRules": {
       "copy": {
         "name": "flexibleServer_firewallRules",
-        "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
+        "count": "[length(parameters('firewallRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1455,16 +1455,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].name]"
+            "value": "[parameters('firewallRules')[copyIndex()].name]"
           },
           "flexibleServerName": {
             "value": "[parameters('name')]"
           },
           "startIpAddress": {
-            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].startIpAddress]"
+            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
           },
           "endIpAddress": {
-            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].endIpAddress]"
+            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
           }
         },
         "template": {
@@ -1548,7 +1548,7 @@
     "flexibleServer_administrators": {
       "copy": {
         "name": "flexibleServer_administrators",
-        "count": "[length(coalesce(parameters('administrators'), createArray()))]"
+        "count": "[length(parameters('administrators'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1563,16 +1563,16 @@
             "value": "[parameters('name')]"
           },
           "login": {
-            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].login]"
+            "value": "[parameters('administrators')[copyIndex()].login]"
           },
           "sid": {
-            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].sid]"
+            "value": "[parameters('administrators')[copyIndex()].sid]"
           },
           "identityResourceId": {
-            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].identityResourceId]"
+            "value": "[parameters('administrators')[copyIndex()].identityResourceId]"
           },
           "tenantId": {
-            "value": "[coalesce(tryGet(coalesce(parameters('administrators'), createArray())[copyIndex()], 'tenantId'), tenant().tenantId)]"
+            "value": "[coalesce(tryGet(parameters('administrators')[copyIndex()], 'tenantId'), tenant().tenantId)]"
           }
         },
         "template": {
