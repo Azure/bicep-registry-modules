@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1090576201804413294"
+      "templateHash": "14298816470867586974"
     },
     "name": "Microsoft Edge Site",
     "description": "This module deploys a Microsoft Edge Site at subscription or resource group scope."
@@ -139,14 +139,14 @@
     "location": {
       "type": "string",
       "metadata": {
-        "description": "Optional. Location for all Resources."
+        "description": "Required. Location for all Resources."
       }
     },
     "resourceGroupName": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Name of the resource group. Required when deploymentScope is \"resourceGroup\", optional when \"subscription\" (will be created if not provided)."
+        "description": "Conditional. Name of the resource group. Required if deploymentScope is \"resourceGroup\""
       }
     },
     "enableTelemetry": {
@@ -154,6 +154,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "enableReferencedModulesTelemetry": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for other module."
       }
     },
     "siteDescription": {
@@ -318,7 +325,7 @@
             "value": "[parameters('location')]"
           },
           "enableTelemetry": {
-            "value": false
+            "value": "[parameters('enableReferencedModulesTelemetry')]"
           },
           "siteDescription": {
             "value": "[parameters('siteDescription')]"

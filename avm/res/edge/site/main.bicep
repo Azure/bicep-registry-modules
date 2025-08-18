@@ -16,14 +16,17 @@ param deploymentScope string = 'resourceGroup'
 @description('Required. Name of the resource to create.')
 param name string
 
-@description('Optional. Location for all Resources.')
+@description('Required. Location for all Resources.')
 param location string
 
-@description('Conditional. Name of the resource group. Required when deploymentScope is "resourceGroup", optional when "subscription" (will be created if not provided).')
+@description('Conditional. Name of the resource group. Required if deploymentScope is "resourceGroup"')
 param resourceGroupName string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Enable/Disable usage telemetry for other module.')
+param enableReferencedModulesTelemetry bool = false
 
 @description('Optional. The description of the site.')
 param siteDescription string?
@@ -118,7 +121,7 @@ module siteAtResourceGroup 'site-rg.bicep' = if (deploymentScope == 'resourceGro
   params: {
     name: name
     location: location
-    enableTelemetry: false // Telemetry handled at main level
+    enableTelemetry: enableReferencedModulesTelemetry
     siteDescription: siteDescription
     displayName: displayName
     labels: labels

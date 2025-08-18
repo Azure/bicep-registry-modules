@@ -357,6 +357,7 @@ param siteDescription = 'Production edge site for region deployment'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | The display name of the site. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`siteAddress`](#parameter-siteaddress) | object | The physical address configuration of the site. |
 
@@ -364,16 +365,16 @@ param siteDescription = 'Production edge site for region deployment'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the resource group. Required when deploymentScope is "resourceGroup", optional when "subscription" (will be created if not provided). |
+| [`resourceGroupName`](#parameter-resourcegroupname) | string | Name of the resource group. Required if deploymentScope is "resourceGroup" |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`deploymentScope`](#parameter-deploymentscope) | string | The scope at which to deploy the module. Valid values are "subscription" or "resourceGroup". |
+| [`enableReferencedModulesTelemetry`](#parameter-enablereferencedmodulestelemetry) | bool | Enable/Disable usage telemetry for other module. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`labels`](#parameter-labels) | object | Labels for the site. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`siteDescription`](#parameter-sitedescription) | string | The description of the site. |
@@ -381,6 +382,13 @@ param siteDescription = 'Production edge site for region deployment'
 ### Parameter: `displayName`
 
 The display name of the site.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `location`
+
+Location for all Resources.
 
 - Required: Yes
 - Type: string
@@ -401,7 +409,7 @@ The physical address configuration of the site.
 
 ### Parameter: `resourceGroupName`
 
-Name of the resource group. Required when deploymentScope is "resourceGroup", optional when "subscription" (will be created if not provided).
+Name of the resource group. Required if deploymentScope is "resourceGroup"
 
 - Required: No
 - Type: string
@@ -421,6 +429,14 @@ The scope at which to deploy the module. Valid values are "subscription" or "res
   ]
   ```
 
+### Parameter: `enableReferencedModulesTelemetry`
+
+Enable/Disable usage telemetry for other module.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -435,13 +451,6 @@ Labels for the site.
 
 - Required: No
 - Type: object
-
-### Parameter: `location`
-
-Location for all Resources.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `lock`
 
