@@ -17,7 +17,10 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
+    Write-Verbose 'Adding upstream repository reference' -Verbose
     git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+    Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
+    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
