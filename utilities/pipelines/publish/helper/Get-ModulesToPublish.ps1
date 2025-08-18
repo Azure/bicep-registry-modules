@@ -27,8 +27,8 @@ function Get-ModifiedFileList {
     Start-Sleep 5 # Wait for git to finish adding the remote
 
     # Note: Fetches only the name of the modified files
-    # if ($inUpstream -and $currentBranch -eq 'main') {
-    if ($true) {
+    if ($inUpstream -and $currentBranch -eq 'main') {
+        # if ($true) {
         Write-Verbose 'Currently in upstream [main].' -Verbose
         $currentCommit = git rev-parse --short=7 'upstream/main' # Get the current commit (main)
         $previousCommit = git rev-parse --short=7 'upstream/main^' # Get the previous main's commit in upstream
