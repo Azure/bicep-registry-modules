@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app-configuration/configuration-store/CHANGELOG.md).
 
-## 0.8.0
+## 0.9.0
 
 ### Changes
 
@@ -12,10 +12,28 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Improved handling of Customer Managed Keys (CMK) by using safe navigation operators and more robust property access, increasing reliability when referencing Key Vault resources and identities.
 - Added built-in role assignments for `App Configuration Reader` and `App Configuration Contributor`, both in documentation and implementation, allowing finer-grained access control.
 - Applied `@batchSize(1)` to the replica deployment module for improved resource management and reliability during parallel deployments.
+
+## 0.8.0
+
+### Changes
+
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes
 
+- Added type for replica location, enabling the specification of the replica name
+
+### Breaking Changes
+
+- Added type for replica location, enabling the specification of the replica name
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
 - Added type for replica location, enabling the specification of the replica name
 
 ## 0.7.0
