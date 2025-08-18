@@ -732,11 +732,9 @@ CPU architecture supported by an OS disk.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Arm64'
     'x64'
   ]
@@ -803,11 +801,9 @@ Specifies the Edge Zone within the Azure Region where this Managed Disk should e
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'EdgeZone'
   ]
   ```
@@ -941,11 +937,9 @@ Sources of a disk creation.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Linux'
     'Windows'
   ]
