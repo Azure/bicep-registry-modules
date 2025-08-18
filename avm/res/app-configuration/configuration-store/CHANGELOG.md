@@ -13,6 +13,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added built-in role assignments for `App Configuration Reader` and `App Configuration Contributor`, both in documentation and implementation, allowing finer-grained access control.
 - Applied `@batchSize(1)` to the replica deployment module for improved resource management and reliability during parallel deployments.
 
+### Breaking Changes
+
+- None
+
 ## 0.8.0
 
 ### Changes
