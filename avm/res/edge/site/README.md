@@ -8,7 +8,6 @@ This module deploys a Microsoft Edge Site at subscription or resource group scop
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -372,7 +371,6 @@ param siteDescription = 'Production edge site for region deployment'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`deploymentScope`](#parameter-deploymentscope) | string | The scope at which to deploy the module. Valid values are "subscription" or "resourceGroup". |
-| [`enableReferencedModulesTelemetry`](#parameter-enablereferencedmodulestelemetry) | bool | Enable/Disable usage telemetry for other module. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`labels`](#parameter-labels) | object | Labels for the site. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -428,14 +426,6 @@ The scope at which to deploy the module. Valid values are "subscription" or "res
     'subscription'
   ]
   ```
-
-### Parameter: `enableReferencedModulesTelemetry`
-
-Enable/Disable usage telemetry for other module.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -606,14 +596,6 @@ The description of the site.
 | `name` | string | The name of the site. |
 | `resourceGroupName` | string | The name of the resource group. |
 | `resourceId` | string | The resource ID of the site. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

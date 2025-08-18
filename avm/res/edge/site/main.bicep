@@ -25,9 +25,6 @@ param resourceGroupName string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Enable/Disable usage telemetry for other module.')
-param enableReferencedModulesTelemetry bool = false
-
 @description('Optional. The description of the site.')
 param siteDescription string?
 
@@ -121,13 +118,10 @@ module siteAtResourceGroup 'site-rg.bicep' = if (deploymentScope == 'resourceGro
   params: {
     name: name
     location: location
-    enableTelemetry: enableReferencedModulesTelemetry
     siteDescription: siteDescription
     displayName: displayName
     labels: labels
     siteAddress: siteAddress
-    roleAssignments: roleAssignments
-    lock: lock
   }
 }
 
