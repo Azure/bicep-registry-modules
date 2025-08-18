@@ -297,7 +297,9 @@ type privateEndpointSingleServiceType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
-  tags: object?
+  tags: {
+    *: string
+  }?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
@@ -353,7 +355,9 @@ type privateEndpointMultiServiceType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
+  tags: {
+    *: string
+  }?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
