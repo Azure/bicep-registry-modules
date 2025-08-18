@@ -46,7 +46,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
   params: {
     // Required parameters
     displayName: 'Test Edge Site'
-    name: 'esdef001'
+    name: 'esmin001'
     siteAddress: {
       country: 'United States'
     }
@@ -71,7 +71,7 @@ module site 'br/public:avm/res/edge/site:<version>' = {
       "value": "Test Edge Site"
     },
     "name": {
-      "value": "esdef001"
+      "value": "esmin001"
     },
     "siteAddress": {
       "value": {
@@ -94,7 +94,7 @@ using 'br/public:avm/res/edge/site:<version>'
 
 // Required parameters
 param displayName = 'Test Edge Site'
-param name = 'esdef001'
+param name = 'esmin001'
 param siteAddress = {
   country: 'United States'
 }

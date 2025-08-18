@@ -15,17 +15,11 @@ param resourceGroupName string = 'dep-${namePrefix}-edge.site-${serviceShort}-rg
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'esdef'
+param serviceShort string = 'esmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation

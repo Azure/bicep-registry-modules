@@ -30,9 +30,10 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.edge.site.yml"
       - "avm/res/edge/site/**"
-      - "avm/utilities/pipelines/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
+      - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/edge/site"
