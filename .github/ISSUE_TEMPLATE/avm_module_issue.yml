@@ -135,6 +135,7 @@ body:
         - "avm/res/digital-twins/digital-twins-instance"
         - "avm/res/document-db/database-account"
         - "avm/res/document-db/mongo-cluster"
+        - "avm/res/edge/site"
         - "avm/res/elastic-san/elastic-san"
         - "avm/res/event-grid/domain"
         - "avm/res/event-grid/namespace"
