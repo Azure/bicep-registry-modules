@@ -29,15 +29,15 @@ function Get-ModifiedFileList {
     # Note: Fetches only the name of the modified files
     if ($true) {
         Write-Verbose 'Currently in upstream [main].' -Verbose
-        $currentCommit = git rev-parse --short=8 'HEAD' # Get the current commit (main)
-        $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
+        $currentCommit = git rev-parse --short=8 'main' # Get the current commit (main)
+        $previousCommit = git rev-parse --short=8 'upstream/main^' # Get the previous main's commit in upstream
 
         $retryCount = 0
         while ($currentCommit -eq $previousCommit) {
             Write-Warning 'Current and previous commits are the same. Trying again'
             git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
             Start-Sleep 5 # Wait for git to finish fetching
-            $previousCommit = git rev-parse 'upstream/main^' # Get the previous main's commit in upstream
+            $previousCommit = git rev-parse --short=8 'upstream/main^' # Get the previous main's commit in upstream
 
             if ($retryCount -ge 5) {
                 throw 'Failed to get a different previous commit after 5 retries. Exiting.'
@@ -45,26 +45,26 @@ function Get-ModifiedFileList {
             $retryCount++
         }
 
-        Write-Verbose ('Fetching changes of current commit [{0}] against [main^] [{1}].' -f $currentCommit, $previousCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{0}] against [main^] [{1}].' -f $currentCommit, $previousCommit) -Verbose
         $diff = git diff --name-only --diff-filter=AM $previousCommit
     } else {
         Write-Verbose ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.') -Verbose
         $currentCommit = git rev-parse --short=8 'HEAD' # Get the current commit
-        $currentUpstreamCommit = git rev-parse 'upstream/main' # Get the previous main's commit in upstream
+        $currentUpstreamCommit = git rev-parse --short=8 'upstream/main' # Get the previous main's commit in upstream
 
         $retryCount = 0
         while ($currentCommit -eq $currentUpstreamCommit) {
             Write-Warning 'Current and commit and upstream main are the same. Trying again'
             git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
             Start-Sleep 5 # Wait for git to finish fetching
-            $currentUpstreamCommit = git rev-parse 'upstream/main' # Get the previous main's commit in upstream
+            $currentUpstreamCommit = git rev-parse --short=8 'upstream/main' # Get the previous main's commit in upstream
 
             if ($retryCount -ge 5) {
                 throw 'Failed to get a different previous commit after 5 retries. Exiting.'
             }
             $retryCount++
         }
-        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit.Substring(0, 7)) -Verbose
+        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
         $diff = git diff --name-only --diff-filter=AM $currentUpstreamCommit
     }
 
