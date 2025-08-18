@@ -22,10 +22,10 @@ param clusterType string = 'managedCluster'
 
 @description('Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension.')
 @secure()
-param configurationProtectedSettings object?
+param configurationProtectedSettings resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
 
 @description('Optional. Configuration settings, as name-value pairs for configuring this extension.')
-param configurationSettings object?
+param configurationSettings resourceInput<'Microsoft.KubernetesConfiguration/extensions@2024-11-01'>.properties.configurationSettings?
 
 @description('Required. Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.')
 param extensionType string
@@ -43,7 +43,7 @@ param targetNamespace string?
 param version string?
 
 @description('Optional. A list of flux configuraitons.')
-param fluxConfigurations array?
+param fluxConfigurations resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -96,19 +96,19 @@ var extensionProperties = {
   version: version
 }
 
-resource extensionManaged 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = if (clusterType == 'managedCluster') {
+resource extensionManaged 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'managedCluster') {
   name: name
   scope: managedCluster
   properties: extensionProperties
 }
 
-resource extensionConnected 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = if (clusterType == 'connectedCluster') {
+resource extensionConnected 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'connectedCluster') {
   name: name
   scope: connectedCluster
   properties: extensionProperties
 }
 
-module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1' = [
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.7' = [
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-Cluster-FluxConfiguration${index}'
     params: {
@@ -116,6 +116,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       clusterName: clusterName
       scope: fluxConfiguration.scope
       namespace: fluxConfiguration.namespace
+      clusterType: clusterType
       sourceKind: contains(fluxConfiguration, 'gitRepository') ? 'GitRepository' : 'Bucket'
       name: fluxConfiguration.?name ?? toLower('${clusterName}-fluxconfiguration${index}')
       bucket: fluxConfiguration.?bucket
