@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module with WAF aligned settings.'
 
 // ========== //
 // Parameters //
@@ -45,8 +45,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       
       // Optional parameters with custom values for WAF-aligned testing
-      location: resourceLocation
-      enableTelemetry: true
       suffix: 'waf'
       tags: {
         Environment: 'Test'
