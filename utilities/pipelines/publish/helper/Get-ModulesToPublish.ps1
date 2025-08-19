@@ -22,7 +22,6 @@ function Get-ModifiedFileList {
 
     # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
-        # if ($true) {
         Write-Verbose 'Currently in the upstream branch [main].' -Verbose
 
         # Get the current and previous commit
