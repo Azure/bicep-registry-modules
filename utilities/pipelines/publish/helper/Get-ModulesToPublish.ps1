@@ -20,53 +20,30 @@ function Get-ModifiedFileList {
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
-    Write-Verbose 'Adding upstream repository reference' -Verbose
-    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
-    Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
-    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
-    Start-Sleep 5 # Wait for git to finish adding the remote
-
     # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
         # if ($true) {
         Write-Verbose 'Currently in the upstream branch [main].' -Verbose
-        $currentCommit = git rev-parse --short=7 'HEAD' # Get the current commit (main)
-        $previousCommit = git rev-parse --short=7 'HEAD^' # Get the previous main's commit in upstream
 
-        $retryCount = 0
-        while ($currentCommit -eq $previousCommit) {
-            Write-Warning 'Current and previous commits are the same. Trying again'
-            git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
-            Start-Sleep 5 # Wait for git to finish fetching
-            $previousCommit = git rev-parse --short=7 'upstream/main^' # Get the previous main's commit in upstream
-
-            if ($retryCount -ge 5) {
-                throw 'Failed to get a different previous commit after 5 retries. Exiting.'
-            }
-            $retryCount++
-        }
+        # Get the current and previous commit
+        $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
 
         Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
         $diff = git diff --name-only --diff-filter=AM $currentCommit $previousCommit
     } else {
         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
-        $currentCommit = git rev-parse --short=7 'HEAD' # Get the current commit
-        $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get the previous main's commit in upstream
 
-        $retryCount = 0
-        while ($currentCommit -eq $currentUpstreamCommit) {
-            Write-Warning 'Current and commit and upstream main are the same. Trying again'
-            git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
-            Start-Sleep 5 # Wait for git to finish fetching
-            $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get the previous main's commit in upstream
+        Write-Verbose 'Adding upstream repository reference' -Verbose
+        git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+        Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
+        git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
+        Start-Sleep 5 # Wait for git to finish adding the remote
 
-            if ($retryCount -ge 5) {
-                throw 'Failed to get a different previous commit after 5 retries. Exiting.'
-            }
-            $retryCount++
-        }
+        $currentCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
+        $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get main's commit in upstream
+
         Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
-        $diff = git diff --name-only --diff-filter=AM $currentUpstreamCommit
+        $diff = git diff --name-only --diff-filter=AM $currentCommit $currentUpstreamCommit
     }
 
     if ($diff.Count -gt 0) {
