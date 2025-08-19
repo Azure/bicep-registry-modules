@@ -47,8 +47,8 @@ module site 'br/public:avm/res/edge/site/sub-scope:<version>' = {
       country: 'US'
     }
     // Non-required parameters
+    description: 'Edge site deployed at subscription scope'
     displayName: 'Subscription-Scoped Edge Site'
-    siteDescription: 'Edge site deployed at subscription scope'
   }
 }
 ```
@@ -78,11 +78,11 @@ module site 'br/public:avm/res/edge/site/sub-scope:<version>' = {
       }
     },
     // Non-required parameters
+    "description": {
+      "value": "Edge site deployed at subscription scope"
+    },
     "displayName": {
       "value": "Subscription-Scoped Edge Site"
-    },
-    "siteDescription": {
-      "value": "Edge site deployed at subscription scope"
     }
   }
 }
@@ -105,8 +105,8 @@ param siteAddress = {
   country: 'US'
 }
 // Non-required parameters
+param description = 'Edge site deployed at subscription scope'
 param displayName = 'Subscription-Scoped Edge Site'
-param siteDescription = 'Edge site deployed at subscription scope'
 ```
 
 </details>
@@ -137,6 +137,7 @@ module site 'br/public:avm/res/edge/site/sub-scope:<version>' = {
       streetAddress2: 'Floor 34'
     }
     // Non-required parameters
+    description: 'Test edge site for region deployment'
     displayName: 'Test Edge Site'
     labels: {
       businessUnit: 'IT'
@@ -144,7 +145,6 @@ module site 'br/public:avm/res/edge/site/sub-scope:<version>' = {
       environment: 'test'
       project: 'EdgeDeployment'
     }
-    siteDescription: 'Test edge site for region deployment'
   }
 }
 ```
@@ -179,6 +179,9 @@ module site 'br/public:avm/res/edge/site/sub-scope:<version>' = {
       }
     },
     // Non-required parameters
+    "description": {
+      "value": "Test edge site for region deployment"
+    },
     "displayName": {
       "value": "Test Edge Site"
     },
@@ -189,9 +192,6 @@ module site 'br/public:avm/res/edge/site/sub-scope:<version>' = {
         "environment": "test",
         "project": "EdgeDeployment"
       }
-    },
-    "siteDescription": {
-      "value": "Test edge site for region deployment"
     }
   }
 }
@@ -219,6 +219,7 @@ param siteAddress = {
   streetAddress2: 'Floor 34'
 }
 // Non-required parameters
+param description = 'Test edge site for region deployment'
 param displayName = 'Test Edge Site'
 param labels = {
   businessUnit: 'IT'
@@ -226,7 +227,6 @@ param labels = {
   environment: 'test'
   project: 'EdgeDeployment'
 }
-param siteDescription = 'Test edge site for region deployment'
 ```
 
 </details>
@@ -246,10 +246,10 @@ param siteDescription = 'Test edge site for region deployment'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`description`](#parameter-description) | string | The description of the site. |
 | [`displayName`](#parameter-displayname) | string | The display name of the site. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`labels`](#parameter-labels) | object | Labels for the site. |
-| [`siteDescription`](#parameter-sitedescription) | string | The description of the site. |
 
 ### Parameter: `location`
 
@@ -271,6 +271,13 @@ The physical address configuration of the site.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `description`
+
+The description of the site.
+
+- Required: No
+- Type: string
 
 ### Parameter: `displayName`
 
@@ -294,13 +301,6 @@ Labels for the site.
 
 - Required: No
 - Type: object
-
-### Parameter: `siteDescription`
-
-The description of the site.
-
-- Required: No
-- Type: string
 
 ## Outputs
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13869998213565654665"
+      "templateHash": "13210813748140073638"
     },
     "name": "Microsoft Edge Site Resources",
     "description": "Resource group scoped resources for Microsoft Edge Site."
@@ -32,7 +32,7 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "siteDescription": {
+    "description": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -92,7 +92,7 @@
       "apiVersion": "2025-03-01-preview",
       "name": "[parameters('name')]",
       "properties": {
-        "description": "[parameters('siteDescription')]",
+        "description": "[parameters('description')]",
         "displayName": "[parameters('displayName')]",
         "labels": "[parameters('labels')]",
         "siteAddress": "[parameters('siteAddress')]"

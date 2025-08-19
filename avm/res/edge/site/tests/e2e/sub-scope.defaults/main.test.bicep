@@ -28,7 +28,7 @@ module testDeployment '../../../sub-scope/main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       displayName: 'Subscription-Scoped Edge Site'
-      siteDescription: 'Edge site deployed at subscription scope'
+      description: 'Edge site deployed at subscription scope'
       siteAddress: {
         country: 'US'
       }

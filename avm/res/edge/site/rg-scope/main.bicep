@@ -5,25 +5,25 @@ metadata description = 'Resource group scoped resources for Microsoft Edge Site.
 //   Parameters   //
 // ============== //
 
-@description('Required. Name of the resource to create.')
+@sys.description('Required. Name of the resource to create.')
 param name string
 
-@description('Optional. Location for all Resources.')
+@sys.description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The description of the site.')
-param siteDescription string?
+@sys.description('Optional. The description of the site.')
+param description string?
 
-@description('Optional. The display name of the site.')
+@sys.description('Optional. The display name of the site.')
 param displayName string = name
 
-@description('Optional. Labels for the site.')
+@sys.description('Optional. Labels for the site.')
 param labels resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.labels?
 
-@description('Required. The physical address configuration of the site.')
+@sys.description('Required. The physical address configuration of the site.')
 param siteAddress resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.siteAddress
 
 // ============== //
@@ -52,7 +52,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 resource site 'Microsoft.Edge/sites@2025-03-01-preview' = {
   name: name
   properties: {
-    description: siteDescription
+    description: description
     displayName: displayName
     labels: labels
     siteAddress: siteAddress
@@ -63,14 +63,14 @@ resource site 'Microsoft.Edge/sites@2025-03-01-preview' = {
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the site.')
+@sys.description('The resource ID of the site.')
 output resourceId string = site.id
 
-@description('The name of the site.')
+@sys.description('The name of the site.')
 output name string = site.name
 
-@description('The location the resource was deployed into.')
+@sys.description('The location the resource was deployed into.')
 output location string = location
 
-@description('The name of the resource group the role assignment was applied at.')
+@sys.description('The name of the resource group the role assignment was applied at.')
 output resourceGroupName string = resourceGroup().name

@@ -126,6 +126,7 @@ module site 'br/public:avm/res/edge/site/rg-scope:<version>' = {
       streetAddress2: 'Floor 34'
     }
     // Non-required parameters
+    description: 'Test edge site for region deployment'
     displayName: 'Test Edge Site'
     labels: {
       businessUnit: 'IT'
@@ -134,7 +135,6 @@ module site 'br/public:avm/res/edge/site/rg-scope:<version>' = {
       project: 'EdgeDeployment'
     }
     location: '<location>'
-    siteDescription: 'Test edge site for region deployment'
   }
 }
 ```
@@ -166,6 +166,9 @@ module site 'br/public:avm/res/edge/site/rg-scope:<version>' = {
       }
     },
     // Non-required parameters
+    "description": {
+      "value": "Test edge site for region deployment"
+    },
     "displayName": {
       "value": "Test Edge Site"
     },
@@ -179,9 +182,6 @@ module site 'br/public:avm/res/edge/site/rg-scope:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "siteDescription": {
-      "value": "Test edge site for region deployment"
     }
   }
 }
@@ -208,6 +208,7 @@ param siteAddress = {
   streetAddress2: 'Floor 34'
 }
 // Non-required parameters
+param description = 'Test edge site for region deployment'
 param displayName = 'Test Edge Site'
 param labels = {
   businessUnit: 'IT'
@@ -216,7 +217,6 @@ param labels = {
   project: 'EdgeDeployment'
 }
 param location = '<location>'
-param siteDescription = 'Test edge site for region deployment'
 ```
 
 </details>
@@ -235,11 +235,11 @@ param siteDescription = 'Test edge site for region deployment'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`description`](#parameter-description) | string | The description of the site. |
 | [`displayName`](#parameter-displayname) | string | The display name of the site. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`labels`](#parameter-labels) | object | Labels for the site. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`siteDescription`](#parameter-sitedescription) | string | The description of the site. |
 
 ### Parameter: `name`
 
@@ -254,6 +254,13 @@ The physical address configuration of the site.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `description`
+
+The description of the site.
+
+- Required: No
+- Type: string
 
 ### Parameter: `displayName`
 
@@ -285,13 +292,6 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `siteDescription`
-
-The description of the site.
-
-- Required: No
-- Type: string
 
 ## Outputs
 

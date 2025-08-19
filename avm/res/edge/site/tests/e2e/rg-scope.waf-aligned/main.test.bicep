@@ -38,7 +38,7 @@ module testDeployment '../../../rg-scope/main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       displayName: 'Test Edge Site'
-      siteDescription: 'Test edge site for region deployment'
+      description: 'Test edge site for region deployment'
       siteAddress: {
         city: 'New York'
         country: 'US'
