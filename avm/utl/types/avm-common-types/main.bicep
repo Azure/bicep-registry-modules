@@ -297,10 +297,7 @@ type privateEndpointSingleServiceType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
-  tags: {
-    @description('Optional. A tag key-value pair.')
-    *: string
-  }?
+  tags: resourceInput<'Microsoft.Network/privateEndpoints@2024-07-01'>.tags?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
@@ -356,10 +353,7 @@ type privateEndpointMultiServiceType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: {
-    @description('Optional. A tag key-value pair.')
-    *: string
-  }?
+  tags: resourceInput<'Microsoft.Network/privateEndpoints@2024-07-01'>.tags?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
