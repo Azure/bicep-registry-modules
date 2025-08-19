@@ -25,6 +25,9 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
+@description('Optional. The current time in UTC.')
+param timeNow string = utcNow()
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -269,7 +272,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'TestWebhook'
           runbookName: 'TestRunbook'
-          expiryTime: '2025-12-31T13:00'
+          expiryTime: dateTimeAdd(timeNow, 'P1M')
           parameters: {
             param1: 'value1'
             param2: 'value2'

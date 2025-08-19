@@ -410,7 +410,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     ]
     webhooks: [
       {
-        expiryTime: '2025-12-31T13:00'
+        expiryTime: '<expiryTime>'
         name: 'TestWebhook'
         parameters: {
           param1: 'value1'
@@ -680,7 +680,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "webhooks": {
       "value": [
         {
-          "expiryTime": "2025-12-31T13:00",
+          "expiryTime": "<expiryTime>",
           "name": "TestWebhook",
           "parameters": {
             "param1": "value1",
@@ -908,7 +908,7 @@ param variables = [
 ]
 param webhooks = [
   {
-    expiryTime: '2025-12-31T13:00'
+    expiryTime: '<expiryTime>'
     name: 'TestWebhook'
     parameters: {
       param1: 'value1'
