@@ -37,7 +37,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       resourceGroupName: resourceGroupName
       location: resourceLocation
-      displayName: 'Test Edge Site'
       siteAddress: {
         country: 'US'
       }

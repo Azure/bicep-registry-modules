@@ -13,22 +13,22 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The description of the site.')
-param siteDescription string?
+param siteDescription resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.description?
 
 @description('Required. The display name of the site.')
-param displayName string
+param displayName resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.displayName
 
 @description('Optional. Labels for the site.')
-param labels resourceInput<'Microsoft.Edge/sites@2025-06-01'>.properties.labels?
+param labels resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.labels?
 
 @description('Required. The physical address configuration of the site.')
-param siteAddress resourceInput<'Microsoft.Edge/sites@2025-06-01'>.properties.siteAddress
+param siteAddress resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.siteAddress
 
 // ============== //
 // Resources      //
 // ============== //
 
-resource site 'Microsoft.Edge/sites@2025-06-01' = {
+resource site 'Microsoft.Edge/sites@2025-03-01-preview' = {
   name: name
   properties: {
     description: siteDescription

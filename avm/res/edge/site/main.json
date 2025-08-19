@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7382289313470649775"
+      "templateHash": "7639341399108410414"
     },
     "name": "Microsoft Edge Site",
     "description": "This module deploys a Microsoft Edge Site at subscription or resource group scope."
@@ -158,22 +158,29 @@
     },
     "siteDescription": {
       "type": "string",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/description"
+        },
         "description": "Optional. The description of the site."
-      }
+      },
+      "nullable": true
     },
     "displayName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The display name of the site."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/displayName"
+        },
+        "description": "Optional. The display name of the site."
+      },
+      "defaultValue": "[parameters('name')]"
     },
     "labels": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Edge/sites@2025-06-01#properties/properties/properties/labels"
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/labels"
         },
         "description": "Optional. Labels for the site."
       },
@@ -183,7 +190,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Edge/sites@2025-06-01#properties/properties/properties/siteAddress"
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/siteAddress"
         },
         "description": "Required. The physical address configuration of the site."
       }
@@ -247,7 +254,7 @@
     "site": {
       "condition": "[equals(parameters('deploymentScope'), 'subscription')]",
       "type": "Microsoft.Edge/sites",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2025-03-01-preview",
       "name": "[parameters('name')]",
       "properties": {
         "description": "[parameters('siteDescription')]",
@@ -331,7 +338,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6909732699527091776"
+              "templateHash": "16106223708103891332"
             },
             "name": "Microsoft Edge Site Resources",
             "description": "Resource group scoped resources for Microsoft Edge Site."
@@ -352,14 +359,20 @@
             },
             "siteDescription": {
               "type": "string",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/description"
+                },
                 "description": "Optional. The description of the site."
-              }
+              },
+              "nullable": true
             },
             "displayName": {
               "type": "string",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/displayName"
+                },
                 "description": "Required. The display name of the site."
               }
             },
@@ -367,7 +380,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Edge/sites@2025-06-01#properties/properties/properties/labels"
+                  "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/labels"
                 },
                 "description": "Optional. Labels for the site."
               },
@@ -377,7 +390,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Edge/sites@2025-06-01#properties/properties/properties/siteAddress"
+                  "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/siteAddress"
                 },
                 "description": "Required. The physical address configuration of the site."
               }
@@ -386,7 +399,7 @@
           "resources": {
             "site": {
               "type": "Microsoft.Edge/sites",
-              "apiVersion": "2025-06-01",
+              "apiVersion": "2025-03-01-preview",
               "name": "[parameters('name')]",
               "properties": {
                 "description": "[parameters('siteDescription')]",

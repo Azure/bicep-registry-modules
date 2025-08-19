@@ -26,16 +26,16 @@ param resourceGroupName string?
 param enableTelemetry bool = true
 
 @description('Optional. The description of the site.')
-param siteDescription string?
+param siteDescription resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.description?
 
-@description('Required. The display name of the site.')
-param displayName string
+@description('Optional. The display name of the site.')
+param displayName resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.displayName = name
 
 @description('Optional. Labels for the site.')
-param labels resourceInput<'Microsoft.Edge/sites@2025-06-01'>.properties.labels?
+param labels resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.labels?
 
 @description('Required. The physical address configuration of the site.')
-param siteAddress resourceInput<'Microsoft.Edge/sites@2025-06-01'>.properties.siteAddress
+param siteAddress resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.siteAddress
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -95,7 +95,7 @@ var formattedRoleAssignments = [
 ]
 
 // Deploy Edge Site at subscription scope
-resource site 'Microsoft.Edge/sites@2025-06-01' = if (deploymentScope == 'subscription') {
+resource site 'Microsoft.Edge/sites@2025-03-01-preview' = if (deploymentScope == 'subscription') {
   name: name
   properties: {
     description: siteDescription
