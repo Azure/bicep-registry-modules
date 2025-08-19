@@ -49,3 +49,6 @@ output name string = site.name
 
 @description('The location the resource was deployed into.')
 output location string = location
+
+@description('The name of the resource group the role assignment was applied at.')
+output resourceGroupName string = resourceGroup().name

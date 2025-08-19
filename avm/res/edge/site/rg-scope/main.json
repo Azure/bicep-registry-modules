@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17081991353937314367"
+      "templateHash": "14387835624990758013"
     },
     "name": "Microsoft Edge Site Resources",
     "description": "Resource group scoped resources for Microsoft Edge Site."
@@ -99,6 +99,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[parameters('location')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the role assignment was applied at."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

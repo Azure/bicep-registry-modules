@@ -289,4 +289,5 @@ The description of the site.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
+| `resourceGroupName` | string | The name of the resource group the role assignment was applied at. |
 | `resourceId` | string | The resource ID of the site. |
