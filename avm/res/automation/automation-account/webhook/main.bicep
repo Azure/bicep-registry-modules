@@ -7,7 +7,6 @@ param automationAccountName string
 @sys.description('Required. The name of the webhook.')
 param name string
 
-@secure()
 @sys.description('Required. The runbook in which the webhook will be used.')
 param runbookName string
 
