@@ -21,8 +21,7 @@ function Get-ModifiedFileList {
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
     # Note: Fetches only the name of the modified files
-    # if ($inUpstream -and $currentBranch -eq 'main') {
-    if ($true) {
+    if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in the upstream branch [main].' -Verbose
 
         # Get the current and previous commit

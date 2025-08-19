@@ -52,8 +52,6 @@ function Publish-ModuleFromPathToPBR {
     # 1. Get list of all modules qualifying for publishing (updated and versioned) and order them by length, so that child modules are processed first
     $modulesToPublishList = Get-ModulesToPublish -ModuleFolderPath $topModuleFolderPath | Sort-Object -Property Length -Descending
 
-    return $modulesToPublishList
-
     # If no module qualifies for publishing, return
     if (-not $modulesToPublishList) {
         Write-Verbose "No changes detected for any module in $topModuleFolderPath. Skipping publishing." -Verbose
