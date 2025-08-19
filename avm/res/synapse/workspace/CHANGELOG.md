@@ -2,15 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/CHANGELOG.md).
 
-## 0.13.1
+## 0.14.0
 
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added type for `tags` parameter
 
 ### Breaking Changes
 
-- None
+- Renamed `purviewResourceID` to `purviewResourceId`
 
 ## 0.13.0
 
