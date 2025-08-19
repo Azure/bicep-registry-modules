@@ -48,7 +48,7 @@ param firewallRules firewallRuleType[]?
 param virtualNetworkRules virtualNetworkRuleType[]?
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies securityAlerPolicyType[]?
+param securityAlertPolicies securityAlertPolicyType[]?
 
 @description('Optional. The keys to configure.')
 param keys keyType[]?
@@ -982,7 +982,7 @@ type virtualNetworkRuleType = {
 
 @export()
 @description('The type for a security alert policy.')
-type securityAlerPolicyType = {
+type securityAlertPolicyType = {
   @description('Required. The name of the Security Alert Policy.')
   name: string
 
