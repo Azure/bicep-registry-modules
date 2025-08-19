@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'
+
 // Resource group scoped module for Edge Site resources
 metadata name = 'Microsoft Edge Site Resources'
 metadata description = 'Resource group scoped resources for Microsoft Edge Site.'
@@ -15,8 +17,8 @@ param location string = resourceGroup().location
 @description('Optional. The description of the site.')
 param siteDescription resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.description?
 
-@description('Required. The display name of the site.')
-param displayName resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.displayName
+@description('Optional. The display name of the site.')
+param displayName resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.displayName = name
 
 @description('Optional. Labels for the site.')
 param labels resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.labels?

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "17081991353937314367"
+    },
+    "name": "Microsoft Edge Site Resources",
+    "description": "Resource group scoped resources for Microsoft Edge Site."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the resource to create."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "siteDescription": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/description"
+        },
+        "description": "Optional. The description of the site."
+      },
+      "nullable": true
+    },
+    "displayName": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/displayName"
+        },
+        "description": "Optional. The display name of the site."
+      },
+      "defaultValue": "[parameters('name')]"
+    },
+    "labels": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/labels"
+        },
+        "description": "Optional. Labels for the site."
+      },
+      "nullable": true
+    },
+    "siteAddress": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/siteAddress"
+        },
+        "description": "Required. The physical address configuration of the site."
+      }
+    }
+  },
+  "resources": {
+    "site": {
+      "type": "Microsoft.Edge/sites",
+      "apiVersion": "2025-03-01-preview",
+      "name": "[parameters('name')]",
+      "properties": {
+        "description": "[parameters('siteDescription')]",
+        "displayName": "[parameters('displayName')]",
+        "labels": "[parameters('labels')]",
+        "siteAddress": "[parameters('siteAddress')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the site."
+      },
+      "value": "[resourceId('Microsoft.Edge/sites', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the site."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[parameters('location')]"
+    }
+  }
+}

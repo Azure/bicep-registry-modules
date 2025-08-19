@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-edge.site-${serviceShort}-rg
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'eswaf'
+param serviceShort string = 'esrgwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -30,15 +30,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
+module testDeployment '../../../rg-scope/main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    scope: resourceGroup
     params: {
       name: '${namePrefix}${serviceShort}001'
-      resourceGroupName: resourceGroupName
       location: resourceLocation
-      displayName: 'Production Edge Site'
-      siteDescription: 'Production edge site for region deployment'
+      displayName: 'Test Edge Site'
+      siteDescription: 'Test edge site for region deployment'
       siteAddress: {
         city: 'New York'
         country: 'US'
@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = [
         streetAddress2: 'Floor 34'
       }
       labels: {
-        environment: 'production'
+        environment: 'test'
         businessUnit: 'IT'
         costCenter: 'CC-1234'
         project: 'EdgeDeployment'
