@@ -53,10 +53,6 @@ module testDeployment '../../../main.bicep' = [
         costCenter: 'CC-1234'
         project: 'EdgeDeployment'
       }
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
     }
   }
 ]
