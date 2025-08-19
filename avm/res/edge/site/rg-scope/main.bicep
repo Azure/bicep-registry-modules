@@ -1,6 +1,3 @@
-targetScope = 'resourceGroup'
-
-// Resource group scoped module for Edge Site resources
 metadata name = 'Microsoft Edge Site Resources'
 metadata description = 'Resource group scoped resources for Microsoft Edge Site.'
 
