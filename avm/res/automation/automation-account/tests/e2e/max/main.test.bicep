@@ -269,7 +269,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'TestWebhook'
           runbookName: 'TestRunbook'
-          expiryTime: '9999-12-31T13:00'
+          expiryTime: '2025-12-31T13:00'
           parameters: {
             param1: 'value1'
             param2: 'value2'
