@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "7239657967522750396"
+      "version": "0.37.4.10188",
+      "templateHash": "6248505883003094484"
     },
     "name": "Automation Account Webhook",
     "description": "This module deploys an Azure Automation Account Webhook."
@@ -24,7 +24,7 @@
       }
     },
     "runbookName": {
-      "type": "securestring",
+      "type": "string",
       "metadata": {
         "description": "Required. The runbook in which the webhook will be used."
       }

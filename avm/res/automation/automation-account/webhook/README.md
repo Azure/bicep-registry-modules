@@ -10,9 +10,9 @@ This module deploys an Azure Automation Account Webhook.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Automation/automationAccounts/webhooks` | [2024-10-23](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/webhooks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Automation/automationAccounts/webhooks` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/webhooks)</li></ul> |
 
 ## Parameters
 
@@ -21,7 +21,7 @@ This module deploys an Azure Automation Account Webhook.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the webhook. |
-| [`runbookName`](#parameter-runbookname) | securestring | The runbook in which the webhook will be used. |
+| [`runbookName`](#parameter-runbookname) | string | The runbook in which the webhook will be used. |
 
 **Conditional parameters**
 
@@ -49,7 +49,7 @@ The name of the webhook.
 The runbook in which the webhook will be used.
 
 - Required: Yes
-- Type: securestring
+- Type: string
 
 ### Parameter: `automationAccountName`
 
