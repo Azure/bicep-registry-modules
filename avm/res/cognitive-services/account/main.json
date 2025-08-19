@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "482760100843709366"
+      "version": "0.37.4.10188",
+      "templateHash": "8965773684848411598"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -300,6 +300,38 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a disconnected container commitment plan."
+      }
+    },
+    "networkInjectionType": {
+      "type": "object",
+      "properties": {
+        "scenario": {
+          "type": "string",
+          "allowedValues": [
+            "agent",
+            "none"
+          ],
+          "metadata": {
+            "description": "Required. The scenario for the network injection."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Resource ID of the subnet on the Virtual Network on which to inject."
+          }
+        },
+        "useMicrosoftManagedNetwork": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to use Microsoft Managed Network. Defaults to false."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1006,6 +1038,13 @@
         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
       }
     },
+    "networkInjections": {
+      "$ref": "#/definitions/networkInjectionType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
+      }
+    },
     "privateEndpoints": {
       "type": "array",
       "items": {
@@ -1262,6 +1301,7 @@
         "allowProjectManagement": "[parameters('allowProjectManagement')]",
         "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
+        "networkInjections": "[if(not(empty(parameters('networkInjections'))), createArray(createObject('scenario', tryGet(parameters('networkInjections'), 'scenario'), 'subnetArmId', tryGet(parameters('networkInjections'), 'subnetResourceId'), 'useMicrosoftManagedNetwork', coalesce(tryGet(parameters('networkInjections'), 'useMicrosoftManagedNetwork'), false()))), null())]",
         "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
         "apiProperties": "[parameters('apiProperties')]",
@@ -2173,8 +2213,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "3723512518520185794"
+              "version": "0.37.4.10188",
+              "templateHash": "10828079590669389085"
             }
           },
           "definitions": {

@@ -31,7 +31,7 @@ param vpnGatewayScaleUnit int = 2
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.Network/vpnGateways@2024-07-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -47,13 +47,15 @@ param enableTelemetry bool = true
 // ================//
 
 // If both are provided, bgpPeeringAddresses takes precedence and bgpPeeringAddress is ignored
-var finalBgpSettings = bgpSettings != null ? {
-  asn: bgpSettings!.asn
-  peerWeight: bgpSettings!.?peerWeight
-  bgpPeeringAddress: bgpSettings!.?bgpPeeringAddresses == null ? bgpSettings!.?bgpPeeringAddress : null
-  bgpPeeringAddresses: bgpSettings!.?bgpPeeringAddress == null ? bgpSettings!.?bgpPeeringAddresses : null
-} : null
-  
+var finalBgpSettings = bgpSettings != null
+  ? {
+      asn: bgpSettings!.asn
+      peerWeight: bgpSettings!.?peerWeight
+      bgpPeeringAddress: bgpSettings!.?bgpPeeringAddresses == null ? bgpSettings!.?bgpPeeringAddress : null
+      bgpPeeringAddresses: bgpSettings!.?bgpPeeringAddress == null ? bgpSettings!.?bgpPeeringAddresses : null
+    }
+  : null
+
 // ================//
 // Deployments     //
 // ================//
@@ -101,9 +103,9 @@ resource vpnGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: vpnGateway
 }
@@ -161,9 +163,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = vpnGateway.location
 
 @description('The resource IDs of the NAT rules.')
-output natRuleResourceIds array = [
-  for (natRule, index) in natRules: vpnGateway_natRules[index].outputs.resourceId
-]
+output natRuleResourceIds array = [for (natRule, index) in natRules: vpnGateway_natRules[index].outputs.resourceId]
 
 @description('The resource IDs of the VPN connections.')
 output vpnConnectionResourceIds array = [
@@ -194,7 +194,7 @@ type bgpSettingsType = {
   bgpPeeringAddresses: {
     @description('Optional. The IP configuration ID.')
     ipconfigurationId: string?
-    
+
     @description('Optional. The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*).')
     customBgpIpAddresses: string[]?
   }[]?
@@ -216,7 +216,7 @@ type routingConfigurationType = {
       @description('Required. The resource ID of the route table.')
       id: string
     }[]?
-    
+
     @description('Optional. The list of labels to propagate to.')
     labels: string[]?
   }?
@@ -227,14 +227,14 @@ type routingConfigurationType = {
     staticRoutes: {
       @description('Optional. The name of the static route.')
       name: string?
-      
+
       @description('Optional. The address prefixes for the static route.')
       addressPrefixes: string[]?
-      
+
       @description('Optional. The next hop IP address for the static route.')
       nextHopIpAddress: string?
     }[]?
-    
+
     @description('Optional. Static routes configuration.')
     staticRoutesConfig: {
       @description('Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.')
@@ -248,46 +248,46 @@ type routingConfigurationType = {
 type vpnConnectionType = {
   @description('Required. The name of the VPN connection.')
   name: string
-  
+
   @description('Optional. Connection bandwidth in MBPS.')
   connectionBandwidth: int?
-  
+
   @description('Optional. Enable BGP flag.')
   enableBgp: bool?
-  
+
   @description('Optional. Enable internet security.')
   enableInternetSecurity: bool?
-  
+
   @description('Optional. Remote VPN site resource ID.')
   remoteVpnSiteResourceId: string?
-  
+
   @description('Optional. Enable rate limiting.')
   enableRateLimiting: bool?
-  
+
   @description('Optional. Routing configuration.')
   routingConfiguration: routingConfigurationType?
-  
+
   @description('Optional. Routing weight.')
   routingWeight: int?
-  
+
   @description('Optional. Shared key.')
   sharedKey: string?
-  
+
   @description('Optional. Use local Azure IP address.')
   useLocalAzureIpAddress: bool?
-  
+
   @description('Optional. Use policy-based traffic selectors.')
   usePolicyBasedTrafficSelectors: bool?
-  
+
   @description('Optional. VPN connection protocol type.')
   vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')?
-  
+
   @description('Optional. IPSec policies.')
   ipsecPolicies: ipsecPolicyType[]?
-  
+
   @description('Optional. Traffic selector policies.')
   trafficSelectorPolicies: trafficSelectorPolicyType[]?
-  
+
   @description('Optional. VPN link connections.')
   vpnLinkConnections: vpnSiteLinkConnectionType[]?
 }
@@ -297,19 +297,19 @@ type vpnConnectionType = {
 type natRuleType = {
   @description('Required. The name of the NAT rule.')
   name: string
-  
+
   @description('Optional. External mappings.')
   externalMappings: vpnNatRuleMappingType[]?
-  
+
   @description('Optional. Internal mappings.')
   internalMappings: vpnNatRuleMappingType[]?
-  
+
   @description('Optional. IP configuration ID.')
   ipConfigurationId: string?
-  
+
   @description('Optional. NAT rule mode.')
   mode: ('EgressSnat' | 'IngressSnat')?
-  
+
   @description('Optional. NAT rule type.')
   type: ('Dynamic' | 'Static')?
 }

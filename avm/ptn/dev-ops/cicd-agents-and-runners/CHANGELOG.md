@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added two new parameters
 - Added a deployment script that whitelists ACR tasks to run
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

@@ -10,9 +10,9 @@ This module deploys a Dev Center Catalog.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevCenter/devcenters/catalogs` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/catalogs) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevCenter/devcenters/catalogs` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_catalogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/catalogs)</li></ul> |
 
 ## Parameters
 

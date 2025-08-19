@@ -6,6 +6,7 @@
 /avm/ptn/ai-ml/ai-foundry/ @Azure/avm-ptn-aiml-aifoundry-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/aca-lza/hosting-environment/ @Azure/avm-ptn-acalza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/ai-platform/baseline/ @Azure/avm-ptn-aiplatform-baseline-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/alz/ama/ @Azure/avm-ptn-alz-ama-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/alz/empty/ @Azure/avm-ptn-alz-empty-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app-service-lza/hosting-environment/ @Azure/avm-ptn-appservicelza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app/container-job-toolkit/ @Azure/avm-ptn-app-containerjobtoolkit-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -152,7 +153,6 @@
 /avm/res/network/express-route-gateway/ @Azure/avm-res-network-expressroutegateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/express-route-port/ @Azure/avm-res-network-expressrouteport-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/firewall-policy/ @Azure/avm-res-network-firewallpolicy-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/res/network/front-door/ @Azure/avm-res-network-frontdoor-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/front-door-web-application-firewall-policy/ @Azure/avm-res-network-frontdoorwebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/ip-group/ @Azure/avm-res-network-ipgroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/load-balancer/ @Azure/avm-res-network-loadbalancer-module-owners-bicep @Azure/avm-module-reviewers-bicep

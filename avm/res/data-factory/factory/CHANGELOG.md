@@ -2,12 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.10.5
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.4
 
 ### Changes
 
 - Added support for Purview Account integration via `purviewResourceId` parameter
 - Enhanced Data Factory configuration to include Purview connectivity when specified
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

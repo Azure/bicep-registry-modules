@@ -15,7 +15,7 @@ param administratorLoginPassword string?
 param tenantId string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
-param administrators array = []
+param administrators administratorType[]?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -150,7 +150,7 @@ param delegatedSubnetResourceId string?
 param privateDnsZoneArmResourceId string = ''
 
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
-param firewallRules array = []
+param firewallRules firewallRuleType[]?
 
 @description('Optional. Determines whether or not public network access is enabled or disabled.')
 @allowed([
@@ -165,7 +165,7 @@ param databases array = []
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -347,9 +347,9 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: flexibleServer
 }
@@ -386,7 +386,7 @@ module flexibleServer_databases 'database/main.bicep' = [
 ]
 
 module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
-  for (firewallRule, index) in firewallRules: {
+  for (firewallRule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-FirewallRules-${index}'
     params: {
       name: firewallRule.name
@@ -417,7 +417,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
 ]
 
 module flexibleServer_administrators 'administrator/main.bicep' = [
-  for (administrator, index) in administrators: {
+  for (administrator, index) in (administrators ?? []): {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-Administrators-${index}'
     params: {
       flexibleServerName: flexibleServer.name
@@ -591,4 +591,33 @@ type replicaType = {
 
   @description('Conditional. Used to indicate role of the server in replication set. Required if enabling replication.')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
+}
+
+@export()
+@description('The type of an administrator.')
+type administratorType = {
+  @description('Required. The objectId of the Active Directory administrator.')
+  objectId: string
+
+  @description('Required. Active Directory administrator principal name.')
+  principalName: string
+
+  @description('Required. The principal type used to represent the type of Active Directory Administrator.')
+  principalType: ('Group' | 'ServicePrincipal' | 'Unknown' | 'User')
+
+  @description('Optional. The tenantId of the Active Directory administrator.')
+  tenantId: string?
+}
+
+@export()
+@description('The type of a firewall rule.')
+type firewallRuleType = {
+  @description('Required. The name of the PostgreSQL flexible server Firewall Rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  startIpAddress: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  endIpAddress: string
 }

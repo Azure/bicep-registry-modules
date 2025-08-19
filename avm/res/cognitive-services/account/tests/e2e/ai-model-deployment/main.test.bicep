@@ -11,14 +11,18 @@ metadata description = 'This instance deploys the module with the AI model deplo
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
+@description('Optional. The location to deploy resources to.')
+#disable-next-line no-unused-params
+param resourceLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'csad'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// Set to fixed location as different AI models are only available in very specific locations
-param enforcedLocation string = 'eastus2'
+// Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
+import { enforcedLocation } from '../../shared/constants.bicep'
 
 // ============ //
 // Dependencies //
@@ -26,7 +30,7 @@ param enforcedLocation string = 'eastus2'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }

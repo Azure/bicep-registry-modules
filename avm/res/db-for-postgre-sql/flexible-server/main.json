@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "16300464404055290658"
+      "version": "0.37.4.10188",
+      "templateHash": "16507120904825728422"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -113,6 +113,103 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "administratorType": {
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The objectId of the Active Directory administrator."
+          }
+        },
+        "principalName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Active Directory administrator principal name."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Group",
+            "ServicePrincipal",
+            "Unknown",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The principal type used to represent the type of Active Directory Administrator."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tenantId of the Active Directory administrator."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an administrator."
+      }
+    },
+    "firewallRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the PostgreSQL flexible server Firewall Rule."
+          }
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a firewall rule."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -404,12 +501,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -538,7 +642,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -682,7 +786,10 @@
     },
     "administrators": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/administratorType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Azure AD administrators when AAD authentication enabled."
       }
@@ -899,7 +1006,10 @@
     },
     "firewallRules": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/firewallRuleType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The firewall rules to create in the PostgreSQL flexible server."
       }
@@ -1119,7 +1229,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "flexibleServer"
@@ -1222,8 +1332,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "14209532475717782464"
+              "version": "0.37.4.10188",
+              "templateHash": "10938443433319583034"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1306,7 +1416,7 @@
     "flexibleServer_firewallRules": {
       "copy": {
         "name": "flexibleServer_firewallRules",
-        "count": "[length(parameters('firewallRules'))]"
+        "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1318,16 +1428,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('firewallRules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].name]"
           },
           "flexibleServerName": {
             "value": "[parameters('name')]"
           },
           "startIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].startIpAddress]"
           },
           "endIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].endIpAddress]"
           }
         },
         "template": {
@@ -1336,8 +1446,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "7016747611432091556"
+              "version": "0.37.4.10188",
+              "templateHash": "14702487814399753741"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1445,8 +1555,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "12474838261269936962"
+              "version": "0.37.4.10188",
+              "templateHash": "6442500807924546985"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1529,7 +1639,7 @@
     "flexibleServer_administrators": {
       "copy": {
         "name": "flexibleServer_administrators",
-        "count": "[length(parameters('administrators'))]"
+        "count": "[length(coalesce(parameters('administrators'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1544,16 +1654,16 @@
             "value": "[parameters('name')]"
           },
           "objectId": {
-            "value": "[parameters('administrators')[copyIndex()].objectId]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].objectId]"
           },
           "principalName": {
-            "value": "[parameters('administrators')[copyIndex()].principalName]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].principalName]"
           },
           "principalType": {
-            "value": "[parameters('administrators')[copyIndex()].principalType]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].principalType]"
           },
           "tenantId": {
-            "value": "[tryGet(parameters('administrators')[copyIndex()], 'tenantId')]"
+            "value": "[tryGet(coalesce(parameters('administrators'), createArray())[copyIndex()], 'tenantId')]"
           }
         },
         "template": {
@@ -1562,8 +1672,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "3446998327151626578"
+              "version": "0.37.4.10188",
+              "templateHash": "13733516267420319787"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1673,8 +1783,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "7758997343908173427"
+              "version": "0.37.4.10188",
+              "templateHash": "4142088260159064277"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."

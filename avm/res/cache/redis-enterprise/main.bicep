@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -17,7 +17,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Cache/redisEnterprise@2025-04-01'>.tags?
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
@@ -220,19 +220,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -256,8 +256,8 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' = {
                 }
               : null
             keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion ?? '')
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           }
         }
       : null
@@ -295,9 +295,9 @@ resource redisCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: redisCluster
 }

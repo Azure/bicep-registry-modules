@@ -572,6 +572,7 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
           name: 'CanNotDelete'
         }
       : null
+    tags: virtualNetworkResourceGroupTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -588,6 +589,7 @@ module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-gr
           name: 'CanNotDelete'
         }
       : null
+    tags: subscriptionTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -1341,6 +1343,7 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   params: {
     name: deploymentScriptResourceGroupName
     location: deploymentScriptLocation
+    tags: subscriptionTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -1351,6 +1354,7 @@ module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-g
   params: {
     name: routeTablesResourceGroupName
     location: virtualNetworkLocation ?? deployment().location
+    tags: virtualNetworkResourceGroupTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -1672,6 +1676,7 @@ module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources
             name: 'CanNotDelete'
           }
         : null
+      tags: virtualNetworkResourceGroupTags
       enableTelemetry: enableTelemetry
     }
   }
@@ -1809,6 +1814,8 @@ output failedProviders string = !empty(resourceProviders)
 output failedFeatures string = !empty(resourceProviders)
   ? registerResourceProviders.?outputs.outputs.failedFeaturesRegistrations
   : ''
+
+output virtualWanHubConnectionName string = virtualWanHubConnectionName
 
 // ================ //
 // Definitions      //

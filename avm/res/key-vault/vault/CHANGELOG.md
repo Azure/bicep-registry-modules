@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/CHANGELOG.md).
 
+## 0.13.1
+
+### Changes
+
+- Updated the avm-common-types references to `0.6.0`, enabling notes on locks.
+- Updated ReadMe with AzAdvertizer reference
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "5779099274369994275"
+      "version": "0.37.4.10188",
+      "templateHash": "17311864461969554789"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -358,7 +358,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "project"
@@ -393,8 +393,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "14857766193027518802"
+              "version": "0.37.4.10188",
+              "templateHash": "3874620192547794605"
             }
           },
           "parameters": {
@@ -475,8 +475,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "2870377621592243437"
+              "version": "0.37.4.10188",
+              "templateHash": "13253222899830410134"
             }
           },
           "parameters": {
@@ -555,8 +555,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "652092725147825793"
+              "version": "0.37.4.10188",
+              "templateHash": "13285220429203560050"
             }
           },
           "parameters": {
