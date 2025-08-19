@@ -33,7 +33,7 @@ param certificateType string
   'TLS13'
 ])
 @description('Optional. The minimum TLS version required for the custom domain. Default value: TLS12.')
-param minimumTlsVersion string = 'TLS13'
+param minimumTlsVersion string = 'TLS12'
 
 @description('Optional. The name of the secret. ie. subs/rg/profile/secret.')
 param secretName string = ''
@@ -52,7 +52,7 @@ resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   }
 }
 
-resource customDomain 'Microsoft.Cdn/profiles/customDomains@2025-04-15' = {
+resource customDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
   name: name
   parent: profile
   properties: {

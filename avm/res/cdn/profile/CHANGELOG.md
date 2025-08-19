@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.15
+
+### Changes
+
+- Added TLS13 as allowed minimumTlsVersion parameter for the customDomain resource
+- Updated Microsoft.Cdn/profiles API version to @2025-06-01
+
+### Breaking Changes
+
+- None
+
 ## 0.14.1
 
 ### Changes
