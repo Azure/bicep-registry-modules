@@ -30,9 +30,10 @@ param certificateType string
 @allowed([
   'TLS10'
   'TLS12'
+  'TLS13'
 ])
 @description('Optional. The minimum TLS version required for the custom domain. Default value: TLS12.')
-param minimumTlsVersion string = 'TLS12'
+param minimumTlsVersion string = 'TLS13'
 
 @description('Optional. The name of the secret. ie. subs/rg/profile/secret.')
 param secretName string = ''
