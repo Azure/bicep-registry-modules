@@ -17,10 +17,10 @@ param location string
 param enableTelemetry bool = true
 
 @description('Optional. The description of the site.')
-param siteDescription resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.description?
+param siteDescription string?
 
 @description('Optional. The display name of the site.')
-param displayName resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.displayName = name
+param displayName string = name
 
 @description('Optional. Labels for the site.')
 param labels resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.labels?

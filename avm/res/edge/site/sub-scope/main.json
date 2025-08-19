@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13583462511482624575"
+      "templateHash": "3873392143082722799"
     },
     "name": "Microsoft Edge Site Resources",
     "description": "Subscription scoped resources for Microsoft Edge Site."
@@ -33,23 +33,17 @@
     },
     "siteDescription": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/description"
-        },
         "description": "Optional. The description of the site."
-      },
-      "nullable": true
+      }
     },
     "displayName": {
       "type": "string",
+      "defaultValue": "[parameters('name')]",
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/displayName"
-        },
         "description": "Optional. The display name of the site."
-      },
-      "defaultValue": "[parameters('name')]"
+      }
     },
     "labels": {
       "type": "object",
