@@ -1,6 +1,6 @@
 # Changelog
 
-The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/edge/site/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/edge/site/rg-scope/CHANGELOG.md).
 
 ## 0.1.0
 

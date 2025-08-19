@@ -6,8 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2570610586283774634"
-    }
+      "templateHash": "13583462511482624575"
+    },
+    "name": "Microsoft Edge Site Resources",
+    "description": "Subscription scoped resources for Microsoft Edge Site."
   },
   "parameters": {
     "name": {

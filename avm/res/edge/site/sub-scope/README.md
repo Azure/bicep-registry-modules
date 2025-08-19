@@ -1,5 +1,6 @@
-#  `[Microsoft.Edge/sites]`
+# Microsoft Edge Site Resources `[Microsoft.Edge/sites]`
 
+Subscription scoped resources for Microsoft Edge Site.
 
 ## Navigation
 

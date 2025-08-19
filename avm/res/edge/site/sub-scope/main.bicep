@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Microsoft Edge Site Resources'
+metadata description = 'Subscription scoped resources for Microsoft Edge Site.'
+
 // ============== //
 //   Parameters   //
 // ============== //
