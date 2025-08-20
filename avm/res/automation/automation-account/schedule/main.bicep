@@ -44,11 +44,11 @@ param timeZone string = ''
 @sys.description('Generated. Time used as a basis for e.g. the schedule start date.')
 param baseTime string = utcNow('u')
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
 
-resource schedule 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = {
+resource schedule 'Microsoft.Automation/automationAccounts/schedules@2024-10-23' = {
   name: name
   parent: automationAccount
   properties: {

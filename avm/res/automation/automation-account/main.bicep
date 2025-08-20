@@ -45,6 +45,9 @@ param jobSchedules array = []
 @description('Optional. List of variables to be created in the automation account.')
 param variables array = []
 
+@description('Optional. List of webhooks to be created in the automation account.')
+param webhooks array = []
+
 @description('Optional. ID of the log analytics workspace to be linked to the deployed automation account.')
 param linkedWorkspaceResourceId string = ''
 
@@ -185,7 +188,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' = {
   name: name
   location: location
   tags: tags
@@ -346,6 +349,20 @@ module automationAccount_variables 'variable/main.bicep' = [
       description: variable.?description
       value: variable.value
       isEncrypted: variable.?isEncrypted
+    }
+  }
+]
+
+module automationAccount_webhook 'webhook/main.bicep' = [
+  for (webhook, index) in webhooks: {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Webhook-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      name: webhook.name
+      runbookName: webhook.runbookName
+      runOn: webhook.?runOn
+      expiryTime: webhook.?expiryTime
+      parameters: webhook.?parameters
     }
   }
 ]
