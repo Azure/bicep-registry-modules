@@ -13,7 +13,7 @@ param friendlyName string = name
 @sys.description('Optional. Time zone of the Scaling Plan. Defaults to UTC.')
 param timeZone string = 'UTC'
 
-@sys.description('Optional. Host pool type of the Scaling Plan.')
+@sys.description('Optional. Host pool type of the Scaling Plan. Defaults to \'Pooled\'.')
 @allowed([
   'Personal'
   'Pooled'
@@ -172,9 +172,9 @@ resource scalingPlan_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: scalingPlan
 }

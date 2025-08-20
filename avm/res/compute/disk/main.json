@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "18204160603102381854"
+      "version": "0.37.4.10188",
+      "templateHash": "3082444524711759095"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk"
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -148,10 +155,9 @@
     },
     "edgeZone": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "EdgeZone",
-        ""
+        "EdgeZone"
       ],
       "metadata": {
         "description": "Optional. Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created."
@@ -159,11 +165,10 @@
     },
     "architecture": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "x64",
-        "Arm64",
-        ""
+        "Arm64"
       ],
       "metadata": {
         "description": "Optional. CPU architecture supported by an OS disk."
@@ -311,11 +316,10 @@
     },
     "osType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Windows",
-        "Linux",
-        ""
+        "Linux"
       ],
       "metadata": {
         "description": "Optional. Sources of a disk creation."
@@ -370,10 +374,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/disks@2025-01-02#properties/tags"
+        },
         "description": "Optional. Tags of the availability set resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -455,9 +462,9 @@
         "maxShares": "[parameters('maxShares')]",
         "networkAccessPolicy": "[parameters('networkAccessPolicy')]",
         "optimizedForFrequentAttach": "[parameters('optimizedForFrequentAttach')]",
-        "osType": "[if(not(empty(parameters('osType'))), parameters('osType'), null())]",
+        "osType": "[parameters('osType')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "supportedCapabilities": "[if(not(empty(parameters('osType'))), createObject('acceleratedNetwork', parameters('acceleratedNetwork'), 'architecture', if(not(empty(parameters('architecture'))), parameters('architecture'), null())), createObject())]"
+        "supportedCapabilities": "[if(not(empty(parameters('osType'))), createObject('acceleratedNetwork', parameters('acceleratedNetwork'), 'architecture', parameters('architecture')), createObject())]"
       },
       "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]"
     },
@@ -469,7 +476,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "disk"

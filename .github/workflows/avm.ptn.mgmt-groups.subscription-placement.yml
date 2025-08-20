@@ -18,6 +18,10 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
@@ -28,6 +32,7 @@ on:
       - "avm/ptn/mgmt-groups/subscription-placement/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

@@ -10,9 +10,9 @@ This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DocumentDB/mongoClusters/users` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-01-preview/mongoClusters/users) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DocumentDB/mongoClusters/users` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_mongoclusters_users.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-01-preview/mongoClusters/users)</li></ul> |
 
 ## Parameters
 

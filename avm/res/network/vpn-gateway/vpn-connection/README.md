@@ -11,9 +11,9 @@ This module deploys a VPN Gateway VPN Connection.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Network/vpnGateways/vpnConnections` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_vpnconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections)</li></ul> |
 
 ## Parameters
 

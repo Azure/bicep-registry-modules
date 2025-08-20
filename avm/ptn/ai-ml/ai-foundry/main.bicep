@@ -13,29 +13,6 @@ param baseUniqueName string = substring(uniqueString(subscription().id, resource
 @description('Optional. Location for all Resources. Defaults to the location of the resource group.')
 param location string = resourceGroup().location
 
-@description('Optional. SKU of the AI Foundry / Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
-@allowed([
-  'C2'
-  'C3'
-  'C4'
-  'F0'
-  'F1'
-  'S'
-  'S0'
-  'S1'
-  'S10'
-  'S2'
-  'S3'
-  'S4'
-  'S5'
-  'S6'
-  'S7'
-  'S8'
-  'S9'
-  'DC0'
-])
-param sku string = 'S0'
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -54,7 +31,7 @@ param lock lockType?
 param includeAssociatedResources bool = false
 
 @description('Optional. The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints.')
-param privateEndpointSubnetId string?
+param privateEndpointSubnetResourceId string?
 
 @description('Optional. Custom configuration for the AI Foundry.')
 param aiFoundryConfiguration foundryConfigurationType?
@@ -110,15 +87,16 @@ module foundryAccount 'modules/account.bicep' = {
   params: {
     name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
-    sku: sku
+    sku: !empty(aiFoundryConfiguration.?sku) ? aiFoundryConfiguration!.sku! : 'S0'
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     aiModelDeployments: aiModelDeployments
-    privateEndpointSubnetId: privateEndpointSubnetId
-    privateDnsZoneResourceIds: !empty(privateEndpointSubnetId) && !empty(aiFoundryConfiguration.?networking)
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    agentSubnetResourceId: aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId
+    privateDnsZoneResourceIds: !empty(privateEndpointSubnetResourceId) && !empty(aiFoundryConfiguration.?networking)
       ? [
-          aiFoundryConfiguration!.networking!.cognitiveServicesPrivateDnsZoneId!
-          aiFoundryConfiguration!.networking!.openAiPrivateDnsZoneId!
-          aiFoundryConfiguration!.networking!.aiServicesPrivateDnsZoneId!
+          aiFoundryConfiguration!.networking!.cognitiveServicesPrivateDnsZoneResourceId!
+          aiFoundryConfiguration!.networking!.openAiPrivateDnsZoneResourceId!
+          aiFoundryConfiguration!.networking!.aiServicesPrivateDnsZoneResourceId!
         ]
       : []
     roleAssignments: aiFoundryConfiguration.?roleAssignments
@@ -141,8 +119,8 @@ module keyVault 'modules/keyVault.bicep' = if (includeAssociatedResources) {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    privateEndpointSubnetId: privateEndpointSubnetId
-    privateDnsZoneId: keyVaultConfiguration.?privateDnsZoneId
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateDnsZoneResourceId: keyVaultConfiguration.?privateDnsZoneResourceId
     roleAssignments: keyVaultConfiguration.?roleAssignments
   }
 }
@@ -155,8 +133,8 @@ module aiSearch 'modules/aiSearch.bicep' = if (includeAssociatedResources) {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    privateEndpointSubnetId: privateEndpointSubnetId
-    privateDnsZoneId: aiSearchConfiguration.?privateDnsZoneId
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateDnsZoneResourceId: aiSearchConfiguration.?privateDnsZoneResourceId
     roleAssignments: aiSearchConfiguration.?roleAssignments
   }
 }
@@ -174,11 +152,8 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    containerName: empty(storageAccountConfiguration.?containerName)
-      ? projectName
-      : storageAccountConfiguration!.containerName!
-    privateEndpointSubnetId: privateEndpointSubnetId
-    blobPrivateDnsZoneId: storageAccountConfiguration.?blobPrivateDnsZoneId
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    blobPrivateDnsZoneResourceId: storageAccountConfiguration.?blobPrivateDnsZoneResourceId
     roleAssignments: concat(
       !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?roleAssignments)
         ? storageAccountConfiguration!.roleAssignments!
@@ -211,11 +186,13 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    privateEndpointSubnetId: privateEndpointSubnetId
-    privateDnsZoneId: cosmosDbConfiguration.?privateDnsZoneId
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateDnsZoneResourceId: cosmosDbConfiguration.?privateDnsZoneResourceId
     roleAssignments: cosmosDbConfiguration.?roleAssignments
   }
 }
+
+var createCapabilityHosts = (aiFoundryConfiguration.?createCapabilityHosts ?? false) && includeAssociatedResources
 
 module foundryProject 'modules/project/main.bicep' = {
   name: take('module.project.main.${projectName}', 64)
@@ -231,13 +208,15 @@ module foundryProject 'modules/project/main.bicep' = {
       : '${baseName} Default Project'
     accountName: foundryAccount.outputs.name
     location: foundryAccount.outputs.location
-    includeCapabilityHost: false // aiFoundryConfiguration.?createAIAgentService ?? false
+    // NOTE: Only creating capability host for the Foundry Account if associated resources are included AND if the agent service subnet is NOT provided.
+    //       When injecting the agent subnet into the Foundry Account, the capability host seems to be automatically created.
+    createAccountCapabilityHost: (createCapabilityHosts && empty(aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId))
+    createProjectCapabilityHost: createCapabilityHosts
     storageAccountConnection: includeAssociatedResources
       ? {
-          storageAccountName: storageAccount!.outputs.name
+          resourceName: storageAccount!.outputs.name
           subscriptionId: storageAccount!.outputs.subscriptionId
           resourceGroupName: storageAccount!.outputs.resourceGroupName
-          containerName: storageAccount!.outputs.containerName
         }
       : null
     aiSearchConnection: includeAssociatedResources
@@ -291,8 +270,8 @@ type resourceConfigurationType = {
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetId\' is provided.')
-  privateDnsZoneId: string?
+  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  privateDnsZoneResourceId: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?
@@ -307,11 +286,8 @@ type storageAccountConfigurationType = {
   @description('Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created.')
-  containerName: string?
-
-  @description('Optional. The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when \'privateEndpointSubnetId\' is provided.')
-  blobPrivateDnsZoneId: string?
+  @description('Optional. The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  blobPrivateDnsZoneResourceId: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?
@@ -326,8 +302,30 @@ type foundryConfigurationType = {
   @description('Optional. The location of the AI Foundry account. Will default to the resource group location if not specified.')
   location: string?
 
-  // @description('Optional. Whether to create the AI Agent Service. If true, the AI Foundry account will be created with the capability to host AI Agents. If true, \'networking.agentServiceSubnetId\' is required. Defaults to false.')
-  // createAIAgentService: bool?
+  @description('Optional. SKU of the AI Foundry / Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region. Defaults to \'S0\'.')
+  sku:
+    | null
+    | 'C2'
+    | 'C3'
+    | 'C4'
+    | 'F0'
+    | 'F1'
+    | 'S'
+    | 'S0'
+    | 'S1'
+    | 'S10'
+    | 'S2'
+    | 'S3'
+    | 'S4'
+    | 'S5'
+    | 'S6'
+    | 'S7'
+    | 'S8'
+    | 'S9'
+    | 'DC0'
+
+  @description('Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if \'includeAssociatedResources\' is true. Defaults to false.')
+  createCapabilityHosts: bool?
 
   @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
   allowProjectManagement: bool?
@@ -345,17 +343,17 @@ type foundryConfigurationType = {
 @export()
 @description('Values to establish private networking for the AI Foundry service.')
 type foundryNetworkConfigurationType = {
-  // @description('Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if \'createAIAgentService\' is true.')
-  // agentServiceSubnetId: string?
+  @description('Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if \'createAIAgentService\' is true.')
+  agentServiceSubnetResourceId: string?
 
   @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
-  cognitiveServicesPrivateDnsZoneId: string
+  cognitiveServicesPrivateDnsZoneResourceId: string
 
   @description('Required. The Resource ID of the Private DNS Zone for the OpenAI account.')
-  openAiPrivateDnsZoneId: string
+  openAiPrivateDnsZoneResourceId: string
 
   @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
-  aiServicesPrivateDnsZoneId: string
+  aiServicesPrivateDnsZoneResourceId: string
 }
 
 @export()

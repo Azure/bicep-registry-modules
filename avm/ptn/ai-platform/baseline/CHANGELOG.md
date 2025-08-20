@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Fix location pairs for Log Analytics workspace
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

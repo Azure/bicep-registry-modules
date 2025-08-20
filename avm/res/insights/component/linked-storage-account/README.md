@@ -10,9 +10,9 @@ This component deploys an Application Insights Linked Storage Account.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
 
 ## Parameters
 

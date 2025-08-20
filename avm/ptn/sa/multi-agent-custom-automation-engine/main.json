@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "846680875398957861"
+      "version": "0.37.4.10188",
+      "templateHash": "8244317518978802619"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -3309,8 +3309,8 @@
           "flowType": {
             "value": "Bluefield"
           },
-          "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId), createObject('value', ''))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]"
+          "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4028,7 +4028,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "securityRules": {
             "value": [
               {
@@ -4702,7 +4702,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "securityRules": {
             "value": [
               {
@@ -5376,7 +5376,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "securityRules": {
             "value": [
               {
@@ -6176,7 +6176,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "securityRules": {
             "value": [
               {
@@ -8536,12 +8536,12 @@
             "value": "[parameters('tags')]"
           },
           "virtualNetworkResourceId": {
-            "value": "[tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'resourceId'), 'value')]"
+            "value": "[tryGet(tryGet(tryGet(if(parameters('enablePrivateNetworking'), reference('virtualNetwork'), null()), 'outputs'), 'resourceId'), 'value')]"
           },
           "publicIPAddressObject": {
             "value": {
               "name": "[format('pip-bas{0}', parameters('solutionPrefix'))]",
-              "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]",
+              "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]",
               "tags": "[parameters('tags')]"
             }
           },
@@ -8560,7 +8560,7 @@
           "scaleUnits": {
             "value": 4
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]"
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -10323,7 +10323,7 @@
               "destinations": {
                 "logAnalytics": [
                   {
-                    "workspaceResourceId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId]",
+                    "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]",
                     "name": "la--1264800308"
                   }
                 ]
@@ -11617,12 +11617,12 @@
                 "name": "[format('nic-{0}', variables('virtualMachineResourceName'))]",
                 "tags": "[parameters('tags')]",
                 "deleteOption": "Delete",
-                "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]",
+                "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]",
                 "ipConfigurations": [
                   {
                     "name": "[format('{0}-nic01-ipconfig01', variables('virtualMachineResourceName'))]",
                     "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]",
-                    "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]"
+                    "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]"
                   }
                 ]
               }
@@ -11652,7 +11652,7 @@
               "tags": "[parameters('tags')]"
             }
           },
-          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name))), 'enabled', true(), 'tags', parameters('tags'))), createObject('value', null()))]",
+          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', reference('logAnalyticsWorkspace').outputs.name.value))), 'enabled', true(), 'tags', parameters('tags'))), createObject('value', null()))]",
           "extensionNetworkWatcherAgentConfig": {
             "value": {
               "enabled": true,
@@ -23143,7 +23143,7 @@
               "systemAssigned": true
             }
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[0], 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('openAiPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', createArray()))]",
           "deployments": {
@@ -23171,8 +23171,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "7548142629324965299"
+              "version": "0.37.4.10188",
+              "templateHash": "8214979247287698118"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -23391,6 +23391,36 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type of the secrets exported to the provided Key Vault."
+              }
+            },
+            "_1.lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
               }
             },
             "_1.privateEndpointCustomDnsConfigType": {
@@ -23682,12 +23712,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -23823,7 +23860,7 @@
                   }
                 },
                 "lock": {
-                  "$ref": "#/definitions/lockType",
+                  "$ref": "#/definitions/_1.lockType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -24327,7 +24364,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "cognitiveService"
@@ -29988,7 +30025,7 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "networkRestrictions": {
             "value": {
               "networkAclBypass": "None",
@@ -33797,8 +33834,8 @@
           "enablePrivateNetworking": {
             "value": "[parameters('enablePrivateNetworking')]"
           },
-          "subnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'subnetResourceIds'), 'value', 3)), createObject('value', null()))]",
-          "logAnalyticsResourceName": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name), createObject('value', null()))]",
+          "subnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', tryGet(tryGet(tryGet(if(parameters('enablePrivateNetworking'), reference('virtualNetwork'), null()), 'outputs'), 'subnetResourceIds'), 'value', 3)), createObject('value', null()))]",
+          "logAnalyticsResourceName": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.name.value), createObject('value', null()))]",
           "enableMonitoring": {
             "value": "[parameters('enableMonitoring')]"
           },
@@ -33813,8 +33850,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8784449629873845439"
+              "version": "0.37.4.10188",
+              "templateHash": "16155287450920132677"
             }
           },
           "parameters": {
@@ -36416,7 +36453,7 @@
           "reserved": {
             "value": true
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "kind": {
             "value": "linux"
           },
@@ -36983,9 +37020,9 @@
             "value": "app,linux,container"
           },
           "serverFarmResourceId": {
-            "value": "[tryGet(reference('webServerFarm'), 'outputs').resourceId.value]"
+            "value": "[tryGet(reference('webServerFarm'), 'outputs', 'resourceId', 'value')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "publicNetworkAccess": {
             "value": "Enabled"
           },
@@ -37019,8 +37056,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "466229037251812113"
+              "version": "0.37.4.10188",
+              "templateHash": "4511430464667862818"
             }
           },
           "definitions": {
@@ -38032,8 +38069,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "5539098255558802452"
+                      "version": "0.37.4.10188",
+                      "templateHash": "4653685834544796273"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
