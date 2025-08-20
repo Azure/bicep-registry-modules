@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15182921591715897732"
+      "templateHash": "4535882689266523749"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -128,8 +128,8 @@
       "extensionType": "[parameters('extensionType')]",
       "releaseTrain": "[parameters('releaseTrain')]",
       "scope": {
-        "cluster": "[if(not(empty(coalesce(parameters('releaseNamespace'), ''))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
-        "namespace": "[if(not(empty(coalesce(parameters('targetNamespace'), ''))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
+        "cluster": "[if(not(empty(parameters('releaseNamespace'))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
+        "namespace": "[if(not(empty(parameters('targetNamespace'))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
       },
       "version": "[parameters('version')]"
     }
@@ -159,7 +159,7 @@
       "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
       "existing": true,
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('clusterName')]"
     },
     "connectedCluster": {
