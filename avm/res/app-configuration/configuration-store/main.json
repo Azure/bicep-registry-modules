@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12168973636398460377"
+      "version": "0.37.4.10188",
+      "templateHash": "17783609764578034101"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -103,6 +103,58 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "replicaLocationType": {
+      "type": "object",
+      "properties": {
+        "replicaLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Location of the replica."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the replica."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a replica location"
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -401,12 +453,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -542,7 +601,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -682,7 +741,9 @@
       "defaultValue": "Standard",
       "allowedValues": [
         "Free",
-        "Standard"
+        "Developer",
+        "Standard",
+        "Premium"
       ],
       "metadata": {
         "description": "Optional. Pricing tier of App Configuration."
@@ -749,6 +810,9 @@
     },
     "replicaLocations": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/replicaLocationType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. All Replicas to create."
@@ -832,6 +896,8 @@
       "App Compliance Automation Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ffc6bbe0-e443-4c3b-bf54-26581bb2f78e')]",
       "App Configuration Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b')]",
       "App Configuration Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')]",
+      "App Configuration Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '175b81b9-6e0d-490a-85e4-0d422273c10c')]",
+      "App Configuration Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fe86443c-f201-4fc4-9d2a-ac61149fbda0')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -852,7 +918,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.appconfiguration-configurationstore.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -873,7 +939,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2024-12-01-preview",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -889,7 +955,7 @@
     },
     "configurationStore": {
       "type": "Microsoft.AppConfiguration/configurationStores",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-02-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -919,7 +985,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "configurationStore"
@@ -1025,8 +1091,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8891144649996176363"
+              "version": "0.37.4.10188",
+              "templateHash": "4166303424618131775"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value."
@@ -1069,12 +1135,12 @@
             "appConfiguration": {
               "existing": true,
               "type": "Microsoft.AppConfiguration/configurationStores",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('appConfigurationName')]"
             },
             "keyValues": {
               "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
               "properties": {
                 "contentType": "[parameters('contentType')]",
@@ -1115,7 +1181,9 @@
     "configurationStore_replicas": {
       "copy": {
         "name": "configurationStore_replicas",
-        "count": "[length(coalesce(parameters('replicaLocations'), createArray()))]"
+        "count": "[length(coalesce(parameters('replicaLocations'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1130,10 +1198,10 @@
             "value": "[parameters('name')]"
           },
           "replicaLocation": {
-            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()]]"
+            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()].replicaLocation]"
           },
           "name": {
-            "value": "[format('{0}replica', coalesce(parameters('replicaLocations'), createArray())[copyIndex()])]"
+            "value": "[tryGet(coalesce(parameters('replicaLocations'), createArray())[copyIndex()], 'name')]"
           }
         },
         "template": {
@@ -1142,8 +1210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "14825535493137706311"
+              "version": "0.37.4.10188",
+              "templateHash": "12609356088985615301"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica."
@@ -1151,8 +1219,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "[format('{0}replica', parameters('replicaLocation'))]",
               "metadata": {
-                "description": "Required. Name of the replica."
+                "description": "Optional. Name of the replica."
               }
             },
             "appConfigurationName": {
@@ -1171,7 +1240,7 @@
           "resources": [
             {
               "type": "Microsoft.AppConfiguration/configurationStores/replicas",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
               "location": "[parameters('replicaLocation')]"
             }
@@ -1993,14 +2062,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('configurationStore', '2024-05-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('configurationStore', '2025-02-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('configurationStore', '2024-05-01', 'full').location]"
+      "value": "[reference('configurationStore', '2025-02-01-preview', 'full').location]"
     },
     "endpoint": {
       "type": "string",

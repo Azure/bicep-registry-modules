@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Removed icon from parameter description that can conflict with upstream tools
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

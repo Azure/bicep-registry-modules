@@ -5,15 +5,240 @@ This module deploys a Role Assignment to a Resource Group scope.
 ## Navigation
 
 - [Resource Types](#Resource-Types)
+- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+
+## Usage examples
+
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/authorization/role-assignment/rg-scope:<version>`.
+
+- [Using only defaults (Resource Group scope)](#example-1-using-only-defaults-resource-group-scope)
+- [Using large parameter set (Resource Group scope)](#example-2-using-large-parameter-set-resource-group-scope)
+- [WAF-aligned (Resource Group scope)](#example-3-waf-aligned-resource-group-scope)
+
+### Example 1: _Using only defaults (Resource Group scope)_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+    // Non-required parameters
+    principalType: 'ServicePrincipal'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
+    },
+    // Non-required parameters
+    "principalType": {
+      "value": "ServicePrincipal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+// Non-required parameters
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set (Resource Group scope)_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: 'Reader'
+    // Non-required parameters
+    description: 'Role Assignment (resource group scope)'
+    principalType: 'ServicePrincipal'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "Reader"
+    },
+    // Non-required parameters
+    "description": {
+      "value": "Role Assignment (resource group scope)"
+    },
+    "principalType": {
+      "value": "ServicePrincipal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = 'Reader'
+// Non-required parameters
+param description = 'Role Assignment (resource group scope)'
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned (Resource Group scope)_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+    // Non-required parameters
+    principalType: 'ServicePrincipal'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
+    },
+    // Non-required parameters
+    "principalType": {
+      "value": "ServicePrincipal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/rg-scope:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+// Non-required parameters
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
 
 ## Parameters
 

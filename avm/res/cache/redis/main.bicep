@@ -7,7 +7,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Redis cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -16,7 +16,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Cache/redis@2024-11-01'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -38,14 +38,13 @@ param minimumTlsVersion string = '1.2'
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc.')
-param redisConfiguration object = {}
+param redisConfiguration resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.redisConfiguration?
 
 @allowed([
   '4'
@@ -87,13 +86,13 @@ param capacity int = 1
 param skuName string = 'Premium'
 
 @description('Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.')
-param staticIP string = ''
+param staticIP string?
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. A dictionary of tenant settings.')
-param tenantSettings object = {}
+param tenantSettings resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.tenantSettings = {}
 
 @description('Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter.')
 param zoneRedundant bool = true
@@ -219,7 +218,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : null)
-    redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
+    redisConfiguration: redisConfiguration
     redisVersion: redisVersion
     replicasPerMaster: skuName == 'Premium' ? replicasPerMaster : null
     replicasPerPrimary: skuName == 'Premium' ? replicasPerPrimary : null
@@ -229,8 +228,8 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
       family: skuName == 'Premium' ? 'P' : 'C'
       name: skuName
     }
-    staticIP: !empty(staticIP) ? staticIP : null
-    subnetId: !empty(subnetResourceId) ? subnetResourceId : null
+    staticIP: staticIP
+    subnetId: subnetResourceId
     tenantSettings: tenantSettings
     zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
   }
@@ -270,9 +269,9 @@ resource redis_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: redis
 }
@@ -500,7 +499,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 // =============== //

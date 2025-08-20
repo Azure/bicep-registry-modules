@@ -23,7 +23,7 @@ param vTpmEnabled bool = false
 param imageReference object
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
-param plan object = {}
+param plan resourceInput<'Microsoft.Compute/virtualMachineScaleSets@2024-07-01'>.plan?
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.')
 param osDisk object
@@ -53,7 +53,7 @@ param roleAssignments roleAssignmentType[]?
 param scaleSetFaultDomain int = 1
 
 @description('Optional. Resource ID of a proximity placement group.')
-param proximityPlacementGroupResourceId string = ''
+param proximityPlacementGroupResourceId string?
 
 @description('Required. Configures NICs and PIPs.')
 param nicConfigurations array
@@ -76,9 +76,8 @@ param maxPriceForLowPriorityVm int?
 @allowed([
   'Windows_Client'
   'Windows_Server'
-  ''
 ])
-param licenseType string = ''
+param licenseType string?
 
 @description('Optional. Required if name is specified. Password of the user specified in user parameter.')
 @secure()
@@ -145,7 +144,7 @@ param extensionCustomScriptConfig object = {
 param bootDiagnosticStorageAccountUri string = '.blob.${environment().suffixes.storage}/'
 
 @description('Optional. The name of the boot diagnostic storage account. Provide this if you want to use your own storage account for security reasons instead of the recommended Microsoft Managed Storage Account.')
-param bootDiagnosticStorageAccountName string = ''
+param bootDiagnosticStorageAccountName string?
 
 @description('Optional. Enable boot diagnostics to use default managed or secure storage. Defaults set to false.')
 param bootDiagnosticEnabled bool = false
@@ -154,7 +153,7 @@ import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-co
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -250,10 +249,10 @@ param rebootSetting string = 'IfRequired'
 param patchAssessmentMode string = 'ImageDefault'
 
 @description('Optional. Specifies the time zone of the virtual machine. e.g. \'Pacific Standard Time\'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`.')
-param timeZone string = ''
+param timeZone string?
 
 @description('Optional. Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object.')
-param additionalUnattendContent array = []
+param additionalUnattendContent resourceInput<'Microsoft.Compute/virtualMachineScaleSets@2024-07-01'>.properties.virtualMachineProfile.osProfile.windowsConfiguration.additionalUnattendContent?
 
 @description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
 param winRM object = {}
@@ -267,10 +266,10 @@ param publicKeys array = []
 
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machines in the scale set.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param secrets array = []
+param secrets resourceInput<'Microsoft.Compute/virtualMachineScaleSets@2024-07-01'>.properties.virtualMachineProfile.osProfile.secrets = []
 
 @description('Optional. Specifies Scheduled Event related configurations.')
-param scheduledEventsProfile object = {}
+param scheduledEventsProfile resourceInput<'Microsoft.Compute/virtualMachineScaleSets@2024-07-01'>.properties.virtualMachineProfile.scheduledEventsProfile = {}
 
 @description('Optional. Specifies whether the Virtual Machine Scale Set should be overprovisioned.')
 param overprovision bool = false
@@ -285,7 +284,7 @@ param zoneBalance bool = false
 param singlePlacementGroup bool = false
 
 @description('Optional. Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in.')
-param scaleInPolicy object = {
+param scaleInPolicy resourceInput<'Microsoft.Compute/virtualMachineScaleSets@2024-07-01'>.properties.scaleInPolicy = {
   rules: [
     'Default'
   ]
@@ -306,7 +305,7 @@ param skuCapacity int = 1
 param availabilityZones int[] = [1, 2, 3]
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/virtualMachineScaleSets@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -386,8 +385,8 @@ var windowsConfiguration = {
           : null
       }
     : null
-  timeZone: empty(timeZone) ? null : timeZone
-  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContent
+  timeZone: timeZone
+  additionalUnattendContent: additionalUnattendContent
   winRM: !empty(winRM) ? { listeners: winRM.listeners } : null
 }
 
@@ -643,7 +642,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
             ]
           }
         : null
-      licenseType: empty(licenseType) ? null : licenseType
+      licenseType: licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
       billingProfile: !empty(vmPriority) && null != maxPriceForLowPriorityVm
@@ -669,7 +668,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
     name: skuName
     capacity: skuCapacity
   }
-  plan: !empty(plan) ? plan : null
+  plan: plan
 }
 
 module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinConfig.enabled) {
@@ -706,7 +705,7 @@ module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extension
   ]
 }
 
-resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceResourceId)) {
+resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(monitoringWorkspaceResourceId)) {
   name: last(split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : 'law'), '/'))!
   scope: az.resourceGroup(
     split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : '//'), '/')[2],
@@ -727,11 +726,11 @@ module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMon
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
     settings: {
-      workspaceId: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace.properties.customerId : ''
+      workspaceId: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace!.properties.customerId : ''
       GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
     }
     protectedSettings: {
-      workspaceKey: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+      workspaceKey: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace!.listKeys().primarySharedKey : ''
     }
   }
   dependsOn: [
@@ -835,9 +834,9 @@ resource vmss_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock 
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: vmss
 }

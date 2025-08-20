@@ -5,15 +5,240 @@ This module deploys a Role Assignment to a Subscription scope.
 ## Navigation
 
 - [Resource Types](#Resource-Types)
+- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+
+## Usage examples
+
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/authorization/role-assignment/sub-scope:<version>`.
+
+- [Using only defaults (Subscription scope)](#example-1-using-only-defaults-subscription-scope)
+- [Using large parameter set (Subscription scope)](#example-2-using-large-parameter-set-subscription-scope)
+- [WAF-aligned (Subscription scope)](#example-3-waf-aligned-subscription-scope)
+
+### Example 1: _Using only defaults (Subscription scope)_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+    // Non-required parameters
+    principalType: 'ServicePrincipal'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "<roleDefinitionIdOrName>"
+    },
+    // Non-required parameters
+    "principalType": {
+      "value": "ServicePrincipal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = '<roleDefinitionIdOrName>'
+// Non-required parameters
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set (Subscription scope)_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: 'Reader'
+    // Non-required parameters
+    description: 'Role Assignment (subscription scope)'
+    principalType: 'ServicePrincipal'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "Reader"
+    },
+    // Non-required parameters
+    "description": {
+      "value": "Role Assignment (subscription scope)"
+    },
+    "principalType": {
+      "value": "ServicePrincipal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = 'Reader'
+// Non-required parameters
+param description = 'Role Assignment (subscription scope)'
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned (Subscription scope)_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+    // Non-required parameters
+    principalType: 'ServicePrincipal'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "<roleDefinitionIdOrName>"
+    },
+    // Non-required parameters
+    "principalType": {
+      "value": "ServicePrincipal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param roleDefinitionIdOrName = '<roleDefinitionIdOrName>'
+// Non-required parameters
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
 
 ## Parameters
 
