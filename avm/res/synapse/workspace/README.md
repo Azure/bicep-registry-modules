@@ -1737,7 +1737,7 @@ param tags = {
 | [`preventDataExfiltration`](#parameter-preventdataexfiltration) | bool | Prevent Data Exfiltration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Enable or Disable public network access to workspace. |
-| [`purviewResourceID`](#parameter-purviewresourceid) | string | Purview Resource ID. |
+| [`purviewResourceId`](#parameter-purviewresourceid) | string | Purview Resource ID. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | securestring | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
 | [`sqlPools`](#parameter-sqlpools) | array | List of SQL Pools to be created in the workspace. |
@@ -3139,7 +3139,7 @@ Enable or Disable public network access to workspace.
   ]
   ```
 
-### Parameter: `purviewResourceID`
+### Parameter: `purviewResourceId`
 
 Purview Resource ID.
 
