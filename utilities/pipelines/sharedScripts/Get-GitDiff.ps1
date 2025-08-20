@@ -76,7 +76,7 @@ function Get-GitDiff {
     $diff = git diff $diffInput
 
     if ($PathOnly) {
-        return $diff | Get-Item -Force # TODO: Should only run for added files. Otherwise we may get issues like: https://github.com/Azure/bicep-registry-modules/actions/runs/17100576210/job/48495769509#step:4:272
+        return $diff | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
     }
 
     return $diff
