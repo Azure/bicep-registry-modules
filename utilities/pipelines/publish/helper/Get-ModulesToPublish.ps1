@@ -51,7 +51,7 @@ function Get-ModifiedFileList {
         Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
     }
 
-    $modifiedFiles = $diff | Get-Item -Force
+    $modifiedFiles = $diff | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
 
     if ($modifiedFiles.Count -gt 0) {
         Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
