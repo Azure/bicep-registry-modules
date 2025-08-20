@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5699120273065796087"
+      "templateHash": "14269505087657868483"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -72,7 +72,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the private endpoints output."
       }
     },
     "networkAclsType": {
@@ -146,7 +147,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the network configuration."
       }
     },
     "secretsExportConfigurationType": {
@@ -188,7 +190,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the exported secrets."
       }
     },
     "localUserType": {
@@ -247,7 +250,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a local user."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {

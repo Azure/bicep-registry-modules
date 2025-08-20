@@ -1,6 +1,6 @@
 # Virtual Machine Image Templates `[Microsoft.VirtualMachineImages/imageTemplates]`
 
-This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).
+This module deploys a Virtual Machine Image Template that can be consumed by the Azure Image Builder (AIB).
 
 ## Navigation
 
