@@ -94,9 +94,9 @@ function Get-TemplateFileToPublish {
     Write-Verbose ('[{0}] files are relevant for publishing' -f $relevantPaths.Count) -Verbose
 
     if ($relevantPaths.Count -gt 0) {
-        Write-Verbose ("[{0}] File-type-filtered files found:`n[{1}]" -f $relevantPaths.Count, ($relevantPaths | ConvertTo-Json | Out-String)) -Verbose
+        Write-Debug ("[{0}] File-type-filtered files found:`n[{1}]" -f $relevantPaths.Count, ($relevantPaths | ConvertTo-Json | Out-String))
     } else {
-        Write-Verbose 'No file-type-filtered files found.' -Verbose
+        Write-Debug 'No file-type-filtered files found.'
     }
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {

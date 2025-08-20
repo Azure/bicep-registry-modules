@@ -54,6 +54,8 @@ function Get-GitDiff {
         [string] $PathFilter
     )
 
+    # TODO: Must be updated to align with latest changes in main
+
     git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
     git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
     $currentBranch = Get-GitBranchName
