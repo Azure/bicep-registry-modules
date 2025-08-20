@@ -13,13 +13,16 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 // Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+import { enforcedLocation } from '../../shared/constants.bicep'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndrymax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. Whether to remove the locking dependency after deployment. Defaults to false.')
+param removeLockingDependencyAfterDeployment bool = false
 
 // Setting max length to 12 to stay within bounds of baseName length constraints.
 // Setting min length to 12 to prevent min-char warnings on the test deployment.
@@ -60,11 +63,12 @@ module testDeployment '../../../main.bicep' = [
       baseUniqueName: substring(uniqueString(subscription().id, resourceGroup.name, serviceShort), 0, 5)
       location: enforcedLocation
       includeAssociatedResources: true
-      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
-      sku: 'S0'
+      privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
         location: enforcedLocation
+        sku: 'S0'
+        createCapabilityHosts: true
         project: {
           name: 'projcustom${workloadName}'
           displayName: 'Custom Project for ${workloadName}'
@@ -72,9 +76,10 @@ module testDeployment '../../../main.bicep' = [
         }
         allowProjectManagement: true
         networking: {
-          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
+          agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneResourceId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneResourceId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
         roleAssignments: [
           {
@@ -86,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
       }
       keyVaultConfiguration: {
         name: 'kvcustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -97,8 +102,7 @@ module testDeployment '../../../main.bicep' = [
       }
       storageAccountConfiguration: {
         name: 'stcustom${workloadName}'
-        containerName: 'my-foundry-proj-data'
-        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
+        blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -109,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
       }
       cosmosDbConfiguration: {
         name: 'cosmoscustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -120,7 +124,7 @@ module testDeployment '../../../main.bicep' = [
       }
       aiSearchConfiguration: {
         name: 'srchcustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -131,14 +135,14 @@ module testDeployment '../../../main.bicep' = [
       }
       aiModelDeployments: [
         {
-          name: 'gpt-4.1'
+          name: 'gpt-4o'
           model: {
-            name: 'gpt-4.1'
             format: 'OpenAI'
-            version: '2025-04-14'
+            name: 'gpt-4o'
+            version: '2024-11-20'
           }
           sku: {
-            name: 'GlobalStandard'
+            name: 'Standard'
             capacity: 1
           }
         }
@@ -155,3 +159,15 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// Custom module call to remove locking dependencies that can cause errors during the resource removal step
+module removeLockingDependencies '../../shared/removeLockingDependencies.bicep' = if (removeLockingDependencyAfterDeployment) {
+  name: take('module.removeLockingDependencies.${workloadName}', 64)
+  scope: resourceGroup
+  dependsOn: [testDeployment]
+  params: {
+    accountName: testDeployment[0].outputs.aiServicesName
+    projectName: testDeployment[0].outputs.aiProjectName
+    location: enforcedLocation
+  }
+}
