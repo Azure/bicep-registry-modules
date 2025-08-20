@@ -2377,40 +2377,6 @@ The DNS config information for a container group.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`nameServers`](#parameter-dnsconfignameservers) | array | 	The DNS servers for the container group. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`options`](#parameter-dnsconfigoptions) | string | The DNS options for the container group. |
-| [`searchDomains`](#parameter-dnsconfigsearchdomains) | string | The DNS search domains for hostname lookup in the container group. |
-
-### Parameter: `dnsConfig.nameServers`
-
-	The DNS servers for the container group.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `dnsConfig.options`
-
-The DNS options for the container group.
-
-- Required: No
-- Type: string
-
-### Parameter: `dnsConfig.searchDomains`
-
-The DNS search domains for hostname lookup in the container group.
-
-- Required: No
-- Type: string
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.

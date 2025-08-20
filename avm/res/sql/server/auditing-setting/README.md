@@ -1,4 +1,4 @@
-# Azure SQL Server Audit Settings `[Microsoft.Sql/servers]`
+# Azure SQL Server Audit Settings `[Microsoft.Sql/servers/auditingSettings]`
 
 This module deploys an Azure SQL Server Audit Settings.
 

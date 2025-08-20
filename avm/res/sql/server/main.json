@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14482393169612232058"
+      "templateHash": "9457010424663674252"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -848,7 +848,7 @@
         "description": "The type for a virtual network rule."
       }
     },
-    "securityAlerPolicyType": {
+    "securityAlertPolicyType": {
       "type": "object",
       "properties": {
         "name": {
@@ -2050,7 +2050,7 @@
     "securityAlertPolicies": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/securityAlerPolicyType"
+        "$ref": "#/definitions/securityAlertPolicyType"
       },
       "nullable": true,
       "metadata": {
