@@ -66,7 +66,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = if (clusterType == 'managedCluster') {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-01' existing = if (clusterType == 'managedCluster') {
   name: clusterName
 }
 
@@ -82,12 +82,12 @@ var extensionProperties = {
   extensionType: extensionType
   releaseTrain: releaseTrain
   scope: {
-    cluster: !empty(releaseNamespace ?? '')
+    cluster: !empty(releaseNamespace)
       ? {
           releaseNamespace: releaseNamespace
         }
       : null
-    namespace: !empty(targetNamespace ?? '')
+    namespace: !empty(targetNamespace)
       ? {
           targetNamespace: targetNamespace
         }

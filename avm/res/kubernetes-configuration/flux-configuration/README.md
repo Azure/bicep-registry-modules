@@ -199,7 +199,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
     }
-    location: '<location>'
   }
 }
 ```
@@ -250,9 +249,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
         "timeoutInSeconds": 180,
         "url": "https://github.com/mspnp/aks-baseline"
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -289,7 +285,6 @@ param gitRepository = {
   timeoutInSeconds: 180
   url: 'https://github.com/mspnp/aks-baseline'
 }
-param location = '<location>'
 ```
 
 </details>
@@ -497,7 +492,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
     }
-    location: '<location>'
   }
 }
 ```
@@ -553,9 +547,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
         "timeoutInSeconds": 180,
         "url": "https://github.com/mspnp/aks-baseline"
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -597,7 +588,6 @@ param gitRepository = {
   timeoutInSeconds: 180
   url: 'https://github.com/mspnp/aks-baseline'
 }
-param location = '<location>'
 ```
 
 </details>

@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Non-functional API version update
 - Updated ReadMe with AzAdvertizer reference
+- Small type change
 
 ### Breaking Changes
 

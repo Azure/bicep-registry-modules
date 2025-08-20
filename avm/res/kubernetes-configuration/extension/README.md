@@ -72,7 +72,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
         suspend: false
       }
     ]
-    location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
   }
@@ -128,9 +127,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "releaseNamespace": {
       "value": "flux-system"
     },
@@ -178,7 +174,6 @@ param fluxConfigurations = [
     suspend: false
   }
 ]
-param location = '<location>'
 param releaseNamespace = 'flux-system'
 param releaseTrain = 'Stable'
 ```
@@ -204,7 +199,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcemin001'
     // Non-required parameters
-    location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
   }
@@ -234,9 +228,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "releaseNamespace": {
       "value": "flux-system"
     },
@@ -262,7 +253,6 @@ param clusterName = '<clusterName>'
 param extensionType = 'microsoft.flux'
 param name = 'kcemin001'
 // Non-required parameters
-param location = '<location>'
 param releaseNamespace = 'flux-system'
 param releaseTrain = 'Stable'
 ```
@@ -493,7 +483,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
         suspend: false
       }
     ]
-    location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
     version: '0.5.2'
@@ -556,9 +545,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "releaseNamespace": {
       "value": "flux-system"
     },
@@ -615,7 +601,6 @@ param fluxConfigurations = [
     suspend: false
   }
 ]
-param location = '<location>'
 param releaseNamespace = 'flux-system'
 param releaseTrain = 'Stable'
 param version = '0.5.2'
