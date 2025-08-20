@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. An array of routes to be established within the hub route table.')
-param routes routeType[]?
+param routes resourceInput<'Microsoft.Network/routeTables@2024-07-01'>.properties.routes?
 
 @description('Optional. Switch to disable BGP route propagation.')
 param disableBgpRoutePropagation bool = false
@@ -17,12 +17,12 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/routeTables@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -78,7 +78,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
+resource routeTable 'Microsoft.Network/routeTables@2024-07-01' = {
   name: name
   location: location
   tags: tags
@@ -126,26 +126,3 @@ output resourceId string = routeTable.id
 
 @description('The location the resource was deployed into.')
 output location string = routeTable.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a route.')
-type routeType = {
-  @description('Required. Name of the route.')
-  name: string
-
-  @description('Required. Properties of the route.')
-  properties: {
-    @description('Required. The type of Azure hop the packet should be sent to.')
-    nextHopType: ('VirtualAppliance' | 'VnetLocal' | 'Internet' | 'VirtualNetworkGateway' | 'None')
-
-    @description('Optional. The destination CIDR to which the route applies.')
-    addressPrefix: string?
-
-    @description('Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.')
-    nextHopIpAddress: string?
-  }
-}
