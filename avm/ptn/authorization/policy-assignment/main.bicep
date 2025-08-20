@@ -146,7 +146,7 @@ module policyAssignment_sub 'modules/subscription.bicep' = if (!empty(subscripti
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []
@@ -170,7 +170,7 @@ module policyAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceG
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []

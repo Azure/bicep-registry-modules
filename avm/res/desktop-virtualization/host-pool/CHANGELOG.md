@@ -16,6 +16,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   with default values
 - Updated resource to API version `2025-03-01-preview`
 - Added several types
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

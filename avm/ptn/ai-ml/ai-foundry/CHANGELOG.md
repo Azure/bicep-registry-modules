@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Enabled custom notes for locks.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

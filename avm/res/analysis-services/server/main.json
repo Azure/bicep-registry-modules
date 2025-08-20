@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12552616871219769276"
+      "templateHash": "10149324849753065667"
     },
     "name": "Analysis Services Servers",
     "description": "This module deploys an Analysis Services Server."
@@ -270,6 +270,12 @@
     },
     "firewallSettings": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AnalysisServices/servers@2017-08-01#properties/properties/properties/ipV4FirewallSettings"
+        },
+        "description": "Optional. The inbound firewall rules to define on the server. If not specified, firewall is disabled."
+      },
       "defaultValue": {
         "firewallRules": [
           {
@@ -279,9 +285,6 @@
           }
         ],
         "enablePowerBIService": true
-      },
-      "metadata": {
-        "description": "Optional. The inbound firewall rules to define on the server. If not specified, firewall is disabled."
       }
     },
     "location": {

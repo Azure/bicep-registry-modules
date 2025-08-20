@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1195510837296458963"
+      "templateHash": "3078997291416932467"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -987,7 +987,7 @@
           },
           "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', ''))]",
           "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "parameters": "[if(not(empty(parameters('parameters'))), createObject('value', parameters('parameters')), createObject('value', createObject()))]",
+          "parameters": "[if(not(empty(variables('parametersMerged'))), createObject('value', variables('parametersMerged')), createObject('value', createObject()))]",
           "identity": {
             "value": "[parameters('identity')]"
           },
@@ -1253,7 +1253,7 @@
           },
           "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', ''))]",
           "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "parameters": "[if(not(empty(parameters('parameters'))), createObject('value', parameters('parameters')), createObject('value', createObject()))]",
+          "parameters": "[if(not(empty(variables('parametersMerged'))), createObject('value', variables('parametersMerged')), createObject('value', createObject()))]",
           "identity": {
             "value": "[parameters('identity')]"
           },

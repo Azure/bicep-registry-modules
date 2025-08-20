@@ -19,7 +19,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added the `weekDaysScheme` to the `daysData` configuration
 - Added checks to ensure that `daysData` does not contain both `allWeekScheme` and `weekDaysScheme` at the same time or a combination of `weekDaysScheme` and `allWeekScheme` with individual days.
 - Added a test for `weekDaysScheme`
--
+- Updated ReadMe with AzAdvertizer reference
 ### Breaking Changes
 
 - None

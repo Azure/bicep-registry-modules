@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Fix in metadata description
 
 ### Breaking Changes
 
@@ -19,6 +20,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added note for a required setting for DevBox-supported images.
 - Added parameter types
 - Fix: Added missing tags passthrough to the `images` sub-resource
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

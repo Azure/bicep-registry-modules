@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added type for `administrators` & `firewallRules` parameters
 
 ### Breaking Changes
 
@@ -17,6 +18,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Bugfix: Fixed issue where the incorrect database ownership was set during initial deployment of DB for Postgre SQL Flexible Server.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

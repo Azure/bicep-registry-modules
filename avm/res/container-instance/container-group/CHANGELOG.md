@@ -6,7 +6,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Updated ReadMe with AzAdvertizer reference
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Replaced custom type of `dnsConfig` parameter with resource-derived type
 
 ### Breaking Changes
 

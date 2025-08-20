@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Re-compiled `main.json` with latest Bicep version
 - Added type for `tags`
 - Added default of `applicationInsightsDashboardName` from empty to nullable (- has **not** impact on behavior)
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

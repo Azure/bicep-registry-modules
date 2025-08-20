@@ -48,7 +48,7 @@ param firewallRules firewallRuleType[]?
 param virtualNetworkRules virtualNetworkRuleType[]?
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies securityAlerPolicyType[]?
+param securityAlertPolicies securityAlertPolicyType[]?
 
 @description('Optional. The keys to configure.')
 param keys keyType[]?
@@ -518,7 +518,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   }
 }
 
-module server_audit_settings 'audit-setting/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'auditing-setting/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
@@ -982,7 +982,7 @@ type virtualNetworkRuleType = {
 
 @export()
 @description('The type for a security alert policy.')
-type securityAlerPolicyType = {
+type securityAlertPolicyType = {
   @description('Required. The name of the Security Alert Policy.')
   name: string
 

@@ -18,6 +18,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added types for object/array parameters
 - Added exported user-defined type `vnetConfigType`
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
