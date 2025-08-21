@@ -749,7 +749,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     name: 'dep-test-cdnpmin'
     sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
-    location: '<location>'
+    location: 'global'
   }
 }
 ```
@@ -775,7 +775,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "global"
     }
   }
 }
@@ -795,7 +795,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 param name = 'dep-test-cdnpmin'
 param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
-param location = '<location>'
+param location = 'global'
 ```
 
 </details>
@@ -869,7 +869,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       ]
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
-    location: '<location>'
+    location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -974,7 +974,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "lock": {
       "value": {
@@ -1075,7 +1075,7 @@ param endpointProperties = {
   ]
   queryStringCachingBehavior: 'IgnoreQueryString'
 }
-param location = '<location>'
+param location = 'global'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -1152,7 +1152,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       ]
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
-    location: '<location>'
+    location: 'global'
     originResponseTimeoutSeconds: 60
   }
 }
@@ -1211,7 +1211,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "originResponseTimeoutSeconds": {
       "value": 60
@@ -1264,7 +1264,7 @@ param endpointProperties = {
   ]
   queryStringCachingBehavior: 'IgnoreQueryString'
 }
-param location = '<location>'
+param location = 'global'
 param originResponseTimeoutSeconds = 60
 ```
 
