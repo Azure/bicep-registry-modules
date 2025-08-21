@@ -747,7 +747,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmin'
-    sku: 'Standard_Microsoft'
+    sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
     location: '<location>'
   }
@@ -771,7 +771,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmin"
     },
     "sku": {
-      "value": "Standard_Microsoft"
+      "value": "Standard_AzureFrontDoor"
     },
     // Non-required parameters
     "location": {
@@ -793,7 +793,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmin'
-param sku = 'Standard_Microsoft'
+param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -816,7 +816,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
-    sku: 'Standard_Microsoft'
+    sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -915,7 +915,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmax"
     },
     "sku": {
-      "value": "Standard_Microsoft"
+      "value": "Standard_AzureFrontDoor"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -1022,7 +1022,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmax'
-param sku = 'Standard_Microsoft'
+param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -1120,7 +1120,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'
-    sku: 'Standard_Microsoft'
+    sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
     endpointProperties: {
       contentTypesToCompress: [
@@ -1175,7 +1175,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpwaf"
     },
     "sku": {
-      "value": "Standard_Microsoft"
+      "value": "Standard_AzureFrontDoor"
     },
     // Non-required parameters
     "endpointProperties": {
@@ -1232,7 +1232,7 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpwaf'
-param sku = 'Standard_Microsoft'
+param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
 param endpointProperties = {
   contentTypesToCompress: [
