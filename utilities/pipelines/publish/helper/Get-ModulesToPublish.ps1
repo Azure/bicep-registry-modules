@@ -50,17 +50,18 @@ function Get-TemplateFileToPublish {
 
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
-    $modifiedModuleFiles = (Get-GitDiff -PathFilter $ModuleFolderPath -PathOnly -Verbose).FullName
+    $modifiedModuleFiles = Get-GitDiff -PathFilter $ModuleFolderPath -PathOnly -Verbose
+    $modifiedModuleFilePaths = $modifiedModuleFiles ? $modifiedModuleFiles.FullName : @()
 
-    Write-Verbose ('[{0}] modified files identified in path [{1}]:' -f $modifiedModuleFiles.count, $ModuleFolderPath) -Verbose
-    $modifiedModuleFiles | ForEach-Object {
+    Write-Verbose ('[{0}] modified files identified in path [{1}]:' -f $modifiedModuleFilePaths.count, ($ModuleFolderPath -split ('{0}[\\|\/]' -f [regex]::Escape($RepoRoot)))[1]) -Verbose
+    $modifiedModuleFilePaths | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     # Only include `main.json' / 'version.json' files
     $relevantPaths = @()
-    foreach ($modifiedFile in $modifiedModuleFiles) {
+    foreach ($modifiedFile in $modifiedModuleFilePaths) {
 
         foreach ($path in  $PathsToInclude) {
             if ($modifiedFile -eq (Resolve-Path (Join-Path (Split-Path $modifiedFile) $path) -ErrorAction 'SilentlyContinue')) {
@@ -72,21 +73,17 @@ function Get-TemplateFileToPublish {
     Write-Verbose ('[{0}] files identified that justify publishing:' -f $relevantPaths.count) -Verbose
     $relevantPaths | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
         Find-TemplateFile -Path $_ -Verbose
     } | Sort-Object -Culture 'en-US' -Unique -Descending
 
-    if ($TemplateFilesToPublish.Count -eq 0) {
-        Write-Verbose 'No template file found in the modified module.' -Verbose
-    }
-
     Write-Verbose ('[{0}] template(s) for modified modules found:' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     if ($SkipNotVersionedModules) {
@@ -104,7 +101,7 @@ function Get-TemplateFileToPublish {
     Write-Verbose ('[{0}] versioned modules to publish' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     return $TemplateFilesToPublish

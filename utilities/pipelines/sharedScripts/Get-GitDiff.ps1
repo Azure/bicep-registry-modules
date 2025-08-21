@@ -112,7 +112,7 @@ function Get-GitDiff {
         ($PathOnly ? '--name-only' : $null),
         $currentCommit,
         $compareWithCommit,
-        $PathFilter
+        '--', $PathFilter
     ) | Where-Object { $_ }
     $modifiedFiles = git diff $diffInput
 
