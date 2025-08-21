@@ -18,11 +18,11 @@ param publicIPAddressObject publicIPAddressObjectType = {
   name: '${name}-pip'
 }
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -59,7 +59,7 @@ param enablePrivateOnlyBastion bool = false
 @description('Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.')
 param scaleUnits int = 2
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -292,7 +292,7 @@ output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBast
 // ================ //
 
 import { dnsSettingsType, ipTagType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.9.0'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
 @description('The type for the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
