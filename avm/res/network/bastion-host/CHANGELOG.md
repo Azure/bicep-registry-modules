@@ -9,7 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 - Added missing properties of the `publicIPAddressObject` parameter, allowing for more control over public IP address settings.
 - Added strong typing for the `publicIPAddressObject` parameter, improving validation and IntelliSense support.
-- Updated `roleAssignmentType` and `diagnosticSettingLogsOnlyType` to 'avm-common-types version' `0.6.0`
+- Updated `roleAssignmentType` and `diagnosticSettingLogsOnlyType` to 'avm-common-types' version `0.6.0`
 
 ### Breaking Changes
 
