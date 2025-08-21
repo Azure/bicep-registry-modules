@@ -116,20 +116,9 @@ function Get-GitDiff {
     ) | Where-Object { $_ }
     $modifiedFiles = git diff $diffInput
 
-    if ($modifiedFiles.Count -gt 0) {
-        Write-Debug ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles | ConvertTo-Json | Out-String))
-    } else {
-        Write-Debug 'Plain diff files found via `git diff`.'
-    }
-
     if ($PathOnly) {
+        # Returns only the paths of the changed files, not the changes themselves
         return $modifiedFiles | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
-    }
-
-    if ($modifiedFiles.Count -gt 0) {
-        Write-Debug ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String))
-    } else {
-        Write-Debug 'No modified files found via `git diff`.'
     }
 
     return $modifiedFiles
