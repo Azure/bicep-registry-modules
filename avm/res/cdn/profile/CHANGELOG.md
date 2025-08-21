@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added TLS13 as allowed minimumTlsVersion parameter for the customDomain resource
-- Updated Microsoft.Cdn/profiles API version to @2025-06-01
+- Updated Microsoft.Cdn/profiles API version to 2025-06-01
 
 ### Breaking Changes
 
