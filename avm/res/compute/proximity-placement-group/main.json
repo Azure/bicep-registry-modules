@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "3940421282476160298"
+      "version": "0.37.4.10188",
+      "templateHash": "2713817885224625693"
     },
     "name": "Proximity Placement Groups",
     "description": "This module deploys a Proximity Placement Group."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -162,10 +169,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/proximityPlacementGroups@2024-11-01#properties/tags"
+        },
         "description": "Optional. Tags of the proximity placement group resource."
-      }
+      },
+      "nullable": true
     },
     "availabilityZone": {
       "type": "int",
@@ -181,10 +191,13 @@
     },
     "colocationStatus": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/proximityPlacementGroups@2024-11-01#properties/properties/properties/colocationStatus"
+        },
         "description": "Optional. Describes colocation status of the Proximity Placement Group."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -195,10 +208,13 @@
     },
     "intent": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/proximityPlacementGroups@2024-11-01#properties/properties/properties/intent"
+        },
         "description": "Optional. Specifies the user intent of the proximity placement group."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -259,7 +275,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "proximityPlacementGroup"

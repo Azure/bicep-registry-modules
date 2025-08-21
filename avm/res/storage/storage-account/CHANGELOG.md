@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.26.1
+
+### Changes
+
+- Added metadata to exported types
+
+### Breaking Changes
+
+- None
+
+## 0.26.0
+
+### Changes
+
+- Addressed diverse warnings
+- Updated ReadMe with AzAdvertizer reference
+
+### Breaking Changes
+
+- Changed the type for the `diagnosticSettings` parameter to only support metrics. This matches the implementation of the resource provider.
+
 ## 0.25.1
 
 ### Changes

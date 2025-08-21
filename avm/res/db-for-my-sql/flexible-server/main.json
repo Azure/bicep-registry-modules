@@ -5,13 +5,46 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "1357046788318246879"
+      "version": "0.37.4.10188",
+      "templateHash": "14944902911494147621"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
   },
   "definitions": {
+    "configurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the configuration."
+          }
+        },
+        "source": {
+          "type": "string",
+          "allowedValues": [
+            "system-default",
+            "user-override"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Source of the configuration."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value of the configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a configuration"
+      }
+    },
     "privateEndpointOutputType": {
       "type": "object",
       "properties": {
@@ -469,12 +502,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1014,6 +1054,16 @@
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
       }
     },
+    "configurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/configurationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The configurations to create in the server."
+      }
+    },
     "advancedThreatProtection": {
       "type": "string",
       "defaultValue": "Enabled",
@@ -1161,7 +1211,7 @@
     },
     "flexibleServer": {
       "type": "Microsoft.DBforMySQL/flexibleServers",
-      "apiVersion": "2024-10-01-preview",
+      "apiVersion": "2024-12-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1214,7 +1264,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "flexibleServer"
@@ -1316,8 +1366,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "2376481360328882580"
+              "version": "0.37.4.10188",
+              "templateHash": "3420942288215794383"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1353,7 +1403,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/databases",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
@@ -1423,8 +1473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "17839370044473662673"
+              "version": "0.37.4.10188",
+              "templateHash": "9004997780351658128"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1458,7 +1508,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1531,8 +1581,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "7077211639917524660"
+              "version": "0.37.4.10188",
+              "templateHash": "17006457634218723566"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1573,7 +1623,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
-              "apiVersion": "2023-12-30",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
               "properties": {
                 "administratorType": "ActiveDirectory",
@@ -1613,6 +1663,124 @@
         "flexibleServer"
       ]
     },
+    "flexibleServer_configurations": {
+      "copy": {
+        "name": "flexibleServer_configurations",
+        "count": "[length(coalesce(parameters('configurations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-Configuration-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('configurations'), createArray())[copyIndex()].name]"
+          },
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "source": {
+            "value": "[tryGet(coalesce(parameters('configurations'), createArray())[copyIndex()], 'source')]"
+          },
+          "value": {
+            "value": "[tryGet(coalesce(parameters('configurations'), createArray())[copyIndex()], 'value')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "16815086506589257787"
+            },
+            "name": "DBforMySQL Flexible Server Configurations",
+            "description": "This module deploys a DBforMySQL Flexible Server Configuration."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the configuration."
+              }
+            },
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "source": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "system-default",
+                "user-override"
+              ],
+              "metadata": {
+                "description": "Optional. Source of the configuration."
+              }
+            },
+            "value": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Value of the configuration."
+              }
+            }
+          },
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-12-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "configuration": {
+              "type": "Microsoft.DBforMySQL/flexibleServers/configurations",
+              "apiVersion": "2024-12-01-preview",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+              "properties": {
+                "source": "[parameters('source')]",
+                "value": "[parameters('value')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed configuration."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/configurations', parameters('flexibleServerName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name of the deployed configuration."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
     "flexibleServer_advancedThreatProtection": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1636,8 +1804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15768255940384774839"
+              "version": "0.37.4.10188",
+              "templateHash": "10605175316669845349"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -1664,7 +1832,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
-              "apiVersion": "2024-10-01-preview",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
               "properties": {
                 "state": "[parameters('advancedThreatProtection')]"
@@ -2486,7 +2654,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flexibleServer', '2024-10-01-preview', 'full').location]"
+      "value": "[reference('flexibleServer', '2024-12-01-preview', 'full').location]"
     },
     "fqdn": {
       "type": "string",

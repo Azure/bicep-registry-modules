@@ -32,6 +32,7 @@ on:
       - "avm/res/dev-center/devcenter/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

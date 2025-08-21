@@ -84,6 +84,11 @@ module testDeployment '../../../main.bicep' = {
         value: false
       }
       effect: {
+        value: 'DeployIfNotExists'
+      }
+    }
+    parameterOverrides: {
+      effect: {
         value: 'Disabled'
       }
     }

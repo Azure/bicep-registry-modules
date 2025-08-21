@@ -18,14 +18,14 @@ This module deploys an Azure Virtual Desktop Workspace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/workspaces` | [2022-10-14-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2022-10-14-preview/workspaces) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DesktopVirtualization/workspaces` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.desktopvirtualization_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/workspaces)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -108,7 +108,9 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     // Required parameters
     name: 'dvwsmax001'
     // Non-required parameters
-    applicationGroupReferences: []
+    applicationGroupReferences: [
+      '<applicationGroupResourceId>'
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -254,7 +256,9 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     },
     // Non-required parameters
     "applicationGroupReferences": {
-      "value": []
+      "value": [
+        "<applicationGroupResourceId>"
+      ]
     },
     "diagnosticSettings": {
       "value": [
@@ -412,7 +416,9 @@ using 'br/public:avm/res/desktop-virtualization/workspace:<version>'
 // Required parameters
 param name = 'dvwsmax001'
 // Non-required parameters
-param applicationGroupReferences = []
+param applicationGroupReferences = [
+  '<applicationGroupResourceId>'
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -565,6 +571,70 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    privateEndpoints: [
+      {
+        customDnsConfigs: []
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-feed1'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r0'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-feed2'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r1'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'feed'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        customDnsConfigs: []
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-global'
+            properties: {
+              groupId: 'global'
+              memberName: 'web'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'global'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -601,6 +671,72 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
         }
       ]
     },
+    "privateEndpoints": {
+      "value": [
+        {
+          "customDnsConfigs": [],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig-feed1",
+              "properties": {
+                "groupId": "feed",
+                "memberName": "web-r0",
+                "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfig-feed2",
+              "properties": {
+                "groupId": "feed",
+                "memberName": "web-r1",
+                "privateIPAddress": "10.0.0.13"
+              }
+            }
+          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "feed",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "customDnsConfigs": [],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig-global",
+              "properties": {
+                "groupId": "global",
+                "memberName": "web",
+                "privateIPAddress": "10.0.0.11"
+              }
+            }
+          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "global",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -633,6 +769,70 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param privateEndpoints = [
+  {
+    customDnsConfigs: []
+    ipConfigurations: [
+      {
+        name: 'myIPconfig-feed1'
+        properties: {
+          groupId: 'feed'
+          memberName: 'web-r0'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+      {
+        name: 'myIPconfig-feed2'
+        properties: {
+          groupId: 'feed'
+          memberName: 'web-r1'
+          privateIPAddress: '10.0.0.13'
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'feed'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    customDnsConfigs: []
+    ipConfigurations: [
+      {
+        name: 'myIPconfig-global'
+        properties: {
+          groupId: 'global'
+          memberName: 'web'
+          privateIPAddress: '10.0.0.11'
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'global'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -663,7 +863,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Public network access for the workspace. Enabled by default. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Public network access for the workspace. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -680,7 +880,6 @@ Array of application group references.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `description`
 
@@ -839,6 +1038,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -858,6 +1058,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1041,6 +1248,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -1060,6 +1268,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1275,11 +1490,10 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Public network access for the workspace. Enabled by default.
+Public network access for the workspace.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
 
 ### Parameter: `roleAssignments`
 
@@ -1421,8 +1635,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

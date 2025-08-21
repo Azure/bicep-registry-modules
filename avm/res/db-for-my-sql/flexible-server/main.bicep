@@ -4,7 +4,7 @@ metadata description = 'This module deploys a DBforMySQL Flexible Server.'
 @description('Required. The name of the MySQL flexible server.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -171,6 +171,9 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
+@description('Optional. The configurations to create in the server.')
+param configurations configurationType[]?
+
 @description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
 @allowed([
   'Enabled'
@@ -302,7 +305,7 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -369,9 +372,9 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: flexibleServer
 }
@@ -425,6 +428,18 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       sid: administrator.sid
       identityResourceId: administrator.identityResourceId
       tenantId: administrator.?tenantId ?? tenant().tenantId
+    }
+  }
+]
+
+module flexibleServer_configurations 'configuration/main.bicep' = [
+  for (configuration, index) in (configurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
+    params: {
+      name: configuration.name
+      flexibleServerName: flexibleServer.name
+      source: configuration.?source
+      value: configuration.?value
     }
   }
 ]
@@ -550,6 +565,19 @@ output privateEndpoints privateEndpointOutputType[] = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The type for a configuration')
+type configurationType = {
+  @description('Required. The name of the configuration.')
+  name: string
+
+  @description('Optional. Source of the configuration.')
+  source: ('system-default' | 'user-override')?
+
+  @description('Optional. Value of the configuration.')
+  value: string?
+}
 
 @export()
 type privateEndpointOutputType = {

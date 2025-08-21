@@ -60,6 +60,8 @@ spec:
     - Azure.Log.Replication # Excluded as it requires user input and additional configuration
     # Virtual Network Gateway
     - Azure.VNG.MaintenanceConfig # Requires a maintenance configuration resource Id as a user input.
+    # Recovery Services Vault
+    - Azure.RSV.ReplicationAlert # Requires user input, like an E-Mail to send alerts to
   if:
     name: "."
     contains:

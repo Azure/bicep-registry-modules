@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "16289812864199382767"
+      "version": "0.37.4.10188",
+      "templateHash": "4960057997414961767"
     },
     "name": "Microsoft Entra Domain Services",
     "description": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance."
@@ -177,12 +177,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -318,14 +325,14 @@
     },
     "pfxCertificate": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days."
       }
     },
     "pfxCertificatePassword": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The password to decrypt the provided Secure LDAP certificate PFX file. Required if secure LDAP is enabled."
       }
@@ -575,8 +582,8 @@
         "ldapsSettings": {
           "externalAccess": "[parameters('externalAccess')]",
           "ldaps": "[parameters('ldaps')]",
-          "pfxCertificate": "[if(not(empty(parameters('pfxCertificate'))), parameters('pfxCertificate'), null())]",
-          "pfxCertificatePassword": "[if(not(empty(parameters('pfxCertificatePassword'))), parameters('pfxCertificatePassword'), null())]"
+          "pfxCertificate": "[parameters('pfxCertificate')]",
+          "pfxCertificatePassword": "[parameters('pfxCertificatePassword')]"
         },
         "replicaSets": "[parameters('replicaSets')]",
         "domainSecuritySettings": {
@@ -640,7 +647,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "domainservice"

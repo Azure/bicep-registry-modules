@@ -14,31 +14,31 @@ param location string = 'global'
 param enabled bool = true
 
 @description('Optional. Scopes on which alert processing rule will apply.')
-param scopes array = [
+param scopes string[] = [
   subscription().id
 ]
 
 @description('Optional.  Actions to be applied.')
-param actions array = [
+param actions resourceInput<'Microsoft.AlertsManagement/actionRules@2021-08-08'>.properties.actions = [
   {
     actionType: 'RemoveAllActionGroups'
   }
 ]
 
 @description('Optional.  Conditions on which alerts will be filtered.')
-param conditions array?
+param conditions resourceInput<'Microsoft.AlertsManagement/actionRules@2021-08-08'>.properties.conditions?
 
 @description('Optional. Scheduling for alert processing rule.')
-param schedule object?
+param schedule resourceInput<'Microsoft.AlertsManagement/actionRules@2021-08-08'>.properties.schedule?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.AlertsManagement/actionRules@2021-08-08'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -107,9 +107,9 @@ resource actionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: actionRule
 }

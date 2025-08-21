@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "6181717056890837435"
+      "version": "0.37.4.10188",
+      "templateHash": "14710395605405022452"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -678,12 +678,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1566,10 +1573,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "diskEncryptionSetResourceId": {
       "type": "string",
@@ -1587,17 +1597,23 @@
     },
     "httpProxyConfig": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/properties/properties/httpProxyConfig"
+        },
         "description": "Optional. Configurations for provisioning the cluster with HTTP proxy servers."
-      }
+      },
+      "nullable": true
     },
     "identityProfile": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/properties/properties/identityProfile"
+        },
         "description": "Optional. Identities associated with the cluster."
-      }
+      },
+      "nullable": true
     },
     "kedaAddon": {
       "type": "bool",
@@ -1923,7 +1939,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "managedCluster"
@@ -2044,8 +2060,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "2040378203872905050"
+              "version": "0.37.4.10188",
+              "templateHash": "15214623384404752025"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2240,8 +2256,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "15335448253202727588"
+              "version": "0.37.4.10188",
+              "templateHash": "7002414833582441484"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2682,6 +2698,9 @@
           },
           "version": {
             "value": "[tryGet(parameters('fluxExtension'), 'version')]"
+          },
+          "targetNamespace": {
+            "value": "[tryGet(parameters('fluxExtension'), 'targetNamespace')]"
           }
         },
         "template": {
@@ -2691,12 +2710,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9966442976957263225"
+              "version": "0.33.93.31351",
+              "templateHash": "13174696940078832071"
             },
             "name": "Kubernetes Configuration Extensions",
-            "description": "This module deploys a Kubernetes Configuration Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Kubernetes Configuration Extension."
           },
           "parameters": {
             "name": {
@@ -2781,12 +2799,15 @@
               }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.5', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.6', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2841,7 +2862,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "enableTelemetry": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "clusterName": {
                     "value": "[parameters('clusterName')]"
