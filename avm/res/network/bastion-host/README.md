@@ -55,7 +55,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     // Non-required parameters
     location: '<location>'
     publicIPAddressObject: {
-      allocationMethod: 'Static'
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -71,7 +70,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         }
       ]
       name: 'nbhctmpip001-pip'
-      publicIPPrefixResourceId: ''
+      publicIPAllocationMethod: 'Static'
+      publicIpPrefixResourceId: ''
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -86,11 +86,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
-      zones: [
-        1
-        2
-        3
-      ]
     }
   }
 }
@@ -121,7 +116,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     },
     "publicIPAddressObject": {
       "value": {
-        "allocationMethod": "Static",
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -137,7 +131,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
           }
         ],
         "name": "nbhctmpip001-pip",
-        "publicIPPrefixResourceId": "",
+        "publicIPAllocationMethod": "Static",
+        "publicIpPrefixResourceId": "",
         "roleAssignments": [
           {
             "principalId": "<principalId>",
@@ -151,12 +146,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
-        },
-        "zones": [
-          1,
-          2,
-          3
-        ]
+        }
       }
     }
   }
@@ -179,7 +169,6 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param location = '<location>'
 param publicIPAddressObject = {
-  allocationMethod: 'Static'
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -195,7 +184,8 @@ param publicIPAddressObject = {
     }
   ]
   name: 'nbhctmpip001-pip'
-  publicIPPrefixResourceId: ''
+  publicIPAllocationMethod: 'Static'
+  publicIpPrefixResourceId: ''
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -210,11 +200,6 @@ param publicIPAddressObject = {
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
-  zones: [
-    1
-    2
-    3
-  ]
 }
 ```
 
