@@ -8,15 +8,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added TLS13 as allowed minimumTlsVersion parameter for the customDomain resource
 - Updated Microsoft.Cdn/profiles API version to 2025-06-01
-
-### Breaking Changes
-
-- None
-
-## 0.14.1
-
-### Changes
-
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes
