@@ -27,12 +27,7 @@ param enableTelemetry bool = true
 param domainName string
 
 @description('Optional. The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise.')
-@allowed([
-  'Standard'
-  'Enterprise'
-  'Premium'
-])
-param sku string = 'Enterprise'
+param sku ('Standard' | 'Enterprise' | 'Premium') = 'Enterprise'
 
 @description('Optional. Additional replica set for the managed domain.')
 param replicaSets replicaSetType[]?
@@ -55,101 +50,48 @@ param pfxCertificatePassword string = ''
 param additionalRecipients array = []
 
 @description('Optional. The value is to provide domain configuration type.')
-@allowed([
-  'FullySynced'
-  'ResourceTrusting'
-])
-param domainConfigurationType string = 'FullySynced'
+param domainConfigurationType ('FullySynced' | 'ResourceTrusting') = 'FullySynced'
 
 @description('Optional. The value is to synchronize scoped users and groups.')
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-param filteredSync string = 'Enabled'
+param filteredSync ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable clients making request using TLSv1.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param tlsV1 string = 'Disabled'
+param tlsV1 ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable clients making request using NTLM v1.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param ntlmV1 string = 'Disabled'
+param ntlmV1 ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable synchronized users to use NTLM authentication.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 #disable-next-line secure-secrets-in-params // Not a secret
-param syncNtlmPasswords string = 'Enabled'
+param syncNtlmPasswords ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable on-premises users to authenticate against managed domain.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 #disable-next-line secure-secrets-in-params // Not a secret
-param syncOnPremPasswords string = 'Enabled'
+param syncOnPremPasswords ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable Kerberos requests that use RC4 encryption.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param kerberosRc4Encryption string = 'Disabled'
+param kerberosRc4Encryption ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param kerberosArmoring string = 'Enabled'
+param kerberosArmoring ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param syncOnPremSamAccountName string?
+param syncOnPremSamAccountName ('Disabled' | 'Enabled')?
 
 @description('Optional. The value is to notify the DC Admins.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param notifyDcAdmins string = 'Enabled'
+param notifyDcAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to notify the Global Admins.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param notifyGlobalAdmins string = 'Enabled'
+param notifyGlobalAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable the Secure LDAP for external services of Azure AD DS Services.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param externalAccess string = 'Enabled'
+param externalAccess ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. A flag to determine whether or not Secure LDAP is enabled or disabled.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param ldaps string = 'Enabled'
+param ldaps ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.')
-@allowed(['All', 'CloudOnly'])
-param syncScope string = 'All'
+param syncScope ('All' | 'CloudOnly') = 'All'
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
@@ -164,7 +106,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
+param tags resourceInput<'Microsoft.AAD/domainServices@2025-06-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
@@ -257,6 +199,7 @@ resource domainservice 'Microsoft.AAD/domainServices@2025-06-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource domainservice_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
