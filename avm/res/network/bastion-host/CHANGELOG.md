@@ -14,6 +14,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - The property `publicIPAddressObject.zones` has been renamed to `publicIPAddressObject.availabilityZones` as a result of referencing an updated version of the 'public-ip-address' module.
+- Default value of the `availabilityZones` parameter has been reverted back to an empty array `[]` as Availability Zones are currently in preview and only available in certain regions.
 
 ## 0.7.0
 

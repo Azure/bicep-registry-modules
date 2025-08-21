@@ -890,14 +890,7 @@ The list of Availability zones to use for the zone-redundant resources.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
+- Default: `[]`
 - Allowed:
   ```Bicep
   [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "6993669898380387897"
+      "templateHash": "9281561721256441098"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host."
@@ -755,11 +755,7 @@
       "items": {
         "type": "int"
       },
-      "defaultValue": [
-        1,
-        2,
-        3
-      ],
+      "defaultValue": [],
       "allowedValues": [
         1,
         2,

@@ -75,7 +75,7 @@ param enableTelemetry bool = true
   2
   3
 ])
-param availabilityZones int[] = [1, 2, 3]
+param availabilityZones int[] = [] // Availability Zones are currently in preview (August 2025, see https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#az) and only available in certain regions, therefore the default is an empty array.
 
 var enableReferencedModulesTelemetry = false
 
