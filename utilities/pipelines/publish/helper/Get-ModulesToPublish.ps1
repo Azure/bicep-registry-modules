@@ -1,32 +1,4 @@
 #region Helper functions
-
-<#
-.SYNOPSIS
-Get the name of the current checked out branch.
-
-.DESCRIPTION
-Get the name of the current checked out branch. If git cannot find it, best effort based on environment variables is used.
-
-.EXAMPLE
-Get-CurrentBranch
-
-Get the name of the current checked out branch.
-#>
-function Get-GitBranchName {
-    [CmdletBinding()]
-    param ()
-
-    # Get branch name from Git
-    $BranchName = git branch --show-current
-
-    # If git could not get name, try GitHub variable
-    if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:GITHUB_REF_NAME)) {
-        $BranchName = $env:GITHUB_REF_NAME
-    }
-
-    return $BranchName
-}
-
 <#
 .SYNOPSIS
 Find the closest main.json file to the changed files in the module folder structure.

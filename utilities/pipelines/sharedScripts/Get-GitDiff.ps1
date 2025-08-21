@@ -1,4 +1,34 @@
-﻿<#
+﻿#region helper functions
+<#
+.SYNOPSIS
+Get the name of the current checked out branch.
+
+.DESCRIPTION
+Get the name of the current checked out branch. If git cannot find it, best effort based on environment variables is used.
+
+.EXAMPLE
+Get-CurrentBranch
+
+Get the name of the current checked out branch.
+#>
+function Get-GitBranchName {
+    [CmdletBinding()]
+    param ()
+
+    # Get branch name from Git
+    $BranchName = git branch --show-current
+
+    # If git could not get name, try GitHub variable
+    if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:GITHUB_REF_NAME)) {
+        $BranchName = $env:GITHUB_REF_NAME
+    }
+
+    return $BranchName
+}
+
+#endregion
+
+<#
 .SYNOPSIS
 Get modified files, or changes between the current commit and latest main (upstream) or upstream/main^ if you are on the upstream main branch.
 
@@ -54,30 +84,53 @@ function Get-GitDiff {
         [string] $PathFilter
     )
 
-    # TODO: Must be updated to align with latest changes in main
-
-    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
-    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
+    $currentCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
 
     if ($inUpstream -and $currentBranch -eq 'main') {
-        Write-Verbose 'Currently in upstream [main]. Fetching changes against [main^-1].'
+        Write-Verbose 'Currently in the upstream branch [main].' -Verbose
+        # Get the current and previous commit
+        $compareWithCommit = (git log -2 --format=%H)[1].Substring(0, 7) # Takes the second item of revision range -2
+        Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $compareWithCommit) -Verbose
     } else {
-        Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.'))
+        Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
+
+        Write-Debug 'Adding upstream repository reference'
+        git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+        Write-Debug 'Fetching latest changes from [upstream]'
+        git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
+        Start-Sleep 5 # Wait for git to finish adding the remote
+
+        $compareWithCommit = git rev-parse --short=7 'upstream/main' # Get main's latest commit in upstream
+
+        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $compareWithCommit) -Verbose
     }
 
     $diffInput = @(
         '--diff-filter=AM',
         ($PathOnly ? '--name-only' : $null),
-        (($inUpstream -and $currentBranch -eq 'main') ? 'upstream/main^' : 'upstream/main'),
+        $currentCommit,
+        $compareWithCommit,
         $PathFilter
     ) | Where-Object { $_ }
-    $diff = git diff $diffInput
+    $modifiedFiles = git diff $diffInput
 
-    if ($PathOnly) {
-        return $diff | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
+    if ($modifiedFiles.Count -gt 0) {
+        Write-Debug ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles | ConvertTo-Json | Out-String))
+    } else {
+        Write-Debug 'Plain diff files found via `git diff`.'
     }
 
-    return $diff
+    if ($PathOnly) {
+        return $modifiedFiles | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
+    }
+
+    if ($modifiedFiles.Count -gt 0) {
+        Write-Debug ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String))
+    } else {
+        Write-Debug 'No modified files found via `git diff`.'
+    }
+
+    return $modifiedFiles
 }
