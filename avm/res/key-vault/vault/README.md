@@ -27,7 +27,7 @@ This module deploys a Key Vault.
 
 ## Usage examples
 
-The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+The following section provides usage examples for the module that were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
