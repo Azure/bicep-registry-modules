@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Introduced [`access-policy`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/access-policy) as child module
 - Introduced [`key`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/key) as child module
 - Introduced [`secret`](/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/secret) as child module
+- Updates avm-common-types references to `0.6.1`
 
 ### Breaking Changes
 
