@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Initial release
-- Updated resource provider version to 2024-11-01
+- Updated resource provider version to `2024-11-01`
 
 ### Breaking Changes
 
