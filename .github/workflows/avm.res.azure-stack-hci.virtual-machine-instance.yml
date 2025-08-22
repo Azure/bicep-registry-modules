@@ -30,9 +30,10 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.azure-stack-hci.virtual-machine-instance.yml"
       - "avm/res/azure-stack-hci/virtual-machine-instance/**"
-      - "avm/utilities/pipelines/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
+      - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/azure-stack-hci/virtual-machine-instance"
