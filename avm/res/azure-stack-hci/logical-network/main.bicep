@@ -46,7 +46,7 @@ param vlanId int?
 param ipConfigurationReferences subnetIpConfigurationReferenceType[]?
 
 @description('Conditional. Network associated pool of IP Addresses. Required if ipAllocationMethod is Static.')
-param ipPools ipPoolType[]?
+param ipPools poolType[]?
 
 @description('Conditional. The route name. Required if ipAllocationMethod is Static.')
 param routeName string?
@@ -201,7 +201,7 @@ type ipPoolInfoType = {}
 
 @export()
 @description('The type for an IP pool.')
-type ipPoolType = {
+type poolType = {
   @description('Required. The end IP address of the pool.')
   end: string
   @description('Optional. Additional info for the pool.')

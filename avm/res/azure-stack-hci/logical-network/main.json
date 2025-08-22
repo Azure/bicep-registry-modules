@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13204655140255200385"
+      "templateHash": "10017705780193959922"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -35,7 +35,7 @@
         "description": "The type for IP pool info."
       }
     },
-    "ipPoolType": {
+    "poolType": {
       "type": "object",
       "properties": {
         "end": {
@@ -249,7 +249,7 @@
     "ipPools": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/ipPoolType"
+        "$ref": "#/definitions/poolType"
       },
       "nullable": true,
       "metadata": {
