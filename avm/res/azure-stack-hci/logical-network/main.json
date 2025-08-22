@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "369463873785242820"
+      "version": "0.36.177.2456",
+      "templateHash": "10017705780193959922"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -25,6 +25,60 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for an IP configuration reference."
+      }
+    },
+    "ipPoolInfoType": {
+      "type": "object",
+      "properties": {},
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for IP pool info."
+      }
+    },
+    "poolType": {
+      "type": "object",
+      "properties": {
+        "end": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The end IP address of the pool."
+          }
+        },
+        "info": {
+          "$ref": "#/definitions/ipPoolInfoType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Additional info for the pool."
+          }
+        },
+        "ipPoolType": {
+          "type": "string",
+          "allowedValues": [
+            "vippool",
+            "vm"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of the IP pool. Must be either vippool or vm."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the IP pool."
+          }
+        },
+        "start": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start IP address of the pool."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an IP pool."
       }
     },
     "roleAssignmentType": {
@@ -192,18 +246,14 @@
         "description": "Optional. A list of IP configuration references."
       }
     },
-    "startingAddress": {
-      "type": "string",
+    "ipPools": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/poolType"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The starting IP address of the IP address range. Required if ipAllocationMethod is Static."
-      }
-    },
-    "endingAddress": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The ending IP address of the IP address range. Required if ipAllocationMethod is Static."
+        "description": "Conditional. Network associated pool of IP Addresses. Required if ipAllocationMethod is Static."
       }
     },
     "routeName": {
@@ -246,13 +296,6 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
     },
-    "subnet1Pools": [
-      {
-        "start": "[parameters('startingAddress')]",
-        "end": "[parameters('endingAddress')]",
-        "info": {}
-      }
-    ],
     "routeTable": {
       "properties": {
         "routes": [
@@ -310,7 +353,7 @@
               "ipAllocationMethod": "[parameters('ipAllocationMethod')]",
               "ipConfigurationReferences": "[map(coalesce(parameters('ipConfigurationReferences'), createArray()), lambda('ipConfigurationReference', createObject('ID', lambdaVariables('ipConfigurationReference').id)))]",
               "vlan": "[parameters('vlanId')]",
-              "ipPools": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('subnet1Pools'))]",
+              "ipPools": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), parameters('ipPools'))]",
               "routeTable": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('routeTable'))]"
             }
           }
