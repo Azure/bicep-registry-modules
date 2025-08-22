@@ -282,7 +282,7 @@ output volumeGroups volumeGroupOutputType[] = [
 // Definitions      //
 // ================ //
 
-import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
 
 @sys.export()
