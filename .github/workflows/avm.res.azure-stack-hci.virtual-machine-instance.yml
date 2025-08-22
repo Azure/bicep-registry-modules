@@ -33,6 +33,8 @@ on:
       - "avm/utilities/pipelines/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
+      - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/azure-stack-hci/virtual-machine-instance"
