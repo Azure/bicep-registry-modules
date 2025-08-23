@@ -8,28 +8,28 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. List of the local (on-premises) IP address ranges.')
-param localAddressPrefixes array
-
 @description('Required. Public IP of the local gateway.')
 param localGatewayPublicIpAddress string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/localNetworkGateways@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. FQDN of local network gateway.')
-param fqdn string = ''
+param fqdn string?
+
+@description('Required. Local network site address space configuration.')
+param localNetworkAddressSpace resourceInput<'Microsoft.Network/localNetworkGateways@2024-07-01'>.properties.localNetworkAddressSpace
 
 @description('Optional. Local network gateway\'s BGP speaker settings.')
 param bgpSettings bgpSettingsType?
@@ -85,19 +85,18 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01' = {
+resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2024-07-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    localNetworkAddressSpace: {
-      addressPrefixes: localAddressPrefixes
-    }
-    fqdn: !empty(fqdn) ? fqdn : null
+    localNetworkAddressSpace: localNetworkAddressSpace
+    fqdn: fqdn
     gatewayIpAddress: localGatewayPublicIpAddress
     bgpSettings: !empty(bgpSettings)
       ? {
           asn: bgpSettings!.localAsn
+          bgpPeeringAddresses: bgpSettings!.?bgpPeeringAddresses
           bgpPeeringAddress: bgpSettings!.localBgpPeeringAddress
           peerWeight: bgpSettings.?peerWeight ?? 0
         }
@@ -165,4 +164,7 @@ type bgpSettingsType = {
 
   @description('Optional. The weight added to routes learned from this BGP speaker.')
   peerWeight: int?
+
+  @description('Optional. BGP peering address with IP configuration ID for virtual network gateway.')
+  bgpPeeringAddresses: resourceInput<'Microsoft.Network/localNetworkGateways@2024-07-01'>.properties.bgpSettings.bgpPeeringAddresses?
 }

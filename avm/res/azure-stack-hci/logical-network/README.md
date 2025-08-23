@@ -118,10 +118,14 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     dnsServers: [
       '192.168.1.254'
     ]
-    endingAddress: '192.168.1.190'
     ipAllocationMethod: 'Static'
+    ipPools: [
+      {
+        end: '192.168.1.190'
+        start: '192.168.1.171'
+      }
+    ]
     routeName: 'default'
-    startingAddress: '192.168.1.171'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -166,17 +170,19 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
         "192.168.1.254"
       ]
     },
-    "endingAddress": {
-      "value": "192.168.1.190"
-    },
     "ipAllocationMethod": {
       "value": "Static"
     },
+    "ipPools": {
+      "value": [
+        {
+          "end": "192.168.1.190",
+          "start": "192.168.1.171"
+        }
+      ]
+    },
     "routeName": {
       "value": "default"
-    },
-    "startingAddress": {
-      "value": "192.168.1.171"
     },
     "tags": {
       "value": {
@@ -212,10 +218,14 @@ param defaultGateway = '192.168.1.1'
 param dnsServers = [
   '192.168.1.254'
 ]
-param endingAddress = '192.168.1.190'
 param ipAllocationMethod = 'Static'
+param ipPools = [
+  {
+    end: '192.168.1.190'
+    start: '192.168.1.171'
+  }
+]
 param routeName = 'default'
-param startingAddress = '192.168.1.171'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -244,9 +254,8 @@ param vlanId = '<vlanId>'
 | [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. Required if ipAllocationMethod is Static. |
 | [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. Required if ipAllocationMethod is Static. |
 | [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. Required if ipAllocationMethod is Static. |
-| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. Required if ipAllocationMethod is Static. |
+| [`ipPools`](#parameter-ippools) | array | Network associated pool of IP Addresses. Required if ipAllocationMethod is Static. |
 | [`routeName`](#parameter-routename) | string | The route name. Required if ipAllocationMethod is Static. |
-| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. Required if ipAllocationMethod is Static. |
 
 **Optional parameters**
 
@@ -304,9 +313,66 @@ The DNS servers list. Required if ipAllocationMethod is Static.
 - Type: array
 - Default: `[]`
 
-### Parameter: `endingAddress`
+### Parameter: `ipPools`
 
-The ending IP address of the IP address range. Required if ipAllocationMethod is Static.
+Network associated pool of IP Addresses. Required if ipAllocationMethod is Static.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`end`](#parameter-ippoolsend) | string | The end IP address of the pool. |
+| [`start`](#parameter-ippoolsstart) | string | The start IP address of the pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`info`](#parameter-ippoolsinfo) | object | Additional info for the pool. |
+| [`ipPoolType`](#parameter-ippoolsippooltype) | string | The type of the IP pool. Must be either vippool or vm. |
+| [`name`](#parameter-ippoolsname) | string | The name of the IP pool. |
+
+### Parameter: `ipPools.end`
+
+The end IP address of the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipPools.start`
+
+The start IP address of the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipPools.info`
+
+Additional info for the pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `ipPools.ipPoolType`
+
+The type of the IP pool. Must be either vippool or vm.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'vippool'
+    'vm'
+  ]
+  ```
+
+### Parameter: `ipPools.name`
+
+The name of the IP pool.
 
 - Required: No
 - Type: string
@@ -314,13 +380,6 @@ The ending IP address of the IP address range. Required if ipAllocationMethod is
 ### Parameter: `routeName`
 
 The route name. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
-### Parameter: `startingAddress`
-
-The starting IP address of the IP address range. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string

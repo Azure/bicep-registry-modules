@@ -159,7 +159,7 @@ param backupRetentionIntervalInHours int = 8
 @description('Optional. Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local".')
 param backupStorageRedundancy string = 'Local'
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
