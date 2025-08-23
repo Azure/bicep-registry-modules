@@ -132,6 +132,11 @@ function Get-TemplateFileToPublish {
         [switch] $SkipNotVersionedModules
     )
 
+    # Adding a `/` at the end of the path (if not present) to avoid that e.g. a filter like `cache/redis` also matches `cache/redis-enterprise`
+    if ($ModuleFolderPath -notmatch '^.+[\\|\/]$') {
+        $ModuleFolderPath += '/'
+    }
+
     $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
     $ModifiedFiles = Get-ModifiedFileList -Verbose
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
