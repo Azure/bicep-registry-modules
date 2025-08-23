@@ -130,8 +130,6 @@ param availabilityZones int[] = [
 @description('Optional. Database configuration.')
 param database databaseType?
 
-var temp = 1
-
 // ============ //
 // Other params //
 // ============ //

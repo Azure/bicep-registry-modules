@@ -28,8 +28,6 @@ param disableAccessKeyAuthentication bool = false
 @description('Optional. Specifies whether the non-ssl Redis server port (6379) is enabled.')
 param enableNonSslPort bool = false
 
-var temp = 1
-
 @allowed([
   '1.0'
   '1.1'
