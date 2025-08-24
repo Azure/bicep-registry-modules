@@ -5,9 +5,11 @@
     "avm/res/authorization/role-assignment/rg-scope",
     "avm/res/storage/storage-account/blob-service/container",
     "avm/res/storage/storage-account/file-service/share",
-    "avm/res/network/virtual-network/subnet",
     "avm/res/key-vault/vault/access-policy",
     "avm/res/key-vault/vault/key",
-    "avm/res/key-vault/vault/secret"
+    "avm/res/key-vault/vault/secret",
+    "avm/res/network/virtual-network/subnet",
+    "avm/res/web/site/config",
+    "avm/res/web/site/slot"
   ]
 }
