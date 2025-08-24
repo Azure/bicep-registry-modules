@@ -298,6 +298,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
       retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
       retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
