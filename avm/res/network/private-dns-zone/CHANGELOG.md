@@ -15,15 +15,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Introduced [`soa`](/Azure/bicep-registry-modules/blob/main/avm/res/network/private-dns-zone/soa) as child module
 - Introduced [`srv`](/Azure/bicep-registry-modules/blob/main/avm/res/network/private-dns-zone/srv) as child module
 - Introduced [`txt`](/Azure/bicep-registry-modules/blob/main/avm/res/network/private-dns-zone/txt) as child module
-
-### Breaking Changes
-
-- None
-
-## 0.7.2
-
-### Changes
-
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes
