@@ -3,8 +3,6 @@
     "avm/res/authorization/role-assignment/mg-scope",
     "avm/res/authorization/role-assignment/sub-scope",
     "avm/res/authorization/role-assignment/rg-scope",
-    "avm/res/storage/storage-account/blob-service/container",
-    "avm/res/storage/storage-account/file-service/share",
     "avm/res/key-vault/vault/access-policy",
     "avm/res/key-vault/vault/key",
     "avm/res/key-vault/vault/secret",
@@ -17,6 +15,13 @@
     "avm/res/network/private-dns-zone/srv",
     "avm/res/network/private-dns-zone/txt",
     "avm/res/network/virtual-network/subnet",
+    "avm/res/storage/storage-account/blob-service/container",
+    "avm/res/storage/storage-account/blob-service/container/immutability-policy",
+    "avm/res/storage/storage-account/file-service/share",
+    "avm/res/storage/storage-account/local-user",
+    "avm/res/storage/storage-account/management-policy",
+    "avm/res/storage/storage-account/queue-service/queue",
+    "avm/res/storage/storage-account/table-service/table",
     "avm/res/web/site/config",
     "avm/res/web/site/slot"
   ]
