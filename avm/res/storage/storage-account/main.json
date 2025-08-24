@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16181084255543286330"
+      "templateHash": "11034924493048851319"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -4553,7 +4553,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2300611676881742064"
+              "templateHash": "10987417587345212372"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4794,8 +4794,7 @@
               "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
               "properties": {
-                "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
-                "enableTelemetry": "[variables('enableReferencedModulesTelemetry')]"
+                "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
               }
             },
             "queueServices_diagnosticSettings": {
@@ -4864,6 +4863,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {

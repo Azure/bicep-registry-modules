@@ -33,7 +33,6 @@ resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2024-01-
           corsRules: corsRules
         }
       : null
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -74,6 +73,7 @@ module queueServices_queues 'queue/main.bicep' = [
       name: queue.name
       metadata: queue.?metadata
       roleAssignments: queue.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
