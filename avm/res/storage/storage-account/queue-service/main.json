@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12471258242431737986"
+      "version": "0.37.4.10188",
+      "templateHash": "2300611676881742064"
     },
     "name": "Storage Account Queue Services",
     "description": "This module deploys a Storage Account Queue Service."
@@ -232,7 +232,8 @@
     }
   },
   "variables": {
-    "name": "default"
+    "name": "default",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "storageAccount": {
@@ -246,7 +247,8 @@
       "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
       "properties": {
-        "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
+        "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
+        "enableTelemetry": "[variables('enableReferencedModulesTelemetry')]"
       }
     },
     "queueServices_diagnosticSettings": {
@@ -324,8 +326,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4374879850096827769"
+              "version": "0.37.4.10188",
+              "templateHash": "2132843331730732433"
             },
             "name": "Storage Account Queues",
             "description": "This module deploys a Storage Account Queue."
@@ -431,6 +433,13 @@
               },
               "defaultValue": {}
             },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -472,6 +481,26 @@
               "type": "Microsoft.Storage/storageAccounts/queueServices",
               "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.storage-queue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "storageAccount": {
               "existing": true,

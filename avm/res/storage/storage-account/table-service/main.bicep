@@ -18,6 +18,8 @@ param diagnosticSettings diagnosticSettingFullType[]?
 // The name of the table service
 var name = 'default'
 
+var enableReferencedModulesTelemetry = false
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
@@ -70,6 +72,7 @@ module tableServices_tables 'table/main.bicep' = [
       name: table.name
       storageAccountName: storageAccount.name
       roleAssignments: table.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

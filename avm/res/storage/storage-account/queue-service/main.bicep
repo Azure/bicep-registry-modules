@@ -18,6 +18,8 @@ param diagnosticSettings diagnosticSettingFullType[]?
 // The name of the blob services
 var name = 'default'
 
+var enableReferencedModulesTelemetry = false
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
@@ -31,6 +33,7 @@ resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2024-01-
           corsRules: corsRules
         }
       : null
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

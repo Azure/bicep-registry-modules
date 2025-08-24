@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.26.3
+
+### Changes
+
+- Introduced [`blob-service/container/immutability-policy`](/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/blob-service/container/immutability-policy) as child module
+- Introduced [`local-user`](/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/local-user) as child module
+- Introduced [`management-policy`](/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/management-policy) as child module
+- Introduced [`table-service/table`](/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/table-service/table) as child module
+- Introduced [`queue-service/queue`](/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/queue-service/queue) as child module
+
+### Breaking Changes
+
+- None
+
 ## 0.26.2
 
 ### Changes

@@ -107,6 +107,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.storage-blobcontainer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
@@ -160,6 +162,7 @@ module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutab
     immutabilityPeriodSinceCreationInDays: immutabilityPolicyProperties.?immutabilityPeriodSinceCreationInDays
     allowProtectedAppendWrites: immutabilityPolicyProperties.?allowProtectedAppendWrites
     allowProtectedAppendWritesAll: immutabilityPolicyProperties.?allowProtectedAppendWritesAll
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
