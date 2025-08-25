@@ -456,7 +456,7 @@ module service_loggers 'logger/main.bicep' = [
       credentials: logger.?credentials
       isBuffered: logger.?isBuffered
       description: logger.?loggerDescription
-      type: logger.?loggerType ?? 'azureMonitor'
+      type: logger.?type ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId
       enableTelemetry: enableReferencedModulesTelemetry
     }

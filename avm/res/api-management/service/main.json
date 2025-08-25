@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3263833235075962910"
+      "templateHash": "5938547546162852750"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -5387,7 +5387,7 @@
             "value": "[tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'loggerDescription')]"
           },
           "type": {
-            "value": "[coalesce(tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'loggerType'), 'azureMonitor')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'type'), 'azureMonitor')]"
           },
           "targetResourceId": {
             "value": "[tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'targetResourceId')]"
