@@ -70,8 +70,8 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       publicIPAddressObject: {
         name: '${namePrefix}${serviceShort}001-pip'
-        allocationMethod: 'Static'
-        publicIPPrefixResourceId: ''
+        publicIPAllocationMethod: 'Static'
+        publicIpPrefixResourceId: ''
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -81,11 +81,6 @@ module testDeployment '../../../main.bicep' = [
         ]
         skuName: 'Standard'
         skuTier: 'Regional'
-        zones: [
-          1
-          2
-          3
-        ]
         diagnosticSettings: [
           {
             name: 'customSetting'
