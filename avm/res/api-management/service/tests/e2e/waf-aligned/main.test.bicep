@@ -46,7 +46,6 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
