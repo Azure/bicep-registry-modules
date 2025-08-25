@@ -35,8 +35,32 @@ param subscriptionsLimit int = 1
 @sys.description('Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process.')
 param terms string = ''
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry bool = false
+
 resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-product.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
@@ -60,6 +84,7 @@ module product_apis 'api/main.bicep' = [
       apiManagementServiceName: apiManagementServiceName
       name: api.name
       productName: name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -71,6 +96,7 @@ module product_groups 'group/main.bicep' = [
       apiManagementServiceName: apiManagementServiceName
       name: group.name
       productName: name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

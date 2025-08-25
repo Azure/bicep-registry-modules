@@ -158,6 +158,8 @@ param publicIpAddressResourceId string?
 @description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
 param enableDeveloperPortal bool = false
 
+var enableReferencedModulesTelemetry bool = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -309,6 +311,7 @@ module service_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       service_apiVersionSets
@@ -327,6 +330,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
       description: apiVersionSet.?description
       versionHeaderName: apiVersionSet.?versionHeaderName
       versionQueryName: apiVersionSet.?versionQueryName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -353,6 +357,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
       supportState: authorizationServer.?supportState ?? false
       tokenBodyParameters: authorizationServer.?tokenBodyParameters ?? []
       tokenEndpoint: authorizationServer.?tokenEndpoint ?? ''
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -372,6 +377,7 @@ module service_backends 'backend/main.bicep' = [
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
       tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -386,6 +392,7 @@ module service_caches 'cache/main.bicep' = [
       name: cache.name
       resourceId: cache.?resourceId
       useFromLocation: cache.useFromLocation
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -407,6 +414,7 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
       operationNameFormat: apidiagnostic.?operationNameFormat
       samplingPercentage: apidiagnostic.?samplingPercentage
       verbosity: apidiagnostic.?verbosity
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       service_apis
@@ -432,6 +440,7 @@ module service_identityProviders 'identity-provider/main.bicep' = [
       signInTenant: identityProvider.?signInTenant ?? ''
       signUpPolicyName: identityProvider.?signUpPolicyName ?? ''
       type: identityProvider.?type ?? 'aad'
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -447,6 +456,7 @@ module service_loggers 'logger/main.bicep' = [
       description: logger.?loggerDescription
       type: logger.?loggerType ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId ?? ''
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       service_namedValues
@@ -465,6 +475,7 @@ module service_namedValues 'named-value/main.bicep' = [
       tags: namedValue.?tags // Note: these are not resource tags
       secret: namedValue.?secret ?? false
       value: namedValue.?value ?? newGuidValue
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -476,6 +487,7 @@ module service_portalsettings 'portalsetting/main.bicep' = [
       apiManagementServiceName: service.name
       name: portalsetting.name
       properties: portalsetting.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -487,6 +499,7 @@ module service_policies 'policy/main.bicep' = [
       apiManagementServiceName: service.name
       value: policy.value
       format: policy.?format ?? 'xml'
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -506,6 +519,7 @@ module service_products 'product/main.bicep' = [
       subscriptionRequired: product.?subscriptionRequired ?? false
       subscriptionsLimit: product.?subscriptionsLimit ?? 1
       terms: product.?terms ?? ''
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       service_apis
