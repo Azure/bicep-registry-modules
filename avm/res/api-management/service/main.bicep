@@ -80,13 +80,13 @@ param sku string = 'Premium'
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
 param skuCapacity int = 3
 
-@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
+@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.')
 param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 
-@description('Optional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.')
+@description('Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.')
 @allowed([
   'None'
   'External'
@@ -146,17 +146,32 @@ param policies array?
 @description('Optional. Portal settings.')
 param portalsettings array?
 
+// import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+// @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note: Private endpoints are supported with Developer, Basic, Standard, Premium, BasicV2, and StandardV2 SKUs only. Consumption SKU does not support private endpoints. \'virtualNetworkType\' must be set to \'None\' (or left empty which defaults to \'None\') on initial deployment of Private Endpoints.')
+// param privateEndpoints privateEndpointSingleServiceType[]?
+
 @description('Optional. Products.')
 param products array?
+
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. Note: Cannot be set to "Disabled" during initial service creation - must be changed post-deployment. If not specified, defaults to "Enabled".')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string?
 
 @description('Optional. Subscriptions.')
 param subscriptions array?
 
-@description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
+@description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.')
 param publicIpAddressResourceId string?
 
 @description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
 param enableDeveloperPortal bool = false
+
+// =============== //
+//   Variables     //
+// =============== //
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -270,6 +285,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
         }
       : null
     publicIpAddressId: publicIpAddressResourceId
+    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : 'Enabled'
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion

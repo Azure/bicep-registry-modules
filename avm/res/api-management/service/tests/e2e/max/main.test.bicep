@@ -42,13 +42,14 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     locationRegion1: resourceLocation
     locationRegion2: locationRegion2
-    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
-    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
-    networkSecurityGroupName: 'nsg'
-    virtualNetworkName: 'vnet'
+    logAnalyticsWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
@@ -88,15 +89,13 @@ module testDeployment '../../../main.bicep' = [
             capacity: 1
           }
           disableGateway: false
-          publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion2
           virtualNetworkConfiguration: {
             subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
           }
         }
       ]
-      virtualNetworkType: 'Internal'
+      virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
-      publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
           displayName: 'Echo API'
@@ -215,22 +214,93 @@ module testDeployment '../../../main.bicep' = [
       ]
       portalsettings: [
         {
-          name: 'signin'
-          properties: {
-            enabled: false
-          }
-        }
-        {
           name: 'signup'
           properties: {
             enabled: false
             termsOfService: {
-              consentRequired: false
+              consentRequired: true
+              enabled: true
+              text: 'Terms of service text'
+            }
+            subscriptions: {
               enabled: false
             }
+            url: ''
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: ''
           }
         }
+        {
+          name: 'signin'
+          properties: {
+            enabled: false
+            termsOfService: {
+              consentRequired: true
+              enabled: true
+              text: 'Terms of service text'
+            }
+            subscriptions: {
+              enabled: false
+            }
+            url: ''
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: ''
+          }
+        }
+      // TODO: Uncomment when delegation is working properly
+      //   {
+      //     name: 'delegation'
+      //     properties: {
+      //       enabled: false
+      //       termsOfService: {
+      //         consentRequired: false
+      //         enabled: false
+      //         text: 'Terms of service text'
+      //       }
+      //       subscriptions: {
+      //         enabled: false
+      //       }
+      //       url: 'https://test.com'
+      //       userRegistration: {
+      //         enabled: false
+      //       }
+      //       validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
+      //       validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
+      //     }
+      //   }
       ]
+      // TODO: Uncomment when PEs are working properly
+      // privateEndpoints: [
+      //   {
+      //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      //         }
+      //       ]
+      //     }
+      //     tags: {
+      //       'hidden-title': 'This is visible in the resource name'
+      //       Environment: 'Non-Prod'
+      //       Role: 'DeploymentValidation'
+      //     }
+      //   }
+      //   {
+      //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      //         }
+      //       ]
+      //     }
+      //   }
+      // ]
       products: [
         {
           apis: [

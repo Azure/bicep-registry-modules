@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "12052045734240221562"
+      "version": "0.37.4.10188",
+      "templateHash": "1235977291199844094"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server."
@@ -29,8 +29,7 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a token body parameter."
+        "__bicep_export!": true
       }
     }
   },
@@ -184,12 +183,12 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "authorizationServer": {
       "type": "Microsoft.ApiManagement/service/authorizationServers",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('serverDescription')]",

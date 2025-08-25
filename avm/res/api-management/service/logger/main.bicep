@@ -21,18 +21,18 @@ param isBuffered bool = true
 ])
 param type string
 
-@sys.description('Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource).')
+@sys.description('Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.')
 param targetResourceId string
 
 @secure()
-@sys.description('Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger.')
+@sys.description('Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub.')
 param credentials object
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource loggers 'Microsoft.ApiManagement/service/loggers@2022-08-01' = {
+resource loggers 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
   name: name
   parent: service
   properties: {

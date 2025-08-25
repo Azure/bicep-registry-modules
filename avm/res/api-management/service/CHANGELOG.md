@@ -2,11 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
-## 0.10.0
+## 0.11.0
 
 ### Changes
 
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- All API versions have been updated to the latest supported versions.
+- New parameters have been added to various tests
 
 ### Breaking Changes
 

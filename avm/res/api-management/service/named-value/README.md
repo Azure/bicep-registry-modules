@@ -13,7 +13,7 @@ This module deploys an API Management Service Named Value.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ApiManagement/service/namedValues` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_namedvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/namedValues)</li></ul> |
+| `Microsoft.ApiManagement/service/namedValues` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_namedvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/namedValues)</li></ul> |
 
 ## Parameters
 
@@ -66,7 +66,27 @@ KeyVault location details of the namedValue.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identityClientId`](#parameter-keyvaultidentityclientid) | string | Null for SystemAssignedIdentity or Client Id for UserAssignedIdentity , which will be used to access key vault secret. |
+| [`secretIdentifier`](#parameter-keyvaultsecretidentifier) | string | Key vault secret identifier for fetching secret. Providing a versioned secret will prevent auto-refresh. This requires API Management service to be configured with aka.ms/apimmsi. |
+
+### Parameter: `keyVault.identityClientId`
+
+Null for SystemAssignedIdentity or Client Id for UserAssignedIdentity , which will be used to access key vault secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVault.secretIdentifier`
+
+Key vault secret identifier for fetching secret. Providing a versioned secret will prevent auto-refresh. This requires API Management service to be configured with aka.ms/apimmsi.
+
+- Required: No
+- Type: string
 
 ### Parameter: `secret`
 
