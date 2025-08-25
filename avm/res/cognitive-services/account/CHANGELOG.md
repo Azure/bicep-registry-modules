@@ -2,16 +2,36 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
-## 0.13.0
+## 0.13.2
 
 ### Changes
 
-- Added support for `networkInjections` to supply private networking options for agent services
+- Updated `privateEndpoints` parameter type to 'avm-common-types' `0.6.1`, adding a type to its `tags` property
 
 ### Breaking Changes
 
 - None
 
+## 0.13.1
+
+### Changes
+
+- Recompiled template with latest Bicep version 0.37.4
+
+### Breaking Changes
+
+- None
+
+## 0.13.0
+
+### Changes
+
+- Added support for `networkInjections` to supply private networking options for agent services
+- Updated ReadMe with AzAdvertizer reference
+
+### Breaking Changes
+
+- None
 
 ## 0.12.0
 

@@ -4,7 +4,7 @@ metadata description = 'Private Link Private DNS Zones'
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for the Private Link Private DNS Zones created.')
 param lock lockType?
 

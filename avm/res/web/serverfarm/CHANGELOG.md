@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Documentation enhancements
 - Consistency improvements
 - Updated avm-common-types references to latest version `0.6.0`, enabling custom notes on locks
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

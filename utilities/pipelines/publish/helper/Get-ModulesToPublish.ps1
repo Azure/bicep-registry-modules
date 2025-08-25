@@ -17,21 +17,47 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
-    git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
 
     # Note: Fetches only the name of the modified files
     if ($inUpstream -and $currentBranch -eq 'main') {
-        Write-Verbose 'Currently in upstream [main]. Fetching changes against [main^-1].' -Verbose
-        $diff = git diff --name-only --diff-filter=AM 'upstream/main^'
+        Write-Verbose 'Currently in the upstream branch [main].' -Verbose
+
+        # Get the current and previous commit
+        $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
+
+        Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
+        $diff = git diff --name-only --diff-filter=AM $currentCommit $previousCommit
     } else {
-        Write-Verbose ('{0} Fetching changes against upstream [main]' -f ($inUpstream ? "Currently in upstream [$currentBranch]." : 'Currently in a fork.')) -Verbose
-        $diff = git diff --name-only --diff-filter=AM 'upstream/main'
+        Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
+
+        Write-Verbose 'Adding upstream repository reference' -Verbose
+        git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
+        Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
+        git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
+        Start-Sleep 5 # Wait for git to finish adding the remote
+
+        $currentCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
+        $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get main's commit in upstream
+
+        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
+        $diff = git diff --name-only --diff-filter=AM $currentCommit $currentUpstreamCommit
     }
 
-    $modifiedFiles = $diff | Get-Item -Force
+    if ($diff.Count -gt 0) {
+        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $diff.Count, ($diff | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
+    }
+
+    $modifiedFiles = $diff | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
+
+    if ($modifiedFiles.Count -gt 0) {
+        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No modified files found via `git diff`.' -Verbose
+    }
 
     return $modifiedFiles
 }
@@ -111,6 +137,12 @@ function Get-TemplateFileToPublish {
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
     $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
+    if ($modifiedModuleFiles.Count -gt 0) {
+        Write-Verbose ("[{0}] Path-filtered files found:`n[{1}]" -f $modifiedModuleFiles.Count, ($modifiedModuleFiles | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No path-filtered files found.' -Verbose
+    }
+
     $relevantPaths = @()
     foreach ($modifiedFile in $modifiedModuleFiles) {
 
@@ -119,6 +151,12 @@ function Get-TemplateFileToPublish {
                 $relevantPaths += $modifiedFile
             }
         }
+    }
+
+    if ($relevantPaths.Count -gt 0) {
+        Write-Verbose ("[{0}] File-type-filtered files found:`n[{1}]" -f $relevantPaths.Count, ($relevantPaths | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'No file-type-filtered files found.' -Verbose
     }
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {

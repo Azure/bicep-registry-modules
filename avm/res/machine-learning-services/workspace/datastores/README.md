@@ -10,9 +10,9 @@ This module creates a datastore in a Machine Learning Services workspace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.MachineLearningServices/workspaces/datastores` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/datastores) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.MachineLearningServices/workspaces/datastores` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_datastores.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/datastores)</li></ul> |
 
 ## Parameters
 

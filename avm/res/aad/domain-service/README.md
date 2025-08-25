@@ -320,7 +320,6 @@ The certificate required to configure Secure LDAP. Should be a base64encoded rep
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `pfxCertificatePassword`
 
@@ -328,7 +327,6 @@ The password to decrypt the provided Secure LDAP certificate PFX file. Required 
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `additionalRecipients`
 
@@ -943,6 +941,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
