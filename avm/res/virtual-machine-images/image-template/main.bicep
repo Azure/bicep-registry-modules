@@ -1,5 +1,5 @@
 metadata name = 'Virtual Machine Image Templates'
-metadata description = 'This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).'
+metadata description = 'This module deploys a Virtual Machine Image Template that can be consumed by the Azure Image Builder (AIB).'
 
 @description('Required. The name prefix of the Image Template to be built by the Azure Image Builder service.')
 param name string

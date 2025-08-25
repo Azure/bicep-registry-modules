@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13316434564794265101"
+      "templateHash": "3198677949208280134"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -226,12 +226,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -257,7 +264,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -299,7 +306,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -340,7 +347,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -680,7 +762,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -691,6 +773,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
           }
         },
@@ -705,7 +790,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -922,6 +1007,13 @@
         "description": "Optional. List of variables to be created in the automation account."
       }
     },
+    "webhooks": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of webhooks to be created in the automation account."
+      }
+    },
     "linkedWorkspaceResourceId": {
       "type": "string",
       "defaultValue": "",
@@ -1093,7 +1185,7 @@
     },
     "automationAccount": {
       "type": "Microsoft.Automation/automationAccounts",
-      "apiVersion": "2022-08-08",
+      "apiVersion": "2024-10-23",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1226,7 +1318,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13108480772176269913"
+              "templateHash": "3928413467467592575"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential."
@@ -1268,7 +1360,7 @@
             "automationAccount": {
               "existing": true,
               "type": "Microsoft.Automation/automationAccounts",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[parameters('automationAccountName')]"
             },
             "credential": {
@@ -1352,7 +1444,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "11026784119283901076"
+              "templateHash": "76263396795506547"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module."
@@ -1402,12 +1494,12 @@
             "automationAccount": {
               "existing": true,
               "type": "Microsoft.Automation/automationAccounts",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[parameters('automationAccountName')]"
             },
             "module": {
               "type": "Microsoft.Automation/automationAccounts/modules",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1446,7 +1538,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('module', '2022-08-08', 'full').location]"
+              "value": "[reference('module', '2024-10-23', 'full').location]"
             }
           }
         }
@@ -1496,7 +1588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "12925078808010720965"
+              "templateHash": "15709403792257280801"
             },
             "name": "Automation Account Powershell72 Modules",
             "description": "This module deploys a Powershell72 Module in the Automation Account."
@@ -1546,7 +1638,7 @@
             "automationAccount": {
               "existing": true,
               "type": "Microsoft.Automation/automationAccounts",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[parameters('automationAccountName')]"
             },
             "powershell72module": {
@@ -1637,7 +1729,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5460542404203464613"
+              "templateHash": "12859650999872952113"
             },
             "name": "Automation Account Python 3 Packages",
             "description": "This module deploys a Python3 Package in the Automation Account."
@@ -1680,7 +1772,7 @@
             "automationAccount": {
               "existing": true,
               "type": "Microsoft.Automation/automationAccounts",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[parameters('automationAccountName')]"
             },
             "python3package": {
@@ -1770,7 +1862,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8495167034992643388"
+              "templateHash": "12576415234128007777"
             },
             "name": "Automation Account Python 2 Packages",
             "description": "This module deploys a Python2 Package in the Automation Account."
@@ -1813,7 +1905,7 @@
             "automationAccount": {
               "existing": true,
               "type": "Microsoft.Automation/automationAccounts",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[parameters('automationAccountName')]"
             },
             "python2package": {
@@ -1914,7 +2006,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "15697291385132604043"
+              "templateHash": "4389837751138730963"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule."
@@ -2003,7 +2095,7 @@
           "resources": [
             {
               "type": "Microsoft.Automation/automationAccounts/schedules",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "properties": {
                 "advancedSchedule": "[if(not(empty(parameters('advancedSchedule'))), parameters('advancedSchedule'), null())]",
@@ -2098,7 +2190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1019687553311113763"
+              "templateHash": "1719728153394600761"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook."
@@ -2203,14 +2295,14 @@
             "automationAccount": {
               "existing": true,
               "type": "Microsoft.Automation/automationAccounts",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[parameters('automationAccountName')]"
             },
             "storageAccount": {
               "condition": "[not(empty(parameters('scriptStorageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-01-01",
               "subscriptionId": "[split(parameters('scriptStorageAccountResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('scriptStorageAccountResourceId'), '/')[4]]",
               "name": "[last(split(parameters('scriptStorageAccountResourceId'), '/'))]"
@@ -2301,7 +2393,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8698511353077779177"
+              "templateHash": "4364883831919014667"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule."
@@ -2350,7 +2442,7 @@
           "resources": [
             {
               "type": "Microsoft.Automation/automationAccounts/jobSchedules",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "properties": {
                 "parameters": "[parameters('parameters')]",
@@ -2432,7 +2524,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "17684856766018700093"
+              "templateHash": "14143097911227892238"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable."
@@ -2474,7 +2566,7 @@
           "resources": [
             {
               "type": "Microsoft.Automation/automationAccounts/variables",
-              "apiVersion": "2022-08-08",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -2497,6 +2589,145 @@
                 "description": "The resource ID of the deployed variable."
               },
               "value": "[resourceId('Microsoft.Automation/automationAccounts/variables', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed variable."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_webhook": {
+      "copy": {
+        "name": "automationAccount_webhook",
+        "count": "[length(parameters('webhooks'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Webhook-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('webhooks')[copyIndex()].name]"
+          },
+          "runbookName": {
+            "value": "[parameters('webhooks')[copyIndex()].runbookName]"
+          },
+          "runOn": {
+            "value": "[tryGet(parameters('webhooks')[copyIndex()], 'runOn')]"
+          },
+          "expiryTime": {
+            "value": "[tryGet(parameters('webhooks')[copyIndex()], 'expiryTime')]"
+          },
+          "parameters": {
+            "value": "[tryGet(parameters('webhooks')[copyIndex()], 'parameters')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "6248505883003094484"
+            },
+            "name": "Automation Account Webhook",
+            "description": "This module deploys an Azure Automation Account Webhook."
+          },
+          "parameters": {
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the webhook."
+              }
+            },
+            "runbookName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The runbook in which the webhook will be used."
+              }
+            },
+            "runOn": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The hybrid worker group that the scheduled job should run on."
+              }
+            },
+            "parameters": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. List of job properties."
+              }
+            },
+            "expiryTime": {
+              "type": "string",
+              "defaultValue": "[utcNow()]",
+              "metadata": {
+                "description": "Optional. The expiration time of the webhook."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Automation/automationAccounts/webhooks",
+              "apiVersion": "2024-10-23",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "properties": {
+                "isEnabled": false,
+                "expiryTime": "[parameters('expiryTime')]",
+                "runbook": {
+                  "name": "[parameters('runbookName')]"
+                },
+                "runOn": "[parameters('runOn')]",
+                "uri": "",
+                "parameters": "[parameters('parameters')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed variable."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed variable."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/webhooks', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the deployed webhook."
+              },
+              "value": "[reference(resourceId('Microsoft.Automation/automationAccounts/webhooks', parameters('automationAccountName'), parameters('name')), '2024-10-23').uri]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -2546,7 +2777,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "10618294377187916179"
+              "templateHash": "44020276311331886"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -2590,12 +2821,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2025-02-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "linkedService": {
               "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-              "apiVersion": "2020-08-01",
+              "apiVersion": "2025-02-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -3609,14 +3840,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('automationAccount', '2022-08-08', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('automationAccount', '2024-10-23', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('automationAccount', '2022-08-08', 'full').location]"
+      "value": "[reference('automationAccount', '2024-10-23', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",

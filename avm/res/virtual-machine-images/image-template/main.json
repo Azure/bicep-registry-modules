@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17757985162301373220"
+      "templateHash": "11937127813700857858"
     },
     "name": "Virtual Machine Image Templates",
-    "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB)."
+    "description": "This module deploys a Virtual Machine Image Template that can be consumed by the Azure Image Builder (AIB)."
   },
   "definitions": {
     "distributionType": {

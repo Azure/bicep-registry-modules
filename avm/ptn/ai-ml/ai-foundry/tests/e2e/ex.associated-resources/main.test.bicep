@@ -12,7 +12,7 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 // Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+import { enforcedLocation } from '../../shared/constants.bicep'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndryres'
@@ -44,16 +44,19 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
+      aiFoundryConfiguration: {
+        createCapabilityHosts: true
+      }
       aiModelDeployments: [
         {
-          name: 'gpt-4.1'
+          name: 'gpt-4o'
           model: {
-            name: 'gpt-4.1'
             format: 'OpenAI'
-            version: '2025-04-14'
+            name: 'gpt-4o'
+            version: '2024-11-20'
           }
           sku: {
-            name: 'GlobalStandard'
+            name: 'Standard'
             capacity: 1
           }
         }
