@@ -34,22 +34,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `products`
   - `subscriptions`
   - `certificates`
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 
 ### Breaking Changes
 
 - Reduced type of `products/apis` & `products/products` from array of objects to array of string as only the name can be configured
 - Diverse bugfixes like renaming the parameters `identityProvider/signinTenant` to `signInTenant`,`logger/resourceId` to `targetResourceId` & `logger/loggerType` to `type` being named incorrectly and hence not being passed through
-
-## 0.10.0
-
-### Changes
-
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
-
-### Breaking Changes
-
-- None
 
 ## 0.9.1
 
