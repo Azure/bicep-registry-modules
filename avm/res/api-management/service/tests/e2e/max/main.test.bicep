@@ -42,13 +42,16 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     locationRegion1: resourceLocation
     locationRegion2: locationRegion2
-    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
     publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
-    networkSecurityGroupName: 'nsg'
-    virtualNetworkName: 'vnet'
+    networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
+    virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
+    routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
   }
 }
 

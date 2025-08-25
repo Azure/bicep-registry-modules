@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8734715252584136050"
+      "templateHash": "16064108269009620660"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -412,8 +412,8 @@
         "description": "The Resources IDs of the API management service product APIs."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('apis'))))]",
-        "input": "[reference(format('product_apis[{0}]', range(0, length(parameters('apis')))[copyIndex()])).outputs.resourceId.value]"
+        "count": "[length(range(0, length(coalesce(parameters('apis'), createArray()))))]",
+        "input": "[reference(format('product_apis[{0}]', range(0, length(coalesce(parameters('apis'), createArray())))[copyIndex()])).outputs.resourceId.value]"
       }
     },
     "groupResourceIds": {
@@ -422,8 +422,8 @@
         "description": "The Resources IDs of the API management service product groups."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('groups'))))]",
-        "input": "[reference(format('product_groups[{0}]', range(0, length(parameters('groups')))[copyIndex()])).outputs.resourceId.value]"
+        "count": "[length(range(0, length(coalesce(parameters('groups'), createArray()))))]",
+        "input": "[reference(format('product_groups[{0}]', range(0, length(coalesce(parameters('groups'), createArray())))[copyIndex()])).outputs.resourceId.value]"
       }
     }
   }
