@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "6540641649090267136"
+      "templateHash": "15327805619306331997"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -107,7 +107,7 @@
         "tags": "[parameters('tags')]",
         "secret": "[parameters('secret')]",
         "displayName": "[parameters('displayName')]",
-        "value": "[if(not(empty(parameters('keyVault'))), parameters('value'), null())]",
+        "value": "[if(empty(parameters('keyVault')), parameters('value'), null())]",
         "keyVault": "[parameters('keyVault')]"
       }
     }

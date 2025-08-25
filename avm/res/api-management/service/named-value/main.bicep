@@ -56,7 +56,7 @@ resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-05-01' = {
     tags: tags
     secret: secret
     displayName: displayName
-    value: !empty(keyVault) ? value : null
+    value: empty(keyVault) ? value : null
     keyVault: keyVault
   }
 }
