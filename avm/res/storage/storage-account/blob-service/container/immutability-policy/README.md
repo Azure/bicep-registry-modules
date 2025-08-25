@@ -7,7 +7,6 @@ This module deploys a Storage Account Blob Container Immutability Policy.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -30,7 +29,6 @@ This module deploys a Storage Account Blob Container Immutability Policy.
 | :-- | :-- | :-- |
 | [`allowProtectedAppendWrites`](#parameter-allowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
 | [`allowProtectedAppendWritesAll`](#parameter-allowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`immutabilityPeriodSinceCreationInDays`](#parameter-immutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
 
 ### Parameter: `containerName`
@@ -63,14 +61,6 @@ This property can only be changed for unlocked time-based retention policies. Wh
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `immutabilityPeriodSinceCreationInDays`
 
 The immutability period for the blobs in the container since the policy creation, in days.
@@ -86,7 +76,3 @@ The immutability period for the blobs in the container since the policy creation
 | `name` | string | The name of the deployed immutability policy. |
 | `resourceGroupName` | string | The resource group of the deployed immutability policy. |
 | `resourceId` | string | The resource ID of the deployed immutability policy. |
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

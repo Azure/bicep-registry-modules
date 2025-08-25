@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11034924493048851319"
+      "templateHash": "18330630485971773183"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2305,9 +2305,6 @@
           },
           "rules": {
             "value": "[parameters('managementPolicyRules')]"
-          },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2317,7 +2314,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "11396990179822840507"
+              "templateHash": "14529265638306912023"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -2338,36 +2335,9 @@
                 },
                 "description": "Required. The Storage Account ManagementPolicies Rules."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-mgmtpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             {
               "type": "Microsoft.Storage/storageAccounts/managementPolicies",
               "apiVersion": "2024-01-01",
@@ -2446,9 +2416,6 @@
           },
           "sshAuthorizedKeys": {
             "value": "[tryGet(coalesce(parameters('localUsers'), createArray())[copyIndex()], 'sshAuthorizedKeys')]"
-          },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2459,7 +2426,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13489580058485095121"
+              "templateHash": "3261275799710495788"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -2571,36 +2538,9 @@
               "metadata": {
                 "description": "Optional. The local user SSH authorized keys for SFTP."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
           "resources": {
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-localuser.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
@@ -2724,7 +2664,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2058257511420778294"
+              "templateHash": "1215393307957288546"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3195,7 +3135,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "13076091811153414804"
+                      "templateHash": "15600440533481093288"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3409,8 +3349,7 @@
                       "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
                       "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                    },
-                    "enableReferencedModulesTelemetry": false
+                    }
                   },
                   "resources": {
                     "storageAccount::blobServices": {
@@ -3506,9 +3445,6 @@
                           },
                           "allowProtectedAppendWritesAll": {
                             "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll')]"
-                          },
-                          "enableTelemetry": {
-                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -3518,7 +3454,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "5532479832096799358"
+                              "templateHash": "2858994808980111017"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -3557,36 +3493,9 @@
                               "metadata": {
                                 "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
                               }
-                            },
-                            "enableTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable/Disable usage telemetry for module."
-                              }
                             }
                           },
                           "resources": [
-                            {
-                              "condition": "[parameters('enableTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.storage-containerimmutpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": [],
-                                  "outputs": {
-                                    "telemetry": {
-                                      "type": "String",
-                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                                    }
-                                  }
-                                }
-                              }
-                            },
                             {
                               "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
                               "apiVersion": "2024-01-01",
@@ -4553,7 +4462,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "10987417587345212372"
+              "templateHash": "1100093319443502715"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4779,8 +4688,7 @@
             }
           },
           "variables": {
-            "name": "default",
-            "enableReferencedModulesTelemetry": false
+            "name": "default"
           },
           "resources": {
             "storageAccount": {
@@ -4863,9 +4771,6 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
-                  },
-                  "enableTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4876,7 +4781,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "2132843331730732433"
+                      "templateHash": "17963799770990303971"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -4982,13 +4887,6 @@
                       },
                       "defaultValue": {}
                     },
-                    "enableTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
-                    },
                     "roleAssignments": {
                       "type": "array",
                       "items": {
@@ -5030,26 +4928,6 @@
                       "type": "Microsoft.Storage/storageAccounts/queueServices",
                       "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
-                    },
-                    "avmTelemetry": {
-                      "condition": "[parameters('enableTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-queue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": [],
-                          "outputs": {
-                            "telemetry": {
-                              "type": "String",
-                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                            }
-                          }
-                        }
-                      }
                     },
                     "storageAccount": {
                       "existing": true,
@@ -5176,7 +5054,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "10362220789498806296"
+              "templateHash": "13069389074590786512"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5402,8 +5280,7 @@
             }
           },
           "variables": {
-            "name": "default",
-            "enableReferencedModulesTelemetry": false
+            "name": "default"
           },
           "resources": {
             "storageAccount": {
@@ -5483,9 +5360,6 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(parameters('tables')[copyIndex()], 'roleAssignments')]"
-                  },
-                  "enableTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5496,7 +5370,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "4485564297595609119"
+                      "templateHash": "10905926757212375091"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -5601,13 +5475,6 @@
                       "metadata": {
                         "description": "Required. Name of the table."
                       }
-                    },
-                    "enableTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -5638,26 +5505,6 @@
                       "type": "Microsoft.Storage/storageAccounts/tableServices",
                       "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
-                    },
-                    "avmTelemetry": {
-                      "condition": "[parameters('enableTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-table.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": [],
-                          "outputs": {
-                            "telemetry": {
-                              "type": "String",
-                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                            }
-                          }
-                        }
-                      }
                     },
                     "storageAccount": {
                       "existing": true,
