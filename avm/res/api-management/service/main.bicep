@@ -542,6 +542,7 @@ module service_subscriptions 'subscription/main.bicep' = [
       scope: subscription.?scope
       secondaryKey: subscription.?secondaryKey
       state: subscription.?state
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
