@@ -7,7 +7,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Initial version
+- Added types for `authorizationMethods`, `bearerTokenSendingMethods` & `clientAuthenticationMethod` parameters
 
 ### Breaking Changes
 
-- None
+- Removed user-defined type `tokenBodyParameterType` in favor of resource-derived type

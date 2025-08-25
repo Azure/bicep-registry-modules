@@ -14,11 +14,11 @@ param approvalRequired bool = false
 @sys.description('Optional. Product description. May include HTML formatting tags.')
 param description string = ''
 
-@sys.description('Optional. Array of Product APIs.')
-param apis array = []
+@sys.description('Optional. Names of Product APIs.')
+param apis string[]?
 
-@sys.description('Optional. Array of Product Groups.')
-param groups array = []
+@sys.description('Optional. Names of Product Groups.')
+param groups string[]?
 
 @sys.description('Required. Product Name.')
 param name string
@@ -40,7 +40,7 @@ param enableTelemetry bool = true
 
 var enableReferencedModulesTelemetry bool = false
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
@@ -63,7 +63,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
+resource product 'Microsoft.ApiManagement/service/products@2024-05-01' = {
   name: name
   parent: service
   properties: {
@@ -78,11 +78,11 @@ resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
 }
 
 module product_apis 'api/main.bicep' = [
-  for (api, index) in apis: {
+  for (api, index) in (apis ?? []): {
     name: '${deployment().name}-Api-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
-      name: api.name
+      name: api
       productName: name
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -90,11 +90,11 @@ module product_apis 'api/main.bicep' = [
 ]
 
 module product_groups 'group/main.bicep' = [
-  for (group, index) in groups: {
+  for (group, index) in (groups ?? []): {
     name: '${deployment().name}-Group-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
-      name: group.name
+      name: group
       productName: name
       enableTelemetry: enableReferencedModulesTelemetry
     }

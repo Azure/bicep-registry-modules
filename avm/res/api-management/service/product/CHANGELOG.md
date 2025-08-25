@@ -10,4 +10,4 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Reduced the `api` & `group` parameter types to `string[]` as its the only value the user can provide

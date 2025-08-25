@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Initial version
+- Added type to `properties` parameter. Note: The properties are dependent on the value of the `name` parameter.
 
 ### Breaking Changes
 

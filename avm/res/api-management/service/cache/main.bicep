@@ -22,7 +22,7 @@ param useFromLocation string
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
@@ -45,7 +45,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cache 'Microsoft.ApiManagement/service/caches@2022-08-01' = {
+resource cache 'Microsoft.ApiManagement/service/caches@2024-05-01' = {
   name: name
   parent: service
   properties: {

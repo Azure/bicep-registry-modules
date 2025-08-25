@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Initial version
+- Added types for `credentials`, `proxy`, `serviceFabricCluster` & `tls` parameters
 
 ### Breaking Changes
 

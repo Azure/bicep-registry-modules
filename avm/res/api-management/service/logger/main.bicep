@@ -21,17 +21,17 @@ param isBuffered bool = true
 ])
 param type string
 
-@sys.description('Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource).')
-param targetResourceId string
+@sys.description('Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.')
+param targetResourceId string?
 
 @secure()
-@sys.description('Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger.')
-param credentials object
+@sys.description('Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub.')
+param credentials resourceInput<'Microsoft.ApiManagement/service/loggers@2024-05-01'>.properties.credentials?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
@@ -54,7 +54,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource loggers 'Microsoft.ApiManagement/service/loggers@2022-08-01' = {
+resource loggers 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
   name: name
   parent: service
   properties: {

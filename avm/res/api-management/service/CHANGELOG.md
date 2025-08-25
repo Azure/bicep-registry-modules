@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
-## 0.10.1
+## 0.11.0
 
 ### Changes
 
@@ -22,10 +22,24 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Introduced [`avm/res/api-management/service/product/api`](/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/api) as child module
 - Introduced [`avm/res/api-management/service/product/group`](/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/group) as child module
 - Introduced [`avm/res/api-management/service/subscription`](/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/subscription) as child module
+- Added types for parameters
+  - `backends`
+  - `caches`
+  - `apiDiagnostics`
+  - `identityProviders`
+  - `loggers`
+  - `namedValues`
+  - `policies`
+  - `portalsettings`
+  - `products`
+  - `subscriptions`
+  - `certificates`
+
 
 ### Breaking Changes
 
-- None
+- Reduced type of `products/apis` & `products/products` from array of objects to array of string as only the name can be configured
+- Diverse bugfixes like renaming the parameters `identityProvider/signinTenant` to `signInTenant`,`logger/resourceId` to `targetResourceId` & `logger/loggerType` to `type` being named incorrectly and hence not being passed through
 
 ## 0.10.0
 

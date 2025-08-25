@@ -5,7 +5,7 @@ metadata description = 'This module deploys an API Management Service Identity P
 param apiManagementServiceName string
 
 @description('Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string.')
-param allowedTenants array = []
+param allowedTenants resourceInput<'Microsoft.ApiManagement/service/identityProviders@2024-05-01'>.properties.allowedTenants = []
 
 @description('Optional. OpenID Connect discovery endpoint hostname for AAD or AAD B2C.')
 param authority string = ''
@@ -59,7 +59,7 @@ param enableTelemetry bool = true
 
 var isAadB2C = (type == 'aadB2C')
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
@@ -82,7 +82,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2022-08-01' = {
+resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2024-05-01' = {
   name: name
   parent: service
   properties: {

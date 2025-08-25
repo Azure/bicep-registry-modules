@@ -41,11 +41,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource policy 'Microsoft.ApiManagement/service/policies@2022-08-01' = {
+resource policy 'Microsoft.ApiManagement/service/policies@2024-05-01' = {
   name: name
   parent: service
   properties: {

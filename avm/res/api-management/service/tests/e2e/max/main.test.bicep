@@ -178,7 +178,7 @@ module testDeployment '../../../main.bicep' = [
           clientLibrary: 'MSAL-2'
           clientSecret: 'apimSlientSecret'
           authority: split(environment().authentication.loginEndpoint, '/')[2]
-          signinTenant: 'mytenant.onmicrosoft.com'
+          signInTenant: 'mytenant.onmicrosoft.com'
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
@@ -187,13 +187,13 @@ module testDeployment '../../../main.bicep' = [
       loggers: [
         {
           name: 'logger'
-          loggerType: 'applicationInsights'
+          type: 'applicationInsights'
           isBuffered: false
           description: 'Logger to Azure Application Insights'
           credentials: {
             instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
           }
-          resourceId: nestedDependencies.outputs.appInsightsResourceId
+          targetResourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       lock: {
@@ -234,15 +234,11 @@ module testDeployment '../../../main.bicep' = [
       products: [
         {
           apis: [
-            {
-              name: 'echo-api'
-            }
+            'echo-api'
           ]
           approvalRequired: false
           groups: [
-            {
-              name: 'developers'
-            }
+            'developers'
           ]
           name: 'Starter'
           displayName: 'Starter'
