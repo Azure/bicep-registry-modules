@@ -111,7 +111,7 @@ output name string = product.name
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The Resources IDs of the API management service product APIs.')
-output apiResourceIds array = [for index in range(0, length(apis)): product_apis[index].outputs.resourceId]
+output apiResourceIds array = [for index in range(0, length(apis ?? [])): product_apis[index].outputs.resourceId]
 
 @sys.description('The Resources IDs of the API management service product groups.')
-output groupResourceIds array = [for index in range(0, length(groups)): product_groups[index].outputs.resourceId]
+output groupResourceIds array = [for index in range(0, length(groups ?? [])): product_groups[index].outputs.resourceId]
