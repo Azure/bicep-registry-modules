@@ -11,7 +11,7 @@ param name string = '${last(split(virtualNetworkResourceId, '/'))}-vnetlink'
 param location string = 'global'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01'>.tags?
 
 @description('Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?.')
 param registrationEnabled bool = false

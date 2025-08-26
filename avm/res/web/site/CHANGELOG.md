@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.19.2
+
+### Changes
+
+- Introduced [`config`](/Azure/bicep-registry-modules/blob/main/avm/res/web/site/config) as child module
+- Introduced [`slot`](/Azure/bicep-registry-modules/blob/main/avm/res/web/site/slot) as child module
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes

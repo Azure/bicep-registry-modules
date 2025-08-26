@@ -77,6 +77,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-privatednszone.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -112,6 +114,7 @@ module privateDnsZone_A 'a/main.bicep' = [
       metadata: aRecord.?metadata
       ttl: aRecord.?ttl ?? 3600
       roleAssignments: aRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -126,6 +129,7 @@ module privateDnsZone_AAAA 'aaaa/main.bicep' = [
       metadata: aaaaRecord.?metadata
       ttl: aaaaRecord.?ttl ?? 3600
       roleAssignments: aaaaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -140,6 +144,7 @@ module privateDnsZone_CNAME 'cname/main.bicep' = [
       metadata: cnameRecord.?metadata
       ttl: cnameRecord.?ttl ?? 3600
       roleAssignments: cnameRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -154,6 +159,7 @@ module privateDnsZone_MX 'mx/main.bicep' = [
       mxRecords: mxRecord.?mxRecords
       ttl: mxRecord.?ttl ?? 3600
       roleAssignments: mxRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -168,6 +174,7 @@ module privateDnsZone_PTR 'ptr/main.bicep' = [
       ptrRecords: ptrRecord.?ptrRecords
       ttl: ptrRecord.?ttl ?? 3600
       roleAssignments: ptrRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -182,6 +189,7 @@ module privateDnsZone_SOA 'soa/main.bicep' = [
       soaRecord: soaRecord.?soaRecord
       ttl: soaRecord.?ttl ?? 3600
       roleAssignments: soaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -196,6 +204,7 @@ module privateDnsZone_SRV 'srv/main.bicep' = [
       srvRecords: srvRecord.?srvRecords
       ttl: srvRecord.?ttl ?? 3600
       roleAssignments: srvRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -210,6 +219,7 @@ module privateDnsZone_TXT 'txt/main.bicep' = [
       txtRecords: txtRecord.?txtRecords
       ttl: txtRecord.?ttl ?? 3600
       roleAssignments: txtRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -279,7 +289,7 @@ type aType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/A@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -288,10 +298,7 @@ type aType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of A records in the record set.')
-  aRecords: {
-    @description('Required. The IPv4 address of this A record.')
-    ipv4Address: string
-  }[]?
+  aRecords: resourceInput<'Microsoft.Network/privateDnsZones/A@2024-06-01'>.properties.aRecords?
 }
 
 @export()
@@ -301,7 +308,7 @@ type aaaaType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/AAAA@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -310,10 +317,7 @@ type aaaaType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of AAAA records in the record set.')
-  aaaaRecords: {
-    @description('Required. The IPv6 address of this AAAA record.')
-    ipv6Address: string
-  }[]?
+  aaaaRecords: resourceInput<'Microsoft.Network/privateDnsZones/AAAA@2024-06-01'>.properties.aaaaRecords?
 }
 
 @export()
@@ -323,7 +327,7 @@ type cnameType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/CNAME@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -332,10 +336,7 @@ type cnameType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The CNAME record in the record set.')
-  cnameRecord: {
-    @description('Required. The canonical name of the CNAME record.')
-    cname: string
-  }?
+  cnameRecord: resourceInput<'Microsoft.Network/privateDnsZones/CNAME@2024-06-01'>.properties.cnameRecord?
 }
 
 @export()
@@ -345,7 +346,7 @@ type mxType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/MX@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -354,13 +355,7 @@ type mxType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of MX records in the record set.')
-  mxRecords: {
-    @description('Required. The domain name of the mail host for this MX record.')
-    exchange: string
-
-    @description('Required. The preference value for this MX record.')
-    preference: int
-  }[]?
+  mxRecords: resourceInput<'Microsoft.Network/privateDnsZones/MX@2024-06-01'>.properties.mxRecords?
 }
 
 @export()
@@ -370,7 +365,7 @@ type ptrType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/PTR@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -379,10 +374,7 @@ type ptrType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of PTR records in the record set.')
-  ptrRecords: {
-    @description('Required. The PTR target domain name for this PTR record.')
-    ptrdname: string
-  }[]?
+  ptrRecords: resourceInput<'Microsoft.Network/privateDnsZones/PTR@2024-06-01'>.properties.ptrRecords?
 }
 
 @export()
@@ -392,7 +384,7 @@ type soaType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/SOA@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -401,28 +393,7 @@ type soaType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The SOA record in the record set.')
-  soaRecord: {
-    @description('Required. The email contact for this SOA record.')
-    email: string
-
-    @description('Required. The expire time for this SOA record.')
-    expireTime: int
-
-    @description('Required. The domain name of the authoritative name server for this SOA record.')
-    host: string
-
-    @description('Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration.')
-    minimumTtl: int
-
-    @description('Required. The refresh value for this SOA record.')
-    refreshTime: int
-
-    @description('Required. The retry time for this SOA record.')
-    retryTime: int
-
-    @description('Required. The serial number for this SOA record.')
-    serialNumber: int
-  }?
+  soaRecord: resourceInput<'Microsoft.Network/privateDnsZones/SOA@2024-06-01'>.properties.soaRecord?
 }
 
 @export()
@@ -432,7 +403,7 @@ type srvType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/SRV@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -441,19 +412,7 @@ type srvType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of SRV records in the record set.')
-  srvRecords: {
-    @description('Required. The priority value for this SRV record.')
-    priority: int
-
-    @description('Required. The weight value for this SRV record.')
-    weight: int
-
-    @description('Required. The port value for this SRV record.')
-    port: int
-
-    @description('Required. The target domain name for this SRV record.')
-    target: string
-  }[]?
+  srvRecords: resourceInput<'Microsoft.Network/privateDnsZones/SRV@2024-06-01'>.properties.srvRecords?
 }
 
 @export()
@@ -463,7 +422,7 @@ type txtType = {
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/privateDnsZones/TXT@2024-06-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
@@ -472,10 +431,7 @@ type txtType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of TXT records in the record set.')
-  txtRecords: {
-    @description('Required. The text value of this TXT record.')
-    value: string[]
-  }[]?
+  txtRecords: resourceInput<'Microsoft.Network/privateDnsZones/TXT@2024-06-01'>.properties.txtRecords?
 }
 
 @export()
@@ -496,7 +452,7 @@ type virtualNetworkLinkType = {
   registrationEnabled: bool?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01'>.tags?
 
   @description('Optional. The resolution type of the private-dns-zone fallback machanism.')
   resolutionPolicy: ('Default' | 'NxDomainRedirect')?
