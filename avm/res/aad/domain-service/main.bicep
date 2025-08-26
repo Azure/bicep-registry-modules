@@ -75,9 +75,6 @@ param kerberosRc4Encryption ('Disabled' | 'Enabled') = 'Disabled'
 @description('Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC.')
 param kerberosArmoring ('Disabled' | 'Enabled') = 'Enabled'
 
-@description('Optional. Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID.')
-param syncOnPremSamAccountName ('Disabled' | 'Enabled')?
-
 @description('Optional. The value is to notify the DC Admins.')
 param notifyDcAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
@@ -165,7 +162,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource domainservice 'Microsoft.AAD/domainServices@2025-06-01' = {
+resource domainservice 'Microsoft.AAD/domainServices@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -192,7 +189,6 @@ resource domainservice 'Microsoft.AAD/domainServices@2025-06-01' = {
       syncOnPremPasswords: syncOnPremPasswords
       kerberosRc4Encryption: kerberosRc4Encryption
       kerberosArmoring: kerberosArmoring
-      syncOnPremSamAccountName: syncOnPremSamAccountName
     }
     sku: sku
     syncScope: syncScope

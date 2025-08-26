@@ -6,8 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated API version to `2025-06-01`
-- added `syncOnPremSamAccountName` property
+- Updated API version to `2025-05-01`
 - Updated `avm-common-types` to `0.6.1`
 - CI Test uses preview Graph extension to create the required service principal
 

@@ -16,7 +16,7 @@ This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.AAD/domainServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.aad_domainservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2025-06-01/domainServices)</li></ul> |
+| `Microsoft.AAD/domainServices` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.aad_domainservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2025-05-01/domainServices)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -89,7 +89,6 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         subnetId: '<subnetId>'
       }
     ]
-    syncOnPremSamAccountName: 'Disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -178,9 +177,6 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         }
       ]
     },
-    "syncOnPremSamAccountName": {
-      "value": "Disabled"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -247,7 +243,6 @@ param replicaSets = [
     subnetId: '<subnetId>'
   }
 ]
-param syncOnPremSamAccountName = 'Disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -297,7 +292,6 @@ param tags = {
 | [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise. |
 | [`syncNtlmPasswords`](#parameter-syncntlmpasswords) | string | The value is to enable synchronized users to use NTLM authentication. |
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
-| [`syncOnPremSamAccountName`](#parameter-synconpremsamaccountname) | string | Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID. |
 | [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
@@ -860,20 +854,6 @@ The value is to enable on-premises users to authenticate against managed domain.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `syncOnPremSamAccountName`
-
-Synchronize the samAccountName attribute in Entra Domain Services from the onPremisesSamAccountName attribute in Entra ID.
-
-- Required: No
-- Type: string
 - Allowed:
   ```Bicep
   [
