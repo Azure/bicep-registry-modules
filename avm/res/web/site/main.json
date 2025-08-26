@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "6827324165239649746"
+      "templateHash": "8557212666369750117"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5180,7 +5180,10 @@
           "properties": {
             "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'properties')]"
           },
-          "currentAppSettings": "[if(coalesce(tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'retainCurrentAppSettings'), and(true(), equals(coalesce(parameters('configs'), createArray())[copyIndex()].name, 'appsettings'))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]"
+          "currentAppSettings": "[if(coalesce(tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'retainCurrentAppSettings'), and(true(), equals(coalesce(parameters('configs'), createArray())[copyIndex()].name, 'appsettings'))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]",
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5190,7 +5193,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7820317590850007781"
+              "templateHash": "18307958685058146038"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5249,6 +5252,13 @@
                 "description": "Optional. Resource ID of the application insight to leverage for this resource."
               }
             },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "currentAppSettings": {
               "type": "object",
               "properties": {},
@@ -5265,6 +5275,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.web-siteconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "applicationInsights": {
               "condition": "[not(empty(parameters('applicationInsightResourceId')))]",
               "existing": true,
@@ -5575,6 +5605,9 @@
           },
           "outboundVnetRouting": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'outboundVnetRouting')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5585,7 +5618,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "14498149399563468794"
+              "templateHash": "3511908102505409340"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -10106,6 +10139,13 @@
               "metadata": {
                 "description": "Optional. Specifies the scope of uniqueness for the default hostname during resource creation."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -10134,6 +10174,26 @@
             ]
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.web-siteslot.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
