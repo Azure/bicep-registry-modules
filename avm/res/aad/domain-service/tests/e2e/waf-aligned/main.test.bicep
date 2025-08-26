@@ -116,10 +116,10 @@ module testDeployment '../../../main.bicep' = {
         subnetId: nestedDependencies.outputs.subnetResourceId
       }
       // replicaset currently are not working, when deployed via Bicep
-      // {
-      //   location: replicaLocation
-      //   subnetId: nestedDependencies.outputs.replicaSubnetResourceId
-      // }
+      {
+        location: replicaLocation
+        subnetId: nestedDependencies.outputs.replicaSubnetResourceId
+      }
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'

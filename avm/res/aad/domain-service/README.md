@@ -85,6 +85,10 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         location: '<location>'
         subnetId: '<subnetId>'
       }
+      {
+        location: '<location>'
+        subnetId: '<subnetId>'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -168,6 +172,10 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         {
           "location": "<location>",
           "subnetId": "<subnetId>"
+        },
+        {
+          "location": "<location>",
+          "subnetId": "<subnetId>"
         }
       ]
     },
@@ -229,6 +237,10 @@ param name = 'aaddswaf001'
 param pfxCertificate = '<pfxCertificate>'
 param pfxCertificatePassword = '<pfxCertificatePassword>'
 param replicaSets = [
+  {
+    location: '<location>'
+    subnetId: '<subnetId>'
+  }
   {
     location: '<location>'
     subnetId: '<subnetId>'
