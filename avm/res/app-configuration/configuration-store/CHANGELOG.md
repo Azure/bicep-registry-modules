@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app-configuration/configuration-store/CHANGELOG.md).
 
+## 0.9.2
+
+### Changes
+
+- Updated logic for `softDeleteRetentionInDays`: now sets retention to `0` when `sku` is `Developer` (previously only checked for `Free`).
+- Changed handling of `enablePurgeProtection`: removed the check for `sku` so purge protection can be enabled regardless of tier.
+
+### Breaking Changes
+
+- If you previously relied on purge protection being disabled for certain SKUs (other than `Free`), this behavior has changed. Purge protection can now be enabled for all SKUs.
+
 ## 0.9.1
 
 ### Changes
