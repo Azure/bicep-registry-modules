@@ -13,7 +13,9 @@ param managedIdentities managedIdentityAllType?
 
 @allowed([
   'Free'
+  'Developer'
   'Standard'
+  'Premium'
 ])
 @description('Optional. Pricing tier of App Configuration.')
 param sku string = 'Standard'
@@ -74,7 +76,7 @@ param dataPlaneProxy dataPlaneProxyType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -112,6 +114,14 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '516239f1-63e1-4d78-a4de-a74fb236a071'
   )
+  'App Configuration Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '175b81b9-6e0d-490a-85e4-0d422273c10c'
+  )
+  'App Configuration Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'fe86443c-f201-4fc4-9d2a-ac61149fbda0'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -137,7 +147,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.appconfiguration-configurationstore.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -155,7 +165,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -175,7 +185,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
+resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025-02-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -226,7 +236,7 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
     }
   }
 ]
-
+@batchSize(1)
 module configurationStore_replicas 'replica/main.bicep' = [
   for (replicaLocation, index) in (replicaLocations ?? []): {
     name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'

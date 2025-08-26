@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "595566273208178612"
+      "templateHash": "10396319188362265745"
     },
     "name": "App Service Environments",
     "description": "This module deploys an App Service Environment."
@@ -273,10 +273,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/hostingEnvironments@2024-11-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -307,15 +310,18 @@
     },
     "clusterSettings": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/hostingEnvironments@2024-11-01#properties/properties/properties/clusterSettings"
+        },
+        "description": "Optional. Custom settings for changing the behavior of the App Service Environment."
+      },
       "defaultValue": [
         {
           "name": "DisableTls1.0",
           "value": "1"
         }
-      ],
-      "metadata": {
-        "description": "Optional. Custom settings for changing the behavior of the App Service Environment."
-      }
+      ]
     },
     "customDnsSuffix": {
       "type": "string",

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7602607370211189478"
+      "templateHash": "15052551736982652592"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -29,11 +29,11 @@
             "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
           }
         },
-        "privateDnsZoneId": {
+        "privateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided."
+            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
           }
         },
         "roleAssignments": {
@@ -69,18 +69,11 @@
             "description": "Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided."
           }
         },
-        "containerName": {
+        "blobPrivateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the container to create in the Storage Account. If using existingResourceId, this should be an existing container in that account, by default a container named the same as the AI Foundry Project. If not provided and not using an existing Storage Account, a default container named the same as the AI Foundry Project name will be created."
-          }
-        },
-        "blobPrivateDnsZoneId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource ID of the DNS zone \"blob\" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetId' is provided."
+            "description": "Optional. The Resource ID of the DNS zone \"blob\" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
           }
         },
         "roleAssignments": {
@@ -114,6 +107,40 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The location of the AI Foundry account. Will default to the resource group location if not specified."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "C2",
+            "C3",
+            "C4",
+            "DC0",
+            "F0",
+            "F1",
+            "S",
+            "S0",
+            "S1",
+            "S10",
+            "S2",
+            "S3",
+            "S4",
+            "S5",
+            "S6",
+            "S7",
+            "S8",
+            "S9"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. Defaults to 'S0'."
+          }
+        },
+        "createCapabilityHosts": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false."
           }
         },
         "allowProjectManagement": {
@@ -156,19 +183,26 @@
     "foundryNetworkConfigurationType": {
       "type": "object",
       "properties": {
-        "cognitiveServicesPrivateDnsZoneId": {
+        "agentServiceSubnetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true."
+          }
+        },
+        "cognitiveServicesPrivateDnsZoneResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
           }
         },
-        "openAiPrivateDnsZoneId": {
+        "openAiPrivateDnsZoneResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. The Resource ID of the Private DNS Zone for the OpenAI account."
           }
         },
-        "aiServicesPrivateDnsZoneId": {
+        "aiServicesPrivateDnsZoneResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
@@ -448,33 +482,6 @@
         "description": "Optional. Location for all Resources. Defaults to the location of the resource group."
       }
     },
-    "sku": {
-      "type": "string",
-      "defaultValue": "S0",
-      "allowedValues": [
-        "C2",
-        "C3",
-        "C4",
-        "F0",
-        "F1",
-        "S",
-        "S0",
-        "S1",
-        "S10",
-        "S2",
-        "S3",
-        "S4",
-        "S5",
-        "S6",
-        "S7",
-        "S8",
-        "S9",
-        "DC0"
-      ],
-      "metadata": {
-        "description": "Optional. SKU of the AI Foundry / Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
-      }
-    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -516,7 +523,7 @@
         "description": "Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false."
       }
     },
-    "privateEndpointSubnetId": {
+    "privateEndpointSubnetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -561,7 +568,8 @@
   },
   "variables": {
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
-    "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]"
+    "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
+    "createCapabilityHosts": "[and(coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), false()), parameters('includeAssociatedResources'))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -596,19 +604,20 @@
         "parameters": {
           "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
           "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
-          "sku": {
-            "value": "[parameters('sku')]"
-          },
+          "sku": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'sku'))), createObject('value', parameters('aiFoundryConfiguration').sku), createObject('value', 'S0'))]",
           "allowProjectManagement": {
             "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'allowProjectManagement'), true())]"
           },
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
           },
-          "privateEndpointSubnetId": {
-            "value": "[parameters('privateEndpointSubnetId')]"
+          "privateEndpointSubnetResourceId": {
+            "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
-          "privateDnsZoneResourceIds": "[if(and(not(empty(parameters('privateEndpointSubnetId'))), not(empty(tryGet(parameters('aiFoundryConfiguration'), 'networking')))), createObject('value', createArray(parameters('aiFoundryConfiguration').networking.cognitiveServicesPrivateDnsZoneId, parameters('aiFoundryConfiguration').networking.openAiPrivateDnsZoneId, parameters('aiFoundryConfiguration').networking.aiServicesPrivateDnsZoneId)), createObject('value', createArray()))]",
+          "agentSubnetResourceId": {
+            "value": "[tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'agentServiceSubnetResourceId')]"
+          },
+          "privateDnsZoneResourceIds": "[if(and(not(empty(parameters('privateEndpointSubnetResourceId'))), not(empty(tryGet(parameters('aiFoundryConfiguration'), 'networking')))), createObject('value', createArray(parameters('aiFoundryConfiguration').networking.cognitiveServicesPrivateDnsZoneResourceId, parameters('aiFoundryConfiguration').networking.openAiPrivateDnsZoneResourceId, parameters('aiFoundryConfiguration').networking.aiServicesPrivateDnsZoneResourceId)), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[tryGet(parameters('aiFoundryConfiguration'), 'roleAssignments')]"
           },
@@ -630,7 +639,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16170875016097971391"
+              "templateHash": "7176206729749411912"
             }
           },
           "definitions": {
@@ -894,11 +903,18 @@
                 "description": "Required. Whether to allow project management in AI Foundry. This is required to enable the AI Foundry UI and project management features."
               }
             },
-            "privateEndpointSubnetId": {
+            "privateEndpointSubnetResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneId' to establish private endpoints."
+                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceIds' to establish private endpoints."
+              }
+            },
+            "agentSubnetResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints."
               }
             },
             "roleAssignments": {
@@ -966,7 +982,7 @@
                 }
               }
             ],
-            "privateNetworkingEnabled": "[and(not(empty(variables('privateDnsZoneResourceIdValues'))), not(empty(parameters('privateEndpointSubnetId'))))]"
+            "privateNetworkingEnabled": "[and(not(empty(variables('privateDnsZoneResourceIdValues'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
           },
           "resources": {
             "foundryAccount": {
@@ -1012,16 +1028,17 @@
                     "value": "[parameters('name')]"
                   },
                   "disableLocalAuth": {
-                    "value": "[variables('privateNetworkingEnabled')]"
+                    "value": false
                   },
                   "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
                     "value": {
-                      "defaultAction": "[if(variables('privateNetworkingEnabled'), 'Deny', 'Allow')]",
+                      "defaultAction": "Allow",
                       "bypass": "AzureServices"
                     }
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZoneResourceIdValues')), 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
+                  "networkInjections": "[if(and(variables('privateNetworkingEnabled'), not(empty(parameters('agentSubnetResourceId')))), createObject('value', createObject('scenario', 'agent', 'subnetResourceId', parameters('agentSubnetResourceId'), 'useMicrosoftManagedNetwork', false())), createObject('value', null()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZoneResourceIdValues')), 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
@@ -1036,8 +1053,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "12300994116622733699"
+                      "version": "0.37.4.10188",
+                      "templateHash": "18408784030873090876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -1331,6 +1348,38 @@
                       "metadata": {
                         "__bicep_export!": true,
                         "description": "The type for a disconnected container commitment plan."
+                      }
+                    },
+                    "networkInjectionType": {
+                      "type": "object",
+                      "properties": {
+                        "scenario": {
+                          "type": "string",
+                          "allowedValues": [
+                            "agent",
+                            "none"
+                          ],
+                          "metadata": {
+                            "description": "Required. The scenario for the network injection."
+                          }
+                        },
+                        "subnetResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The Resource ID of the subnet on the Virtual Network on which to inject."
+                          }
+                        },
+                        "useMicrosoftManagedNetwork": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Whether to use Microsoft Managed Network. Defaults to false."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
                       }
                     },
                     "_1.privateEndpointCustomDnsConfigType": {
@@ -2037,6 +2086,13 @@
                         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
                       }
                     },
+                    "networkInjections": {
+                      "$ref": "#/definitions/networkInjectionType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
+                      }
+                    },
                     "privateEndpoints": {
                       "type": "array",
                       "items": {
@@ -2244,7 +2300,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2293,6 +2349,7 @@
                         "allowProjectManagement": "[parameters('allowProjectManagement')]",
                         "customSubDomainName": "[parameters('customSubDomainName')]",
                         "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
+                        "networkInjections": "[if(not(empty(parameters('networkInjections'))), createArray(createObject('scenario', tryGet(parameters('networkInjections'), 'scenario'), 'subnetArmId', tryGet(parameters('networkInjections'), 'subnetResourceId'), 'useMicrosoftManagedNetwork', coalesce(tryGet(parameters('networkInjections'), 'useMicrosoftManagedNetwork'), false()))), null())]",
                         "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
                         "allowedFqdnList": "[parameters('allowedFqdnList')]",
                         "apiProperties": "[parameters('apiProperties')]",
@@ -3204,8 +3261,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "3723512518520185794"
+                              "version": "0.37.4.10188",
+                              "templateHash": "10828079590669389085"
                             }
                           },
                           "definitions": {
@@ -3480,11 +3537,11 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "privateEndpointSubnetId": {
-            "value": "[parameters('privateEndpointSubnetId')]"
+          "privateEndpointSubnetResourceId": {
+            "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
-          "privateDnsZoneId": {
-            "value": "[tryGet(parameters('keyVaultConfiguration'), 'privateDnsZoneId')]"
+          "privateDnsZoneResourceId": {
+            "value": "[tryGet(parameters('keyVaultConfiguration'), 'privateDnsZoneResourceId')]"
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('keyVaultConfiguration'), 'roleAssignments')]"
@@ -3498,7 +3555,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8588554450158353039"
+              "templateHash": "3619843058281336187"
             }
           },
           "definitions": {
@@ -3696,14 +3753,14 @@
                 "description": "Optional. The full resource ID of an existing Key Vault to use instead of creating a new one."
               }
             },
-            "privateEndpointSubnetId": {
+            "privateEndpointSubnetResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneId' to establish private endpoints."
+                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceId' to establish private endpoints."
               }
             },
-            "privateDnsZoneId": {
+            "privateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -3743,7 +3800,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
+            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
           },
           "resources": {
             "existingKeyVault": {
@@ -3805,7 +3862,7 @@
                   "softDeleteRetentionInDays": {
                     "value": 7
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneId')))), 'service', 'vault', 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), 'service', 'vault', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   }
@@ -3817,8 +3874,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "17700945019270494013"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9847220803814850914"
                     },
                     "name": "Key Vaults",
                     "description": "This module deploys a Key Vault."
@@ -4367,7 +4424,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4409,7 +4466,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4450,7 +4507,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4572,7 +4629,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4597,12 +4654,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4744,7 +4808,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4819,7 +4883,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -5138,7 +5202,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.13.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5187,7 +5251,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "keyVault"
@@ -5281,8 +5345,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "10958657547953938402"
+                              "version": "0.37.4.10188",
+                              "templateHash": "4539421523375369835"
                             },
                             "name": "Key Vault Access Policies",
                             "description": "This module deploys a Key Vault Access Policy."
@@ -5547,8 +5611,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "2929149431927742782"
+                              "version": "0.37.4.10188",
+                              "templateHash": "8382262411419152826"
                             },
                             "name": "Key Vault Secrets",
                             "description": "This module deploys a Key Vault Secret."
@@ -5866,8 +5930,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "13194636282705261955"
+                              "version": "0.37.4.10188",
+                              "templateHash": "4632549097651981071"
                             },
                             "name": "Key Vault Keys",
                             "description": "This module deploys a Key Vault Key."
@@ -7163,11 +7227,11 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "privateEndpointSubnetId": {
-            "value": "[parameters('privateEndpointSubnetId')]"
+          "privateEndpointSubnetResourceId": {
+            "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
-          "privateDnsZoneId": {
-            "value": "[tryGet(parameters('aiSearchConfiguration'), 'privateDnsZoneId')]"
+          "privateDnsZoneResourceId": {
+            "value": "[tryGet(parameters('aiSearchConfiguration'), 'privateDnsZoneResourceId')]"
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
@@ -7181,7 +7245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5080003277583940970"
+              "templateHash": "6380830102881120586"
             }
           },
           "definitions": {
@@ -7379,14 +7443,14 @@
                 "description": "Optional. The full resource ID of an existing AI Search resource to use instead of creating a new one."
               }
             },
-            "privateEndpointSubnetId": {
+            "privateEndpointSubnetResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneId' to establish private endpoints."
+                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceId' to establish private endpoints."
               }
             },
-            "privateDnsZoneId": {
+            "privateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -7426,7 +7490,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
+            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
           },
           "resources": {
             "existingSearchService": {
@@ -7483,7 +7547,7 @@
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneId')))), 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -9723,12 +9787,11 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "containerName": "[if(empty(tryGet(parameters('storageAccountConfiguration'), 'containerName')), createObject('value', variables('projectName')), createObject('value', parameters('storageAccountConfiguration').containerName))]",
-          "privateEndpointSubnetId": {
-            "value": "[parameters('privateEndpointSubnetId')]"
+          "privateEndpointSubnetResourceId": {
+            "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
-          "blobPrivateDnsZoneId": {
-            "value": "[tryGet(parameters('storageAccountConfiguration'), 'blobPrivateDnsZoneId')]"
+          "blobPrivateDnsZoneResourceId": {
+            "value": "[tryGet(parameters('storageAccountConfiguration'), 'blobPrivateDnsZoneResourceId')]"
           },
           "roleAssignments": {
             "value": "[concat(if(and(not(empty(parameters('storageAccountConfiguration'))), not(empty(tryGet(parameters('storageAccountConfiguration'), 'roleAssignments')))), parameters('storageAccountConfiguration').roleAssignments, createArray()), createArray(createObject('principalId', reference('foundryAccount').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), if(empty(tryGet(parameters('aiSearchConfiguration'), 'existingResourceId')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray()))]"
@@ -9742,7 +9805,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6861679548439377986"
+              "templateHash": "16873663592844610603"
             }
           },
           "definitions": {
@@ -9940,24 +10003,18 @@
                 "description": "Optional. The full resource ID of an existing storage account to use instead of creating a new one."
               }
             },
-            "privateEndpointSubnetId": {
+            "privateEndpointSubnetResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'blobPrivateDnsZoneId' to establish private endpoints."
+                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'blobPrivateDnsZoneResourceId' to establish private endpoints."
               }
             },
-            "blobPrivateDnsZoneId": {
+            "blobPrivateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the private DNS zone for the storage account blob service to establish private endpoints."
-              }
-            },
-            "containerName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Name of the blob container used when connecting via AI Foundry."
               }
             },
             "roleAssignments": {
@@ -9993,7 +10050,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('blobPrivateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
+            "privateNetworkingEnabled": "[and(not(empty(parameters('blobPrivateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
           },
           "resources": {
             "existingStorageAccount": {
@@ -10046,12 +10103,7 @@
                       "deleteRetentionPolicyEnabled": true,
                       "deleteRetentionPolicyDays": 7,
                       "containerDeleteRetentionPolicyEnabled": true,
-                      "containerDeleteRetentionPolicyDays": 7,
-                      "containers": [
-                        {
-                          "name": "[parameters('containerName')]"
-                        }
-                      ]
+                      "containerDeleteRetentionPolicyDays": 7
                     }
                   },
                   "minimumTlsVersion": {
@@ -10066,7 +10118,7 @@
                   "supportsHttpsTrafficOnly": {
                     "value": true
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('blobPrivateDnsZoneId')))), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('blobPrivateDnsZoneResourceId')))), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   }
@@ -10078,8 +10130,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "8372201108893410794"
+                      "version": "0.37.4.10188",
+                      "templateHash": "16027397933856085759"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account."
@@ -10505,47 +10557,14 @@
                         }
                       }
                     },
-                    "diagnosticSettingFullType": {
+                    "diagnosticSettingMetricsOnlyType": {
                       "type": "object",
                       "properties": {
                         "name": {
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. The name of the diagnostic setting."
-                          }
-                        },
-                        "logCategoriesAndGroups": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "category": {
-                                "type": "string",
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                                }
-                              },
-                              "categoryGroup": {
-                                "type": "string",
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                                }
-                              },
-                              "enabled": {
-                                "type": "bool",
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                                }
-                              }
-                            }
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                            "description": "Optional. The name of diagnostic setting."
                           }
                         },
                         "metricCategories": {
@@ -10621,7 +10640,7 @@
                         }
                       },
                       "metadata": {
-                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
                           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
@@ -11242,7 +11261,7 @@
                     "diagnosticSettings": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/definitions/diagnosticSettingFullType"
+                        "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
                       },
                       "nullable": true,
                       "metadata": {
@@ -11400,7 +11419,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.26.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -12300,8 +12319,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "6496156712513767604"
+                              "version": "0.37.4.10188",
+                              "templateHash": "14529265638306912023"
                             },
                             "name": "Storage Account Management Policies",
                             "description": "This module deploys a Storage Account Management Policy."
@@ -12412,8 +12431,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "1848298161211813339"
+                              "version": "0.37.4.10188",
+                              "templateHash": "3261275799710495788"
                             },
                             "name": "Storage Account Local Users",
                             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -12650,8 +12669,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "11910419758160029371"
+                              "version": "0.37.4.10188",
+                              "templateHash": "1215393307957288546"
                             },
                             "name": "Storage Account blob Services",
                             "description": "This module deploys a Storage Account Blob Service."
@@ -13121,8 +13140,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.177.2456",
-                                      "templateHash": "6122312203250039927"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "15600440533481093288"
                                     },
                                     "name": "Storage Account Blob Containers",
                                     "description": "This module deploys a Storage Account Blob Container."
@@ -13440,8 +13459,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.36.177.2456",
-                                              "templateHash": "10543597982986889039"
+                                              "version": "0.37.4.10188",
+                                              "templateHash": "2858994808980111017"
                                             },
                                             "name": "Storage Account Blob Container Immutability Policies",
                                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -13620,8 +13639,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "13648200339882213035"
+                              "version": "0.37.4.10188",
+                              "templateHash": "2735186993322606805"
                             },
                             "name": "Storage Account File Share Services",
                             "description": "This module deploys a Storage Account File Share Service."
@@ -13986,8 +14005,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.177.2456",
-                                      "templateHash": "14521101547538449945"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "15881640847294537074"
                                     },
                                     "name": "Storage Account File Shares",
                                     "description": "This module deploys a Storage Account File Share."
@@ -14185,7 +14204,7 @@
                                       "condition": "[parameters('enableTelemetry')]",
                                       "type": "Microsoft.Resources/deployments",
                                       "apiVersion": "2024-03-01",
-                                      "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                                      "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                                       "properties": {
                                         "mode": "Incremental",
                                         "template": {
@@ -14448,8 +14467,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "9773019661912371328"
+                              "version": "0.37.4.10188",
+                              "templateHash": "1100093319443502715"
                             },
                             "name": "Storage Account Queue Services",
                             "description": "This module deploys a Storage Account Queue Service."
@@ -14767,8 +14786,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.177.2456",
-                                      "templateHash": "15007234791973585726"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "17963799770990303971"
                                     },
                                     "name": "Storage Account Queues",
                                     "description": "This module deploys a Storage Account Queue."
@@ -15040,8 +15059,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "11814035234561258492"
+                              "version": "0.37.4.10188",
+                              "templateHash": "13069389074590786512"
                             },
                             "name": "Storage Account Table Services",
                             "description": "This module deploys a Storage Account Table Service."
@@ -15356,8 +15375,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.177.2456",
-                                      "templateHash": "13467255229088290809"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "10905926757212375091"
                                     },
                                     "name": "Storage Account Table",
                                     "description": "This module deploys a Storage Account Table."
@@ -15610,8 +15629,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "13684748067799780567"
+                              "version": "0.37.4.10188",
+                              "templateHash": "9368972709899985618"
                             }
                           },
                           "definitions": {
@@ -15869,13 +15888,6 @@
                 "description": "Resource Group Name of the Storage Account."
               },
               "value": "[if(empty(parameters('existingResourceId')), resourceGroup().name, variables('existingResourceGroupName'))]"
-            },
-            "containerName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the blob container used when connecting via AI Foundry."
-              },
-              "value": "[parameters('containerName')]"
             }
           }
         }
@@ -15911,11 +15923,11 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "privateEndpointSubnetId": {
-            "value": "[parameters('privateEndpointSubnetId')]"
+          "privateEndpointSubnetResourceId": {
+            "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
-          "privateDnsZoneId": {
-            "value": "[tryGet(parameters('cosmosDbConfiguration'), 'privateDnsZoneId')]"
+          "privateDnsZoneResourceId": {
+            "value": "[tryGet(parameters('cosmosDbConfiguration'), 'privateDnsZoneResourceId')]"
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('cosmosDbConfiguration'), 'roleAssignments')]"
@@ -15929,7 +15941,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5441655769388904467"
+              "templateHash": "9713840631975182834"
             }
           },
           "definitions": {
@@ -16127,14 +16139,14 @@
                 "description": "Optional. The full resource ID of an existing Cosmos DB to use instead of creating a new one."
               }
             },
-            "privateEndpointSubnetId": {
+            "privateEndpointSubnetResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneId' to establish private endpoints."
+                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceId' to establish private endpoints."
               }
             },
-            "privateDnsZoneId": {
+            "privateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -16174,7 +16186,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneId'))), not(empty(parameters('privateEndpointSubnetId'))))]"
+            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
           },
           "resources": {
             "existingCosmosDb": {
@@ -16227,7 +16239,7 @@
                       "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), 'Disabled', 'Enabled')]"
                     }
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneId')))), 'service', 'Sql', 'subnetResourceId', parameters('privateEndpointSubnetId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), 'service', 'Sql', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
@@ -20055,10 +20067,13 @@
           "location": {
             "value": "[reference('foundryAccount').outputs.location.value]"
           },
-          "includeCapabilityHost": {
-            "value": false
+          "createAccountCapabilityHost": {
+            "value": "[and(variables('createCapabilityHosts'), empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'agentServiceSubnetResourceId')))]"
           },
-          "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('storageAccountName', reference('storageAccount').outputs.name.value, 'subscriptionId', reference('storageAccount').outputs.subscriptionId.value, 'resourceGroupName', reference('storageAccount').outputs.resourceGroupName.value, 'containerName', reference('storageAccount').outputs.containerName.value)), createObject('value', null()))]",
+          "createProjectCapabilityHost": {
+            "value": "[variables('createCapabilityHosts')]"
+          },
+          "storageAccountConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('storageAccount').outputs.name.value, 'subscriptionId', reference('storageAccount').outputs.subscriptionId.value, 'resourceGroupName', reference('storageAccount').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('aiSearch').outputs.name.value, 'subscriptionId', reference('aiSearch').outputs.subscriptionId.value, 'resourceGroupName', reference('aiSearch').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "cosmosDbConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('cosmosDb').outputs.name.value, 'subscriptionId', reference('cosmosDb').outputs.subscriptionId.value, 'resourceGroupName', reference('cosmosDb').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "tags": {
@@ -20076,7 +20091,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "17311864461969554789"
+              "templateHash": "8851117120311264419"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20114,46 +20129,6 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Type representing values to create an Azure connection to an AI Foundry project."
-              }
-            },
-            "storageAccountConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the project connection. Will default to \"<account>-<container>\" if not provided."
-                  }
-                },
-                "storageAccountName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the Storage Account for the connection."
-                  }
-                },
-                "containerName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of container in the Storage Account to use for the connections."
-                  }
-                },
-                "subscriptionId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The subscription ID of the Storage Account."
-                  }
-                },
-                "resourceGroupName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The resource group name of the Storage Account."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "Type representing values to create an Azure Storage Account connections to an AI Foundry project."
               }
             },
             "lockType": {
@@ -20230,10 +20205,16 @@
                 "description": "Required. Name of the existing parent Foundry Account resource."
               }
             },
-            "includeCapabilityHost": {
+            "createAccountCapabilityHost": {
               "type": "bool",
               "metadata": {
-                "description": "Required. Include the capability host for the Foundry project."
+                "description": "Required. Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided."
+              }
+            },
+            "createProjectCapabilityHost": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided."
               }
             },
             "cosmosDbConnection": {
@@ -20251,7 +20232,7 @@
               }
             },
             "storageAccountConnection": {
-              "$ref": "#/definitions/storageAccountConnectionType",
+              "$ref": "#/definitions/azureConnectionType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Storage Account connection for the project."
@@ -20276,71 +20257,10 @@
             }
           },
           "variables": {
-            "createCapabilityHost": "[and(and(and(parameters('includeCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
+            "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
+            "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
           },
           "resources": {
-            "project::storageConnection": {
-              "condition": "[not(empty(parameters('storageAccountConnection')))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').storageAccountName)]",
-              "properties": {
-                "category": "AzureBlob",
-                "target": "[reference('storageAccount').primaryEndpoints.blob]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').storageAccountName)]",
-                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]",
-                  "AccountName": "[parameters('storageAccountConnection').storageAccountName]",
-                  "ContainerName": "[parameters('storageAccountConnection').containerName]"
-                }
-              },
-              "dependsOn": [
-                "project",
-                "storageAccount"
-              ]
-            },
-            "project::searchConnection": {
-              "condition": "[not(empty(parameters('aiSearchConnection')))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('aiSearchConnection').resourceName)]",
-              "properties": {
-                "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', parameters('aiSearchConnection').resourceName)]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('aiSearchConnection').subscriptionId, parameters('aiSearchConnection').resourceGroupName), 'Microsoft.Search/searchServices', parameters('aiSearchConnection').resourceName)]",
-                  "location": "[reference('aiSearch', '2025-05-01', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "aiSearch",
-                "project"
-              ]
-            },
-            "project::cosmosConnection": {
-              "condition": "[not(empty(parameters('cosmosDbConnection')))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('cosmosDbConnection').resourceName)]",
-              "properties": {
-                "category": "CosmosDB",
-                "target": "[reference('cosmosDb').documentEndpoint]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('cosmosDbConnection').subscriptionId, parameters('cosmosDbConnection').resourceGroupName), 'Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbConnection').resourceName)]",
-                  "location": "[reference('cosmosDb', '2025-04-15', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "cosmosDb",
-                "project"
-              ]
-            },
             "foundryAccount": {
               "existing": true,
               "type": "Microsoft.CognitiveServices/accounts",
@@ -20354,7 +20274,7 @@
               "apiVersion": "2025-01-01",
               "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
               "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
-              "name": "[parameters('storageAccountConnection').storageAccountName]"
+              "name": "[parameters('storageAccountConnection').resourceName]"
             },
             "aiSearch": {
               "condition": "[not(empty(parameters('aiSearchConnection')))]",
@@ -20376,7 +20296,7 @@
             },
             "project": {
               "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-06-01",
+              "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "identity": {
@@ -20388,36 +20308,117 @@
               },
               "tags": "[parameters('tags')]"
             },
+            "cosmosDbConnectionResource": {
+              "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('cosmosDbConnection').resourceName)]",
+              "properties": {
+                "category": "CosmosDB",
+                "target": "[reference('cosmosDb').documentEndpoint]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('cosmosDbConnection').subscriptionId, parameters('cosmosDbConnection').resourceGroupName), 'Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbConnection').resourceName)]",
+                  "location": "[reference('cosmosDb', '2025-04-15', 'full').location]"
+                }
+              },
+              "dependsOn": [
+                "cosmosDb",
+                "cosmosDbRoleAssignments",
+                "project",
+                "waitForProjectScript"
+              ]
+            },
+            "storageAccountConnectionResource": {
+              "condition": "[not(empty(parameters('storageAccountConnection')))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').resourceName)]",
+              "properties": {
+                "category": "AzureStorageAccount",
+                "target": "[reference('storageAccount').primaryEndpoints.blob]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountConnection').subscriptionId, parameters('storageAccountConnection').resourceGroupName), 'Microsoft.Storage/storageAccounts', parameters('storageAccountConnection').resourceName)]",
+                  "location": "[reference('storageAccount', '2025-01-01', 'full').location]"
+                }
+              },
+              "dependsOn": [
+                "cosmosDbConnectionResource",
+                "project",
+                "storageAccount",
+                "storageAccountRoleAssignments",
+                "waitForProjectScript"
+              ]
+            },
+            "aiSearchConnectionResource": {
+              "condition": "[not(empty(parameters('aiSearchConnection')))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('aiSearchConnection').resourceName)]",
+              "properties": {
+                "category": "CognitiveSearch",
+                "target": "[format('https://{0}.search.windows.net/', parameters('aiSearchConnection').resourceName)]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('aiSearchConnection').subscriptionId, parameters('aiSearchConnection').resourceGroupName), 'Microsoft.Search/searchServices', parameters('aiSearchConnection').resourceName)]",
+                  "location": "[reference('aiSearch', '2025-05-01', 'full').location]"
+                }
+              },
+              "dependsOn": [
+                "aiSearch",
+                "aiSearchRoleAssignments",
+                "cosmosDbConnectionResource",
+                "project",
+                "storageAccountConnectionResource",
+                "waitForProjectScript"
+              ]
+            },
             "accountCapabilityHost": {
-              "condition": "[variables('createCapabilityHost')]",
+              "condition": "[variables('createAccountCapabilityHostInternal')]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}', parameters('accountName'), take(format('{0}-cap-host', parameters('accountName')), 64))]",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
                 "tags": "[parameters('tags')]"
-              }
+              },
+              "dependsOn": [
+                "aiSearchConnectionResource",
+                "cosmosDbConnectionResource",
+                "project",
+                "storageAccountConnectionResource",
+                "waitForConnectionsScript"
+              ]
             },
-            "projectCapabilityHost": {
-              "condition": "[variables('createCapabilityHost')]",
+            "capabilityHost": {
+              "condition": "[variables('createProjectCapabilityHostInternal')]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-              "apiVersion": "2025-06-01",
-              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), take(format('{0}-cap-host', parameters('name')), 64))]",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
+                "threadStorageConnections": [
+                  "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
+                ],
                 "vectorStoreConnections": [
                   "[format('{0}', parameters('aiSearchConnection').resourceName)]"
                 ],
                 "storageConnections": [
-                  "[format('{0}', parameters('storageAccountConnection').storageAccountName)]"
-                ],
-                "threadStorageConnections": [
-                  "[format('{0}', parameters('cosmosDbConnection').resourceName)]"
+                  "[format('{0}', parameters('storageAccountConnection').resourceName)]"
                 ],
                 "tags": "[parameters('tags')]"
               },
               "dependsOn": [
-                "project"
+                "accountCapabilityHost",
+                "aiSearchConnectionResource",
+                "cosmosDbConnectionResource",
+                "project",
+                "storageAccountConnectionResource",
+                "waitForConnectionsScript"
               ]
             },
             "projectLock": {
@@ -20431,7 +20432,144 @@
                 "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
+                "capabilityHost",
                 "project"
+              ]
+            },
+            "waitForProjectScript": {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[format('script-wait-proj-{0}', parameters('name'))]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "seconds": {
+                    "value": 30
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.37.4.10188",
+                      "templateHash": "12058385900108541348"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the deployment script."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Location for the deployment script."
+                      }
+                    },
+                    "seconds": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. Sleep/wait time for the deployment script in seconds."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Resources/deploymentScripts",
+                      "apiVersion": "2023-08-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "kind": "AzurePowerShell",
+                      "properties": {
+                        "azPowerShellVersion": "11.0",
+                        "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
+                        "timeout": "P1D",
+                        "cleanupPreference": "Always",
+                        "retentionInterval": "P1D"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "project"
+              ]
+            },
+            "cosmosDbRoleAssignments": {
+              "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('module.project.role-assign.cosmosDb.{0}', parameters('name')), 64)]",
+              "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
+              "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "cosmosDbName": {
+                    "value": "[parameters('cosmosDbConnection').resourceName]"
+                  },
+                  "projectIdentityPrincipalId": {
+                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.37.4.10188",
+                      "templateHash": "4343866242768882577"
+                    }
+                  },
+                  "parameters": {
+                    "cosmosDbName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Cosmos DB account."
+                      }
+                    },
+                    "projectIdentityPrincipalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The principal ID of the project identity."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosDbName'))]",
+                      "name": "[guid(parameters('projectIdentityPrincipalId'), resourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')))]",
+                      "properties": {
+                        "principalId": "[parameters('projectIdentityPrincipalId')]",
+                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
+                        "principalType": "ServicePrincipal"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "project",
+                "waitForProjectScript"
               ]
             },
             "storageAccountRoleAssignments": {
@@ -20448,13 +20586,10 @@
                 "mode": "Incremental",
                 "parameters": {
                   "storageAccountName": {
-                    "value": "[parameters('storageAccountConnection').storageAccountName]"
+                    "value": "[parameters('storageAccountConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
-                  },
-                  "containerName": {
-                    "value": "[parameters('storageAccountConnection').containerName]"
+                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -20464,7 +20599,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "3874620192547794605"
+                      "templateHash": "2328866770764276306"
                     }
                   },
                   "parameters": {
@@ -20479,12 +20614,6 @@
                       "metadata": {
                         "description": "Required. The principal ID of the project identity."
                       }
-                    },
-                    "containerName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the blob container for the project."
-                      }
                     }
                   },
                   "resources": [
@@ -20498,25 +20627,13 @@
                         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
                         "principalType": "ServicePrincipal"
                       }
-                    },
-                    {
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-                      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('storageAccountName'))]",
-                      "properties": {
-                        "principalId": "[parameters('projectIdentityPrincipalId')]",
-                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                        "principalType": "ServicePrincipal",
-                        "conditionVersion": "2.0",
-                        "condition": "[format('((!(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read''}})  AND  !(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action''}}) AND  !(ActionMatches{{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write''}}) ) OR (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase ''{0}''))', parameters('containerName'))]"
-                      }
                     }
                   ]
                 }
               },
               "dependsOn": [
-                "project"
+                "project",
+                "waitForProjectScript"
               ]
             },
             "aiSearchRoleAssignments": {
@@ -20536,7 +20653,7 @@
                     "value": "[parameters('aiSearchConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -20590,14 +20707,91 @@
                 }
               },
               "dependsOn": [
-                "project"
+                "project",
+                "waitForProjectScript"
               ]
             },
-            "cosmosDbRoleAssignments": {
-              "condition": "[not(empty(parameters('cosmosDbConnection')))]",
+            "waitForConnectionsScript": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('module.project.role-assign.cosmosDb.{0}', parameters('name')), 64)]",
+              "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[format('script-wait-conns-{0}', parameters('name'))]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "seconds": {
+                    "value": 60
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.37.4.10188",
+                      "templateHash": "12058385900108541348"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the deployment script."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Location for the deployment script."
+                      }
+                    },
+                    "seconds": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. Sleep/wait time for the deployment script in seconds."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Resources/deploymentScripts",
+                      "apiVersion": "2023-08-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "kind": "AzurePowerShell",
+                      "properties": {
+                        "azPowerShellVersion": "11.0",
+                        "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
+                        "timeout": "P1D",
+                        "cleanupPreference": "Always",
+                        "retentionInterval": "P1D"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "aiSearchConnectionResource",
+                "cosmosDbConnectionResource",
+                "project",
+                "storageAccountConnectionResource",
+                "waitForProjectScript"
+              ]
+            },
+            "cosmosDbSqlRoleAssignments": {
+              "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('createProjectCapabilityHostInternal'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('module.project.role-assign.cosmosDbDataPlane.{0}', parameters('name')), 64)]",
               "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
               "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
               "properties": {
@@ -20610,13 +20804,10 @@
                     "value": "[parameters('cosmosDbConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-06-01', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
                   },
                   "projectWorkspaceId": {
                     "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
-                  },
-                  "createCapabilityHost": {
-                    "value": "[variables('createCapabilityHost')]"
                   }
                 },
                 "template": {
@@ -20626,7 +20817,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "13285220429203560050"
+                      "templateHash": "1974052573238970785"
                     }
                   },
                   "parameters": {
@@ -20647,34 +20838,23 @@
                       "metadata": {
                         "description": "Required. The project workspace ID."
                       }
-                    },
-                    "createCapabilityHost": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Whether to create a capability host for the project."
-                      }
                     }
                   },
                   "variables": {
-                    "cosmosContainerNameSuffixes": "[if(parameters('createCapabilityHost'), createArray('thread-message-store', 'system-thread-message-store', 'agent-entity-store'), createArray())]",
-                    "cosmosDefaultSqlRoleDefinitionId": "[if(parameters('createCapabilityHost'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDbName'), '00000000-0000-0000-0000-000000000002'), '')]"
+                    "cosmosContainerNameSuffixes": [
+                      "thread-message-store",
+                      "system-thread-message-store",
+                      "agent-entity-store"
+                    ],
+                    "cosmosDefaultSqlRoleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDbName'), '00000000-0000-0000-0000-000000000002')]"
                   },
                   "resources": [
                     {
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosDbName'))]",
-                      "name": "[guid(parameters('projectIdentityPrincipalId'), resourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')))]",
-                      "properties": {
-                        "principalId": "[parameters('projectIdentityPrincipalId')]",
-                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
-                        "principalType": "ServicePrincipal"
-                      }
-                    },
-                    {
                       "copy": {
                         "name": "cosmosDataRoleAssigment",
-                        "count": "[length(variables('cosmosContainerNameSuffixes'))]"
+                        "count": "[length(variables('cosmosContainerNameSuffixes'))]",
+                        "mode": "serial",
+                        "batchSize": 1
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
                       "apiVersion": "2025-04-15",
@@ -20683,17 +20863,92 @@
                         "principalId": "[parameters('projectIdentityPrincipalId')]",
                         "roleDefinitionId": "[variables('cosmosDefaultSqlRoleDefinitionId')]",
                         "scope": "[format('{0}/dbs/enterprise_memory/colls/{1}-{2}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), parameters('projectWorkspaceId'), variables('cosmosContainerNameSuffixes')[copyIndex()])]"
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), 'Microsoft.Authorization/roleAssignments', guid(parameters('projectIdentityPrincipalId'), resourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName'))))]"
-                      ]
+                      }
                     }
                   ]
                 }
               },
               "dependsOn": [
+                "capabilityHost",
+                "cosmosDbRoleAssignments",
+                "project"
+              ]
+            },
+            "storageAccountContainerRoleAssignments": {
+              "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('createProjectCapabilityHostInternal'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('module.project.role-assign.storageAccountDataPlane.{0}', parameters('name')), 64)]",
+              "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
+              "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "storageAccountName": {
+                    "value": "[parameters('storageAccountConnection').resourceName]"
+                  },
+                  "projectIdentityPrincipalId": {
+                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                  },
+                  "projectWorkspaceId": {
+                    "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.37.4.10188",
+                      "templateHash": "12946450716069874852"
+                    }
+                  },
+                  "parameters": {
+                    "storageAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the storage account."
+                      }
+                    },
+                    "projectIdentityPrincipalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The principal ID of the project identity."
+                      }
+                    },
+                    "projectWorkspaceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The project workspace ID."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+                      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('storageAccountName'))]",
+                      "properties": {
+                        "principalId": "[parameters('projectIdentityPrincipalId')]",
+                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                        "principalType": "ServicePrincipal",
+                        "conditionVersion": "2.0",
+                        "condition": "[replace('      (\n        (\n          !(ActionMatches{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/read''})\n          AND  !(ActionMatches{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/filter/action''})\n          AND  !(ActionMatches{''Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write''})\n        )\n        OR\n        (@Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringStartsWithIgnoreCase ''#projectWorkspaceId#''\n        AND @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:name] StringLikeIgnoreCase ''*-azureml-agent'')\n      )\n      ', '#projectWorkspaceId#', parameters('projectWorkspaceId'))]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "capabilityHost",
+                "cosmosDbSqlRoleAssignments",
                 "project",
-                "projectCapabilityHost"
+                "storageAccountRoleAssignments"
               ]
             }
           },

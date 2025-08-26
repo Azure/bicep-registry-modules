@@ -47,7 +47,7 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. Tags of the Recovery Service Vault resource.')
 param tags resourceInput<'Microsoft.RecoveryServices/vaults@2024-04-01'>.tags?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 

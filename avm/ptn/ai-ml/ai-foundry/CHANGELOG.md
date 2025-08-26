@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Added Capability Hosts support
+- Added Foundry Account network injection via Agents subnet
+- Updated Foundry Storage Account Connection to be of type `AzureStorageAccount` instead of `AzureBlob`
+- Added RBAC for the Foundry Project Identity to associated resources and their data plane
+- Added input parameter `aiFoundryConfiguration.createCapabilityHosts`
+- Added input parameter `aiFoundryConfiguration.networking.agentServiceSubnetResourceId`
+- Set Foundry Account `disableLocalAuth` to false to support Capability Hosts
+- Set Foundry Account `networkAcls.defaultAction` to 'Allow' to support Capability Hosts
+
+### Breaking Changes
+
+- Moved input parameter `sku` to `aiFoundryConfiguration.sku`
+- Renamed all input parameters ending in `subnetId` to `subnetResourceId`
+- Renamed all input parameters ending in `privateDnsZoneId` to `privateDnsZoneResourceId`
+- Removed input parameter `storageAccountConfiguration.containerName`
+
 ## 0.2.1
 
 ### Changes
