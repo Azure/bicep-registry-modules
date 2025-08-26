@@ -126,7 +126,7 @@ type customDomainType = {
   secretName: string?
 
   @description('Optional. The minimum TLS version.')
-  minimumTlsVersion: 'TLS10' | 'TLS12' | null
+  minimumTlsVersion: 'TLS10' | 'TLS12' | 'TLS13' | null
 
   @description('Optional. Extended properties.')
   extendedProperties: object?
