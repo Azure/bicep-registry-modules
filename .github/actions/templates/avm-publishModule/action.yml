@@ -54,7 +54,9 @@ runs:
           # Grouping task logs
           Write-Output '::group::Publish module to public bicep registry'
 
-          return 'Made it'
+          Write-Output 'Made it'
+          Start-Sleep 60
+          return
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
