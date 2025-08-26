@@ -7,11 +7,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated logic for `softDeleteRetentionInDays`: now sets retention to `0` when `sku` is `Developer` (previously only checked for `Free`).
-- Changed handling of `enablePurgeProtection`: removed the check for `sku` so purge protection can be enabled regardless of tier.
+- Updated logic for `enablePurgeProtections`: now sets retention to `false` when `sku` is `Developer` (previously only checked for `Free`).
 
 ### Breaking Changes
 
-- If you previously relied on purge protection being disabled for certain SKUs (other than `Free`), this behavior has changed. Purge protection can now be enabled for all SKUs.
+- None
 
 ## 0.9.1
 

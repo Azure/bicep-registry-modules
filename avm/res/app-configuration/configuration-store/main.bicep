@@ -196,7 +196,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
   properties: {
     createMode: createMode
     disableLocalAuth: disableLocalAuth
-    enablePurgeProtection: enablePurgeProtection
+    enablePurgeProtection: sku == 'Free' || sku == 'Developer' ? false : enablePurgeProtection
     encryption: !empty(customerManagedKey)
       ? {
           keyVaultProperties: {
