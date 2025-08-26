@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13966350689706824957"
+      "templateHash": "9277089994275321905"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -434,7 +434,8 @@
           "type": "string",
           "allowedValues": [
             "TLS10",
-            "TLS12"
+            "TLS12",
+            "TLS13"
           ],
           "nullable": true,
           "metadata": {
@@ -1820,7 +1821,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5076312184844953701"
+              "templateHash": "1486369118418758330"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -1877,7 +1878,8 @@
                   "type": "string",
                   "allowedValues": [
                     "TLS10",
-                    "TLS12"
+                    "TLS12",
+                    "TLS13"
                   ],
                   "nullable": true,
                   "metadata": {

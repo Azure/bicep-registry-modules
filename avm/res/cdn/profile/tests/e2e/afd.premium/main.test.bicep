@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module as Azure Front Door Pre
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cdn.profiles-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-afd.premium-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'dep-${namePrefix}-test-${serviceShort}'
+      name: 'dep-${namePrefix}-test-afd-${serviceShort}'
       location: 'global'
       originResponseTimeoutSeconds: 60
       sku: 'Premium_AzureFrontDoor'
@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       afdEndpoints: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+          name: 'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
           routes: [
             {
               name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
@@ -117,30 +117,30 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      securityPolicies: [
-        {
-          name: 'dep${namePrefix}test${serviceShort}secpol'
-          associations: [
-            {
-              domains: [
-                {
-                  id: resourceId(
-                    subscription().subscriptionId,
-                    resourceGroup.name,
-                    'Microsoft.Cdn/profiles/afdEndpoints',
-                    'dep-${namePrefix}-test-${serviceShort}',
-                    'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
-                  )
-                }
-              ]
-              patternsToMatch: [
-                '/*'
-              ]
-            }
-          ]
-          wafPolicyResourceId: wafPolicy.outputs.resourceId
-        }
-      ]
+      // securityPolicies: [
+      //   {
+      //     name: 'dep${namePrefix}test${serviceShort}secpol'
+      //     associations: [
+      //       {
+      //         domains: [
+      //           {
+      //             id: resourceId(
+      //               subscription().subscriptionId,
+      //               resourceGroup.name,
+      //               'Microsoft.Cdn/profiles/afdEndpoints',
+      //               'dep-${namePrefix}-test-${serviceShort}',
+      //               'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
+      //             )
+      //           }
+      //         ]
+      //         patternsToMatch: [
+      //           '/*'
+      //         ]
+      //       }
+      //     ]
+      //     wafPolicyResourceId: wafPolicy.outputs.resourceId
+      //   }
+      // ]
     }
   }
 ]
