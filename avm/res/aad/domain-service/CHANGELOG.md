@@ -12,7 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- TLS 1.0/1.1 has been deprecated and the property `tlsV1` can't be enabled anymore.
 
 ## 0.4.1
 

@@ -55,8 +55,8 @@ param domainConfigurationType ('FullySynced' | 'ResourceTrusting') = 'FullySynce
 @description('Optional. The value is to synchronize scoped users and groups.')
 param filteredSync ('Disabled' | 'Enabled') = 'Enabled'
 
-@description('Optional. The value is to enable clients making request using TLSv1.')
-param tlsV1 ('Disabled' | 'Enabled') = 'Disabled'
+@description('Optional. TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025.')
+param tlsV1 ('Disabled') = 'Disabled'
 
 @description('Optional. The value is to enable clients making request using NTLM v1.')
 param ntlmV1 ('Disabled' | 'Enabled') = 'Disabled'

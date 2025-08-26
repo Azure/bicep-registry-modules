@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7124111096573881401"
+      "templateHash": "3108240755496558611"
     },
     "name": "Microsoft Entra Domain Services",
     "description": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance."
@@ -370,12 +370,11 @@
     "tlsV1": {
       "type": "string",
       "allowedValues": [
-        "Disabled",
-        "Enabled"
+        "Disabled"
       ],
       "defaultValue": "Disabled",
       "metadata": {
-        "description": "Optional. The value is to enable clients making request using TLSv1."
+        "description": "Optional. TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025."
       }
     },
     "ntlmV1": {
