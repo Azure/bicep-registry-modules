@@ -557,6 +557,10 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
       publicNetworkAccess: publicNetworkAccess
       networkAccessPolicy: networkAccessPolicy
+      encryption: {
+        diskEncryptionSetId: dataDisk.managedDisk.?diskEncryptionSetResourceId
+        type: 'EncryptionAtRestWithCustomerKey'
+      }
     }
     zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
       ? array(string(availabilityZone))
@@ -1038,7 +1042,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
   ]
 }
 
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2024-04-05' = if (!empty(guestConfiguration)) {
   name: guestConfiguration.?name ?? 'AzureWindowsBaseline'
   scope: vm
   dependsOn: [
@@ -1209,6 +1213,9 @@ type dataDiskType = {
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
+
+    @description('Optional. The type of key used to encrypt the data of the disk')
+    diskEncryptionType: resourceInput<'Microsoft.Compute/disks@2024-03-02'>.properties.encryption.type?
 
     @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
     id: string?
