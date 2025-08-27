@@ -12,7 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- TLS 1.0/1.1 has been deprecated and the property `tlsV1` can't be enabled anymore.
+- TLS 1.0/1.1 has been deprecated and the property `tlsV1` can't be enabled anymore. [How to migrate to Transport Layer Security (TLS) 1.2 enforcement for Microsoft Entra Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/reference-domain-services-tls-enforcement)
 
 ## 0.4.1
 

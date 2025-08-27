@@ -103,7 +103,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.AAD/domainServices@2025-06-01'>.tags?
+param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -162,7 +162,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource domainservice 'Microsoft.AAD/domainServices@2025-05-01' = {
+resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
   name: name
   location: location
   tags: tags

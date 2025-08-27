@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3108240755496558611"
+      "templateHash": "486113145732957580"
     },
     "name": "Microsoft Entra Domain Services",
     "description": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance."
@@ -501,7 +501,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AAD/domainServices@2025-06-01#properties/tags"
+          "source": "Microsoft.AAD/domainServices@2022-12-01#properties/tags"
         },
         "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
@@ -565,7 +565,7 @@
     },
     "domainservice": {
       "type": "Microsoft.AAD/domainServices",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2022-12-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -702,7 +702,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('domainservice', '2025-05-01', 'full').location]"
+      "value": "[reference('domainservice', '2022-12-01', 'full').location]"
     }
   }
 }
