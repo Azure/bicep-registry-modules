@@ -69,6 +69,13 @@ param enableMicrosoftEntraAuth bool = false
 @description('Optional. The Microsoft Entra ID authentication identity assignments to be created for the cluster.')
 param entraAuthIdentities authIdentityType[]?
 
+@description('Optional. Controls public network access to the cluster. Allowed values: "Enabled", "Disabled".')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = 'Enabled'
+
 var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
@@ -141,7 +148,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-07-01-preview' = {
   name: name
   tags: tags
   location: location
@@ -175,6 +182,7 @@ resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = 
           : []
       )
     }
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
