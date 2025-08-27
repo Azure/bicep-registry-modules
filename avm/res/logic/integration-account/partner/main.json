@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "18353238431781035551"
+      "templateHash": "17868200208729709967"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys a Integration Account Partner."
@@ -32,7 +32,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. The partner classification."
+            "description": "Optional. The partner classification."
           }
         }
       },

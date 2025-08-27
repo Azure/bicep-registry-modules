@@ -63,6 +63,11 @@ B2B partner content settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`businessIdentities`](#parameter-b2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`partnerClassification`](#parameter-b2bpartnercontentpartnerclassification) | string | The partner classification. |
 
 ### Parameter: `b2bPartnerContent.businessIdentities`
