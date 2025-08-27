@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+
+## 0.19.0
+
+### Fix
+
+- added encryption to Data disks
+
+### Breaking Changes
+
+- Renamed `zone` parameter to `availabilityZone` in public IP config
+
 ## 0.18.0
 
 ### Changes
