@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "662935619767858141"
+      "templateHash": "11749753160860386297"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -226,7 +226,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.Compute/disks@2024-03-02#properties/properties/properties/encryption/properties/type"
                 },
-                "description": "Optional. The type of key used to encrypt the data of the disk"
+                "description": "Optional. The type of key used to encrypt the data of the disk."
               },
               "nullable": true
             },

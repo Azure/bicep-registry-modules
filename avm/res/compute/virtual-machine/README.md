@@ -7314,7 +7314,7 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
-| [`diskEncryptionType`](#parameter-datadisksmanageddiskdiskencryptiontype) | string | The type of key used to encrypt the data of the disk |
+| [`diskEncryptionType`](#parameter-datadisksmanageddiskdiskencryptiontype) | string | The type of key used to encrypt the data of the disk. |
 | [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
 | [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk. |
 
@@ -7327,7 +7327,7 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 ### Parameter: `dataDisks.managedDisk.diskEncryptionType`
 
-The type of key used to encrypt the data of the disk
+The type of key used to encrypt the data of the disk.
 
 - Required: No
 - Type: string
