@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
                 value: '0987654321'
               }
             ]
-            partnerClassification: 'Carrier'
+            partnerClassification: 'Distributor'
           }
           metadata: {
             key1: 'value1'

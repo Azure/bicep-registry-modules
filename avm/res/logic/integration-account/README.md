@@ -147,7 +147,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               value: '0987654321'
             }
           ]
-          partnerClassification: 'Carrier'
+          partnerClassification: 'Distributor'
         }
         metadata: {
           key1: 'value1'
@@ -260,7 +260,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
                 "value": "0987654321"
               }
             ],
-            "partnerClassification": "Carrier"
+            "partnerClassification": "Distributor"
           },
           "metadata": {
             "key1": "value1",
@@ -367,7 +367,7 @@ param partners = [
           value: '0987654321'
         }
       ]
-      partnerClassification: 'Carrier'
+      partnerClassification: 'Distributor'
     }
     metadata: {
       key1: 'value1'
