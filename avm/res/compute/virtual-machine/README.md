@@ -21,15 +21,15 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Automanage/configurationProfileAssignments` | 2022-05-04 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automanage_configurationprofileassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments)</li></ul> |
 | `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
-| `Microsoft.Compute/virtualMachines/extensions` | 2022-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions)</li></ul> |
+| `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
-| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2020-06-25 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments)</li></ul> |
+| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Network/networkInterfaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkInterfaces)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 
 ## Usage examples
 
@@ -82,12 +82,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
-              zones: [
+              availabilityZones: [
                 1
                 2
                 3
               ]
+              publicIpNameSuffix: '-pip-01'
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -154,12 +154,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "zones": [
+                "availabilityZones": [
                   1,
                   2,
                   3
-                ]
+                ],
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -230,12 +230,12 @@ param nicConfigurations = [
       {
         name: 'ipconfig01'
         pipConfiguration: {
-          publicIpNameSuffix: '-pip-01'
-          zones: [
+          availabilityZones: [
             1
             2
             3
           ]
+          publicIpNameSuffix: '-pip-01'
         }
         subnetResourceId: '<subnetResourceId>'
       }
@@ -521,6 +521,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: [
+                1
+                2
+                3
+              ]
               diagnosticSettings: [
                 {
                   workspaceResourceId: '<workspaceResourceId>'
@@ -544,11 +549,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
                 }
-              ]
-              zones: [
-                1
-                2
-                3
               ]
             }
             subnetResourceId: '<subnetResourceId>'
@@ -828,6 +828,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "availabilityZones": [
+                  1,
+                  2,
+                  3
+                ],
                 "diagnosticSettings": [
                   {
                     "workspaceResourceId": "<workspaceResourceId>"
@@ -851,11 +856,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                   }
-                ],
-                "zones": [
-                  1,
-                  2,
-                  3
                 ]
               },
               "subnetResourceId": "<subnetResourceId>"
@@ -1179,6 +1179,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: [
+            1
+            2
+            3
+          ]
           diagnosticSettings: [
             {
               workspaceResourceId: '<workspaceResourceId>'
@@ -1202,11 +1207,6 @@ param nicConfigurations = [
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
             }
-          ]
-          zones: [
-            1
-            2
-            3
           ]
         }
         subnetResourceId: '<subnetResourceId>'
@@ -1479,6 +1479,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: [
+                1
+                2
+                3
+              ]
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
@@ -1486,11 +1491,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: 'Reader'
                 }
-              ]
-              zones: [
-                1
-                2
-                3
               ]
             }
             subnetResourceId: '<subnetResourceId>'
@@ -1763,6 +1763,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "availabilityZones": [
+                  1,
+                  2,
+                  3
+                ],
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
@@ -1770,11 +1775,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
-                ],
-                "zones": [
-                  1,
-                  2,
-                  3
                 ]
               },
               "subnetResourceId": "<subnetResourceId>"
@@ -2093,6 +2093,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: [
+            1
+            2
+            3
+          ]
           publicIpNameSuffix: '-pip-01'
           roleAssignments: [
             {
@@ -2100,11 +2105,6 @@ param nicConfigurations = [
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Reader'
             }
-          ]
-          zones: [
-            1
-            2
-            3
           ]
         }
         subnetResourceId: '<subnetResourceId>'
@@ -2732,8 +2732,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: []
               publicIpNameSuffix: '-pip-01'
-              zones: []
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -2823,8 +2823,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "zones": []
+                "availabilityZones": [],
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -2920,8 +2920,8 @@ param nicConfigurations = [
       {
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: []
           publicIpNameSuffix: '-pip-01'
-          zones: []
         }
         subnetResourceId: '<subnetResourceId>'
       }
@@ -4537,6 +4537,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         diskSizeGB: 128
         managedDisk: {
           diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+          diskEncryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
           storageAccountType: 'Premium_LRS'
         }
       }
@@ -4614,6 +4615,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "diskSizeGB": 128,
           "managedDisk": {
             "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
+            "diskEncryptionType": "EncryptionAtRestWithPlatformAndCustomerKeys",
             "storageAccountType": "Premium_LRS"
           }
         }
@@ -4673,6 +4675,7 @@ param dataDisks = [
     diskSizeGB: 128
     managedDisk: {
       diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+      diskEncryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
       storageAccountType: 'Premium_LRS'
     }
   }
@@ -5802,6 +5805,7 @@ The public IP address configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-nicconfigurationsipconfigurationspipconfigurationavailabilityzones) | array | The zones of the public IP address. |
 | [`ddosSettings`](#parameter-nicconfigurationsipconfigurationspipconfigurationddossettings) | object | The DDoS protection plan configuration associated with the public IP address. |
 | [`diagnosticSettings`](#parameter-nicconfigurationsipconfigurationspipconfigurationdiagnosticsettings) | array | Diagnostic settings for the public IP address. |
 | [`dnsSettings`](#parameter-nicconfigurationsipconfigurationspipconfigurationdnssettings) | object | The DNS settings of the public IP address. |
@@ -5819,7 +5823,21 @@ The public IP address configuration.
 | [`skuName`](#parameter-nicconfigurationsipconfigurationspipconfigurationskuname) | string | The SKU name of the public IP address. |
 | [`skuTier`](#parameter-nicconfigurationsipconfigurationspipconfigurationskutier) | string | The SKU tier of the public IP address. |
 | [`tags`](#parameter-nicconfigurationsipconfigurationspipconfigurationtags) | object | The tags of the public IP address. |
-| [`zones`](#parameter-nicconfigurationsipconfigurationspipconfigurationzones) | array | The zones of the public IP address. |
+
+### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.availabilityZones`
+
+The zones of the public IP address.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.ddosSettings`
 
@@ -6329,21 +6347,6 @@ The tags of the public IP address.
 
 - Required: No
 - Type: object
-
-### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.zones`
-
-The zones of the public IP address.
-
-- Required: No
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `nicConfigurations.ipConfigurations.privateIPAddress`
 
@@ -7311,12 +7314,20 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`diskEncryptionType`](#parameter-datadisksmanageddiskdiskencryptiontype) | string | The type of key used to encrypt the data of the disk |
 | [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
 | [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk. |
 
 ### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
 Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionType`
+
+The type of key used to encrypt the data of the disk
 
 - Required: No
 - Type: string
@@ -8302,7 +8313,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.2` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
