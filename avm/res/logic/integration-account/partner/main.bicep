@@ -46,6 +46,8 @@ resource partner 'Microsoft.Logic/integrationAccounts/partners@2019-05-01' = {
 type b2bPartnerContentType = {
   @description('Required. The list of partner business identities.')
   businessIdentities: businessIdentityType[]
+  @description('Required. The partner classification.')
+  partnerClassification: ('Carrier' | 'Distributor')?
 }
 
 @description('The type for a business identity.')

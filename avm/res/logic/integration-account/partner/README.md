@@ -63,6 +63,7 @@ B2B partner content settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`businessIdentities`](#parameter-b2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
+| [`partnerClassification`](#parameter-b2bpartnercontentpartnerclassification) | string | The partner classification. |
 
 ### Parameter: `b2bPartnerContent.businessIdentities`
 
@@ -91,6 +92,20 @@ The user defined business identity value.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `b2bPartnerContent.partnerClassification`
+
+The partner classification.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Carrier'
+    'Distributor'
+  ]
+  ```
 
 ### Parameter: `location`
 

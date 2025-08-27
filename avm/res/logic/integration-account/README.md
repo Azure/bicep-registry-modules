@@ -147,6 +147,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               value: '0987654321'
             }
           ]
+          partnerClassification: 'Carrier'
         }
         metadata: {
           key1: 'value1'
@@ -258,7 +259,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
                 "qualifier": "ZZZ",
                 "value": "0987654321"
               }
-            ]
+            ],
+            "partnerClassification": "Carrier"
           },
           "metadata": {
             "key1": "value1",
@@ -365,6 +367,7 @@ param partners = [
           value: '0987654321'
         }
       ]
+      partnerClassification: 'Carrier'
     }
     metadata: {
       key1: 'value1'
@@ -891,6 +894,7 @@ The B2B partner content settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`businessIdentities`](#parameter-partnersb2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
+| [`partnerClassification`](#parameter-partnersb2bpartnercontentpartnerclassification) | string | The partner classification. |
 
 ### Parameter: `partners.b2bPartnerContent.businessIdentities`
 
@@ -919,6 +923,20 @@ The user defined business identity value.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `partners.b2bPartnerContent.partnerClassification`
+
+The partner classification.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Carrier'
+    'Distributor'
+  ]
+  ```
 
 ### Parameter: `partners.metadata`
 

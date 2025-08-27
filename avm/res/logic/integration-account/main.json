@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "15794483355166833996"
+      "templateHash": "7348333800821418240"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -80,6 +80,17 @@
           },
           "metadata": {
             "description": "Required. The list of partner business identities."
+          }
+        },
+        "partnerClassification": {
+          "type": "string",
+          "allowedValues": [
+            "Carrier",
+            "Distributor"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The partner classification."
           }
         }
       },
@@ -596,7 +607,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "3357738835334398570"
+              "templateHash": "18353238431781035551"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys a Integration Account Partner."
@@ -612,6 +623,17 @@
                   },
                   "metadata": {
                     "description": "Required. The list of partner business identities."
+                  }
+                },
+                "partnerClassification": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Carrier",
+                    "Distributor"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. The partner classification."
                   }
                 }
               },
