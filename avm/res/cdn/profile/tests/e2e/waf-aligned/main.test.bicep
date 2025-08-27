@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     storageAccountName: 'dep${namePrefix}wafstorage${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-waf-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-waf-kv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-waf-kv-${serviceShort}-1'
     location: resourceLocation
   }
 }
