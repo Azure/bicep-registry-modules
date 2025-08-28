@@ -123,35 +123,39 @@ function Set-AvmGitHubIssueOwnerConfig {
 
             # add issue to project
             $ProjectNumber = 566 # AVM - Module Issues
-            Add-GitHubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+            if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
+                Add-GitHubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+            }
 
-            if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
+            if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
                 gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
             }
 
-            if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
+            if ($PSCmdlet.ShouldProcess("Reply comment to issue [$($issue.title)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $Repo
             }
 
             if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
-                if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
+                if ($PSCmdlet.ShouldProcess(("Owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
                     # assign owner
                     $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+                }
 
-                    #assign owner team members
-                    $ownerTeamMembers | ForEach-Object {
+                #assign owner team members
+                $ownerTeamMembers | ForEach-Object {
+                    if ($PSCmdlet.ShouldProcess("Owner team member [$_] to issue [$($issue.title)]", 'Assign')) {
                         gh issue edit $issue.url --add-assignee $_ --repo $Repo
                     }
                 }
 
                 if ([String]::IsNullOrEmpty($assign)) {
-                    if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
-                        $reply = @"
+                    $reply = @"
 > [!WARNING]
 > This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
 
+                    if ($PSCmdlet.ShouldProcess("Missing user comment to issue [$($issue.title)]", 'Add')) {
                         gh issue comment $issue.url --body $reply --repo $Repo
                     }
                 }
