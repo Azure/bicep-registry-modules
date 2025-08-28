@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'cdnpwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'gbd'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

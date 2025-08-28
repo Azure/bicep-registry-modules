@@ -1449,50 +1449,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             cacheConfiguration: {
               compressionSettings: {
                 contentTypesToCompress: [
-                  'application/javascript'
-                  'application/json'
-                  'application/xml'
-                  'font/woff'
-                  'font/woff2'
-                  'image/svg+xml'
-                  'text/css'
-                  'text/html'
-                  'text/plain'
-                  'text/xml'
-                ]
-                isCompressionEnabled: true
-              }
-              queryParameters: 'version,lang'
-              queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
-            }
-            customDomainNames: [
-              'dep-waf-primary-cdnpwaf-domain'
-            ]
-            enabledState: 'Enabled'
-            forwardingProtocol: 'HttpsOnly'
-            httpsRedirect: 'Enabled'
-            linkToDefaultDomain: 'Enabled'
-            name: 'dep-waf-web-route'
-            originGroupName: 'dep-waf-primary-origin-group'
-            patternsToMatch: [
-              '/*'
-            ]
-            ruleSets: [
-              {
-                name: 'depwafsecurityrulescdnpwaf'
-              }
-              {
-                name: 'depwafperformancerulescdnpwaf'
-              }
-            ]
-            supportedProtocols: [
-              'Https'
-            ]
-          }
-          {
-            cacheConfiguration: {
-              compressionSettings: {
-                contentTypesToCompress: [
                   'application/json'
                   'application/xml'
                   'text/xml'
@@ -1584,44 +1540,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       ]
     }
     originGroups: [
-      {
-        healthProbeSettings: {
-          probeIntervalInSeconds: 30
-          probePath: '/health'
-          probeProtocol: 'Https'
-          probeRequestType: 'GET'
-        }
-        loadBalancingSettings: {
-          additionalLatencyInMilliseconds: 50
-          sampleSize: 4
-          successfulSamplesRequired: 3
-        }
-        name: 'dep-waf-primary-origin-group'
-        origins: [
-          {
-            enabledState: 'Enabled'
-            enforceCertificateNameCheck: true
-            hostName: '<hostName>'
-            httpPort: 80
-            httpsPort: 443
-            name: 'dep-waf-primary-origin'
-            priority: 1
-            weight: 1000
-          }
-          {
-            enabledState: 'Enabled'
-            enforceCertificateNameCheck: true
-            hostName: '<hostName>'
-            httpPort: 80
-            httpsPort: 443
-            name: 'dep-waf-secondary-origin'
-            priority: 2
-            weight: 1
-          }
-        ]
-        sessionAffinityState: 'Disabled'
-        trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 5
-      }
       {
         healthProbeSettings: {
           probeIntervalInSeconds: 15
@@ -1838,50 +1756,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "cacheConfiguration": {
                 "compressionSettings": {
                   "contentTypesToCompress": [
-                    "application/javascript",
-                    "application/json",
-                    "application/xml",
-                    "font/woff",
-                    "font/woff2",
-                    "image/svg+xml",
-                    "text/css",
-                    "text/html",
-                    "text/plain",
-                    "text/xml"
-                  ],
-                  "isCompressionEnabled": true
-                },
-                "queryParameters": "version,lang",
-                "queryStringCachingBehavior": "IncludeSpecifiedQueryStrings"
-              },
-              "customDomainNames": [
-                "dep-waf-primary-cdnpwaf-domain"
-              ],
-              "enabledState": "Enabled",
-              "forwardingProtocol": "HttpsOnly",
-              "httpsRedirect": "Enabled",
-              "linkToDefaultDomain": "Enabled",
-              "name": "dep-waf-web-route",
-              "originGroupName": "dep-waf-primary-origin-group",
-              "patternsToMatch": [
-                "/*"
-              ],
-              "ruleSets": [
-                {
-                  "name": "depwafsecurityrulescdnpwaf"
-                },
-                {
-                  "name": "depwafperformancerulescdnpwaf"
-                }
-              ],
-              "supportedProtocols": [
-                "Https"
-              ]
-            },
-            {
-              "cacheConfiguration": {
-                "compressionSettings": {
-                  "contentTypesToCompress": [
                     "application/json",
                     "application/xml",
                     "text/xml"
@@ -1985,44 +1859,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     },
     "originGroups": {
       "value": [
-        {
-          "healthProbeSettings": {
-            "probeIntervalInSeconds": 30,
-            "probePath": "/health",
-            "probeProtocol": "Https",
-            "probeRequestType": "GET"
-          },
-          "loadBalancingSettings": {
-            "additionalLatencyInMilliseconds": 50,
-            "sampleSize": 4,
-            "successfulSamplesRequired": 3
-          },
-          "name": "dep-waf-primary-origin-group",
-          "origins": [
-            {
-              "enabledState": "Enabled",
-              "enforceCertificateNameCheck": true,
-              "hostName": "<hostName>",
-              "httpPort": 80,
-              "httpsPort": 443,
-              "name": "dep-waf-primary-origin",
-              "priority": 1,
-              "weight": 1000
-            },
-            {
-              "enabledState": "Enabled",
-              "enforceCertificateNameCheck": true,
-              "hostName": "<hostName>",
-              "httpPort": 80,
-              "httpsPort": 443,
-              "name": "dep-waf-secondary-origin",
-              "priority": 2,
-              "weight": 1
-            }
-          ],
-          "sessionAffinityState": "Disabled",
-          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": 5
-        },
         {
           "healthProbeSettings": {
             "probeIntervalInSeconds": 15,
@@ -2241,50 +2077,6 @@ param afdEndpoints = [
         cacheConfiguration: {
           compressionSettings: {
             contentTypesToCompress: [
-              'application/javascript'
-              'application/json'
-              'application/xml'
-              'font/woff'
-              'font/woff2'
-              'image/svg+xml'
-              'text/css'
-              'text/html'
-              'text/plain'
-              'text/xml'
-            ]
-            isCompressionEnabled: true
-          }
-          queryParameters: 'version,lang'
-          queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
-        }
-        customDomainNames: [
-          'dep-waf-primary-cdnpwaf-domain'
-        ]
-        enabledState: 'Enabled'
-        forwardingProtocol: 'HttpsOnly'
-        httpsRedirect: 'Enabled'
-        linkToDefaultDomain: 'Enabled'
-        name: 'dep-waf-web-route'
-        originGroupName: 'dep-waf-primary-origin-group'
-        patternsToMatch: [
-          '/*'
-        ]
-        ruleSets: [
-          {
-            name: 'depwafsecurityrulescdnpwaf'
-          }
-          {
-            name: 'depwafperformancerulescdnpwaf'
-          }
-        ]
-        supportedProtocols: [
-          'Https'
-        ]
-      }
-      {
-        cacheConfiguration: {
-          compressionSettings: {
-            contentTypesToCompress: [
               'application/json'
               'application/xml'
               'text/xml'
@@ -2376,44 +2168,6 @@ param managedIdentities = {
   ]
 }
 param originGroups = [
-  {
-    healthProbeSettings: {
-      probeIntervalInSeconds: 30
-      probePath: '/health'
-      probeProtocol: 'Https'
-      probeRequestType: 'GET'
-    }
-    loadBalancingSettings: {
-      additionalLatencyInMilliseconds: 50
-      sampleSize: 4
-      successfulSamplesRequired: 3
-    }
-    name: 'dep-waf-primary-origin-group'
-    origins: [
-      {
-        enabledState: 'Enabled'
-        enforceCertificateNameCheck: true
-        hostName: '<hostName>'
-        httpPort: 80
-        httpsPort: 443
-        name: 'dep-waf-primary-origin'
-        priority: 1
-        weight: 1000
-      }
-      {
-        enabledState: 'Enabled'
-        enforceCertificateNameCheck: true
-        hostName: '<hostName>'
-        httpPort: 80
-        httpsPort: 443
-        name: 'dep-waf-secondary-origin'
-        priority: 2
-        weight: 1
-      }
-    ]
-    sessionAffinityState: 'Disabled'
-    trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 5
-  }
   {
     healthProbeSettings: {
       probeIntervalInSeconds: 15
