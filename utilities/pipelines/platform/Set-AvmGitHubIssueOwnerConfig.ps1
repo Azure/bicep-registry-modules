@@ -83,137 +83,145 @@ function Set-AvmGitHubIssueOwnerConfig {
 
     foreach ($issue in $issues) {
 
-        if ($issue.title.StartsWith('[AVM Module Issue]')) {
-            $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value
+        if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
+            # Not a module issue. Skipping
+            continue
+        }
 
-            if ([string]::IsNullOrEmpty($moduleName)) {
-                throw 'No valid module name was found in the issue.'
-            }
+        $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value
 
-            # ================== #
-            # Collect issue data #
-            # ================== #
-            # CSV
-            # ---
-            $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
-            $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
+        if ([string]::IsNullOrEmpty($moduleName)) {
+            throw 'No valid module name was found in the issue.'
+        }
 
-            # new/unknown module
-            if ($null -eq $module) {
-                $reply = @"
+        # ================== #
+        # Collect issue data #
+        # ================== #
+        # CSV
+        # ---
+        $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
+        $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
+
+        # new/unknown module
+        if ($null -eq $module) {
+            $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > The module does not exist yet, we look into it. Please file a new module proposal under [AVM Module proposal](https://aka.ms/avm/moduleproposal).
 "@
-            }
-            # orphaned module
-            elseif ($module.ModuleStatus -eq 'Orphaned') {
-                $reply = @"
+        }
+        # orphaned module
+        elseif ($module.ModuleStatus -eq 'Orphaned') {
+            $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > Please note, that this module is currently orphaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
 "@
-            }
-            # existing module
-            else {
-                $reply = @"
+        }
+        # existing module
+        else {
+            $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @Azure/$($module.ModuleOwnersGHTeam) team will review it soon!
 "@
+        }
+
+        # Existing comments
+        # -----------------
+        $existingCommentsInputObject = @{
+            RepositoryOwner = $RepositoryOwner
+            RepositoryName  = $RepositoryName
+            IssueNumber     = $issue.number
+            # SinceWhen (Get-Date -AsUTC).ToString('yyyy-MM-ddT00:00:00Z')
+        }
+        $existingComments = Get-GitHubIssueCommentsList @existingCommentsInputObject
+
+        # Existing assignees
+        # ------------------
+        $existingAssignees = $issue.assignees.login
+
+        # Existing labels
+        # ---------------
+        $existingLabels = $issue.labels.name
+
+        # ============= #
+        # Process issue #
+        # ============= #
+
+        # Add issue to project
+        # --------------------
+        $ProjectNumber = 566 # AVM - Module Issues
+        if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
+            Add-GitHubIssueToProject -Repo $fullRepositoryName -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+        }
+        Write-Verbose ('📃 Issue [{0}]: Added to project [#{1}]' -f $issue.title, $ProjectNumber) -Verbose
+
+        switch ($moduleType) {
+            'res' { $label = 'Class: Resource Module :package:' }
+            'ptn' { $label = 'Class: Pattern Module :package:' }
+            'utl' { $label = 'Class: Utility Module :package:' }
+            default {
+                throw "Unknown module type [$moduleType]"
             }
+        }
 
-            # Existing comments
-            # -----------------
-            $existingCommentsInputObject = @{
-                RepositoryOwner = $RepositoryOwner
-                RepositoryName  = $RepositoryName
-                IssueNumber     = $issue.number
-                # SinceWhen (Get-Date -AsUTC).ToString('yyyy-MM-ddT00:00:00Z')
+        # Add class label
+        # ---------------
+        if ($existingLabels -notcontains $label) {
+            if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
+                gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
-            $existingComments = Get-GitHubIssueCommentsList @existingCommentsInputObject
+            Write-Verbose ('🏷️ Issue [{0}]: Added label [{1}]' -f $issue.title, $label) -Verbose
+        }
 
-            # Existing assignees
-            # ------------------
-            $existingAssignees = $issue.assignees.login
-
-            # Existing labels
-            # ---------------
-            $existingLabels = $issue.labels.name
-
-            # ============= #
-            # Process issue #
-            # ============= #
-
-            # Add issue to project
-            # --------------------
-            $ProjectNumber = 566 # AVM - Module Issues
-            if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
-                Add-GitHubIssueToProject -Repo $fullRepositoryName -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+        # Add initial comment
+        # -------------------
+        if ($existingComments.body -contains $reply) {
+            if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
+                # write comment
+                gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
-            Write-Verbose ('📃 Issue [{0}]: Added to project [#{1}]' -f $issue.title, $ProjectNumber) -Verbose
+            Write-Verbose ('💬 Issue [{0}]: Added initial comment.' -f $issue.title) -Verbose
+        } else {
+            Write-Verbose ('📎 Issue [{0}]: Already received its initial comment. Skipping.' -f $issue.title) -Verbose
+        }
 
-            switch ($moduleType) {
-                'res' { $label = 'Class: Resource Module :package:' }
-                'ptn' { $label = 'Class: Pattern Module :package:' }
-                'utl' { $label = 'Class: Utility Module :package:' }
-                default {
-                    throw "Unknown module type [$moduleType]"
+        if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+
+            # Assign owner team members
+            # -------------------------
+            foreach ($alias in ($ownerTeamMembers | Where-Object { $existingAssignees -notcontains $_ })) {
+
+                if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.title)]", 'Assign')) {
+                    $assignment = gh issue edit $issue.url --add-assignee $alias --repo $fullRepositoryName
+                } else {
+                    $assignment = 'anyValue' # Required for correct error handling if running in WhatIf mode
                 }
-            }
 
-            # Add class label
-            # ---------------
-            if ($existingLabels -notcontains $label) {
-                if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
-                    gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
-                }
-                Write-Verbose ('🏷️ Issue [{0}]: Added label [{1}]' -f $issue.title, $label) -Verbose
-            }
-
-            # Add initial comment
-            # -------------------
-            # Comments should only be added for new issues to not create unnecessary noise
-            if ($issue.created_at -gt (Get-Date '2025-08-31') -and -not ($existingComments.body -contains $reply)) {
-                if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
-                    # write comment
-                    gh issue comment $issue.url --body $reply --repo $fullRepositoryName
-                }
-                Write-Verbose ('💬 Issue [{0}]: Added initial comment.' -f $issue.title) -Verbose
-            }
-
-            if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
-
-                # Assign owner team members
-                # -------------------------
-                $ownerTeamMembers | Where-Object {
-                    $existingAssignees -notcontains $_
-                } | ForEach-Object {
-                    if ($PSCmdlet.ShouldProcess("Owner team member [$_] to issue [$($issue.title)]", 'Assign')) {
-                        gh issue edit $issue.url --add-assignee $_ --repo $fullRepositoryName
-                    }
-                    Write-Verbose ('👋 Issue [{0}]: Added owner team member [{1}]' -f $issue.title, $_) -Verbose
-                }
+                Write-Verbose ('👋 Issue [{0}]: Added owner team member [{1}]' -f $issue.title, $alias) -Verbose
 
                 # Error handling if assignment failed
-                if ([String]::IsNullOrEmpty($assign)) {
+                if ([String]::IsNullOrEmpty($assignment)) {
                     $reply = @"
 > [!WARNING]
 > This issue couldn't be assigned due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
-                    if ($issue.created_at -gt (Get-Date '2025-08-31') -and -not ($existingComments.body -contains $reply)) {
+                    if ($existingComments.body -contains $reply) {
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
                         Write-Verbose ('💬 Issue [{0}]: Added [Assignment failed] comment' -f $issue.title) -Verbose
+                    } else {
+                        Write-Verbose ('📎 Issue {0}: Already has a comment calling out the failed assignment. Skipping.' -f $issue.title) -Verbose
                     }
                 }
             }
         }
 
-        Write-Verbose ('issue {0}{1} updated' -f $issue.title, $($WhatIfPreference ? ' would have been' : ''))
+        Write-Verbose ('✅ Issue [{0}] {1} updated' -f $issue.title, $($WhatIfPreference ? 'would have been' : ''))
     }
 }
