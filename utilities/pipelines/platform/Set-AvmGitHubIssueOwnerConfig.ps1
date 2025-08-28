@@ -67,14 +67,10 @@ function Set-AvmGitHubIssueOwnerConfig {
 
     if (-not [String]::IsNullOrEmpty($IssueUrl)) {
         Write-Verbose "Running on issue [$IssueUrl" -Verbose
-        # Running on a specific issue
-        # $issues = @() + (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $fullRepositoryName | ConvertFrom-Json -Depth 100)
-
         $issueId = Split-Path $IssueUrl -Leaf
         $issues = @() + (Get-GitHubIssueList @baseInputObject -IssueId $issueId)
     } else {
         Write-Verbose 'Running on all issues' -Verbose
-        # Running on all issuee
         $issues = Get-GitHubIssueList @baseInputObject
     }
 
