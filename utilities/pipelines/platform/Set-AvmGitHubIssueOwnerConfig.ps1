@@ -75,7 +75,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         $issues = Get-GitHubIssueList @baseInputObject
     }
 
-    # TODO: Group issues into type (res|ptn|utl) so that we can fetch the CSV Data only once (line 94)
+    # Fetch module data
     $csvData = @{
         res = (Get-AvmCsvData -ModuleIndex 'Bicep-Resource')
         ptn = (Get-AvmCsvData -ModuleIndex 'Bicep-Pattern')
@@ -123,11 +123,13 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
             }
 
-            # add issue to project
+            # Add issue to project
+            # --------------------
             $ProjectNumber = 566 # AVM - Module Issues
             if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
                 Add-GitHubIssueToProject -Repo $fullRepositoryName -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
             }
+            Write-Verbose ('📃 Issue [{0}]: Added to project [#{1}]' -f $issue.title, $ProjectNumber) -Verbose
 
             switch ($moduleType) {
                 'res' { $label = 'Class: Resource Module :package:' }
@@ -138,40 +140,53 @@ function Set-AvmGitHubIssueOwnerConfig {
                 }
             }
 
+            # Add class label
+            # ---------------
             # TODO: Update to only add label if it doesn't already exist
             if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
                 gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
+            Write-Verbose ('🏷️ Issue [{0}]: Added label [{1}]' -f $issue.title, $label) -Verbose
 
+            # Add initial comment
+            # -------------------
             # TODO: Update to only add comment if it doesn't already exist
-            if ($PSCmdlet.ShouldProcess("Reply comment to issue [$($issue.title)]", 'Add')) {
+            if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
+            Write-Verbose ('💬 Issue [{0}]: Added initial comment.' -f $issue.title) -Verbose
 
 
             if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
 
-                # TODO: Update to only add assignee if it doesn't already exist
                 # Assign owner team members
+                # -------------------------
+                # TODO: Update to only add assignee if it doesn't already exist
                 $ownerTeamMembers | ForEach-Object {
                     if ($PSCmdlet.ShouldProcess("Owner team member [$_] to issue [$($issue.title)]", 'Assign')) {
                         gh issue edit $issue.url --add-assignee $_ --repo $fullRepositoryName
                     }
+                    Write-Verbose ('👋 Issue [{0}]: Added owner team member [{1}]' -f $issue.title, $_) -Verbose
                 }
 
+                # Error handling if assignment failed
                 if ([String]::IsNullOrEmpty($assign)) {
                     $reply = @"
 > [!WARNING]
 > This issue couldn't be assigned due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
                     # TODO: Update to only add comment if it doesn't already exist
-                    if ($PSCmdlet.ShouldProcess("Missing user comment to issue [$($issue.title)]", 'Add')) {
+                    if ($PSCmdlet.ShouldProcess("'Missing user' comment to issue [$($issue.title)]", 'Add')) {
                         gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                     }
+                    Write-Verbose ('💬 Issue [{0}]: Added [Missing user] comment' -f $issue.title) -Verbose
                 }
             }
 
+            # Remove excess assignees
+            # -----------------------
+            # Beware: Some issue may be assign manually.
             # TODO: Add logic to remove assignees
             # -> If orphaned, all assignees
             # -> If owned, any user that is not part of the owner team
