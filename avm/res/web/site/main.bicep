@@ -269,7 +269,7 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
     serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
       ? null
       : serverFarmResourceId
-    clientAffinityEnabled: clientAffinityEnabled
+    clientAffinityEnabled: !empty(serverFarmResourceId) ? clientAffinityEnabled : null
     clientAffinityProxyEnabled: clientAffinityProxyEnabled
     clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled
     httpsOnly: httpsOnly
@@ -285,7 +285,7 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
     functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
     clientCertExclusionPaths: clientCertExclusionPaths
-    clientCertMode: clientCertMode
+    clientCertMode: !empty(serverFarmResourceId) ? clientCertMode : null
     cloningInfo: cloningInfo
     containerSize: containerSize
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
@@ -293,9 +293,9 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
     hostNameSslStates: hostNameSslStates
     hyperV: hyperV
     redundancyMode: redundancyMode
-    publicNetworkAccess: !empty(publicNetworkAccess)
-      ? any(publicNetworkAccess)
-      : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+    publicNetworkAccess: !empty(serverFarmResourceId)
+      ? (!empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled'))
+      : null
     scmSiteAlsoStopped: scmSiteAlsoStopped
     endToEndEncryptionEnabled: e2eEncryptionEnabled
     dnsConfiguration: dnsConfiguration
