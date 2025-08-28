@@ -59,7 +59,8 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
 
           $functionInput = @{
-            Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            RepositoryOwner = "${{ github.repository_owner }}"
+            RepositoryName  = "${{ github.event.repository.name }}"
             RepoRoot = $env:GITHUB_WORKSPACE
             WhatIf   = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
           }
@@ -72,10 +73,7 @@ jobs:
               break
             }
             {$PSItem -in @('schedule', 'workflow_dispatch')} {
-              $functionInput += @{
-                RepositoryOwner = "${{ github.repository_owner }}"
-                RepositoryName  = "${{ github.event.repository.name }}"
-              }
+              # Nothing to do
               break
             }
             default {
