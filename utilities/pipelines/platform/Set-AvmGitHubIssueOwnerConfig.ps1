@@ -78,6 +78,8 @@ function Set-AvmGitHubIssueOwnerConfig {
         $issues = Get-GitHubIssueList @baseInputObject
     }
 
+    # TODO: Group issues into type (res|ptn|utl) so that we can fetch the CSV Data only once (line 94)
+
     foreach ($issue in $issues) {
 
         if ($issue.title.StartsWith('[AVM Module Issue]')) {
