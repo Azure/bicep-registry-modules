@@ -4,7 +4,8 @@ name: .Platform - Set GitHub issue owner config
 on:
   issues:
     types: [opened]
-
+  schedule:
+    - cron: "30 6 * * *" # Every day at 6:30 am
 jobs:
   SetAvmGitHubIssueOwnerConfig:
     name: Set-AvmGitHubIssueOwnerConfig
@@ -32,7 +33,20 @@ jobs:
           $functionInput = @{
             Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
             RepoRoot = $env:GITHUB_WORKSPACE
-            IssueUrl = "${{ github.event.issue.url }}"
+          }
+
+          switch('${{ github.event_name}}') {
+            'issues' {
+              $functionInput += @{
+                IssueUrl = "${{ github.event.issue.url }}"
+              }
+            }
+            'schedule' {
+              Write-Verbose "Running on a schedule" -Verbose
+            }
+            default {
+              throw 'Unkown event [${{ github.event_name}}]'
+            }
           }
 
           Write-Verbose "Invoke task with" -Verbose

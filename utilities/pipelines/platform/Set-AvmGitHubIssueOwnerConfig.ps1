@@ -26,7 +26,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         [Parameter(Mandatory = $true)]
         [string] $Repo,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string] $IssueUrl,
 
         [Parameter(Mandatory = $false)]
@@ -38,7 +38,13 @@ function Set-AvmGitHubIssueOwnerConfig {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
-    $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    if (-not [String]::IsNullOrEmpty($IssueUrl)) {
+        # Running on a specific issue
+        $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    } else {
+        # Running on all issues
+    }
+
 
     if ($issue.title.StartsWith('[AVM Module Issue]')) {
         $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn|utl)')[0].Trim().Replace(' ', '')
@@ -52,7 +58,6 @@ function Set-AvmGitHubIssueOwnerConfig {
         $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
         $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleOwnersGHTeam)
-        $contributorTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleContributorsGHTeam)
 
         # new/unknown module
         if ($null -eq $module) {
@@ -78,7 +83,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
-> A member of the @Azure/$($module.ModuleOwnersGHTeam) or @Azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+> A member of the @Azure/$($module.ModuleOwnersGHTeam) team will review it soon!
 "@
         }
 
@@ -102,11 +107,6 @@ function Set-AvmGitHubIssueOwnerConfig {
 
                 #assign owner team members
                 $ownerTeamMembers | ForEach-Object {
-                    gh issue edit $issue.url --add-assignee $_ --repo $Repo
-                }
-
-                #assign contributor team members
-                $contributorTeamMembers | ForEach-Object {
                     gh issue edit $issue.url --add-assignee $_ --repo $Repo
                 }
             }
