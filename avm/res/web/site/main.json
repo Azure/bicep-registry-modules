@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8557212666369750117"
+      "templateHash": "7049129840128232061"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5041,9 +5041,9 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentResourceId'))), parameters('managedEnvironmentResourceId'), null())]",
+        "managedEnvironmentId": "[parameters('managedEnvironmentResourceId')]",
         "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentResourceId')))), null(), parameters('serverFarmResourceId'))]",
-        "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
+        "clientAffinityEnabled": "[if(not(empty(parameters('serverFarmResourceId'))), parameters('clientAffinityEnabled'), null())]",
         "clientAffinityProxyEnabled": "[parameters('clientAffinityProxyEnabled')]",
         "clientAffinityPartitioningEnabled": "[parameters('clientAffinityPartitioningEnabled')]",
         "httpsOnly": "[parameters('httpsOnly')]",
@@ -5055,7 +5055,7 @@
         "functionAppConfig": "[parameters('functionAppConfig')]",
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
         "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
-        "clientCertMode": "[parameters('clientCertMode')]",
+        "clientCertMode": "[if(not(empty(parameters('serverFarmResourceId'))), parameters('clientCertMode'), null())]",
         "cloningInfo": "[parameters('cloningInfo')]",
         "containerSize": "[parameters('containerSize')]",
         "dailyMemoryTimeQuota": "[parameters('dailyMemoryTimeQuota')]",
@@ -5063,7 +5063,7 @@
         "hostNameSslStates": "[parameters('hostNameSslStates')]",
         "hyperV": "[parameters('hyperV')]",
         "redundancyMode": "[parameters('redundancyMode')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled'))]",
+        "publicNetworkAccess": "[if(not(empty(parameters('serverFarmResourceId'))), if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled')), null())]",
         "scmSiteAlsoStopped": "[parameters('scmSiteAlsoStopped')]",
         "endToEndEncryptionEnabled": "[parameters('e2eEncryptionEnabled')]",
         "dnsConfiguration": "[parameters('dnsConfiguration')]",
@@ -12735,6 +12735,7 @@
     },
     "customDomainVerificationId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification."
       },
