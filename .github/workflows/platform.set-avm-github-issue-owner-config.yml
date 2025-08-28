@@ -61,8 +61,8 @@ jobs:
           $functionInput = @{
             RepositoryOwner = "${{ github.repository_owner }}"
             RepositoryName  = "${{ github.event.repository.name }}"
-            RepoRoot = $env:GITHUB_WORKSPACE
-            WhatIf   = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
+            RepoRoot        = $env:GITHUB_WORKSPACE
+            WhatIf          = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
           }
 
           switch('${{ github.event_name}}') {
