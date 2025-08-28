@@ -24,7 +24,7 @@ Optional. The PAT to use to interact with either GitHub. If not provided, the sc
 Set-AvmGitHubIssueOwnerConfig -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
-Will be triggered by the workflow platform.set-avm-github-issue-owner-config.yml
+Existing assignments won't be removed as we cannot determine whether they were added manually
 #>
 function Set-AvmGitHubIssueOwnerConfig {
 
@@ -49,29 +49,32 @@ function Set-AvmGitHubIssueOwnerConfig {
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueList.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueCommentsList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
     $fullRepositoryName = "$RepositoryOwner/$RepositoryName"
 
+    $baseInputObject = @{
+        RepositoryOwner = $RepositoryOwner
+        RepositoryName  = $RepositoryName
+    }
+    if ($PersonalAccessToken) {
+        $baseInputObject['PersonalAccessToken'] = @{
+            PersonalAccessToken = $PersonalAccessToken
+        }
+    }
+
     if (-not [String]::IsNullOrEmpty($IssueUrl)) {
         Write-Verbose "Running on issue [$IssueUrl" -Verbose
         # Running on a specific issue
-        $issues = @() + (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $fullRepositoryName | ConvertFrom-Json -Depth 100)
+        # $issues = @() + (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $fullRepositoryName | ConvertFrom-Json -Depth 100)
+
+        $issueId = Split-Path $IssueUrl -Leaf
+        $issues = @() + (Get-GitHubIssueList @baseInputObject -IssueId $issueId)
     } else {
         Write-Verbose 'Running on all issues' -Verbose
-        # Running on all issues
-
-        $baseInputObject = @{
-            RepositoryOwner = $RepositoryOwner
-            RepositoryName  = $RepositoryName
-        }
-        if ($PersonalAccessToken) {
-            $baseInputObject['PersonalAccessToken'] = @{
-                PersonalAccessToken = $PersonalAccessToken
-            }
-        }
-
+        # Running on all issuee
         $issues = Get-GitHubIssueList @baseInputObject
     }
 
@@ -91,14 +94,18 @@ function Set-AvmGitHubIssueOwnerConfig {
                 throw 'No valid module name was found in the issue.'
             }
 
-            # get CSV data
+            # ================== #
+            # Collect issue data #
+            # ================== #
+            # CSV
+            # ---
             $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
             $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
 
             # new/unknown module
             if ($null -eq $module) {
                 $reply = @"
-**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+**@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > The module does not exist yet, we look into it. Please file a new module proposal under [AVM Module proposal](https://aka.ms/avm/moduleproposal).
@@ -107,7 +114,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             # orphaned module
             elseif ($module.ModuleStatus -eq 'Orphaned') {
                 $reply = @"
-**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+**@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > Please note, that this module is currently orphaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
@@ -116,12 +123,34 @@ function Set-AvmGitHubIssueOwnerConfig {
             # existing module
             else {
                 $reply = @"
-**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+**@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @Azure/$($module.ModuleOwnersGHTeam) team will review it soon!
 "@
             }
+
+            # Existing comments
+            # -----------------
+            $existingCommentsInputObject = @{
+                RepositoryOwner = $RepositoryOwner
+                RepositoryName  = $RepositoryName
+                IssueNumber     = $issue.number
+                # SinceWhen (Get-Date -AsUTC).ToString('yyyy-MM-ddT00:00:00Z')
+            }
+            $existingComments = Get-GitHubIssueCommentsList @existingCommentsInputObject
+
+            # Existing assignees
+            # ------------------
+            $existingAssignees = $issue.assignees.login
+
+            # Existing labels
+            # ---------------
+            $existingLabels = $issue.labels.name
+
+            # ============= #
+            # Process issue #
+            # ============= #
 
             # Add issue to project
             # --------------------
@@ -142,28 +171,31 @@ function Set-AvmGitHubIssueOwnerConfig {
 
             # Add class label
             # ---------------
-            # TODO: Update to only add label if it doesn't already exist
-            if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
-                gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
+            if ($existingLabels -notcontains $label) {
+                if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
+                    gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
+                }
+                Write-Verbose ('🏷️ Issue [{0}]: Added label [{1}]' -f $issue.title, $label) -Verbose
             }
-            Write-Verbose ('🏷️ Issue [{0}]: Added label [{1}]' -f $issue.title, $label) -Verbose
 
             # Add initial comment
             # -------------------
-            # TODO: Update to only add comment if it doesn't already exist
-            if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
-                # write comment
-                gh issue comment $issue.url --body $reply --repo $fullRepositoryName
+            # Comments should only be added for new issues to not create unnecessary noise
+            if ($issue.created_at -gt (Get-Date '2025-08-31') -and -not ($existingComments.body -contains $reply)) {
+                if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
+                    # write comment
+                    gh issue comment $issue.url --body $reply --repo $fullRepositoryName
+                }
+                Write-Verbose ('💬 Issue [{0}]: Added initial comment.' -f $issue.title) -Verbose
             }
-            Write-Verbose ('💬 Issue [{0}]: Added initial comment.' -f $issue.title) -Verbose
-
 
             if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
 
                 # Assign owner team members
                 # -------------------------
-                # TODO: Update to only add assignee if it doesn't already exist
-                $ownerTeamMembers | ForEach-Object {
+                $ownerTeamMembers | Where-Object {
+                    $existingAssignees -notcontains $_
+                } | ForEach-Object {
                     if ($PSCmdlet.ShouldProcess("Owner team member [$_] to issue [$($issue.title)]", 'Assign')) {
                         gh issue edit $issue.url --add-assignee $_ --repo $fullRepositoryName
                     }
@@ -176,20 +208,14 @@ function Set-AvmGitHubIssueOwnerConfig {
 > [!WARNING]
 > This issue couldn't be assigned due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
-                    # TODO: Update to only add comment if it doesn't already exist
-                    if ($PSCmdlet.ShouldProcess("'Missing user' comment to issue [$($issue.title)]", 'Add')) {
-                        gh issue comment $issue.url --body $reply --repo $fullRepositoryName
+                    if ($issue.created_at -gt (Get-Date '2025-08-31') -and -not ($existingComments.body -contains $reply)) {
+                        if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
+                            gh issue comment $issue.url --body $reply --repo $fullRepositoryName
+                        }
+                        Write-Verbose ('💬 Issue [{0}]: Added [Assignment failed] comment' -f $issue.title) -Verbose
                     }
-                    Write-Verbose ('💬 Issue [{0}]: Added [Missing user] comment' -f $issue.title) -Verbose
                 }
             }
-
-            # Remove excess assignees
-            # -----------------------
-            # Beware: Some issue may be assign manually.
-            # TODO: Add logic to remove assignees
-            # -> If orphaned, all assignees
-            # -> If owned, any user that is not part of the owner team
         }
 
         Write-Verbose ('issue {0}{1} updated' -f $issue.title, $($WhatIfPreference ? ' would have been' : ''))
