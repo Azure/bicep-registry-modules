@@ -69,9 +69,18 @@ function Set-AvmGitHubIssueOwnerConfig {
         Write-Verbose "Running on issue [$IssueUrl" -Verbose
         $issueId = Split-Path $IssueUrl -Leaf
         $issues = @() + (Get-GitHubIssueList @baseInputObject -IssueId $issueId)
+
+        Write-Verbose 'Fetching all comments of issue' -Verbose
+        $existingComments = @() + (Get-GitHubIssueCommentsList @baseInputObject -IssueNumber $issueId)
     } else {
-        Write-Verbose 'Running on all issues' -Verbose
+        Write-Verbose 'Fetching all issues' -Verbose
         $issues = Get-GitHubIssueList @baseInputObject
+
+        Write-Verbose 'Fetching all comments' -Verbose
+        $existingComments = Get-GitHubIssueCommentsList @baseInputObject | Where-Object {
+            # Filtering as also PR comments are returned
+            $_.html_url -like '*/issues/*#issuecomment*'
+        }
     }
 
     # Fetch module data
@@ -100,8 +109,15 @@ function Set-AvmGitHubIssueOwnerConfig {
         # CSV
         # ---
         $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
-        $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
 
+        if (-not $module) {
+            Write-Warning ('⚠️ Module [{0}] not found in CSV. Skipping issue [{1}]' -f $moduleName, $issue.html_url)
+
+            ## TODO: Adding comment?
+
+        } else {
+            $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
+        }
         # new/unknown module
         if ($null -eq $module) {
             $reply = @"
@@ -132,13 +148,9 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         # Existing comments
         # -----------------
-        $existingCommentsInputObject = @{
-            RepositoryOwner = $RepositoryOwner
-            RepositoryName  = $RepositoryName
-            IssueNumber     = $issue.number
-            # SinceWhen (Get-Date -AsUTC).ToString('yyyy-MM-ddT00:00:00Z')
+        $commentsOfIssue = $existingComments | Where-Object {
+            ($_.html_url -like '*/issues/{0}#issuecomment*' -f $issue.number)
         }
-        $existingComments = Get-GitHubIssueCommentsList @existingCommentsInputObject
 
         # Existing assignees
         # ------------------
@@ -180,7 +192,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         # Add initial comment
         # -------------------
-        if ($existingComments.body -contains $reply) {
+        if ($commentsOfIssue.body -notcontains $reply) {
             if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
@@ -210,7 +222,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 > [!WARNING]
 > This issue couldn't be assigned due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
-                    if ($existingComments.body -contains $reply) {
+                    if ($commentsOfIssue.body -notcontains $reply) {
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
