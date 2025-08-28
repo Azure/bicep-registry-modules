@@ -265,7 +265,7 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
   tags: tags
   identity: identity
   properties: {
-    managedEnvironmentId: !empty(managedEnvironmentResourceId) ? managedEnvironmentResourceId : null
+    managedEnvironmentId: managedEnvironmentResourceId
     serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
       ? null
       : serverFarmResourceId
