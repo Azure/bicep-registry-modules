@@ -65,19 +65,9 @@ jobs:
             WhatIf          = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
           }
 
-          switch('${{ github.event_name}}') {
-            'issues' {
-              $functionInput += @{
-                IssueUrl = "${{ github.event.issue.url }}"
-              }
-              break
-            }
-            {$PSItem -in @('schedule', 'workflow_dispatch')} {
-              # Nothing to do
-              break
-            }
-            default {
-              throw 'Unkown event [${{ github.event_name}}]'
+          if('${{ github.event_name}}' -eq 'issues') {
+            $functionInput += @{
+              IssueUrl = "${{ github.event.issue.url }}"
             }
           }
 
