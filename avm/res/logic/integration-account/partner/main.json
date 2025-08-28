@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "999444990085763573"
+      "templateHash": "9407236248839413146"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys a Integration Account Partner."
@@ -81,30 +81,35 @@
       "properties": {
         "contactName": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The name of the contact person."
           }
         },
         "email": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The email address of the partner."
           }
         },
         "telephone": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The phone number of the partner."
           }
         },
         "fax": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The fax number of the partner."
           }
         },
         "supplyChainCode": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The supply chain code of the partner."
           }

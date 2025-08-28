@@ -142,35 +142,35 @@ The RosettaNet partner properties.
 
 The name of the contact person.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `b2bPartnerContent.partnerContact.email`
 
 The email address of the partner.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `b2bPartnerContent.partnerContact.fax`
 
 The fax number of the partner.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `b2bPartnerContent.partnerContact.supplyChainCode`
 
 The supply chain code of the partner.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `b2bPartnerContent.partnerContact.telephone`
 
 The phone number of the partner.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `location`
