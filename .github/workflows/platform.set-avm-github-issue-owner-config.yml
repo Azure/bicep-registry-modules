@@ -6,12 +6,40 @@ on:
     types: [opened]
   schedule:
     - cron: "30 6 * * *" # Every day at 6:30 am
+  workflow_dispatch:
+    inputs:
+      whatIf:
+        type: boolean
+        description: "Simulate execution"
+        required: false
+        default: false
+
+env:
+  workflowPath: ".github/workflows/platform.set-avm-github-issue-owner-config.yml"
+
 jobs:
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
   SetAvmGitHubIssueOwnerConfig:
     name: Set-AvmGitHubIssueOwnerConfig
     runs-on: ubuntu-latest
     permissions:
       issues: write
+    needs:
+      - job_initialize_pipeline
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
@@ -33,6 +61,7 @@ jobs:
           $functionInput = @{
             Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
             RepoRoot = $env:GITHUB_WORKSPACE
+            WhatIf   = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
           }
 
           switch('${{ github.event_name}}') {
@@ -40,12 +69,14 @@ jobs:
               $functionInput += @{
                 IssueUrl = "${{ github.event.issue.url }}"
               }
+              break
             }
-            'schedule' {
+            {$PSItem -in @('schedule', 'workflow_dispatch')} {
               $functionInput += @{
                 RepositoryOwner = "${{ github.repository_owner }}"
                 RepositoryName  = "${{ github.event.repository.name }}"
               }
+              break
             }
             default {
               throw 'Unkown event [${{ github.event_name}}]'

@@ -30,6 +30,7 @@ Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'ht
 Will be triggered by the workflow platform.set-avm-github-issue-owner-config.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
+
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory = $true)]
@@ -57,9 +58,11 @@ function Set-AvmGitHubIssueOwnerConfig {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
     if (-not [String]::IsNullOrEmpty($IssueUrl)) {
+        Write-Verbose "Running on issue [$IssueUrl" -Verbose
         # Running on a specific issue
         $issues = @() + (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100)
     } else {
+        Write-Verbose 'Running on all issues' -Verbose
         # Running on all issues
 
         $baseInputObject = @{
