@@ -42,7 +42,10 @@ jobs:
               }
             }
             'schedule' {
-              Write-Verbose "Running on a schedule" -Verbose
+              $functionInput += @{
+                RepositoryOwner = "${{ github.repository_owner }}"
+                RepositoryName  = "${{ github.event.repository.name }}"
+              }
             }
             default {
               throw 'Unkown event [${{ github.event_name}}]'
