@@ -81,6 +81,13 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
             partnerClassification: 'Distributor'
+            partnerContact: {
+              contactName: 'John Doe'
+              email: 'john.doe@example.com'
+              telephone: '123-456-7890'
+              fax: '123-456-7891'
+              supplyChainCode: 'SC123'
+            }
           }
           metadata: {
             key1: 'value1'

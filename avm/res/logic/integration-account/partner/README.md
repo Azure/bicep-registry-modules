@@ -69,6 +69,7 @@ B2B partner content settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`partnerClassification`](#parameter-b2bpartnercontentpartnerclassification) | string | The partner classification. |
+| [`partnerContact`](#parameter-b2bpartnercontentpartnercontact) | object | The RosettaNet partner properties. |
 
 ### Parameter: `b2bPartnerContent.businessIdentities`
 
@@ -109,8 +110,68 @@ The partner classification.
   [
     'Carrier'
     'Distributor'
+    'EndUser'
+    'EndUserGovernment'
+    'Financier'
+    'FreightForwarder'
+    'Manufacturer'
+    'MarketPlace'
+    'Retailer'
+    'Shopper'
   ]
   ```
+
+### Parameter: `b2bPartnerContent.partnerContact`
+
+The RosettaNet partner properties.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contactName`](#parameter-b2bpartnercontentpartnercontactcontactname) | string | The name of the contact person. |
+| [`email`](#parameter-b2bpartnercontentpartnercontactemail) | string | The email address of the partner. |
+| [`fax`](#parameter-b2bpartnercontentpartnercontactfax) | string | The fax number of the partner. |
+| [`supplyChainCode`](#parameter-b2bpartnercontentpartnercontactsupplychaincode) | string | The supply chain code of the partner. |
+| [`telephone`](#parameter-b2bpartnercontentpartnercontacttelephone) | string | The phone number of the partner. |
+
+### Parameter: `b2bPartnerContent.partnerContact.contactName`
+
+The name of the contact person.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `b2bPartnerContent.partnerContact.email`
+
+The email address of the partner.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `b2bPartnerContent.partnerContact.fax`
+
+The fax number of the partner.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `b2bPartnerContent.partnerContact.supplyChainCode`
+
+The supply chain code of the partner.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `b2bPartnerContent.partnerContact.telephone`
+
+The phone number of the partner.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 

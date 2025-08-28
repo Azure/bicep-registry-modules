@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4374775322104098272"
+      "templateHash": "14052735159875991913"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -70,6 +70,47 @@
         }
       }
     },
+    "_1.rosettaNetPartnerPropertiesType": {
+      "type": "object",
+      "properties": {
+        "contactName": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The name of the contact person."
+          }
+        },
+        "email": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The email address of the partner."
+          }
+        },
+        "telephone": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The phone number of the partner."
+          }
+        },
+        "fax": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The fax number of the partner."
+          }
+        },
+        "supplyChainCode": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The supply chain code of the partner."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for RosettaNet partner properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "partner/main.bicep"
+        }
+      }
+    },
     "b2bPartnerContentType": {
       "type": "object",
       "properties": {
@@ -86,11 +127,26 @@
           "type": "string",
           "allowedValues": [
             "Carrier",
-            "Distributor"
+            "Distributor",
+            "EndUser",
+            "EndUserGovernment",
+            "Financier",
+            "FreightForwarder",
+            "Manufacturer",
+            "MarketPlace",
+            "Retailer",
+            "Shopper"
           ],
           "nullable": true,
           "metadata": {
             "description": "Optional. The partner classification."
+          }
+        },
+        "partnerContact": {
+          "$ref": "#/definitions/_1.rosettaNetPartnerPropertiesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The RosettaNet partner properties."
           }
         }
       },
@@ -607,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "17868200208729709967"
+              "templateHash": "999444990085763573"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys a Integration Account Partner."
@@ -629,11 +685,26 @@
                   "type": "string",
                   "allowedValues": [
                     "Carrier",
-                    "Distributor"
+                    "Distributor",
+                    "EndUser",
+                    "EndUserGovernment",
+                    "Financier",
+                    "FreightForwarder",
+                    "Manufacturer",
+                    "MarketPlace",
+                    "Retailer",
+                    "Shopper"
                   ],
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The partner classification."
+                  }
+                },
+                "partnerContact": {
+                  "$ref": "#/definitions/rosettaNetPartnerPropertiesType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The RosettaNet partner properties."
                   }
                 }
               },
@@ -660,6 +731,44 @@
               },
               "metadata": {
                 "description": "The type for a business identity."
+              }
+            },
+            "rosettaNetPartnerPropertiesType": {
+              "type": "object",
+              "properties": {
+                "contactName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The name of the contact person."
+                  }
+                },
+                "email": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The email address of the partner."
+                  }
+                },
+                "telephone": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The phone number of the partner."
+                  }
+                },
+                "fax": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The fax number of the partner."
+                  }
+                },
+                "supplyChainCode": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The supply chain code of the partner."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for RosettaNet partner properties."
               }
             }
           },

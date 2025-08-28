@@ -47,7 +47,19 @@ type b2bPartnerContentType = {
   @description('Required. The list of partner business identities.')
   businessIdentities: businessIdentityType[]
   @description('Optional. The partner classification.')
-  partnerClassification: ('Carrier' | 'Distributor')?
+  partnerClassification: (
+    | 'Carrier'
+    | 'Distributor'
+    | 'EndUser'
+    | 'EndUserGovernment'
+    | 'Financier'
+    | 'Manufacturer'
+    | 'Retailer'
+    | 'Shopper'
+    | 'FreightForwarder'
+    | 'MarketPlace')?
+  @description('Optional. The RosettaNet partner properties.')
+  partnerContact: rosettaNetPartnerPropertiesType?
 }
 
 @description('The type for a business identity.')
@@ -56,6 +68,20 @@ type businessIdentityType = {
   qualifier: string
   @description('Required. The user defined business identity value.')
   value: string
+}
+
+@description('The type for RosettaNet partner properties.')
+type rosettaNetPartnerPropertiesType = {
+  @description('Optional. The name of the contact person.')
+  contactName: string
+  @description('Optional. The email address of the partner.')
+  email: string
+  @description('Optional. The phone number of the partner.')
+  telephone: string
+  @description('Optional. The fax number of the partner.')
+  fax: string
+  @description('Optional. The supply chain code of the partner.')
+  supplyChainCode: string
 }
 
 // ============ //
