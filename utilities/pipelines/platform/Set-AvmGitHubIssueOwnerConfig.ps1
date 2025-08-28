@@ -90,9 +90,9 @@ function Set-AvmGitHubIssueOwnerConfig {
             }
 
             $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
+
             # get CSV data
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
-
             $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $module.ModuleOwnersGHTeam)
 
             # new/unknown module
@@ -137,6 +137,10 @@ function Set-AvmGitHubIssueOwnerConfig {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $Repo
             }
+
+            # TODO: Add logic to remove assignees
+            # -> If orphaned, all assignees
+            # -> If owned, any user that is not part of the owner team
 
             if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
                 if ($PSCmdlet.ShouldProcess(("Owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
