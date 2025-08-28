@@ -148,6 +148,13 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             }
           ]
           partnerClassification: 'Distributor'
+          partnerContact: {
+            contactName: 'John Doe'
+            email: 'john.doe@example.com'
+            fax: '123-456-7891'
+            supplyChainCode: 'SC123'
+            telephone: '123-456-7890'
+          }
         }
         metadata: {
           key1: 'value1'
@@ -260,7 +267,14 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
                 "value": "0987654321"
               }
             ],
-            "partnerClassification": "Distributor"
+            "partnerClassification": "Distributor",
+            "partnerContact": {
+              "contactName": "John Doe",
+              "email": "john.doe@example.com",
+              "fax": "123-456-7891",
+              "supplyChainCode": "SC123",
+              "telephone": "123-456-7890"
+            }
           },
           "metadata": {
             "key1": "value1",
@@ -368,6 +382,13 @@ param partners = [
         }
       ]
       partnerClassification: 'Distributor'
+      partnerContact: {
+        contactName: 'John Doe'
+        email: 'john.doe@example.com'
+        fax: '123-456-7891'
+        supplyChainCode: 'SC123'
+        telephone: '123-456-7890'
+      }
     }
     metadata: {
       key1: 'value1'
@@ -900,6 +921,7 @@ The B2B partner content settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`partnerClassification`](#parameter-partnersb2bpartnercontentpartnerclassification) | string | The partner classification. |
+| [`partnerContact`](#parameter-partnersb2bpartnercontentpartnercontact) | object | The RosettaNet partner properties. |
 
 ### Parameter: `partners.b2bPartnerContent.businessIdentities`
 
@@ -940,8 +962,68 @@ The partner classification.
   [
     'Carrier'
     'Distributor'
+    'EndUser'
+    'EndUserGovernment'
+    'Financier'
+    'FreightForwarder'
+    'Manufacturer'
+    'MarketPlace'
+    'Retailer'
+    'Shopper'
   ]
   ```
+
+### Parameter: `partners.b2bPartnerContent.partnerContact`
+
+The RosettaNet partner properties.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contactName`](#parameter-partnersb2bpartnercontentpartnercontactcontactname) | string | The name of the contact person. |
+| [`email`](#parameter-partnersb2bpartnercontentpartnercontactemail) | string | The email address of the partner. |
+| [`fax`](#parameter-partnersb2bpartnercontentpartnercontactfax) | string | The fax number of the partner. |
+| [`supplyChainCode`](#parameter-partnersb2bpartnercontentpartnercontactsupplychaincode) | string | The supply chain code of the partner. |
+| [`telephone`](#parameter-partnersb2bpartnercontentpartnercontacttelephone) | string | The phone number of the partner. |
+
+### Parameter: `partners.b2bPartnerContent.partnerContact.contactName`
+
+The name of the contact person.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.b2bPartnerContent.partnerContact.email`
+
+The email address of the partner.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.b2bPartnerContent.partnerContact.fax`
+
+The fax number of the partner.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.b2bPartnerContent.partnerContact.supplyChainCode`
+
+The supply chain code of the partner.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `partners.b2bPartnerContent.partnerContact.telephone`
+
+The phone number of the partner.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `partners.metadata`
 
