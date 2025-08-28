@@ -149,11 +149,11 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           ]
           partnerClassification: 'Distributor'
           partnerContact: {
-            contactName: 'John Doe'
-            email: 'john.doe@example.com'
-            fax: '123-456-7891'
+            emailAddress: 'john.doe@example.com'
+            faxNumber: '123-456-7891'
+            name: 'John Doe'
             supplyChainCode: 'SC123'
-            telephone: '123-456-7890'
+            telephoneNumber: '123-456-7890'
           }
         }
         metadata: {
@@ -269,11 +269,11 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             ],
             "partnerClassification": "Distributor",
             "partnerContact": {
-              "contactName": "John Doe",
-              "email": "john.doe@example.com",
-              "fax": "123-456-7891",
+              "emailAddress": "john.doe@example.com",
+              "faxNumber": "123-456-7891",
+              "name": "John Doe",
               "supplyChainCode": "SC123",
-              "telephone": "123-456-7890"
+              "telephoneNumber": "123-456-7890"
             }
           },
           "metadata": {
@@ -383,11 +383,11 @@ param partners = [
       ]
       partnerClassification: 'Distributor'
       partnerContact: {
-        contactName: 'John Doe'
-        email: 'john.doe@example.com'
-        fax: '123-456-7891'
+        emailAddress: 'john.doe@example.com'
+        faxNumber: '123-456-7891'
+        name: 'John Doe'
         supplyChainCode: 'SC123'
-        telephone: '123-456-7890'
+        telephoneNumber: '123-456-7890'
       }
     }
     metadata: {
@@ -984,29 +984,29 @@ The RosettaNet partner properties.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contactName`](#parameter-partnersb2bpartnercontentpartnercontactcontactname) | string | The name of the contact person. |
-| [`email`](#parameter-partnersb2bpartnercontentpartnercontactemail) | string | The email address of the partner. |
-| [`fax`](#parameter-partnersb2bpartnercontentpartnercontactfax) | string | The fax number of the partner. |
+| [`emailAddress`](#parameter-partnersb2bpartnercontentpartnercontactemailaddress) | string | The email address of the partner. |
+| [`faxNumber`](#parameter-partnersb2bpartnercontentpartnercontactfaxnumber) | string | The fax number of the partner. |
+| [`name`](#parameter-partnersb2bpartnercontentpartnercontactname) | string | The name of the contact person. |
 | [`supplyChainCode`](#parameter-partnersb2bpartnercontentpartnercontactsupplychaincode) | string | The supply chain code of the partner. |
-| [`telephone`](#parameter-partnersb2bpartnercontentpartnercontacttelephone) | string | The phone number of the partner. |
+| [`telephoneNumber`](#parameter-partnersb2bpartnercontentpartnercontacttelephonenumber) | string | The phone number of the partner. |
 
-### Parameter: `partners.b2bPartnerContent.partnerContact.contactName`
-
-The name of the contact person.
-
-- Required: No
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.partnerContact.email`
+### Parameter: `partners.b2bPartnerContent.partnerContact.emailAddress`
 
 The email address of the partner.
 
 - Required: No
 - Type: string
 
-### Parameter: `partners.b2bPartnerContent.partnerContact.fax`
+### Parameter: `partners.b2bPartnerContent.partnerContact.faxNumber`
 
 The fax number of the partner.
+
+- Required: No
+- Type: string
+
+### Parameter: `partners.b2bPartnerContent.partnerContact.name`
+
+The name of the contact person.
 
 - Required: No
 - Type: string
@@ -1018,7 +1018,7 @@ The supply chain code of the partner.
 - Required: No
 - Type: string
 
-### Parameter: `partners.b2bPartnerContent.partnerContact.telephone`
+### Parameter: `partners.b2bPartnerContent.partnerContact.telephoneNumber`
 
 The phone number of the partner.
 

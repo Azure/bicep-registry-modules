@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "9407236248839413146"
+      "templateHash": "2027828636035245422"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys a Integration Account Partner."
@@ -79,28 +79,28 @@
     "rosettaNetPartnerPropertiesType": {
       "type": "object",
       "properties": {
-        "contactName": {
+        "name": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of the contact person."
           }
         },
-        "email": {
+        "emailAddress": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The email address of the partner."
           }
         },
-        "telephone": {
+        "telephoneNumber": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The phone number of the partner."
           }
         },
-        "fax": {
+        "faxNumber": {
           "type": "string",
           "nullable": true,
           "metadata": {

@@ -132,29 +132,29 @@ The RosettaNet partner properties.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contactName`](#parameter-b2bpartnercontentpartnercontactcontactname) | string | The name of the contact person. |
-| [`email`](#parameter-b2bpartnercontentpartnercontactemail) | string | The email address of the partner. |
-| [`fax`](#parameter-b2bpartnercontentpartnercontactfax) | string | The fax number of the partner. |
+| [`emailAddress`](#parameter-b2bpartnercontentpartnercontactemailaddress) | string | The email address of the partner. |
+| [`faxNumber`](#parameter-b2bpartnercontentpartnercontactfaxnumber) | string | The fax number of the partner. |
+| [`name`](#parameter-b2bpartnercontentpartnercontactname) | string | The name of the contact person. |
 | [`supplyChainCode`](#parameter-b2bpartnercontentpartnercontactsupplychaincode) | string | The supply chain code of the partner. |
-| [`telephone`](#parameter-b2bpartnercontentpartnercontacttelephone) | string | The phone number of the partner. |
+| [`telephoneNumber`](#parameter-b2bpartnercontentpartnercontacttelephonenumber) | string | The phone number of the partner. |
 
-### Parameter: `b2bPartnerContent.partnerContact.contactName`
-
-The name of the contact person.
-
-- Required: No
-- Type: string
-
-### Parameter: `b2bPartnerContent.partnerContact.email`
+### Parameter: `b2bPartnerContent.partnerContact.emailAddress`
 
 The email address of the partner.
 
 - Required: No
 - Type: string
 
-### Parameter: `b2bPartnerContent.partnerContact.fax`
+### Parameter: `b2bPartnerContent.partnerContact.faxNumber`
 
 The fax number of the partner.
+
+- Required: No
+- Type: string
+
+### Parameter: `b2bPartnerContent.partnerContact.name`
+
+The name of the contact person.
 
 - Required: No
 - Type: string
@@ -166,7 +166,7 @@ The supply chain code of the partner.
 - Required: No
 - Type: string
 
-### Parameter: `b2bPartnerContent.partnerContact.telephone`
+### Parameter: `b2bPartnerContent.partnerContact.telephoneNumber`
 
 The phone number of the partner.
 

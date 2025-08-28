@@ -73,13 +73,13 @@ type businessIdentityType = {
 @description('The type for RosettaNet partner properties.')
 type rosettaNetPartnerPropertiesType = {
   @description('Optional. The name of the contact person.')
-  contactName: string?
+  name: string?
   @description('Optional. The email address of the partner.')
-  email: string?
+  emailAddress: string?
   @description('Optional. The phone number of the partner.')
-  telephone: string?
+  telephoneNumber: string?
   @description('Optional. The fax number of the partner.')
-  fax: string?
+  faxNumber: string?
   @description('Optional. The supply chain code of the partner.')
   supplyChainCode: string?
 }
