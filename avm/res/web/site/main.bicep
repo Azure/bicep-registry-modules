@@ -538,7 +538,7 @@ output location string = app.location
 output defaultHostname string = app.properties.defaultHostName
 
 @description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-output customDomainVerificationId string = app.properties.customDomainVerificationId
+output customDomainVerificationId string? = app.properties.customDomainVerificationId
 
 @description('The outbound IP addresses of the app.')
 output outboundIpAddresses string = app.properties.outboundIpAddresses
