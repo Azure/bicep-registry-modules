@@ -247,9 +247,9 @@ function Set-AvmGitHubIssueOwnerConfig {
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
-                        Write-Verbose ('  💬  [{0}/{1}] Issue [{2}] {3}: Added [Assignment failed] comment' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+                        Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added [Assignment failed] comment' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
                     } else {
-                        Write-Verbose ('  📎  [{0}/{1}] Issue [{2}] {3}: Already has a comment calling out the failed assignment. Skipping.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+                        Write-Verbose ('    📎  [{0}/{1}] Issue [{2}] {3}: Already has a comment calling out the failed assignment. Skipping.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
                     }
                 }
             }
