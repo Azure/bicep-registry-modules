@@ -84,6 +84,27 @@ function Set-AvmGitHubIssueOwnerConfig {
         utl = (Get-AvmCsvData -ModuleIndex 'Bicep-Utility')
     }
 
+    $statistics = [ordered]@{
+        "Updates`n-------"                 = $null
+        'Added first comments'             = 0
+        'Added failed assignment comments' = 0
+        'Added assignees'                  = 0
+        'Removed assignees'                = 0
+        'Project assignments'              = 0
+        Labeled                            = 0
+
+        "`nTotals`n------"                 = $null
+        'Total issues'                     = $issues.Count
+        'Updated issues'                   = 0
+
+        "`nCategories`n---------"          = $null
+        '📦 Module issues'                 = 0
+        '🚀 CI issues'                     = 0
+        '❔ Question issues'                = 0
+        '⛓️‍💥 Failed workflows issues'    = 0
+        '◻️  Other issues'                 = 0
+    }
+
     $processedCount = 0
     $totalCount = $issues.Count
     foreach ($issue in $issues) {
@@ -94,11 +115,11 @@ function Set-AvmGitHubIssueOwnerConfig {
         $shortTitle = '{0}{1}' -f $plainTitle.SubString(0, [Math]::Min(15, $plainTitle.Length)).Trim(), ($plainTitle.Length -gt 15 ? '(...)' : '')
 
         switch ($issueCategory) {
-            'AVM CI Environment Issue' { $issueIcon = '🚀'; break }
-            'AVM Module Issue' { $issueIcon = '📦'; break }
-            'AVM Question/Feedback' { $issueIcon = '❔'; break }
-            'Failed pipeline' { $issueIcon = '⛓️‍💥'; break }
-            default { $issueIcon = '◻️ ' }
+            'AVM CI Environment Issue' { $issueIcon = '🚀'; $statistics.'🚀 CI issues'++; break }
+            'AVM Module Issue' { $issueIcon = '📦'; $statistics.'📦 Module issues'++; break }
+            'AVM Question/Feedback' { $issueIcon = '❔'; $statistics.'❔ Question issues'++; break }
+            'Failed pipeline' { $issueIcon = '⛓️‍💥'; $statistics.'⛓️‍💥 Failed workflows issues'++; break }
+            default { $issueIcon = '◻️ '; $statistics.'◻️  Other issues'++; }
         }
 
 
@@ -187,6 +208,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         $ProjectNumber = 566 # AVM - Module Issues
         if ($projectAssignments.number -notcontains $projectNumber) {
             $anyUpdate = $true
+            $statistics.'Project assignments'++
             if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
                 Add-GitHubIssueToProject @baseInputObject -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
             }
@@ -206,6 +228,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         # ---------------
         if ($existingLabels -notcontains $label) {
             $anyUpdate = $true
+            $statistics.Labeled++
             if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
                 gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
@@ -216,6 +239,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         # -------------------
         if ($commentsOfIssue.body -notcontains $reply) {
             $anyUpdate = $true
+            $statistics.'Added first comments'++
             if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
@@ -229,6 +253,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             # -------------------------
             foreach ($alias in ($ownerTeamMembers | Where-Object { $existingAssignees -notcontains $_ })) {
                 $anyUpdate = $true
+                $statistics.'Added assignees'++
                 if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.title)]", 'Assign')) {
                     $assignment = gh issue edit $issue.url --add-assignee $alias --repo $fullRepositoryName
                 } else {
@@ -244,12 +269,11 @@ function Set-AvmGitHubIssueOwnerConfig {
 > This issue couldn't be assigned due to an internal error. @$($moduleCsvData.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
                     if ($commentsOfIssue.body -notcontains $reply) {
+                        $statistics.'Added failed assignment comments'++
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
                         Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added [Assignment failed] comment' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
-                    } else {
-                        Write-Verbose ('    📎  [{0}/{1}] Issue [{2}] {3}: Already has a comment calling out the failed assignment. Skipping.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
                     }
                 }
             }
@@ -266,6 +290,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
         foreach ($excessAssignee in $assigneesToRemove) {
             $anyUpdate = $true
+            $statistics.'Removed assignees'++
             if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.title)]", 'Remove')) {
                 gh issue edit $issue.url --remove-assignee $excessAssignee --repo $fullRepositoryName
             }
@@ -273,10 +298,20 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         if ($anyUpdate) {
+            $statistics.'Updated issues'++
             Write-Verbose ('    💾  [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : '')) -Verbose
         } else {
             Write-Verbose ('    ✅  [{0}/{1}] Issue [{2}] {3} is up to date' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
         }
         $processedCount++
     }
+
+    # ================ #
+    # Print statistics #
+    # ================ #
+
+    Write-Verbose '# ========== #' -Verbose
+    Write-Verbose '# Statistics #' -Verbose
+    Write-Verbose '# ========== #' -Verbose
+    Write-Verbose ($statistics | Format-Table -AutoSize -Wrap -HideTableHeaders | Out-String) -Verbose
 }
