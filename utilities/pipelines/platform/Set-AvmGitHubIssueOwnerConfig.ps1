@@ -89,13 +89,24 @@ function Set-AvmGitHubIssueOwnerConfig {
     foreach ($issue in $issues) {
 
         $anyUpdate = $false
-        $plainTitle = $issue.title -split '^.+?]:? '
+        $plainTitle = $issue.title -replace '^.+?]:? '
+        $issueCategory = ($issue.title -replace $plainTitle).Trim().TrimStart('[').TrimEnd(':').TrimEnd(']')
         $shortTitle = '{0}{1}' -f $plainTitle.SubString(0, [Math]::Min(15, $plainTitle.Length)).Trim(), ($plainTitle.Length -gt 15 ? '(...)' : '')
-        Write-Verbose ('[{0}/{1}] Issue [{2}] {3}: Analyzing...' -f $processedCount, $totalCount, $issue.html_url, $shortTitle) -Verbose
+
+        switch ($issueCategory) {
+            'AVM CI Environment Issue' { $issueIcon = '🚀'; break }
+            'AVM Module Issue' { $issueIcon = '📦'; break }
+            'AVM Question/Feedback' { $issueIcon = '❔'; break }
+            'Failed pipeline' { $issueIcon = '⛓️‍💥'; break }
+            default { $issueIcon = '◻️ ' }
+        }
+
+
+        Write-Verbose ('[{0}/{1}] Issue [{2}] {3} {4}: Analyzing...' -f $processedCount, $totalCount, $issue.html_url, $issueIcon, $shortTitle) -Verbose
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
-            Write-Verbose ('  ℹ️  [{0}/{1}] Issue [{2}] {3}: Not a module issue. Skipping' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+            Write-Verbose (' ℹ️  [{0}/{1}] Issue [{2}] {3}: Not a module issue but [{4}]. Skipping' -f $processedCount, $totalCount, $issue.number, $shortTitle, $issueCategory) -Verbose
             $processedCount++
             continue
         }
