@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4049539271338304588"
+      "templateHash": "8146017449778060639"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -995,7 +995,7 @@
             "value": "[tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'targetNamespace')]"
           },
           "contentLinkContent": {
-            "value": "[coalesce(parameters('schemas'), createArray())[copyIndex()].contentLinkContent]"
+            "value": "[coalesce(parameters('schemas'), createArray())[copyIndex()].contentLink]"
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"

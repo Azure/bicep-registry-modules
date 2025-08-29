@@ -228,7 +228,7 @@ module integrationAccount_schemas 'schema/main.bicep' = [
       metadata: schema.?metadata
       schemaType: schema.schemaType
       targetNamespace: schema.?targetNamespace
-      contentLinkContent: schema.contentLinkContent
+      contentLinkContent: schema.contentLink
       tags: schema.?tags ?? tags
     }
   }
