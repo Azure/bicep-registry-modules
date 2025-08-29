@@ -112,7 +112,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         '◻️  Other issues'                 = 0
     }
 
-    $processedCount = 0
+    $processedCount = 1
     $totalCount = $issues.Count
     foreach ($issue in $issues) {
 
