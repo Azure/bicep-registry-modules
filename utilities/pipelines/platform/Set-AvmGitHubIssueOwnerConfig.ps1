@@ -89,6 +89,10 @@ function Set-AvmGitHubIssueOwnerConfig {
     foreach ($issue in $issues) {
 
         $anyUpdate = $false
+        if ($processedCount -lt 25) {
+            $processedCount++
+            continue
+        }
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
@@ -96,7 +100,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value
-        $shortTitle = '{0}...' -f ($issue.title -split ']: ')[1].SubString(0, 15).Trim()
+        $shortTitle = '{0}(...)' -f ($issue.title -replace '^.+?]:? ').SubString(0, 15).Trim()
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             throw 'No valid module name was found in the issue.'
