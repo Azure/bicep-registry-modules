@@ -167,6 +167,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         # Add issue to project
         # --------------------
+        # TODO: Check if already in project
         $ProjectNumber = 566 # AVM - Module Issues
         if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
             Add-GitHubIssueToProject -Repo $fullRepositoryName -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
@@ -251,7 +252,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             }
         }
 
-        Write-Debug ('✅ [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : ''))
+        Write-Verbose ('✅ [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : '')) -Verbose
         $processedCount++
     }
 }
