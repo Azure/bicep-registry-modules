@@ -17,7 +17,7 @@ param documentName string?
 param metadata object?
 
 @description('Required. The schema type.')
-param schemaType ('NotSpecified' | 'Xml') = 'Xml'
+param schemaType ('NotSpecified' | 'Xml')
 
 @description('Optional. The target namespace of the schema.')
 param targetNamespace string?

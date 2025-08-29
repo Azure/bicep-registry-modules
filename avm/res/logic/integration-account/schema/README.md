@@ -71,9 +71,8 @@ The Name of the schema resource.
 
 The schema type.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'Xml'`
 - Allowed:
   ```Bicep
   [
