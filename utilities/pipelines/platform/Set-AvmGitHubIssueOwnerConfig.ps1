@@ -118,7 +118,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         $anyUpdate = $false
         $plainTitle = $issue.title -replace '^.+?]:? '
-        $issueCategory = ($issue.title -replace $plainTitle).Trim().TrimStart('[').TrimEnd(':').TrimEnd(']')
+        $issueCategory = ($issue.title -replace [regex]::Escape($plainTitle)).Trim().TrimStart('[').TrimEnd(':').TrimEnd(']')
         $shortTitle = '{0}{1}' -f $plainTitle.SubString(0, [Math]::Min(15, $plainTitle.Length)).Trim(), ($plainTitle.Length -gt 15 ? '(...)' : '')
 
         switch ($issueCategory) {

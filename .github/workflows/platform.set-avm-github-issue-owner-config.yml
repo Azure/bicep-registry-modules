@@ -87,4 +87,4 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-AvmGitHubIssueOwnerConfig @functionInput -Verbose # -WhatIf
+          Set-AvmGitHubIssueOwnerConfig @functionInput -Verbose
