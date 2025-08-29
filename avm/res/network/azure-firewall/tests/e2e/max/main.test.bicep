@@ -207,6 +207,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      enableDnsProxy: true
       availabilityZones: [
         1
         2

@@ -75,6 +75,9 @@ param availabilityZones int[] = [1, 2, 3]
 @description('Optional. Enable/Disable forced tunneling.')
 param enableForcedTunneling bool = false
 
+@description('Optional. Enable/Disable DNS proxy. When enabled, the firewall will act as a DNS proxy and forward DNS requests to the configured DNS servers.')
+param enableDnsProxy bool = false
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -278,44 +281,62 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
   zones: map(availabilityZones, zone => '${zone}')
   tags: tags
   properties: azureSkuName == 'AZFW_VNet'
-    ? {
-        threatIntelMode: threatIntelMode
-        firewallPolicy: !empty(firewallPolicyId)
+    ? union(
+        {
+          threatIntelMode: threatIntelMode
+          firewallPolicy: !empty(firewallPolicyId)
+            ? {
+                id: firewallPolicyId
+              }
+            : null
+          ipConfigurations: ipConfigurations
+          managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
+          sku: {
+            name: azureSkuName
+            tier: azureSkuTier
+          }
+          applicationRuleCollections: applicationRuleCollections ?? []
+          natRuleCollections: natRuleCollections ?? []
+          networkRuleCollections: networkRuleCollections ?? []
+        },
+        enableDnsProxy
           ? {
-              id: firewallPolicyId
+              additionalProperties: {
+                'Network.DNS.EnableProxy': 'true'
+              }
             }
-          : null
-        ipConfigurations: ipConfigurations
-        managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
-        sku: {
-          name: azureSkuName
-          tier: azureSkuTier
-        }
-        applicationRuleCollections: applicationRuleCollections ?? []
-        natRuleCollections: natRuleCollections ?? []
-        networkRuleCollections: networkRuleCollections ?? []
-      }
-    : {
-        autoscaleConfiguration: {
-          maxCapacity: autoscaleMaxCapacity
-          minCapacity: autoscaleMinCapacity
-        }
-        firewallPolicy: !empty(firewallPolicyId)
+          : {}
+      )
+    : union(
+        {
+          autoscaleConfiguration: {
+            maxCapacity: autoscaleMaxCapacity
+            minCapacity: autoscaleMinCapacity
+          }
+          firewallPolicy: !empty(firewallPolicyId)
+            ? {
+                id: firewallPolicyId
+              }
+            : null
+          sku: {
+            name: azureSkuName
+            tier: azureSkuTier
+          }
+          hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
+          virtualHub: !empty(virtualHubResourceId)
+            ? {
+                id: virtualHubResourceId
+              }
+            : null
+        },
+        enableDnsProxy
           ? {
-              id: firewallPolicyId
+              additionalProperties: {
+                'Network.DNS.EnableProxy': 'true'
+              }
             }
-          : null
-        sku: {
-          name: azureSkuName
-          tier: azureSkuTier
-        }
-        hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-        virtualHub: !empty(virtualHubResourceId)
-          ? {
-              id: virtualHubResourceId
-            }
-          : null
-      }
+          : {}
+      )
 }
 
 resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

@@ -1919,6 +1919,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableDnsProxy`](#parameter-enablednsproxy) | bool | Enable/Disable DNS proxy. When enabled, the firewall will act as a DNS proxy and forward DNS requests to the configured DNS servers. |
 | [`enableForcedTunneling`](#parameter-enableforcedtunneling) | bool | Enable/Disable forced tunneling. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
@@ -2392,6 +2393,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `enableDnsProxy`
+
+Enable/Disable DNS proxy. When enabled, the firewall will act as a DNS proxy and forward DNS requests to the configured DNS servers.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableForcedTunneling`
 
