@@ -139,7 +139,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             continue
         }
 
-        $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value
+        $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value.Trim()
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             Write-Warning ('    ⚠️  [{0}/{1}] Issue [{2}] {3}: No valid module name was found in the issue. Skipping' -f $processedCount, $totalCount, $issue.number, $shortTitle)
@@ -216,7 +216,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($projectAssignments.number -notcontains $projectNumber) {
             $anyUpdate = $true
             $statistics.'Project assignments'++
-            if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
+            if ($PSCmdlet.ShouldProcess("Issue [$($issue.html_url)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
                 Add-GitHubIssueToProject @baseInputObject -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
             }
             Write-Verbose ('    📃  [{0}/{1}] Issue [{2}] {3}: Added to project [#{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $ProjectNumber) -Verbose
@@ -236,7 +236,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($existingLabels -notcontains $label) {
             $anyUpdate = $true
             $statistics.Labeled++
-            if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
+            if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.html_url)]", 'Add')) {
                 gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
             Write-Verbose ('    🏷️  [{0}/{1}] Issue [{2}] {3}: Added label [{4}]' -f $processedCount, $totalCount, $issue.title, $shortTitle, $label) -Verbose
@@ -247,7 +247,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($commentsOfIssue.body -notcontains $reply) {
             $anyUpdate = $true
             $statistics.'Added first comments'++
-            if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
+            if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.html_url)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
@@ -261,7 +261,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             foreach ($alias in ($ownerTeamMembers | Where-Object { $existingAssignees -notcontains $_ })) {
                 $anyUpdate = $true
                 $statistics.'Added assignees'++
-                if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.title)]", 'Assign')) {
+                if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.html_url)]", 'Assign')) {
                     $assignment = gh issue edit $issue.url --add-assignee $alias --repo $fullRepositoryName
                 } else {
                     $assignment = 'anyValue' # Required for correct error handling if running in WhatIf mode
@@ -277,7 +277,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
                     if ($commentsOfIssue.body -notcontains $reply) {
                         $statistics.'Added failed assignment comments'++
-                        if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
+                        if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.html_url)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
                         Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added [Assignment failed] comment' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
@@ -298,7 +298,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         foreach ($excessAssignee in $assigneesToRemove) {
             $anyUpdate = $true
             $statistics.'Removed assignees'++
-            if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.title)]", 'Remove')) {
+            if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.html_url)]", 'Remove')) {
                 gh issue edit $issue.url --remove-assignee $excessAssignee --repo $fullRepositoryName
             }
             Write-Verbose ('    🗑️  [{0}/{1}] Issue [{2}] {3}: Removed excess assignee [{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $excessAssignee) -Verbose
