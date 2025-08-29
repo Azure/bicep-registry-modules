@@ -8,6 +8,11 @@ on:
     - cron: "0 0 * * 0" # Every sundary at 0 am
   workflow_dispatch:
     inputs:
+      issueNumber:
+        type: string
+        description: "Specific issue to process"
+        required: false
+        default: ''
       whatIf:
         type: boolean
         description: "Simulate execution"
@@ -33,6 +38,7 @@ jobs:
           workflowPath: "${{ env.workflowPath}}"
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      issueNumber: ${{ steps.get-workflow-param.outputs.issueNumber }}
   SetAvmGitHubIssueOwnerConfig:
     name: Set-AvmGitHubIssueOwnerConfig
     runs-on: ubuntu-latest
@@ -63,6 +69,12 @@ jobs:
             RepositoryName  = "${{ github.event.repository.name }}"
             RepoRoot        = $env:GITHUB_WORKSPACE
             WhatIf          = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
+          }
+
+          if(-not [String]::IsNullOrEmpty('${{ needs.job_initialize_pipeline.outputs.issueNumber }}')) {
+            $functionInput += @{
+              IssueUrl = "https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/issues/${{ needs.job_initialize_pipeline.outputs.issueNumber }}"
+            }
           }
 
           if('${{ github.event_name}}' -eq 'issues') {
