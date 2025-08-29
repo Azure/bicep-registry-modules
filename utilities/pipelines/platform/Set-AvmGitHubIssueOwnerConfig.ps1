@@ -97,7 +97,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         'Total issues'                     = $issues.Count
         'Updated issues'                   = 0
 
-        "`nCategories`n---------"          = $null
+        "`nCategories`n----------"         = $null
         '📦 Module issues'                 = 0
         '🚀 CI issues'                     = 0
         '❔ Question issues'                = 0
