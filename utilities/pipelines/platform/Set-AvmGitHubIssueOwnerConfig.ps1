@@ -118,16 +118,9 @@ function Set-AvmGitHubIssueOwnerConfig {
         # ---
         $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
 
-        if (-not $module) {
-            Write-Warning ('⚠️ [{0}/{1}] Module [{2}] not found in CSV. Skipping assignment. Ref: [{3}]' -f $processedCount, $totalCount, $moduleName, $issue.html_url)
-
-            ## TODO: Adding comment?
-
-        } else {
-            $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
-        }
         # new/unknown module
         if ($null -eq $module) {
+            Write-Warning ('⚠️ [{0}/{1}] Module [{2}] not found in CSV. Skipping assignment. Ref: [{3}]' -f $processedCount, $totalCount, $moduleName, $issue.html_url)
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -146,6 +139,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
         # existing module
         else {
+            $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
