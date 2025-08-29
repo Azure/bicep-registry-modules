@@ -114,7 +114,7 @@ function Get-GitHubIssueList {
         }
 
         $page++
-    } while ($response -and -not $IssueId)
+    } while ($response -and -not $IssueId) # Only loop if fetching more than one issue
 
     return $allIssues
 }

@@ -24,7 +24,9 @@ Optional. The PAT to use to interact with either GitHub. If not provided, the sc
 Set-AvmGitHubIssueOwnerConfig -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
-Existing assignments won't be removed as we cannot determine whether they were added manually
+Existing assignments won't be removed as we cannot determine whether they were added manually.
+One way to address this would be to fetch he timeline per issue and only remove assignees that are not owners and where not manually added as per set timeline.
+See:https://docs.github.com/en/rest/issues/timeline?apiVersion=2022-11-28#list-timeline-events-for-an-issue
 #>
 function Set-AvmGitHubIssueOwnerConfig {
 
@@ -49,7 +51,8 @@ function Set-AvmGitHubIssueOwnerConfig {
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueList.ps1')
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueCommentsList.ps1')
+    # . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueCommentsList.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueTimeline.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
@@ -69,18 +72,9 @@ function Set-AvmGitHubIssueOwnerConfig {
         Write-Verbose "Running on issue [$IssueUrl" -Verbose
         $issueId = Split-Path $IssueUrl -Leaf
         $issues = @() + (Get-GitHubIssueList @baseInputObject -IssueId $issueId)
-
-        Write-Verbose 'Fetching all comments of issue' -Verbose
-        $existingComments = @() + (Get-GitHubIssueCommentsList @baseInputObject -IssueNumber $issueId)
     } else {
         Write-Verbose 'Fetching all issues' -Verbose
         $issues = Get-GitHubIssueList @baseInputObject
-
-        Write-Verbose 'Fetching all comments' -Verbose
-        $existingComments = Get-GitHubIssueCommentsList @baseInputObject | Where-Object {
-            # Filtering as also PR comments are returned
-            $_.html_url -like '*/issues/*#issuecomment*'
-        }
     }
 
     # Fetch module data
@@ -90,6 +84,9 @@ function Set-AvmGitHubIssueOwnerConfig {
         utl = (Get-AvmCsvData -ModuleIndex 'Bicep-Utility')
     }
 
+    # TODO: Add counter
+    $processedCount = 0
+    $totalCount = $issues.Count
     foreach ($issue in $issues) {
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
@@ -98,6 +95,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value
+        $shortTitle = '{0}...' -f ($issue.title -split ']: ')[1].SubString(0, 15)
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             throw 'No valid module name was found in the issue.'
@@ -106,12 +104,21 @@ function Set-AvmGitHubIssueOwnerConfig {
         # ================== #
         # Collect issue data #
         # ================== #
+
+        # Issue Timeline
+        # --------------
+        $timelineEvents = @() + (Get-GitHubIssueTimeline @baseInputObject -IssueNumber $issue.number)
+
+        # Existing comments
+        # ----------------
+        $commentsOfIssue = @() + ($timelineEvents | Where-Object { $_.event -eq 'commented' })
+
         # CSV
         # ---
         $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
 
         if (-not $module) {
-            Write-Warning ('⚠️ Module [{0}] not found in CSV. Skipping issue [{1}]' -f $moduleName, $issue.html_url)
+            Write-Warning ('⚠️ [{0}/{1}] Module [{2}] not found in CSV. Skipping assignment. Ref: [{3}]' -f $processedCount, $totalCount, $moduleName, $issue.html_url)
 
             ## TODO: Adding comment?
 
@@ -146,12 +153,6 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
         }
 
-        # Existing comments
-        # -----------------
-        $commentsOfIssue = $existingComments | Where-Object {
-            ($_.html_url -like '*/issues/{0}#issuecomment*' -f $issue.number)
-        }
-
         # Existing assignees
         # ------------------
         $existingAssignees = $issue.assignees.login
@@ -170,7 +171,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
             Add-GitHubIssueToProject -Repo $fullRepositoryName -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
         }
-        Write-Verbose ('📃 Issue [{0}]: Added to project [#{1}]' -f $issue.title, $ProjectNumber) -Verbose
+        Write-Verbose ('📃 [{0}/{1}] Issue [{2}] {3}: Added to project [#{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $ProjectNumber) -Verbose
 
         switch ($moduleType) {
             'res' { $label = 'Class: Resource Module :package:' }
@@ -187,7 +188,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
                 gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
-            Write-Verbose ('🏷️ Issue [{0}]: Added label [{1}]' -f $issue.title, $label) -Verbose
+            Write-Verbose ('🏷️ [{0}/{1}] Issue [{2}] {3}: Added label [{4}]' -f $processedCount, $totalCount, $issue.title, $shortTitle, $label) -Verbose
         }
 
         # Add initial comment
@@ -197,9 +198,9 @@ function Set-AvmGitHubIssueOwnerConfig {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
-            Write-Verbose ('💬 Issue [{0}]: Added initial comment.' -f $issue.title) -Verbose
+            Write-Verbose ('[{0}/{1}] 💬 Issue [{2}] {3}: Added initial comment.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
         } else {
-            Write-Verbose ('📎 Issue [{0}]: Already received its initial comment. Skipping.' -f $issue.title) -Verbose
+            Write-Debug ('[{0}/{1}] 📎 Issue [{2}] {3}: Already received its initial comment. Skipping.' -f $processedCount, $totalCount, $issue.number, $shortTitle)
         }
 
         if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
@@ -214,7 +215,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                     $assignment = 'anyValue' # Required for correct error handling if running in WhatIf mode
                 }
 
-                Write-Verbose ('👋 Issue [{0}]: Added owner team member [{1}]' -f $issue.title, $alias) -Verbose
+                Write-Verbose ('👋 [{0}/{1}] Issue [{2}] {3}: Added owner team member [{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $alias) -Verbose
 
                 # Error handling if assignment failed
                 if ([String]::IsNullOrEmpty($assignment)) {
@@ -226,14 +227,31 @@ function Set-AvmGitHubIssueOwnerConfig {
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
-                        Write-Verbose ('💬 Issue [{0}]: Added [Assignment failed] comment' -f $issue.title) -Verbose
+                        Write-Verbose ('💬 [{0}/{1}] Issue [{2}] {3}: Added [Assignment failed] comment' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
                     } else {
-                        Write-Verbose ('📎 Issue {0}: Already has a comment calling out the failed assignment. Skipping.' -f $issue.title) -Verbose
+                        Write-Verbose ('📎 [{0}/{1}] Issue [{2}] {3}: Already has a comment calling out the failed assignment. Skipping.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
                     }
                 }
             }
         }
 
-        Write-Verbose ('✅ Issue [{0}] {1} updated' -f $issue.title, $($WhatIfPreference ? 'would have been' : ''))
+        # Remove assignees unless owner or manually added (i.e., not by bot)
+        # ------------------------------------------------------------------
+        $usersAssignedManually = ($timelineEvents | Where-Object {
+                ($_.event -eq 'assigned') -and ($_.actor.login -ne 'avm-team-linter[bot]')
+            }).assignee.login
+        $assigneesToRemove = $existingAssignees | Where-Object {
+            ($ownerTeamMembers -notcontains $_) -and ($usersAssignedManually -notcontains $_)
+
+            foreach ($excessAssignee in $assigneesToRemove) {
+                if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.title)]", 'Remove')) {
+                    gh issue edit $issue.url --remove-assignee $excessAssignee --repo $fullRepositoryName
+                }
+                Write-Verbose ('🗑️ [{0}/{1}] Issue [{2}] {3}: Removed excess assignee [{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $excessAssignee) -Verbose
+            }
+        }
+
+        Write-Debug ('✅ [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : ''))
+        $processedCount++
     }
 }
