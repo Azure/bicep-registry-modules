@@ -89,10 +89,6 @@ function Set-AvmGitHubIssueOwnerConfig {
     foreach ($issue in $issues) {
 
         $anyUpdate = $false
-        if ($processedCount -lt 25) {
-            $processedCount++
-            continue
-        }
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
