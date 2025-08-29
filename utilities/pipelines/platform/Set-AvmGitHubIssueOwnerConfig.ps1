@@ -116,10 +116,10 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         # CSV
         # ---
-        $module = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
+        $moduleCsvData = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
 
         # new/unknown module
-        if ($null -eq $module) {
+        if ($null -eq $moduleCsvData) {
             Write-Warning ('⚠️ [{0}/{1}] Module [{2}] not found in CSV. Skipping assignment. Ref: [{3}]' -f $processedCount, $totalCount, $moduleName, $issue.html_url)
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
@@ -129,7 +129,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
         }
         # orphaned module
-        elseif ($module.ModuleStatus -eq 'Orphaned') {
+        elseif ($moduleCsvData.ModuleStatus -eq 'Orphaned') {
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -139,12 +139,12 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
         # existing module
         else {
-            $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $module.ModuleOwnersGHTeam)
+            $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $moduleCsvData.ModuleOwnersGHTeam)
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
-> A member of the @Azure/$($module.ModuleOwnersGHTeam) team will review it soon!
+> A member of the @Azure/$($moduleCsvData.ModuleOwnersGHTeam) team will review it soon!
 "@
         }
 
@@ -206,7 +206,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             Write-Verbose ('[{0}/{1}] 💬 Issue [{2}] {3}: Added initial comment.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
         }
 
-        if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+        if (($moduleCsvData.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($moduleCsvData.PrimaryModuleOwnerGHHandle)))) {
 
             # Assign owner team members
             # -------------------------
@@ -224,7 +224,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                 if ([String]::IsNullOrEmpty($assignment)) {
                     $reply = @"
 > [!WARNING]
-> This issue couldn't be assigned due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
+> This issue couldn't be assigned due to an internal error. @$($moduleCsvData.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
                     if ($commentsOfIssue.body -notcontains $reply) {
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.title)]", 'Add')) {
