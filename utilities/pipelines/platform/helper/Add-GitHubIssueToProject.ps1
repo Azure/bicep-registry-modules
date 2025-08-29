@@ -25,9 +25,6 @@ Add-GitHubIssueToProject -RepositoryOwner 'Azure' -RepositoryName 'bicep-registr
 
 Add the issue 757 to proejct 538.
 
-.EXAMPLE
-Add-GitHubIssueToProject -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
-
 .NOTES
 Needs to run under a context with the permissions to read/write organization projects
 #>

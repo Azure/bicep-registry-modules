@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Adds an existing GitHub issue to an existing GitHub project (the new type, not the classic ones)
+Get all project assignments of a given issue
 
 .DESCRIPTION
-Adds an existing GitHub issue to an existing GitHub project (the new type, not the classic ones)
+Get all project assignments of a given issue
 
 .PARAMETER RepositoryOwner
 Mandatory. The repository's organization.
@@ -11,25 +11,21 @@ Mandatory. The repository's organization.
 .PARAMETER RepositoryName
 Mandatory. The name of the repository.
 
-.PARAMETER ProjectNumber
-Mandatory. The GitHub project number (see last part of project URL, for example 538 for https://github.com/orgs/Azure/projects/538)
-
-.PARAMETER IssueUrl
-Condtional. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757' . Required if IssueId is not specified.
-
-.PARAMETER IssueId
-Condtional. The GH issue ID, like '3154954746'. Note: This is not the same as the issue number. Required if IssueUrl is not specified.
+.PARAMETER IssueNumber
+Mandatory. The GitHub issue number (see last part of project URL, for example 538 for https://github.com/Azure/bicep-registry-modules/issues/538)
 
 .EXAMPLE
-Add-GitHubIssueToProject -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+Get-GitHubIssueProjectAssignment -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueNumber 5900
 
-Add the issue 757 to proejct 538.
+Get the project assignments of issue 5900.
 
-.EXAMPLE
-Add-GitHubIssueToProject -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+Returns, for example,
+title               number url
+-----               ------ ---
+AVM - Module Issues    566 https://github.com/orgs/Azure/projects/566
 
 .NOTES
-Needs to run under a context with the permissions to read/write organization projects
+Only fetches the first 50 assignments
 You can locally log into the required scope via `gh auth login --scopes read:project`
 #>
 function Get-GitHubIssueProjectAssignment {
