@@ -12,7 +12,7 @@ Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not p
 Mandatory. The repository's organization.
 
 .PARAMETER RepositoryName
-Mandatory. The name of the repository to fetch the workflows from.
+Mandatory. The name of the repository to fetch the comments from.
 
 .PARAMETER IssueNumber
 Optional. The issue number to get the comments for. If not provided, all comments for the repository will be returned.
