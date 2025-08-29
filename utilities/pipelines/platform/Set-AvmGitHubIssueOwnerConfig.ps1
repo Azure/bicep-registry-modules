@@ -139,7 +139,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             continue
         }
 
-        $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value.Trim()
+        $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value | ForEach-Object { ($_ ?? '').Trim() }
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             Write-Warning ('    ⚠️  [{0}/{1}] Issue [{2}] {3}: No valid module name was found in the issue. Skipping' -f $processedCount, $totalCount, $issue.number, $shortTitle)
