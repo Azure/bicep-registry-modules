@@ -1,5 +1,5 @@
 metadata name = 'Integration Account Partners'
-metadata description = 'This module deploys a Integration Account Partner.'
+metadata description = 'This module deploys an Integration Account Partner.'
 
 @description('Required. The Name of the partner resource.')
 param name string

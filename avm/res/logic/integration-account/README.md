@@ -20,6 +20,7 @@ This module deploys a Logic App Integration Account.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Logic/integrationAccounts` | [2019-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts) |
 | `Microsoft.Logic/integrationAccounts/partners` | [2019-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/partners) |
+| `Microsoft.Logic/integrationAccounts/schemas` | [2019-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/schemas) |
 
 ## Usage examples
 
@@ -200,6 +201,25 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    schemas: [
+      {
+        contentLink: {
+          uri: 'https://deplsnodiasaiamax01.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-08-29T16:03:33Z&se=2025-08-30T00:18:33Z&spr=https&sv=2024-11-04&sr=b&sig=qoyd2yubWD9RNDSuFWrcI8ASJgoQeMxAEE9sg4jtebQ%3D'
+        }
+        documentName: 'PurchaseOrder'
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'schema1'
+        schemaType: 'Xml'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+        targetNamespace: 'http://example.com/purchaseorder'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -323,6 +343,27 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       ]
     },
+    "schemas": {
+      "value": [
+        {
+          "contentLink": {
+            "uri": "https://deplsnodiasaiamax01.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-08-29T16:03:33Z&se=2025-08-30T00:18:33Z&spr=https&sv=2024-11-04&sr=b&sig=qoyd2yubWD9RNDSuFWrcI8ASJgoQeMxAEE9sg4jtebQ%3D"
+          },
+          "documentName": "PurchaseOrder",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "schema1",
+          "schemaType": "Xml",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          },
+          "targetNamespace": "http://example.com/purchaseorder"
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -432,6 +473,25 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param schemas = [
+  {
+    contentLink: {
+      uri: 'https://deplsnodiasaiamax01.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-08-29T16:03:33Z&se=2025-08-30T00:18:33Z&spr=https&sv=2024-11-04&sr=b&sig=qoyd2yubWD9RNDSuFWrcI8ASJgoQeMxAEE9sg4jtebQ%3D'
+    }
+    documentName: 'PurchaseOrder'
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'schema1'
+    schemaType: 'Xml'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+    targetNamespace: 'http://example.com/purchaseorder'
   }
 ]
 param tags = {
@@ -666,6 +726,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`partners`](#parameter-partners) | array | All partners to create. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`schemas`](#parameter-schemas) | array | The content link for the schema. |
 | [`sku`](#parameter-sku) | string | Integration account sku name. |
 | [`state`](#parameter-state) | string | The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1154,6 +1215,92 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `schemas`
+
+The content link for the schema.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentLink`](#parameter-schemascontentlink) | object | Content link settings. |
+| [`name`](#parameter-schemasname) | string | The Name of the schema resource. |
+| [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
+| [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
+| [`tags`](#parameter-schemastags) | object | Resource tags. |
+| [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
+
+### Parameter: `schemas.contentLink`
+
+Content link settings.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`uri`](#parameter-schemascontentlinkuri) | string | The URI of the content link. |
+
+### Parameter: `schemas.contentLink.uri`
+
+The URI of the content link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `schemas.name`
+
+The Name of the schema resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `schemas.schemaType`
+
+The schema type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `schemas.documentName`
+
+The document name.
+
+- Required: No
+- Type: string
+
+### Parameter: `schemas.metadata`
+
+The schema metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `schemas.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
+
+### Parameter: `schemas.targetNamespace`
+
+The target namespace of the schema.
+
+- Required: No
+- Type: string
 
 ### Parameter: `sku`
 

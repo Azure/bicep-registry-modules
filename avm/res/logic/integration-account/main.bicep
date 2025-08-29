@@ -22,6 +22,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. All partners to create.')
 param partners partnerType[]?
 
+@description('Optional. The content link for the schema.')
+param schemas schemaType[]?
+
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
   'Completed'
@@ -214,6 +217,23 @@ module integrationAccount_partners 'partner/main.bicep' = [
   }
 ]
 
+module integrationAccount_schemas 'schema/main.bicep' = [
+  for (schema, index) in (schemas ?? []): {
+    name: '${uniqueString(deployment().name, location)}-integrationAccount-Schema-${index}'
+    params: {
+      name: schema.name
+      location: location
+      integrationAccountName: integrationAccount.name
+      documentName: schema.?documentName
+      metadata: schema.?metadata
+      schemaType: schema.schemaType
+      targetNamespace: schema.?targetNamespace
+      contentLinkContent: schema.contentLinkContent
+      tags: schema.?tags ?? tags
+    }
+  }
+]
+
 resource integrationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
@@ -266,6 +286,32 @@ type partnerType = {
 
   @description('Optional. The partner metadata.')
   metadata: object?
+
+  @description('Optional. Resource tags.')
+  tags: object?
+}
+
+import { contentLinkType } from 'schema/main.bicep'
+
+@description('The type for a schema.')
+type schemaType = {
+  @description('Required. The Name of the schema resource.')
+  name: string
+
+  @description('Optional. The document name.')
+  documentName: string?
+
+  @description('Optional. The schema metadata.')
+  metadata: object?
+
+  @description('Required. The schema type.')
+  schemaType: string
+
+  @description('Optional. The target namespace of the schema.')
+  targetNamespace: string?
+
+  @description('Required. Content link settings.')
+  contentLink: contentLinkType
 
   @description('Optional. Resource tags.')
   tags: object?

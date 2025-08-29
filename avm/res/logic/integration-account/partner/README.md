@@ -1,6 +1,6 @@
 # Integration Account Partners `[Microsoft.Logic/integrationAccounts/partners]`
 
-This module deploys a Integration Account Partner.
+This module deploys an Integration Account Partner.
 
 ## Navigation
 
