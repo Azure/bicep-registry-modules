@@ -23,6 +23,13 @@ Optional. The PAT to use to interact with either GitHub. If not provided, the sc
 .EXAMPLE
 Set-AvmGitHubIssueOwnerConfig -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
+Process the issue with issue number 757
+
+.EXAMPLE
+Set-avmGitHubIssueOwnerConfig -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -WhatIf
+
+Simulate the processing of ALL issues in the given repository
+
 .NOTES
 Existing assignments won't be removed as we cannot determine whether they were added manually.
 One way to address this would be to fetch he timeline per issue and only remove assignees that are not owners and where not manually added as per set timeline.
