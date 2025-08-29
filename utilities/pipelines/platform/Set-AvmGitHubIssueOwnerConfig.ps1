@@ -96,7 +96,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         $moduleName, $moduleType = [regex]::Match($issue.body, 'avm\/(res|ptn|utl)\/.+').Captures.Groups.value
-        $shortTitle = '{0}...' -f ($issue.title -split ']: ')[1].SubString(0, 15)
+        $shortTitle = '{0}...' -f ($issue.title -split ']: ')[1].SubString(0, 15).Trim()
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             throw 'No valid module name was found in the issue.'
