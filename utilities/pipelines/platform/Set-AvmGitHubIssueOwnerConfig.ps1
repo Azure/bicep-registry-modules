@@ -51,7 +51,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueList.ps1')
-    # . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueCommentsList.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueProjectAssignment.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueTimeline.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
@@ -84,10 +84,11 @@ function Set-AvmGitHubIssueOwnerConfig {
         utl = (Get-AvmCsvData -ModuleIndex 'Bicep-Utility')
     }
 
-    # TODO: Add counter
     $processedCount = 0
     $totalCount = $issues.Count
     foreach ($issue in $issues) {
+
+        $anyUpdate = $false
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
@@ -161,18 +162,25 @@ function Set-AvmGitHubIssueOwnerConfig {
         # ---------------
         $existingLabels = $issue.labels.name
 
+        # Existing project assignments
+        # ---------------------------
+        $existingLabels = $issue.labels.name
+
         # ============= #
         # Process issue #
         # ============= #
+        $projectAssignments = Get-GitHubIssueProjectAssignment @baseInputObject -IssueNumber $issue.number
 
         # Add issue to project
         # --------------------
-        # TODO: Check if already in project
         $ProjectNumber = 566 # AVM - Module Issues
-        if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
-            Add-GitHubIssueToProject -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+        if ($projectAssignments.number -notcontains $projectNumber) {
+            $anyUpdate = $true
+            if ($PSCmdlet.ShouldProcess("Issue [$($issue.title)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
+                Add-GitHubIssueToProject @baseInputObject -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+            }
+            Write-Verbose ('📃 [{0}/{1}] Issue [{2}] {3}: Added to project [#{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $ProjectNumber) -Verbose
         }
-        Write-Verbose ('📃 [{0}/{1}] Issue [{2}] {3}: Added to project [#{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $ProjectNumber) -Verbose
 
         switch ($moduleType) {
             'res' { $label = 'Class: Resource Module :package:' }
@@ -186,6 +194,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         # Add class label
         # ---------------
         if ($existingLabels -notcontains $label) {
+            $anyUpdate = $true
             if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.title)]", 'Add')) {
                 gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
@@ -195,13 +204,12 @@ function Set-AvmGitHubIssueOwnerConfig {
         # Add initial comment
         # -------------------
         if ($commentsOfIssue.body -notcontains $reply) {
+            $anyUpdate = $true
             if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.title)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
             Write-Verbose ('[{0}/{1}] 💬 Issue [{2}] {3}: Added initial comment.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
-        } else {
-            Write-Debug ('[{0}/{1}] 📎 Issue [{2}] {3}: Already received its initial comment. Skipping.' -f $processedCount, $totalCount, $issue.number, $shortTitle)
         }
 
         if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
@@ -209,7 +217,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             # Assign owner team members
             # -------------------------
             foreach ($alias in ($ownerTeamMembers | Where-Object { $existingAssignees -notcontains $_ })) {
-
+                $anyUpdate = $true
                 if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.title)]", 'Assign')) {
                     $assignment = gh issue edit $issue.url --add-assignee $alias --repo $fullRepositoryName
                 } else {
@@ -245,6 +253,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             ($ownerTeamMembers -notcontains $_) -and ($usersAssignedManually -notcontains $_)
 
             foreach ($excessAssignee in $assigneesToRemove) {
+                $anyUpdate = $true
                 if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.title)]", 'Remove')) {
                     gh issue edit $issue.url --remove-assignee $excessAssignee --repo $fullRepositoryName
                 }
@@ -252,7 +261,11 @@ function Set-AvmGitHubIssueOwnerConfig {
             }
         }
 
-        Write-Verbose ('✅ [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : '')) -Verbose
+        if ($anyUpdate) {
+            Write-Verbose ('✅ [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : '')) -Verbose
+        } else {
+            Write-Verbose ('✅ [{0}/{1}] Issue [{2}] {3} is up to date' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+        }
         $processedCount++
     }
 }
