@@ -2,7 +2,6 @@
 name: .Platform - Set GitHub issue owner config
 
 on:
-  push: # TODO: remove
   issues:
     types: [opened]
   schedule:
@@ -69,7 +68,7 @@ jobs:
             RepositoryOwner = "${{ github.repository_owner }}"
             RepositoryName  = "${{ github.event.repository.name }}"
             RepoRoot        = $env:GITHUB_WORKSPACE
-            WhatIf          = $true #[System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
+            WhatIf          = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
           }
 
           if(-not [String]::IsNullOrEmpty('${{ needs.job_initialize_pipeline.outputs.issueNumber }}')) {
