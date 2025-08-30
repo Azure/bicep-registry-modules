@@ -222,9 +222,9 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         switch ($moduleType) {
-            'res' { $label = 'Class: Resource Module :package:' }
-            'ptn' { $label = 'Class: Pattern Module :package:' }
-            'utl' { $label = 'Class: Utility Module :package:' }
+            'res' { $label = 'Class: Resource Module :package:'; break }
+            'ptn' { $label = 'Class: Pattern Module :package:'; break }
+            'utl' { $label = 'Class: Utility Module :package:'; break }
             default {
                 throw "Unknown module type [$moduleType]"
             }
