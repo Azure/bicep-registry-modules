@@ -29,11 +29,6 @@ Process the issue with issue number 757
 Set-avmGitHubIssueOwnerConfig -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -WhatIf
 
 Simulate the processing of ALL issues in the given repository
-
-.NOTES
-Existing assignments won't be removed as we cannot determine whether they were added manually.
-One way to address this would be to fetch he timeline per issue and only remove assignees that are not owners and where not manually added as per set timeline.
-See:https://docs.github.com/en/rest/issues/timeline?apiVersion=2022-11-28#list-timeline-events-for-an-issue
 #>
 function Set-AvmGitHubIssueOwnerConfig {
 
