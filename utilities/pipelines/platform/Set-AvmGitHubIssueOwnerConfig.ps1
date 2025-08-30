@@ -204,6 +204,10 @@ function Set-AvmGitHubIssueOwnerConfig {
         # ---------------------------
         $existingLabels = $issue.labels.name
 
+        if ($moduleCsvData.ModuleStatus -eq 'Orphaned' -and $existingLabels -notcontains 'Status: Module Orphaned :yellow_circle:') {
+            Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] is orphaned but not assigned the required label. Please check.' -f $issue.number, $shortTitle, $moduleName)
+        }
+
         # ============= #
         # Process issue #
         # ============= #
