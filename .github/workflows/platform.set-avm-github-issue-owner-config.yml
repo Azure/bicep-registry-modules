@@ -2,6 +2,7 @@
 name: .Platform - Set GitHub issue owner config
 
 on:
+  push: # TODO: remove
   issues:
     types: [opened]
   schedule:
