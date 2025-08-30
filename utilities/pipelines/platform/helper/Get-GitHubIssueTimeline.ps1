@@ -18,7 +18,7 @@ Mandatory. The name of the repository to fetch the timelines from.
 Mandatory. The issue number to get the comments for.
 
 .EXAMPLE
-Get-GitHubIssueTimeline -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueNumber '1234'
+Get-GitHubIssueTimeline -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueNumber '1234'
 
 Get all comments of the issue 1234 of the repository 'Azure/bicep-registry-modules'
 #>
