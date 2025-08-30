@@ -223,7 +223,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             $anyUpdate = $true
             $statistics.'Project assignments'++
             if ($PSCmdlet.ShouldProcess("Issue [$($issue.number)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
-                Add-GitHubIssueToProject @baseInputObject -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+                Add-GitHubIssueToProject @baseInputObject -ProjectNumber $ProjectNumber -IssueUrl $issue.url
             }
             Write-Verbose ('    📃  Issue [{0}] {1}: Added to project [#{2}]' -f $issue.number, $shortTitle, $ProjectNumber) -Verbose
         }
@@ -243,7 +243,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             $anyUpdate = $true
             $statistics.Labeled++
             if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.number)]", 'Add')) {
-                gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
+                gh issue edit $issue.number --add-label $label --repo $fullRepositoryName
             }
             Write-Verbose ('    🏷️  Issue [{0}] {1}: Added label [{2}]' -f $issue.title, $shortTitle, $label) -Verbose
         }
@@ -255,7 +255,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             $statistics.'Added first comments'++
             if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.number)]", 'Add')) {
                 # write comment
-                gh issue comment $issue.url --body $reply --repo $fullRepositoryName
+                gh issue comment $issue.number --body $reply --repo $fullRepositoryName
             }
             Write-Verbose ('    💬  Issue [{0}] {1}: Added initial comment{2}.' -f $issue.number, $shortTitle, ($moduleCsvData.ModuleStatus -eq 'Orphaned' ? ' (for orphaned)' : '')) -Verbose
         }
@@ -268,7 +268,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                 $anyUpdate = $true
                 $statistics.'Added assignees'++
                 if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.number)]", 'Assign')) {
-                    $assignment = gh issue edit $issue.url --add-assignee $alias --repo $fullRepositoryName
+                    $assignment = gh issue edit $issue.number --add-assignee $alias --repo $fullRepositoryName
                 } else {
                     $assignment = 'anyValue' # Required for correct error handling if running in WhatIf mode
                 }
@@ -284,7 +284,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                     if ($commentsOfIssue.body -notcontains $reply) {
                         $statistics.'Added failed assignment comments'++
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.number)]", 'Add')) {
-                            gh issue comment $issue.url --body $reply --repo $fullRepositoryName
+                            gh issue comment $issue.number --body $reply --repo $fullRepositoryName
                         }
                         Write-Verbose ('    💬  Issue [{0}] {1}: Added [Assignment failed] comment' -f $issue.number, $shortTitle) -Verbose
                     }
@@ -305,7 +305,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             $anyUpdate = $true
             $statistics.'Removed assignees'++
             if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.number)]", 'Remove')) {
-                gh issue edit $issue.url --remove-assignee $excessAssignee --repo $fullRepositoryName
+                gh issue edit $issue.number --remove-assignee $excessAssignee --repo $fullRepositoryName
             }
             Write-Verbose ('    🗑️  Issue [{0}] {1}: Removed excess assignee [{2}]' -f $issue.number, $shortTitle, $excessAssignee) -Verbose
         }
