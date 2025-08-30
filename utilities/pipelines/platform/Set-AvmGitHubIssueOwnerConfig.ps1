@@ -241,16 +241,16 @@ function Set-AvmGitHubIssueOwnerConfig {
             Write-Verbose ('    🏷️  [{0}/{1}] Issue [{2}] {3}: Added label [{4}]' -f $processedCount, $totalCount, $issue.title, $shortTitle, $label) -Verbose
         }
 
-        # Add initial comment
-        # -------------------
-        if ($commentsOfIssue.body -notcontains $reply) {
+        # Add initial comment (if not an old issue, unless orphaned)
+        # ----------------------------------------------------------
+        if ($commentsOfIssue.body -notcontains $reply -and ($issue.created_at -gt (Get-Date).AddDays(-7) -or $moduleCsvData.ModuleStatus -eq 'Orphaned')) {
             $anyUpdate = $true
             $statistics.'Added first comments'++
             if ($PSCmdlet.ShouldProcess("Initial comment to issue [$($issue.number)]", 'Add')) {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
-            Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added initial comment.' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+            Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added initial comment{4}.' -f $processedCount, $totalCount, $issue.number, $shortTitle, ($moduleCsvData.ModuleStatus -eq 'Orphaned' ? ' (for orphaned)' : '')) -Verbose
         }
 
         if (($moduleCsvData.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($moduleCsvData.PrimaryModuleOwnerGHHandle)))) {
