@@ -84,8 +84,6 @@ function Set-AvmGitHubIssueOwnerConfig {
         $issues = Get-GitHubIssueList @baseInputObject
     }
 
-    $issues = $issues[0..55] # TODO: remove
-
     # Fetch module data
     $csvData = @{
         res = (Get-AvmCsvData -ModuleIndex 'Bicep-Resource')
