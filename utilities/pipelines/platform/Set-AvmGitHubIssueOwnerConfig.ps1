@@ -133,7 +133,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
-            Write-Verbose ('    ℹ️  [{0}/{1}] Issue [{2}] {3}: Not a module issue but [{4}]. Skipping' -f $processedCount, $totalCount, $issue.number, $shortTitle, $issueCategory) -Verbose
+            Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
             $processedCount++
             continue
         }
@@ -141,7 +141,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         $moduleName, $moduleType = [regex]::Match($issue.body, '\navm\/(res|ptn|utl)\/.+').Captures.Groups.value | ForEach-Object { ($_ ?? '').Trim() }
 
         if ([string]::IsNullOrEmpty($moduleName)) {
-            Write-Warning ('    ⚠️  [{0}/{1}] Issue [{2}] {3}: No valid module name was found in the issue. Skipping' -f $processedCount, $totalCount, $issue.number, $shortTitle)
+            Write-Warning ('    ⚠️  Issue [{0}] {1}: No valid module name was found in the issue. Skipping' -f $issue.number, $shortTitle)
             $processedCount++
             continue
         }
@@ -164,7 +164,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         # new/unknown module
         if ($null -eq $moduleCsvData) {
-            Write-Warning ('    ⚠️  [{0}/{1}] Issue [{2}] {3}: Module [{4}] not found in CSV. Skipping assignment.' -f $processedCount, $totalCount, $issue.number, $shortTitle, $moduleName)
+            Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] not found in CSV. Skipping assignment.' -f $issue.number, $shortTitle, $moduleName)
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -218,7 +218,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess("Issue [$($issue.number)] to project [$ProjectNumber (AVM - Module Issues)]", 'Add')) {
                 Add-GitHubIssueToProject @baseInputObject -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
             }
-            Write-Verbose ('    📃  [{0}/{1}] Issue [{2}] {3}: Added to project [#{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $ProjectNumber) -Verbose
+            Write-Verbose ('    📃  Issue [{0}] {1}: Added to project [#{2}]' -f $issue.number, $shortTitle, $ProjectNumber) -Verbose
         }
 
         switch ($moduleType) {
@@ -238,7 +238,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess("Class label to issue [$($issue.number)]", 'Add')) {
                 gh issue edit $issue.url --add-label $label --repo $fullRepositoryName
             }
-            Write-Verbose ('    🏷️  [{0}/{1}] Issue [{2}] {3}: Added label [{4}]' -f $processedCount, $totalCount, $issue.title, $shortTitle, $label) -Verbose
+            Write-Verbose ('    🏷️  Issue [{0}] {1}: Added label [{2}]' -f $issue.title, $shortTitle, $label) -Verbose
         }
 
         # Add initial comment (if not an old issue, unless orphaned)
@@ -250,7 +250,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                 # write comment
                 gh issue comment $issue.url --body $reply --repo $fullRepositoryName
             }
-            Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added initial comment{4}.' -f $processedCount, $totalCount, $issue.number, $shortTitle, ($moduleCsvData.ModuleStatus -eq 'Orphaned' ? ' (for orphaned)' : '')) -Verbose
+            Write-Verbose ('    💬  Issue [{0}] {1}: Added initial comment{2}.' -f $issue.number, $shortTitle, ($moduleCsvData.ModuleStatus -eq 'Orphaned' ? ' (for orphaned)' : '')) -Verbose
         }
 
         if (($moduleCsvData.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($moduleCsvData.PrimaryModuleOwnerGHHandle)))) {
@@ -266,7 +266,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                     $assignment = 'anyValue' # Required for correct error handling if running in WhatIf mode
                 }
 
-                Write-Verbose ('    👋  [{0}/{1}] Issue [{2}] {3}: Added owner team member [{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $alias) -Verbose
+                Write-Verbose ('    👋  Issue [{0}] {1}: Added owner team member [{2}]' -f $issue.number, $shortTitle, $alias) -Verbose
 
                 # Error handling if assignment failed
                 if ([String]::IsNullOrEmpty($assignment)) {
@@ -279,7 +279,7 @@ function Set-AvmGitHubIssueOwnerConfig {
                         if ($PSCmdlet.ShouldProcess("'Assignment failed' comment to issue [$($issue.number)]", 'Add')) {
                             gh issue comment $issue.url --body $reply --repo $fullRepositoryName
                         }
-                        Write-Verbose ('    💬  [{0}/{1}] Issue [{2}] {3}: Added [Assignment failed] comment' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+                        Write-Verbose ('    💬  Issue [{0}] {1}: Added [Assignment failed] comment' -f $issue.number, $shortTitle) -Verbose
                     }
                 }
             }
@@ -300,14 +300,14 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.number)]", 'Remove')) {
                 gh issue edit $issue.url --remove-assignee $excessAssignee --repo $fullRepositoryName
             }
-            Write-Verbose ('    🗑️  [{0}/{1}] Issue [{2}] {3}: Removed excess assignee [{4}]' -f $processedCount, $totalCount, $issue.number, $shortTitle, $excessAssignee) -Verbose
+            Write-Verbose ('    🗑️  Issue [{0}] {1}: Removed excess assignee [{2}]' -f $issue.number, $shortTitle, $excessAssignee) -Verbose
         }
 
         if ($anyUpdate) {
             $statistics.'Updated issues'++
-            Write-Verbose ('    💾  [{0}/{1}] Issue [{2}] {3} {4} updated' -f $processedCount, $totalCount, $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : '')) -Verbose
+            Write-Verbose ('    💾  Issue [{0}] {1} {2} updated' -f $issue.number, $shortTitle, $($WhatIfPreference ? 'would have been' : '')) -Verbose
         } else {
-            Write-Verbose ('    ✅  [{0}/{1}] Issue [{2}] {3} is up to date' -f $processedCount, $totalCount, $issue.number, $shortTitle) -Verbose
+            Write-Verbose ('    ✅  Issue [{0}] {1} is up to date' -f $issue.number, $shortTitle) -Verbose
         }
         $processedCount++
     }
