@@ -85,7 +85,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         ptn = (Get-AvmCsvData -ModuleIndex 'Bicep-Pattern')
         utl = (Get-AvmCsvData -ModuleIndex 'Bicep-Utility')
     }
-
+    $moduleDistributionData = [System.Collections.ArrayList]@()
     $statistics = [ordered]@{
         "Updates`n-------"                 = $null
         'Added first comments'             = 0
@@ -134,6 +134,17 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         $moduleName, $moduleType = [regex]::Match($issue.body, '\navm\/(res|ptn|utl)\/.+').Captures.Groups.value | ForEach-Object { ($_ ?? '').Trim() }
+
+        # Populate distribution data
+        if ($moduleDistributionData.ModuleName -notcontains ($moduleName ? $moduleName : '<unkown>')) {
+            $moduleDistributionData += @{
+                ModuleName = $moduleName ? $moduleName : '<unkown>'
+                ModuleType = $moduleType ? $moduleType : '<?>'
+                References = [System.Collections.ArrayList]@()
+            }
+        }
+        ($moduleDistributionData | Where-Object { $_.ModuleName -eq ($moduleName ? $moduleName : '<unkown>') }).References += $issue.html_url
+
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: No valid module name was found in the issue. Skipping' -f $issue.number, $shortTitle)
@@ -320,4 +331,22 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose '# Statistics #' -Verbose
     Write-Verbose '# ========== #' -Verbose
     Write-Verbose ($statistics | Format-Table -AutoSize -Wrap -HideTableHeaders | Out-String) -Verbose
+    Write-Verbose '' -Verbose
+    Write-Verbose '# Assignee distribution' -Verbose
+    Write-Verbose '# ---------------------' -Verbose
+    Write-Verbose ($issues | Group-Object -Property { $_.assignee.login } | ForEach-Object {
+            [PSCustomObject]@{
+                Assignee = ($_.name ? $_.name : 'Unassigned')
+                '#'      = $_.Count
+            }
+        } | Sort-Object '#' -Descending | Out-String) -Verbose
+    Write-Verbose '# Module distribution' -Verbose
+    Write-Verbose '# -------------------' -Verbose
+    Write-Verbose ($moduleDistributionData | ForEach-Object {
+            [PSCustomObject]@{
+                Name = $_.ModuleName
+                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '👀'))
+                '#'  = $_.References.Count
+            }
+        } | Sort-Object -Property { $_.'#' } -Descending | Format-Table | Out-String) -Verbose
 }
