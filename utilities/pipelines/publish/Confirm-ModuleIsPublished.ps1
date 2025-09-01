@@ -52,12 +52,12 @@ function Confirm-ModuleIsPublished {
     #######################################
     ##   Confirm module tag is created   ##
     #######################################
-    # $existingTag = git ls-remote --tags origin $GitTagName
-    # if (-not $existingTag) {
-    #     throw "Tag [$GitTagName] was not successfully created. Please review."
-    # } else {
-    #     Write-Verbose "Passed: Found Git tag [$GitTagName]" -Verbose
-    # }
+    $existingTag = git ls-remote --tags origin $GitTagName
+    if (-not $existingTag) {
+        throw "Tag [$GitTagName] was not successfully created. Please review."
+    } else {
+        Write-Verbose "Passed: Found Git tag [$GitTagName]" -Verbose
+    }
 
     switch ($ValidationMethod) {
         'Oras' {
