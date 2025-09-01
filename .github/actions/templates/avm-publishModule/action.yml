@@ -47,7 +47,7 @@ runs:
 
     # Adding a step to install Oras as it's only needed for publishing/validation
     - name: Install Oras
-      shell: pwsh
+      shell: bash
       run: |
         VERSION="1.2.2"
         curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
