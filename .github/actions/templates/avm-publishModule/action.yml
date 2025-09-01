@@ -45,43 +45,54 @@ runs:
         sudo mv ./bicep /usr/local/bin/bicep
         bicep --version
 
-    - name: "Publish module to public bicep registry"
-      id: publish_step
-      uses: azure/powershell@v2
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Publish module to public bicep registry'
+    # Adding a step to install Oras as it's only needed for publishing/validation
+    - name: Install Oras
+      shell: pwsh
+      run: |
+        VERSION="1.2.2"
+        curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
+        mkdir -p oras-install/
+        tar -zxf oras_${VERSION}_*.tar.gz -C oras-install/
+        sudo mv oras-install/oras /usr/local/bin/
+        rm -rf oras_${VERSION}_*.tar.gz oras-install/
 
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
+    # - name: "Publish module to public bicep registry"
+    #   id: publish_step
+    #   uses: azure/powershell@v2
+    #   with:
+    #     azPSVersion: "latest"
+    #     inlineScript: |
+    #       # Grouping task logs
+    #       Write-Output '::group::Publish module to public bicep registry'
 
-          $functionInput = @{
-            TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
-            PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
-            RepoRoot             = $env:GITHUB_WORKSPACE
-          }
+    #       # Load used functions
+    #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
 
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+    #       $functionInput = @{
+    #         TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
+    #         PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+    #         RepoRoot             = $env:GITHUB_WORKSPACE
+    #       }
 
-          if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-            $publishCompressedOutput = $publishOutputs.Keys | Foreach-Object {
-              @{
-                version             = $publishOutputs.$_.version
-                publishedModuleName = $publishOutputs.$_.publishedModuleName
-                gitTagName          = $publishOutputs.$_.gitTagName
-              }
-            } | ConvertTo-Json -Compress
-            if($publishCompressedOutput -notmatch "\[.*\]") {
-              $publishCompressedOutput = "[$publishCompressedOutput]"
-            }
-            Write-Verbose "Publishing output: $publishCompressedOutput" -Verbose
-            Write-Output ('{0}={1}' -f 'publishOutput', $publishCompressedOutput) >> $env:GITHUB_OUTPUT
-          }
+    #       Write-Verbose "Invoke function with" -Verbose
+    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Write-Output '::endgroup::'
+    #       if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
+    #         $publishCompressedOutput = $publishOutputs.Keys | Foreach-Object {
+    #           @{
+    #             version             = $publishOutputs.$_.version
+    #             publishedModuleName = $publishOutputs.$_.publishedModuleName
+    #             gitTagName          = $publishOutputs.$_.gitTagName
+    #           }
+    #         } | ConvertTo-Json -Compress
+    #         if($publishCompressedOutput -notmatch "\[.*\]") {
+    #           $publishCompressedOutput = "[$publishCompressedOutput]"
+    #         }
+    #         Write-Verbose "Publishing output: $publishCompressedOutput" -Verbose
+    #         Write-Output ('{0}={1}' -f 'publishOutput', $publishCompressedOutput) >> $env:GITHUB_OUTPUT
+    #       }
+
+    #       Write-Output '::endgroup::'
 
     - name: "Validate publish"
       uses: azure/powershell@v2
