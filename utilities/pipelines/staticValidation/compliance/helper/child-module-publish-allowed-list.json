@@ -3,8 +3,21 @@
     "avm/res/authorization/role-assignment/mg-scope",
     "avm/res/authorization/role-assignment/sub-scope",
     "avm/res/authorization/role-assignment/rg-scope",
+    "avm/res/key-vault/vault/access-policy",
+    "avm/res/key-vault/vault/key",
+    "avm/res/key-vault/vault/secret",
+    "avm/res/network/private-dns-zone/a",
+    "avm/res/network/private-dns-zone/aaaa",
+    "avm/res/network/private-dns-zone/cname",
+    "avm/res/network/private-dns-zone/mx",
+    "avm/res/network/private-dns-zone/ptr",
+    "avm/res/network/private-dns-zone/soa",
+    "avm/res/network/private-dns-zone/srv",
+    "avm/res/network/private-dns-zone/txt",
+    "avm/res/network/virtual-network/subnet",
     "avm/res/storage/storage-account/blob-service/container",
     "avm/res/storage/storage-account/file-service/share",
-    "avm/res/network/virtual-network/subnet"
+    "avm/res/web/site/config",
+    "avm/res/web/site/slot"
   ]
 }

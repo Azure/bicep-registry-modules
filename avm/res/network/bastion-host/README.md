@@ -18,7 +18,7 @@ This module deploys a Bastion Host.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/bastionHosts` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/bastionHosts)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
 
 ## Usage examples
@@ -55,7 +55,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     // Non-required parameters
     location: '<location>'
     publicIPAddressObject: {
-      allocationMethod: 'Static'
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -71,7 +70,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         }
       ]
       name: 'nbhctmpip001-pip'
-      publicIPPrefixResourceId: ''
+      publicIPAllocationMethod: 'Static'
+      publicIpPrefixResourceId: ''
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -86,11 +86,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
-      zones: [
-        1
-        2
-        3
-      ]
     }
   }
 }
@@ -121,7 +116,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     },
     "publicIPAddressObject": {
       "value": {
-        "allocationMethod": "Static",
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -137,7 +131,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
           }
         ],
         "name": "nbhctmpip001-pip",
-        "publicIPPrefixResourceId": "",
+        "publicIPAllocationMethod": "Static",
+        "publicIpPrefixResourceId": "",
         "roleAssignments": [
           {
             "principalId": "<principalId>",
@@ -151,12 +146,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
-        },
-        "zones": [
-          1,
-          2,
-          3
-        ]
+        }
       }
     }
   }
@@ -179,7 +169,6 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param location = '<location>'
 param publicIPAddressObject = {
-  allocationMethod: 'Static'
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -195,7 +184,8 @@ param publicIPAddressObject = {
     }
   ]
   name: 'nbhctmpip001-pip'
-  publicIPPrefixResourceId: ''
+  publicIPAllocationMethod: 'Static'
+  publicIpPrefixResourceId: ''
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -210,11 +200,6 @@ param publicIPAddressObject = {
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
-  zones: [
-    1
-    2
-    3
-  ]
 }
 ```
 
@@ -890,14 +875,7 @@ The list of Availability zones to use for the zone-redundant resources.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
+- Default: `[]`
 - Allowed:
   ```Bicep
   [
@@ -1156,6 +1134,563 @@ Specifies the properties of the Public IP to create and be used by Azure Bastion
   }
   ```
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-publicipaddressobjectname) | string | The name of the Public IP Address. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-publicipaddressobjectavailabilityzones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
+| [`ddosSettings`](#parameter-publicipaddressobjectddossettings) | object | The DDoS protection plan configuration associated with the public IP address. |
+| [`diagnosticSettings`](#parameter-publicipaddressobjectdiagnosticsettings) | array | Diagnostic settings for the Public IP resource. |
+| [`dnsSettings`](#parameter-publicipaddressobjectdnssettings) | object | The DNS settings of the public IP address. |
+| [`enableTelemetry`](#parameter-publicipaddressobjectenabletelemetry) | bool | Enable or disable usage telemetry for the Public IP module. |
+| [`idleTimeoutInMinutes`](#parameter-publicipaddressobjectidletimeoutinminutes) | int | Idle timeout in minutes for the Public IP resource. |
+| [`ipTags`](#parameter-publicipaddressobjectiptags) | array | The list of tags associated with the public IP address. |
+| [`location`](#parameter-publicipaddressobjectlocation) | string | Location for the Public IP resource. |
+| [`lock`](#parameter-publicipaddressobjectlock) | object | The lock settings of the service. |
+| [`publicIPAddressVersion`](#parameter-publicipaddressobjectpublicipaddressversion) | string | IP address version. |
+| [`publicIPAllocationMethod`](#parameter-publicipaddressobjectpublicipallocationmethod) | string | The public IP address allocation method. |
+| [`publicIpPrefixResourceId`](#parameter-publicipaddressobjectpublicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
+| [`roleAssignments`](#parameter-publicipaddressobjectroleassignments) | array | Array of role assignments to create for the Public IP resource. |
+| [`skuName`](#parameter-publicipaddressobjectskuname) | string | Name of a public IP address SKU. |
+| [`skuTier`](#parameter-publicipaddressobjectskutier) | string | Tier of a public IP address SKU. |
+| [`tags`](#parameter-publicipaddressobjecttags) | object | Tags to apply to the Public IP resource. |
+
+### Parameter: `publicIPAddressObject.name`
+
+The name of the Public IP Address.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.availabilityZones`
+
+A list of availability zones denoting the IP allocated for the resource needs to come from.
+
+- Required: No
+- Type: array
+
+### Parameter: `publicIPAddressObject.ddosSettings`
+
+The DDoS protection plan configuration associated with the public IP address.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`protectionMode`](#parameter-publicipaddressobjectddossettingsprotectionmode) | string | The DDoS protection policy customizations. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ddosProtectionPlan`](#parameter-publicipaddressobjectddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
+
+### Parameter: `publicIPAddressObject.ddosSettings.protectionMode`
+
+The DDoS protection policy customizations.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.ddosSettings.ddosProtectionPlan`
+
+The DDoS protection plan associated with the public IP address.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-publicipaddressobjectddossettingsddosprotectionplanid) | string | The resource ID of the DDOS protection plan associated with the public IP address. |
+
+### Parameter: `publicIPAddressObject.ddosSettings.ddosProtectionPlan.id`
+
+The resource ID of the DDOS protection plan associated with the public IP address.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings`
+
+Diagnostic settings for the Public IP resource.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-publicipaddressobjectdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-publicipaddressobjectdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-publicipaddressobjectdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-publicipaddressobjectdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-publicipaddressobjectdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-publicipaddressobjectdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-publicipaddressobjectdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-publicipaddressobjectdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-publicipaddressobjectdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-publicipaddressobjectdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-publicipaddressobjectdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-publicipaddressobjectdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-publicipaddressobjectdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-publicipaddressobjectdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.dnsSettings`
+
+The DNS settings of the public IP address.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domainNameLabel`](#parameter-publicipaddressobjectdnssettingsdomainnamelabel) | string | The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domainNameLabelScope`](#parameter-publicipaddressobjectdnssettingsdomainnamelabelscope) | string | The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. |
+| [`fqdn`](#parameter-publicipaddressobjectdnssettingsfqdn) | string | The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone. |
+| [`reverseFqdn`](#parameter-publicipaddressobjectdnssettingsreversefqdn) | string | The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN. |
+
+### Parameter: `publicIPAddressObject.dnsSettings.domainNameLabel`
+
+The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.dnsSettings.domainNameLabelScope`
+
+The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.dnsSettings.fqdn`
+
+The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.dnsSettings.reverseFqdn`
+
+The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.enableTelemetry`
+
+Enable or disable usage telemetry for the Public IP module.
+
+- Required: No
+- Type: bool
+
+### Parameter: `publicIPAddressObject.idleTimeoutInMinutes`
+
+Idle timeout in minutes for the Public IP resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `publicIPAddressObject.ipTags`
+
+The list of tags associated with the public IP address.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipTagType`](#parameter-publicipaddressobjectiptagsiptagtype) | string | The IP tag type. |
+| [`tag`](#parameter-publicipaddressobjectiptagstag) | string | The IP tag. |
+
+### Parameter: `publicIPAddressObject.ipTags.ipTagType`
+
+The IP tag type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.ipTags.tag`
+
+The IP tag.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.location`
+
+Location for the Public IP resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-publicipaddressobjectlockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-publicipaddressobjectlockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-publicipaddressobjectlocknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `publicIPAddressObject.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.publicIPAddressVersion`
+
+IP address version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.publicIPAllocationMethod`
+
+The public IP address allocation method.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.publicIpPrefixResourceId`
+
+Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments`
+
+Array of role assignments to create for the Public IP resource.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-publicipaddressobjectroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-publicipaddressobjectroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-publicipaddressobjectroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-publicipaddressobjectroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-publicipaddressobjectroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-publicipaddressobjectroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-publicipaddressobjectroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-publicipaddressobjectroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `publicIPAddressObject.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicIPAddressObject.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.skuName`
+
+Name of a public IP address SKU.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.skuTier`
+
+Tier of a public IP address SKU.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
+
+### Parameter: `publicIPAddressObject.tags`
+
+Tags to apply to the Public IP resource.
+
+- Required: No
+- Type: object
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -1307,9 +1842,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
