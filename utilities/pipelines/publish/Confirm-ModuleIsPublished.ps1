@@ -71,7 +71,7 @@ function Confirm-ModuleIsPublished {
             while ($true) {
                 $index++
 
-                oras pull $registryReference --format 'json'
+                oras pull $registryReference --format 'json' 2>$null
 
                 if (Test-Path (Join-Path -Path $PWD 'Compiled ARM template')) {
                     # A very simple check
