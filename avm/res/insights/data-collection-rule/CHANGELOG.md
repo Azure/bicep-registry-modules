@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/data-collection-rule/CHANGELOG.md).
 
-## 0.6.3
+## 0.7.0
 
 ### Changes
 
