@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec >/dev/null 2>&1 # Redirect log to avoid ACI issue
+
 set -e  # Exit on any error
 
 echo "Starting HCI deployment script..."
