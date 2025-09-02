@@ -125,6 +125,10 @@ resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-1
   properties: dataCollectionRulePropertiesUnion
 }
 
+// Resolve which of the Data Collection Rule entities were actually constructed, so we know which one to
+// reference for outputs later on.
+var createdDCR = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll : dataCollectionRule
+
 // Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
 module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalScope.bicep' = if ((!empty(lock ?? {}) && lock.?kind != 'None') || (!empty(roleAssignments ?? []))) {
   name: '${uniqueString(deployment().name, location)}-DCR-ConditionalScope'
@@ -161,6 +165,11 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
   ? dataCollectionRuleAll.?identity.?principalId
   : dataCollectionRule.?identity.?principalId
 
+@description('The endpoints of the dataCollectionRule, if created')
+output endpoints object? = !empty(createdDCR.?properties.?endpoints) ? createdDCR.properties.endpoints : null
+
+@description('The ImmutableId of the dataCollectionRule')
+output immutableId string? = !empty(createdDCR.?properties.?immutableId) ? createdDCR.properties.immutableId : null
 // =============== //
 //   Definitions   //
 // =============== //
