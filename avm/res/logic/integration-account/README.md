@@ -204,7 +204,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     schemas: [
       {
         contentLink: {
-          uri: 'https://deplsnodiasaiamax01.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-08-29T16:03:33Z&se=2025-08-30T00:18:33Z&spr=https&sv=2024-11-04&sr=b&sig=qoyd2yubWD9RNDSuFWrcI8ASJgoQeMxAEE9sg4jtebQ%3D'
+          uri: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D'
         }
         documentName: 'PurchaseOrder'
         metadata: {
@@ -347,7 +347,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       "value": [
         {
           "contentLink": {
-            "uri": "https://deplsnodiasaiamax01.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-08-29T16:03:33Z&se=2025-08-30T00:18:33Z&spr=https&sv=2024-11-04&sr=b&sig=qoyd2yubWD9RNDSuFWrcI8ASJgoQeMxAEE9sg4jtebQ%3D"
+            "uri": "https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D"
           },
           "documentName": "PurchaseOrder",
           "metadata": {
@@ -478,7 +478,7 @@ param roleAssignments = [
 param schemas = [
   {
     contentLink: {
-      uri: 'https://deplsnodiasaiamax01.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-08-29T16:03:33Z&se=2025-08-30T00:18:33Z&spr=https&sv=2024-11-04&sr=b&sig=qoyd2yubWD9RNDSuFWrcI8ASJgoQeMxAEE9sg4jtebQ%3D'
+      uri: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D'
     }
     documentName: 'PurchaseOrder'
     metadata: {
