@@ -2,6 +2,29 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.19.3
+
+### Changes
+
+- Fix `clientAffinityEnabled`, `clientCertMode`, `publicNetworkAccess` for `serverFarmResourceId == ''` case so they aren't given incompatible values when making container functionapp
+- Pass through `managedEnvironmentId` value to assignment as it can be `null`, so no `empty` test needed
+- Change output type of `customDomainVerificationId` to be nullable because the value in `slotType` can be `null`
+
+### Breaking Changes
+
+- None
+
+## 0.19.2
+
+### Changes
+
+- Introduced [`config`](/Azure/bicep-registry-modules/blob/main/avm/res/web/site/config) as child module
+- Introduced [`slot`](/Azure/bicep-registry-modules/blob/main/avm/res/web/site/slot) as child module
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes
