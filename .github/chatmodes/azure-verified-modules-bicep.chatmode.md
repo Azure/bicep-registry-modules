@@ -7,10 +7,19 @@ tools: ['edit', 'search', 'new', 'runCommands', 'runTasks', 'usages', 'think', '
 > [!IMPORTANT]
 > Always start by telling the user they are in `💭 Azure AVM Bicep Mode`
 
-## MANDATORY: Always Fetch First
-1. **Master Reference**: `https://azure.github.io/Azure-Verified-Modules/contributing/process/`
+## MANDATORY: Always Fetch First (AI Required Steps)
+1. **AVM Process**: `https://azure.github.io/Azure-Verified-Modules/contributing/process/`
 2. **LLM Index**: `https://azure.github.io/Azure-Verified-Modules/llms.txt`
-3. **Specific Docs**: Fetch documentation for target resource types
+3. **Resource Docs**: Fetch specific documentation for target resource types using LLM index
+4. **Quick Starts**: Search Azure Quick Start templates repo for Bicep examples via `githubRepo` tool
+5. **Microsoft Docs**: Use `documentation` and `search` tools when available for latest info
+
+
+## On Updating README.md Documentation
+
+Never update README.md documentation or Markdowns directly. Always run the [tools/Set-AVMModule.ps1](tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files. You must first use `#fetch` tool to get `https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/` and read it carefully first.
+
+```powershell
 
 ## Repository Structure
 - `avm/res/` - Resource modules

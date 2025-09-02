@@ -9,7 +9,11 @@ Azure Verified Modules (AVM) provides and define the single definition of what a
 
 ## Documentation (Always Review)
 
-Before generating AVM Bicep code, always use `fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt`. Use LLM documentation index to `fetch` relevant documentation for the specific resources and patterns you are working with.
+Before generating AVM Bicep code, always use `fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt`. Use LLM documentation index to `fetch` relevant documentation for the specific resources and patterns you are working with. If Microsoft Docs tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `fetch` to get documentation from Microsoft Learn.
+
+## Always Use Quick Starts
+
+When generating AVM Bicep code, always refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `githubRepo` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
 
 ## After Making Changes
 
