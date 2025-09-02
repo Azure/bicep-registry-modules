@@ -203,9 +203,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     schemas: [
       {
-        contentLink: {
-          uri: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D'
-        }
+        content: '<content>'
         documentName: 'PurchaseOrder'
         metadata: {
           key1: 'value1'
@@ -346,9 +344,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "schemas": {
       "value": [
         {
-          "contentLink": {
-            "uri": "https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D"
-          },
+          "content": "<content>",
           "documentName": "PurchaseOrder",
           "metadata": {
             "key1": "value1",
@@ -477,9 +473,7 @@ param roleAssignments = [
 ]
 param schemas = [
   {
-    contentLink: {
-      uri: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D'
-    }
+    content: '<content>'
     documentName: 'PurchaseOrder'
     metadata: {
       key1: 'value1'
@@ -1227,7 +1221,7 @@ The content link for the schema.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contentLink`](#parameter-schemascontentlink) | object | Content link settings. |
+| [`content`](#parameter-schemascontent) | string | The schema content. |
 | [`name`](#parameter-schemasname) | string | The Name of the schema resource. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 
@@ -1235,27 +1229,15 @@ The content link for the schema.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
 | [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
 | [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
 
-### Parameter: `schemas.contentLink`
+### Parameter: `schemas.content`
 
-Content link settings.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`uri`](#parameter-schemascontentlinkuri) | string | The URI of the content link. |
-
-### Parameter: `schemas.contentLink.uri`
-
-The URI of the content link.
+The schema content.
 
 - Required: Yes
 - Type: string
@@ -1272,6 +1254,13 @@ The Name of the schema resource.
 The schema type.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `schemas.contentType`
+
+The schema content type.
+
+- Required: No
 - Type: string
 
 ### Parameter: `schemas.documentName`

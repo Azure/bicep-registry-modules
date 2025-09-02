@@ -21,6 +21,42 @@ param serviceShort string = 'iamax'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
+// Variables    //
+// ============ //
+var schemaContent = '''<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://example.com/purchaseorder"
+           xmlns="http://example.com/purchaseorder"
+           elementFormDefault="qualified">
+
+  <xs:element name="PurchaseOrder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="OrderNumber" type="xs:string"/>
+        <xs:element name="OrderDate" type="xs:date"/>
+        <xs:element name="CustomerName" type="xs:string"/>
+        <xs:element name="Items">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Item" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ProductID" type="xs:string"/>
+                    <xs:element name="Quantity" type="xs:int"/>
+                    <xs:element name="Price" type="xs:decimal"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>'''
+
+// ============ //
 // Dependencies //
 // ============ //
 
@@ -69,12 +105,10 @@ module testDeployment '../../../main.bicep' = [
       schemas: [
         {
           name: 'schema1'
+          content: schemaContent
           schemaType: 'Xml'
           targetNamespace: 'http://example.com/purchaseorder'
           documentName: 'PurchaseOrder'
-          contentLink: {
-            uri: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-02T20:09:47Z&se=2025-09-03T04:24:47Z&spr=https&sv=2024-11-04&sr=b&sig=ZkPbN0pZZy1UPKbHptGTNZ3zM55Uc0Lza9smQNnqRFo%3D'
-          }
           metadata: {
             key1: 'value1'
             key2: 'value2'

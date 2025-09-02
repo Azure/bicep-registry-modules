@@ -10,20 +10,23 @@ param location string = resourceGroup().location
 @description('Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment.')
 param integrationAccountName string
 
-@description('Optional. The document name.')
-param documentName string?
+@description('Required. The schema content.')
+param content string
+
+@description('Optional. The schema content type')
+param contentType string = 'application/xml'
+
+@description('Required. The document name.')
+param documentName string
 
 @description('Optional. The schema metadata.')
 param metadata object?
 
-@description('Required. The schema type.')
-param schemaType ('NotSpecified' | 'Xml')
+@description('Optional. The schema type.')
+param schemaType ('NotSpecified' | 'Xml') = 'Xml'
 
-@description('Optional. The target namespace of the schema.')
-param targetNamespace string?
-
-@description('Required. Content link settings.')
-param contentLinkContent contentLinkType
+@description('Required. The target namespace of the schema.')
+param targetNamespace string
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.tags?
@@ -37,23 +40,14 @@ resource schema 'Microsoft.Logic/integrationAccounts/schemas@2019-05-01' = {
   parent: integrationAccount
   location: location
   properties: {
+    contentType: contentType
+    content: content
     documentName: documentName
     metadata: metadata
     schemaType: schemaType
     targetNamespace: targetNamespace
-    contentLink: contentLinkContent
   }
   tags: tags
-}
-
-// =============== //
-//   Definitions   //
-// =============== //
-@export()
-@description('The type for content link properties.')
-type contentLinkType = {
-  @description('Required. The URI of the content link.')
-  uri: string
 }
 
 // ============ //

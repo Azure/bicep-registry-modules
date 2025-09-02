@@ -6,27 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11611166958960220608"
+      "templateHash": "16665621860404742352"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
-  },
-  "definitions": {
-    "contentLinkType": {
-      "type": "object",
-      "properties": {
-        "uri": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The URI of the content link."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for content link properties."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -48,11 +31,23 @@
         "description": "Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment."
       }
     },
+    "content": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The schema content."
+      }
+    },
+    "contentType": {
+      "type": "string",
+      "defaultValue": "application/xml",
+      "metadata": {
+        "description": "Optional. The schema content type"
+      }
+    },
     "documentName": {
       "type": "string",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. The document name."
+        "description": "Required. The document name."
       }
     },
     "metadata": {
@@ -68,21 +63,15 @@
         "NotSpecified",
         "Xml"
       ],
+      "defaultValue": "Xml",
       "metadata": {
-        "description": "Required. The schema type."
+        "description": "Optional. The schema type."
       }
     },
     "targetNamespace": {
       "type": "string",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. The target namespace of the schema."
-      }
-    },
-    "contentLinkContent": {
-      "$ref": "#/definitions/contentLinkType",
-      "metadata": {
-        "description": "Required. Content link settings."
+        "description": "Required. The target namespace of the schema."
       }
     },
     "tags": {
@@ -109,11 +98,12 @@
       "name": "[format('{0}/{1}', parameters('integrationAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
+        "contentType": "[parameters('contentType')]",
+        "content": "[parameters('content')]",
         "documentName": "[parameters('documentName')]",
         "metadata": "[parameters('metadata')]",
         "schemaType": "[parameters('schemaType')]",
-        "targetNamespace": "[parameters('targetNamespace')]",
-        "contentLink": "[parameters('contentLinkContent')]"
+        "targetNamespace": "[parameters('targetNamespace')]"
       },
       "tags": "[parameters('tags')]"
     }

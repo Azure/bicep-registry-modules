@@ -20,9 +20,10 @@ This module deploys an Integration Account Schema.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contentLinkContent`](#parameter-contentlinkcontent) | object | Content link settings. |
+| [`content`](#parameter-content) | string | The schema content. |
+| [`documentName`](#parameter-documentname) | string | The document name. |
 | [`name`](#parameter-name) | string | The Name of the schema resource. |
-| [`schemaType`](#parameter-schematype) | string | The schema type. |
+| [`targetNamespace`](#parameter-targetnamespace) | string | The target namespace of the schema. |
 
 **Conditional parameters**
 
@@ -34,28 +35,22 @@ This module deploys an Integration Account Schema.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`documentName`](#parameter-documentname) | string | The document name. |
+| [`contentType`](#parameter-contenttype) | string | The schema content type |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) | object | The schema metadata. |
+| [`schemaType`](#parameter-schematype) | string | The schema type. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-| [`targetNamespace`](#parameter-targetnamespace) | string | The target namespace of the schema. |
 
-### Parameter: `contentLinkContent`
+### Parameter: `content`
 
-Content link settings.
+The schema content.
 
 - Required: Yes
-- Type: object
+- Type: string
 
-**Required parameters**
+### Parameter: `documentName`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`uri`](#parameter-contentlinkcontenturi) | string | The URI of the content link. |
-
-### Parameter: `contentLinkContent.uri`
-
-The URI of the content link.
+The document name.
 
 - Required: Yes
 - Type: string
@@ -67,19 +62,12 @@ The Name of the schema resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `schemaType`
+### Parameter: `targetNamespace`
 
-The schema type.
+The target namespace of the schema.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'NotSpecified'
-    'Xml'
-  ]
-  ```
 
 ### Parameter: `integrationAccountName`
 
@@ -88,12 +76,13 @@ The name of the parent integration account. Required if the template is used in 
 - Required: Yes
 - Type: string
 
-### Parameter: `documentName`
+### Parameter: `contentType`
 
-The document name.
+The schema content type
 
 - Required: No
 - Type: string
+- Default: `'application/xml'`
 
 ### Parameter: `location`
 
@@ -110,19 +99,27 @@ The schema metadata.
 - Required: No
 - Type: object
 
+### Parameter: `schemaType`
+
+The schema type.
+
+- Required: No
+- Type: string
+- Default: `'Xml'`
+- Allowed:
+  ```Bicep
+  [
+    'NotSpecified'
+    'Xml'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Resource tags.
 
 - Required: No
 - Type: object
-
-### Parameter: `targetNamespace`
-
-The target namespace of the schema.
-
-- Required: No
-- Type: string
 
 ## Outputs
 

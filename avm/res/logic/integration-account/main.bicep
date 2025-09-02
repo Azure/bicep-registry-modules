@@ -224,11 +224,12 @@ module integrationAccount_schemas 'schema/main.bicep' = [
       name: schema.name
       location: location
       integrationAccountName: integrationAccount.name
-      documentName: schema.?documentName
+      content: schema.content
+      contentType: schema.?contentType
+      documentName: schema.documentName
       metadata: schema.?metadata
-      schemaType: schema.schemaType
-      targetNamespace: schema.?targetNamespace
-      contentLinkContent: schema.contentLink
+      schemaType: schema.?schemaType
+      targetNamespace: schema.targetNamespace
       tags: schema.?tags ?? tags
     }
   }
@@ -291,12 +292,16 @@ type partnerType = {
   tags: object?
 }
 
-import { contentLinkType } from 'schema/main.bicep'
-
 @description('The type for a schema.')
 type schemaType = {
   @description('Required. The Name of the schema resource.')
   name: string
+
+  @description('Required. The schema content.')
+  content: string
+
+  @description('Optional. The schema content type.')
+  contentType: string?
 
   @description('Optional. The document name.')
   documentName: string?
@@ -309,9 +314,6 @@ type schemaType = {
 
   @description('Optional. The target namespace of the schema.')
   targetNamespace: string?
-
-  @description('Required. Content link settings.')
-  contentLink: contentLinkType
 
   @description('Optional. Resource tags.')
   tags: object?
