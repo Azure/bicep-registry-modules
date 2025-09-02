@@ -35,7 +35,7 @@ This module deploys an Integration Account Schema.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contentType`](#parameter-contenttype) | string | The schema content type |
+| [`contentType`](#parameter-contenttype) | string | The schema content type. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) | object | The schema metadata. |
 | [`schemaType`](#parameter-schematype) | string | The schema type. |
@@ -78,7 +78,7 @@ The name of the parent integration account. Required if the template is used in 
 
 ### Parameter: `contentType`
 
-The schema content type
+The schema content type.
 
 - Required: No
 - Type: string

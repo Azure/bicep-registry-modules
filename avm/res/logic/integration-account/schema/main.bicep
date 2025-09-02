@@ -13,7 +13,7 @@ param integrationAccountName string
 @description('Required. The schema content.')
 param content string
 
-@description('Optional. The schema content type')
+@description('Optional. The schema content type.')
 param contentType string = 'application/xml'
 
 @description('Required. The document name.')

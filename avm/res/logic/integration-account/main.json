@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "12273047715161959026"
+      "templateHash": "5661141991389832286"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -1002,7 +1002,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "16665621860404742352"
+              "templateHash": "13145803544886508688"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1037,7 +1037,7 @@
               "type": "string",
               "defaultValue": "application/xml",
               "metadata": {
-                "description": "Optional. The schema content type"
+                "description": "Optional. The schema content type."
               }
             },
             "documentName": {
