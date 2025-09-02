@@ -14,20 +14,15 @@ tools: ['edit', 'search', 'new', 'runCommands', 'runTasks', 'usages', 'think', '
 4. **Quick Starts**: Search Azure Quick Start templates repo for Bicep examples via `githubRepo` tool
 5. **Microsoft Docs**: Use `documentation` and `search` tools when available for latest info
 
-
-## On Updating README.md Documentation
-
-Never update README.md documentation or Markdowns directly. Always run the [tools/Set-AVMModule.ps1](tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files. You must first use `#fetch` tool to get `https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/` and read it carefully first.
-
-```powershell
-
 ## Repository Structure
+
 - `avm/res/` - Resource modules
 - `avm/ptn/` - Pattern modules
 - `avm/utl/` - Utility modules
 
 ## Module Structure
-```
+
+```text
 avm/{res|ptn|utl}/{service}/{resource}/
 ├── main.bicep
 ├── version.json
@@ -40,6 +35,7 @@ avm/{res|ptn|utl}/{service}/{resource}/
 - Patterns: `/bicep-pattern-modules/`
 
 ## Usage Pattern
+
 ```bicep
 module example 'br/public:avm/res/storage/storage-account:0.25.0' = {
   name: 'deployment'
@@ -55,6 +51,13 @@ module example 'br/public:avm/res/storage/storage-account:0.25.0' = {
 ```
 
 ## MANDATORY Standards
+
+### On Updating README.md Documentation
+
+Never update README.md documentation or Markdowns directly. Always run the [tools/Set-AVMModule.ps1](tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files. You must first use `#fetch` tool to get `https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/` and read it carefully first.
+
+> [!IMPORTANT]
+> Use `-SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5` parameters when running `Set-AVMModule` when running locally to update an existing module. You must run this prior to committing any changes to a module.
 
 ### Module Header
 ```bicep
