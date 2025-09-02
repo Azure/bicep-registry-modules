@@ -73,7 +73,7 @@ var dataCollectionRulePropertiesUnion = union(
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct'
+  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct' || dataCollectionRuleProperties.kind == 'WorkspaceTransforms'
     ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
@@ -174,6 +174,7 @@ type dataCollectionRulePropertiesType =
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
+  | workspaceTransformsDcrPropertiesType
 
 @description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
@@ -290,6 +291,21 @@ type directDcrPropertiesType = {
 
   @description('Required. Declaration of custom streams used in this rule.')
   streamDeclarations: object
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+@description('The type for the properties of the \'WorkspaceTransforms\' data collection rule.')
+type workspaceTransformsDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'WorkspaceTransforms'
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
 
   @description('Optional. Description of the data collection rule.')
   description: string?
