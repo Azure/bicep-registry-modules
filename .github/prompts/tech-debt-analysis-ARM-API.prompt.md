@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files and examples for technical debt, inconsistencies, documentation gaps, and quality issues.'
-tools: ['codebase', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'searchResults', 'githubRepo', 'todos', 'runTests', 'search', 'runCommands', 'documentation']
+tools: ['search', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'documentation', 'search']
 ---
 
 # Technical Debt Analysis for Azure Verified Module

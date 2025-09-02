@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Triage Open GitHub Issues related to the specific resource module.'
-tools: ['codebase', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'searchResults', 'githubRepo', 'todos', 'runTests', 'search', 'runCommands', 'documentation', 'github']
+tools: ['search', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'documentation', 'search', 'get_issue', 'get_issue_comments', 'get_pull_request', 'get_pull_request_comments', 'list_issues', 'search_issues', 'search_pull_requests']
 ---
 
 # Triage Open GitHub Issues for Resource Module
