@@ -214,7 +214,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           tag1: 'value1'
           tag2: 'value2'
         }
-        targetNamespace: 'http://example.com/purchaseorder'
       }
     ]
     tags: {
@@ -353,8 +352,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           "tags": {
             "tag1": "value1",
             "tag2": "value2"
-          },
-          "targetNamespace": "http://example.com/purchaseorder"
+          }
         }
       ]
     },
@@ -482,7 +480,6 @@ param schemas = [
       tag1: 'value1'
       tag2: 'value2'
     }
-    targetNamespace: 'http://example.com/purchaseorder'
   }
 ]
 param tags = {
@@ -1220,7 +1217,6 @@ The content link for the schema.
 | :-- | :-- | :-- |
 | [`content`](#parameter-schemascontent) | string | The schema content. |
 | [`name`](#parameter-schemasname) | string | The Name of the schema resource. |
-| [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
 
 **Optional parameters**
 
@@ -1231,6 +1227,7 @@ The content link for the schema.
 | [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
+| [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
 
 ### Parameter: `schemas.content`
 
@@ -1242,13 +1239,6 @@ The schema content.
 ### Parameter: `schemas.name`
 
 The Name of the schema resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `schemas.targetNamespace`
-
-The target namespace of the schema.
 
 - Required: Yes
 - Type: string
@@ -1287,6 +1277,13 @@ Resource tags.
 
 - Required: No
 - Type: object
+
+### Parameter: `schemas.targetNamespace`
+
+The target namespace of the schema.
+
+- Required: No
+- Type: string
 
 ### Parameter: `sku`
 

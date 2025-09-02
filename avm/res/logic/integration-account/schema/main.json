@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "392296969456325346"
+      "templateHash": "6148704121131756587"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
@@ -71,8 +71,9 @@
     },
     "targetNamespace": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The target namespace of the schema."
+        "description": "Optional. The target namespace of the schema."
       }
     },
     "tags": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "4553360873504464552"
+      "templateHash": "4337211258393949390"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -92,8 +92,9 @@
         },
         "targetNamespace": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The target namespace of the schema."
+            "description": "Optional. The target namespace of the schema."
           }
         },
         "tags": {
@@ -988,7 +989,7 @@
             "value": "[tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'schemaType')]"
           },
           "targetNamespace": {
-            "value": "[coalesce(parameters('schemas'), createArray())[copyIndex()].targetNamespace]"
+            "value": "[tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'targetNamespace')]"
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
@@ -1002,7 +1003,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "392296969456325346"
+              "templateHash": "6148704121131756587"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1067,8 +1068,9 @@
             },
             "targetNamespace": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The target namespace of the schema."
+                "description": "Optional. The target namespace of the schema."
               }
             },
             "tags": {

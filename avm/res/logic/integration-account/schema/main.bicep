@@ -25,8 +25,8 @@ param metadata object?
 @description('Optional. The schema type.')
 param schemaType ('NotSpecified' | 'Xml') = 'Xml'
 
-@description('Required. The target namespace of the schema.')
-param targetNamespace string
+@description('Optional. The target namespace of the schema.')
+param targetNamespace string?
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.tags?

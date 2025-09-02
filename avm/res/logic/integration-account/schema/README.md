@@ -22,7 +22,6 @@ This module deploys an Integration Account Schema.
 | :-- | :-- | :-- |
 | [`content`](#parameter-content) | string | The schema content. |
 | [`name`](#parameter-name) | string | The Name of the schema resource. |
-| [`targetNamespace`](#parameter-targetnamespace) | string | The target namespace of the schema. |
 
 **Conditional parameters**
 
@@ -40,6 +39,7 @@ This module deploys an Integration Account Schema.
 | [`metadata`](#parameter-metadata) | object | The schema metadata. |
 | [`schemaType`](#parameter-schematype) | string | The schema type. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
+| [`targetNamespace`](#parameter-targetnamespace) | string | The target namespace of the schema. |
 
 ### Parameter: `content`
 
@@ -51,13 +51,6 @@ The schema content.
 ### Parameter: `name`
 
 The Name of the schema resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `targetNamespace`
-
-The target namespace of the schema.
 
 - Required: Yes
 - Type: string
@@ -120,6 +113,13 @@ Resource tags.
 
 - Required: No
 - Type: object
+
+### Parameter: `targetNamespace`
+
+The target namespace of the schema.
+
+- Required: No
+- Type: string
 
 ## Outputs
 

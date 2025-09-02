@@ -229,7 +229,7 @@ module integrationAccount_schemas 'schema/main.bicep' = [
       documentName: schema.?documentName
       metadata: schema.?metadata
       schemaType: schema.?schemaType
-      targetNamespace: schema.targetNamespace
+      targetNamespace: schema.?targetNamespace
       tags: schema.?tags ?? tags
     }
   }
@@ -312,8 +312,8 @@ type schemaType = {
   @description('Optional. The schema type.')
   schemaType: string?
 
-  @description('Required. The target namespace of the schema.')
-  targetNamespace: string
+  @description('Optional. The target namespace of the schema.')
+  targetNamespace: string?
 
   @description('Optional. Resource tags.')
   tags: object?
