@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10527336981370900309"
+      "templateHash": "7234814696449651914"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -856,7 +856,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "The endpoints of the dataCollectionRule, if created"
+        "description": "The endpoints of the dataCollectionRule, if created."
       },
       "value": "[if(not(empty(tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')), 'properties'), 'endpoints'))), if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).properties.endpoints, null())]"
     },
@@ -864,7 +864,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "The ImmutableId of the dataCollectionRule"
+        "description": "The ImmutableId of the dataCollectionRule."
       },
       "value": "[if(not(empty(tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')), 'properties'), 'immutableId'))), if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).properties.immutableId, null())]"
     }

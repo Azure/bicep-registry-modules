@@ -163,10 +163,10 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
   ? dataCollectionRuleAll.?identity.?principalId
   : dataCollectionRule.?identity.?principalId
 
-@description('The endpoints of the dataCollectionRule, if created')
+@description('The endpoints of the dataCollectionRule, if created.')
 output endpoints object? = !empty(createdDCR.?properties.?endpoints) ? createdDCR.properties.endpoints : null
 
-@description('The ImmutableId of the dataCollectionRule')
+@description('The ImmutableId of the dataCollectionRule.')
 output immutableId string? = !empty(createdDCR.?properties.?immutableId) ? createdDCR.properties.immutableId : null
 // =============== //
 //   Definitions   //
