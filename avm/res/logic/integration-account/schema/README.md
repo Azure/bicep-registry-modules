@@ -21,7 +21,6 @@ This module deploys an Integration Account Schema.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`content`](#parameter-content) | string | The schema content. |
-| [`documentName`](#parameter-documentname) | string | The document name. |
 | [`name`](#parameter-name) | string | The Name of the schema resource. |
 | [`targetNamespace`](#parameter-targetnamespace) | string | The target namespace of the schema. |
 
@@ -36,6 +35,7 @@ This module deploys an Integration Account Schema.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contentType`](#parameter-contenttype) | string | The schema content type. |
+| [`documentName`](#parameter-documentname) | string | The document name. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) | object | The schema metadata. |
 | [`schemaType`](#parameter-schematype) | string | The schema type. |
@@ -44,13 +44,6 @@ This module deploys an Integration Account Schema.
 ### Parameter: `content`
 
 The schema content.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `documentName`
-
-The document name.
 
 - Required: Yes
 - Type: string
@@ -83,6 +76,13 @@ The schema content type.
 - Required: No
 - Type: string
 - Default: `'application/xml'`
+
+### Parameter: `documentName`
+
+The document name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 

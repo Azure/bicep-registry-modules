@@ -204,7 +204,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     schemas: [
       {
         content: '<content>'
-        documentName: 'PurchaseOrder'
         metadata: {
           key1: 'value1'
           key2: 'value2'
@@ -345,7 +344,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       "value": [
         {
           "content": "<content>",
-          "documentName": "PurchaseOrder",
           "metadata": {
             "key1": "value1",
             "key2": "value2"
@@ -474,7 +472,6 @@ param roleAssignments = [
 param schemas = [
   {
     content: '<content>'
-    documentName: 'PurchaseOrder'
     metadata: {
       key1: 'value1'
       key2: 'value2'
@@ -1223,7 +1220,7 @@ The content link for the schema.
 | :-- | :-- | :-- |
 | [`content`](#parameter-schemascontent) | string | The schema content. |
 | [`name`](#parameter-schemasname) | string | The Name of the schema resource. |
-| [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
+| [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
 
 **Optional parameters**
 
@@ -1232,8 +1229,8 @@ The content link for the schema.
 | [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
 | [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
+| [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
-| [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
 
 ### Parameter: `schemas.content`
 
@@ -1249,9 +1246,9 @@ The Name of the schema resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `schemas.schemaType`
+### Parameter: `schemas.targetNamespace`
 
-The schema type.
+The target namespace of the schema.
 
 - Required: Yes
 - Type: string
@@ -1277,19 +1274,19 @@ The schema metadata.
 - Required: No
 - Type: object
 
+### Parameter: `schemas.schemaType`
+
+The schema type.
+
+- Required: No
+- Type: string
+
 ### Parameter: `schemas.tags`
 
 Resource tags.
 
 - Required: No
 - Type: object
-
-### Parameter: `schemas.targetNamespace`
-
-The target namespace of the schema.
-
-- Required: No
-- Type: string
 
 ### Parameter: `sku`
 

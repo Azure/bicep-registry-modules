@@ -16,8 +16,8 @@ param content string
 @description('Optional. The schema content type.')
 param contentType string = 'application/xml'
 
-@description('Required. The document name.')
-param documentName string
+@description('Optional. The document name.')
+param documentName string?
 
 @description('Optional. The schema metadata.')
 param metadata object?

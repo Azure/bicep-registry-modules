@@ -108,7 +108,6 @@ module testDeployment '../../../main.bicep' = [
           content: schemaContent
           schemaType: 'Xml'
           targetNamespace: 'http://example.com/purchaseorder'
-          documentName: 'PurchaseOrder'
           metadata: {
             key1: 'value1'
             key2: 'value2'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "13145803544886508688"
+      "templateHash": "392296969456325346"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
@@ -46,8 +46,9 @@
     },
     "documentName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The document name."
+        "description": "Optional. The document name."
       }
     },
     "metadata": {

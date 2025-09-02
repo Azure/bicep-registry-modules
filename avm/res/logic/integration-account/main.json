@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "5661141991389832286"
+      "templateHash": "4553360873504464552"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -85,15 +85,15 @@
         },
         "schemaType": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The schema type."
+            "description": "Optional. The schema type."
           }
         },
         "targetNamespace": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The target namespace of the schema."
+            "description": "Required. The target namespace of the schema."
           }
         },
         "tags": {
@@ -979,7 +979,7 @@
             "value": "[tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'contentType')]"
           },
           "documentName": {
-            "value": "[coalesce(parameters('schemas'), createArray())[copyIndex()].documentName]"
+            "value": "[tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'documentName')]"
           },
           "metadata": {
             "value": "[tryGet(coalesce(parameters('schemas'), createArray())[copyIndex()], 'metadata')]"
@@ -1002,7 +1002,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.177.2456",
-              "templateHash": "13145803544886508688"
+              "templateHash": "392296969456325346"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1042,8 +1042,9 @@
             },
             "documentName": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The document name."
+                "description": "Optional. The document name."
               }
             },
             "metadata": {
