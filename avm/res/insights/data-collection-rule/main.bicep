@@ -147,18 +147,16 @@ module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalS
 // =========== //
 
 @description('The name of the dataCollectionRule.')
-output name string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.name : dataCollectionRule.name
+output name string = createdDCR.name
 
 @description('The resource ID of the dataCollectionRule.')
-output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id
+output resourceId string = createdDCR.id
 
 @description('The name of the resource group the dataCollectionRule was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = dataCollectionRuleProperties.kind == 'All'
-  ? dataCollectionRuleAll.location
-  : dataCollectionRule.location
+output location string = createdDCR.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
