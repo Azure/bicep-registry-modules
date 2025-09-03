@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "3385381296378204773"
+      "version": "0.37.4.10188",
+      "templateHash": "12746589177326633292"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -490,6 +490,43 @@
         "description": "The type for the workspace connection."
       }
     },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -512,7 +549,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -554,7 +591,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -595,7 +632,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1508,12 +1620,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1649,7 +1768,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -1658,7 +1777,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -1669,6 +1788,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -1683,7 +1805,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1897,7 +2019,7 @@
       "items": {
         "$ref": "#/definitions/connectionType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Connections to create in the workspace."
       }
@@ -1907,7 +2029,7 @@
       "items": {
         "$ref": "#/definitions/datastoreType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Datastores to create in the workspace."
       }
@@ -2159,7 +2281,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "workspace"
@@ -2289,8 +2411,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "4274081592342795983"
+              "version": "0.37.4.10188",
+              "templateHash": "15706519372996640102"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2506,11 +2628,11 @@
     "workspace_connections": {
       "copy": {
         "name": "workspace_connections",
-        "count": "[length(parameters('connections'))]"
+        "count": "[length(coalesce(parameters('connections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-connection', parameters('name'), parameters('connections')[copyIndex()].name)]",
+      "name": "[format('{0}-{1}-connection', parameters('name'), coalesce(parameters('connections'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2521,31 +2643,31 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('connections')[copyIndex()].name]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].name]"
           },
           "category": {
-            "value": "[parameters('connections')[copyIndex()].category]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].category]"
           },
           "expiryTime": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'expiryTime')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'expiryTime')]"
           },
           "isSharedToAll": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'isSharedToAll')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'isSharedToAll')]"
           },
           "metadata": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'metadata')]"
           },
           "sharedUserList": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'sharedUserList')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'sharedUserList')]"
           },
           "target": {
-            "value": "[parameters('connections')[copyIndex()].target]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].target]"
           },
           "value": {
-            "value": "[tryGet(parameters('connections')[copyIndex()], 'value')]"
+            "value": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'value')]"
           },
           "connectionProperties": {
-            "value": "[parameters('connections')[copyIndex()].connectionProperties]"
+            "value": "[coalesce(parameters('connections'), createArray())[copyIndex()].connectionProperties]"
           }
         },
         "template": {
@@ -2555,8 +2677,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "11050242102011513557"
+              "version": "0.37.4.10188",
+              "templateHash": "11346810785468226802"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3349,11 +3471,11 @@
     "workspace_datastores": {
       "copy": {
         "name": "workspace_datastores",
-        "count": "[length(parameters('datastores'))]"
+        "count": "[length(coalesce(parameters('datastores'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-datastore', parameters('name'), parameters('datastores')[copyIndex()].name)]",
+      "name": "[format('{0}-{1}-datastore', parameters('name'), coalesce(parameters('datastores'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3364,10 +3486,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('datastores')[copyIndex()].name]"
+            "value": "[coalesce(parameters('datastores'), createArray())[copyIndex()].name]"
           },
           "properties": {
-            "value": "[parameters('datastores')[copyIndex()].properties]"
+            "value": "[coalesce(parameters('datastores'), createArray())[copyIndex()].properties]"
           }
         },
         "template": {
@@ -3376,8 +3498,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "10767049507832713221"
+              "version": "0.37.4.10188",
+              "templateHash": "2277213146580993632"
             },
             "name": "Machine Learning Services Workspaces Datastores",
             "description": "This module creates a datastore in a Machine Learning Services workspace."

@@ -12,9 +12,9 @@ DevTest lab policies are used to modify the lab settings such as only allowing c
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevTestLab/labs/policysets/policies` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/policysets/policies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevTestLab/labs/policysets/policies` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_policysets_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/policysets/policies)</li></ul> |
 
 ## Parameters
 

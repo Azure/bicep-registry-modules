@@ -34,7 +34,7 @@ param imageManagedIdentityName string = 'msi-aib'
 @description('Required. The name of the Azure Compute Gallery.')
 param computeGalleryName string
 
-import { imageType } from 'br/public:avm/res/compute/gallery:0.9.1'
+import { imageType } from 'br/public:avm/res/compute/gallery:0.9.3'
 @description('Required. The Image Definitions in the Azure Compute Gallery.')
 param computeGalleryImageDefinitions imageType[]
 
@@ -77,7 +77,7 @@ param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virt
 @description('Optional. The name of the Deployment Script to upload files to the assets storage account.')
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
-@description('Optional. The files to upload to the Assets Storage Account.')
+@description('Optional. The files to upload to the Assets Storage Account. Note, the file you\'re uploading should not contain emojis as they may cause problems when loaded into the environment of the uploading deployment script.')
 param storageAccountFilesToUpload storageAccountFilesToUploadType[]?
 
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
@@ -193,7 +193,7 @@ module imageMSI_build_rg_rbac 'br/public:avm/res/authorization/role-assignment/r
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.9.3' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -262,7 +262,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (deploymentsT
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
@@ -315,7 +315,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' =
 }
 
 // Deployment scripts & their storage account
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {
