@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7234814696449651914"
+      "templateHash": "6373748746647451100"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -821,14 +821,14 @@
       "metadata": {
         "description": "The name of the dataCollectionRule."
       },
-      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).name]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), parameters('name'), parameters('name'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the dataCollectionRule."
       },
-      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).id]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), resourceId('Microsoft.Insights/dataCollectionRules', parameters('name')), resourceId('Microsoft.Insights/dataCollectionRules', parameters('name')))]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -842,7 +842,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).location]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full').location, reference('dataCollectionRule', '2023-03-11', 'full').location)]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -858,7 +858,7 @@
       "metadata": {
         "description": "The endpoints of the dataCollectionRule, if created."
       },
-      "value": "[if(not(empty(tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')), 'properties'), 'endpoints'))), if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).properties.endpoints, null())]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(reference('dataCollectionRuleAll'), 'endpoints'), tryGet(reference('dataCollectionRule'), 'endpoints'))]"
     },
     "immutableId": {
       "type": "string",
@@ -866,7 +866,7 @@
       "metadata": {
         "description": "The ImmutableId of the dataCollectionRule."
       },
-      "value": "[if(not(empty(tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')), 'properties'), 'immutableId'))), if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), reference('dataCollectionRule', '2023-03-11', 'full')).properties.immutableId, null())]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(reference('dataCollectionRuleAll'), 'immutableId'), tryGet(reference('dataCollectionRule'), 'immutableId'))]"
     }
   }
 }

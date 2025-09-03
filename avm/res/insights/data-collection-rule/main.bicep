@@ -125,10 +125,6 @@ resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-1
   properties: dataCollectionRulePropertiesUnion
 }
 
-// Resolve which of the Data Collection Rule entities were actually constructed, so we know which one to
-// reference for outputs later on.
-var createdDCR = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll : dataCollectionRule
-
 // Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
 module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalScope.bicep' = if ((!empty(lock ?? {}) && lock.?kind != 'None') || (!empty(roleAssignments ?? []))) {
   name: '${uniqueString(deployment().name, location)}-DCR-ConditionalScope'
@@ -147,16 +143,16 @@ module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalS
 // =========== //
 
 @description('The name of the dataCollectionRule.')
-output name string = createdDCR.name
+output name string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.name : dataCollectionRule.name
 
 @description('The resource ID of the dataCollectionRule.')
-output resourceId string = createdDCR.id
+output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id
 
 @description('The name of the resource group the dataCollectionRule was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = createdDCR.location
+output location string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.location : dataCollectionRule.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
@@ -164,10 +160,11 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
   : dataCollectionRule.?identity.?principalId
 
 @description('The endpoints of the dataCollectionRule, if created.')
-output endpoints object? = !empty(createdDCR.?properties.?endpoints) ? createdDCR.properties.endpoints : null
+output endpoints object? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.properties.?endpoints : dataCollectionRule.properties.?endpoints
 
 @description('The ImmutableId of the dataCollectionRule.')
-output immutableId string? = !empty(createdDCR.?properties.?immutableId) ? createdDCR.properties.immutableId : null
+output immutableId string? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.properties.?immutableId : dataCollectionRule.properties.?immutableId
+
 // =============== //
 //   Definitions   //
 // =============== //
