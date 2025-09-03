@@ -12,30 +12,17 @@ Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not p
 Mandatory. The repository's organization.
 
 .PARAMETER RepositoryName
-Mandatory. The name of the repository to fetch the comments from.
+Mandatory. The name of the repository to fetch the timelines from.
 
 .PARAMETER IssueNumber
-Optional. The issue number to get the comments for. If not provided, all comments for the repository will be returned.
-
-.PARAMETER SinceWhen
-Optional. Only show comments created since this date. Format: YYYY-MM-DDTHH:MM:SSZ
+Mandatory. The issue number to get the comments for.
 
 .EXAMPLE
-Get-GitHubIssueCommentsList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueNumber '1234'
+Get-GitHubIssueTimeline -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueNumber '1234'
 
 Get all comments of the issue 1234 of the repository 'Azure/bicep-registry-modules'
-
-.EXAMPLE
-Get-GitHubIssueCommentsList-RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules'
-
-Get all comments of the repository 'Azure/bicep-registry-modules' using the GitHub CLI for authentication
-
-.EXAMPLE
-Get-GitHubIssueCommentsList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueNumber '1234' -SinceWhen (Get-Date).ToString('yyyy-MM-ddT00:00:00Z')
-
-Get all comments of the issue 1234 of the repository 'Azure/bicep-registry-modules' that were created today
 #>
-function Get-GitHubIssueCommentsList {
+function Get-GitHubIssueTimeline {
 
     [CmdletBinding()]
     param (
@@ -48,11 +35,8 @@ function Get-GitHubIssueCommentsList {
         [Parameter(Mandatory = $true)]
         [string] $RepositoryName,
 
-        [Parameter(Mandatory = $false)]
-        [string] $IssueNumber,
-
-        [Parameter(Mandatory = $false)]
-        [string] $SinceWhen
+        [Parameter(Mandatory = $true)]
+        [string] $IssueNumber
     )
 
     $allComments = @()
@@ -63,12 +47,9 @@ function Get-GitHubIssueCommentsList {
             'per_page=100',
             "page=$page"
         )
-        if (-not [String]::IsNullOrEmpty($SinceWhen)) {
-            $queryParameters += "since=$SinceWhen"
-        }
         $queryParameters = $queryParameters -join '&'
 
-        $queryUrl = "/repos/$RepositoryOwner/$RepositoryName/issues{0}/comments?$queryParameters" -f ($IssueNumber ? "/$IssueNumber" : '')
+        $queryUrl = "/repos/$RepositoryOwner/$RepositoryName/issues/$IssueNumber/timeline?$queryParameters"
         if ($PersonalAccessToken) {
             # Using PAT
             $requestInputObject = @{
