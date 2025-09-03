@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -73,10 +73,11 @@ module testDeployment '../../../main.bicep' = {
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
       natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
+      acrDeploymentScriptSubnetName: 'acr-ds-subnet'
+      deploymentScriptPrivateDnsZoneResourceId: nestedDependencies.outputs.deploymentScriptPrivateDnsZoneResourceId
       computeNetworking: {
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
-        deploymentScriptPrivateDnsZoneResourceId: nestedDependencies.outputs.deploymentScriptPrivateDnsZoneResourceId
         containerInstanceSubnetName: 'aci-subnet'
         computeNetworkType: 'azureContainerApp'
       }

@@ -572,6 +572,7 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
           name: 'CanNotDelete'
         }
       : null
+    tags: virtualNetworkResourceGroupTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -588,6 +589,7 @@ module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-gr
           name: 'CanNotDelete'
         }
       : null
+    tags: subscriptionTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -642,12 +644,12 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
-              ? createBastionNsg.outputs.resourceId
+              ? createBastionNsg.?outputs.resourceId
               : resourceId(
                   subscriptionId,
                   virtualNetworkResourceGroupName,
                   'Microsoft.Network/networkSecurityGroups',
-                  '${createLzNsg[i].outputs.name}'
+                  '${createLzNsg[i].?outputs.name}'
                 )
             routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
               ? resourceId(
@@ -657,10 +659,10 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
                   subnet.?routeTableName ?? ''
                 )
               : null
-            routeTableName: subnet.?routeTableName ?? null
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
-              ? createNatGateway.outputs.resourceId
+              ? createNatGateway.?outputs.resourceId
               : null
+            delegation: subnet.?delegation
           }
         : {}
     ]
@@ -1006,7 +1008,7 @@ module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assig
     )
     params: {
       location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
       subscriptionId: subscriptionId
@@ -1039,7 +1041,7 @@ module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-
     )
     params: {
       location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
       subscriptionId: subscriptionId
@@ -1073,7 +1075,7 @@ module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/ro
     )
     params: {
       location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
       subscriptionId: subscriptionId
@@ -1341,6 +1343,7 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   params: {
     name: deploymentScriptResourceGroupName
     location: deploymentScriptLocation
+    tags: subscriptionTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -1351,6 +1354,7 @@ module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-g
   params: {
     name: routeTablesResourceGroupName
     location: virtualNetworkLocation ?? deployment().location
+    tags: virtualNetworkResourceGroupTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -1372,7 +1376,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
-    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.?outputs.principalId ?? '' : ''
     roleDefinitionIdOrName: 'Contributor'
     subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'
@@ -1383,7 +1387,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
-    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.?outputs.principalId ?? '' : ''
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd'
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
@@ -1414,13 +1418,13 @@ module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: createDsVnet.outputs.resourceId
+        virtualNetworkResourceId: createDsVnet.?outputs.resourceId ?? ''
       }
     ]
   }
 }
 
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (!empty(resourceProviders)) {
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (!empty(resourceProviders)) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
   ]
@@ -1437,13 +1441,13 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0'
       {
         service: 'file'
         subnetResourceId: filter(
-          createDsVnet.outputs.subnetResourceIds,
+          createDsVnet.?outputs.subnetResourceIds ?? [],
           subnetResourceId => contains(subnetResourceId, 'ds-pe-subnet')
         )[0]
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
-              privateDnsZoneResourceId: dsFilePrivateDNSZone.outputs.resourceId
+              privateDnsZoneResourceId: dsFilePrivateDNSZone.?outputs.resourceId ?? ''
             }
           ]
         }
@@ -1474,7 +1478,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!emp
               ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 25, 0)
               : null
             name: 'ds-subnet'
-            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.?outputs.resourceId : null
             delegation: 'Microsoft.ContainerInstance/containerGroups'
           }
           {
@@ -1482,7 +1486,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!emp
             addressPrefix: !empty(resourceProviders)
               ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 25, 1)
               : null
-            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.?outputs.resourceId : null
           }
         ]
       : null
@@ -1505,20 +1509,25 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
     managedIdentities: !(empty(resourceProviders))
       ? {
           userAssignedResourcesIds: [
-            createManagedIdentityForDeploymentScript.outputs.resourceId
+            createManagedIdentityForDeploymentScript.?outputs.resourceId ?? ''
           ]
         }
       : null
-    storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
+    storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.?outputs.resourceId : null
     subnetResourceIds: !(empty(resourceProviders))
-      ? [filter(createDsVnet.outputs.subnetResourceIds, subnetResourceId => contains(subnetResourceId, 'ds-subnet'))[0]]
+      ? [
+          filter(
+            createDsVnet.?outputs.subnetResourceIds ?? [],
+            subnetResourceId => contains(subnetResourceId, 'ds-subnet')
+          )[0]
+        ]
       : null
     arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
     scriptContent: loadTextContent('../scripts/Register-SubscriptionResourceProviderList.ps1')
   }
 }
 
-module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virtualNetworkDeployNatGateway && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createNatGateway 'br/public:avm/res/network/nat-gateway:1.4.0' = if (virtualNetworkDeployNatGateway && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -1527,7 +1536,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virt
   name: deploymentNames.createNatGateway
   params: {
     name: virtualNetworkNatGatewayConfiguration.?name ?? 'nat-gw-${virtualNetworkName}'
-    zone: virtualNetworkNatGatewayConfiguration.?zones ?? 0
+    availabilityZone: virtualNetworkNatGatewayConfiguration.?zones ?? -1
     location: virtualNetworkLocation
     enableTelemetry: enableTelemetry
     tags: virtualNetworkTags
@@ -1565,7 +1574,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virt
     ]
   }
 }
-module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = [
+module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.4.0' = [
   for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && (vnet.?deployNatGateway ?? false)) {
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
@@ -1574,7 +1583,7 @@ module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' =
     ]
     params: {
       name: vnet.?natGatewayConfiguration.?name ?? 'nat-gw-${vnet.name}'
-      zone: vnet.?natGatewayConfiguration.?zones ?? 0
+      availabilityZone: vnet.?natGatewayConfiguration.?zones ?? -1
       location: vnet.location
       enableTelemetry: enableTelemetry
       tags: vnet.?tags
@@ -1614,7 +1623,7 @@ module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' =
   }
 ]
 
-module createBastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.7.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
@@ -1622,7 +1631,7 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (vi
   ]
   params: {
     name: virtualNetworkBastionConfiguration.?name ?? 'bastion-${virtualNetworkName}'
-    virtualNetworkResourceId: createLzVnet.outputs.resourceId
+    virtualNetworkResourceId: createLzVnet.?outputs.resourceId ?? ''
     location: virtualNetworkLocation
     skuName: virtualNetworkBastionConfiguration.?bastionSku ?? 'Standard'
     disableCopyPaste: virtualNetworkBastionConfiguration.?disableCopyPaste ?? true
@@ -1667,6 +1676,7 @@ module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources
             name: 'CanNotDelete'
           }
         : null
+      tags: virtualNetworkResourceGroupTags
       enableTelemetry: enableTelemetry
     }
   }
@@ -1688,7 +1698,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
           name: subnet.name
           addressPrefix: subnet.?addressPrefix
           networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
-            ? createBastionNsg.outputs.resourceId
+            ? createBastionNsg.?outputs.resourceId
             : !empty(subnet.?networkSecurityGroup)
                 ? resourceId(
                     subscriptionId,
@@ -1706,8 +1716,9 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
               )
             : null
           natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
-            ? createAdditonalNatGateway[i].outputs.resourceId
+            ? createAdditonalNatGateway[i].?outputs.resourceId
             : null
+          delegation: subnet.?delegation
         }
       ]
       location: vnet.?location ?? deployment().location
@@ -1798,11 +1809,13 @@ module meshPeerFromPrimaryVnet 'peering.bicep' = [
 
 // OUTPUTS
 output failedProviders string = !empty(resourceProviders)
-  ? registerResourceProviders.outputs.outputs.failedProvidersRegistrations
+  ? registerResourceProviders.?outputs.outputs.failedProvidersRegistrations
   : ''
 output failedFeatures string = !empty(resourceProviders)
-  ? registerResourceProviders.outputs.outputs.failedFeaturesRegistrations
+  ? registerResourceProviders.?outputs.outputs.failedFeaturesRegistrations
   : ''
+
+output virtualWanHubConnectionName string = virtualWanHubConnectionName
 
 // ================ //
 // Definitions      //

@@ -28,7 +28,7 @@ param location string = resourceGroup().location
 @allowed([
   'app'
   'elastic'
-  'functionApp'
+  'functionapp'
   'windows'
   'linux'
 ])
@@ -38,7 +38,7 @@ param kind string = 'app'
 param reserved bool = (kind == 'linux')
 
 @description('Optional. The Resource ID of the App Service Environment to use for the App Service Plan.')
-param appServiceEnvironmentId string = ''
+param appServiceEnvironmentResourceId string = ''
 
 @description('Optional. Target worker tier assigned to the App Service plan.')
 param workerTierName string = ''
@@ -66,21 +66,21 @@ param targetWorkerSize int = 0
 @description('Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
 param zoneRedundant bool = startsWith(skuName, 'P') || startsWith(skuName, 'EP') ? true : false
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Web/serverfarms@2024-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
@@ -136,21 +136,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' = {
   name: name
   kind: kind
   location: location
   tags: tags
-  sku: {
-    name: skuName
-    capacity: skuName == 'FC1' ? null : skuCapacity
-    tier: skuName == 'FC1' ? 'FlexConsumption' : null
-  }
+  sku: skuName == 'FC1'
+    ? {
+        name: skuName
+        tier: 'FlexConsumption'
+      }
+    : {
+        name: skuName
+        capacity: skuCapacity
+      }
   properties: {
     workerTierName: workerTierName
-    hostingEnvironmentProfile: !empty(appServiceEnvironmentId)
+    hostingEnvironmentProfile: !empty(appServiceEnvironmentResourceId)
       ? {
-          id: appServiceEnvironmentId
+          id: appServiceEnvironmentResourceId
         }
       : null
     perSiteScaling: perSiteScaling
@@ -189,9 +193,9 @@ resource appServicePlan_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: appServicePlan
 }

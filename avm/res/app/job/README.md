@@ -13,11 +13,11 @@ This module deploys a Container App Job.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.App/jobs` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_jobs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/jobs)</li></ul> |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Usage examples
 
@@ -327,14 +327,14 @@ module job 'br/public:avm/res/app/job:<version>' = {
       parallelism: 1
       replicaCompletionCount: 1
       scale: {
-        maxExecutions: 1
+        maxExecutions: 10
         minExecutions: 1
         pollingInterval: 55
         rules: [
           {
             auth: [
               {
-                secretRef: 'connectionString'
+                secretRef: 'connection-string'
                 triggerParameter: 'connection'
               }
             ]
@@ -342,7 +342,31 @@ module job 'br/public:avm/res/app/job:<version>' = {
               queueName: '<queueName>'
               storageAccountResourceId: '<storageAccountResourceId>'
             }
-            name: 'queue'
+            name: 'queue-connectionstring'
+            type: 'azure-queue'
+          }
+          {
+            auth: []
+            identity: '<identity>'
+            metadata: {
+              accountName: '<accountName>'
+              cloud: 'AzurePublicCloud'
+              queueLength: '2'
+              queueName: '<queueName>'
+            }
+            name: 'queue-identity-user'
+            type: 'azure-queue'
+          }
+          {
+            auth: []
+            identity: 'system'
+            metadata: {
+              accountName: '<accountName>'
+              cloud: 'AzurePublicCloud'
+              queueLength: '2'
+              queueName: '<queueName>'
+            }
+            name: 'queue-identity-system'
             type: 'azure-queue'
           }
         ]
@@ -492,14 +516,14 @@ module job 'br/public:avm/res/app/job:<version>' = {
         "parallelism": 1,
         "replicaCompletionCount": 1,
         "scale": {
-          "maxExecutions": 1,
+          "maxExecutions": 10,
           "minExecutions": 1,
           "pollingInterval": 55,
           "rules": [
             {
               "auth": [
                 {
-                  "secretRef": "connectionString",
+                  "secretRef": "connection-string",
                   "triggerParameter": "connection"
                 }
               ],
@@ -507,7 +531,31 @@ module job 'br/public:avm/res/app/job:<version>' = {
                 "queueName": "<queueName>",
                 "storageAccountResourceId": "<storageAccountResourceId>"
               },
-              "name": "queue",
+              "name": "queue-connectionstring",
+              "type": "azure-queue"
+            },
+            {
+              "auth": [],
+              "identity": "<identity>",
+              "metadata": {
+                "accountName": "<accountName>",
+                "cloud": "AzurePublicCloud",
+                "queueLength": "2",
+                "queueName": "<queueName>"
+              },
+              "name": "queue-identity-user",
+              "type": "azure-queue"
+            },
+            {
+              "auth": [],
+              "identity": "system",
+              "metadata": {
+                "accountName": "<accountName>",
+                "cloud": "AzurePublicCloud",
+                "queueLength": "2",
+                "queueName": "<queueName>"
+              },
+              "name": "queue-identity-system",
               "type": "azure-queue"
             }
           ]
@@ -663,14 +711,14 @@ param eventTriggerConfig = {
   parallelism: 1
   replicaCompletionCount: 1
   scale: {
-    maxExecutions: 1
+    maxExecutions: 10
     minExecutions: 1
     pollingInterval: 55
     rules: [
       {
         auth: [
           {
-            secretRef: 'connectionString'
+            secretRef: 'connection-string'
             triggerParameter: 'connection'
           }
         ]
@@ -678,7 +726,31 @@ param eventTriggerConfig = {
           queueName: '<queueName>'
           storageAccountResourceId: '<storageAccountResourceId>'
         }
-        name: 'queue'
+        name: 'queue-connectionstring'
+        type: 'azure-queue'
+      }
+      {
+        auth: []
+        identity: '<identity>'
+        metadata: {
+          accountName: '<accountName>'
+          cloud: 'AzurePublicCloud'
+          queueLength: '2'
+          queueName: '<queueName>'
+        }
+        name: 'queue-identity-user'
+        type: 'azure-queue'
+      }
+      {
+        auth: []
+        identity: 'system'
+        metadata: {
+          accountName: '<accountName>'
+          cloud: 'AzurePublicCloud'
+          queueLength: '2'
+          queueName: '<queueName>'
+        }
+        name: 'queue-identity-system'
         type: 'azure-queue'
       }
     ]
@@ -1454,6 +1526,7 @@ Scaling rules for the job.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auth`](#parameter-eventtriggerconfigscalerulesauth) | array | Authentication secrets for the scale rule. |
+| [`identity`](#parameter-eventtriggerconfigscalerulesidentity) | string | The resource ID of a user-assigned managed identity that is assigned to the Container App, or "system" for system-assigned identity. |
 
 ### Parameter: `eventTriggerConfig.scale.rules.metadata`
 
@@ -1518,6 +1591,13 @@ Name of the secret from which to pull the auth params.
 Trigger Parameter that uses the secret.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `eventTriggerConfig.scale.rules.identity`
+
+The resource ID of a user-assigned managed identity that is assigned to the Container App, or "system" for system-assigned identity.
+
+- Required: No
 - Type: string
 
 ### Parameter: `eventTriggerConfig.scale.maxExecutions`
@@ -1844,6 +1924,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1863,6 +1944,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2309,6 +2397,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

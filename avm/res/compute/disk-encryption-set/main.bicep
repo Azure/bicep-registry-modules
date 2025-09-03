@@ -7,7 +7,7 @@ param name string
 @description('Optional. Resource location.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -18,7 +18,7 @@ param keyVaultResourceId string
 param keyName string
 
 @description('Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.')
-param keyVersion string = ''
+param keyVersion string?
 
 @description('Optional. The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys.')
 @allowed([
@@ -44,7 +44,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the disk encryption resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/diskEncryptionSets@2025-01-02'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -128,11 +128,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: last(split(keyVaultResourceId, '/'))!
   scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
 
-  resource key 'keys@2021-10-01' existing = {
+  resource key 'keys@2024-11-01' existing = {
     name: keyName
   }
 }
@@ -199,9 +199,9 @@ resource diskEncryptionSet_lock 'Microsoft.Authorization/locks@2020-05-01' = if 
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: diskEncryptionSet
 }

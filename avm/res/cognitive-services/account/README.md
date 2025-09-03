@@ -13,16 +13,17 @@ This module deploys a Cognitive Service.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -32,18 +33,206 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
-- [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
-- [Storing keys of service in key vault](#example-3-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-6-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-7-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-10-waf-aligned)
+- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
+- [Storing keys of service in key vault](#example-4-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-7-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-8-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-11-waf-aligned)
 
-### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
+
+This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadpa003'
+    // Non-required parameters
+    customSubDomainName: 'xcsadpaai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4o'
+          version: '2024-11-20'
+        }
+        name: 'gpt-4o'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    location: '<location>'
+    networkInjections: {
+      scenario: 'agent'
+      subnetResourceId: '<subnetResourceId>'
+      useMicrosoftManagedNetwork: false
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadpa003"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadpaai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4o",
+            "version": "2024-11-20"
+          },
+          "name": "gpt-4o",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkInjections": {
+      "value": {
+        "scenario": "agent",
+        "subnetResourceId": "<subnetResourceId>",
+        "useMicrosoftManagedNetwork": false
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              },
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadpa003'
+// Non-required parameters
+param customSubDomainName = 'xcsadpaai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o'
+      version: '2024-11-20'
+    }
+    name: 'gpt-4o'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param location = '<location>'
+param networkInjections = {
+  scenario: 'agent'
+  subnetResourceId: '<subnetResourceId>'
+  useMicrosoftManagedNetwork: false
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 2: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -213,7 +402,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 2: _Using `AIServices` with `deployments` in parameter set_
+### Example 3: _Using `AIServices` with `deployments` in parameter set_
 
 This instance deploys the module with the AI model deployment feature.
 
@@ -331,7 +520,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Storing keys of service in key vault_
+### Example 4: _Storing keys of service in key vault_
 
 This instance deploys the module and stores its keys in a key vault.
 
@@ -422,7 +611,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -491,7 +680,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -505,9 +694,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: 'accountDeployment'
   params: {
     // Required parameters
-    kind: 'Face'
+    kind: 'AIServices'
     name: 'csamax001'
     // Non-required parameters
+    allowProjectManagement: false
     customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
@@ -556,6 +746,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     }
+    networkInjections: {
+      scenario: 'agent'
+      subnetResourceId: '<subnetResourceId>'
+      useMicrosoftManagedNetwork: false
+    }
     privateEndpoints: [
       {
         customDnsConfigs: [
@@ -568,11 +763,27 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         ]
         ipConfigurations: [
           {
-            name: 'myIPconfig'
+            name: 'myIPconfigDefault'
             properties: {
               groupId: 'account'
               memberName: 'default'
               privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfigSecondary'
+            properties: {
+              groupId: 'account'
+              memberName: 'secondary'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'myIPconfigThird'
+            properties: {
+              groupId: 'account'
+              memberName: 'third'
+              privateIPAddress: '10.0.0.12'
             }
           }
         ]
@@ -603,12 +814,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     ]
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
-      {
-        name: 'db64fe2f-3995-4ae0-86ef-97511d5b84e3'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
       {
         name: '<name>'
         principalId: '<principalId>'
@@ -645,12 +850,15 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "Face"
+      "value": "AIServices"
     },
     "name": {
       "value": "csamax001"
     },
     // Non-required parameters
+    "allowProjectManagement": {
+      "value": false
+    },
     "customSubDomainName": {
       "value": "xcsamax"
     },
@@ -711,6 +919,13 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         ]
       }
     },
+    "networkInjections": {
+      "value": {
+        "scenario": "agent",
+        "subnetResourceId": "<subnetResourceId>",
+        "useMicrosoftManagedNetwork": false
+      }
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -724,11 +939,27 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           ],
           "ipConfigurations": [
             {
-              "name": "myIPconfig",
+              "name": "myIPconfigDefault",
               "properties": {
                 "groupId": "account",
                 "memberName": "default",
                 "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfigSecondary",
+              "properties": {
+                "groupId": "account",
+                "memberName": "secondary",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "myIPconfigThird",
+              "properties": {
+                "groupId": "account",
+                "memberName": "third",
+                "privateIPAddress": "10.0.0.12"
               }
             }
           ],
@@ -763,12 +994,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "roleAssignments": {
       "value": [
-        {
-          "name": "db64fe2f-3995-4ae0-86ef-97511d5b84e3",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
         {
           "name": "<name>",
           "principalId": "<principalId>",
@@ -807,9 +1032,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
-param kind = 'Face'
+param kind = 'AIServices'
 param name = 'csamax001'
 // Non-required parameters
+param allowProjectManagement = false
 param customSubDomainName = 'xcsamax'
 param diagnosticSettings = [
   {
@@ -858,6 +1084,11 @@ param networkAcls = {
     }
   ]
 }
+param networkInjections = {
+  scenario: 'agent'
+  subnetResourceId: '<subnetResourceId>'
+  useMicrosoftManagedNetwork: false
+}
 param privateEndpoints = [
   {
     customDnsConfigs: [
@@ -870,11 +1101,27 @@ param privateEndpoints = [
     ]
     ipConfigurations: [
       {
-        name: 'myIPconfig'
+        name: 'myIPconfigDefault'
         properties: {
           groupId: 'account'
           memberName: 'default'
           privateIPAddress: '10.0.0.10'
+        }
+      }
+      {
+        name: 'myIPconfigSecondary'
+        properties: {
+          groupId: 'account'
+          memberName: 'secondary'
+          privateIPAddress: '10.0.0.11'
+        }
+      }
+      {
+        name: 'myIPconfigThird'
+        properties: {
+          groupId: 'account'
+          memberName: 'third'
+          privateIPAddress: '10.0.0.12'
         }
       }
     ]
@@ -906,12 +1153,6 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: 'db64fe2f-3995-4ae0-86ef-97511d5b84e3'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
@@ -934,7 +1175,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 7: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -1095,7 +1336,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 7: _As Speech Service_
+### Example 8: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -1264,7 +1505,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1373,7 +1614,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1491,7 +1732,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1713,6 +1954,7 @@ param tags = {
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
 | [`allowProjectManagement`](#parameter-allowprojectmanagement) | bool | Enable/Disable project management feature for AI Foundry. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
+| [`commitmentPlans`](#parameter-commitmentplans) | array | Commitment plans to deploy for the cognitive services account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1724,6 +1966,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`migrationToken`](#parameter-migrationtoken) | securestring | Resource migration token. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
+| [`networkInjections`](#parameter-networkinjections) | object | Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
@@ -1804,6 +2047,113 @@ The API properties for special APIs.
 
 - Required: No
 - Type: object
+
+### Parameter: `commitmentPlans`
+
+Commitment plans to deploy for the cognitive services account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRenew`](#parameter-commitmentplansautorenew) | bool | Whether the plan should auto-renew at the end of the current commitment period. |
+| [`current`](#parameter-commitmentplanscurrent) | object | The current commitment configuration. |
+| [`hostingModel`](#parameter-commitmentplanshostingmodel) | string | The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web). |
+| [`planType`](#parameter-commitmentplansplantype) | string | The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`commitmentPlanGuid`](#parameter-commitmentplanscommitmentplanguid) | string | The unique identifier of an existing commitment plan to update. Set to null to create a new plan. |
+| [`next`](#parameter-commitmentplansnext) | object | The configuration of the next commitment period, if scheduled. |
+
+### Parameter: `commitmentPlans.autoRenew`
+
+Whether the plan should auto-renew at the end of the current commitment period.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `commitmentPlans.current`
+
+The current commitment configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-commitmentplanscurrentcount) | int | The number of committed instances (e.g., number of containers or cores). |
+| [`tier`](#parameter-commitmentplanscurrenttier) | string | The tier of the commitment plan (e.g., T1, T2). |
+
+### Parameter: `commitmentPlans.current.count`
+
+The number of committed instances (e.g., number of containers or cores).
+
+- Required: Yes
+- Type: int
+
+### Parameter: `commitmentPlans.current.tier`
+
+The tier of the commitment plan (e.g., T1, T2).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `commitmentPlans.hostingModel`
+
+The hosting model for the commitment plan. (e.g., DisconnectedContainer, ConnectedContainer, ProvisionedWeb, Web).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `commitmentPlans.planType`
+
+The plan type indicating which capability the plan applies to (e.g., NTTS, STT, CUSTOMSTT, ADDON).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `commitmentPlans.commitmentPlanGuid`
+
+The unique identifier of an existing commitment plan to update. Set to null to create a new plan.
+
+- Required: No
+- Type: string
+
+### Parameter: `commitmentPlans.next`
+
+The configuration of the next commitment period, if scheduled.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-commitmentplansnextcount) | int | The number of committed instances for the next period. |
+| [`tier`](#parameter-commitmentplansnexttier) | string | The tier for the next commitment period. |
+
+### Parameter: `commitmentPlans.next.count`
+
+The number of committed instances for the next period.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `commitmentPlans.next.tier`
+
+The tier for the next commitment period.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `customerManagedKey`
 
@@ -2181,6 +2531,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2200,6 +2551,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2245,6 +2603,54 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
+
+### Parameter: `networkInjections`
+
+Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`scenario`](#parameter-networkinjectionsscenario) | string | The scenario for the network injection. |
+| [`subnetResourceId`](#parameter-networkinjectionssubnetresourceid) | string | The Resource ID of the subnet on the Virtual Network on which to inject. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`useMicrosoftManagedNetwork`](#parameter-networkinjectionsusemicrosoftmanagednetwork) | bool | Whether to use Microsoft Managed Network. Defaults to false. |
+
+### Parameter: `networkInjections.scenario`
+
+The scenario for the network injection.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'agent'
+    'none'
+  ]
+  ```
+
+### Parameter: `networkInjections.subnetResourceId`
+
+The Resource ID of the subnet on the Virtual Network on which to inject.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkInjections.useMicrosoftManagedNetwork`
+
+Whether to use Microsoft Managed Network. Defaults to false.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `privateEndpoints`
 
@@ -2425,6 +2831,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2444,6 +2851,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2869,6 +3283,7 @@ SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' t
     'C2'
     'C3'
     'C4'
+    'DC0'
     'F0'
     'F1'
     'S'
@@ -2922,6 +3337,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

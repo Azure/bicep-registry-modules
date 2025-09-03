@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "10169307559274055693"
+      "version": "0.37.4.10188",
+      "templateHash": "1719728153394600761"
     },
     "name": "Automation Account Runbooks",
     "description": "This module deploys an Azure Automation Account Runbook."
@@ -111,14 +111,14 @@
     "automationAccount": {
       "existing": true,
       "type": "Microsoft.Automation/automationAccounts",
-      "apiVersion": "2022-08-08",
+      "apiVersion": "2024-10-23",
       "name": "[parameters('automationAccountName')]"
     },
     "storageAccount": {
       "condition": "[not(empty(parameters('scriptStorageAccountResourceId')))]",
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-01-01",
       "subscriptionId": "[split(parameters('scriptStorageAccountResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('scriptStorageAccountResourceId'), '/')[4]]",
       "name": "[last(split(parameters('scriptStorageAccountResourceId'), '/'))]"

@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -45,11 +45,18 @@ module testDeployment '../../../main.bicep' = {
     computeTypes: [
       'azure-container-app'
     ]
+    logAnalyticsReplicationRegion: 'westus2'
     selfHostedConfig: {
       githubOrganization: 'githHubOrganization'
       githubRepository: 'dummyRepo'
       personalAccessToken: personalAccessToken
       selfHostedType: 'github'
+      azureContainerAppTarget: {
+        resources: {
+          cpu: '1'
+          memory: '2Gi'
+        }
+      }
     }
     networkingConfiguration: {
       addressSpace: '10.0.0.0/16'

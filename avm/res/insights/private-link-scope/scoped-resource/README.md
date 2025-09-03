@@ -10,9 +10,9 @@ This module deploys a Private Link Scope Scoped Resource.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Insights/privateLinkScopes/scopedResources` | [2021-07-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-07-01-preview/privateLinkScopes/scopedResources) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Insights/privateLinkScopes/scopedResources` | 2021-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_privatelinkscopes_scopedresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-07-01-preview/privateLinkScopes/scopedResources)</li></ul> |
 
 ## Parameters
 

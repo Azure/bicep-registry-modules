@@ -452,7 +452,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
   name: deploymentNames.createSubscriptionResources
   params: {
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
-      ? createSubscription.outputs.subscriptionId
+      ? createSubscription.?outputs.subscriptionId ?? ''
       : existingSubscriptionId
     managementGroupAssociationDelayCount: managementGroupAssociationDelayCount
     subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
@@ -508,34 +508,37 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
 
 @description('The Subscription ID that has been created or provided.')
 output subscriptionId string = (subscriptionAliasEnabled && empty(existingSubscriptionId))
-  ? createSubscription.outputs.subscriptionId
+  ? createSubscription.?outputs.subscriptionId ?? ''
   : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided')
       ? existingSubscriptionIDEmptyCheck
       : '${existingSubscriptionId}'
 
 @description('The Subscription Resource ID that has been created or provided.')
 output subscriptionResourceId string = (subscriptionAliasEnabled && empty(existingSubscriptionId))
-  ? createSubscription.outputs.subscriptionResourceId
+  ? createSubscription.?outputs.subscriptionResourceId ?? ''
   : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided')
       ? existingSubscriptionIDEmptyCheck
       : '/subscriptions/${existingSubscriptionId}'
 
 @description('The Subscription Owner State. Only used when creating MCA Subscriptions across tenants.')
 output subscriptionAcceptOwnershipState string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
-  ? createSubscription.outputs.subscriptionAcceptOwnershipState
+  ? createSubscription.?outputs.subscriptionAcceptOwnershipState ?? ''
   : 'N/A'
 
 @description('The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants.')
 output subscriptionAcceptOwnershipUrl string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
-  ? createSubscription.outputs.subscriptionAcceptOwnershipUrl
+  ? createSubscription.?outputs.subscriptionAcceptOwnershipUrl ?? ''
   : 'N/A'
 
 @description('The resource providers that failed to register.')
 output failedResourceProviders string = !empty(resourceProviders)
-  ? createSubscriptionResources.outputs.failedProviders
+  ? createSubscriptionResources.?outputs.failedProviders ?? ''
   : ''
 
 @description('The resource providers features that failed to register.')
 output failedResourceProvidersFeatures string = !empty(resourceProviders)
-  ? createSubscriptionResources.outputs.failedFeatures
+  ? createSubscriptionResources.?outputs.failedFeatures ?? ''
   : ''
+
+@description('The name of the Virtual WAN Hub Connection.')
+output virtualWanHubConnectionName string = createSubscriptionResources.?outputs.virtualWanHubConnectionName ?? ''

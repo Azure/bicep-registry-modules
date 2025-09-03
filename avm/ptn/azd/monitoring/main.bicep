@@ -13,7 +13,7 @@ param applicationInsightsName string
 param enableTelemetry bool = true
 
 @description('Optional. The resource portal dashboards name.')
-param applicationInsightsDashboardName string = ''
+param applicationInsightsDashboardName string?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -27,7 +27,7 @@ param location string = resourceGroup().location
   }
   '''
 })
-param tags object?
+param tags resourceInput<'Microsoft.OperationalInsights/workspaces@2025-02-01'>.tags?
 
 // ============== //
 // Resources      //

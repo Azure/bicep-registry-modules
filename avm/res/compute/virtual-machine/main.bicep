@@ -81,7 +81,7 @@ param evictionPolicy string = 'Deallocate'
 param maxPriceForLowPriorityVm string = ''
 
 @description('Optional. Specifies resource ID about the dedicated host that the virtual machine resides in.')
-param dedicatedHostId string = ''
+param dedicatedHostResourceId string = ''
 
 @description('Optional. Specifies that the image or disk that is being used was licensed on-premises.')
 @allowed([
@@ -89,9 +89,8 @@ param dedicatedHostId string = ''
   'SLES_BYOS'
   'Windows_Client'
   'Windows_Server'
-  ''
 ])
-param licenseType string = ''
+param licenseType string?
 
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
 param publicKeys publicKeyType[] = []
@@ -210,12 +209,14 @@ param extensionNvidiaGpuDriverWindows object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
+@secure()
+#disable-next-line secure-parameter-default
 param extensionHostPoolRegistration object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
 param extensionGuestConfigurationExtension object = {
   enabled: false
 }
@@ -235,7 +236,7 @@ param extensionGuestConfigurationExtensionProtectedSettings object = {}
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -244,7 +245,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -315,6 +316,24 @@ param winRMListeners winRMListenerType[]?
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
+
+@description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
+param capacityReservationGroupResourceId string = ''
+
+@allowed([
+  'AllowAll'
+  'AllowPrivate'
+  'DenyAll'
+])
+@description('Optional. Policy for accessing the disk via network.')
+param networkAccessPolicy string = 'DenyAll'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Policy for controlling export on the disk.')
+param publicNetworkAccess string = 'Disabled'
 
 var enableReferencedModulesTelemetry = false
 
@@ -536,6 +555,8 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+      publicNetworkAccess: publicNetworkAccess
+      networkAccessPolicy: networkAccessPolicy
     }
     zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
       ? array(string(availabilityZone))
@@ -637,6 +658,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+    capacityReservation: !empty(capacityReservationGroupResourceId)
+      ? {
+          capacityReservationGroup: {
+            id: capacityReservationGroupResourceId
+          }
+        }
+      : null
     diagnosticsProfile: {
       bootDiagnostics: {
         enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnostics
@@ -673,12 +701,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
-    host: !empty(dedicatedHostId)
+    host: !empty(dedicatedHostResourceId)
       ? {
-          id: dedicatedHostId
+          id: dedicatedHostResourceId
         }
       : null
-    licenseType: !empty(licenseType) ? licenseType : null
+    licenseType: licenseType
     userData: !empty(userData) ? base64(userData) : null
   }
   dependsOn: [
@@ -1048,9 +1076,9 @@ resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ??
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: vm
 }
