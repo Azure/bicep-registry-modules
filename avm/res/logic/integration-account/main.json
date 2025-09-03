@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5666833472678512174"
+      "templateHash": "1817474260195324631"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -1245,7 +1245,7 @@
             "value": "[coalesce(parameters('maps'), createArray())[copyIndex()].content]"
           },
           "mapType": {
-            "value": "[coalesce(parameters('maps'), createArray())[copyIndex()].mapType]"
+            "value": "[tryGet(coalesce(parameters('maps'), createArray())[copyIndex()], 'mapType')]"
           },
           "metadata": {
             "value": "[tryGet(coalesce(parameters('maps'), createArray())[copyIndex()], 'metadata')]"

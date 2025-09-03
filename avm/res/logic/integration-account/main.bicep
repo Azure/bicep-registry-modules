@@ -246,7 +246,7 @@ module integrationAccount_maps 'map/main.bicep' = [
       location: location
       integrationAccountName: integrationAccount.name
       content: map.content
-      mapType: map.mapType
+      mapType: map.?mapType
       metadata: map.?metadata
       parametersSchema: map.?parametersSchema
       tags: map.?tags ?? tags
