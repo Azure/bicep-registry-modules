@@ -20,13 +20,13 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. All partners to create.')
-param partners partnerType[]?
+param partners integrationAccountPartnerType[]?
 
 @description('Optional. All schemas to create.')
-param schemas schemaType[]?
+param schemas integrationAccountSchemaType[]?
 
 @description('Optional. All maps to create.')
-param maps mapType[]?
+param maps integrationAccountMapType[]?
 
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
@@ -295,8 +295,8 @@ output resourceGroupName string = resourceGroup().name
 // ================ //
 
 import { b2bPartnerContentType } from 'partner/main.bicep'
-@description('The type for a partner.')
-type partnerType = {
+@description('The type for an integration account partner.')
+type integrationAccountPartnerType = {
   @description('Required. The Name of the partner resource.')
   name: string
 
@@ -310,8 +310,8 @@ type partnerType = {
   tags: object?
 }
 
-@description('The type for a schema.')
-type schemaType = {
+@description('The type for an integration account schema.')
+type integrationAccountSchemaType = {
   @description('Required. The Name of the schema resource.')
   name: string
 
@@ -338,15 +338,15 @@ type schemaType = {
 }
 
 import { integrationAccountMapParametersSchemaType } from 'map/main.bicep'
-@description('The type for a map.')
-type mapType = {
+@description('The type for an integration account map.')
+type integrationAccountMapType = {
   @description('Required. The name of the map resource.')
   name: string
 
   @description('Required. The content of the map.')
   content: string
 
-  @description('Optional. The map type.')
+  @description('Optional. The map type. Default is "Xslt".')
   mapType: ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30')?
 
   @description('Optional. The parameters schema of integration account map.')

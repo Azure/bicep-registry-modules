@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17416083578503861018"
+      "templateHash": "5666833472678512174"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
   },
   "definitions": {
-    "partnerType": {
+    "integrationAccountPartnerType": {
       "type": "object",
       "properties": {
         "name": {
@@ -44,10 +44,10 @@
         }
       },
       "metadata": {
-        "description": "The type for a partner."
+        "description": "The type for an integration account partner."
       }
     },
-    "schemaType": {
+    "integrationAccountSchemaType": {
       "type": "object",
       "properties": {
         "name": {
@@ -106,10 +106,10 @@
         }
       },
       "metadata": {
-        "description": "The type for a schema."
+        "description": "The type for an integration account schema."
       }
     },
-    "mapType": {
+    "integrationAccountMapType": {
       "type": "object",
       "properties": {
         "name": {
@@ -135,7 +135,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The map type."
+            "description": "Optional. The map type. Default is \"Xslt\"."
           }
         },
         "parametersSchema": {
@@ -161,7 +161,7 @@
         }
       },
       "metadata": {
-        "description": "The type for a map."
+        "description": "The type for an integration account map."
       }
     },
     "_1.businessIdentityType": {
@@ -568,7 +568,7 @@
     "partners": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/partnerType"
+        "$ref": "#/definitions/integrationAccountPartnerType"
       },
       "nullable": true,
       "metadata": {
@@ -578,7 +578,7 @@
     "schemas": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/schemaType"
+        "$ref": "#/definitions/integrationAccountSchemaType"
       },
       "nullable": true,
       "metadata": {
@@ -588,7 +588,7 @@
     "maps": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/mapType"
+        "$ref": "#/definitions/integrationAccountMapType"
       },
       "nullable": true,
       "metadata": {
