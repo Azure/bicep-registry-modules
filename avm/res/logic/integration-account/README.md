@@ -19,6 +19,7 @@ This module deploys a Logic App Integration Account.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Logic/integrationAccounts` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts)</li></ul> |
+| `Microsoft.Logic/integrationAccounts/maps` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_maps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/maps)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/partners` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_partners.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/partners)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/schemas` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_schemas.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/schemas)</li></ul> |
 
@@ -135,6 +136,20 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maps: [
+      {
+        content: '<content>'
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'map1'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
     partners: [
       {
         b2bPartnerContent: {
@@ -269,6 +284,22 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         "name": "myCustomLockName"
       }
     },
+    "maps": {
+      "value": [
+        {
+          "content": "<content>",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "map1",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
     "partners": {
       "value": [
         {
@@ -401,6 +432,20 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maps = [
+  {
+    content: '<content>'
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'map1'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
 param partners = [
   {
     b2bPartnerContent: {
@@ -712,9 +757,10 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maps`](#parameter-maps) | array | All maps to create. |
 | [`partners`](#parameter-partners) | array | All partners to create. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`schemas`](#parameter-schemas) | array | The content link for the schema. |
+| [`schemas`](#parameter-schemas) | array | All schemas to create. |
 | [`sku`](#parameter-sku) | string | Integration account sku name. |
 | [`state`](#parameter-state) | string | The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -923,6 +969,94 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `maps`
+
+All maps to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`content`](#parameter-mapscontent) | string | The content of the map. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mapType`](#parameter-mapsmaptype) | string | The map type. |
+| [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
+| [`name`](#parameter-mapsname) | string | The name of the map resource. |
+| [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
+| [`tags`](#parameter-mapstags) | object | Resource tags. |
+
+### Parameter: `maps.content`
+
+The content of the map.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maps.mapType`
+
+The map type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Liquid'
+    'NotSpecified'
+    'Xslt'
+    'Xslt20'
+    'Xslt30'
+  ]
+  ```
+
+### Parameter: `maps.metadata`
+
+The map metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `maps.name`
+
+The name of the map resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maps.parametersSchema`
+
+The parameters schema of integration account map.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ref`](#parameter-mapsparametersschemaref) | string | The reference name. |
+
+### Parameter: `maps.parametersSchema.ref`
+
+The reference name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maps.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
 
 ### Parameter: `partners`
 
@@ -1206,7 +1340,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `schemas`
 
-The content link for the schema.
+All schemas to create.
 
 - Required: No
 - Type: array

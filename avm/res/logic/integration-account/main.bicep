@@ -22,8 +22,11 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. All partners to create.')
 param partners partnerType[]?
 
-@description('Optional. The content link for the schema.')
+@description('Optional. All schemas to create.')
 param schemas schemaType[]?
+
+@description('Optional. All maps to create.')
+param maps mapType[]?
 
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
@@ -235,6 +238,22 @@ module integrationAccount_schemas 'schema/main.bicep' = [
   }
 ]
 
+module integrationAccount_maps 'map/main.bicep' = [
+  for (map, index) in (maps ?? []): {
+    name: '${uniqueString(deployment().name, location)}-integrationAccount-Map-${index}'
+    params: {
+      name: map.name
+      location: location
+      integrationAccountName: integrationAccount.name
+      content: map.content
+      mapType: map.mapType
+      metadata: map.?metadata
+      parametersSchema: map.?parametersSchema
+      tags: map.?tags ?? tags
+    }
+  }
+]
+
 resource integrationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
@@ -276,7 +295,6 @@ output resourceGroupName string = resourceGroup().name
 // ================ //
 
 import { b2bPartnerContentType } from 'partner/main.bicep'
-
 @description('The type for a partner.')
 type partnerType = {
   @description('Required. The Name of the partner resource.')
@@ -314,6 +332,28 @@ type schemaType = {
 
   @description('Optional. The target namespace of the schema.')
   targetNamespace: string?
+
+  @description('Optional. Resource tags.')
+  tags: object?
+}
+
+import { integrationAccountMapParametersSchemaType } from 'map/main.bicep'
+@description('The type for a map.')
+type mapType = {
+  @description('Optional. The name of the map resource.')
+  name: string
+
+  @description('Required. The content of the map.')
+  content: string
+
+  @description('Optional. The map type.')
+  mapType: ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30')?
+
+  @description('Optional. The parameters schema of integration account map.')
+  parametersSchema: integrationAccountMapParametersSchemaType?
+
+  @description('Optional. The map metadata.')
+  metadata: object?
 
   @description('Optional. Resource tags.')
   tags: object?

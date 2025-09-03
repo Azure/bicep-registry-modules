@@ -1,0 +1,67 @@
+metadata name = 'Integration Account Maps'
+metadata description = 'This module deploys an Integration Account Map.'
+
+@description('Required. The Name of the map resource.')
+param name string
+
+@description('Optional. Resource location.')
+param location string = resourceGroup().location
+
+@description('Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment.')
+param integrationAccountName string
+
+@description('Required. The content of the map.')
+param content string
+
+@description('Optional. The map type.')
+param mapType ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30') = 'Xslt'
+
+@description('Optional. The map metadata.')
+param metadata object?
+
+@description('Optional. The parameters schema of integration account map.')
+param parametersSchema integrationAccountMapParametersSchemaType?
+
+@description('Optional. Resource tags.')
+param tags resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.tags?
+
+resource integrationAccount 'Microsoft.Logic/integrationAccounts@2019-05-01' existing = {
+  name: integrationAccountName
+}
+
+resource map 'Microsoft.Logic/integrationAccounts/maps@2019-05-01' = {
+  name: name
+  parent: integrationAccount
+  location: location
+  properties: {
+    content: content
+    mapType: mapType
+    metadata: metadata
+    parametersSchema: parametersSchema
+  }
+  tags: tags
+}
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for integration account map parameters schema.')
+type integrationAccountMapParametersSchemaType = {
+  @description('Required. The reference name.')
+  ref: string
+}
+
+// ============ //
+// Outputs      //
+// ============ //
+
+@description('The resource ID of the integration account map.')
+output resourceId string = map.id
+
+@description('The name of the integration account map.')
+output name string = map.name
+
+@description('The resource group the integration account map was deployed into.')
+output resourceGroupName string = resourceGroup().name

@@ -25,36 +25,40 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 var schemaContent = '''<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://example.com/purchaseorder"
-           xmlns="http://example.com/purchaseorder"
+           targetNamespace="http://schemas.example.com/invoice/parameters"
+           xmlns="http://schemas.example.com/invoice/parameters"
            elementFormDefault="qualified">
-
-  <xs:element name="PurchaseOrder">
+  <xs:element name="parameters">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="OrderNumber" type="xs:string"/>
-        <xs:element name="OrderDate" type="xs:date"/>
-        <xs:element name="CustomerName" type="xs:string"/>
-        <xs:element name="Items">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="Item" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="ProductID" type="xs:string"/>
-                    <xs:element name="Quantity" type="xs:int"/>
-                    <xs:element name="Price" type="xs:decimal"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
+        <xs:element name="discountRate" type="xs:decimal"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
 </xs:schema>'''
+
+var mapContent = '''<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:param name="discountRate"/>
+  <xsl:output method="xml" indent="yes"/>
+  <xsl:template match="/invoice">
+    <discountedInvoice>
+      <customer>
+        <xsl:value-of select="customer"/>
+      </customer>
+      <originalTotal>
+        <xsl:value-of select="totalAmount"/>
+      </originalTotal>
+      <discountRate>
+        <xsl:value-of select="$discountRate"/>
+      </discountRate>
+      <discountedTotal>
+        <xsl:value-of select="format-number(totalAmount * (1 - $discountRate), '#.00')"/>
+      </discountedTotal>
+    </discountedInvoice>
+  </xsl:template>
+</xsl:stylesheet>'''
 
 // ============ //
 // Dependencies //
@@ -154,6 +158,20 @@ module testDeployment '../../../main.bicep' = [
             businessIdentities: []
           }
           name: 'partner2'
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
+      maps: [
+        {
+          name: 'map1'
+          content: mapContent
           metadata: {
             key1: 'value1'
             key2: 'value2'
