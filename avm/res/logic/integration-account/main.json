@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9937673996882534531"
+      "templateHash": "17416083578503861018"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -115,7 +115,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The name of the map resource."
+            "description": "Required. The name of the map resource."
           }
         },
         "content": {
@@ -1291,7 +1291,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The Name of the map resource."
+                "description": "Required. The name of the map resource."
               }
             },
             "location": {

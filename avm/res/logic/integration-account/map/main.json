@@ -32,7 +32,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The Name of the map resource."
+        "description": "Required. The name of the map resource."
       }
     },
     "location": {

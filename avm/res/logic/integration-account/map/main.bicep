@@ -1,7 +1,7 @@
 metadata name = 'Integration Account Maps'
 metadata description = 'This module deploys an Integration Account Map.'
 
-@description('Required. The Name of the map resource.')
+@description('Required. The name of the map resource.')
 param name string
 
 @description('Optional. Resource location.')

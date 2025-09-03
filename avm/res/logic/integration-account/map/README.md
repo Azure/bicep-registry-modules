@@ -21,7 +21,7 @@ This module deploys an Integration Account Map.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`content`](#parameter-content) | string | The content of the map. |
-| [`name`](#parameter-name) | string | The Name of the map resource. |
+| [`name`](#parameter-name) | string | The name of the map resource. |
 
 **Conditional parameters**
 
@@ -48,7 +48,7 @@ The content of the map.
 
 ### Parameter: `name`
 
-The Name of the map resource.
+The name of the map resource.
 
 - Required: Yes
 - Type: string

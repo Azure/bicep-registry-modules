@@ -340,7 +340,7 @@ type schemaType = {
 import { integrationAccountMapParametersSchemaType } from 'map/main.bicep'
 @description('The type for a map.')
 type mapType = {
-  @description('Optional. The name of the map resource.')
+  @description('Required. The name of the map resource.')
   name: string
 
   @description('Required. The content of the map.')

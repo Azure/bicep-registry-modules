@@ -982,6 +982,7 @@ All maps to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`content`](#parameter-mapscontent) | string | The content of the map. |
+| [`name`](#parameter-mapsname) | string | The name of the map resource. |
 
 **Optional parameters**
 
@@ -989,13 +990,19 @@ All maps to create.
 | :-- | :-- | :-- |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. |
 | [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
-| [`name`](#parameter-mapsname) | string | The name of the map resource. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
 | [`tags`](#parameter-mapstags) | object | Resource tags. |
 
 ### Parameter: `maps.content`
 
 The content of the map.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maps.name`
+
+The name of the map resource.
 
 - Required: Yes
 - Type: string
@@ -1023,13 +1030,6 @@ The map metadata.
 
 - Required: No
 - Type: object
-
-### Parameter: `maps.name`
-
-The name of the map resource.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `maps.parametersSchema`
 
