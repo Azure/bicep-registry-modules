@@ -5,7 +5,7 @@ on:
   issues:
     types: [opened]
   schedule:
-    - cron: "0 0 * * 0" # Every sundary at 0 am
+    - cron: "0 0 * * 0" # Every sunday at 0 am
   workflow_dispatch:
     inputs:
       issueNumber:
