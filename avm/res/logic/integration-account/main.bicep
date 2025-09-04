@@ -246,6 +246,7 @@ module integrationAccount_maps 'map/main.bicep' = [
       location: location
       integrationAccountName: integrationAccount.name
       content: map.content
+      contentType: map.?contentType
       mapType: map.?mapType
       metadata: map.?metadata
       parametersSchema: map.?parametersSchema
@@ -338,6 +339,7 @@ type integrationAccountSchemaType = {
 }
 
 import { integrationAccountMapParametersSchemaType } from 'map/main.bicep'
+
 @description('The type for an integration account map.')
 type integrationAccountMapType = {
   @description('Required. The name of the map resource.')
@@ -345,6 +347,9 @@ type integrationAccountMapType = {
 
   @description('Required. The content of the map.')
   content: string
+
+  @description('Optional. The content type of the map.')
+  contentType: string?
 
   @description('Optional. The map type. Default is "Xslt".')
   mapType: ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30')?

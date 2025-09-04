@@ -33,6 +33,7 @@ This module deploys an Integration Account Map.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`contentType`](#parameter-contenttype) | string | The content type of the map. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`mapType`](#parameter-maptype) | string | The map type. |
 | [`metadata`](#parameter-metadata) | object | The map metadata. |
@@ -58,6 +59,13 @@ The name of the map resource.
 The name of the parent integration account. Required if the template is used in a standalone deployment.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `contentType`
+
+The content type of the map.
+
+- Required: No
 - Type: string
 
 ### Parameter: `location`

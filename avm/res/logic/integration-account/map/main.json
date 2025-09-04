@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13552004014848300059"
+      "templateHash": "14496818667910908880"
     },
     "name": "Integration Account Maps",
     "description": "This module deploys an Integration Account Map."
@@ -54,6 +54,13 @@
         "description": "Required. The content of the map."
       }
     },
+    "contentType": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The content type of the map."
+      }
+    },
     "mapType": {
       "type": "string",
       "allowedValues": [
@@ -93,6 +100,9 @@
       "nullable": true
     }
   },
+  "variables": {
+    "defaultContentType": "[if(equals(parameters('mapType'), 'Liquid'), 'application/liquid', 'application/xml')]"
+  },
   "resources": {
     "integrationAccount": {
       "existing": true,
@@ -107,6 +117,7 @@
       "location": "[parameters('location')]",
       "properties": {
         "content": "[parameters('content')]",
+        "contentType": "[coalesce(parameters('contentType'), variables('defaultContentType'))]",
         "mapType": "[parameters('mapType')]",
         "metadata": "[parameters('metadata')]",
         "parametersSchema": "[parameters('parametersSchema')]"

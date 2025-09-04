@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1817474260195324631"
+      "templateHash": "7159227265650004335"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -122,6 +122,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. The content of the map."
+          }
+        },
+        "contentType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The content type of the map."
           }
         },
         "mapType": {
@@ -1244,6 +1251,9 @@
           "content": {
             "value": "[coalesce(parameters('maps'), createArray())[copyIndex()].content]"
           },
+          "contentType": {
+            "value": "[tryGet(coalesce(parameters('maps'), createArray())[copyIndex()], 'contentType')]"
+          },
           "mapType": {
             "value": "[tryGet(coalesce(parameters('maps'), createArray())[copyIndex()], 'mapType')]"
           },
@@ -1265,7 +1275,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13552004014848300059"
+              "templateHash": "14496818667910908880"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1313,6 +1323,13 @@
                 "description": "Required. The content of the map."
               }
             },
+            "contentType": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The content type of the map."
+              }
+            },
             "mapType": {
               "type": "string",
               "allowedValues": [
@@ -1352,6 +1369,9 @@
               "nullable": true
             }
           },
+          "variables": {
+            "defaultContentType": "[if(equals(parameters('mapType'), 'Liquid'), 'application/liquid', 'application/xml')]"
+          },
           "resources": {
             "integrationAccount": {
               "existing": true,
@@ -1366,6 +1386,7 @@
               "location": "[parameters('location')]",
               "properties": {
                 "content": "[parameters('content')]",
+                "contentType": "[coalesce(parameters('contentType'), variables('defaultContentType'))]",
                 "mapType": "[parameters('mapType')]",
                 "metadata": "[parameters('metadata')]",
                 "parametersSchema": "[parameters('parametersSchema')]"

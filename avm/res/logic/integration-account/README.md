@@ -988,6 +988,7 @@ All maps to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`contentType`](#parameter-mapscontenttype) | string | The content type of the map. |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. Default is "Xslt". |
 | [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
@@ -1005,6 +1006,13 @@ The content of the map.
 The name of the map resource.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `maps.contentType`
+
+The content type of the map.
+
+- Required: No
 - Type: string
 
 ### Parameter: `maps.mapType`

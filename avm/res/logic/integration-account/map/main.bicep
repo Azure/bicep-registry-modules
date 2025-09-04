@@ -13,6 +13,9 @@ param integrationAccountName string
 @description('Required. The content of the map.')
 param content string
 
+@description('Optional. The content type of the map.')
+param contentType string?
+
 @description('Optional. The map type.')
 param mapType ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30') = 'Xslt'
 
@@ -25,6 +28,8 @@ param parametersSchema integrationAccountMapParametersSchemaType?
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.tags?
 
+var defaultContentType = mapType == 'Liquid' ? 'application/liquid' : 'application/xml'
+
 resource integrationAccount 'Microsoft.Logic/integrationAccounts@2019-05-01' existing = {
   name: integrationAccountName
 }
@@ -35,6 +40,7 @@ resource map 'Microsoft.Logic/integrationAccounts/maps@2019-05-01' = {
   location: location
   properties: {
     content: content
+    contentType: contentType ?? defaultContentType
     mapType: mapType
     metadata: metadata
     parametersSchema: parametersSchema
