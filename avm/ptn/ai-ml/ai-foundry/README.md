@@ -1071,6 +1071,7 @@ Custom configuration for the AI Foundry.
 | [`accountName`](#parameter-aifoundryconfigurationaccountname) | string | The name of the AI Foundry account. |
 | [`allowProjectManagement`](#parameter-aifoundryconfigurationallowprojectmanagement) | bool | Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true. |
 | [`createCapabilityHosts`](#parameter-aifoundryconfigurationcreatecapabilityhosts) | bool | Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false. |
+| [`disableLocalAuth`](#parameter-aifoundryconfigurationdisablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. When set to true, local authentication via API keys is disabled. Note: If using Capability Hosts, this may need to be set to false for compatibility. Defaults to true. |
 | [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
 | [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
 | [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
@@ -1094,6 +1095,13 @@ Whether to allow project management in the AI Foundry account. If true, users ca
 ### Parameter: `aiFoundryConfiguration.createCapabilityHosts`
 
 Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `aiFoundryConfiguration.disableLocalAuth`
+
+Allow only Azure AD authentication. Should be enabled for security reasons. When set to true, local authentication via API keys is disabled. Note: If using Capability Hosts, this may need to be set to false for compatibility. Defaults to true.
 
 - Required: No
 - Type: bool
