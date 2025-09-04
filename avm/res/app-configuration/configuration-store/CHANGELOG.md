@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app-configuration/configuration-store/CHANGELOG.md).
 
+## 0.9.2
+
+### Changes
+
+- Updated logic for `softDeleteRetentionInDays`: now sets retention to `0` when `sku` is `Developer` (previously only checked for `Free`).
+- Updated logic for `enablePurgeProtections`: now sets retention to `false` when `sku` is `Developer` (previously only checked for `Free`).
+
+### Breaking Changes
+
+- None
+
 ## 0.9.1
 
 ### Changes

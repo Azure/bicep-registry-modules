@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13471923779604074887"
+      "version": "0.37.4.10188",
+      "templateHash": "702614170296865172"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -26,10 +26,13 @@
     },
     "credentials": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
+        },
         "description": "Optional. Backend Credentials Contract Properties."
-      }
+      },
+      "nullable": true
     },
     "description": {
       "type": "string",
@@ -47,10 +50,13 @@
     },
     "proxy": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
+        },
         "description": "Optional. Backend Proxy Contract Properties."
-      }
+      },
+      "nullable": true
     },
     "resourceId": {
       "type": "string",
@@ -61,10 +67,13 @@
     },
     "serviceFabricCluster": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
+        },
         "description": "Optional. Backend Service Fabric Cluster Properties."
-      }
+      },
+      "nullable": true
     },
     "title": {
       "type": "string",
@@ -75,12 +84,15 @@
     },
     "tls": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
+        },
+        "description": "Optional. Backend TLS Properties."
+      },
       "defaultValue": {
         "validateCertificateChain": false,
         "validateCertificateName": false
-      },
-      "metadata": {
-        "description": "Optional. Backend TLS Properties."
       }
     },
     "url": {
@@ -88,18 +100,45 @@
       "metadata": {
         "description": "Required. Runtime URL of the Backend."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-backend.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "backend": {
       "type": "Microsoft.ApiManagement/service/backends",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "title": "[parameters('title')]",
