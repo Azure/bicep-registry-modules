@@ -417,7 +417,7 @@ module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = i
   params: {
     managedInstanceName: managedInstance.name
     serverKeyName: encryptionProtector!.serverKeyName
-    serverKeyType: encryptionProtector.?serverKeyType ?? 'ServiceManaged'
+    serverKeyType: encryptionProtector.?serverKeyType
     autoRotationEnabled: encryptionProtector.?autoRotationEnabled ?? true
   }
   dependsOn: [

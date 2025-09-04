@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "179124434751154738"
+      "templateHash": "10159681011489235132"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -2709,7 +2709,7 @@
             "value": "[parameters('encryptionProtector').serverKeyName]"
           },
           "serverKeyType": {
-            "value": "[coalesce(tryGet(parameters('encryptionProtector'), 'serverKeyType'), 'ServiceManaged')]"
+            "value": "[tryGet(parameters('encryptionProtector'), 'serverKeyType')]"
           },
           "autoRotationEnabled": {
             "value": "[coalesce(tryGet(parameters('encryptionProtector'), 'autoRotationEnabled'), true())]"
