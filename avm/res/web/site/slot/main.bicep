@@ -275,7 +275,9 @@ resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
       : null
     storageAccountRequired: storageAccountRequired
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
-    virtualNetworkSubnetId: virtualNetworkSubnetResourceId
+    virtualNetworkSubnetId: contains(managedEnvironmentSupportedKinds, kind) && (!empty(app.properties.managedEnvironmentId) || !empty(managedEnvironmentResourceId))
+      ? null
+      : virtualNetworkSubnetResourceId
     siteConfig: siteConfig
     functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
