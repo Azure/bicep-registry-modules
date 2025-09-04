@@ -145,7 +145,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
         name: 'map1'
         parametersSchema: {
-          ref: 'schema1'
+          ref: 'iamax001/schema1'
         }
         tags: {
           tag1: 'value1'
@@ -297,7 +297,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           },
           "name": "map1",
           "parametersSchema": {
-            "ref": "schema1"
+            "ref": "iamax001/schema1"
           },
           "tags": {
             "tag1": "value1",
@@ -447,7 +447,7 @@ param maps = [
     }
     name: 'map1'
     parametersSchema: {
-      ref: 'schema1'
+      ref: 'iamax001/schema1'
     }
     tags: {
       tag1: 'value1'
