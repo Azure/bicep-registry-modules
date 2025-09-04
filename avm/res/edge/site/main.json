@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "109047849730473759"
+    },
+    "name": "Microsoft Edge Site (Multi-Scope)",
+    "description": "This module's child-modules deploy a Microsoft Edge Site at a Subscription (sub-scope) or Resource Group (rg-scope) scope.\n\n> While this template is **not** published, you can find the actual published modules in the subfolders\n> - `sub-scope`\n> - `rg-scope`\n\n"
+  },
+  "resources": []
+}

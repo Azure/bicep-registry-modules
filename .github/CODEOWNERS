@@ -101,6 +101,7 @@
 /avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/document-db/mongo-cluster/ @Azure/avm-res-documentdb-mongocluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/edge/site/ @Azure/avm-res-edge-site-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/elastic-san/elastic-san/ @Azure/avm-res-elasticsan-elasticsan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/namespace/ @Azure/avm-res-eventgrid-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
