@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.19.4
+
+### Changes
+
+- Fix `virtualNetworkSubnetResourceId` parameter to prevent "internal server error" when deploying Azure Functions with Flex Consumption Plan (FC1)
+- Added conditional logic to set `virtualNetworkSubnetId` to `null` when using managed environments (Container Apps/Flex Consumption plans)
+- Applied fix to both main module and slot module for consistency
+- Added test case for Flex Consumption plan with VNet integration scenario
+
+### Breaking Changes
+
+- None
+
 ## 0.19.3
 
 ### Changes
