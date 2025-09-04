@@ -334,6 +334,8 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose '' -Verbose
     Write-Verbose '# Assignee distribution' -Verbose
     Write-Verbose '# ---------------------' -Verbose
+    # Expand issues by assignees
+    # E.g., if one issue has two assignees, the list will contain two copies of that issue, one per assignee
     $expandedList = [System.Collections.ArrayList]@()
     foreach ($issue in $issues) {
         $assignees = $issue.assignees
