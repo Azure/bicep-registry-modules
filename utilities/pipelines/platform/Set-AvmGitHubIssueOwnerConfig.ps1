@@ -269,6 +269,13 @@ function Set-AvmGitHubIssueOwnerConfig {
             # Assign owner team members
             # -------------------------
             foreach ($alias in ($ownerTeamMembers | Where-Object { $existingAssignees -notcontains $_ })) {
+
+                if ($timelineEvents | Where-Object { ($_.event -eq 'unassigned') -and ($_.assignee.login -eq $alias) }) {
+                    # Skipping this alias as it was previously manually unassigned
+                    Write-Verbose ('    🚫  Issue [{0}] {1}: Skipping assignment of owner team member [{2}]' -f $issue.number, $shortTitle, $alias)
+                    continue
+                }
+
                 $anyUpdate = $true
                 $statistics.'Added assignees'++
                 if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.number)]", 'Assign')) {
@@ -311,7 +318,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.number)]", 'Remove')) {
                 $null = gh issue edit $issue.number --remove-assignee $excessAssignee --repo $fullRepositoryName
             }
-            Write-Verbose ('    🗑️  Issue [{0}] {1}: Removed excess assignee [{2}]' -f $issue.number, $shortTitle, $excessAssignee) -Verbose
+            Write-Verbose ('    ♻️  Issue [{0}] {1}: Removed excess assignee [{2}]' -f $issue.number, $shortTitle, $excessAssignee) -Verbose
         }
 
         if ($anyUpdate) {
