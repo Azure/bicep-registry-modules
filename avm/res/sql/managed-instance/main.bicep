@@ -7,10 +7,10 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
+@description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
 param administratorLogin string?
 
-@description('Required. The administrator login password. Required if no `administrators` object for AAD authentication is provided.')
+@description('Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided.')
 @secure()
 param administratorLoginPassword string?
 

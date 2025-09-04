@@ -1155,8 +1155,6 @@ param vulnerabilityAssessment = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
-| [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`name`](#parameter-name) | string | The name of the SQL managed instance. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The fully qualified resource ID of the subnet on which the SQL managed instance will be placed. |
 
@@ -1164,6 +1162,8 @@ param vulnerabilityAssessment = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
+| [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`administrators`](#parameter-administrators) | object | The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided. |
 | [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
 
@@ -1204,20 +1204,6 @@ param vulnerabilityAssessment = {
 | [`vulnerabilityAssessment`](#parameter-vulnerabilityassessment) | object | The vulnerability assessment configuration. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not multi-az is enabled. |
 
-### Parameter: `administratorLogin`
-
-The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.
-
-- Required: No
-- Type: string
-
-### Parameter: `administratorLoginPassword`
-
-The administrator login password. Required if no `administrators` object for AAD authentication is provided.
-
-- Required: No
-- Type: securestring
-
 ### Parameter: `name`
 
 The name of the SQL managed instance.
@@ -1231,6 +1217,20 @@ The fully qualified resource ID of the subnet on which the SQL managed instance 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `administratorLogin`
+
+The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `administratorLoginPassword`
+
+The administrator login password. Required if no `administrators` object for AAD authentication is provided.
+
+- Required: No
+- Type: securestring
 
 ### Parameter: `administrators`
 

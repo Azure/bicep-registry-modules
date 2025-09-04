@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10159681011489235132"
+      "templateHash": "5288295484037276115"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -854,14 +854,14 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Required. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
+        "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
       }
     },
     "administratorLoginPassword": {
       "type": "securestring",
       "nullable": true,
       "metadata": {
-        "description": "Required. The administrator login password. Required if no `administrators` object for AAD authentication is provided."
+        "description": "Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided."
       }
     },
     "administrators": {
