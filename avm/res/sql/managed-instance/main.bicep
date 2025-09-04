@@ -376,6 +376,12 @@ module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = 
     name: securityAlertPolicy!.name
     emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins
     state: securityAlertPolicy.?state
+    createStorageRoleAssignment: securityAlertPolicy!.?createStorageRoleAssignment
+    disabledAlerts: securityAlertPolicy!.?disabledAlerts
+    emailAddresses: securityAlertPolicy!.?emailAddresses
+    retentionDays: securityAlertPolicy!.?retentionDays
+    storageAccountResourceId: securityAlertPolicy!.?storageAccountResourceId
+    useStorageAccountAccessKey: securityAlertPolicy!.?useStorageAccountAccessKey
   }
 }
 

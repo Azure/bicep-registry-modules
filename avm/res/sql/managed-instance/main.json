@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13842545779716554607"
+      "templateHash": "179124434751154738"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -2128,6 +2128,24 @@
           },
           "state": {
             "value": "[tryGet(parameters('securityAlertPolicy'), 'state')]"
+          },
+          "createStorageRoleAssignment": {
+            "value": "[tryGet(parameters('securityAlertPolicy'), 'createStorageRoleAssignment')]"
+          },
+          "disabledAlerts": {
+            "value": "[tryGet(parameters('securityAlertPolicy'), 'disabledAlerts')]"
+          },
+          "emailAddresses": {
+            "value": "[tryGet(parameters('securityAlertPolicy'), 'emailAddresses')]"
+          },
+          "retentionDays": {
+            "value": "[tryGet(parameters('securityAlertPolicy'), 'retentionDays')]"
+          },
+          "storageAccountResourceId": {
+            "value": "[tryGet(parameters('securityAlertPolicy'), 'storageAccountResourceId')]"
+          },
+          "useStorageAccountAccessKey": {
+            "value": "[tryGet(parameters('securityAlertPolicy'), 'useStorageAccountAccessKey')]"
           }
         },
         "template": {
