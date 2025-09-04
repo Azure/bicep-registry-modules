@@ -7,7 +7,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `avm-common-types` to `0.6.1`
-- CI Test uses [Microsoft Graph Bicep Extension](https://learn.microsoft.com/en-us/community/content/microsoft-graph-bicep-extension) to create the required service principal
 
 ### Breaking Changes
 
