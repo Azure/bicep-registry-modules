@@ -172,6 +172,9 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'map1'
           content: mapContent
+          parametersSchema: {
+            ref: 'schema1'
+          }
           metadata: {
             key1: 'value1'
             key2: 'value2'
