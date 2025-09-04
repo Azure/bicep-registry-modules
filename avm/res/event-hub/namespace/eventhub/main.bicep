@@ -292,10 +292,10 @@ output resourceGroupName string = resourceGroup().name
 @export()
 @description('Type definition for an Event Hub authorization rule.')
 type eventHubAuthorizationRuleType = {
-  @description('Required. The name of the Event Hub authorization rule')
+  @description('Required. The name of the Event Hub authorization rule.')
   name: string
 
-  @description('Required. The allowed rights for an Event Hub authorization rule')
+  @description('Required. The allowed rights for an Event Hub authorization rule.')
   rights: ('Listen' | 'Send' | 'Manage')[]
 }
 

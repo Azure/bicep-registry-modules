@@ -278,6 +278,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
     params: {
       namespaceName: eventHubNamespace.name
       name: eventHub.name
+      enableTelemetry: enableReferencedModulesTelemetry
       authorizationRules: eventHub.?authorizationRules
       captureDescriptionDestinationArchiveNameFormat: eventHub.?captureDescriptionDestinationArchiveNameFormat
       captureDescriptionDestinationBlobContainer: eventHub.?captureDescriptionDestinationBlobContainer

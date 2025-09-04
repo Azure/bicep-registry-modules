@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5909473515842303715"
+      "templateHash": "9625520125750782736"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -18,7 +18,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the Event Hub authorization rule"
+            "description": "Required. The name of the Event Hub authorization rule."
           }
         },
         "rights": {
@@ -29,7 +29,7 @@
             "Send"
           ],
           "metadata": {
-            "description": "Required. The allowed rights for an Event Hub authorization rule"
+            "description": "Required. The allowed rights for an Event Hub authorization rule."
           }
         }
       },

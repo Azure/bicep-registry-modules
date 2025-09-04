@@ -98,19 +98,19 @@ Authorization Rules for the event hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-authorizationrulesname) | string | The name of the Event Hub authorization rule |
-| [`rights`](#parameter-authorizationrulesrights) | array | The allowed rights for an Event Hub authorization rule |
+| [`name`](#parameter-authorizationrulesname) | string | The name of the Event Hub authorization rule. |
+| [`rights`](#parameter-authorizationrulesrights) | array | The allowed rights for an Event Hub authorization rule. |
 
 ### Parameter: `authorizationRules.name`
 
-The name of the Event Hub authorization rule
+The name of the Event Hub authorization rule.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `authorizationRules.rights`
 
-The allowed rights for an Event Hub authorization rule
+The allowed rights for an Event Hub authorization rule.
 
 - Required: Yes
 - Type: array
