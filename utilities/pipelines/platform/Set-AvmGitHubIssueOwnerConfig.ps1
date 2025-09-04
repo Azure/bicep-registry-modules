@@ -272,7 +272,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
                 if ($timelineEvents | Where-Object { ($_.event -eq 'unassigned') -and ($_.assignee.login -eq $alias) }) {
                     # Skipping this alias as it was previously manually unassigned
-                    Write-Verbose ('    🚫  Issue [{0}] {1}: Skipping assignment of owner team member [{2}]' -f $issue.number, $shortTitle, $alias) -Verbose
+                    Write-Verbose ('    🚫  Issue [{0}] {1}: Skipping re-assignment of owner team member [{2}] as they were manually unassigned' -f $issue.number, $shortTitle, $alias) -Verbose
                     continue
                 }
 
