@@ -110,6 +110,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     $processedCount = 1
     $totalCount = $issues.Count
     foreach ($issue in $issues) {
+
         $anyUpdate = $false
         $plainTitle = $issue.title -replace '^.+?]:? '
         $issueCategory = ($issue.title -replace [regex]::Escape($plainTitle)).Trim().TrimStart('[').TrimEnd(':').TrimEnd(']')
