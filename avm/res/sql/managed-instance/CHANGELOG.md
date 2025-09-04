@@ -8,7 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated/added UDTs & RDTs for `tags`, `vCores`,  `databases`,  `databases.tags`, `vulnerabilityAssessment`, `securityAlertPolicy`, `keys` & `encryptionProtector`
 - Updated LockType to 'avm-common-types version' `0.6.1`, enabling custom notes for locks.
-- Added numerous capabilities to the `vulnerabilityAssessment` deployment
+- Added numerous capabilities to the `securityAlertPolicy` deployment
 
 ### Breaking Changes
 
