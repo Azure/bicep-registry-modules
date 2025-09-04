@@ -337,18 +337,15 @@ function Set-AvmGitHubIssueOwnerConfig {
     $expandedList = [System.Collections.ArrayList]@()
     foreach ($issue in $issues) {
         $assignees = $issue.assignees
-
         if (-not $assignees) {
             $assignees = @(@{ login = 'Unassigned' })
         }
-
         foreach ($assignee in $assignees) {
             $copy = $issue.PsObject.Copy()
             $copy.assignee = $assignee
             $expandedList += $copy
         }
     }
-
     Write-Verbose ($expandedList | Group-Object -Property { $_.assignee.login } | ForEach-Object {
             [PSCustomObject]@{
                 Assignee = ($_.name ? $_.name : 'Unassigned')
