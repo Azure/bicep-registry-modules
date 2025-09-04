@@ -167,7 +167,6 @@ module testDeployment '../../../main.bicep' = [
           'test1@contoso.com'
           'test2@contoso.com'
         ]
-        createStorageRoleAssignment: true
         disabledAlerts: [
           'Unsafe_Action'
         ]

@@ -222,7 +222,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       }
     ]
     securityAlertPolicy: {
-      createStorageRoleAssignment: true
       disabledAlerts: [
         'Unsafe_Action'
       ]
@@ -404,7 +403,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     },
     "securityAlertPolicy": {
       "value": {
-        "createStorageRoleAssignment": true,
         "disabledAlerts": [
           "Unsafe_Action"
         ],
@@ -562,7 +560,6 @@ param roleAssignments = [
   }
 ]
 param securityAlertPolicy = {
-  createStorageRoleAssignment: true
   disabledAlerts: [
     'Unsafe_Action'
   ]
@@ -627,7 +624,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       systemAssigned: true
     }
     securityAlertPolicy: {
-      createStorageRoleAssignment: true
       disabledAlerts: [
         'Unsafe_Action'
       ]
@@ -690,7 +686,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     },
     "securityAlertPolicy": {
       "value": {
-        "createStorageRoleAssignment": true,
         "disabledAlerts": [
           "Unsafe_Action"
         ],
@@ -743,7 +738,6 @@ param managedIdentities = {
   systemAssigned: true
 }
 param securityAlertPolicy = {
-  createStorageRoleAssignment: true
   disabledAlerts: [
     'Unsafe_Action'
   ]
@@ -2298,13 +2292,11 @@ The security alert policy configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`createStorageRoleAssignment`](#parameter-securityalertpolicycreatestorageroleassignment) | bool | Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account. Defaults to true. |
 | [`disabledAlerts`](#parameter-securityalertpolicydisabledalerts) | array | Specifies an array of alerts that are disabled. |
 | [`emailAccountAdmins`](#parameter-securityalertpolicyemailaccountadmins) | bool | Specifies that the schedule scan notification will be is sent to the subscription administrators. |
 | [`emailAddresses`](#parameter-securityalertpolicyemailaddresses) | array | Specifies an array of e-mail addresses to which the alert is sent. |
 | [`retentionDays`](#parameter-securityalertpolicyretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-securityalertpolicystate) | string | Enables advanced data security features, like recuring vulnerability assesment scans and ATP. If enabled, storage account must be provided. |
-| [`useStorageAccountAccessKey`](#parameter-securityalertpolicyusestorageaccountaccesskey) | bool | Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account. |
 
 ### Parameter: `securityAlertPolicy.name`
 
@@ -2319,13 +2311,6 @@ A blob storage to  hold all Threat Detection audit logs. Required if state is 'E
 
 - Required: No
 - Type: string
-
-### Parameter: `securityAlertPolicy.createStorageRoleAssignment`
-
-Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account. Defaults to true.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `securityAlertPolicy.disabledAlerts`
 
@@ -2379,13 +2364,6 @@ Enables advanced data security features, like recuring vulnerability assesment s
     'Enabled'
   ]
   ```
-
-### Parameter: `securityAlertPolicy.useStorageAccountAccessKey`
-
-Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `servicePrincipal`
 

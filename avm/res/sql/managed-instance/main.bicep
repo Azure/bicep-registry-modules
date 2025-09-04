@@ -376,12 +376,10 @@ module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = 
     name: securityAlertPolicy!.name
     emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins
     state: securityAlertPolicy.?state
-    createStorageRoleAssignment: securityAlertPolicy!.?createStorageRoleAssignment
     disabledAlerts: securityAlertPolicy!.?disabledAlerts
     emailAddresses: securityAlertPolicy!.?emailAddresses
     retentionDays: securityAlertPolicy!.?retentionDays
     storageAccountResourceId: securityAlertPolicy!.?storageAccountResourceId
-    useStorageAccountAccessKey: securityAlertPolicy!.?useStorageAccountAccessKey
   }
 }
 
@@ -512,14 +510,8 @@ type securityAlertPolicyType = {
     | 'Unsafe_Action'
     | 'Brute_Force')[]?
 
-  @description('Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account.')
-  useStorageAccountAccessKey: bool?
-
   @description('Conditional. A blob storage to  hold all Threat Detection audit logs. Required if state is \'Enabled\'.')
   storageAccountResourceId: string?
-
-  @description('Optional. Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account. Defaults to true.')
-  createStorageRoleAssignment: bool?
 }
 
 @export()
