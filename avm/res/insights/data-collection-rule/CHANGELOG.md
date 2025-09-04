@@ -8,15 +8,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Add output `immutableId` to allow use of the DCR's `immutableId`, if generated
 - Add output `endpoints` to allow use of the DCR's logging & metrics endpoints, if generated
-
-### Breaking Changes
-
-- None
-
-## 0.6.2
-
-### Changes
-
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes
