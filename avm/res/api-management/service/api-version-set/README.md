@@ -7,6 +7,7 @@ This module deploys an API Management Service API Version Set.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -34,6 +35,7 @@ This module deploys an API Management Service API Version Set.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Description of API Version Set. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | API Version set name. |
 | [`versionHeaderName`](#parameter-versionheadername) | string | Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header. |
 | [`versionQueryName`](#parameter-versionqueryname) | string | Name of query parameter that indicates the API Version if versioningScheme is set to query. |
@@ -74,6 +76,14 @@ Description of API Version Set.
 - Required: No
 - Type: string
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `name`
 
 API Version set name.
@@ -103,3 +113,7 @@ Name of query parameter that indicates the API Version if versioningScheme is se
 | `name` | string | The name of the API Version set. |
 | `resourceGroupName` | string | The resource group the API Version set was deployed into. |
 | `resourceId` | string | The resource ID of the API Version set. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

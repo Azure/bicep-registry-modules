@@ -27,12 +27,7 @@ param enableTelemetry bool = true
 param domainName string
 
 @description('Optional. The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise.')
-@allowed([
-  'Standard'
-  'Enterprise'
-  'Premium'
-])
-param sku string = 'Enterprise'
+param sku ('Standard' | 'Enterprise' | 'Premium') = 'Enterprise'
 
 @description('Optional. Additional replica set for the managed domain.')
 param replicaSets replicaSetType[]?
@@ -55,96 +50,47 @@ param pfxCertificatePassword string?
 param additionalRecipients array = []
 
 @description('Optional. The value is to provide domain configuration type.')
-@allowed([
-  'FullySynced'
-  'ResourceTrusting'
-])
-param domainConfigurationType string = 'FullySynced'
+param domainConfigurationType ('FullySynced' | 'ResourceTrusting') = 'FullySynced'
 
 @description('Optional. The value is to synchronize scoped users and groups.')
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-param filteredSync string = 'Enabled'
+param filteredSync ('Disabled' | 'Enabled') = 'Enabled'
 
-@description('Optional. The value is to enable clients making request using TLSv1.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param tlsV1 string = 'Disabled'
+@description('Optional. TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025.')
+param tlsV1 ('Disabled') = 'Disabled'
 
 @description('Optional. The value is to enable clients making request using NTLM v1.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param ntlmV1 string = 'Disabled'
+param ntlmV1 ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable synchronized users to use NTLM authentication.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 #disable-next-line secure-secrets-in-params // Not a secret
-param syncNtlmPasswords string = 'Enabled'
+param syncNtlmPasswords ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable on-premises users to authenticate against managed domain.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 #disable-next-line secure-secrets-in-params // Not a secret
-param syncOnPremPasswords string = 'Enabled'
+param syncOnPremPasswords ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable Kerberos requests that use RC4 encryption.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param kerberosRc4Encryption string = 'Disabled'
+param kerberosRc4Encryption ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param kerberosArmoring string = 'Enabled'
+param kerberosArmoring ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to notify the DC Admins.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param notifyDcAdmins string = 'Enabled'
+param notifyDcAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to notify the Global Admins.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param notifyGlobalAdmins string = 'Enabled'
+param notifyGlobalAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable the Secure LDAP for external services of Azure AD DS Services.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param externalAccess string = 'Enabled'
+param externalAccess ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. A flag to determine whether or not Secure LDAP is enabled or disabled.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param ldaps string = 'Enabled'
+param ldaps ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.')
-@allowed(['All', 'CloudOnly'])
-param syncScope string = 'All'
+param syncScope ('All' | 'CloudOnly') = 'All'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -159,11 +105,11 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType[]?
 
@@ -249,6 +195,7 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource domainservice_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'

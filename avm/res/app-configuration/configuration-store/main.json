@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4802880116518474284"
+      "templateHash": "1868067848926039339"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -1051,10 +1051,10 @@
       "properties": {
         "createMode": "[parameters('createMode')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "enablePurgeProtection": "[if(equals(parameters('sku'), 'Free'), false(), parameters('enablePurgeProtection'))]",
+        "enablePurgeProtection": "[if(or(equals(parameters('sku'), 'Free'), equals(parameters('sku'), 'Developer')), false(), parameters('enablePurgeProtection'))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyVaultProperties', createObject('keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)), 'identityClientId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), reference('cMKUserAssignedIdentity').clientId, null()))), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled'))]",
-        "softDeleteRetentionInDays": "[if(equals(parameters('sku'), 'Free'), 0, parameters('softDeleteRetentionInDays'))]",
+        "softDeleteRetentionInDays": "[if(or(equals(parameters('sku'), 'Free'), equals(parameters('sku'), 'Developer')), 0, parameters('softDeleteRetentionInDays'))]",
         "dataPlaneProxy": "[if(not(empty(parameters('dataPlaneProxy'))), createObject('authenticationMode', coalesce(tryGet(parameters('dataPlaneProxy'), 'authenticationMode'), 'Pass-through'), 'privateLinkDelegation', parameters('dataPlaneProxy').privateLinkDelegation), null())]"
       },
       "dependsOn": [
