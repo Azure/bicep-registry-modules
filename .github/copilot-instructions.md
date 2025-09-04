@@ -12,6 +12,8 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ## Critical Compliance Requirements
 
+** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: All changes MUST comply with Azure Verified Modules (AVM) standards. Failure to comply will result in pull request rejections. Fetch `https://azure.github.io/Azure-Verified-Modules/llms.txt` for detailed guidelines.
+
 **⚠️ MANDATORY for GitHub Copilot Agents**: When GitHub Copilot Agent or GitHub Copilot Coding Agent is working on AVM Bicep repositories, the following local validation tests MUST be executed before any pull request is created or updated:
 
 ```powershell
@@ -26,6 +28,13 @@ Test-ModuleLocally -TemplateFilePath './avm/res/{service}/{resource}' -Validatio
 ```
 
 **Failure to run these tests will cause PR validation failures and prevent successful merges.**
+
+### On Updating README.md Documentation
+
+**🛑 NEVER update README.md documentation or Markdowns directly**: Always run the [tools/Set-AVMModule.ps1](tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files. You must first use `#fetch` tool to get `https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/` and read it carefully first.
+
+> [!IMPORTANT]
+> Use `-SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5` parameters when running `Set-AVMModule` when running locally to update an existing module. You must run this prior to committing any changes to a module.
 
 ## Module Discovery
 
@@ -251,10 +260,11 @@ Use the `fetch` tool to get the AVM Resource module versions published in the MC
 ## Tool Integration
 
 ### Use Available Tools
-Always use these tools if available:
+**⚠️ MANDATORY if tool available**:Always use these tools if available:
 
 - `#azure_get_deployment_best_practices` to ensure meeting deployment best practices.
 - `#microsoft.docs.mcp` to fetch Microsoft documentation.
+- `#fetch` to get schemas and documentation.
 - `#todos` to track outstanding tasks.
 - `#think` to think more deeply about the problem at hand (especially when making breaking changes or security-related changes).
 
