@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16181163629166007646"
+      "version": "0.37.4.10188",
+      "templateHash": "7596916494865403373"
     },
     "name": "SQL Managed Instance Security Alert Policies",
     "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -40,19 +41,150 @@
       "metadata": {
         "description": "Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators."
       }
+    },
+    "emailAddresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies an array of e-mail addresses to which the alert is sent."
+      }
+    },
+    "retentionDays": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the number of days to keep in the Threat Detection audit logs."
+      }
+    },
+    "createStorageRoleAssignment": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account."
+      }
+    },
+    "disabledAlerts": {
+      "type": "array",
+      "allowedValues": [
+        "Access_Anomaly",
+        "Brute_Force",
+        "Data_Exfiltration",
+        "Sql_Injection",
+        "Sql_Injection_Vulnerability",
+        "Unsafe_Action"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies an array of alerts that are disabled."
+      }
+    },
+    "useStorageAccountAccessKey": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. A blob storage to  hold all Threat Detection audit logs. Required if state is 'Enabled'."
+      }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "storageAccount": {
+      "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-01-01",
+      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+    },
+    "managedInstance": {
+      "existing": true,
+      "type": "Microsoft.Sql/managedInstances",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[parameters('managedInstanceName')]"
+    },
+    "securityAlertPolicy": {
       "type": "Microsoft.Sql/managedInstances/securityAlertPolicies",
       "apiVersion": "2024-05-01-preview",
       "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
+      "properties": "[shallowMerge(createArray(createObject('state', parameters('state'), 'emailAccountAdmins', parameters('emailAccountAdmins'), 'emailAddresses', parameters('emailAddresses'), 'disabledAlerts', parameters('disabledAlerts')), if(and(not(empty(parameters('storageAccountResourceId'))), equals(parameters('state'), 'Enabled')), createObject('retentionDays', parameters('retentionDays'), 'storageEndpoint', reference('storageAccount').primaryEndpoints.blob, 'storageAccountAccessKey', if(parameters('useStorageAccountAccessKey'), listKeys('storageAccount', '2025-01-01').keys[0].value, null())), createObject())))]",
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "storageAccount_sbdc_rbac": {
+      "condition": "[and(and(not(parameters('useStorageAccountAccessKey')), parameters('createStorageRoleAssignment')), not(empty(parameters('storageAccountResourceId'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-sbdc-rbac', parameters('managedInstanceName'))]",
+      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
       "properties": {
-        "state": "[parameters('state')]",
-        "emailAccountAdmins": "[parameters('emailAccountAdmins')]"
-      }
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+          },
+          "managedInstanceIdentityPrincipalId": {
+            "value": "[reference('managedInstance', '2024-05-01-preview', 'full').identity.principalId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "15323880075407480308"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Storage account name."
+              }
+            },
+            "managedInstanceIdentityPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Managed Identity Principal ID."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "managedInstance"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
