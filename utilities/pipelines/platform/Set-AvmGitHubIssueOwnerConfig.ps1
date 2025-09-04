@@ -110,7 +110,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     $processedCount = 1
     $totalCount = $issues.Count
     foreach ($issue in $issues) {
-
+        continue
         $anyUpdate = $false
         $plainTitle = $issue.title -replace '^.+?]:? '
         $issueCategory = ($issue.title -replace [regex]::Escape($plainTitle)).Trim().TrimStart('[').TrimEnd(':').TrimEnd(']')
@@ -334,7 +334,22 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose '' -Verbose
     Write-Verbose '# Assignee distribution' -Verbose
     Write-Verbose '# ---------------------' -Verbose
-    Write-Verbose ($issues | Group-Object -Property { $_.assignee.login } | ForEach-Object {
+    $expandedList = [System.Collections.ArrayList]@()
+    foreach ($issue in $issues) {
+        $assignees = $issue.assignees
+
+        if (-not $assignees) {
+            $assignees = @(@{ login = 'Unassigned' })
+        }
+
+        foreach ($assignee in $assignees) {
+            $copy = $issue.PsObject.Copy()
+            $copy.assignee = $assignee
+            $expandedList += $copy
+        }
+    }
+
+    Write-Verbose ($expandedList | Group-Object -Property { $_.assignee.login } | ForEach-Object {
             [PSCustomObject]@{
                 Assignee = ($_.name ? $_.name : 'Unassigned')
                 '#'      = $_.Count
