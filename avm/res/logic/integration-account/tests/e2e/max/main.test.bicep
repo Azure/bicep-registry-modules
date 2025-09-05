@@ -173,7 +173,8 @@ module testDeployment '../../../main.bicep' = [
           name: 'map1'
           content: mapContent
           parametersSchema: {
-            ref: '${namePrefix}${serviceShort}001/schema1'
+            content: schemaContent
+            contentType: 'application/xml'
           }
           metadata: {
             key1: 'value1'

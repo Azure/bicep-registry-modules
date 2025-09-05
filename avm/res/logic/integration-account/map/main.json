@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14496818667910908880"
+      "templateHash": "7345771280677859314"
     },
     "name": "Integration Account Maps",
     "description": "This module deploys an Integration Account Map."
@@ -15,11 +15,14 @@
     "integrationAccountMapParametersSchemaType": {
       "type": "object",
       "properties": {
-        "ref": {
+        "content": {
           "type": "string",
           "metadata": {
             "description": "Required. The reference name."
           }
+        },
+        "contentType": {
+          "type": "string"
         }
       },
       "metadata": {

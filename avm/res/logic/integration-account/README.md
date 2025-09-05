@@ -145,7 +145,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
         name: 'map1'
         parametersSchema: {
-          ref: 'iamax001/schema1'
+          content: '<content>'
+          contentType: 'application/xml'
         }
         tags: {
           tag1: 'value1'
@@ -297,7 +298,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           },
           "name": "map1",
           "parametersSchema": {
-            "ref": "iamax001/schema1"
+            "content": "<content>",
+            "contentType": "application/xml"
           },
           "tags": {
             "tag1": "value1",
@@ -447,7 +449,8 @@ param maps = [
     }
     name: 'map1'
     parametersSchema: {
-      ref: 'iamax001/schema1'
+      content: '<content>'
+      contentType: 'application/xml'
     }
     tags: {
       tag1: 'value1'
@@ -1054,19 +1057,6 @@ The parameters schema of integration account map.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ref`](#parameter-mapsparametersschemaref) | string | The reference name. |
-
-### Parameter: `maps.parametersSchema.ref`
-
-The reference name.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `maps.tags`
 
