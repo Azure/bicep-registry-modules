@@ -343,7 +343,21 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose '' -Verbose
     Write-Verbose '# Assignee distribution' -Verbose
     Write-Verbose '# ---------------------' -Verbose
-    Write-Verbose ($issues | Group-Object -Property { $_.assignee.login } | ForEach-Object {
+    # Expand issues by assignees
+    # E.g., if one issue has two assignees, the list will contain two copies of that issue, one per assignee
+    $expandedList = [System.Collections.ArrayList]@()
+    foreach ($issue in $issues) {
+        $assignees = $issue.assignees
+        if (-not $assignees) {
+            $assignees = @(@{ login = 'Unassigned' })
+        }
+        foreach ($assignee in $assignees) {
+            $copy = $issue.PsObject.Copy()
+            $copy.assignee = $assignee
+            $expandedList += $copy
+        }
+    }
+    Write-Verbose ($expandedList | Group-Object -Property { $_.assignee.login } | ForEach-Object {
             [PSCustomObject]@{
                 Assignee = ($_.name ? $_.name : 'Unassigned')
                 '#'      = $_.Count
