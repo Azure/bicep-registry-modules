@@ -477,6 +477,9 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
+// https://rozemuller.com/using-vm-templates-for-avd-sessionhost-automation/
+// https://www.powershellgallery.com/packages/Az.Avd/1.2.4/Content/Public%5CCreate-AvdVmTemplate.ps1
+// It remains unclear what can go into a vm template and what cannot. In the portal most values you can specify are not passed into the VMTemplate parameter (e.g., Image) but a sepate deployment. Yet via the pwsh command, they are deployed as a vmtemplate
 @export()
 type vmTemplateType = {
   @sys.description('Required. This prefix will be used in combination with the VM number to create the VM name. If using \'rdsh\' as the prefix, VMs would be named \'rdsh-0\', \'rdsh-1\', etc. You should use a unique prefix to reduce name collisions in Active Directory.')
