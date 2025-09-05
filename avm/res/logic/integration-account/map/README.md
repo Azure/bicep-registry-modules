@@ -108,6 +108,27 @@ The parameters schema of integration account map.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`content`](#parameter-parametersschemacontent) | string | The parameters schema content. |
+| [`contentType`](#parameter-parametersschemacontenttype) | string | The parameters schema content type. |
+
+### Parameter: `parametersSchema.content`
+
+The parameters schema content.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `parametersSchema.contentType`
+
+The parameters schema content type.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `tags`
 
 Resource tags.

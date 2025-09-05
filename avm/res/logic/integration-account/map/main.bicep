@@ -55,8 +55,9 @@ resource map 'Microsoft.Logic/integrationAccounts/maps@2019-05-01' = {
 @export()
 @description('The type for integration account map parameters schema.')
 type integrationAccountMapParametersSchemaType = {
-  @description('Required. The reference name.')
+  @description('Required. The parameters schema content.')
   content: string
+  @description('Required. The parameters schema content type.')
   contentType: string
 }
 
