@@ -63,6 +63,7 @@ module testDeployment '../../../main.bicep' = [
       privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
         createCapabilityHosts: true
+        disableLocalAuth: true
         networking: {
           agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
           aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId

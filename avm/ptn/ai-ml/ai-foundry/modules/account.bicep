@@ -30,6 +30,9 @@ param sku string = 'S0'
 @description('Required. Whether to allow project management in AI Foundry. This is required to enable the AI Foundry UI and project management features.')
 param allowProjectManagement bool
 
+@description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons. When set to true, local authentication via API keys is disabled. Note: If using Capability Hosts, this may need to be set to false for compatibility.')
+param disableLocalAuth bool = true
+
 @description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceIds\' to establish private endpoints.')
 param privateEndpointSubnetResourceId string?
 
@@ -79,7 +82,7 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.1' = {
     }
     deployments: aiModelDeployments
     customSubDomainName: name
-    disableLocalAuth: false
+    disableLocalAuth: disableLocalAuth
     publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
     networkAcls: {
       defaultAction: 'Allow'
