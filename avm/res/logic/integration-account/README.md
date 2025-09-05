@@ -145,8 +145,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
         name: 'map1'
         parametersSchema: {
-          content: '<content>'
-          contentType: 'application/xml'
+          ref: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-05T19:52:40Z&se=2025-09-06T04:07:40Z&skoid=aef3c886-3d01-4c3a-a1bb-c7cef2bd4def&sktid=16b3c013-d300-468d-ac64-7eda0820b6d3&skt=2025-09-05T19:52:40Z&ske=2025-09-06T04:07:40Z&sks=b&skv=2024-11-04&spr=https&sv=2024-11-04&sr=b&sig=L8Jg9yYsrGCfQNU10oOc4fHTKTFviXp%2BqrVuXQHne2Q%3D'
         }
         tags: {
           tag1: 'value1'
@@ -298,8 +297,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           },
           "name": "map1",
           "parametersSchema": {
-            "content": "<content>",
-            "contentType": "application/xml"
+            "ref": "https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-05T19:52:40Z&se=2025-09-06T04:07:40Z&skoid=aef3c886-3d01-4c3a-a1bb-c7cef2bd4def&sktid=16b3c013-d300-468d-ac64-7eda0820b6d3&skt=2025-09-05T19:52:40Z&ske=2025-09-06T04:07:40Z&sks=b&skv=2024-11-04&spr=https&sv=2024-11-04&sr=b&sig=L8Jg9yYsrGCfQNU10oOc4fHTKTFviXp%2BqrVuXQHne2Q%3D"
           },
           "tags": {
             "tag1": "value1",
@@ -449,8 +447,7 @@ param maps = [
     }
     name: 'map1'
     parametersSchema: {
-      content: '<content>'
-      contentType: 'application/xml'
+      ref: 'https://lbsstg001.blob.core.windows.net/files/sampleschema.xml?sp=r&st=2025-09-05T19:52:40Z&se=2025-09-06T04:07:40Z&skoid=aef3c886-3d01-4c3a-a1bb-c7cef2bd4def&sktid=16b3c013-d300-468d-ac64-7eda0820b6d3&skt=2025-09-05T19:52:40Z&ske=2025-09-06T04:07:40Z&sks=b&skv=2024-11-04&spr=https&sv=2024-11-04&sr=b&sig=L8Jg9yYsrGCfQNU10oOc4fHTKTFviXp%2BqrVuXQHne2Q%3D'
     }
     tags: {
       tag1: 'value1'
@@ -1062,19 +1059,11 @@ The parameters schema of integration account map.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`content`](#parameter-mapsparametersschemacontent) | string | The parameters schema content. |
-| [`contentType`](#parameter-mapsparametersschemacontenttype) | string | The parameters schema content type. |
+| [`ref`](#parameter-mapsparametersschemaref) | string | The parameters schema of the integration account map. |
 
-### Parameter: `maps.parametersSchema.content`
+### Parameter: `maps.parametersSchema.ref`
 
-The parameters schema content.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `maps.parametersSchema.contentType`
-
-The parameters schema content type.
+The parameters schema of the integration account map.
 
 - Required: Yes
 - Type: string

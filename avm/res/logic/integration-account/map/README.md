@@ -112,19 +112,11 @@ The parameters schema of integration account map.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`content`](#parameter-parametersschemacontent) | string | The parameters schema content. |
-| [`contentType`](#parameter-parametersschemacontenttype) | string | The parameters schema content type. |
+| [`ref`](#parameter-parametersschemaref) | string | The parameters schema of the integration account map. |
 
-### Parameter: `parametersSchema.content`
+### Parameter: `parametersSchema.ref`
 
-The parameters schema content.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `parametersSchema.contentType`
-
-The parameters schema content type.
+The parameters schema of the integration account map.
 
 - Required: Yes
 - Type: string
