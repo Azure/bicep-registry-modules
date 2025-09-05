@@ -583,6 +583,56 @@ The list of logic app receivers that are part of this action group.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`callbackUrl`](#parameter-logicappreceiverscallbackurl) | securestring | The callback url where http request sent to. |
+| [`name`](#parameter-logicappreceiversname) | string | The name of the logic app receiver. Names must be unique across all receivers within an action group. |
+| [`resourceId`](#parameter-logicappreceiversresourceid) | string | The azure resource id of the logic app receiver. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentity`](#parameter-logicappreceiversmanagedidentity) | string | The principal id of the managed identity. The value can be "None", "SystemAssigned" |
+| [`useCommonAlertSchema`](#parameter-logicappreceiversusecommonalertschema) | bool | Indicates whether to use common alert schema. |
+
+### Parameter: `logicAppReceivers.callbackUrl`
+
+The callback url where http request sent to.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `logicAppReceivers.name`
+
+The name of the logic app receiver. Names must be unique across all receivers within an action group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `logicAppReceivers.resourceId`
+
+The azure resource id of the logic app receiver.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `logicAppReceivers.managedIdentity`
+
+The principal id of the managed identity. The value can be "None", "SystemAssigned"
+
+- Required: No
+- Type: string
+
+### Parameter: `logicAppReceivers.useCommonAlertSchema`
+
+Indicates whether to use common alert schema.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.

@@ -43,7 +43,7 @@ param automationRunbookReceivers resourceInput<'Microsoft.Insights/actionGroups@
 param voiceReceivers resourceInput<'Microsoft.Insights/actionGroups@2024-10-01-preview'>.properties.voiceReceivers?
 
 @description('Optional. The list of logic app receivers that are part of this action group.')
-param logicAppReceivers resourceInput<'Microsoft.Insights/actionGroups@2024-10-01-preview'>.properties.logicAppReceivers?
+param logicAppReceivers logicAppReceiversType[]?
 
 @description('Optional. The list of function receivers that are part of this action group.')
 param azureFunctionReceivers resourceInput<'Microsoft.Insights/actionGroups@2024-10-01-preview'>.properties.azureFunctionReceivers?
@@ -167,3 +167,27 @@ output resourceId string = actionGroup.id
 
 @description('The location the resource was deployed into.')
 output location string = actionGroup.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type describing a Logic App receiver.')
+type logicAppReceiversType = {
+  @description('Required. The name of the logic app receiver. Names must be unique across all receivers within an action group.')
+  name: string
+
+  @description('Required. The callback url where http request sent to.')
+  @secure()
+  callbackUrl: string
+
+  @description('Required. The azure resource id of the logic app receiver.')
+  resourceId: string
+
+  @description('Optional. The principal id of the managed identity. The value can be "None", "SystemAssigned"')
+  managedIdentity: string?
+
+  @description('Optional. Indicates whether to use common alert schema.')
+  useCommonAlertSchema: bool?
+}

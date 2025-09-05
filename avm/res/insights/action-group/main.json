@@ -6,12 +6,53 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5232054108662102341"
+      "templateHash": "4315303305268338937"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group."
   },
   "definitions": {
+    "logicAppReceiversType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the logic app receiver. Names must be unique across all receivers within an action group."
+          }
+        },
+        "callbackUrl": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. The callback url where http request sent to."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The azure resource id of the logic app receiver."
+          }
+        },
+        "managedIdentity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal id of the managed identity. The value can be \"None\", \"SystemAssigned\""
+          }
+        },
+        "useCommonAlertSchema": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether to use common alert schema."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing a Logic App receiver."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -244,13 +285,13 @@
     },
     "logicAppReceivers": {
       "type": "array",
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/logicAppReceivers"
-        },
-        "description": "Optional. The list of logic app receivers that are part of this action group."
+      "items": {
+        "$ref": "#/definitions/logicAppReceiversType"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of logic app receivers that are part of this action group."
+      }
     },
     "azureFunctionReceivers": {
       "type": "array",
