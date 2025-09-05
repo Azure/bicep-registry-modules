@@ -595,7 +595,7 @@ The list of logic app receivers that are part of this action group.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`managedIdentity`](#parameter-logicappreceiversmanagedidentity) | string | The principal id of the managed identity. The value can be "None", "SystemAssigned" |
+| [`managedIdentity`](#parameter-logicappreceiversmanagedidentity) | string | The principal id of the managed identity. The value can be "None", "SystemAssigned". |
 | [`useCommonAlertSchema`](#parameter-logicappreceiversusecommonalertschema) | bool | Indicates whether to use common alert schema. |
 
 ### Parameter: `logicAppReceivers.callbackUrl`
@@ -621,7 +621,7 @@ The azure resource id of the logic app receiver.
 
 ### Parameter: `logicAppReceivers.managedIdentity`
 
-The principal id of the managed identity. The value can be "None", "SystemAssigned"
+The principal id of the managed identity. The value can be "None", "SystemAssigned".
 
 - Required: No
 - Type: string

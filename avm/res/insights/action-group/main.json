@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4315303305268338937"
+      "templateHash": "12769653612776447281"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group."
@@ -37,7 +37,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The principal id of the managed identity. The value can be \"None\", \"SystemAssigned\""
+            "description": "Optional. The principal id of the managed identity. The value can be \"None\", \"SystemAssigned\"."
           }
         },
         "useCommonAlertSchema": {
