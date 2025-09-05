@@ -185,7 +185,7 @@ type logicAppReceiversType = {
   @description('Required. The azure resource id of the logic app receiver.')
   resourceId: string
 
-  @description('Optional. The principal id of the managed identity. The value can be "None", "SystemAssigned"')
+  @description('Optional. The principal id of the managed identity. The value can be "None", "SystemAssigned".')
   managedIdentity: string?
 
   @description('Optional. Indicates whether to use common alert schema.')
