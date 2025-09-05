@@ -59,7 +59,7 @@ param customRdpProperty string = 'audiocapturemode:i:1;audiomode:i:0;drivestored
 param validationEnvironment bool = false
 
 @sys.description('Optional. The necessary information for adding more VMs to this Host Pool.')
-param vmTemplate object = {}
+param vmTemplate vmTemplateType?
 
 @sys.description('Optional. Host Pool token validity length. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the token will be valid for 8 hours.')
 param tokenValidityLength string = 'PT8H'
@@ -287,7 +287,23 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'
           registrationTokenOperation: 'Update'
         }
       : null
-    vmTemplate: !empty(vmTemplate) ? string(vmTemplate) : null
+    vmTemplate: !empty(vmTemplate)
+      ? string({
+          namePrefix: vmTemplate!.namePrefix
+          osDiskType: vmTemplate!.?osDiskType ?? 'StandardSSD_LRS'
+          hibernate: vmTemplate.?hibernate ?? false
+          diskSizeGB: vmTemplate.?diskSizeGB ?? 0
+          securityType: vmTemplate.?securityType ?? 'Standard'
+          secureBoot: vmTemplate.?secureBoot ?? true
+          vTPM: vmTemplate.?vTPM ?? true
+          vmInfrastructureType: vmTemplate.?vmInfrastructureType ?? 'Cloud'
+          virtualProcessorCount: vmTemplate.?virtualProcessorCount ?? 4
+          memoryGB: vmTemplate.?memoryGB ?? 8
+          maximumMemoryGB: vmTemplate.?maximumMemoryGB ?? 0
+          minimumMemoryGB: vmTemplate.?minimumMemoryGB ?? 0
+          dynamicMemoryConfig: vmTemplate.?dynamicMemoryConfig
+        })
+      : ''
     agentUpdate: agentUpdate
     ring: ring
     ssoadfsAuthority: ssoadfsAuthority
@@ -459,4 +475,46 @@ type privateEndpointOutputType = {
 
   @sys.description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
+}
+
+@export()
+type vmTemplateType = {
+  @sys.description('Required. This prefix will be used in combination with the VM number to create the VM name. If using \'rdsh\' as the prefix, VMs would be named \'rdsh-0\', \'rdsh-1\', etc. You should use a unique prefix to reduce name collisions in Active Directory.')
+  namePrefix: string
+
+  @sys.description('Required. Standard SSD Disks are a cost effective storage option optimized for workloads that need consistent performance at lower IOPS levels. Premium SSD disks offer high-performance, low-latency disk support for I/O-intensive applications and production workloads. Use Standard HDD disks for Dev/Test scenarios and less critical workloads at lowest cost. Defaults to \'StandardSSD_LRS\'.')
+  osDiskType: ('StandardSSD_LRS' | 'Premium_LRS' | 'Standard_LRS')?
+
+  @sys.description('Optional. Whether the VMs created will be hibernate enabled. Defaults to \'false\'.')
+  hibernate: bool?
+
+  @sys.description('Optional. The size of the session host VMs in GB. If the value of this parameter is 0, the disk will be created with the default size set in the image. Defaults to \'0\'.')
+  diskSizeGB: int?
+
+  @sys.description('Optional. Specifies the SecurityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings. Defaults to \'Standard\'.')
+  securityType: ('TrustedLaunch' | 'Standard' | 'ConfidentialVM')?
+
+  @sys.description('Optional. Specifies whether secure boot should be enabled on the virtual machine. Defaults to \'true\'.')
+  secureBoot: bool?
+
+  @sys.description('Optional. Specifies whether vTPM (Virtual Trusted Platform Module) should be enabled on the virtual machine. Defaults to \'true\'.')
+  vTPM: bool?
+
+  @sys.description('Optional. The infrastructure type for the virtual machines. Defaults to \'Cloud\'.')
+  vmInfrastructureType: ('OnPremises' | 'Cloud')?
+
+  @sys.description('Optional. Virtual Processor Count. Defaults to \'4\'.')
+  virtualProcessorCount: int?
+
+  @sys.description('Optional. Memory in GB. Defaults to \'\'.')
+  memoryGB: int?
+
+  @sys.description('Optional.  When using dynamic memory this setting is the maximum GB given to the VM.')
+  maximumMemoryGB: int?
+
+  @sys.description('Optional. When using dynamic memory this setting is the minimum GB given to the VM.')
+  minimumMemoryGB: int?
+
+  @sys.description('Optional. Dynamic memory for virtual machine from a range for amount of memory.')
+  dynamicMemoryConfig: bool?
 }

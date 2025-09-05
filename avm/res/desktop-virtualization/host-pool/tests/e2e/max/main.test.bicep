@@ -107,21 +107,21 @@ module testDeployment '../../../main.bicep' = {
     maxSessionLimit: 99999
     personalDesktopAssignmentType: 'Automatic'
     vmTemplate: {
-      customImageId: null
-      domain: 'domainname.onmicrosoft.com'
-      galleryImageOffer: 'office-365'
-      galleryImagePublisher: 'microsoftwindowsdesktop'
-      galleryImageSKU: '20h1-evd-o365pp'
-      imageType: 'Gallery'
-      imageUri: null
+      // customImageId: null
+      // domain: 'domainname.onmicrosoft.com'
+      // galleryImageOffer: 'office-365'
+      // galleryImagePublisher: 'microsoftwindowsdesktop'
+      // galleryImageSKU: '20h1-evd-o365pp'
+      // imageType: 'Gallery'
+      // imageUri: null
       namePrefix: 'avdv2'
       osDiskType: 'StandardSSD_LRS'
-      useManagedDisks: true
-      vmSize: {
-        cores: 2
-        id: 'Standard_D2s_v3'
-        ram: 8
-      }
+      // useManagedDisks: true
+      // vmSize: {
+      //   cores: 2
+      //   id: 'Standard_D2s_v3'
+      //   ram: 8
+      // }
     }
     lock: {
       kind: 'CanNotDelete'
