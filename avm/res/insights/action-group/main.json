@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3644252255709386753"
+      "templateHash": "5232054108662102341"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group."
@@ -164,94 +164,133 @@
     },
     "emailReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/emailReceivers"
+        },
         "description": "Optional. The list of email receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "eventHubReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/eventHubReceivers"
+        },
         "description": "Optional. The list of Event Hub receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "smsReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/smsReceivers"
+        },
         "description": "Optional. The list of SMS receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "webhookReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/webhookReceivers"
+        },
         "description": "Optional. The list of webhook receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "itsmReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/itsmReceivers"
+        },
         "description": "Optional. The list of ITSM receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "azureAppPushReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/azureAppPushReceivers"
+        },
         "description": "Optional. The list of AzureAppPush receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "automationRunbookReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/automationRunbookReceivers"
+        },
         "description": "Optional. The list of AutomationRunbook receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "voiceReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/voiceReceivers"
+        },
         "description": "Optional. The list of voice receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "logicAppReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/logicAppReceivers"
+        },
         "description": "Optional. The list of logic app receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "azureFunctionReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/azureFunctionReceivers"
+        },
         "description": "Optional. The list of function receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "armRoleReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/armRoleReceivers"
+        },
         "description": "Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported."
-      }
+      },
+      "nullable": true
     },
     "incidentReceivers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/properties/properties/incidentReceivers"
+        },
         "description": "Optional. The list of incident receivers that are part of this action group."
-      }
+      },
+      "nullable": true
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/actionGroups@2024-10-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
