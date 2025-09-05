@@ -48,17 +48,6 @@ resource map 'Microsoft.Logic/integrationAccounts/maps@2019-05-01' = {
   tags: tags
 }
 
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for integration account map parameters schema.')
-type integrationAccountMapParametersSchemaType = {
-  @description('Required. The parameters schema of the integration account map.')
-  ref: string
-}
-
 // ============ //
 // Outputs      //
 // ============ //

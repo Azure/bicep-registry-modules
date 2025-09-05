@@ -338,8 +338,6 @@ type integrationAccountSchemaType = {
   tags: object?
 }
 
-import { integrationAccountMapParametersSchemaType } from 'map/main.bicep'
-
 @description('The type for an integration account map.')
 type integrationAccountMapType = {
   @description('Required. The name of the map resource.')

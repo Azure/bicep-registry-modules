@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "6972586457416737549"
+      "templateHash": "4385953177761148270"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -405,23 +405,6 @@
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
-        }
-      }
-    },
-    "integrationAccountMapParametersSchemaType": {
-      "type": "object",
-      "properties": {
-        "ref": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The parameters schema of the integration account map."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for integration account map parameters schema.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "map/main.bicep"
         }
       }
     },
@@ -1275,27 +1258,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13215172137663395053"
+              "templateHash": "14980714020681019498"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
-          },
-          "definitions": {
-            "integrationAccountMapParametersSchemaType": {
-              "type": "object",
-              "properties": {
-                "ref": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The parameters schema of the integration account map."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for integration account map parameters schema."
-              }
-            }
           },
           "parameters": {
             "name": {
