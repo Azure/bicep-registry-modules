@@ -3,7 +3,7 @@
 // ============== //
 @description('Required. The name of the Key Vault to set the secrets in.')
 param keyVaultName string
-import { secretToSetType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretToSetType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Required. The secrets to set in the Key Vault.')
 param secretsToSet secretToSetType[]
 // ============= //
@@ -24,7 +24,7 @@ resource secrets 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = [
 // =========== //
 //   Outputs   //
 // =========== //
-import { secretSetOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretSetOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('The references to the secrets exported to the provided Key Vault.')
 output secretsSet secretSetOutputType[] = [
   #disable-next-line outputs-should-not-contain-secrets // Only returning the references, not a secret value

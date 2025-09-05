@@ -11,6 +11,7 @@ param eventHubName string
 param name string
 
 @description('Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.')
+@maxLength(1024)
 param userMetadata string = ''
 
 resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
