@@ -173,9 +173,15 @@ module testDeployment '../../../main.bicep' = [
           name: 'map1'
           content: mapContent
           parametersSchema: {
-            discountRate: {
-              type: 'number'
+            type: 'object'
+            properties: {
+              discountRate: {
+                type: 'number'
+              }
             }
+            required: [
+              'discountRate'
+            ]
           }
           metadata: {
             key1: 'value1'
