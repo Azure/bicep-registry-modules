@@ -309,10 +309,10 @@ function Set-AvmGitHubIssueOwnerConfig {
                 ($_.event -eq 'assigned') -and ($_.actor.login -ne 'avm-team-linter[bot]')
             }).assignee.login
         $assigneesToRemove = $existingAssignees | Where-Object {
-            $manuallyAssigned = $usersAssignedManually -contains $_
-            $inOwnerTeam = $ownerTeamMembers -notcontains $_
-            $orphaned = $moduleCsvData.ModuleStatus -eq 'Orphaned'
-            -not $manuallyAssigned -and (-not $inOwnerTeam -or $orphaned)
+            $wasManuallyAssigned = $usersAssignedManually -contains $_
+            $isInOwnerTeam = $ownerTeamMembers -contains $_
+            $isOrphaned = $moduleCsvData.ModuleStatus -eq 'Orphaned'
+            -not $wasManuallyAssigned -and (-not $isInOwnerTeam -or $isOrphaned)
         }
         foreach ($excessAssignee in $assigneesToRemove) {
             $anyUpdate = $true
