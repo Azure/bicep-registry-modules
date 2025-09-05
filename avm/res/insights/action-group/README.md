@@ -17,7 +17,7 @@ This module deploys an Action Group.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Insights/actionGroups` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_actiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-01-01/actionGroups)</li></ul> |
+| `Microsoft.Insights/actionGroups` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_actiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-10-01-preview/actionGroups)</li></ul> |
 
 ## Usage examples
 
@@ -427,6 +427,7 @@ param tags = {
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventHubReceivers`](#parameter-eventhubreceivers) | array | The list of Event Hub receivers that are part of this action group. |
+| [`incidentReceivers`](#parameter-incidentreceivers) | array | The list of incident receivers that are part of this action group. |
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -505,6 +506,13 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `eventHubReceivers`
 
 The list of Event Hub receivers that are part of this action group.
+
+- Required: No
+- Type: array
+
+### Parameter: `incidentReceivers`
+
+The list of incident receivers that are part of this action group.
 
 - Required: No
 - Type: array
