@@ -108,19 +108,6 @@ The parameters schema of integration account map.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ref`](#parameter-parametersschemaref) | string | The parameters schema of the integration account map. |
-
-### Parameter: `parametersSchema.ref`
-
-The parameters schema of the integration account map.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `tags`
 
 Resource tags.

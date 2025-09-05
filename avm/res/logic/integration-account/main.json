@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2405160315344135134"
+      "templateHash": "6972586457416737549"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -146,7 +146,7 @@
           }
         },
         "parametersSchema": {
-          "$ref": "#/definitions/integrationAccountMapParametersSchemaType",
+          "type": "object",
           "nullable": true,
           "metadata": {
             "description": "Optional. The parameters schema of integration account map."
@@ -1275,7 +1275,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "10947765759579042799"
+              "templateHash": "13215172137663395053"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1352,7 +1352,7 @@
               }
             },
             "parametersSchema": {
-              "$ref": "#/definitions/integrationAccountMapParametersSchemaType",
+              "type": "object",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The parameters schema of integration account map."

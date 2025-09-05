@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10947765759579042799"
+      "templateHash": "13215172137663395053"
     },
     "name": "Integration Account Maps",
     "description": "This module deploys an Integration Account Map."
@@ -83,7 +83,7 @@
       }
     },
     "parametersSchema": {
-      "$ref": "#/definitions/integrationAccountMapParametersSchemaType",
+      "type": "object",
       "nullable": true,
       "metadata": {
         "description": "Optional. The parameters schema of integration account map."

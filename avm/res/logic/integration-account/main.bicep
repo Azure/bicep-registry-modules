@@ -355,7 +355,7 @@ type integrationAccountMapType = {
   mapType: ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30')?
 
   @description('Optional. The parameters schema of integration account map.')
-  parametersSchema: integrationAccountMapParametersSchemaType?
+  parametersSchema: object?
 
   @description('Optional. The map metadata.')
   metadata: object?
