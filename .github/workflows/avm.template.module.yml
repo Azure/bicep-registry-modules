@@ -153,9 +153,9 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
-    # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
+    # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: |
-      always() &&
+      !cancelled() &&
       needs.job_module_static_validation.result == 'success' &&
       needs.job_module_deploy_validation.result == 'success' &&
       github.ref == 'refs/heads/main' &&
