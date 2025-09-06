@@ -1,0 +1,140 @@
+metadata name = 'Policy Assignments (Resource Group scope)'
+metadata description = 'This module deploys a Policy Assignment at a Resource Group scope.'
+
+@sys.description('Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope.')
+@maxLength(64)
+param name string
+
+@sys.description('Optional. This message will be part of response in case of policy violation.')
+param description string?
+
+@sys.description('Optional. The display name of the policy assignment. Maximum length is 128 characters.')
+@maxLength(128)
+param displayName string?
+
+@sys.description('Required. Specifies the ID of the policy definition or policy set definition being assigned.')
+param policyDefinitionId string
+
+@sys.description('Optional. Parameters for the policy assignment if needed.')
+param parameters resourceInput<'Microsoft.Authorization/policyAssignments@2025-03-01'>.properties.parameters?
+
+@sys.description('Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning \'Modify\' policy definitions.')
+@allowed([
+  'SystemAssigned'
+  'UserAssigned'
+  'None'
+])
+param identity string = 'SystemAssigned'
+
+@sys.description('Optional. The Resource ID for the user assigned identity to assign to the policy assignment.')
+param userAssignedIdentityResourceId string?
+
+@sys.description('Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition.')
+param roleDefinitionIds string[]?
+
+@sys.description('Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
+param metadata object?
+
+@sys.description('Optional. The messages that describe why a resource is non-compliant with the policy.')
+param nonComplianceMessages resourceInput<'Microsoft.Authorization/policyAssignments@2025-03-01'>.properties.nonComplianceMessages?
+
+@sys.description('Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce.')
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+param enforcementMode string = 'Default'
+
+@sys.description('Optional. The policy excluded scopes.')
+param notScopes resourceInput<'Microsoft.Authorization/policyAssignments@2025-03-01'>.properties.notScopes?
+
+@sys.description('Optional. Location for all resources.')
+param location string = resourceGroup().location
+
+@sys.description('Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition.')
+param overrides resourceInput<'Microsoft.Authorization/policyAssignments@2025-03-01'>.properties.overrides?
+
+@sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
+param resourceSelectors resourceInput<'Microsoft.Authorization/policyAssignments@2025-03-01'>.properties.resourceSelectors?
+
+@sys.description('Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.')
+param definitionVersion string?
+
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var identityVar = identity == 'SystemAssigned'
+  ? {
+      type: identity
+    }
+  : identity == 'UserAssigned'
+      ? {
+          type: identity
+          userAssignedIdentities: {
+            '${userAssignedIdentityResourceId}': {}
+          }
+        }
+      : null
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.authz-policyassignment_rgscope.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+  location: location
+}
+
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01' = {
+  name: name
+  location: location
+  properties: {
+    displayName: displayName
+    metadata: metadata
+    description: description
+    policyDefinitionId: policyDefinitionId
+    parameters: parameters
+    nonComplianceMessages: nonComplianceMessages
+    enforcementMode: enforcementMode
+    notScopes: notScopes
+    overrides: overrides
+    resourceSelectors: resourceSelectors
+    definitionVersion: definitionVersion
+  }
+  identity: identityVar
+}
+
+// TODO: Clarify if coupled enough to justify it being part of a resource modile
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
+    name: guid(resourceGroup().id, roleDefinitionId, location, name)
+    properties: {
+      roleDefinitionId: roleDefinitionId
+      principalId: policyAssignment.identity.principalId
+      principalType: 'ServicePrincipal'
+    }
+  }
+]
+
+@sys.description('Policy Assignment Name.')
+output name string = policyAssignment.name
+
+@sys.description('Policy Assignment principal ID.')
+output principalId string? = policyAssignment.?identity.?principalId
+
+@sys.description('Policy Assignment resource ID.')
+output resourceId string = policyAssignment.id
+
+@sys.description('The location the resource was deployed into.')
+output location string = policyAssignment.location
