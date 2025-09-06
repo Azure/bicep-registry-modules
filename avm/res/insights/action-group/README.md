@@ -47,8 +47,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     // Required parameters
     groupShortName: 'agiagmin001'
     name: 'iagmin001'
-    // Non-required parameters
-    location: 'global'
   }
 }
 ```
@@ -71,10 +69,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     },
     "name": {
       "value": "iagmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "global"
     }
   }
 }
@@ -93,8 +87,6 @@ using 'br/public:avm/res/insights/action-group:<version>'
 // Required parameters
 param groupShortName = 'agiagmin001'
 param name = 'iagmin001'
-// Non-required parameters
-param location = 'global'
 ```
 
 </details>
@@ -337,7 +329,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     groupShortName: 'agiagwaf001'
     name: 'iagwaf001'
     // Non-required parameters
-    location: 'global'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -367,9 +358,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       "value": "iagwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "global"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -395,7 +383,6 @@ using 'br/public:avm/res/insights/action-group:<version>'
 param groupShortName = 'agiagwaf001'
 param name = 'iagwaf001'
 // Non-required parameters
-param location = 'global'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -779,8 +766,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
