@@ -595,6 +595,13 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      immutableStorageWithVersioning: {
+        enabled: true
+        immutabilityPolicy: {
+          allowProtectedAppendWrites: true
+          immutabilityPeriodSinceCreationInDays: 7
+        }
+      }
     }
   }
 ]

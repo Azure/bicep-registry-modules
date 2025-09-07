@@ -170,6 +170,9 @@ param allowedCopyScope string?
 ])
 param publicNetworkAccess string?
 
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
+
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
@@ -428,6 +431,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
         }
       : null
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
+    immutableStorageWithVersioning: immutableStorageWithVersioning
     isSftpEnabled: enableSftp
     isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null

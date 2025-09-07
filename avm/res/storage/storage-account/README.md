@@ -608,6 +608,13 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
       ]
     }
+    immutableStorageWithVersioning: {
+      enabled: true
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: true
+        immutabilityPeriodSinceCreationInDays: 7
+      }
+    }
     largeFileSharesState: 'Enabled'
     localUsers: [
       {
@@ -1152,6 +1159,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "shareQuota": 102400
           }
         ]
+      }
+    },
+    "immutableStorageWithVersioning": {
+      "value": {
+        "enabled": true,
+        "immutabilityPolicy": {
+          "allowProtectedAppendWrites": true,
+          "immutabilityPeriodSinceCreationInDays": 7
+        }
       }
     },
     "largeFileSharesState": {
@@ -1711,6 +1727,13 @@ param fileServices = {
       shareQuota: 102400
     }
   ]
+}
+param immutableStorageWithVersioning = {
+  enabled: true
+  immutabilityPolicy: {
+    allowProtectedAppendWrites: true
+    immutabilityPeriodSinceCreationInDays: 7
+  }
 }
 param largeFileSharesState = 'Enabled'
 param localUsers = [
@@ -3384,6 +3407,7 @@ param tags = {
 | [`enableSftp`](#parameter-enablesftp) | bool | If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
+| [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
@@ -3727,6 +3751,13 @@ File service and shares to deploy.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `immutableStorageWithVersioning`
+
+The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.
+
+- Required: No
+- Type: object
 
 ### Parameter: `isLocalUserEnabled`
 
