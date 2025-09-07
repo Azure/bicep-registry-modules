@@ -98,6 +98,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         "`nTotals`n------"                 = $null
         'Total issues'                     = $issues.Count
         'Updated issues'                   = 0
+        'Issues to review by core team'    = 0
 
         "`nCategories`n----------"         = $null
         '📦 Module issues'                 = 0
@@ -130,6 +131,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             # Not a module issue. Skipping
             if ([String]::IsNullOrEmpty($issueCategory)) {
                 Write-Verbose ('    ⚠️  Issue [{0}] {1}: Not a module issue and unknown category. Is skipped and should be reviewed & updated by maintainers.' -f $issue.number, $shortTitle) -Verbose
+                $statistics.'Issues to review by core team'++
             } else {
                 Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
             }
@@ -152,6 +154,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: No valid module name was found in the issue. Skipping' -f $issue.number, $shortTitle)
+            $statistics.'Issues to review by core team'++
             $processedCount++
             continue
         }
@@ -175,6 +178,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         # new/unknown module
         if ($null -eq $moduleCsvData) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] not found in CSV. Skipping assignment.' -f $issue.number, $shortTitle, $moduleName)
+            $statistics.'Issues to review by core team'++
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -217,6 +221,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($moduleCsvData.ModuleStatus -eq 'Orphaned' -and $existingLabels -notcontains 'Status: Module Orphaned :yellow_circle:') {
             # Added as I found several incorrectly labeled issues
             Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] is orphaned but not assigned the required label. Please check.' -f $issue.number, $shortTitle, $moduleName)
+            $statistics.'Issues to review by core team'++
         }
 
         # ============= #
