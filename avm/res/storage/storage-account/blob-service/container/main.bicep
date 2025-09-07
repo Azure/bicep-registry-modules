@@ -30,7 +30,7 @@ param immutableStorageWithVersioningEnabled bool = false
 param immutabilityPolicyName string = 'default'
 
 @description('Optional. Configure immutability policy.')
-param immutabilityPolicyProperties object?
+param immutabilityPolicy immutabilityPolicyType?
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
 param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata = {}
@@ -152,14 +152,14 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   }
 }
 
-module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicyProperties ?? {}))) {
+module container_immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicy ?? {}))) {
   name: '${name}-${immutabilityPolicyName}'
   params: {
     storageAccountName: storageAccount.name
     containerName: container.name
-    immutabilityPeriodSinceCreationInDays: immutabilityPolicyProperties.?immutabilityPeriodSinceCreationInDays
-    allowProtectedAppendWrites: immutabilityPolicyProperties.?allowProtectedAppendWrites
-    allowProtectedAppendWritesAll: immutabilityPolicyProperties.?allowProtectedAppendWritesAll
+    immutabilityPeriodSinceCreationInDays: immutabilityPolicy.?immutabilityPeriodSinceCreationInDays
+    allowProtectedAppendWrites: immutabilityPolicy.?allowProtectedAppendWrites
+    allowProtectedAppendWritesAll: immutabilityPolicy.?allowProtectedAppendWritesAll
   }
 }
 
@@ -187,3 +187,19 @@ output resourceId string = container.id
 
 @description('The resource group of the deployed container.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+@export()
+@description('The type of an immutability policy.')
+type immutabilityPolicyType = {
+  @description('Optional. The immutability period for the blobs in the container since the policy creation, in days.')
+  immutabilityPeriodSinceCreationInDays: int?
+
+  @description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.')
+  allowProtectedAppendWrites: bool?
+
+  @description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.')
+  allowProtectedAppendWritesAll: bool?
+}
