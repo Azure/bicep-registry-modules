@@ -93,7 +93,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
       }
     }
   }
-  location: location
 }
 
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01' = {
