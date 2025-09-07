@@ -138,7 +138,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
       }
     ]
     notScopes: [
-      '/subscriptions/<value>/resourceGroups/validation-rg'
+      '<id>'
     ]
     overrides: [
       {
@@ -244,7 +244,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     },
     "notScopes": {
       "value": [
-        "/subscriptions/<value>/resourceGroups/validation-rg"
+        "<id>"
       ]
     },
     "overrides": {
@@ -338,7 +338,7 @@ param nonComplianceMessages = [
   }
 ]
 param notScopes = [
-  '/subscriptions/<value>/resourceGroups/validation-rg'
+  '<id>'
 ]
 param overrides = [
   {

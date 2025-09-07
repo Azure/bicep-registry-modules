@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14233657319946366831"
+      "templateHash": "10014073089427385961"
     },
     "name": "Policy Assignments (Resource Group scope)",
     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -181,8 +181,7 @@
             }
           }
         }
-      },
-      "location": "[parameters('location')]"
+      }
     },
     "policyAssignment": {
       "type": "Microsoft.Authorization/policyAssignments",
