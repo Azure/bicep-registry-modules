@@ -138,3 +138,6 @@ output resourceId string = policyAssignment.id
 
 @sys.description('The location the resource was deployed into.')
 output location string = policyAssignment.location
+
+@sys.description('The name of the resource group the module was deployed to.')
+output resourceGroupName string = resourceGroup().name

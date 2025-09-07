@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "504785550635078267"
+      "templateHash": "14233657319946366831"
     },
     "name": "Policy Assignments (Resource Group scope)",
     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -252,6 +252,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('policyAssignment', '2025-03-01', 'full').location]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the module was deployed to."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

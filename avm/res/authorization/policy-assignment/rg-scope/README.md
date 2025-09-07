@@ -640,6 +640,7 @@ The Resource ID for the user assigned identity to assign to the policy assignmen
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | Policy Assignment Name. |
 | `principalId` | string | Policy Assignment principal ID. |
+| `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `resourceId` | string | Policy Assignment resource ID. |
 
 ## Data Collection
