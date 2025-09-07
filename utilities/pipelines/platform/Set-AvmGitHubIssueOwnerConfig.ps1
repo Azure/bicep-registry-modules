@@ -377,7 +377,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose ($moduleDistributionData | ForEach-Object {
             [PSCustomObject]@{
                 Name = $_.ModuleName
-                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '👀'))
+                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '⚠️'))
                 '#'  = $_.References.Count
             }
         } | Sort-Object -Property { $_.'#' } -Descending | Format-Table | Out-String) -Verbose
