@@ -152,10 +152,6 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            immutabilityPolicy: {
-              allowProtectedAppendWrites: false
-            }
-            immutableStorageWithVersioningEnabled: true
           }
         ]
         automaticSnapshotPolicyEnabled: true
