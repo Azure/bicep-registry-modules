@@ -42,8 +42,8 @@ This module deploys a Storage Account Blob Container.
 | [`enableNfsV3AllSquash`](#parameter-enablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
 | [`enableNfsV3RootSquash`](#parameter-enablenfsv3rootsquash) | bool | Enable NFSv3 root squash on blob container. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`immutabilityPolicy`](#parameter-immutabilitypolicy) | object | Configure immutability policy. |
 | [`immutabilityPolicyName`](#parameter-immutabilitypolicyname) | string | Name of the immutable policy. |
-| [`immutabilityPolicyProperties`](#parameter-immutabilitypolicyproperties) | object | Configure immutability policy. |
 | [`immutableStorageWithVersioningEnabled`](#parameter-immutablestoragewithversioningenabled) | bool | This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process. |
 | [`metadata`](#parameter-metadata) | object | A name-value pair to associate with the container as metadata. |
 | [`publicAccess`](#parameter-publicaccess) | string | Specifies whether data in the container may be accessed publicly and the level of access. |
@@ -109,6 +109,42 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `immutabilityPolicy`
+
+Configure immutability policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowProtectedAppendWrites`](#parameter-immutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
+| [`allowProtectedAppendWritesAll`](#parameter-immutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
+| [`immutabilityPeriodSinceCreationInDays`](#parameter-immutabilitypolicyimmutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
+
+### Parameter: `immutabilityPolicy.allowProtectedAppendWrites`
+
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.
+
+- Required: No
+- Type: bool
+
+### Parameter: `immutabilityPolicy.allowProtectedAppendWritesAll`
+
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
+
+- Required: No
+- Type: bool
+
+### Parameter: `immutabilityPolicy.immutabilityPeriodSinceCreationInDays`
+
+The immutability period for the blobs in the container since the policy creation, in days.
+
+- Required: No
+- Type: int
+
 ### Parameter: `immutabilityPolicyName`
 
 Name of the immutable policy.
@@ -116,13 +152,6 @@ Name of the immutable policy.
 - Required: No
 - Type: string
 - Default: `'default'`
-
-### Parameter: `immutabilityPolicyProperties`
-
-Configure immutability policy.
-
-- Required: No
-- Type: object
 
 ### Parameter: `immutableStorageWithVersioningEnabled`
 

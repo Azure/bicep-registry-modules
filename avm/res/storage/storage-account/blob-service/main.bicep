@@ -44,7 +44,7 @@ param deleteRetentionPolicyDays int = 7
 @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
 param deleteRetentionPolicyAllowPermanentDelete bool = false
 
-@description('Optional. Use versioning to automatically maintain previous versions of your blobs.')
+@description('Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.')
 param isVersioningEnabled bool = false
 
 @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
@@ -58,11 +58,16 @@ param restorePolicyEnabled bool = false
 param restorePolicyDays int = 7
 
 @description('Optional. Blob containers to create.')
-param containers array?
+param containers containerType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
+
+#disable-next-line no-unused-vars
+var immutabilityValidation = storageAccount.properties.isHnsEnabled == true && isVersioningEnabled
+  ? fail('Configuration error: Versioning for blobs cannot be enabled when hierarchical namespace is enabled.')
+  : null
 
 var enableReferencedModulesTelemetry = false
 
@@ -163,8 +168,9 @@ module blobServices_container 'container/main.bicep' = [
       metadata: container.?metadata
       publicAccess: container.?publicAccess
       roleAssignments: container.?roleAssignments
-      immutabilityPolicyProperties: container.?immutabilityPolicyProperties
+      immutabilityPolicy: container.?immutabilityPolicy
       enableTelemetry: enableReferencedModulesTelemetry
+      immutabilityPolicyName: container.?immutabilityPolicyName
     }
   }
 ]
@@ -199,4 +205,47 @@ type corsRuleType = {
 
   @description('Required. The number of seconds that the client/browser should cache a preflight response.')
   maxAgeInSeconds: int
+}
+
+import { immutabilityPolicyType } from 'container/main.bicep'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type of a container.')
+type containerType = {
+  @description('Required. The name of the Storage Container to deploy.')
+  name: string
+
+  @description('Optional. Default the container to use specified encryption scope for all writes.')
+  defaultEncryptionScope: string?
+
+  @description('Optional. Block override of encryption scope from the container default.')
+  denyEncryptionScopeOverride: bool?
+
+  @description('Optional. Enable NFSv3 all squash on blob container.')
+  enableNfsV3AllSquash: bool?
+
+  @description('Optional. Enable NFSv3 root squash on blob container.')
+  enableNfsV3RootSquash: bool?
+
+  @description('Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.')
+  immutableStorageWithVersioningEnabled: bool?
+
+  @description('Optional. Name of the immutable policy.')
+  immutabilityPolicyName: string?
+
+  @description('Optional. Configure immutability policy.')
+  immutabilityPolicy: immutabilityPolicyType?
+
+  @description('Optional. A name-value pair to associate with the container as metadata.')
+  metadata: resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata?
+
+  @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
+  publicAccess: ('Container' | 'Blob' | 'None')?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }

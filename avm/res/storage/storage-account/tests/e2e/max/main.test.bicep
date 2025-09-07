@@ -250,7 +250,9 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            allowProtectedAppendWrites: false
+            immutabilityPolicy: {
+              allowProtectedAppendWrites: false
+            }
           }
         ]
         automaticSnapshotPolicyEnabled: true
@@ -594,13 +596,6 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
-      }
-      immutableStorageWithVersioning: {
-        enabled: true
-        immutabilityPolicy: {
-          allowProtectedAppendWrites: true
-          immutabilityPeriodSinceCreationInDays: 7
-        }
       }
     }
   }
