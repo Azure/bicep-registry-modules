@@ -74,7 +74,7 @@ module testDeployment '../../../sub-scope/main.bicep' = {
       }
     ]
     notScopes: [
-      '/subscriptions/${subscriptionId}/resourceGroups/validation-rg'
+      resourceGroup.id
     ]
     parameters: {
       enableCollectionOfSqlQueriesForSecurityResearch: {
