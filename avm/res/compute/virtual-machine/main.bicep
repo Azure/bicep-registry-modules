@@ -577,7 +577,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: vmSize
     }
     securityProfile: {
-      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {})
+      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
       uefiSettings: securityType == 'TrustedLaunch'
         ? {
