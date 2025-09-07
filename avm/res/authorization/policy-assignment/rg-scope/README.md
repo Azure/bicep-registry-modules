@@ -138,7 +138,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
       }
     ]
     notScopes: [
-      '<id>'
+      '<value>/providers/Microsoft.Network/virtualNetworks/myVnet'
     ]
     overrides: [
       {
@@ -244,7 +244,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     },
     "notScopes": {
       "value": [
-        "<id>"
+        "<value>/providers/Microsoft.Network/virtualNetworks/myVnet"
       ]
     },
     "overrides": {
@@ -338,7 +338,7 @@ param nonComplianceMessages = [
   }
 ]
 param notScopes = [
-  '<id>'
+  '<value>/providers/Microsoft.Network/virtualNetworks/myVnet'
 ]
 param overrides = [
   {
