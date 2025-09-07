@@ -6,6 +6,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Adjusted the usage of the `ecryptionAtHost` property to only pass it to the resource provider if enabled
+
+### Breaking Changes
+
+- Changing default value of `encryptionAtHost` from `true` to `false` to improve usability for subscription where the feature is or cannot be enabled
+
+## 0.18.0
+
+### Changes
+
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 - Added type to `tags` parameter
 - Changed default of `licenseType` parameter to nullable

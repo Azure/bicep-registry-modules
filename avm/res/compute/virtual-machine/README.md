@@ -7479,7 +7479,7 @@ This property can be used by user in the request to enable or disable the Host E
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `evictionPolicy`
 
