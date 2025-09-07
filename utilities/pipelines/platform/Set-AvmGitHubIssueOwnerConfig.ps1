@@ -129,7 +129,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
             if ([String]::IsNullOrEmpty($issueCategory)) {
-                Write-Verbose ('    📎  Issue [{0}] {1}: Not a module issue and unknown category. Is skipped and should be reviewed & updated by maintainers.' -f $issue.number, $shortTitle) -Verbose
+                Write-Verbose ('    ⚠️  Issue [{0}] {1}: Not a module issue and unknown category. Is skipped and should be reviewed & updated by maintainers.' -f $issue.number, $shortTitle) -Verbose
             } else {
                 Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
             }
