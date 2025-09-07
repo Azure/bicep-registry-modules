@@ -74,7 +74,7 @@ module testDeployment '../../../rg-scope/main.bicep' = {
       }
     ]
     notScopes: [
-      resourceGroup.id
+      '${resourceGroup.id}/providers/Microsoft.Network/virtualNetworks/myVnet'
     ]
     parameters: {
       enableCollectionOfSqlQueriesForSecurityResearch: {
