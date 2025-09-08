@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-instance/container-group/CHANGELOG.md).
 
+## 0.6.1
+
+### Changes
+
+- Updated ReadMe with AzAdvertizer reference
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Replaced custom type of `dnsConfig` parameter with resource-derived type
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes

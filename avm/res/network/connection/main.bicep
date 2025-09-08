@@ -73,7 +73,7 @@ param customIPSecPolicy customIPSecPolicyType = {
 @description('Optional. The weight added to routes learned from this BGP speaker.')
 param routingWeight int?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -133,8 +133,12 @@ resource connection 'Microsoft.Network/connections@2024-05-01' = {
     enablePrivateLinkFastPath: connectionType == 'ExpressRoute' ? enablePrivateLinkFastPath : null
     expressRouteGatewayBypass: connectionType == 'ExpressRoute' ? expressRouteGatewayBypass : null
     virtualNetworkGateway1: virtualNetworkGateway1
-    virtualNetworkGateway2: connectionType == 'Vnet2Vnet' && !empty(virtualNetworkGateway2ResourceId) ? any({ id: virtualNetworkGateway2ResourceId }) : null
-    localNetworkGateway2: connectionType == 'IPsec' && !empty(localNetworkGateway2ResourceId) ? any({ id: localNetworkGateway2ResourceId }) : null
+    virtualNetworkGateway2: connectionType == 'Vnet2Vnet' && !empty(virtualNetworkGateway2ResourceId)
+      ? any({ id: virtualNetworkGateway2ResourceId })
+      : null
+    localNetworkGateway2: connectionType == 'IPsec' && !empty(localNetworkGateway2ResourceId)
+      ? any({ id: localNetworkGateway2ResourceId })
+      : null
     peer: connectionType == 'ExpressRoute' && !empty(peerResourceId) ? { id: peerResourceId } : null
     authorizationKey: connectionType == 'ExpressRoute' && !empty(authorizationKey) ? authorizationKey : null
     sharedKey: connectionType != 'ExpressRoute' ? vpnSharedKey : null
@@ -157,7 +161,9 @@ resource connection 'Microsoft.Network/connections@2024-05-01' = {
     routingWeight: routingWeight
     enableBgp: enableBgp
     useLocalAzureIpAddress: connectionType == 'IPsec' ? useLocalAzureIpAddress : null
-    gatewayCustomBgpIpAddresses: connectionType == 'IPsec' && !empty(gatewayCustomBgpIpAddresses) ? gatewayCustomBgpIpAddresses : null
+    gatewayCustomBgpIpAddresses: connectionType == 'IPsec' && !empty(gatewayCustomBgpIpAddresses)
+      ? gatewayCustomBgpIpAddresses
+      : null
   }
 }
 
@@ -165,9 +171,9 @@ resource connection_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: connection
 }
@@ -186,7 +192,6 @@ output resourceId string = connection.id
 
 @description('The location the resource was deployed into.')
 output location string = connection.location
-
 
 // =============== //
 //   Definitions   //
@@ -246,4 +251,3 @@ type trafficSelectorPolicyType = {
   @description('Required. A collection of remote address spaces in CIDR format.')
   remoteAddressRanges: string[]
 }
-

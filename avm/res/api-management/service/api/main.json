@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "15594091729270943816"
+      "version": "0.37.4.10188",
+      "templateHash": "18116979725417472212"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -493,7 +493,17 @@
         "description": "Optional. Criteria to limit import of WSDL to a subset of the document."
       },
       "nullable": true
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "service::apiVersionSet": {
@@ -508,6 +518,26 @@
       "type": "Microsoft.ApiManagement/service",
       "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-api.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "api": {
       "type": "Microsoft.ApiManagement/service/apis",
@@ -561,6 +591,9 @@
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -569,8 +602,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "17954633540696938037"
+              "version": "0.37.4.10188",
+              "templateHash": "6713053293232206479"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -613,9 +646,36 @@
               "metadata": {
                 "description": "Required. Contents of the Policy as defined by the format."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-apipolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.ApiManagement/service/apis/policies",
               "apiVersion": "2024-05-01",
@@ -707,6 +767,9 @@
           },
           "verbosity": {
             "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'verbosity')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -716,8 +779,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "7258995271080005683"
+              "version": "0.37.4.10188",
+              "templateHash": "18295485777200437093"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -835,6 +898,13 @@
               "metadata": {
                 "description": "Optional. The verbosity level applied to traces emitted by trace policies."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -855,6 +925,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgm-apidiagnostics.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "diagnostic": {
               "type": "Microsoft.ApiManagement/service/apis/diagnostics",
@@ -961,8 +1051,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "6629339591821662719"
+              "version": "0.37.4.10188",
+              "templateHash": "2321178038283517825"
             },
             "name": "API Management Service APIs Operations",
             "description": "This module deploys an API Management Service API Operation."
@@ -1091,13 +1181,13 @@
             "service::api": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service/apis",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiName'))]"
             },
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "operation": {
@@ -1153,8 +1243,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "15561539799762283135"
+                      "version": "0.37.4.10188",
+                      "templateHash": "17700550507187528779"
                     },
                     "name": "API Management Service API Operation Policies",
                     "description": "This module deploys an API Management Service API Operation Policy."
@@ -1206,7 +1296,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.ApiManagement/service/apis/operations/policies",
-                      "apiVersion": "2022-08-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
                       "properties": {
                         "value": "[parameters('value')]",

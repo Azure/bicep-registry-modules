@@ -49,11 +49,11 @@ param msixPackageApplicationId string?
 @sys.description('Optional. Specifies the package family name for MSIX applications.')
 param msixPackageFamilyName string?
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' existing = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-03-01-preview' existing = {
   name: applicationGroupName
 }
 
-resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2024-04-03' = {
+resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2025-03-01-preview' = {
   name: name
   parent: appGroup
   properties: {

@@ -12,9 +12,9 @@ This module deploys a Security Insights Data Connector.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.SecurityInsights/dataConnectors` | [2025-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-03-01/dataConnectors) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.SecurityInsights/dataConnectors` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_dataconnectors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-03-01/dataConnectors)</li></ul> |
 
 ## Usage examples
 

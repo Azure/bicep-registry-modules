@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "14879341739605245920"
+      "version": "0.37.4.10188",
+      "templateHash": "4862146439358232066"
     },
     "name": "Action Rules",
     "description": "This module deploys an Alert Processing Rule."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -148,6 +155,9 @@
     },
     "scopes": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [
         "[subscription().id]"
       ],
@@ -157,28 +167,37 @@
     },
     "actions": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AlertsManagement/actionRules@2021-08-08#properties/properties/properties/actions"
+        },
+        "description": "Optional.  Actions to be applied."
+      },
       "defaultValue": [
         {
           "actionType": "RemoveAllActionGroups"
         }
-      ],
-      "metadata": {
-        "description": "Optional.  Actions to be applied."
-      }
+      ]
     },
     "conditions": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AlertsManagement/actionRules@2021-08-08#properties/properties/properties/conditions"
+        },
         "description": "Optional.  Conditions on which alerts will be filtered."
-      }
+      },
+      "nullable": true
     },
     "schedule": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AlertsManagement/actionRules@2021-08-08#properties/properties/properties/schedule"
+        },
         "description": "Optional. Scheduling for alert processing rule."
-      }
+      },
+      "nullable": true
     },
     "roleAssignments": {
       "type": "array",
@@ -192,10 +211,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AlertsManagement/actionRules@2021-08-08#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -272,7 +294,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "actionRule"

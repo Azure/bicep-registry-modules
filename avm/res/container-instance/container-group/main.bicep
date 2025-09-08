@@ -31,18 +31,18 @@ param location string = resourceGroup().location
 param logAnalytics logAnalyticsType?
 
 @description('Optional. The DNS config information for a container group.')
-param dnsConfig dnsConfigType?
+param dnsConfig resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.dnsConfig?
 
 @description('Optional. A list of container definitions which will be executed before the application container starts.')
 param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.initContainers?
 
 @description('Optional. The subnets to use by the container group.')
-param subnets containerGroupSubnetIdType[]?
+param subnets containerGroupSubnetType[]?
 
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
 param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.volumes?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -188,8 +188,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       ? {
           logAnalytics: {
             logType: logAnalytics!.logType
-            workspaceId: law.properties.customerId
-            workspaceKey: law.listKeys().primarySharedKey
+            workspaceId: law!.properties.customerId
+            workspaceKey: law!.listKeys().primarySharedKey
             #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
             workspaceResourceId: logAnalytics!.?workspaceResourceId
             metadata: logAnalytics!.?metadata
@@ -199,12 +199,12 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
     encryptionProperties: !empty(customerManagedKey)
       ? {
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
-          vaultBaseUrl: cMKKeyVault.properties.vaultUri
+          vaultBaseUrl: cMKKeyVault!.properties.vaultUri
           keyName: customerManagedKey!.keyName
           // FYI: Key Rotation is not (yet) supported by the RP
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
             ? customerManagedKey!.keyVersion!
-            : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+            : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
         }
       : null
     imageRegistryCredentials: imageRegistryCredentials
@@ -243,9 +243,9 @@ resource containergroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: containergroup
 }
@@ -497,25 +497,12 @@ type ipAddressType = {
 
 @export()
 @description('The type for a container group subnet.')
-type containerGroupSubnetIdType = {
+type containerGroupSubnetType = {
   @description('Required. Resource ID of virtual network and subnet.')
   subnetResourceId: string
 
   @description('Optional. Friendly name for the subnet.')
   name: string?
-}
-
-@export()
-@description('The type for a DNS configuration.')
-type dnsConfigType = {
-  @description('Required. 	The DNS servers for the container group.')
-  nameServers: string[]
-
-  @description('Optional. The DNS options for the container group.')
-  options: string?
-
-  @description('Optional. The DNS search domains for hostname lookup in the container group.')
-  searchDomains: string?
 }
 
 // will be removed in future. For more information see https://learn.microsoft.com/en-us/azure/container-instances/container-instances-gpu

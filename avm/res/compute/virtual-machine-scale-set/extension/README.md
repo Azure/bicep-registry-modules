@@ -10,9 +10,9 @@ This module deploys a Virtual Machine Scale Set Extension.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Compute/virtualMachineScaleSets/extensions` | 2023-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions)</li></ul> |
 
 ## Parameters
 

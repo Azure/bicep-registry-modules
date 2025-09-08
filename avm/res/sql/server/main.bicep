@@ -21,7 +21,7 @@ param managedIdentities managedIdentityAllType?
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
 param primaryUserAssignedIdentityResourceId string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -48,7 +48,7 @@ param firewallRules firewallRuleType[]?
 param virtualNetworkRules virtualNetworkRuleType[]?
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies securityAlerPolicyType[]?
+param securityAlertPolicies securityAlertPolicyType[]?
 
 @description('Optional. The keys to configure.')
 param keys keyType[]?
@@ -81,7 +81,7 @@ param minimalTlsVersion string = '1.2'
 @description('Optional. Whether or not to enable IPv6 support for this server.')
 param isIPv6Enabled string = 'Disabled'
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -262,9 +262,9 @@ resource server_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: server
 }
@@ -518,7 +518,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   }
 }
 
-module server_audit_settings 'audit-setting/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'auditing-setting/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
@@ -982,7 +982,7 @@ type virtualNetworkRuleType = {
 
 @export()
 @description('The type for a security alert policy.')
-type securityAlerPolicyType = {
+type securityAlertPolicyType = {
   @description('Required. The name of the Security Alert Policy.')
   name: string
 

@@ -2,12 +2,24 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added type to `tags` parameter
+- Changed default of `licenseType` parameter to nullable
+
+### Breaking Changes
+
+- Renamed parameter `dedicatedHostId` to `dedicatedHostResourceId`
 
 ## 0.17.0
 
 ### Changes
 
 - The `capacityReservationGroupId, extensionGuestConfigurationExtension, networkAccessPolicy (disk), publicNetworkAccess (disk)` parameters were added.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

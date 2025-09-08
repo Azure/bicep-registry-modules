@@ -10,9 +10,9 @@ This module deploys Synapse Workspaces Administrators.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Synapse/workspaces/administrators` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Synapse/workspaces/administrators` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators)</li></ul> |
 
 ## Parameters
 

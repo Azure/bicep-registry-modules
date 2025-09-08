@@ -13,13 +13,13 @@ This module deploys an Azure Stack HCI virtual machine.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/virtualMachineInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/virtualMachineInstances) |
-| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
-| `Microsoft.HybridCompute/machines` | [2024-07-10](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.AzureStackHCI/virtualMachineInstances` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_virtualmachineinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/virtualMachineInstances)</li></ul> |
+| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2020-06-25 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments)</li></ul> |
+| `Microsoft.HybridCompute/machines` | 2024-07-10 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcompute_machines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines)</li></ul> |
 
 ## Usage examples
 
@@ -209,6 +209,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       }
     }
     // Non-required parameters
+    adminPassword: '<adminPassword>'
     location: '<location>'
   }
 }
@@ -270,6 +271,9 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       }
     },
     // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -319,6 +323,7 @@ param storageProfile = {
   }
 }
 // Non-required parameters
+param adminPassword = '<adminPassword>'
 param location = '<location>'
 ```
 
@@ -342,8 +347,11 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adminPassword`](#parameter-adminpassword) | securestring | The password of arc vm. If it is provided, it will be used for the admin account in osProfile. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`httpProxy`](#parameter-httpproxy) | securestring | The HTTP proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | HTTP proxy configuration. |
+| [`httpsProxy`](#parameter-httpsproxy) | securestring | The HTTPS proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile configuration. |
@@ -390,6 +398,13 @@ Storage profile configuration.
 - Required: Yes
 - Type: object
 
+### Parameter: `adminPassword`
+
+The password of arc vm. If it is provided, it will be used for the admin account in osProfile.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -398,6 +413,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `httpProxy`
+
+The HTTP proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `httpProxyConfig`
 
 HTTP proxy configuration.
@@ -405,6 +427,13 @@ HTTP proxy configuration.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `httpsProxy`
+
+The HTTPS proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration.
+
+- Required: No
+- Type: securestring
 
 ### Parameter: `location`
 

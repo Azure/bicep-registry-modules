@@ -34,15 +34,15 @@ module tags_rg 'tagsResourceGroup.bicep' = if (!empty(resourceGroupName) && !emp
 
 @description('The name of the tags resource.')
 output name string = (!empty(resourceGroupName) && !empty(subscriptionId))
-  ? tags_rg.outputs.name
-  : tags_sub.outputs.name
+  ? tags_rg.?outputs.name ?? ''
+  : tags_sub.?outputs.name ?? ''
 
 @description('The applied tags.')
 output tags object = (!empty(resourceGroupName) && !empty(subscriptionId))
-  ? tags_rg.outputs.tags
-  : tags_sub.outputs.tags
+  ? tags_rg.?outputs.tags ?? {}
+  : tags_sub.?outputs.tags ?? {}
 
 @description('The resource ID of the applied tags.')
 output resourceId string = (!empty(resourceGroupName) && !empty(subscriptionId))
-  ? tags_rg.outputs.resourceId
-  : tags_sub.outputs.resourceId
+  ? tags_rg.?outputs.resourceId ?? ''
+  : tags_sub.?outputs.resourceId ?? ''
