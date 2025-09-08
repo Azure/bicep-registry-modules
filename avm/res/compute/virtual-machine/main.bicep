@@ -588,7 +588,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
-      imageReference: imageReference
+      imageReference:
+        contains(imageReference, 'id')
+        ? {
+            id: imageReference.id
+          }
       osDisk: {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
