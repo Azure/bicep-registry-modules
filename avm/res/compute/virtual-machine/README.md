@@ -1518,7 +1518,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
     bypassPlatformSafetyChecksOnUserSchedule: true
-    computerName: 'winvm1'
+    computerName: '<computerName>'
     dataDisks: [
       {
         caching: 'ReadOnly'
@@ -1543,6 +1543,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -1820,7 +1823,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": true
     },
     "computerName": {
-      "value": "winvm1"
+      "value": "<computerName>"
     },
     "dataDisks": {
       "value": [
@@ -1853,6 +1856,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -2130,7 +2136,7 @@ param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
 param backupVaultResourceGroup = '<backupVaultResourceGroup>'
 param bypassPlatformSafetyChecksOnUserSchedule = true
-param computerName = 'winvm1'
+param computerName = '<computerName>'
 param dataDisks = [
   {
     caching: 'ReadOnly'
@@ -2155,6 +2161,9 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3371,7 +3380,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
-    computerName: 'winvm1'
+    computerName: '<computerName>'
     dataDisks: [
       {
         caching: 'None'
@@ -3740,7 +3749,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<backupVaultResourceGroup>"
     },
     "computerName": {
-      "value": "winvm1"
+      "value": "<computerName>"
     },
     "dataDisks": {
       "value": [
@@ -4117,7 +4126,7 @@ param autoShutdownConfig = {
 param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
 param backupVaultResourceGroup = '<backupVaultResourceGroup>'
-param computerName = 'winvm1'
+param computerName = '<computerName>'
 param dataDisks = [
   {
     caching: 'None'
