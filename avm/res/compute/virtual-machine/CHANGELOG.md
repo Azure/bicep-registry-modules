@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.19.0
+
+### Changes
+
+- Introduced user-defined type for `extensionCustomScriptConfig` parameter that is aligned with its [official documentation](https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows).
+
+### Breaking Changes
+
+- Merged `extensionCustomScriptProtectedSetting` parameter into `extensionCustomScriptConfig`
+- Removed support for the CustomScriptExtension extension to automatically append SAS-Keys to file specified via the `extensionCustomScriptConfig.fileData` property. Instead, the SAS token must either be pre-provided with the URL, or either the settings `extensionCustomScriptConfig.protectedSettings.storageAccountKey` & `extensionCustomScriptConfig.protectedSettings.storageAccountName` or (recommended) `extensionCustomScriptConfig.protectedSettings.managedIdentityResourceId`. For the latter, you can provide either the full resource ID - or set it to `''` if you want it to use the VM's system-assigned identity (if enabled) instead. Note, in either case, the Identity must be granted access to correct Storage Account scope.
+
 ## 0.18.0
 
 ### Changes
