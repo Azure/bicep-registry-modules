@@ -4,6 +4,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.3.1
 
+### Changes
+
 - Added new optional parameter
 - Refactored DNS configuration object for ACR
 
