@@ -93,6 +93,9 @@ module testDeployment '../../../main.bicep' = [
       adminPassword: password
       extensionAadJoinConfig: {
         enabled: true
+        settings: {
+          mdmId: '' // '0000000a-0000-0000-c000-000000000000'
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
