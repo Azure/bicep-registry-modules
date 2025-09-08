@@ -3398,6 +3398,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionAadJoinConfig: {
       enabled: true
       name: 'myAADLogin'
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3772,6 +3775,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enabled": true,
         "name": "myAADLogin",
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -4138,6 +4144,9 @@ param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
   name: 'myAADLogin'
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'

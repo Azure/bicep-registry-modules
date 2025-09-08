@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Introduced user-defined type for `extensionCustomScriptConfig` parameter that is aligned with its [official documentation](https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows).
+- Added parameters `provisionAfterExtensions` & `provisionAfterExtensions`  to 'extension' child module.
 
 ### Breaking Changes
 

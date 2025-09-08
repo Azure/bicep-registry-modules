@@ -918,10 +918,10 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
     autoUpgradeMinorVersion: extensionCustomScriptConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionCustomScriptConfig.?enableAutomaticUpgrade ?? false
     forceUpdateTag: extensionCustomScriptConfig.?forceUpdateTag
-    protectedSettingsFromKeyVault: extensionCustomScriptConfig.?protectedSettingsFromKeyVault
     provisionAfterExtensions: extensionCustomScriptConfig.?provisionAfterExtensions
     supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
     tags: extensionCustomScriptConfig.?tags ?? tags
+    protectedSettingsFromKeyVault: extensionCustomScriptConfig.?protectedSettingsFromKeyVault
     settings: {
       ...(!empty(extensionCustomScriptConfig!.?settings.?commandToExecute)
         ? { commandToExecute: extensionCustomScriptConfig!.?settings.?commandToExecute }
