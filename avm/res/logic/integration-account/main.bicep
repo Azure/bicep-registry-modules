@@ -28,6 +28,9 @@ param schemas integrationAccountSchemaType[]?
 @description('Optional. All maps to create.')
 param maps integrationAccountMapType[]?
 
+@description('Optional. All assemblies to create.')
+param assemblies integrationAccountAssemblyType[]?
+
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
   'Completed'
@@ -255,6 +258,22 @@ module integrationAccount_maps 'map/main.bicep' = [
   }
 ]
 
+module integrationAccount_assemblies 'assembly/main.bicep' = [
+  for (assembly, index) in (assemblies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-integrationAccount-Assembly-${index}'
+    params: {
+      name: assembly.name
+      location: location
+      integrationAccountName: integrationAccount.name
+      assemblyName: assembly.assemblyName
+      content: assembly.content
+      contentType: assembly.?contentType
+      metadata: assembly.?metadata
+      tags: assembly.?tags ?? tags
+    }
+  }
+]
+
 resource integrationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
@@ -316,6 +335,9 @@ type integrationAccountSchemaType = {
   @description('Required. The Name of the schema resource.')
   name: string
 
+  @description('Optional. Resource location.')
+  location: string?
+
   @description('Required. The schema content.')
   content: string
 
@@ -343,6 +365,9 @@ type integrationAccountMapType = {
   @description('Required. The name of the map resource.')
   name: string
 
+  @description('Optional. Resource location.')
+  location: string?
+
   @description('Required. The content of the map.')
   content: string
 
@@ -356,6 +381,30 @@ type integrationAccountMapType = {
   parametersSchema: object?
 
   @description('Optional. The map metadata.')
+  metadata: object?
+
+  @description('Optional. Resource tags.')
+  tags: object?
+}
+
+@description('The type for an integration account assembly.')
+type integrationAccountAssemblyType = {
+  @description('Required. The Name of the assembly resource.')
+  name: string
+
+  @description('Optional. Resource location.')
+  location: string?
+
+  @description('Required. The assembly name.')
+  assemblyName: string
+
+  @description('Required. The assembly content.')
+  content: string
+
+  @description('Optional. The assembly content type.')
+  contentType: string?
+
+  @description('Optional. The assembly metadata.')
   metadata: object?
 
   @description('Optional. Resource tags.')

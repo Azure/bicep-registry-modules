@@ -19,6 +19,7 @@ This module deploys a Logic App Integration Account.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Logic/integrationAccounts` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts)</li></ul> |
+| `Microsoft.Logic/integrationAccounts/assemblies` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_assemblies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/assemblies)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/maps` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_maps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/maps)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/partners` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_partners.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/partners)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/schemas` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_schemas.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/schemas)</li></ul> |
@@ -115,6 +116,13 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     // Required parameters
     name: 'iamax001'
     // Non-required parameters
+    assemblies: [
+      {
+        assemblyName: 'name1'
+        content: '<content>'
+        name: 'assembly1'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -257,6 +265,15 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       "value": "iamax001"
     },
     // Non-required parameters
+    "assemblies": {
+      "value": [
+        {
+          "assemblyName": "name1",
+          "content": "<content>",
+          "name": "assembly1"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -411,6 +428,13 @@ using 'br/public:avm/res/logic/integration-account:<version>'
 // Required parameters
 param name = 'iamax001'
 // Non-required parameters
+param assemblies = [
+  {
+    assemblyName: 'name1'
+    content: '<content>'
+    name: 'assembly1'
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -753,6 +777,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`assemblies`](#parameter-assemblies) | array | All assemblies to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -771,6 +796,79 @@ Name of the integration account to create.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `assemblies`
+
+All assemblies to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assemblyName`](#parameter-assembliesassemblyname) | string | The assembly name. |
+| [`content`](#parameter-assembliescontent) | string | The assembly content. |
+| [`name`](#parameter-assembliesname) | string | The Name of the assembly resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentType`](#parameter-assembliescontenttype) | string | The assembly content type. |
+| [`location`](#parameter-assemblieslocation) | string | Resource location. |
+| [`metadata`](#parameter-assembliesmetadata) | object | The assembly metadata. |
+| [`tags`](#parameter-assembliestags) | object | Resource tags. |
+
+### Parameter: `assemblies.assemblyName`
+
+The assembly name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `assemblies.content`
+
+The assembly content.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `assemblies.name`
+
+The Name of the assembly resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `assemblies.contentType`
+
+The assembly content type.
+
+- Required: No
+- Type: string
+
+### Parameter: `assemblies.location`
+
+Resource location.
+
+- Required: No
+- Type: string
+
+### Parameter: `assemblies.metadata`
+
+The assembly metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `assemblies.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
 
 ### Parameter: `diagnosticSettings`
 
@@ -989,6 +1087,7 @@ All maps to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contentType`](#parameter-mapscontenttype) | string | The content type of the map. |
+| [`location`](#parameter-mapslocation) | string | Resource location. |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. Default is "Xslt". |
 | [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
@@ -1011,6 +1110,13 @@ The name of the map resource.
 ### Parameter: `maps.contentType`
 
 The content type of the map.
+
+- Required: No
+- Type: string
+
+### Parameter: `maps.location`
+
+Resource location.
 
 - Required: No
 - Type: string
@@ -1353,6 +1459,7 @@ All schemas to create.
 | :-- | :-- | :-- |
 | [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
+| [`location`](#parameter-schemaslocation) | string | Resource location. |
 | [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
@@ -1382,6 +1489,13 @@ The schema content type.
 ### Parameter: `schemas.documentName`
 
 The document name.
+
+- Required: No
+- Type: string
+
+### Parameter: `schemas.location`
+
+Resource location.
 
 - Required: No
 - Type: string
