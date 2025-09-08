@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "17361586889046555084"
+      "version": "0.37.4.10188",
+      "templateHash": "12561559227852024672"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -713,6 +713,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Name of the infrastructure resource group for the container apps environment."
+      }
+    },
+    "dnsIsDeployedByPolicy": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether the DNS configuration is deployed by policy."
       }
     }
   },
@@ -7576,7 +7583,7 @@
             ]
           },
           "networkRuleBypassOptions": "[if(parameters('privateNetworking'), createObject('value', 'AzureServices'), createObject('value', 'None'))]",
-          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName), null())), 'privateDnsZoneResourceIds', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')), createArray(if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')), reference('acrPrivateDNSZone').outputs.resourceId.value, ''))), 'privateDnsZoneGroupName', 'acrPrivateDNSZoneGroup'))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName), null())), 'privateDnsZoneGroup', if(not(parameters('dnsIsDeployedByPolicy')), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''))), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''), reference('acrPrivateDNSZone').outputs.resourceId.value), 'name', 'acrPrivateDNSZoneGroup'))), null())))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -22674,14 +22681,7 @@
               {
                 "service": "file",
                 "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
-                "privateDnsZoneGroup": {
-                  "privateDnsZoneGroupConfigs": [
-                    {
-                      "privateDnsZoneResourceId": "[coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value)]",
-                      "name": "stgPrivateDNSZoneGroup"
-                    }
-                  ]
-                }
+                "privateDnsZoneGroup": "[if(not(parameters('dnsIsDeployedByPolicy')), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value), 'name', 'dsStgPrivateDNSZoneGroup'))), null())]"
               }
             ]
           }
@@ -28470,13 +28470,7 @@
               {
                 "service": "file",
                 "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName')), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0])]",
-                "privateDnsZoneGroup": {
-                  "privateDnsZoneGroupConfigs": [
-                    {
-                      "privateDnsZoneResourceId": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value)]"
-                    }
-                  ]
-                }
+                "privateDnsZoneGroup": "[if(not(parameters('dnsIsDeployedByPolicy')), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value), 'name', 'acrStgPrivateDNSZoneGroup'))), null())]"
               }
             ]
           }

@@ -1334,6 +1334,7 @@ param privateNetworking = true
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZone`](#parameter-availabilityzone) | int | The availability zone to be used for the supported resources. |
+| [`dnsIsDeployedByPolicy`](#parameter-dnsisdeployedbypolicy) | bool | Whether the DNS configuration is deployed by policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -2256,6 +2257,14 @@ The availability zone to be used for the supported resources.
 - Required: No
 - Type: int
 - Default: `-1`
+
+### Parameter: `dnsIsDeployedByPolicy`
+
+Whether the DNS configuration is deployed by policy.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
