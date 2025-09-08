@@ -478,11 +478,8 @@ output storageAccountCSEFileName string = storageAccountCSEFileName
 output storageAccountCSEFileUrl string = '${storageAccount.properties.primaryEndpoints.blob}${storageAccount::blobService::container.name}/${storageAccountCSEFileName}'
 
 @secure()
-@description('The SAS token of the created Storage Account Container that holds the Custom Script Extension File.')
-output storageAccountContainerCSFileSasToken string = storageAccount::blobService::container.listAccountSas(
-  '2025-01-01',
-  accountSasProperties
-).accountSasToken
+@description('The SAS token of the created Storage Account that holds the Custom Script Extension File.')
+output storageAccountContainerCSFileSasToken string = storageAccount.listAccountSas('2025-01-01', accountSasProperties).accountSasToken
 
 @description('The resource ID of the created Proximity Placement Group.')
 output proximityPlacementGroupResourceId string = proximityPlacementGroup.id
