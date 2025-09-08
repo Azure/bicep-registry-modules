@@ -2509,7 +2509,8 @@
               "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
               "diskEncryptionSet": {
                 "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
-              }
+              },
+              "id": "[tryGet(parameters('osDisk').managedDisk, 'id')]"
             }
           }
         },
@@ -2542,6 +2543,7 @@
             }
           ]
         },
+
         "capacityReservation": "[if(not(empty(parameters('capacityReservationGroupResourceId'))), createObject('capacityReservationGroup', createObject('id', parameters('capacityReservationGroupResourceId'))), null())]",
         "diagnosticsProfile": {
           "bootDiagnostics": {
@@ -7077,25 +7079,17 @@
           "enableAutomaticUpgrade": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), false())]"
           },
-          "settings": {
-            "value": {
-              "copy": [
-                {
-                  "name": "fileUris",
-                  "count": "[length(parameters('extensionCustomScriptConfig').fileData)]",
-                  "input": "[if(contains(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')], 'storageAccountId'), format('{0}?{1}', parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri, listAccountSas(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].storageAccountId, '2019-04-01', variables('accountSasProperties')).accountSasToken), parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri)]"
-                }
-              ]
-            }
-          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'supressFailures'), false())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'tags'), parameters('tags'))]"
           },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'settings'), createObject())]"
+          },
           "protectedSettings": {
-            "value": "[parameters('extensionCustomScriptProtectedSetting')]"
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject())]"
           }
         },
         "template": {
@@ -7256,8 +7250,7 @@
         }
       },
       "dependsOn": [
-        "vm",
-        "vm_desiredStateConfigurationExtension"
+        "vm"
       ]
     },
     "vm_azureDiskEncryptionExtension": {
