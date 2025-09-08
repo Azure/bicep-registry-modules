@@ -331,9 +331,6 @@ module testDeployment '../../../main.bicep' = [
       extensionAadJoinConfig: {
         enabled: true
         name: 'myAADLogin'
-        settings: {
-          mdmId: '0000000a-0000-0000-c000-000000000000'
-        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
