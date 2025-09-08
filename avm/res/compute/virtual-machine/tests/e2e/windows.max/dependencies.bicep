@@ -146,7 +146,9 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
     name: 'RS0'
     tier: 'Standard'
   }
-  properties: {}
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
 
   resource backupPolicy 'backupPolicies@2025-02-01' = {
     name: 'backupPolicy'
