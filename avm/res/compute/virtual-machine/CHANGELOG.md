@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+
+
+## 0.20.0
+
+### Changes
+
+- The capacityReservationGroupResourceId, extensionGuestConfigurationExtension, networkAccessPolicy (disk), publicNetworkAccess (disk) parameters are now available for the Virtual Machine AVM module.
+
+### Breaking Changes
+
 ## 0.19.0
 
 ### Changes
