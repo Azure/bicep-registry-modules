@@ -11,7 +11,7 @@ param computerName string = name
 param vmSize string
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = true
+param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
 @allowed([
@@ -320,6 +320,7 @@ param configurationProfile string = ''
 @description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
 param capacityReservationGroupResourceId string = ''
 
+
 @allowed([
   'AllowAll'
   'AllowPrivate'
@@ -577,7 +578,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: vmSize
     }
     securityProfile: {
-      encryptionAtHost: encryptionAtHost ? encryptionAtHost : null
+      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
       uefiSettings: securityType == 'TrustedLaunch'
         ? {
@@ -605,6 +606,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
+          id: osDisk.managedDisk.?id
         }
       }
       dataDisks: [
@@ -658,6 +660,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+
     capacityReservation: !empty(capacityReservationGroupResourceId)
       ? {
           capacityReservationGroup: {
@@ -930,20 +933,11 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
     typeHandlerVersion: extensionCustomScriptConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.10' : '2.1')
     autoUpgradeMinorVersion: extensionCustomScriptConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionCustomScriptConfig.?enableAutomaticUpgrade ?? false
-    settings: {
-      fileUris: [
-        for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
-          ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
-          : fileData.uri
-      ]
-    }
     supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
     tags: extensionCustomScriptConfig.?tags ?? tags
-    protectedSettings: extensionCustomScriptProtectedSetting
+    settings: extensionCustomScriptConfig.?settings ?? {}
+    protectedSettings: extensionCustomScriptConfig.?protectedSettings ?? {}
   }
-  dependsOn: [
-    vm_desiredStateConfigurationExtension
-  ]
 }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {

@@ -1711,7 +1711,7 @@
     },
     "encryptionAtHost": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
       }
@@ -2474,11 +2474,7 @@
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
-        "securityProfile": {
-          "encryptionAtHost": "[if(parameters('encryptionAtHost'), parameters('encryptionAtHost'), null())]",
-          "securityType": "[parameters('securityType')]",
-          "uefiSettings": "[if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null())]"
-        },
+        "securityProfile": "[shallowMerge(createArray(if(parameters('encryptionAtHost'), createObject('encryptionAtHost', parameters('encryptionAtHost')), createObject()), createObject('securityType', parameters('securityType'), 'uefiSettings', if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null()))))]",
         "storageProfile": {
           "copy": [
             {
@@ -2509,7 +2505,8 @@
               "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
               "diskEncryptionSet": {
                 "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
-              }
+              },
+              "id": "[tryGet(parameters('osDisk').managedDisk, 'id')]"
             }
           }
         },
@@ -2542,6 +2539,7 @@
             }
           ]
         },
+
         "capacityReservation": "[if(not(empty(parameters('capacityReservationGroupResourceId'))), createObject('capacityReservationGroup', createObject('id', parameters('capacityReservationGroupResourceId'))), null())]",
         "diagnosticsProfile": {
           "bootDiagnostics": {
@@ -7077,25 +7075,17 @@
           "enableAutomaticUpgrade": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), false())]"
           },
-          "settings": {
-            "value": {
-              "copy": [
-                {
-                  "name": "fileUris",
-                  "count": "[length(parameters('extensionCustomScriptConfig').fileData)]",
-                  "input": "[if(contains(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')], 'storageAccountId'), format('{0}?{1}', parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri, listAccountSas(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].storageAccountId, '2019-04-01', variables('accountSasProperties')).accountSasToken), parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri)]"
-                }
-              ]
-            }
-          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'supressFailures'), false())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'tags'), parameters('tags'))]"
           },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'settings'), createObject())]"
+          },
           "protectedSettings": {
-            "value": "[parameters('extensionCustomScriptProtectedSetting')]"
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject())]"
           }
         },
         "template": {
@@ -7256,8 +7246,7 @@
         }
       },
       "dependsOn": [
-        "vm",
-        "vm_desiredStateConfigurationExtension"
+        "vm"
       ]
     },
     "vm_azureDiskEncryptionExtension": {
