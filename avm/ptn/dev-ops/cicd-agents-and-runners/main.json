@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12561559227852024672"
+      "templateHash": "12597453138683207461"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -4414,8 +4414,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "4533956061065498344"
+              "version": "0.37.4.10188",
+              "templateHash": "17921343070314002065"
             },
             "name": "Private DNS Zones",
             "description": "This module deploys a Private DNS zone."
@@ -4432,10 +4432,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4456,21 +4459,13 @@
                 },
                 "aRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "ipv4Address": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The IPv4 address of this A record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/aRecords"
+                    },
                     "description": "Optional. The list of A records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4489,10 +4484,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4513,21 +4511,13 @@
                 },
                 "aaaaRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "ipv6Address": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The IPv6 address of this AAAA record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/aaaaRecords"
+                    },
                     "description": "Optional. The list of AAAA records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4546,10 +4536,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4570,18 +4563,13 @@
                 },
                 "cnameRecord": {
                   "type": "object",
-                  "properties": {
-                    "cname": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The canonical name of the CNAME record."
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/cnameRecord"
+                    },
                     "description": "Optional. The CNAME record in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4600,10 +4588,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4624,27 +4615,13 @@
                 },
                 "mxRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "exchange": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The domain name of the mail host for this MX record."
-                        }
-                      },
-                      "preference": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The preference value for this MX record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/mxRecords"
+                    },
                     "description": "Optional. The list of MX records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4663,10 +4640,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4687,21 +4667,13 @@
                 },
                 "ptrRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "ptrdname": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The PTR target domain name for this PTR record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/ptrRecords"
+                    },
                     "description": "Optional. The list of PTR records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4720,10 +4692,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4744,54 +4719,13 @@
                 },
                 "soaRecord": {
                   "type": "object",
-                  "properties": {
-                    "email": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The email contact for this SOA record."
-                      }
-                    },
-                    "expireTime": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The expire time for this SOA record."
-                      }
-                    },
-                    "host": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The domain name of the authoritative name server for this SOA record."
-                      }
-                    },
-                    "minimumTtl": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
-                      }
-                    },
-                    "refreshTime": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The refresh value for this SOA record."
-                      }
-                    },
-                    "retryTime": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The retry time for this SOA record."
-                      }
-                    },
-                    "serialNumber": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The serial number for this SOA record."
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/soaRecord"
+                    },
                     "description": "Optional. The SOA record in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4810,10 +4744,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4834,39 +4771,13 @@
                 },
                 "srvRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "priority": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The priority value for this SRV record."
-                        }
-                      },
-                      "weight": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The weight value for this SRV record."
-                        }
-                      },
-                      "port": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The port value for this SRV record."
-                        }
-                      },
-                      "target": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The target domain name for this SRV record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/srvRecords"
+                    },
                     "description": "Optional. The list of SRV records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4885,10 +4796,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -4909,24 +4823,13 @@
                 },
                 "txtRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "value": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The text value of this TXT record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/txtRecords"
+                    },
                     "description": "Optional. The list of TXT records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -4968,10 +4871,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+                    },
                     "description": "Optional. Resource tags."
-                  }
+                  },
+                  "nullable": true
                 },
                 "resolutionPolicy": {
                   "type": "string",
@@ -5011,12 +4917,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -5247,14 +5160,15 @@
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5285,7 +5199,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateDnsZone"
@@ -5344,6 +5258,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5353,8 +5270,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "18243374258187942664"
+                      "version": "0.37.4.10188",
+                      "templateHash": "12608084563401365743"
                     },
                     "name": "Private DNS Zone A record",
                     "description": "This module deploys a Private DNS Zone A record."
@@ -5451,23 +5368,36 @@
                     },
                     "aRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/aRecords"
+                        },
                         "description": "Optional. The list of A records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -5500,6 +5430,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonea.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -5599,6 +5549,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5608,8 +5561,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "7322684246075092047"
+                      "version": "0.37.4.10188",
+                      "templateHash": "4881696097088567452"
                     },
                     "name": "Private DNS Zone AAAA record",
                     "description": "This module deploys a Private DNS Zone AAAA record."
@@ -5706,23 +5659,36 @@
                     },
                     "aaaaRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/aaaaRecords"
+                        },
                         "description": "Optional. The list of AAAA records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -5755,6 +5721,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszoneaaaa.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -5854,6 +5840,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5863,8 +5852,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "5264706240021075859"
+                      "version": "0.37.4.10188",
+                      "templateHash": "13307906270868460967"
                     },
                     "name": "Private DNS Zone CNAME record",
                     "description": "This module deploys a Private DNS Zone CNAME record."
@@ -5961,23 +5950,36 @@
                     },
                     "cnameRecord": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/cnameRecord"
+                        },
                         "description": "Optional. A CNAME record."
-                      }
+                      },
+                      "nullable": true
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -6010,6 +6012,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonecname.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -6109,6 +6131,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -6118,8 +6143,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "13758189936483275969"
+                      "version": "0.37.4.10188",
+                      "templateHash": "7946896598573056688"
                     },
                     "name": "Private DNS Zone MX record",
                     "description": "This module deploys a Private DNS Zone MX record."
@@ -6216,23 +6241,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "mxRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/mxRecords"
+                        },
                         "description": "Optional. The list of MX records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -6265,6 +6303,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonemx.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -6364,6 +6422,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -6373,8 +6434,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "11955164584650609753"
+                      "version": "0.37.4.10188",
+                      "templateHash": "7627375510490151870"
                     },
                     "name": "Private DNS Zone PTR record",
                     "description": "This module deploys a Private DNS Zone PTR record."
@@ -6471,23 +6532,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ptrRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/ptrRecords"
+                        },
                         "description": "Optional. The list of PTR records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -6520,6 +6594,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszoneptr.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -6619,6 +6713,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -6628,8 +6725,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "14626715835033259725"
+                      "version": "0.37.4.10188",
+                      "templateHash": "16709883266329935583"
                     },
                     "name": "Private DNS Zone SOA record",
                     "description": "This module deploys a Private DNS Zone SOA record."
@@ -6726,23 +6823,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "soaRecord": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/soaRecord"
+                        },
                         "description": "Optional. A SOA record."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -6775,6 +6885,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonesoa.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -6874,6 +7004,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -6883,8 +7016,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "6510442308165042737"
+                      "version": "0.37.4.10188",
+                      "templateHash": "8123422724272920495"
                     },
                     "name": "Private DNS Zone SRV record",
                     "description": "This module deploys a Private DNS Zone SRV record."
@@ -6981,23 +7114,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "srvRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/srvRecords"
+                        },
                         "description": "Optional. The list of SRV records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -7030,6 +7176,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonesrv.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -7129,6 +7295,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -7138,8 +7307,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "170623042781622569"
+                      "version": "0.37.4.10188",
+                      "templateHash": "17170531000135004092"
                     },
                     "name": "Private DNS Zone TXT record",
                     "description": "This module deploys a Private DNS Zone TXT record."
@@ -7236,10 +7405,13 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
@@ -7250,9 +7422,19 @@
                     },
                     "txtRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/txtRecords"
+                        },
                         "description": "Optional. The list of TXT records in the record set."
+                      },
+                      "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -7285,6 +7467,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonetxt.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -7396,8 +7598,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "725891200086243555"
+                      "version": "0.37.4.10188",
+                      "templateHash": "517173107480898390"
                     },
                     "name": "Private DNS Zone Virtual Network Link",
                     "description": "This module deploys a Private DNS Zone Virtual Network Link."
@@ -7425,10 +7627,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "registrationEnabled": {
                       "type": "bool",
@@ -7592,8 +7797,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12422547988165106386"
+              "version": "0.37.4.10188",
+              "templateHash": "10440624024470892086"
             },
             "name": "Azure Container Registries (ACR)",
             "description": "This module deploys an Azure Container Registry (ACR)."
@@ -7887,6 +8092,43 @@
                 "description": "The type for a webhook."
               }
             },
+            "_1.lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
             "_1.privateEndpointCustomDnsConfigType": {
               "type": "object",
               "properties": {
@@ -7909,7 +8151,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -7951,7 +8193,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -7992,7 +8234,82 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "_1.roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -8212,12 +8529,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -8371,7 +8695,7 @@
                   }
                 },
                 "lock": {
-                  "$ref": "#/definitions/lockType",
+                  "$ref": "#/definitions/_1.lockType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -8380,7 +8704,7 @@
                 "roleAssignments": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/roleAssignmentType"
+                    "$ref": "#/definitions/_1.roleAssignmentType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -8391,6 +8715,9 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                   }
                 },
@@ -8405,7 +8732,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -8714,10 +9041,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries@2025-04-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -8811,7 +9141,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2023-02-01",
+              "apiVersion": "2024-11-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -8820,7 +9150,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('0.9.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -8840,7 +9170,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-02-01",
+              "apiVersion": "2024-11-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -8849,7 +9179,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
               "existing": true,
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2023-01-31",
+              "apiVersion": "2024-11-30",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -8900,7 +9230,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "registry"
@@ -9003,8 +9333,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11112300500664950599"
+                      "version": "0.37.4.10188",
+                      "templateHash": "6143951528715126111"
                     },
                     "name": "Container Registries scopeMaps",
                     "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -9126,8 +9456,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6036875058945996178"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9998680016086915512"
                     },
                     "name": "Azure Container Registry (ACR) Replications",
                     "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -9270,8 +9600,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "15848218260506856293"
+                      "version": "0.37.4.10188",
+                      "templateHash": "10146775336818580275"
                     },
                     "name": "Container Registries Credential Sets",
                     "description": "This module deploys an ACR Credential Set."
@@ -9454,8 +9784,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "3783697279882479947"
+                      "version": "0.37.4.10188",
+                      "templateHash": "16179895563671172347"
                     },
                     "name": "Container Registries Cache",
                     "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -9592,8 +9922,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "10084997815751263562"
+                      "version": "0.37.4.10188",
+                      "templateHash": "6514847976022081392"
                     },
                     "name": "Azure Container Registry (ACR) Webhooks",
                     "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -9817,8 +10147,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15954548978129725136"
+                      "version": "0.34.44.8038",
+                      "templateHash": "12389807800450456797"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -10227,7 +10557,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -10245,7 +10575,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -10333,8 +10663,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "5440815542537978381"
+                              "version": "0.34.44.8038",
+                              "templateHash": "13997305779829540948"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -10406,12 +10736,12 @@
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -10475,7 +10805,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
@@ -10527,7 +10857,7 @@
               "metadata": {
                 "description": "The reference to the Azure container registry."
               },
-              "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2019-05-01').loginServer]"
+              "value": "[reference('registry').loginServer]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -12311,8 +12641,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10777649424390064640"
+              "version": "0.37.4.10188",
+              "templateHash": "1345160196550942789"
             },
             "name": "App ManagedEnvironments",
             "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -12493,12 +12823,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -12622,10 +12959,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/managedEnvironments@2024-10-02-preview#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentityAllType",
@@ -12845,7 +13185,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-11-01",
-              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.11.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.11.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -12930,7 +13270,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "managedEnvironment"
@@ -12973,8 +13313,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "18123249047188753287"
+                      "version": "0.37.4.10188",
+                      "templateHash": "13507794255589178049"
                     },
                     "name": "App ManagedEnvironments Certificates",
                     "description": "This module deploys a App Managed Environment Certificate."
@@ -17073,8 +17413,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5046107291999064360"
+              "version": "0.37.4.10188",
+              "templateHash": "9152479775828128939"
             },
             "name": "Container App Jobs",
             "description": "This module deploys a Container App Job."
@@ -17594,6 +17934,13 @@
                           "description": "Optional. Authentication secrets for the scale rule."
                         }
                       },
+                      "identity": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource ID of a user-assigned managed identity that is assigned to the Container App, or \"system\" for system-assigned identity."
+                        }
+                      },
                       "metadata": {
                         "type": "object",
                         "metadata": {
@@ -17784,12 +18131,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -17926,11 +18280,14 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/jobs@2025-02-02-preview#properties/tags"
+                },
                 "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "registries": {
               "type": "array",
@@ -18085,8 +18442,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-03-01",
+              "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -18104,7 +18461,7 @@
             },
             "job": {
               "type": "Microsoft.App/jobs",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-02-02-preview",
               "name": "[parameters('name')]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -18137,7 +18494,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "job"
@@ -18197,7 +18554,7 @@
                 "example": "Germany West Central",
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('job', '2024-03-01', 'full').location]"
+              "value": "[reference('job', '2025-02-02-preview', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -18206,7 +18563,7 @@
                 "example": "00000000-0000-0000-0000-000000000000",
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('job', '2024-03-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('job', '2025-02-02-preview', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -18329,8 +18686,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5046107291999064360"
+              "version": "0.37.4.10188",
+              "templateHash": "9152479775828128939"
             },
             "name": "Container App Jobs",
             "description": "This module deploys a Container App Job."
@@ -18850,6 +19207,13 @@
                           "description": "Optional. Authentication secrets for the scale rule."
                         }
                       },
+                      "identity": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource ID of a user-assigned managed identity that is assigned to the Container App, or \"system\" for system-assigned identity."
+                        }
+                      },
                       "metadata": {
                         "type": "object",
                         "metadata": {
@@ -19040,12 +19404,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -19182,11 +19553,14 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/jobs@2025-02-02-preview#properties/tags"
+                },
                 "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "registries": {
               "type": "array",
@@ -19341,8 +19715,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-03-01",
+              "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -19360,7 +19734,7 @@
             },
             "job": {
               "type": "Microsoft.App/jobs",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-02-02-preview",
               "name": "[parameters('name')]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -19393,7 +19767,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "job"
@@ -19453,7 +19827,7 @@
                 "example": "Germany West Central",
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('job', '2024-03-01', 'full').location]"
+              "value": "[reference('job', '2025-02-02-preview', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -19462,7 +19836,7 @@
                 "example": "00000000-0000-0000-0000-000000000000",
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('job', '2024-03-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('job', '2025-02-02-preview', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -19506,8 +19880,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "4533956061065498344"
+              "version": "0.37.4.10188",
+              "templateHash": "17921343070314002065"
             },
             "name": "Private DNS Zones",
             "description": "This module deploys a Private DNS zone."
@@ -19524,10 +19898,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19548,21 +19925,13 @@
                 },
                 "aRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "ipv4Address": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The IPv4 address of this A record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/aRecords"
+                    },
                     "description": "Optional. The list of A records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19581,10 +19950,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19605,21 +19977,13 @@
                 },
                 "aaaaRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "ipv6Address": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The IPv6 address of this AAAA record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/aaaaRecords"
+                    },
                     "description": "Optional. The list of AAAA records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19638,10 +20002,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19662,18 +20029,13 @@
                 },
                 "cnameRecord": {
                   "type": "object",
-                  "properties": {
-                    "cname": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The canonical name of the CNAME record."
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/cnameRecord"
+                    },
                     "description": "Optional. The CNAME record in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19692,10 +20054,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19716,27 +20081,13 @@
                 },
                 "mxRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "exchange": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The domain name of the mail host for this MX record."
-                        }
-                      },
-                      "preference": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The preference value for this MX record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/mxRecords"
+                    },
                     "description": "Optional. The list of MX records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19755,10 +20106,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19779,21 +20133,13 @@
                 },
                 "ptrRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "ptrdname": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The PTR target domain name for this PTR record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/ptrRecords"
+                    },
                     "description": "Optional. The list of PTR records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19812,10 +20158,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19836,54 +20185,13 @@
                 },
                 "soaRecord": {
                   "type": "object",
-                  "properties": {
-                    "email": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The email contact for this SOA record."
-                      }
-                    },
-                    "expireTime": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The expire time for this SOA record."
-                      }
-                    },
-                    "host": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The domain name of the authoritative name server for this SOA record."
-                      }
-                    },
-                    "minimumTtl": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
-                      }
-                    },
-                    "refreshTime": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The refresh value for this SOA record."
-                      }
-                    },
-                    "retryTime": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The retry time for this SOA record."
-                      }
-                    },
-                    "serialNumber": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The serial number for this SOA record."
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/soaRecord"
+                    },
                     "description": "Optional. The SOA record in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19902,10 +20210,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -19926,39 +20237,13 @@
                 },
                 "srvRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "priority": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The priority value for this SRV record."
-                        }
-                      },
-                      "weight": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The weight value for this SRV record."
-                        }
-                      },
-                      "port": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The port value for this SRV record."
-                        }
-                      },
-                      "target": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The target domain name for this SRV record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/srvRecords"
+                    },
                     "description": "Optional. The list of SRV records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -19977,10 +20262,13 @@
                 },
                 "metadata": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/metadata"
+                    },
                     "description": "Optional. The metadata of the record."
-                  }
+                  },
+                  "nullable": true
                 },
                 "ttl": {
                   "type": "int",
@@ -20001,24 +20289,13 @@
                 },
                 "txtRecords": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "value": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The text value of this TXT record."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/txtRecords"
+                    },
                     "description": "Optional. The list of TXT records in the record set."
-                  }
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -20060,10 +20337,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+                    },
                     "description": "Optional. Resource tags."
-                  }
+                  },
+                  "nullable": true
                 },
                 "resolutionPolicy": {
                   "type": "string",
@@ -20103,12 +20383,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -20339,14 +20626,15 @@
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -20377,7 +20665,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateDnsZone"
@@ -20436,6 +20724,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -20445,8 +20736,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "18243374258187942664"
+                      "version": "0.37.4.10188",
+                      "templateHash": "12608084563401365743"
                     },
                     "name": "Private DNS Zone A record",
                     "description": "This module deploys a Private DNS Zone A record."
@@ -20543,23 +20834,36 @@
                     },
                     "aRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/aRecords"
+                        },
                         "description": "Optional. The list of A records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/A@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -20592,6 +20896,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonea.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -20691,6 +21015,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -20700,8 +21027,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "7322684246075092047"
+                      "version": "0.37.4.10188",
+                      "templateHash": "4881696097088567452"
                     },
                     "name": "Private DNS Zone AAAA record",
                     "description": "This module deploys a Private DNS Zone AAAA record."
@@ -20798,23 +21125,36 @@
                     },
                     "aaaaRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/aaaaRecords"
+                        },
                         "description": "Optional. The list of AAAA records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/AAAA@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -20847,6 +21187,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszoneaaaa.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -20946,6 +21306,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -20955,8 +21318,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "5264706240021075859"
+                      "version": "0.37.4.10188",
+                      "templateHash": "13307906270868460967"
                     },
                     "name": "Private DNS Zone CNAME record",
                     "description": "This module deploys a Private DNS Zone CNAME record."
@@ -21053,23 +21416,36 @@
                     },
                     "cnameRecord": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/cnameRecord"
+                        },
                         "description": "Optional. A CNAME record."
-                      }
+                      },
+                      "nullable": true
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/CNAME@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -21102,6 +21478,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonecname.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -21201,6 +21597,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -21210,8 +21609,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "13758189936483275969"
+                      "version": "0.37.4.10188",
+                      "templateHash": "7946896598573056688"
                     },
                     "name": "Private DNS Zone MX record",
                     "description": "This module deploys a Private DNS Zone MX record."
@@ -21308,23 +21707,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "mxRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/MX@2024-06-01#properties/properties/properties/mxRecords"
+                        },
                         "description": "Optional. The list of MX records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -21357,6 +21769,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonemx.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -21456,6 +21888,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -21465,8 +21900,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "11955164584650609753"
+                      "version": "0.37.4.10188",
+                      "templateHash": "7627375510490151870"
                     },
                     "name": "Private DNS Zone PTR record",
                     "description": "This module deploys a Private DNS Zone PTR record."
@@ -21563,23 +21998,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ptrRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/ptrRecords"
+                        },
                         "description": "Optional. The list of PTR records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -21612,6 +22060,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszoneptr.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -21711,6 +22179,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -21720,8 +22191,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "14626715835033259725"
+                      "version": "0.37.4.10188",
+                      "templateHash": "16709883266329935583"
                     },
                     "name": "Private DNS Zone SOA record",
                     "description": "This module deploys a Private DNS Zone SOA record."
@@ -21818,23 +22289,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "soaRecord": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SOA@2024-06-01#properties/properties/properties/soaRecord"
+                        },
                         "description": "Optional. A SOA record."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -21867,6 +22351,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonesoa.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -21966,6 +22470,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -21975,8 +22482,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "6510442308165042737"
+                      "version": "0.37.4.10188",
+                      "templateHash": "8123422724272920495"
                     },
                     "name": "Private DNS Zone SRV record",
                     "description": "This module deploys a Private DNS Zone SRV record."
@@ -22073,23 +22580,36 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "srvRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/SRV@2024-06-01#properties/properties/properties/srvRecords"
+                        },
                         "description": "Optional. The list of SRV records in the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
                       "defaultValue": 3600,
                       "metadata": {
                         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -22122,6 +22642,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonesrv.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -22221,6 +22761,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -22230,8 +22773,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "170623042781622569"
+                      "version": "0.37.4.10188",
+                      "templateHash": "17170531000135004092"
                     },
                     "name": "Private DNS Zone TXT record",
                     "description": "This module deploys a Private DNS Zone TXT record."
@@ -22328,10 +22871,13 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/metadata"
+                        },
                         "description": "Optional. The metadata attached to the record set."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ttl": {
                       "type": "int",
@@ -22342,9 +22888,19 @@
                     },
                     "txtRecords": {
                       "type": "array",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/TXT@2024-06-01#properties/properties/properties/txtRecords"
+                        },
                         "description": "Optional. The list of TXT records in the record set."
+                      },
+                      "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     },
                     "roleAssignments": {
@@ -22377,6 +22933,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.nw-privdnszonetxt.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "privateDnsZone": {
                       "existing": true,
                       "type": "Microsoft.Network/privateDnsZones",
@@ -22488,8 +23064,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "725891200086243555"
+                      "version": "0.37.4.10188",
+                      "templateHash": "517173107480898390"
                     },
                     "name": "Private DNS Zone Virtual Network Link",
                     "description": "This module deploys a Private DNS Zone Virtual Network Link."
@@ -22517,10 +23093,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "registrationEnabled": {
                       "type": "bool",
@@ -22693,8 +23272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11337232077129027386"
+              "version": "0.37.4.10188",
+              "templateHash": "13673459900777676693"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -22760,7 +23339,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the private endpoints output."
               }
             },
             "networkAclsType": {
@@ -22834,7 +23414,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the network configuration."
               }
             },
             "secretsExportConfigurationType": {
@@ -22876,7 +23457,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the exported secrets."
               }
             },
             "localUserType": {
@@ -22935,10 +23517,77 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a local user."
               }
             },
-            "_1.privateEndpointCustomDnsConfigType": {
+            "_1.secretSetOutputType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                },
+                "secretUriWithVersion": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI with version of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
+            },
+            "_2.lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "_2.privateEndpointCustomDnsConfigType": {
               "type": "object",
               "properties": {
                 "fqdn": {
@@ -22960,11 +23609,11 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
-            "_1.privateEndpointIpConfigurationType": {
+            "_2.privateEndpointIpConfigurationType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -23002,11 +23651,11 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
-            "_1.privateEndpointPrivateDnsZoneGroupType": {
+            "_2.privateEndpointPrivateDnsZoneGroupType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -23043,36 +23692,82 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
-            "_1.secretSetOutputType": {
+            "_2.roleAssignmentType": {
               "type": "object",
               "properties": {
-                "secretResourceId": {
+                "name": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "description": "The resourceId of the exported secret."
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
                   }
                 },
-                "secretUri": {
+                "roleDefinitionIdOrName": {
                   "type": "string",
                   "metadata": {
-                    "description": "The secret URI of the exported secret."
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                   }
                 },
-                "secretUriWithVersion": {
+                "principalId": {
                   "type": "string",
                   "metadata": {
-                    "description": "The secret URI with version of the exported secret."
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
                   }
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -23120,47 +23815,14 @@
                 }
               }
             },
-            "diagnosticSettingFullType": {
+            "diagnosticSettingMetricsOnlyType": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the diagnostic setting."
-                  }
-                },
-                "logCategoriesAndGroups": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "category": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                        }
-                      },
-                      "categoryGroup": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                        }
-                      },
-                      "enabled": {
-                        "type": "bool",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                    "description": "Optional. The name of diagnostic setting."
                   }
                 },
                 "metricCategories": {
@@ -23236,7 +23898,7 @@
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
@@ -23379,7 +24041,7 @@
                   }
                 },
                 "privateDnsZoneGroup": {
-                  "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+                  "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The private DNS zone group to configure for the private endpoint."
@@ -23403,7 +24065,7 @@
                 "customDnsConfigs": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+                    "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -23413,7 +24075,7 @@
                 "ipConfigurations": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+                    "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -23438,7 +24100,7 @@
                   }
                 },
                 "lock": {
-                  "$ref": "#/definitions/lockType",
+                  "$ref": "#/definitions/_2.lockType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -23447,7 +24109,7 @@
                 "roleAssignments": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/roleAssignmentType"
+                    "$ref": "#/definitions/_2.roleAssignmentType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -23458,6 +24120,9 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                   }
                 },
@@ -23472,7 +24137,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -23857,7 +24522,7 @@
             "diagnosticSettings": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/diagnosticSettingFullType"
+                "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
               },
               "nullable": true,
               "metadata": {
@@ -24015,7 +24680,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.26.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -24915,8 +25580,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "15460042769205098170"
+                      "version": "0.37.4.10188",
+                      "templateHash": "14529265638306912023"
                     },
                     "name": "Storage Account Management Policies",
                     "description": "This module deploys a Storage Account Management Policy."
@@ -25027,8 +25692,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "9887081627902627152"
+                      "version": "0.37.4.10188",
+                      "templateHash": "3261275799710495788"
                     },
                     "name": "Storage Account Local Users",
                     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -25265,8 +25930,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2268741299785261985"
+                      "version": "0.37.4.10188",
+                      "templateHash": "1215393307957288546"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -25736,8 +26401,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "16916608328363874370"
+                              "version": "0.37.4.10188",
+                              "templateHash": "15600440533481093288"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -25964,7 +26629,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -26055,8 +26720,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "8550034166416361637"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "2858994808980111017"
                                     },
                                     "name": "Storage Account Blob Container Immutability Policies",
                                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -26235,8 +26900,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "1154226771534321833"
+                      "version": "0.37.4.10188",
+                      "templateHash": "2735186993322606805"
                     },
                     "name": "Storage Account File Share Services",
                     "description": "This module deploys a Storage Account File Share Service."
@@ -26491,6 +27156,9 @@
                       }
                     }
                   },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
+                  },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
@@ -26586,6 +27254,9 @@
                           },
                           "roleAssignments": {
                             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -26595,8 +27266,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "10293576827034199934"
+                              "version": "0.37.4.10188",
+                              "templateHash": "15881640847294537074"
                             },
                             "name": "Storage Account File Shares",
                             "description": "This module deploys a Storage Account File Share."
@@ -26742,6 +27413,13 @@
                                 "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
                               }
                             },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
+                            },
                             "roleAssignments": {
                               "type": "array",
                               "items": {
@@ -26782,6 +27460,26 @@
                               "type": "Microsoft.Storage/storageAccounts/fileServices",
                               "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "storageAccount": {
                               "existing": true,
@@ -27030,8 +27728,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "12471258242431737986"
+                      "version": "0.37.4.10188",
+                      "templateHash": "1100093319443502715"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -27349,8 +28047,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "4374879850096827769"
+                              "version": "0.37.4.10188",
+                              "templateHash": "17963799770990303971"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -27622,8 +28320,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "14024954014872913175"
+                      "version": "0.37.4.10188",
+                      "templateHash": "13069389074590786512"
                     },
                     "name": "Storage Account Table Services",
                     "description": "This module deploys a Storage Account Table Service."
@@ -27938,8 +28636,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "9958350701479452427"
+                              "version": "0.37.4.10188",
+                              "templateHash": "10905926757212375091"
                             },
                             "name": "Storage Account Table",
                             "description": "This module deploys a Storage Account Table."
@@ -28192,8 +28890,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "8001412005028765743"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9368972709899985618"
                     }
                   },
                   "definitions": {
@@ -28482,8 +29180,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11337232077129027386"
+              "version": "0.37.4.10188",
+              "templateHash": "13673459900777676693"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -28549,7 +29247,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the private endpoints output."
               }
             },
             "networkAclsType": {
@@ -28623,7 +29322,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the network configuration."
               }
             },
             "secretsExportConfigurationType": {
@@ -28665,7 +29365,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the exported secrets."
               }
             },
             "localUserType": {
@@ -28724,10 +29425,77 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a local user."
               }
             },
-            "_1.privateEndpointCustomDnsConfigType": {
+            "_1.secretSetOutputType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                },
+                "secretUriWithVersion": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI with version of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
+            },
+            "_2.lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "_2.privateEndpointCustomDnsConfigType": {
               "type": "object",
               "properties": {
                 "fqdn": {
@@ -28749,11 +29517,11 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
-            "_1.privateEndpointIpConfigurationType": {
+            "_2.privateEndpointIpConfigurationType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -28791,11 +29559,11 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
-            "_1.privateEndpointPrivateDnsZoneGroupType": {
+            "_2.privateEndpointPrivateDnsZoneGroupType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -28832,36 +29600,82 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
-            "_1.secretSetOutputType": {
+            "_2.roleAssignmentType": {
               "type": "object",
               "properties": {
-                "secretResourceId": {
+                "name": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "description": "The resourceId of the exported secret."
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
                   }
                 },
-                "secretUri": {
+                "roleDefinitionIdOrName": {
                   "type": "string",
                   "metadata": {
-                    "description": "The secret URI of the exported secret."
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                   }
                 },
-                "secretUriWithVersion": {
+                "principalId": {
                   "type": "string",
                   "metadata": {
-                    "description": "The secret URI with version of the exported secret."
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
                   }
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -28909,47 +29723,14 @@
                 }
               }
             },
-            "diagnosticSettingFullType": {
+            "diagnosticSettingMetricsOnlyType": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the diagnostic setting."
-                  }
-                },
-                "logCategoriesAndGroups": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "category": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                        }
-                      },
-                      "categoryGroup": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                        }
-                      },
-                      "enabled": {
-                        "type": "bool",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                    "description": "Optional. The name of diagnostic setting."
                   }
                 },
                 "metricCategories": {
@@ -29025,7 +29806,7 @@
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
@@ -29168,7 +29949,7 @@
                   }
                 },
                 "privateDnsZoneGroup": {
-                  "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+                  "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The private DNS zone group to configure for the private endpoint."
@@ -29192,7 +29973,7 @@
                 "customDnsConfigs": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+                    "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -29202,7 +29983,7 @@
                 "ipConfigurations": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+                    "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -29227,7 +30008,7 @@
                   }
                 },
                 "lock": {
-                  "$ref": "#/definitions/lockType",
+                  "$ref": "#/definitions/_2.lockType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -29236,7 +30017,7 @@
                 "roleAssignments": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/roleAssignmentType"
+                    "$ref": "#/definitions/_2.roleAssignmentType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -29247,6 +30028,9 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                   }
                 },
@@ -29261,7 +30045,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -29646,7 +30430,7 @@
             "diagnosticSettings": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/diagnosticSettingFullType"
+                "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
               },
               "nullable": true,
               "metadata": {
@@ -29804,7 +30588,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.25.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.26.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -30704,8 +31488,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "15460042769205098170"
+                      "version": "0.37.4.10188",
+                      "templateHash": "14529265638306912023"
                     },
                     "name": "Storage Account Management Policies",
                     "description": "This module deploys a Storage Account Management Policy."
@@ -30816,8 +31600,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "9887081627902627152"
+                      "version": "0.37.4.10188",
+                      "templateHash": "3261275799710495788"
                     },
                     "name": "Storage Account Local Users",
                     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -31054,8 +31838,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2268741299785261985"
+                      "version": "0.37.4.10188",
+                      "templateHash": "1215393307957288546"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -31525,8 +32309,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "16916608328363874370"
+                              "version": "0.37.4.10188",
+                              "templateHash": "15600440533481093288"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -31753,7 +32537,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -31844,8 +32628,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.36.1.42791",
-                                      "templateHash": "8550034166416361637"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "2858994808980111017"
                                     },
                                     "name": "Storage Account Blob Container Immutability Policies",
                                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -32024,8 +32808,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "1154226771534321833"
+                      "version": "0.37.4.10188",
+                      "templateHash": "2735186993322606805"
                     },
                     "name": "Storage Account File Share Services",
                     "description": "This module deploys a Storage Account File Share Service."
@@ -32280,6 +33064,9 @@
                       }
                     }
                   },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
+                  },
                   "resources": {
                     "storageAccount": {
                       "existing": true,
@@ -32375,6 +33162,9 @@
                           },
                           "roleAssignments": {
                             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -32384,8 +33174,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "10293576827034199934"
+                              "version": "0.37.4.10188",
+                              "templateHash": "15881640847294537074"
                             },
                             "name": "Storage Account File Shares",
                             "description": "This module deploys a Storage Account File Share."
@@ -32531,6 +33321,13 @@
                                 "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
                               }
                             },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
+                            },
                             "roleAssignments": {
                               "type": "array",
                               "items": {
@@ -32571,6 +33368,26 @@
                               "type": "Microsoft.Storage/storageAccounts/fileServices",
                               "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.storage-fileshare.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "storageAccount": {
                               "existing": true,
@@ -32819,8 +33636,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "12471258242431737986"
+                      "version": "0.37.4.10188",
+                      "templateHash": "1100093319443502715"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -33138,8 +33955,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "4374879850096827769"
+                              "version": "0.37.4.10188",
+                              "templateHash": "17963799770990303971"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -33411,8 +34228,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "14024954014872913175"
+                      "version": "0.37.4.10188",
+                      "templateHash": "13069389074590786512"
                     },
                     "name": "Storage Account Table Services",
                     "description": "This module deploys a Storage Account Table Service."
@@ -33727,8 +34544,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "9958350701479452427"
+                              "version": "0.37.4.10188",
+                              "templateHash": "10905926757212375091"
                             },
                             "name": "Storage Account Table",
                             "description": "This module deploys a Storage Account Table."
@@ -33981,8 +34798,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "8001412005028765743"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9368972709899985618"
                     }
                   },
                   "definitions": {
