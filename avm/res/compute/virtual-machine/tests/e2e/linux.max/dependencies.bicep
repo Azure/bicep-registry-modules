@@ -40,7 +40,7 @@ param backupManagementServiceApplicationObjectId string
 @description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
 param logAnalyticsWorkspaceResourceId string
 
-var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
+var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.sh'
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {

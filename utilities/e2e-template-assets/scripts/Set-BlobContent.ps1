@@ -23,17 +23,17 @@ Mandatory. The name of the file of the file to create in the container
 Generate a dummy file 'testCSE.ps1' to the Storage Account 'mystorage' Container 'mycontainer' in Resource Group 'storage-rg'
 #>
 param(
-  [Parameter(Mandatory = $true)]
-  [string] $StorageAccountName,
+    [Parameter(Mandatory = $true)]
+    [string] $StorageAccountName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $ResourceGroupName,
+    [Parameter(Mandatory = $true)]
+    [string] $ResourceGroupName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $ContainerName,
+    [Parameter(Mandatory = $true)]
+    [string] $ContainerName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $FileName
+    [Parameter(Mandatory = $true)]
+    [string] $FileName
 )
 
 Write-Verbose "Create file [$FileName]" -Verbose
