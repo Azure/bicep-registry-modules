@@ -35,7 +35,7 @@ param backupManagementServiceEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -284,22 +284,20 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       extensionCustomScriptConfig: {
-        enabled: true
         name: 'myCustomScript'
-        fileData: [
-          {
-            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
-          }
-        ]
+        settings: {
+          commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
+        }
+        protectedSettings: {
+          fileUris: [
+            '${nestedDependencies.outputs.storageAccountCSEFileUrl}?${nestedDependencies.outputs.storageAccountContainerCSFileSasToken}'
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      extensionCustomScriptProtectedSetting: {
-        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
       }
       extensionDependencyAgentConfig: {
         enabled: true

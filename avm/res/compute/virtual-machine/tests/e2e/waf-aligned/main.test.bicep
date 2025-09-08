@@ -35,7 +35,7 @@ param backupManagementServiceEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
-                zones: [
+                availabilityZones: [
                   1
                   2
                   3
@@ -232,21 +232,22 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       extensionCustomScriptConfig: {
-        enabled: true
-        fileData: [
-          {
-            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
-          }
-        ]
+        name: 'myCustomScript'
+        settings: {
+          commandToExecute: 'value=$(./${nestedDependencies.outputs.storageAccountCSEFileName}); echo "$value"'
+        }
+        protectedSettings: {
+          // Needs 'Storage Blob Data Reader' role on the storage account
+          managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          fileUris: [
+            nestedDependencies.outputs.storageAccountCSEFileUrl
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      extensionCustomScriptProtectedSetting: {
-        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
       }
       extensionDependencyAgentConfig: {
         enabled: true
