@@ -7552,18 +7552,12 @@ The configuration for the [Custom Script] extension.
 - Required: No
 - Type: object
 
-**Required parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoUpgradeMinorVersion`](#parameter-extensioncustomscriptconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`. |
 | [`enableAutomaticUpgrade`](#parameter-extensioncustomscriptconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`. |
-| [`typeHandlerVersion`](#parameter-extensioncustomscriptconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`forceUpdateTag`](#parameter-extensioncustomscriptconfigforceupdatetag) | string | How the extension handler should be forced to update even if the extension configuration has not changed. |
 | [`name`](#parameter-extensioncustomscriptconfigname) | string | The name of the virtual machine extension. Defaults to `CustomScriptExtension`. |
 | [`protectedSettings`](#parameter-extensioncustomscriptconfigprotectedsettings) | secureObject | The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`. |
@@ -7572,6 +7566,7 @@ The configuration for the [Custom Script] extension.
 | [`settings`](#parameter-extensioncustomscriptconfigsettings) | object | The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`. |
 | [`supressFailures`](#parameter-extensioncustomscriptconfigsupressfailures) | bool | Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`. |
 | [`tags`](#parameter-extensioncustomscriptconfigtags) | object | Tags of the resource. |
+| [`typeHandlerVersion`](#parameter-extensioncustomscriptconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux. |
 
 ### Parameter: `extensionCustomScriptConfig.autoUpgradeMinorVersion`
 
@@ -7586,13 +7581,6 @@ Indicates whether the extension should be automatically upgraded by the platform
 
 - Required: No
 - Type: bool
-
-### Parameter: `extensionCustomScriptConfig.typeHandlerVersion`
-
-Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.
-
-- Required: No
-- Type: string
 
 ### Parameter: `extensionCustomScriptConfig.forceUpdateTag`
 
@@ -7675,6 +7663,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `extensionCustomScriptConfig.typeHandlerVersion`
+
+Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.
+
+- Required: No
+- Type: string
 
 ### Parameter: `extensionDependencyAgentConfig`
 

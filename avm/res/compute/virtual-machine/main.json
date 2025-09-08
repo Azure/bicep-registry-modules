@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13649610078583477885"
+      "templateHash": "5626158199534722675"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -738,14 +738,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux."
+            "description": "Optional. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux."
           }
         },
         "autoUpgradeMinorVersion": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`."
+            "description": "Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`."
           }
         },
         "forceUpdateTag": {
@@ -839,7 +839,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`."
+            "description": "Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`."
           }
         },
         "tags": {

@@ -1432,10 +1432,10 @@ type extensionCustomScriptConfigType = {
   @description('Optional. The name of the virtual machine extension. Defaults to `CustomScriptExtension`.')
   name: string?
 
-  @description('Required. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.')
+  @description('Optional. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.')
   typeHandlerVersion: string?
 
-  @description('Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`.')
+  @description('Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`.')
   autoUpgradeMinorVersion: bool?
 
   @description('Optional. How the extension handler should be forced to update even if the extension configuration has not changed.')
@@ -1472,7 +1472,7 @@ type extensionCustomScriptConfigType = {
   @description('Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`.')
   supressFailures: bool?
 
-  @description('Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.')
+  @description('Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.')
   enableAutomaticUpgrade: bool?
 
   @description('Optional. Tags of the resource.')
