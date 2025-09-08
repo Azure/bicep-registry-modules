@@ -39,24 +39,21 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine:<version>`.
 
-- [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
-- [Using only defaults for Linux](#example-2-using-only-defaults-for-linux)
-- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
-- [WAF-aligned](#example-4-waf-aligned)
-- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Deploying Windows VM with premium SSDv2 data disk and shared disk](#example-6-deploying-windows-vm-with-premium-ssdv2-data-disk-and-shared-disk)
-- [Using guest configuration for Windows](#example-7-using-guest-configuration-for-windows)
-- [Using a host pool to register the VM](#example-8-using-a-host-pool-to-register-the-vm)
-- [Using large parameter set for Windows](#example-9-using-large-parameter-set-for-windows)
-- [Deploy a VM with nVidia graphic card](#example-10-deploy-a-vm-with-nvidia-graphic-card)
-- [Using disk encryption set for the VM.](#example-11-using-disk-encryption-set-for-the-vm)
-- [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
-- [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-13-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
+- [Atmg](#example-1-atmg)
+- [Linux.Defaults](#example-2-linuxdefaults)
+- [Linux.Max](#example-3-linuxmax)
+- [Waf-Aligned](#example-4-waf-aligned)
+- [Windows.Defaults](#example-5-windowsdefaults)
+- [Windows.Disks](#example-6-windowsdisks)
+- [Windows.Guestconfiguration](#example-7-windowsguestconfiguration)
+- [Windows.Hostpool](#example-8-windowshostpool)
+- [Windows.Max](#example-9-windowsmax)
+- [Windows.Nvidia](#example-10-windowsnvidia)
+- [Windows.Ssecmk](#example-11-windowsssecmk)
+- [Windows.Vmss](#example-12-windowsvmss)
+- [Windows.Zrsdisks](#example-13-windowszrsdisks)
 
-### Example 1: _Using automanage for the VM._
-
-This instance deploys the module with registering to an automation account.
-
+### Example 1: _Atmg_
 
 <details>
 
@@ -266,10 +263,7 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 2: _Using only defaults for Linux_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 2: _Linux.Defaults_
 
 <details>
 
@@ -453,10 +447,7 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 3: _Using large parameter set for Linux_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 3: _Linux.Max_
 
 <details>
 
@@ -1411,10 +1402,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
-
+### Example 4: _Waf-Aligned_
 
 <details>
 
@@ -2302,10 +2290,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using only defaults for Windows_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 5: _Windows.Defaults_
 
 <details>
 
@@ -2469,10 +2454,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Deploying Windows VM with premium SSDv2 data disk and shared disk_
-
-This instance deploys the module with premium SSDv2 data disk and attachment of an existing shared disk.
-
+### Example 6: _Windows.Disks_
 
 <details>
 
@@ -2703,10 +2685,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Using guest configuration for Windows_
-
-This instance deploys the module with the a guest configuration.
-
+### Example 7: _Windows.Guestconfiguration_
 
 <details>
 
@@ -2975,10 +2954,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 8: _Using a host pool to register the VM_
-
-This instance deploys the module and registers it in a host pool.
-
+### Example 8: _Windows.Hostpool_
 
 <details>
 
@@ -3217,10 +3193,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 9: _Using large parameter set for Windows_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 9: _Windows.Max_
 
 <details>
 
@@ -4304,10 +4277,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _Deploy a VM with nVidia graphic card_
-
-This instance deploys the module for a VM with dedicated nVidia graphic card.
-
+### Example 10: _Windows.Nvidia_
 
 <details>
 
@@ -4487,10 +4457,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 11: _Using disk encryption set for the VM._
-
-This instance deploys the module with disk enryption set.
-
+### Example 11: _Windows.Ssecmk_
 
 <details>
 
@@ -4683,10 +4650,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 12: _Adding the VM to a VMSS._
-
-This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.
-
+### Example 12: _Windows.Vmss_
 
 <details>
 
@@ -4855,10 +4819,7 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 </details>
 <p>
 
-### Example 13: _Deploying Windows VM in a defined zone with a premium zrs data disk_
-
-This instance deploys the module with a premium zrs data disk.
-
+### Example 13: _Windows.Zrsdisks_
 
 <details>
 
