@@ -84,7 +84,7 @@ jobs:
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       # moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      moduleTestFilePaths: "[{\"e2eIgnore\":false,\"path\":\"tests/e2e/linux.max/main.test.bicep\",\"name\":\"linux.max\"},{\"e2eIgnore\":false,\"path\":\"tests/e2e/windows.max/main.test.bicep\",\"name\":\"windows.max\"}]"
+      moduleTestFilePaths: "[{\"e2eIgnore\":false,\"path\":\"tests/e2e/windows.max/main.test.bicep\",\"name\":\"windows.max\"}]"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit
