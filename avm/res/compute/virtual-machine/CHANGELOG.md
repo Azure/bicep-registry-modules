@@ -15,6 +15,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed support for the CustomScriptExtension extension to automatically append SAS-Keys to file specified via the `extensionCustomScriptConfig.fileData` property. Instead, the SAS token must either be pre-provided with the URL, or either the settings `extensionCustomScriptConfig.protectedSettings.storageAccountKey` & `extensionCustomScriptConfig.protectedSettings.storageAccountName` or (recommended) `extensionCustomScriptConfig.protectedSettings.managedIdentityResourceId`. For the latter, you can provide either the full resource ID - or set it to `''` if you want it to use the VM's system-assigned identity (if enabled) instead. Note, in either case, the Identity must be granted access to correct Storage Account scope.
 - Adjusted the usage of the `ecryptionAtHost` property to only pass it to the resource provider if enabled
 
+## 0.19.0
+
+### Changes
+
+- Adjusted the usage of the `ecryptionAtHost` property to only pass it to the resource provider if enabled
+
 ### Breaking Changes
 
 - Changing default value of `encryptionAtHost` from `true` to `false` to improve usability for subscription where the feature is or cannot be enabled
