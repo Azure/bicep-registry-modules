@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "11275965365560506019"
+      "templateHash": "3409900262510537307"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
@@ -184,6 +184,27 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The password of arc vm. If it is provided, it will be used for the admin account in osProfile."
+      }
+    },
+    "httpProxy": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The HTTP proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration."
+      }
+    },
+    "httpsProxy": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The HTTPS proxy server endpoint to use. If it is provided, it will be used in HttpProxyConfiguration."
+      }
     }
   },
   "variables": {
@@ -248,9 +269,9 @@
           "vmSize": "[if(empty(tryGet(parameters('hardwareProfile'), 'vmSize')), 'Custom', tryGet(parameters('hardwareProfile'), 'vmSize'))]",
           "dynamicMemoryConfig": "[tryGet(parameters('hardwareProfile'), 'dynamicMemoryConfig')]"
         },
-        "httpProxyConfig": "[if(empty(parameters('httpProxyConfig')), null(), parameters('httpProxyConfig'))]",
+        "httpProxyConfig": "[if(empty(parameters('httpProxyConfig')), null(), union(parameters('httpProxyConfig'), createObject('httpProxy', parameters('httpProxy'), 'httpsProxy', parameters('httpsProxy'))))]",
         "networkProfile": "[parameters('networkProfile')]",
-        "osProfile": "[parameters('osProfile')]",
+        "osProfile": "[union(parameters('osProfile'), createObject('adminPassword', parameters('adminPassword')))]",
         "securityProfile": "[if(empty(parameters('securityProfile')), null(), parameters('securityProfile'))]",
         "storageProfile": "[parameters('storageProfile')]"
       },

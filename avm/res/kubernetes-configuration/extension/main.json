@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2069097510556451782"
+      "version": "0.37.4.10188",
+      "templateHash": "4535882689266523749"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -38,19 +38,36 @@
         "description": "Optional. Location for all resources."
       }
     },
+    "clusterType": {
+      "type": "string",
+      "defaultValue": "managedCluster",
+      "allowedValues": [
+        "managedCluster",
+        "connectedCluster"
+      ],
+      "metadata": {
+        "description": "Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster."
+      }
+    },
     "configurationProtectedSettings": {
       "type": "secureObject",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/configurationProtectedSettings"
+        },
         "description": "Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension."
-      }
+      },
+      "nullable": true
     },
     "configurationSettings": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KubernetesConfiguration/extensions@2024-11-01#properties/properties/properties/configurationSettings"
+        },
         "description": "Optional. Configuration settings, as name-value pairs for configuring this extension."
-      }
+      },
+      "nullable": true
     },
     "extensionType": {
       "type": "string",
@@ -88,6 +105,14 @@
     },
     "fluxConfigurations": {
       "type": "array",
+      "items": {
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties"
+          }
+        }
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. A list of flux configuraitons."
@@ -95,7 +120,19 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false
+    "enableReferencedModulesTelemetry": false,
+    "extensionProperties": {
+      "autoUpgradeMinorVersion": "[if(not(empty(parameters('version'))), false(), true())]",
+      "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
+      "configurationSettings": "[parameters('configurationSettings')]",
+      "extensionType": "[parameters('extensionType')]",
+      "releaseTrain": "[parameters('releaseTrain')]",
+      "scope": {
+        "cluster": "[if(not(empty(parameters('releaseNamespace'))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
+        "namespace": "[if(not(empty(parameters('targetNamespace'))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
+      },
+      "version": "[parameters('version')]"
+    }
   },
   "resources": {
     "avmTelemetry": {
@@ -119,28 +156,34 @@
       }
     },
     "managedCluster": {
+      "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
       "existing": true,
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('clusterName')]"
     },
-    "extension": {
+    "connectedCluster": {
+      "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+      "existing": true,
+      "type": "Microsoft.Kubernetes/connectedClusters",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('clusterName')]"
+    },
+    "managedExtension": {
+      "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
       "type": "Microsoft.KubernetesConfiguration/extensions",
-      "apiVersion": "2022-03-01",
+      "apiVersion": "2024-11-01",
       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
       "name": "[parameters('name')]",
-      "properties": {
-        "autoUpgradeMinorVersion": "[if(not(empty(parameters('version'))), false(), true())]",
-        "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
-        "configurationSettings": "[parameters('configurationSettings')]",
-        "extensionType": "[parameters('extensionType')]",
-        "releaseTrain": "[parameters('releaseTrain')]",
-        "scope": {
-          "cluster": "[if(not(empty(coalesce(parameters('releaseNamespace'), ''))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
-          "namespace": "[if(not(empty(coalesce(parameters('targetNamespace'), ''))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
-        },
-        "version": "[parameters('version')]"
-      }
+      "properties": "[variables('extensionProperties')]"
+    },
+    "connectedExtension": {
+      "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+      "type": "Microsoft.KubernetesConfiguration/extensions",
+      "apiVersion": "2024-11-01",
+      "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+      "name": "[parameters('name')]",
+      "properties": "[variables('extensionProperties')]"
     },
     "fluxConfiguration": {
       "copy": {
@@ -149,7 +192,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ManagedCluster-FluxConfiguration{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-Cluster-FluxConfiguration{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -167,6 +210,9 @@
           },
           "namespace": {
             "value": "[coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()].namespace]"
+          },
+          "clusterType": {
+            "value": "[parameters('clusterType')]"
           },
           "sourceKind": "[if(contains(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'gitRepository'), createObject('value', 'GitRepository'), createObject('value', 'Bucket'))]",
           "name": {
@@ -195,12 +241,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "885928168160399718"
+              "version": "0.37.4.10188",
+              "templateHash": "12539210087808678828"
             },
             "name": "Kubernetes Configuration Flux Configurations",
-            "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Kubernetes Configuration Flux Configuration."
           },
           "parameters": {
             "name": {
@@ -229,30 +274,73 @@
                 "description": "Optional. Location for all resources."
               }
             },
+            "clusterType": {
+              "type": "string",
+              "defaultValue": "managedCluster",
+              "allowedValues": [
+                "managedCluster",
+                "connectedCluster"
+              ],
+              "metadata": {
+                "description": "Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster."
+              }
+            },
             "bucket": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/bucket"
+                },
                 "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`."
-              }
+              },
+              "nullable": true
             },
             "configurationProtectedSettings": {
               "type": "secureObject",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/configurationProtectedSettings"
+                },
                 "description": "Optional. Key-value pairs of protected configuration settings for the configuration."
-              }
+              },
+              "nullable": true
             },
             "gitRepository": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/gitRepository"
+                },
                 "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`."
-              }
+              },
+              "nullable": true
+            },
+            "ociRepository": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/ociRepository"
+                },
+                "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `OciRepository`."
+              },
+              "nullable": true
+            },
+            "azureBlob": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/azureBlob"
+                },
+                "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `AzureBlob`."
+              },
+              "nullable": true
             },
             "kustomizations": {
               "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/kustomizations"
+                },
                 "description": "Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
               }
             },
@@ -264,23 +352,31 @@
             },
             "scope": {
               "type": "string",
-              "allowedValues": [
-                "cluster",
-                "namespace"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/scope"
+                },
                 "description": "Required. Scope at which the configuration will be installed."
               }
             },
             "sourceKind": {
               "type": "string",
-              "allowedValues": [
-                "Bucket",
-                "GitRepository"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/sourceKind"
+                },
                 "description": "Required. Source Kind to pull the configuration data from."
               }
+            },
+            "reconciliationWaitDuration": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/reconciliationWaitDuration"
+                },
+                "description": "Optional. Reconciliation wait duration (ISO 8601 format)."
+              },
+              "nullable": true
             },
             "suspend": {
               "type": "bool",
@@ -290,12 +386,27 @@
               }
             }
           },
+          "variables": {
+            "fluxConfigProperties": {
+              "scope": "[parameters('scope')]",
+              "namespace": "[parameters('namespace')]",
+              "sourceKind": "[parameters('sourceKind')]",
+              "suspend": "[parameters('suspend')]",
+              "reconciliationWaitDuration": "[parameters('reconciliationWaitDuration')]",
+              "gitRepository": "[parameters('gitRepository')]",
+              "azureBlob": "[parameters('azureBlob')]",
+              "bucket": "[parameters('bucket')]",
+              "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
+              "ociRepository": "[parameters('ociRepository')]",
+              "kustomizations": "[parameters('kustomizations')]"
+            }
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.7', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -312,29 +423,34 @@
               }
             },
             "managedCluster": {
+              "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
               "existing": true,
               "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2025-04-01",
               "name": "[parameters('clusterName')]"
             },
-            "fluxConfiguration": {
+            "connectedCluster": {
+              "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+              "existing": true,
+              "type": "Microsoft.Kubernetes/connectedClusters",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('clusterName')]"
+            },
+            "fluxConfigurationManaged": {
+              "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
               "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-01",
               "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
               "name": "[parameters('name')]",
-              "properties": {
-                "bucket": "[parameters('bucket')]",
-                "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
-                "gitRepository": "[parameters('gitRepository')]",
-                "kustomizations": "[parameters('kustomizations')]",
-                "namespace": "[parameters('namespace')]",
-                "scope": "[parameters('scope')]",
-                "sourceKind": "[parameters('sourceKind')]",
-                "suspend": "[parameters('suspend')]"
-              },
-              "dependsOn": [
-                "managedCluster"
-              ]
+              "properties": "[variables('fluxConfigProperties')]"
+            },
+            "fluxConfigurationConnected": {
+              "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+              "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
+              "apiVersion": "2025-04-01",
+              "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+              "name": "[parameters('name')]",
+              "properties": "[variables('fluxConfigProperties')]"
             }
           },
           "outputs": {
@@ -343,14 +459,14 @@
               "metadata": {
                 "description": "The name of the flux configuration."
               },
-              "value": "[parameters('name')]"
+              "value": "[if(equals(parameters('clusterType'), 'managedCluster'), parameters('name'), parameters('name'))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the flux configuration."
               },
-              "value": "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name'))]"
+              "value": "[if(equals(parameters('clusterType'), 'managedCluster'), extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name')), extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name')))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -363,7 +479,8 @@
         }
       },
       "dependsOn": [
-        "extension"
+        "connectedExtension",
+        "managedExtension"
       ]
     }
   },
@@ -373,14 +490,14 @@
       "metadata": {
         "description": "The name of the extension."
       },
-      "value": "[parameters('name')]"
+      "value": "[if(equals(parameters('clusterType'), 'managedCluster'), parameters('name'), parameters('name'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the extension."
       },
-      "value": "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name'))]"
+      "value": "[if(equals(parameters('clusterType'), 'managedCluster'), extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name')), extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name')))]"
     },
     "resourceGroupName": {
       "type": "string",

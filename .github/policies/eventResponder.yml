@@ -220,15 +220,33 @@ configuration:
               action: Opened
           - includesModifiedFiles:
               files:
-              - .github/actions/templates
-              - .github/workflows/avm.template.module.yml
-              - utilities/pipelines
+                - .github/actions/templates
+                - .github/workflows/avm.template.module.yml
+                - utilities/pipelines
               excludedFiles:
-              - utilities/pipelines/platform
+                - utilities/pipelines/platform/Invoke-AvmJsonModuleIndexGeneration.ps1
+                - utilities/pipelines/platform/Publish-ModuleFromTagToPBR.ps1
+                - utilities/pipelines/platform/Set-AvmGitHubIssueForWorkflow.ps1
+                - utilities/pipelines/platform/Set-AvmGitHubIssueOwnerConfig.ps1
+                - utilities/pipelines/platform/Set-AvmGitHubPrLabels.ps1
+                - utilities/pipelines/platform/Switch-WorkflowState.ps1
+                - utilities/pipelines/platform/Sync-AvmModulesList.ps1
+                - utilities/pipelines/platform/helper/Add-GitHubIssueToProject.ps1
+                - utilities/pipelines/platform/helper/Get-AvmCsvData.ps1
+                - utilities/pipelines/platform/helper/Get-GitHubIssueCommentsList.ps1
+                - utilities/pipelines/platform/helper/Get-GitHubIssueList.ps1
+                - utilities/pipelines/platform/helper/Get-GitHubModuleWorkflowLatestRun.ps1
+                - utilities/pipelines/platform/helper/Get-GitHubModuleWorkflowList.ps1
+                - utilities/pipelines/platform/helper/Get-GithubPrRequestedReviewerTeamNames.ps1
+                - utilities/pipelines/platform/helper/Get-GithubTeamMembersLogin.ps1
+                - utilities/pipelines/platform/helper/Get-RepoInfo.ps1
+                - utilities/pipelines/platform/helper/Split-Array.ps1
+                - utilities/pipelines/platform/deploymentRemoval/Clear-ManagementGroupDeploymentHistory.ps1
+                - utilities/pipelines/platform/deploymentRemoval/Clear-SubscriptionDeploymentHistory.ps1
         then:
           - addReply:
               reply: |
                 > [!WARNING]
                 > **FAO: AVM Core Team**
-                > 
+                >
                 > When merging this PR it will trigger **all** AVM modules to be triggered! Please consider disabling the GitHub actions prior to merging and then re-enable once merged.

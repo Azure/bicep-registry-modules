@@ -13,13 +13,13 @@ This module deploys Azure Service Health Alerts to notify you of service issues,
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/actionGroups` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-01-01/actionGroups) |
-| `Microsoft.Insights/activityLogAlerts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-10-01/activityLogAlerts) |
-| `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/actionGroups` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_actiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-01-01/actionGroups)</li></ul> |
+| `Microsoft.Insights/activityLogAlerts` | 2020-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_activitylogalerts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-10-01/activityLogAlerts)</li></ul> |
+| `Microsoft.Resources/resourceGroups` | 2021-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_resourcegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups)</li></ul> |
 
 ## Usage examples
 
@@ -31,6 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Deploying multiple service health alerts.](#example-1-deploying-multiple-service-health-alerts)
 - [Using only defaults.](#example-2-using-only-defaults)
+- [Deploying multiple service health alerts with an existing action group.](#example-3-deploying-multiple-service-health-alerts-with-an-existing-action-group)
 
 ### Example 1: _Deploying multiple service health alerts._
 
@@ -65,9 +66,9 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
           enabled: true
           name: 'actionGroup-ashalt'
         }
-        alertDescription: 'Resource Health Unhealthy'
+        alertDescription: 'Service Health Incident'
         isEnabled: true
-        serviceHealthAlert: 'Resource Health Unhealthy'
+        serviceHealthAlert: 'Service Health Incident'
       }
     ]
     serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
@@ -113,9 +114,9 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
             "enabled": true,
             "name": "actionGroup-ashalt"
           },
-          "alertDescription": "Resource Health Unhealthy",
+          "alertDescription": "Service Health Incident",
           "isEnabled": true,
-          "serviceHealthAlert": "Resource Health Unhealthy"
+          "serviceHealthAlert": "Service Health Incident"
         }
       ]
     },
@@ -159,9 +160,9 @@ param serviceHealthAlerts = [
       enabled: true
       name: 'actionGroup-ashalt'
     }
-    alertDescription: 'Resource Health Unhealthy'
+    alertDescription: 'Service Health Incident'
     isEnabled: true
-    serviceHealthAlert: 'Resource Health Unhealthy'
+    serviceHealthAlert: 'Service Health Incident'
   }
 ]
 param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
@@ -186,7 +187,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
   params: {
     enableTelemetry: true
     location: '<location>'
-    serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
+    serviceHealthAlertsResourceGroupName: 'dep-ash-ashmin-rg'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -211,7 +212,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
       "value": "<location>"
     },
     "serviceHealthAlertsResourceGroupName": {
-      "value": "<serviceHealthAlertsResourceGroupName>"
+      "value": "dep-ash-ashmin-rg"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -232,6 +233,131 @@ using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
 param enableTelemetry = true
 param location = '<location>'
+param serviceHealthAlertsResourceGroupName = 'dep-ash-ashmin-rg'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
+### Example 3: _Deploying multiple service health alerts with an existing action group._
+
+This instance deploys the module with a reference to an existing action group.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
+  name: 'serviceHealthAlertsDeployment'
+  params: {
+    location: '<location>'
+    serviceHealthAlerts: [
+      {
+        actionGroup: {
+          enabled: true
+          existingActionGroupResourceId: '<existingActionGroupResourceId>'
+        }
+        alertDescription: 'Service Health Advisory'
+        isEnabled: true
+        serviceHealthAlert: 'Service Health Advisory'
+      }
+      {
+        actionGroup: {
+          enabled: true
+          existingActionGroupResourceId: '<existingActionGroupResourceId>'
+        }
+        alertDescription: 'Service Health Incident'
+        isEnabled: true
+        serviceHealthAlert: 'Service Health Incident'
+      }
+    ]
+    serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "<location>"
+    },
+    "serviceHealthAlerts": {
+      "value": [
+        {
+          "actionGroup": {
+            "enabled": true,
+            "existingActionGroupResourceId": "<existingActionGroupResourceId>"
+          },
+          "alertDescription": "Service Health Advisory",
+          "isEnabled": true,
+          "serviceHealthAlert": "Service Health Advisory"
+        },
+        {
+          "actionGroup": {
+            "enabled": true,
+            "existingActionGroupResourceId": "<existingActionGroupResourceId>"
+          },
+          "alertDescription": "Service Health Incident",
+          "isEnabled": true,
+          "serviceHealthAlert": "Service Health Incident"
+        }
+      ]
+    },
+    "serviceHealthAlertsResourceGroupName": {
+      "value": "<serviceHealthAlertsResourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
+
+param location = '<location>'
+param serviceHealthAlerts = [
+  {
+    actionGroup: {
+      enabled: true
+      existingActionGroupResourceId: '<existingActionGroupResourceId>'
+    }
+    alertDescription: 'Service Health Advisory'
+    isEnabled: true
+    serviceHealthAlert: 'Service Health Advisory'
+  }
+  {
+    actionGroup: {
+      enabled: true
+      existingActionGroupResourceId: '<existingActionGroupResourceId>'
+    }
+    alertDescription: 'Service Health Incident'
+    isEnabled: true
+    serviceHealthAlert: 'Service Health Incident'
+  }
+]
 param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
 param subscriptionId = '<subscriptionId>'
 ```
@@ -282,6 +408,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -301,6 +428,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -369,7 +503,6 @@ The action group to use for the alert.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-servicehealthalertsactiongroupenabled) | bool | Flag to enable or disable the action group. |
-| [`name`](#parameter-servicehealthalertsactiongroupname) | string | The name of the action group. |
 
 **Optional parameters**
 
@@ -381,10 +514,12 @@ The action group to use for the alert.
 | [`azureFunctionReceivers`](#parameter-servicehealthalertsactiongroupazurefunctionreceivers) | array | The list of Azure function receivers for the action group. |
 | [`emailReceivers`](#parameter-servicehealthalertsactiongroupemailreceivers) | array | The list of email receivers for the action group. |
 | [`eventHubReceivers`](#parameter-servicehealthalertsactiongroupeventhubreceivers) | array | The list of event hub receivers for the action group. |
+| [`existingActionGroupResourceId`](#parameter-servicehealthalertsactiongroupexistingactiongroupresourceid) | string | The resource Id of an existing action group. |
 | [`groupShortName`](#parameter-servicehealthalertsactiongroupgroupshortname) | string | The short name of the action group. Max length is 12 characters. |
 | [`incidentReceivers`](#parameter-servicehealthalertsactiongroupincidentreceivers) | array | The list of incident receivers for the action group. |
 | [`itsmReceivers`](#parameter-servicehealthalertsactiongroupitsmreceivers) | array | The list of ITSM receivers for the action group. |
 | [`logicAppReceivers`](#parameter-servicehealthalertsactiongrouplogicappreceivers) | array | The list of logic app receivers for the action group. |
+| [`name`](#parameter-servicehealthalertsactiongroupname) | string | The name of the action group. |
 | [`smsReceivers`](#parameter-servicehealthalertsactiongroupsmsreceivers) | array | The list of SMS receivers for the action group. |
 | [`voiceReceivers`](#parameter-servicehealthalertsactiongroupvoicereceivers) | array | The list of voice receivers for the action group. |
 | [`webhookReceivers`](#parameter-servicehealthalertsactiongroupwebhookreceivers) | array | The list of webhook receivers for the action group. |
@@ -395,13 +530,6 @@ Flag to enable or disable the action group.
 
 - Required: Yes
 - Type: bool
-
-### Parameter: `serviceHealthAlerts.actionGroup.name`
-
-The name of the action group.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.armRoleReceivers`
 
@@ -753,6 +881,13 @@ Flag to use common alert schema.
 - Required: No
 - Type: bool
 
+### Parameter: `serviceHealthAlerts.actionGroup.existingActionGroupResourceId`
+
+The resource Id of an existing action group.
+
+- Required: No
+- Type: string
+
 ### Parameter: `serviceHealthAlerts.actionGroup.groupShortName`
 
 The short name of the action group. Max length is 12 characters.
@@ -946,6 +1081,13 @@ Flag to use common alert schema.
 
 - Required: No
 - Type: bool
+
+### Parameter: `serviceHealthAlerts.actionGroup.name`
+
+The name of the action group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers`
 
@@ -1184,7 +1326,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/insights/action-group:0.7.0` | Remote reference |
 | `br/public:avm/res/insights/activity-log-alert:0.4.0` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

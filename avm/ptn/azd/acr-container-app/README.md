@@ -15,11 +15,13 @@ Creates a container app in an Azure Container App environment.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.App/containerApps` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps)</li></ul> |
+| `Microsoft.App/containerApps/authConfigs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs)</li></ul> |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
 
@@ -30,6 +32,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/acr-container-app:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
+- [Using probes](#example-2-using-probes)
 
 ### Example 1: _Using only defaults_
 
@@ -100,6 +103,128 @@ param location = '<location>'
 </details>
 <p>
 
+### Example 2: _Using probes_
+
+This instance deploys the module with container probes.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
+  name: 'acrContainerAppDeployment'
+  params: {
+    // Required parameters
+    containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
+    name: 'acaprb001'
+    // Non-required parameters
+    containerProbes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containerAppsEnvironmentName": {
+      "value": "<containerAppsEnvironmentName>"
+    },
+    "name": {
+      "value": "acaprb001"
+    },
+    // Non-required parameters
+    "containerProbes": {
+      "value": [
+        {
+          "httpGet": {
+            "httpHeaders": [
+              {
+                "name": "Custom-Header",
+                "value": "Awesome"
+              }
+            ],
+            "path": "/health",
+            "port": 8080
+          },
+          "initialDelaySeconds": 3,
+          "periodSeconds": 3,
+          "type": "Liveness"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/acr-container-app:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
+param name = 'acaprb001'
+// Non-required parameters
+param containerProbes = [
+  {
+    httpGet: {
+      httpHeaders: [
+        {
+          name: 'Custom-Header'
+          value: 'Awesome'
+        }
+      ]
+      path: '/health'
+      port: 8080
+    }
+    initialDelaySeconds: 3
+    periodSeconds: 3
+    type: 'Liveness'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -119,6 +244,7 @@ param location = '<location>'
 | [`containerMemory`](#parameter-containermemory) | string | Memory allocated to a single container instance, e.g., 1Gi. |
 | [`containerMinReplicas`](#parameter-containerminreplicas) | int | The minimum number of replicas to run. Must be at least 2. |
 | [`containerName`](#parameter-containername) | string | The name of the container. |
+| [`containerProbes`](#parameter-containerprobes) | array | List of probes for the container. |
 | [`containerRegistryHostSuffix`](#parameter-containerregistryhostsuffix) | string | Hostname suffix for container registry. Set when deploying to sovereign clouds. |
 | [`containerRegistryName`](#parameter-containerregistryname) | string | The name of the container registry. |
 | [`daprAppId`](#parameter-daprappid) | string | The Dapr app ID. |
@@ -138,7 +264,7 @@ param location = '<location>'
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`principalId`](#parameter-principalid) | string | The principal ID of the principal to assign the role to. |
 | [`revisionMode`](#parameter-revisionmode) | string | Controls how active revisions are handled for the Container app. |
-| [`secrets`](#parameter-secrets) | secureObject | The secrets required for the container. |
+| [`secrets`](#parameter-secrets) | array | The secrets required for the container. |
 | [`serviceBinds`](#parameter-servicebinds) | array | The service binds associated with the container. |
 | [`serviceType`](#parameter-servicetype) | string | The name of the container apps add-on to use. e.g. redis. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -207,6 +333,214 @@ The name of the container.
 - Required: No
 - Type: string
 - Default: `'main'`
+
+### Parameter: `containerProbes`
+
+List of probes for the container.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failureThreshold`](#parameter-containerprobesfailurethreshold) | int | Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. |
+| [`httpGet`](#parameter-containerprobeshttpget) | object | HTTPGet specifies the http request to perform. |
+| [`initialDelaySeconds`](#parameter-containerprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. |
+| [`periodSeconds`](#parameter-containerprobesperiodseconds) | int | How often (in seconds) to perform the probe. Default to 10 seconds. |
+| [`successThreshold`](#parameter-containerprobessuccessthreshold) | int | Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. |
+| [`tcpSocket`](#parameter-containerprobestcpsocket) | object | The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported. |
+| [`terminationGracePeriodSeconds`](#parameter-containerprobesterminationgraceperiodseconds) | int | Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour). |
+| [`timeoutSeconds`](#parameter-containerprobestimeoutseconds) | int | Number of seconds after which the probe times out. Defaults to 1 second. |
+| [`type`](#parameter-containerprobestype) | string | The type of probe. |
+
+### Parameter: `containerProbes.failureThreshold`
+
+Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 10
+
+### Parameter: `containerProbes.httpGet`
+
+HTTPGet specifies the http request to perform.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`path`](#parameter-containerprobeshttpgetpath) | string | Path to access on the HTTP server. |
+| [`port`](#parameter-containerprobeshttpgetport) | int | Name or number of the port to access on the container. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`host`](#parameter-containerprobeshttpgethost) | string | Host name to connect to. Defaults to the pod IP. |
+| [`httpHeaders`](#parameter-containerprobeshttpgethttpheaders) | array | HTTP headers to set in the request. |
+| [`scheme`](#parameter-containerprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
+
+### Parameter: `containerProbes.httpGet.path`
+
+Path to access on the HTTP server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containerProbes.httpGet.port`
+
+Name or number of the port to access on the container.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containerProbes.httpGet.host`
+
+Host name to connect to. Defaults to the pod IP.
+
+- Required: No
+- Type: string
+
+### Parameter: `containerProbes.httpGet.httpHeaders`
+
+HTTP headers to set in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containerprobeshttpgethttpheadersname) | string | Name of the header. |
+| [`value`](#parameter-containerprobeshttpgethttpheadersvalue) | string | Value of the header. |
+
+### Parameter: `containerProbes.httpGet.httpHeaders.name`
+
+Name of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containerProbes.httpGet.httpHeaders.value`
+
+Value of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containerProbes.httpGet.scheme`
+
+Scheme to use for connecting to the host. Defaults to HTTP.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
+
+### Parameter: `containerProbes.initialDelaySeconds`
+
+Number of seconds after the container has started before liveness probes are initiated.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 60
+
+### Parameter: `containerProbes.periodSeconds`
+
+How often (in seconds) to perform the probe. Default to 10 seconds.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 240
+
+### Parameter: `containerProbes.successThreshold`
+
+Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 10
+
+### Parameter: `containerProbes.tcpSocket`
+
+The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-containerprobestcpsocketport) | int | Number of the port to access on the container. Name must be an IANA_SVC_NAME. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`host`](#parameter-containerprobestcpsockethost) | string | Host name to connect to, defaults to the pod IP. |
+
+### Parameter: `containerProbes.tcpSocket.port`
+
+Number of the port to access on the container. Name must be an IANA_SVC_NAME.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 65535
+
+### Parameter: `containerProbes.tcpSocket.host`
+
+Host name to connect to, defaults to the pod IP.
+
+- Required: No
+- Type: string
+
+### Parameter: `containerProbes.terminationGracePeriodSeconds`
+
+Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour).
+
+- Required: No
+- Type: int
+
+### Parameter: `containerProbes.timeoutSeconds`
+
+Number of seconds after which the probe times out. Defaults to 1 second.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 240
+
+### Parameter: `containerProbes.type`
+
+The type of probe.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Liveness'
+    'Readiness'
+    'Startup'
+  ]
+  ```
 
 ### Parameter: `containerRegistryHostSuffix`
 
@@ -429,8 +763,49 @@ Controls how active revisions are handled for the Container app.
 The secrets required for the container.
 
 - Required: No
-- Type: secureObject
-- Default: `{}`
+- Type: array
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
+| [`name`](#parameter-secretsname) | string | The name of the container app secret. |
+
+### Parameter: `secrets.keyVaultUrl`
+
+The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.value`
+
+The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.identity`
+
+Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.name`
+
+The name of the container app secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `serviceBinds`
 
@@ -490,8 +865,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/res/app/container-app:0.10.0` | Remote reference |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/res/app/container-app:0.18.1` | Remote reference |
 
 ## Data Collection
 

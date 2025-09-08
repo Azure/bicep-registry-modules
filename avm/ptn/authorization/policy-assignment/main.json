@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "3232583895512445117"
+      "version": "0.37.4.10188",
+      "templateHash": "3078997291416932467"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -44,6 +44,13 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Parameters for the policy assignment if needed."
+      }
+    },
+    "parameterOverrides": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module."
       }
     },
     "identity": {
@@ -182,6 +189,9 @@
       }
     }
   },
+  "variables": {
+    "parametersMerged": "[union(parameters('parameters'), parameters('parameterOverrides'))]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -225,7 +235,7 @@
           },
           "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', ''))]",
           "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "parameters": "[if(not(empty(parameters('parameters'))), createObject('value', parameters('parameters')), createObject('value', createObject()))]",
+          "parameters": "[if(not(empty(variables('parametersMerged'))), createObject('value', variables('parametersMerged')), createObject('value', createObject()))]",
           "identity": {
             "value": "[parameters('identity')]"
           },
@@ -264,8 +274,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "16571041331828455729"
+              "version": "0.37.4.10188",
+              "templateHash": "16696735039358850323"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -474,8 +484,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "16132708231319273822"
+                      "version": "0.37.4.10188",
+                      "templateHash": "6866566455345128487"
                     }
                   },
                   "parameters": {
@@ -546,8 +556,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "18359218032794714355"
+                              "version": "0.37.4.10188",
+                              "templateHash": "9372315288124069987"
                             }
                           },
                           "parameters": {
@@ -635,8 +645,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "13456700536070272376"
+                      "version": "0.37.4.10188",
+                      "templateHash": "14456224861384112444"
                     }
                   },
                   "parameters": {
@@ -707,8 +717,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "283263530432177648"
+                              "version": "0.37.4.10188",
+                              "templateHash": "3858413328521914948"
                             }
                           },
                           "parameters": {
@@ -796,8 +806,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "1587977627296299534"
+                      "version": "0.37.4.10188",
+                      "templateHash": "14885565573528717585"
                     }
                   },
                   "parameters": {
@@ -868,8 +878,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "17794491056080423713"
+                              "version": "0.37.4.10188",
+                              "templateHash": "2244198828379535633"
                             }
                           },
                           "parameters": {
@@ -977,7 +987,7 @@
           },
           "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', ''))]",
           "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "parameters": "[if(not(empty(parameters('parameters'))), createObject('value', parameters('parameters')), createObject('value', createObject()))]",
+          "parameters": "[if(not(empty(variables('parametersMerged'))), createObject('value', variables('parametersMerged')), createObject('value', createObject()))]",
           "identity": {
             "value": "[parameters('identity')]"
           },
@@ -1010,8 +1020,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1309214929264356674"
+              "version": "0.37.4.10188",
+              "templateHash": "7020424788908864147"
             },
             "name": "Policy Assignments (Subscription scope)",
             "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -1243,7 +1253,7 @@
           },
           "displayName": "[if(not(empty(parameters('displayName'))), createObject('value', parameters('displayName')), createObject('value', ''))]",
           "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "parameters": "[if(not(empty(parameters('parameters'))), createObject('value', parameters('parameters')), createObject('value', createObject()))]",
+          "parameters": "[if(not(empty(variables('parametersMerged'))), createObject('value', variables('parametersMerged')), createObject('value', createObject()))]",
           "identity": {
             "value": "[parameters('identity')]"
           },
@@ -1276,8 +1286,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "11388691241992820794"
+              "version": "0.37.4.10188",
+              "templateHash": "1655694359990844863"
             },
             "name": "Policy Assignments (Resource Group scope)",
             "description": "This module deploys a Policy Assignment at a Resource Group scope."

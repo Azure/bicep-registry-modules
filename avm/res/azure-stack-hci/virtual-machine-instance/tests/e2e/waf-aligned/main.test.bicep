@@ -231,6 +231,7 @@ module testDeployment '../../../main.bicep' = {
       adminUsername: 'Administrator'
       adminPassword: localAdminAndDeploymentUserPass
     }
+    adminPassword: localAdminAndDeploymentUserPass
     storageProfile: {
       imageReference: { id: hciImage.outputs.resourceId }
       osDisk: {
