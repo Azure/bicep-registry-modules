@@ -35,6 +35,9 @@ param enableTelemetry bool = true
 @description('Optional. Name of the infrastructure resource group for the container apps environment.')
 param infrastructureResourceGroupName string?
 
+@description('Optional. Whether the DNS configuration is deployed by policy.')
+param dnsIsDeployedByPolicy bool = false
+
 // ================ //
 // Variables        //
 // ================ //
@@ -289,16 +292,18 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
               : networkingConfiguration.networkType == 'useExisting'
                   ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerRegistryPrivateEndpointSubnetName}'
                   : null
-            privateDnsZoneResourceIds: !empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')
-              ? [
-                  networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? ''
-                ]
-              : [
-                  empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')
-                    ? acrPrivateDNSZone.outputs.resourceId
-                    : ''
-                ]
-            privateDnsZoneGroupName: 'acrPrivateDNSZoneGroup'
+            privateDnsZoneGroup: !dnsIsDeployedByPolicy
+              ? {
+                  privateDnsZoneGroupConfigs: [
+                    {
+                      privateDnsZoneResourceId: !empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')
+                        ? networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? ''
+                        : acrPrivateDNSZone.outputs.resourceId
+                      name: 'acrPrivateDNSZoneGroup'
+                    }
+                  ]
+                }
+              : null
           }
         ]
       : null
@@ -783,14 +788,16 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.25.0' = 
                   networkingConfiguration.?containerAppDeploymentScriptSubnetName ?? 'app-deployment-script-subnet'
                 )
             )[0]
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
-              name: 'stgPrivateDNSZoneGroup'
+        privateDnsZoneGroup: !dnsIsDeployedByPolicy
+          ? {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
+                  name: 'dsStgPrivateDNSZoneGroup'
+                }
+              ]
             }
-          ]
-        }
+          : null
       }
     ]
   }
@@ -823,15 +830,18 @@ module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.25.0'
               subnetId =>
                 contains(subnetId, networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet')
             )[0]
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: !empty(networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? '')
-                ? networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? ''
-                : deploymentScriptPrivateDNSZone.outputs.resourceId
+        privateDnsZoneGroup: !dnsIsDeployedByPolicy
+          ? {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: !empty(networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? '')
+                    ? networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? ''
+                    : deploymentScriptPrivateDNSZone.outputs.resourceId
+                  name: 'acrStgPrivateDNSZoneGroup'
+                }
+              ]
             }
-          ]
-        }
+          : null
       }
     ]
   }
