@@ -36,7 +36,7 @@ jobs:
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set environment
@@ -64,7 +64,7 @@ jobs:
             baselineName: CB.AVM.WAF.Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName}}] on [${{ matrix.testCases.path }}]"
@@ -91,7 +91,7 @@ jobs:
             baselineName: Azure.Pillar.Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
@@ -124,7 +124,7 @@ jobs:
         testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set environment
@@ -165,7 +165,7 @@ jobs:
       - job_module_deploy_validation
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set environment
