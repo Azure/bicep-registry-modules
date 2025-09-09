@@ -556,7 +556,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
             : null
         }
       }
-      extensionProfile: extensionHealthConfig.enabled
+      extensionProfile: extensionHealthConfig.?enabled ?? false
         ? {
             extensions: [
               {
@@ -876,7 +876,7 @@ output location string = vmss.location
 @description('The type of the health config extension.')
 type extensionHealthConfigType = {
   @description('Optional. Enable or disable the Health Config extension. Defaults to `false`.')
-  enabled: bool
+  enabled: bool?
 
   @description('Optional. Specifies the version of the script handler. Defaults to `2.0`.')
   typeHandlerVersion: string?
@@ -890,7 +890,7 @@ type extensionHealthConfigType = {
   @description('Conditional. The port to connect to. Defaults to `80`. Required if `protocol` is `tcp`.')
   port: int?
 
-  @description('Optional. The path of the request. Not allowed if `protocol` is `tcp`,')
+  @description('Optional. The path of the request. Not allowed if `protocol` is `tcp`.')
   requestPath: string?
 
   @description('Optional. This is the interval between each health probe. For example, if intervalInSeconds == 5, a probe will be sent to the local application endpoint once every 5 seconds. Defaults to `5`.')

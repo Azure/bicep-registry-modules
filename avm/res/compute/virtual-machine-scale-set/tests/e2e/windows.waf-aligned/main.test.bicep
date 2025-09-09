@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
       }
       osDisk: {
         createOption: 'fromImage'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }

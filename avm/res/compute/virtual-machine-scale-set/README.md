@@ -2293,7 +2293,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2444,7 +2444,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2619,7 +2619,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -3418,7 +3418,7 @@ Turned on by default. The configuration for the [Application Health Monitoring] 
 | [`intervalInSeconds`](#parameter-extensionhealthconfigintervalinseconds) | int | This is the interval between each health probe. For example, if intervalInSeconds == 5, a probe will be sent to the local application endpoint once every 5 seconds. Defaults to `5`. |
 | [`numberOfProbes`](#parameter-extensionhealthconfignumberofprobes) | int | This is the number of consecutive probes required for the health status to change. For example, if numberOfProbles == 3, you will need 3 consecutive "Healthy" signals to change the health status from "Unhealthy" into "Healthy" state. The same requirement applies to change health status into "Unhealthy" state. Defaults to `1`. |
 | [`protocol`](#parameter-extensionhealthconfigprotocol) | string | The protocol to connect with. Defaults to `http`. |
-| [`requestPath`](#parameter-extensionhealthconfigrequestpath) | string | The path of the request. Not allowed if `protocol` is `tcp`, |
+| [`requestPath`](#parameter-extensionhealthconfigrequestpath) | string | The path of the request. Not allowed if `protocol` is `tcp`. |
 | [`typeHandlerVersion`](#parameter-extensionhealthconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `2.0`. |
 
 ### Parameter: `extensionHealthConfig.port`
@@ -3439,7 +3439,7 @@ Indicates whether the extension should use a newer minor version if one is avail
 
 Enable or disable the Health Config extension. Defaults to `false`.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `extensionHealthConfig.gracePeriod`
@@ -3485,7 +3485,7 @@ The protocol to connect with. Defaults to `http`.
 
 ### Parameter: `extensionHealthConfig.requestPath`
 
-The path of the request. Not allowed if `protocol` is `tcp`,
+The path of the request. Not allowed if `protocol` is `tcp`.
 
 - Required: No
 - Type: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3424448177863566091"
+      "templateHash": "11157832261456876697"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
@@ -17,6 +17,7 @@
       "properties": {
         "enabled": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Enable or disable the Health Config extension. Defaults to `false`."
           }
@@ -58,7 +59,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The path of the request. Not allowed if `protocol` is `tcp`,"
+            "description": "Optional. The path of the request. Not allowed if `protocol` is `tcp`."
           }
         },
         "intervalInSeconds": {
@@ -1307,7 +1308,7 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
-          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '2.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), if(and(contains(parameters('extensionHealthConfig'), 'protocol'), not(equals(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'tcp'))), '/', '')), 'intervalInSeconds', coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), 'numberOfProbes', coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1), 'gracePeriod', coalesce(tryGet(parameters('extensionHealthConfig'), 'gracePeriod'), mul(coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1)))))))), null())]",
+          "extensionProfile": "[if(coalesce(tryGet(parameters('extensionHealthConfig'), 'enabled'), false()), createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '2.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), if(and(contains(parameters('extensionHealthConfig'), 'protocol'), not(equals(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'tcp'))), '/', '')), 'intervalInSeconds', coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), 'numberOfProbes', coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1), 'gracePeriod', coalesce(tryGet(parameters('extensionHealthConfig'), 'gracePeriod'), mul(coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1)))))))), null())]",
           "licenseType": "[parameters('licenseType')]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
