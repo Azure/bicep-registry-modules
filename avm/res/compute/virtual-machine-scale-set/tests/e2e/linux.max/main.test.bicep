@@ -85,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
       }
       osDisk: {
         createOption: 'fromImage'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -99,17 +99,19 @@ module testDeployment '../../../main.bicep' = [
       bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
       dataDisks: [
         {
+          lun: 1
           caching: 'ReadOnly'
           createOption: 'Empty'
-          diskSizeGB: '256'
+          diskSizeGB: 256
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
         }
         {
+          lun: 2
           caching: 'ReadOnly'
           createOption: 'Empty'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
@@ -132,14 +134,15 @@ module testDeployment '../../../main.bicep' = [
       disablePasswordAuthentication: true
       encryptionAtHost: false
       extensionCustomScriptConfig: {
-        fileData: [
-          {
-            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
-          }
-        ]
-        protectedSettings: {
+        settings: {
           commandToExecute: 'sudo apt-get update'
+          fileUris: [
+            nestedDependencies.outputs.storageAccountCSEFileUrl
+          ]
+        }
+        protectedSettings: {
+          // Needs 'Storage Blob Data Reader' role on the storage account
+          managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
         }
       }
       extensionDependencyAgentConfig: {

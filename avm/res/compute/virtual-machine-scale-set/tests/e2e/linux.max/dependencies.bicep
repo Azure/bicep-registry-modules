@@ -139,6 +139,19 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   ]
 }
 
+resource msiStorageReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, 'Storage Blob Data Reader', managedIdentity.id)
+  scope: storageAccount::blobService::container
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+    ) // Storage Blob Data Reader
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: sshDeploymentScriptName
   location: location
