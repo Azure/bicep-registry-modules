@@ -12,7 +12,7 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 // Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
 #disable-next-line no-hardcoded-location
-import { enforcedLocation } from '../../shared/constants.bicep'
+import { enforcedLocation, tags } from '../../shared/constants.bicep'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndrywaf'
@@ -96,6 +96,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      tags: tags
     }
   }
 ]

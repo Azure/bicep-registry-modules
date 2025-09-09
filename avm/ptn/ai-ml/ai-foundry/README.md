@@ -104,6 +104,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         }
       }
     ]
+    tags: '<tags>'
   }
 }
 ```
@@ -140,6 +141,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
           }
         }
       ]
+    },
+    "tags": {
+      "value": "<tags>"
     }
   }
 }
@@ -172,6 +176,7 @@ param aiModelDeployments = [
     }
   }
 ]
+param tags = '<tags>'
 ```
 
 </details>
@@ -211,6 +216,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       }
     ]
     includeAssociatedResources: true
+    tags: '<tags>'
   }
 }
 ```
@@ -255,6 +261,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "includeAssociatedResources": {
       "value": true
+    },
+    "tags": {
+      "value": "<tags>"
     }
   }
 }
@@ -291,6 +300,7 @@ param aiModelDeployments = [
   }
 ]
 param includeAssociatedResources = true
+param tags = '<tags>'
 ```
 
 </details>
@@ -342,6 +352,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     storageAccountConfiguration: {
       existingResourceId: '<existingResourceId>'
     }
+    tags: '<tags>'
   }
 }
 ```
@@ -406,6 +417,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "existingResourceId": "<existingResourceId>"
       }
+    },
+    "tags": {
+      "value": "<tags>"
     }
   }
 }
@@ -454,6 +468,7 @@ param keyVaultConfiguration = {
 param storageAccountConfiguration = {
   existingResourceId: '<existingResourceId>'
 }
+param tags = '<tags>'
 ```
 
 </details>
@@ -571,11 +586,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         }
       ]
     }
-    tags: {
-      Environment: 'Example'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    tags: '<tags>'
   }
 }
 ```
@@ -712,11 +723,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       }
     },
     "tags": {
-      "value": {
-        "Environment": "Example",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
+      "value": "<tags>"
     }
   }
 }
@@ -827,11 +834,7 @@ param storageAccountConfiguration = {
     }
   ]
 }
-param tags = {
-  Environment: 'Example'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
+param tags = '<tags>'
 ```
 
 </details>
@@ -894,6 +897,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     storageAccountConfiguration: {
       blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
     }
+    tags: '<tags>'
   }
 }
 ```
@@ -967,6 +971,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": {
         "blobPrivateDnsZoneResourceId": "<blobPrivateDnsZoneResourceId>"
       }
+    },
+    "tags": {
+      "value": "<tags>"
     }
   }
 }
@@ -1022,6 +1029,7 @@ param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
 param storageAccountConfiguration = {
   blobPrivateDnsZoneResourceId: '<blobPrivateDnsZoneResourceId>'
 }
+param tags = '<tags>'
 ```
 
 </details>
