@@ -234,7 +234,7 @@ module testDeployment '../../../main.bicep' = [
       extensionCustomScriptConfig: {
         name: 'myCustomScript'
         settings: {
-          commandToExecute: 'bash ${nestedDependencies.outputs.storageAccountCSEFileName}'
+          commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
         }
         protectedSettings: {
           // Needs 'Storage Blob Data Reader' role on the storage account
