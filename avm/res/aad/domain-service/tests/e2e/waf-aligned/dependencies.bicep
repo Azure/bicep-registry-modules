@@ -263,6 +263,13 @@ resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2024-07-0
 // General resources
 // =================
 
+extension microsoftGraphV1
+// required service principal: https://learn.microsoft.com/en-us/entra/identity/domain-services/template-create-instance#create-required-microsoft-entra-resources
+resource group 'Microsoft.Graph/servicePrincipals@v1.0' = {
+  appId: '2565bd9d-da50-47d4-8b85-4c97f669dc36'
+  displayName: 'Domain Controller Services'
+}
+
 resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location

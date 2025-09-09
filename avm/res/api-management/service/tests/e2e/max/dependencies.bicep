@@ -4,30 +4,39 @@ param managedIdentityName string
 @description('Optional. The location to deploy resources to.')
 param locationRegion1 string = resourceGroup().location
 
-@description('Optional. The location to deploy resources to.')
-param locationRegion2 string = 'westus'
+@description('Required. The location to deploy resources to.')
+param locationRegion2 string
 
-@description('Required. The name of the Public IP to create.')
-param publicIPName string
+@description('Required. The name prefix of the Public IP to create.')
+param publicIPNamePrefix string
 
-@description('Required. The name of the Virtual Network to create.')
-param virtualNetworkName string
-
-@description('DNS Prefix')
+@description('Required. The DNS Prefix to apply for the public IPs.')
 param publicIpDnsLabelPrefix string
 
-@description('Required. The name of the NSG to create.')
-param networkSecurityGroupName string
+@description('Required. The name of the Application insights instance to create.')
+param applicationInsightsName string
+
+@description('Required. The name prefix of the Virtual Network to create.')
+param virtualNetworkNamePrefix string
+
+@description('Required. The name prefix of the NSG to create.')
+param networkSecurityGroupNamePrefix string
+
+@description('Required. The name prefix of the Route Table to create.')
+param routeTableNamePrefix string
+
+@description('Required. The name of the managed identity to create.')
+param logAnalyticsWorkspaceName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: locationRegion1
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: 'logAnalyticsWorkspace'
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+  name: logAnalyticsWorkspaceName
   location: locationRegion1
   tags: {
     Environment: 'Non-Prod'
@@ -44,7 +53,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'applicationInsights'
+  name: applicationInsightsName
   location: locationRegion1
   kind: 'web'
   properties: {
@@ -53,8 +62,8 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource vnetRegion1 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: '${virtualNetworkName}-${locationRegion1}'
+resource vnetRegion1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+  name: '${virtualNetworkNamePrefix}-${locationRegion1}'
   location: locationRegion1
   properties: {
     addressSpace: {
@@ -90,8 +99,8 @@ resource vnetRegion1 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource vnetRegion2 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: '${virtualNetworkName}-${locationRegion2}'
+resource vnetRegion2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+  name: '${virtualNetworkNamePrefix}-${locationRegion2}'
   location: locationRegion2
   properties: {
     addressSpace: {
@@ -127,8 +136,8 @@ resource vnetRegion2 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource routeTableRegion1 'Microsoft.Network/routeTables@2023-11-01' = {
-  name: 'apimRouteTableTest-${locationRegion1}'
+resource routeTableRegion1 'Microsoft.Network/routeTables@2024-07-01' = {
+  name: '${routeTableNamePrefix}-${locationRegion1}'
   location: locationRegion1
   properties: {
     disableBgpRoutePropagation: false
@@ -144,8 +153,8 @@ resource routeTableRegion1 'Microsoft.Network/routeTables@2023-11-01' = {
   }
 }
 
-resource routeTableRegion2 'Microsoft.Network/routeTables@2023-11-01' = {
-  name: 'apimRouteTableTest-${locationRegion2}'
+resource routeTableRegion2 'Microsoft.Network/routeTables@2024-07-01' = {
+  name: '${routeTableNamePrefix}-${locationRegion2}'
   location: locationRegion2
   properties: {
     disableBgpRoutePropagation: false
@@ -161,8 +170,8 @@ resource routeTableRegion2 'Microsoft.Network/routeTables@2023-11-01' = {
   }
 }
 
-resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: '${networkSecurityGroupName}-${locationRegion1}'
+resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
+  name: '${networkSecurityGroupNamePrefix}-${locationRegion1}'
   location: locationRegion1
   properties: {
     securityRules: [
@@ -280,8 +289,8 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
-resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: '${networkSecurityGroupName}-${locationRegion2}'
+resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
+  name: '${networkSecurityGroupNamePrefix}-${locationRegion2}'
   location: locationRegion2
   properties: {
     securityRules: [
@@ -399,8 +408,8 @@ resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
-resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: '${publicIPName}-${locationRegion1}'
+resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
+  name: '${publicIPNamePrefix}-${locationRegion1}'
   location: locationRegion1
   sku: {
     name: 'Standard'
@@ -415,8 +424,8 @@ resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   }
 }
 
-resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: '${publicIPName}-${locationRegion2}'
+resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
+  name: '${publicIPNamePrefix}-${locationRegion2}'
   location: locationRegion2
   sku: {
     name: 'Standard'

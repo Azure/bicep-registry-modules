@@ -10,6 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed numerous redundant fallback values (as they're anyways the default in the referenced module)
 - Updated API & referenced module versions
 - Small type changes
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

@@ -11,7 +11,7 @@ param computerName string = name
 param vmSize string
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = true
+param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
 @allowed([
@@ -81,7 +81,7 @@ param evictionPolicy string = 'Deallocate'
 param maxPriceForLowPriorityVm string = ''
 
 @description('Optional. Specifies resource ID about the dedicated host that the virtual machine resides in.')
-param dedicatedHostId string = ''
+param dedicatedHostResourceId string = ''
 
 @description('Optional. Specifies that the image or disk that is being used was licensed on-premises.')
 @allowed([
@@ -89,9 +89,8 @@ param dedicatedHostId string = ''
   'SLES_BYOS'
   'Windows_Client'
   'Windows_Server'
-  ''
 ])
-param licenseType string = ''
+param licenseType string?
 
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
 param publicKeys publicKeyType[] = []
@@ -237,7 +236,7 @@ param extensionGuestConfigurationExtensionProtectedSettings object = {}
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -246,7 +245,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -578,7 +577,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: vmSize
     }
     securityProfile: {
-      encryptionAtHost: encryptionAtHost ? encryptionAtHost : null
+      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
       uefiSettings: securityType == 'TrustedLaunch'
         ? {
@@ -702,12 +701,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
-    host: !empty(dedicatedHostId)
+    host: !empty(dedicatedHostResourceId)
       ? {
-          id: dedicatedHostId
+          id: dedicatedHostResourceId
         }
       : null
-    licenseType: !empty(licenseType) ? licenseType : null
+    licenseType: licenseType
     userData: !empty(userData) ? base64(userData) : null
   }
   dependsOn: [
@@ -1077,9 +1076,9 @@ resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ??
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: vm
 }

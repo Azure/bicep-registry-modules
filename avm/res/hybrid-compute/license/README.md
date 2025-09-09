@@ -12,9 +12,9 @@ This module deploys an Azure Arc License for use with Azure Arc-enabled servers.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.HybridCompute/licenses` | [2024-11-10-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-11-10-preview/licenses) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.HybridCompute/licenses` | 2024-11-10-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcompute_licenses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-11-10-preview/licenses)</li></ul> |
 
 ## Usage examples
 

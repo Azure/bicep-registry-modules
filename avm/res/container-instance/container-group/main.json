@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "13939702786676880377"
+      "version": "0.37.4.10188",
+      "templateHash": "10688884515968864599"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -564,7 +564,7 @@
         "description": "The type for an IP address."
       }
     },
-    "containerGroupSubnetIdType": {
+    "containerGroupSubnetType": {
       "type": "object",
       "properties": {
         "subnetResourceId": {
@@ -584,38 +584,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a container group subnet."
-      }
-    },
-    "dnsConfigType": {
-      "type": "object",
-      "properties": {
-        "nameServers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. \tThe DNS servers for the container group."
-          }
-        },
-        "options": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DNS options for the container group."
-          }
-        },
-        "searchDomains": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DNS search domains for hostname lookup in the container group."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a DNS configuration."
       }
     },
     "containerGpuType": {
@@ -709,12 +677,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -814,11 +789,14 @@
       }
     },
     "dnsConfig": {
-      "$ref": "#/definitions/dnsConfigType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/dnsConfig"
+        },
         "description": "Optional. The DNS config information for a container group."
-      }
+      },
+      "nullable": true
     },
     "initContainers": {
       "type": "array",
@@ -833,7 +811,7 @@
     "subnets": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/containerGroupSubnetIdType"
+        "$ref": "#/definitions/containerGroupSubnetType"
       },
       "nullable": true,
       "metadata": {
@@ -1054,7 +1032,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "containergroup"
