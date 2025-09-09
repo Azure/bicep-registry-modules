@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5257334458633930606"
+      "templateHash": "15625262238130064609"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -138,73 +138,7 @@
         "__bicep_export!": true
       }
     },
-    "_1.secretSetOutputType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        },
-        "secretUriWithVersion": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI with version of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
-      }
-    },
-    "_2.lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        },
-        "notes": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the notes of the lock."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_2.privateEndpointCustomDnsConfigType": {
+    "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -230,7 +164,7 @@
         }
       }
     },
-    "_2.privateEndpointIpConfigurationType": {
+    "_1.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -272,7 +206,7 @@
         }
       }
     },
-    "_2.privateEndpointPrivateDnsZoneGroupType": {
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -313,76 +247,30 @@
         }
       }
     },
-    "_2.roleAssignmentType": {
+    "_1.secretSetOutputType": {
       "type": "object",
       "properties": {
-        "name": {
+        "secretResourceId": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            "description": "The resourceId of the exported secret."
           }
         },
-        "roleDefinitionIdOrName": {
+        "secretUri": {
           "type": "string",
           "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            "description": "The secret URI of the exported secret."
           }
         },
-        "principalId": {
+        "secretUriWithVersion": {
           "type": "string",
           "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
+            "description": "The secret URI with version of the exported secret."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
@@ -428,7 +316,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -550,7 +438,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -587,7 +475,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -615,7 +503,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -664,7 +552,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -688,7 +576,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -698,7 +586,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -723,7 +611,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/_2.lockType",
+          "$ref": "#/definitions/lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -732,7 +620,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.roleAssignmentType"
+            "$ref": "#/definitions/roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -835,7 +723,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -851,7 +739,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -1463,6 +1351,9 @@
           "name": {
             "value": "[parameters('eventhubs')[copyIndex()].name]"
           },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "authorizationRules": {
             "value": "[tryGet(parameters('eventhubs')[copyIndex()], 'authorizationRules')]"
           },
@@ -1532,12 +1423,60 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5240492241247082284"
+              "templateHash": "17167481729800422327"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
           },
           "definitions": {
+            "eventHubAuthorizationRuleType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Event Hub authorization rule."
+                  }
+                },
+                "rights": {
+                  "type": "array",
+                  "allowedValues": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                  ],
+                  "metadata": {
+                    "description": "Required. The allowed rights for an Event Hub authorization rule."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Type definition for an Event Hub authorization rule."
+              }
+            },
+            "consumerGroupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the consumer group."
+                  }
+                },
+                "userMetadata": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Type definition for an Event Hub consumer group."
+              }
+            },
             "lockType": {
               "type": "object",
               "properties": {
@@ -1571,7 +1510,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1646,7 +1585,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1666,6 +1605,9 @@
             },
             "authorizationRules": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/eventHubAuthorizationRuleType"
+              },
               "defaultValue": [
                 {
                   "name": "RootManageSharedAccessKey",
@@ -1718,6 +1660,9 @@
             },
             "consumergroups": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/consumerGroupType"
+              },
               "defaultValue": [
                 {
                   "name": "$Default"
@@ -1850,6 +1795,13 @@
               "metadata": {
                 "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -1895,6 +1847,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventhub-nseventhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventHub/namespaces",
@@ -1977,7 +1949,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "2040336008826489483"
+                      "templateHash": "17561713370721644464"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -2004,6 +1976,7 @@
                     "userMetadata": {
                       "type": "string",
                       "defaultValue": "",
+                      "maxLength": 1024,
                       "metadata": {
                         "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
                       }
@@ -3128,7 +3101,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "10221696837745467129"
+              "templateHash": "6381990212545754493"
             }
           },
           "definitions": {
@@ -3157,7 +3130,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3180,7 +3153,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
