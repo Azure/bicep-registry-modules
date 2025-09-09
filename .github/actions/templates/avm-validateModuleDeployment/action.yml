@@ -186,7 +186,7 @@ runs:
         inlineScript: |
           $ident = Get-AzUserAssignedIdentity -Name 'avm-ghoidc-uai-001' -ResourceGroupName 'platform-core-rg'
           Write-Verbose 'Connect' -Verbose
-          Connect-Entra -Scopes 'Directory.AccessAsUser.All', 'Device.ReadWrite.All' -Identity -ClientId $ident.ClientId
+          Connect-Entra -Identity -ClientId $ident.ClientId
           Write-Verbose 'Fetch' -Verbose
           $device = Get-EntraDevice -Filter "DisplayName eq 'havmxcvmwinhp'"
           Write-Verbose 'Remove' -Verbose
