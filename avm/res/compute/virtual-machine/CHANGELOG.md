@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.19.0
+
+### Changes
+
+- Adjusted the usage of the `ecryptionAtHost` property to only pass it to the resource provider if enabled
+
+### Breaking Changes
+
+- Changing default value of `encryptionAtHost` from `true` to `false` to improve usability for subscription where the feature is or cannot be enabled
+
 ## 0.18.0
 
 ### Changes

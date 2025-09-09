@@ -11,7 +11,7 @@ param computerName string = name
 param vmSize string
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = true
+param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
 @allowed([
@@ -577,7 +577,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: vmSize
     }
     securityProfile: {
-      encryptionAtHost: encryptionAtHost ? encryptionAtHost : null
+      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
       uefiSettings: securityType == 'TrustedLaunch'
         ? {
