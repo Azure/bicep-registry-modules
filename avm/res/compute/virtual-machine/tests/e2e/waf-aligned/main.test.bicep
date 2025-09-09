@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
-      computerName: take('${namePrefix}${serviceShort}', 15)
+      computerName: take('w${namePrefix}${serviceShort}', 15)
       adminUsername: 'VMAdmin'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'

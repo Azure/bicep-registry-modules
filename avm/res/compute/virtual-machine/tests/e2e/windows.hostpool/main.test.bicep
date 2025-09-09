@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: enforcedLocation
-      name: '${namePrefix}${serviceShort}'
+      name: take('h${namePrefix}${serviceShort}', 15)
       adminUsername: 'localAdminUser'
       managedIdentities: {
         systemAssigned: true

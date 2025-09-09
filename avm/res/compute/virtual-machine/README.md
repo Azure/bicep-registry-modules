@@ -2999,7 +2999,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinhp'
+    name: '<name>'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -3081,7 +3081,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinhp"
+      "value": "<name>"
     },
     "nicConfigurations": {
       "value": [
@@ -3173,7 +3173,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinhp'
+param name = '<name>'
 param nicConfigurations = [
   {
     ipConfigurations: [
