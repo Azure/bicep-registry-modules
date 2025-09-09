@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = [
           desc: 'This is a custom project for testing.'
         }
         allowProjectManagement: true
+        disableLocalAuth: true
         networking: {
           agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
           aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId

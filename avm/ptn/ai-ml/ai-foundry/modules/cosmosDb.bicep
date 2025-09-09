@@ -38,7 +38,7 @@ resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' exi
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (empty(existingResourceId)) {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.1' = if (empty(existingResourceId)) {
   name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
     name: name
