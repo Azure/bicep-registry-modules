@@ -61,7 +61,8 @@ runs:
             @{ Name = 'Az.Monitor' },
             @{ Name = 'Az.OperationalInsights' },
             @{ Name = 'Az.RecoveryServices' },
-            @{ Name = 'Az.Subscription' }
+            @{ Name = 'Az.Subscription' },
+            @{ Name = 'Microsoft.Entra' }
           )
         }
 
