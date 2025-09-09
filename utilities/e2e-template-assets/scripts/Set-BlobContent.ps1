@@ -37,7 +37,7 @@ param(
 )
 
 Write-Verbose "Create file [$FileName]" -Verbose
-$file = New-Item -Value "Write-Host 'I am content'" -Path $FileName -Force
+$file = New-Item -Value "echo 'I am content'" -Path $FileName -Force
 
 Write-Verbose "Getting storage account [$StorageAccountName|$ResourceGroupName] context." -Verbose
 $storageAccount = Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -StorageAccountName $StorageAccountName -ErrorAction 'Stop'
