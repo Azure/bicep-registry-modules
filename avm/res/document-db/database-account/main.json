@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3892196565206613900"
+      "templateHash": "12114158444287519204"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -1860,7 +1860,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "399281922130648700"
+              "templateHash": "9570871897890815068"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -1947,6 +1947,9 @@
               }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -2014,6 +2017,9 @@
                   },
                   "name": {
                     "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {

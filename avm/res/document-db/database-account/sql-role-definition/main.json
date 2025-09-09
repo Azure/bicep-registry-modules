@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "399281922130648700"
+      "templateHash": "9570871897890815068"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
     "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -93,6 +93,9 @@
       }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -160,6 +163,9 @@
           },
           "name": {
             "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {

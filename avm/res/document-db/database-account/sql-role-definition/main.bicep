@@ -22,6 +22,8 @@ param sqlRoleAssignments sqlRoleAssignmentType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
@@ -74,6 +76,7 @@ module databaseAccount_sqlRoleAssignments '../sql-role-assignment/main.bicep' = 
       roleDefinitionId: sqlRoleDefinition.id
       principalId: sqlRoleAssignment.principalId
       name: sqlRoleAssignment.?name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
