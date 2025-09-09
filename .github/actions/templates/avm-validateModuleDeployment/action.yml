@@ -185,6 +185,7 @@ runs:
         azPSVersion: "latest"
         inlineScript: |
           $ident = Get-AzUserAssignedIdentity -Name 'avm-ghoidc-uai-001' -ResourceGroupName 'platform-core-rg'
+          Write-Verbose ('Found [{0}]' -f $ident.name) -Verbose
           Write-Verbose 'Connect' -Verbose
           Connect-Entra -Identity -ClientId $ident.ClientId
           Write-Verbose 'Fetch' -Verbose
