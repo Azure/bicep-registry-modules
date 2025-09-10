@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
       encryptionAtHost: false
       extensionCustomScriptConfig: {
         settings: {
-          commandToExecute: 'sudo apt-get update'
+          commandToExecute: 'bash ${nestedDependencies.outputs.storageAccountCSEFileUrl}'
           fileUris: [
             nestedDependencies.outputs.storageAccountCSEFileUrl
           ]

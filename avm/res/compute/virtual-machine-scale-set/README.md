@@ -571,7 +571,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         managedIdentityResourceId: '<managedIdentityResourceId>'
       }
       settings: {
-        commandToExecute: 'sudo apt-get update'
+        commandToExecute: '<commandToExecute>'
         fileUris: [
           '<storageAccountCSEFileUrl>'
         ]
@@ -779,7 +779,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "managedIdentityResourceId": "<managedIdentityResourceId>"
         },
         "settings": {
-          "commandToExecute": "sudo apt-get update",
+          "commandToExecute": "<commandToExecute>",
           "fileUris": [
             "<storageAccountCSEFileUrl>"
           ]
@@ -981,7 +981,7 @@ param extensionCustomScriptConfig = {
     managedIdentityResourceId: '<managedIdentityResourceId>'
   }
   settings: {
-    commandToExecute: 'sudo apt-get update'
+    commandToExecute: '<commandToExecute>'
     fileUris: [
       '<storageAccountCSEFileUrl>'
     ]
