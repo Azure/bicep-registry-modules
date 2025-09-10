@@ -1,4 +1,4 @@
-# Kubernetes Runtime Load Balancers `[Microsoft.kubernetesruntiume/loadbalancer]`
+# Kubernetes Runtime Load Balancers `[Microsoft.KubernetesRuntime/loadBalancers]`
 
 This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services.
 
@@ -22,7 +22,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-runtiume/load-balancer:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-runtime/load-balancer:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using only defaults](#example-2-using-only-defaults)
@@ -38,7 +38,7 @@ This instance deploys the module with connected cluster.
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<version>' = {
+module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
   name: 'loadBalancerDeployment'
   params: {
     // Required parameters
@@ -97,7 +97,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<versio
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/kubernetes-runtiume/load-balancer:<version>'
+using 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>'
 
 // Required parameters
 param addresses = [
@@ -123,7 +123,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<version>' = {
+module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
   name: 'loadBalancerDeployment'
   params: {
     // Required parameters
@@ -176,7 +176,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<versio
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/kubernetes-runtiume/load-balancer:<version>'
+using 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>'
 
 // Required parameters
 param addresses = [
@@ -200,7 +200,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<version>' = {
+module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
   name: 'loadBalancerDeployment'
   params: {
     // Required parameters
@@ -281,7 +281,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<versio
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/kubernetes-runtiume/load-balancer:<version>'
+using 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>'
 
 // Required parameters
 param addresses = [
