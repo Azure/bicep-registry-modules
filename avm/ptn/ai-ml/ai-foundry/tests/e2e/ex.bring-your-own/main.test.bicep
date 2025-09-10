@@ -42,7 +42,6 @@ module dependencies 'dependencies.bicep' = {
   params: {
     workloadName: workloadName
     location: enforcedLocation
-    tags: tags
   }
 }
 
@@ -95,7 +94,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      tags: tags
     }
   }
 ]

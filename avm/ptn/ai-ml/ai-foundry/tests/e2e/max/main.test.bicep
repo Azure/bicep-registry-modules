@@ -39,7 +39,6 @@ module dependencies 'dependencies.bicep' = {
   params: {
     workloadName: workloadName
     location: enforcedLocation
-    tags: tags
   }
 }
 
@@ -154,11 +153,11 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'lock${workloadName}'
       }
-      tags: union(tags, {
+      tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Example'
         Role: 'DeploymentValidation'
-      })
+      }
     }
   }
 ]
