@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated additional vNet to virtual WAN hub connection name suffix expression to align with expression used for primary vNet to virtual WAN hub connection name
 
+### Breaking Changes
+
+- None
+
 ## 0.3.7
 
 ### Changes
