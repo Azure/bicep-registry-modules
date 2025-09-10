@@ -33,6 +33,7 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 resource dependenciesResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: 'dep-${namePrefix}-bicep-${serviceShort}-dependencies-rg'
   location: enforcedLocation
+  tags: tags
 }
 
 module dependencies 'dependencies.bicep' = {
@@ -41,6 +42,7 @@ module dependencies 'dependencies.bicep' = {
   params: {
     workloadName: workloadName
     location: enforcedLocation
+    tags: tags
   }
 }
 
@@ -49,6 +51,7 @@ module dependencies 'dependencies.bicep' = {
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: tags
 }
 
 // ============== //

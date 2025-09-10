@@ -34,6 +34,7 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: tags
 }
 
 // ============== //

@@ -38,6 +38,7 @@ module dependencies 'dependencies.bicep' = {
   params: {
     workloadName: workloadName
     location: enforcedLocation
+    tags: tags
   }
 }
 
@@ -46,6 +47,7 @@ module dependencies 'dependencies.bicep' = {
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: tags
 }
 
 // ============== //
