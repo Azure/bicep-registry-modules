@@ -1,4 +1,4 @@
-name: "avm.res.kubernetes-runtiume.load-balancer"
+name: "avm.res.kubernetes-runtime.load-balancer"
 
 on:
   workflow_dispatch:
@@ -28,16 +28,16 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.kubernetes-runtiume.load-balancer.yml"
-      - "avm/res/kubernetes-runtiume/load-balancer/**"
+      - ".github/workflows/avm.res.kubernetes-runtime.load-balancer.yml"
+      - "avm/res/kubernetes-runtime/load-balancer/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/kubernetes-runtiume/load-balancer"
-  workflowPath: ".github/workflows/avm.res.kubernetes-runtiume.load-balancer.yml"
+  modulePath: "avm/res/kubernetes-runtime/load-balancer"
+  workflowPath: ".github/workflows/avm.res.kubernetes-runtime.load-balancer.yml"
 
 concurrency:
   group: ${{ github.workflow }}
