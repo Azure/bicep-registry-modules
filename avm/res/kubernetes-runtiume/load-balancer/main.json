@@ -1,0 +1,176 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "14341795372439028728"
+    },
+    "name": "Kubernetes Runtime Load Balancers",
+    "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Required. The name of the load balancer."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "clusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the AKS cluster or Arc-enabled connected cluster that should be configured."
+      }
+    },
+    "clusterType": {
+      "type": "string",
+      "defaultValue": "managedCluster",
+      "allowedValues": [
+        "managedCluster",
+        "connectedCluster"
+      ],
+      "metadata": {
+        "description": "Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster."
+      }
+    },
+    "addresses": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/addresses"
+        },
+        "description": "Required. IP Range - The IP addresses that this load balancer will advertise."
+      }
+    },
+    "advertiseMode": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/advertiseMode"
+        },
+        "description": "Required. Advertise Mode - The mode in which the load balancer should advertise the IP addresses."
+      },
+      "allowedValues": [
+        "ARP",
+        "BGP",
+        "Both"
+      ]
+    },
+    "bgpPeers": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/bgpPeers"
+        },
+        "description": "Optional. The list of BGP peers it should advertise to. Null or empty means to advertise to all peers."
+      },
+      "nullable": true
+    },
+    "serviceSelector": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/serviceSelector"
+        },
+        "description": "Optional. A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label \"a=b\", then please specify {\"a\": \"b\"} in the field."
+      },
+      "nullable": true
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.kubernetesruntime-loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "managedCluster": {
+      "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
+      "existing": true,
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2025-05-01",
+      "name": "[parameters('clusterName')]"
+    },
+    "connectedCluster": {
+      "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+      "existing": true,
+      "type": "Microsoft.Kubernetes/connectedClusters",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('clusterName')]"
+    },
+    "loadBalancerManagedCluster": {
+      "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
+      "type": "Microsoft.KubernetesRuntime/loadBalancers",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
+      "name": "[parameters('name')]",
+      "properties": {
+        "addresses": "[parameters('addresses')]",
+        "advertiseMode": "[parameters('advertiseMode')]",
+        "bgpPeers": "[parameters('bgpPeers')]",
+        "serviceSelector": "[parameters('serviceSelector')]"
+      }
+    },
+    "loadBalancerConnectedCluster": {
+      "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+      "type": "Microsoft.KubernetesRuntime/loadBalancers",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+      "name": "[parameters('name')]",
+      "properties": {
+        "addresses": "[parameters('addresses')]",
+        "advertiseMode": "[parameters('advertiseMode')]",
+        "bgpPeers": "[parameters('bgpPeers')]",
+        "serviceSelector": "[parameters('serviceSelector')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the load balancer."
+      },
+      "value": "[if(equals(parameters('clusterType'), 'managedCluster'), extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesRuntime/loadBalancers', parameters('name')), extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName')), 'Microsoft.KubernetesRuntime/loadBalancers', parameters('name')))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the load balancer."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the load balancer was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
