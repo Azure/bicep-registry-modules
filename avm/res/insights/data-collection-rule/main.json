@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "6373748746647451100"
+      "templateHash": "8608727180008596705"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -854,10 +854,14 @@
     },
     "endpoints": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/endpoints",
+          "output": true
+        },
         "description": "The endpoints of the dataCollectionRule, if created."
       },
+      "nullable": true,
       "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(reference('dataCollectionRuleAll'), 'endpoints'), tryGet(reference('dataCollectionRule'), 'endpoints'))]"
     },
     "immutableId": {
