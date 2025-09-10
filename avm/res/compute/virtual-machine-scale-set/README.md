@@ -81,7 +81,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -153,7 +153,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -221,7 +221,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }

@@ -556,6 +556,33 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
             : null
         }
       }
+      // Health-Config must be deployed using the property as you can otherwise not set the VMSS's `patchMode` to `AutomaticByPlatform`
+      extensionProfile: extensionHealthConfig.?enabled ?? false
+        ? {
+            extensions: [
+              {
+                name: 'HealthExtension'
+                properties: {
+                  publisher: 'Microsoft.ManagedServices'
+                  type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
+                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '2.0'
+                  autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
+                  settings: {
+                    protocol: extensionHealthConfig.?protocol ?? 'http'
+                    port: extensionHealthConfig.?port ?? 80
+                    requestPath: extensionHealthConfig.?requestPath ?? ((contains(extensionHealthConfig, 'protocol') && extensionHealthConfig.?protocol != 'tcp')
+                      ? '/'
+                      : '')
+                    intervalInSeconds: extensionHealthConfig.?intervalInSeconds ?? 5
+                    numberOfProbes: extensionHealthConfig.?numberOfProbes ?? 1
+                    gracePeriod: extensionHealthConfig.?gracePeriod ?? ((extensionHealthConfig.?intervalInSeconds ?? 5) * (extensionHealthConfig.?numberOfProbes ?? 1))
+                  }
+                  provisionAfterExtensions: extensionHealthConfig.?provisionAfterExtensions
+                }
+              }
+            ]
+          }
+        : null
       licenseType: licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
@@ -583,30 +610,6 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
     capacity: skuCapacity
   }
   plan: plan
-}
-
-module vmss_healthExtension 'extension/main.bicep' = if (extensionHealthConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-Health'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'HealthExtension'
-    publisher: 'Microsoft.ManagedServices'
-    type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
-    typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '2.0'
-    autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
-    enableAutomaticUpgrade: extensionHealthConfig.?enableAutomaticUpgrade ?? true
-    settings: {
-      protocol: extensionHealthConfig.?protocol ?? 'http'
-      port: extensionHealthConfig.?port ?? 80
-      requestPath: extensionHealthConfig.?requestPath ?? ((contains(extensionHealthConfig, 'protocol') && extensionHealthConfig.?protocol != 'tcp')
-        ? '/'
-        : '')
-      intervalInSeconds: extensionHealthConfig.?intervalInSeconds ?? 5
-      numberOfProbes: extensionHealthConfig.?numberOfProbes ?? 1
-      gracePeriod: extensionHealthConfig.?gracePeriod ?? ((extensionHealthConfig.?intervalInSeconds ?? 5) * (extensionHealthConfig.?numberOfProbes ?? 1))
-    }
-    provisionAfterExtensions: extensionHealthConfig.?provisionAfterExtensions
-  }
 }
 
 module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinConfig.enabled) {
