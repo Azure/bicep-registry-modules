@@ -11,6 +11,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added types for parameters `osDisk`, `dataDisks`, `nicConfigurations`, `extensionHealthConfig`, `winRM` & `publicKeys`
 - Fixed incorrect default value of `extensionHealthConfig` parameter
 - Added optional `name` property to `nicConfigurations` parameter
+- Moved Health-Extension to its own deployment block
+- Added `provisionAfterExtensions` property support to all extensions
 
 ### Breaking Changes
 

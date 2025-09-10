@@ -3402,6 +3402,12 @@ Turned on by default. The configuration for the [Application Health Monitoring] 
   }
   ```
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-extensionhealthconfigenabled) | bool | Enable or disable the Health Config extension. |
+
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -3413,13 +3419,21 @@ Turned on by default. The configuration for the [Application Health Monitoring] 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoUpgradeMinorVersion`](#parameter-extensionhealthconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `false`. |
-| [`enabled`](#parameter-extensionhealthconfigenabled) | bool | Enable or disable the Health Config extension. Defaults to `false`. |
+| [`enableAutomaticUpgrade`](#parameter-extensionhealthconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `true`. |
 | [`gracePeriod`](#parameter-extensionhealthconfiggraceperiod) | int | The grace period for newly created instances. Defaults to `intervalInSeconds` x `numberOfProbes`. |
 | [`intervalInSeconds`](#parameter-extensionhealthconfigintervalinseconds) | int | This is the interval between each health probe. For example, if intervalInSeconds == 5, a probe will be sent to the local application endpoint once every 5 seconds. Defaults to `5`. |
 | [`numberOfProbes`](#parameter-extensionhealthconfignumberofprobes) | int | This is the number of consecutive probes required for the health status to change. For example, if numberOfProbles == 3, you will need 3 consecutive "Healthy" signals to change the health status from "Unhealthy" into "Healthy" state. The same requirement applies to change health status into "Unhealthy" state. Defaults to `1`. |
 | [`protocol`](#parameter-extensionhealthconfigprotocol) | string | The protocol to connect with. Defaults to `http`. |
+| [`provisionAfterExtensions`](#parameter-extensionhealthconfigprovisionafterextensions) | array | Collection of extension names after which this extension needs to be provisioned. |
 | [`requestPath`](#parameter-extensionhealthconfigrequestpath) | string | The path of the request. Not allowed if `protocol` is `tcp`. |
 | [`typeHandlerVersion`](#parameter-extensionhealthconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `2.0`. |
+
+### Parameter: `extensionHealthConfig.enabled`
+
+Enable or disable the Health Config extension.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `extensionHealthConfig.port`
 
@@ -3435,9 +3449,9 @@ Indicates whether the extension should use a newer minor version if one is avail
 - Required: No
 - Type: bool
 
-### Parameter: `extensionHealthConfig.enabled`
+### Parameter: `extensionHealthConfig.enableAutomaticUpgrade`
 
-Enable or disable the Health Config extension. Defaults to `false`.
+Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `true`.
 
 - Required: No
 - Type: bool
@@ -3482,6 +3496,13 @@ The protocol to connect with. Defaults to `http`.
     'tcp'
   ]
   ```
+
+### Parameter: `extensionHealthConfig.provisionAfterExtensions`
+
+Collection of extension names after which this extension needs to be provisioned.
+
+- Required: No
+- Type: array
 
 ### Parameter: `extensionHealthConfig.requestPath`
 

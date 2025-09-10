@@ -556,31 +556,6 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
             : null
         }
       }
-      extensionProfile: extensionHealthConfig.?enabled ?? false
-        ? {
-            extensions: [
-              {
-                name: 'HealthExtension'
-                properties: {
-                  publisher: 'Microsoft.ManagedServices'
-                  type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
-                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '2.0'
-                  autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
-                  settings: {
-                    protocol: extensionHealthConfig.?protocol ?? 'http'
-                    port: extensionHealthConfig.?port ?? 80
-                    requestPath: extensionHealthConfig.?requestPath ?? ((contains(extensionHealthConfig, 'protocol') && extensionHealthConfig.?protocol != 'tcp')
-                      ? '/'
-                      : '')
-                    intervalInSeconds: extensionHealthConfig.?intervalInSeconds ?? 5
-                    numberOfProbes: extensionHealthConfig.?numberOfProbes ?? 1
-                    gracePeriod: extensionHealthConfig.?gracePeriod ?? ((extensionHealthConfig.?intervalInSeconds ?? 5) * (extensionHealthConfig.?numberOfProbes ?? 1))
-                  }
-                }
-              }
-            ]
-          }
-        : null
       licenseType: licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
@@ -610,6 +585,30 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
   plan: plan
 }
 
+module vmss_healthExtension 'extension/main.bicep' = if (extensionHealthConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VMSS-Health'
+  params: {
+    virtualMachineScaleSetName: vmss.name
+    name: 'HealthExtension'
+    publisher: 'Microsoft.ManagedServices'
+    type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
+    typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '2.0'
+    autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
+    enableAutomaticUpgrade: extensionHealthConfig.?enableAutomaticUpgrade ?? true
+    settings: {
+      protocol: extensionHealthConfig.?protocol ?? 'http'
+      port: extensionHealthConfig.?port ?? 80
+      requestPath: extensionHealthConfig.?requestPath ?? ((contains(extensionHealthConfig, 'protocol') && extensionHealthConfig.?protocol != 'tcp')
+        ? '/'
+        : '')
+      intervalInSeconds: extensionHealthConfig.?intervalInSeconds ?? 5
+      numberOfProbes: extensionHealthConfig.?numberOfProbes ?? 1
+      gracePeriod: extensionHealthConfig.?gracePeriod ?? ((extensionHealthConfig.?intervalInSeconds ?? 5) * (extensionHealthConfig.?numberOfProbes ?? 1))
+    }
+    provisionAfterExtensions: extensionHealthConfig.?provisionAfterExtensions
+  }
+}
+
 module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VMSS-DomainJoin'
   params: {
@@ -624,6 +623,7 @@ module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoin
     protectedSettings: {
       Password: extensionDomainJoinPassword
     }
+    provisionAfterExtensions: extensionDomainJoinConfig.?provisionAfterExtensions
   }
 }
 
@@ -638,6 +638,7 @@ module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extension
     autoUpgradeMinorVersion: extensionAntiMalwareConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAntiMalwareConfig.?enableAutomaticUpgrade ?? false
     settings: extensionAntiMalwareConfig.settings
+    provisionAfterExtensions: extensionAntiMalwareConfig.?provisionAfterExtensions
   }
   dependsOn: [
     vmss_domainJoinExtension
@@ -671,6 +672,7 @@ module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMon
     protectedSettings: {
       workspaceKey: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace!.listKeys().primarySharedKey : ''
     }
+    provisionAfterExtensions: extensionMonitoringAgentConfig.?provisionAfterExtensions
   }
   dependsOn: [
     vmss_microsoftAntiMalwareExtension
@@ -687,6 +689,7 @@ module vmss_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepen
     typeHandlerVersion: extensionDependencyAgentConfig.?typeHandlerVersion ?? '9.5'
     autoUpgradeMinorVersion: extensionDependencyAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionDependencyAgentConfig.?enableAutomaticUpgrade ?? true
+    provisionAfterExtensions: extensionDependencyAgentConfig.?provisionAfterExtensions
   }
   dependsOn: [
     vmss_azureMonitorAgentExtension
@@ -703,6 +706,7 @@ module vmss_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionN
     typeHandlerVersion: extensionNetworkWatcherAgentConfig.?typeHandlerVersion ?? '1.4'
     autoUpgradeMinorVersion: extensionNetworkWatcherAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionNetworkWatcherAgentConfig.?enableAutomaticUpgrade ?? false
+    provisionAfterExtensions: extensionNetworkWatcherAgentConfig.?provisionAfterExtensions
   }
   dependsOn: [
     vmss_dependencyAgentExtension
@@ -721,6 +725,7 @@ module vmss_desiredStateConfigurationExtension 'extension/main.bicep' = if (exte
     enableAutomaticUpgrade: extensionDSCConfig.?enableAutomaticUpgrade ?? false
     settings: extensionDSCConfig.?settings ?? {}
     protectedSettings: extensionDSCConfig.?protectedSettings ?? {}
+    provisionAfterExtensions: extensionDSCConfig.?provisionAfterExtensions
   }
   dependsOn: [
     vmss_networkWatcherAgentExtension
@@ -798,6 +803,7 @@ module vmss_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionA
     enableAutomaticUpgrade: extensionAzureDiskEncryptionConfig.?enableAutomaticUpgrade ?? false
     forceUpdateTag: extensionAzureDiskEncryptionConfig.?forceUpdateTag ?? '1.0'
     settings: extensionAzureDiskEncryptionConfig.settings
+    provisionAfterExtensions: extensionAzureDiskEncryptionConfig.?provisionAfterExtensions
   }
   dependsOn: [
     vmss_customScriptExtension
@@ -875,14 +881,17 @@ output location string = vmss.location
 @export()
 @description('The type of the health config extension.')
 type extensionHealthConfigType = {
-  @description('Optional. Enable or disable the Health Config extension. Defaults to `false`.')
-  enabled: bool?
+  @description('Required. Enable or disable the Health Config extension.')
+  enabled: bool
 
   @description('Optional. Specifies the version of the script handler. Defaults to `2.0`.')
   typeHandlerVersion: string?
 
   @description('Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `false`.')
   autoUpgradeMinorVersion: bool?
+
+  @description('Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `true`.')
+  enableAutomaticUpgrade: bool?
 
   @description('Optional. The protocol to connect with. Defaults to `http`.')
   protocol: ('http' | 'https' | 'tcp')?
@@ -906,6 +915,9 @@ type extensionHealthConfigType = {
   @description('Optional. The grace period for newly created instances. Defaults to `intervalInSeconds` x `numberOfProbes`.')
   @maxValue(14400)
   gracePeriod: int?
+
+  @description('Optional. Collection of extension names after which this extension needs to be provisioned.')
+  provisionAfterExtensions: string[]?
 }
 
 @export()

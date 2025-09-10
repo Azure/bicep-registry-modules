@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11157832261456876697"
+      "templateHash": "6736421211333355117"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
@@ -17,9 +17,8 @@
       "properties": {
         "enabled": {
           "type": "bool",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Enable or disable the Health Config extension. Defaults to `false`."
+            "description": "Required. Enable or disable the Health Config extension."
           }
         },
         "typeHandlerVersion": {
@@ -34,6 +33,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `false`."
+          }
+        },
+        "enableAutomaticUpgrade": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `true`."
           }
         },
         "protocol": {
@@ -86,6 +92,16 @@
           "maxValue": 14400,
           "metadata": {
             "description": "Optional. The grace period for newly created instances. Defaults to `intervalInSeconds` x `numberOfProbes`."
+          }
+        },
+        "provisionAfterExtensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
           }
         }
       },
@@ -1308,7 +1324,6 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
-          "extensionProfile": "[if(coalesce(tryGet(parameters('extensionHealthConfig'), 'enabled'), false()), createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '2.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), if(and(contains(parameters('extensionHealthConfig'), 'protocol'), not(equals(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'tcp'))), '/', '')), 'intervalInSeconds', coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), 'numberOfProbes', coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1), 'gracePeriod', coalesce(tryGet(parameters('extensionHealthConfig'), 'gracePeriod'), mul(coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1)))))))), null())]",
           "licenseType": "[parameters('licenseType')]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
@@ -1417,11 +1432,11 @@
         "vmss"
       ]
     },
-    "vmss_domainJoinExtension": {
-      "condition": "[parameters('extensionDomainJoinConfig').enabled]",
+    "vmss_healthExtension": {
+      "condition": "[parameters('extensionHealthConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VMSS-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-VMSS-Health', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1432,30 +1447,33 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DomainJoin"
+            "value": "HealthExtension"
           },
           "publisher": {
-            "value": "Microsoft.Compute"
+            "value": "Microsoft.ManagedServices"
           },
-          "type": {
-            "value": "JsonADDomainExtension"
-          },
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'ApplicationHealthWindows'), createObject('value', 'ApplicationHealthLinux'))]",
           "typeHandlerVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
+            "value": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '2.0')]"
           },
           "autoUpgradeMinorVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+            "value": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false())]"
           },
           "enableAutomaticUpgrade": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+            "value": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'enableAutomaticUpgrade'), true())]"
           },
           "settings": {
-            "value": "[parameters('extensionDomainJoinConfig').settings]"
-          },
-          "protectedSettings": {
             "value": {
-              "Password": "[parameters('extensionDomainJoinPassword')]"
+              "protocol": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http')]",
+              "port": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80)]",
+              "requestPath": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), if(and(contains(parameters('extensionHealthConfig'), 'protocol'), not(equals(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'tcp'))), '/', ''))]",
+              "intervalInSeconds": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5)]",
+              "numberOfProbes": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1)]",
+              "gracePeriod": "[coalesce(tryGet(parameters('extensionHealthConfig'), 'gracePeriod'), mul(coalesce(tryGet(parameters('extensionHealthConfig'), 'intervalInSeconds'), 5), coalesce(tryGet(parameters('extensionHealthConfig'), 'numberOfProbes'), 1)))]"
             }
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionHealthConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -1466,7 +1484,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1554,13 +1572,217 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
+            }
+          },
+          "resources": {
+            "virtualMachineScaleSet": {
+              "existing": true,
+              "type": "Microsoft.Compute/virtualMachineScaleSets",
+              "apiVersion": "2024-11-01",
+              "name": "[parameters('virtualMachineScaleSetName')]"
+            },
+            "extension": {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss"
+      ]
+    },
+    "vmss_domainJoinExtension": {
+      "condition": "[parameters('extensionDomainJoinConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "DomainJoin"
+          },
+          "publisher": {
+            "value": "Microsoft.Compute"
+          },
+          "type": {
+            "value": "JsonADDomainExtension"
+          },
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "settings": {
+            "value": "[parameters('extensionDomainJoinConfig').settings]"
+          },
+          "protectedSettings": {
+            "value": {
+              "Password": "[parameters('extensionDomainJoinPassword')]"
+            }
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionDomainJoinConfig'), 'provisionAfterExtensions')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "1457477458264476892"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension."
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
                 },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
               },
               "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -1652,6 +1874,9 @@
           },
           "settings": {
             "value": "[parameters('extensionAntiMalwareConfig').settings]"
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionAntiMalwareConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -1662,7 +1887,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1750,13 +1975,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -1853,6 +2078,9 @@
             "value": {
               "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys('vmss_logAnalyticsWorkspace', '2025-02-01').primarySharedKey, '')]"
             }
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionMonitoringAgentConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -1863,7 +2091,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1951,13 +2179,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -2046,6 +2274,9 @@
           },
           "enableAutomaticUpgrade": {
             "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), true())]"
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionDependencyAgentConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -2056,7 +2287,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2144,13 +2375,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -2238,6 +2469,9 @@
           },
           "enableAutomaticUpgrade": {
             "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -2248,7 +2482,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2336,13 +2570,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -2438,6 +2672,9 @@
           },
           "protectedSettings": {
             "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'protectedSettings'), createObject())]"
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionDSCConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -2448,7 +2685,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2536,13 +2773,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -2656,7 +2893,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2744,13 +2981,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {
@@ -2845,6 +3082,9 @@
           },
           "settings": {
             "value": "[parameters('extensionAzureDiskEncryptionConfig').settings]"
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'provisionAfterExtensions')]"
           }
         },
         "template": {
@@ -2855,7 +3095,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "5972745166705801067"
+              "templateHash": "1457477458264476892"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2943,13 +3183,13 @@
             },
             "provisionAfterExtensions": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
-                },
-                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              "items": {
+                "type": "string"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              }
             }
           },
           "resources": {

@@ -39,7 +39,7 @@ param enableAutomaticUpgrade bool
 param protectedSettingsFromKeyVault resourceInput<'Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01'>.properties.protectedSettingsFromKeyVault?
 
 @description('Optional. Collection of extension names after which this extension needs to be provisioned.')
-param provisionAfterExtensions resourceInput<'Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01'>.properties.provisionAfterExtensions?
+param provisionAfterExtensions string[]?
 
 resource virtualMachineScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' existing = {
   name: virtualMachineScaleSetName
