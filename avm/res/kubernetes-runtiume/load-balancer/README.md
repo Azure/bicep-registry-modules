@@ -132,7 +132,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<versio
     ]
     advertiseMode: 'ARP'
     clusterName: '<clusterName>'
-    name: 'krlbdef001'
+    name: 'krlbmin001'
   }
 }
 ```
@@ -162,7 +162,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtiume/load-balancer:<versio
       "value": "<clusterName>"
     },
     "name": {
-      "value": "krlbdef001"
+      "value": "krlbmin001"
     }
   }
 }
@@ -184,7 +184,7 @@ param addresses = [
 ]
 param advertiseMode = 'ARP'
 param clusterName = '<clusterName>'
-param name = 'krlbdef001'
+param name = 'krlbmin001'
 ```
 
 </details>
