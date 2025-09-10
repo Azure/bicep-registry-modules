@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2691883054312794420"
+      "version": "0.37.4.10188",
+      "templateHash": "1457477458264476892"
     },
     "name": "Virtual Machine Scale Set Extensions",
     "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -49,21 +50,21 @@
     },
     "forceUpdateTag": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
       }
     },
     "settings": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Any object that contains the extension specific settings."
       }
     },
     "protectedSettings": {
       "type": "secureObject",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Any object that contains the extension specific protected settings."
       }
@@ -80,12 +81,38 @@
       "metadata": {
         "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
       }
+    },
+    "protectedSettingsFromKeyVault": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+        },
+        "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+      },
+      "nullable": true
+    },
+    "provisionAfterExtensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+      }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "virtualMachineScaleSet": {
+      "existing": true,
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2024-11-01",
+      "name": "[parameters('virtualMachineScaleSetName')]"
+    },
+    "extension": {
       "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
       "properties": {
         "publisher": "[parameters('publisher')]",
@@ -93,13 +120,15 @@
         "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
         "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
         "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-        "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-        "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-        "suppressFailures": "[parameters('supressFailures')]"
+        "forceUpdateTag": "[parameters('forceUpdateTag')]",
+        "settings": "[parameters('settings')]",
+        "protectedSettings": "[parameters('protectedSettings')]",
+        "suppressFailures": "[parameters('supressFailures')]",
+        "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+        "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
