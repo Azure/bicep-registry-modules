@@ -43,7 +43,7 @@ param disableLocalAuthentication bool = true
 param enableAnalyticalStorage bool = false
 
 @description('Optional. Enable automatic failover for regions. Defaults to true.')
-param automaticFailover bool = true
+param enableAutomaticFailover bool = true
 
 @description('Optional. Flag to indicate whether "Free Tier" is enabled. Defaults to false.')
 param enableFreeTier bool = false
@@ -176,6 +176,21 @@ param networkRestrictions networkRestrictionType = {
 @description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
+@description('Optional Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account')
+param enablePerRegionPerPartitionAutoscale bool = false
+
+@description('Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account')
+param enablePartitionMerge bool = false
+
+@description('Optional. Enables the cassandra connector on the Cosmos DB C* account')
+param enableCassandraConnector bool = false
+
+@description('Optional. The CORS policy for the Cosmos DB database account.')
+param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.cors?
+
+@description('Optional. Analytical storage specific properties.')
+param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -257,7 +272,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   name: name
   location: location
   tags: tags
@@ -265,6 +280,14 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: databaseAccountOfferType
+    analyticalStorageConfiguration: analyticalStorageConfiguration
+    defaultIdentity:
+    keyVaultKeyUri:
+    cors: cors
+    connectorOffer: enableCassandraConnector ? 'Small' : null
+    enableCassandraConnector: enableCassandraConnector
+    enablePartitionMerge: enablePartitionMerge
+    enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
       type: backupPolicyType
@@ -327,9 +350,10 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
             ignoreMissingVNetServiceEndpoint: false
           })
           networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+          networkAclBypassResourceIds: networkRestrictions.?networkAclBypassResourceIds
           isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
           enableFreeTier: enableFreeTier
-          enableAutomaticFailover: automaticFailover
+          enableAutomaticFailover: enableAutomaticFailover
           enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
@@ -764,4 +788,7 @@ type networkRestrictionType = {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
   }[]?
+
+  @description('Optional. An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.')
+  networkAclBypassResourceIds: string[]?
 }
