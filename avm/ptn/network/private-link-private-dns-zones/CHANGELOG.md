@@ -16,22 +16,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - Shouldn't be needed as entry should be made into the main ACR zone `privatelink.azurecr.io` instead
   - If still needed please add to `additionalPrivateLinkPrivateDnsZonesToInclude` parameter input
 
-## 0.6.1
-
-### Changes
-
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
-- Updated ReadMe with AzAdvertizer reference
-
-### Breaking Changes
-
-- None
-
 ## 0.6.0
 
 ### Changes
 
-- Initial version
+- Initial version of changelog
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
