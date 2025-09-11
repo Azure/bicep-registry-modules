@@ -191,6 +191,12 @@ param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.pro
 @description('Optional. Analytical storage specific properties.')
 param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
 
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType?
+
+@description('The default identity for accessing key vault used in features like customer managed keys. The default identity needs to be explicitly set by the users. It can be "FirstPartyIdentity", "SystemAssignedIdentity" and more.')
+param defaultIdentity defaultIdentityType?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -253,6 +259,26 @@ var formattedRoleAssignments = [
   })
 ]
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+  )
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -281,8 +307,10 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   properties: {
     databaseAccountOfferType: databaseAccountOfferType
     analyticalStorageConfiguration: analyticalStorageConfiguration
-    defaultIdentity:
-    keyVaultKeyUri:
+    defaultIdentity: defaultIdentity.?type != 'UserAssignedIdentity'
+      ? defaultIdentity.?type
+      : 'UserAssignedIdentity=${defaultIdentity.?userAssignedResourceId}&FederatedClientId=${cMKUserAssignedIdentity!.properties.clientId}'
+    keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
     cors: cors
     connectorOffer: enableCassandraConnector ? 'Small' : null
     enableCassandraConnector: enableCassandraConnector
@@ -514,7 +542,7 @@ module databaseAccount_tables 'table/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -791,4 +819,40 @@ type networkRestrictionType = {
 
   @description('Optional. An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.')
   networkAclBypassResourceIds: string[]?
+}
+
+@export()
+@description('An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.')
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+
+  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
+  userAssignedIdentityResourceId: string?
+}
+
+@description('The type for the default identity.')
+@discriminator('type')
+type defaultIdentityType =
+  | defaultIdentityFirstPartyType
+  | defaultIdentitySysAssignedType
+  | defaultIdentityUserAssignedType
+
+type defaultIdentityFirstPartyType = {
+  @description('Required. The type of defaultidentity to set.')
+  type: 'FirstPartyIdentity'
+}
+type defaultIdentitySysAssignedType = {
+  @description('Required. The type of defaultidentity to set.')
+  type: 'SystemAssignedIdentity'
+}
+type defaultIdentityUserAssignedType = {
+  @description('Required. The type of defaultidentity to set.')
+  type: 'UserAssignedIdentity'
+
+  @description('Required. The resource ID of the user assigned identity to use as the default identity.')
+  userAssignedResourceId: string
 }
