@@ -19,6 +19,8 @@
     "avm/res/authorization/role-assignment/mg-scope",
     "avm/res/authorization/role-assignment/sub-scope",
     "avm/res/authorization/role-assignment/rg-scope",
+    "avm/res/edge/site/sub-scope",
+    "avm/res/edge/site/rg-scope",
     "avm/res/key-vault/vault/access-policy",
     "avm/res/key-vault/vault/key",
     "avm/res/key-vault/vault/secret",
