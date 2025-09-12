@@ -299,9 +299,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   properties: {
     databaseAccountOfferType: databaseAccountOfferType
     analyticalStorageConfiguration: analyticalStorageConfiguration
-    // defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
-    //   ? defaultIdentity!.name
-    //   : 'UserAssignedIdentity=${defaultIdentity!.resourceId}'
+    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
+      ? defaultIdentity!.name
+      : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
     cors: cors
     connectorOffer: enableCassandraConnector ? 'Small' : null
