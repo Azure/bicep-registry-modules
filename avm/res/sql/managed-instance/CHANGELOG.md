@@ -13,6 +13,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - Renamed `vulnerabilityAssessmentsObj` to `vulnerabilityAssessment`
+- Updated the structure of the `vulnerabilityAssessment` parameter with the original `recurringScans*` properties being embedded in a `recurringScans` object property. For example, `vulnerabilityAssessmentsObj.recurringScansIsEnabled` must now be declared as `vulnerabilityAssessment.recurringScans.isEnabled` in alignment with the API spec.
 - Renamed `securityAlertPoliciesObj` to `securityAlertPolicy`
 - Renamed `encryptionProtectorObj` to `encryptionProtector`
 - Renamed `administratorsObj` to `administrators`, using the `Microsoft.SQL/managedInstances` `administrators` property instead of the `Microsoft.SQL/managedInstances/administrators` child-module
