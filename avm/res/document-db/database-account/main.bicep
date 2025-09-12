@@ -308,7 +308,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
-
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
       type: backupPolicyType
