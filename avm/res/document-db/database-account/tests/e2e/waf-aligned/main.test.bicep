@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = {
     zoneRedundant: true
     disableLocalAuthentication: true
     disableKeyBasedMetadataWriteAccess: true
-    automaticFailover: true
+    enableAutomaticFailover: true
     minimumTlsVersion: 'Tls12'
     networkRestrictions: {
       networkAclBypass: 'None'

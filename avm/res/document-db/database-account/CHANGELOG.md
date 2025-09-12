@@ -2,6 +2,24 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- Added support for customer-managed keys through a combination of the added parameters `defaultIdentity` & `keyVaultKeyUri`
+- Added support for the parameters
+  - `cors`
+  - `connectorOffer`
+  - `enableCassandraConnector`
+  - `enablePartitionMerge`
+  - `enablePerRegionPerPartitionAutoscale`
+  - `analyticalStorageConfiguration`
+  - `networkRestrictions.networkAclBypassResourceIds`
+
+### Breaking Changes
+
+- Renamed parameter `automaticFailover` to API-aligned `enableAutomaticFailover`
+
 ## 0.15.1
 
 ### Changes
