@@ -127,7 +127,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
 }
 
 module managementGroupRoleAssignments 'modules/mg-additional-rbac-asi-outer-def-loop.bicep' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo)) {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
       name: name
@@ -139,7 +139,7 @@ module managementGroupRoleAssignments 'modules/mg-additional-rbac-asi-outer-def-
 ]
 
 module additionalSubscriptionRoleAssignments 'modules/sub-additional-rbac-asi-outer-def-loop.bicep' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo)) {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
       name: name
@@ -151,7 +151,7 @@ module additionalSubscriptionRoleAssignments 'modules/sub-additional-rbac-asi-ou
 ]
 
 module additionalResourceGroupRoleAssignments 'modules/rg-additional-rbac-asi-outer-def-loop.bicep' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo)) {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
     params: {
       name: name
