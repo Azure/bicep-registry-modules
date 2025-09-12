@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10502606086739097404"
+      "templateHash": "5626158199534722675"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -724,6 +724,160 @@
         "description": "The type describing the network interface configuration output."
       }
     },
+    "extensionCustomScriptConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the virtual machine extension. Defaults to `CustomScriptExtension`."
+          }
+        },
+        "typeHandlerVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux."
+          }
+        },
+        "autoUpgradeMinorVersion": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`."
+          }
+        },
+        "forceUpdateTag": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+          }
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "commandToExecute": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided."
+              }
+            },
+            "fileUris": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`."
+          }
+        },
+        "protectedSettings": {
+          "type": "secureObject",
+          "properties": {
+            "commandToExecute": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The entry point script to run. Use this property if your command contains secrets such as passwords or if your file URIs are sensitive. Required if `settings.commandToExecute` is not provided."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of storage account. If you specify storage credentials, all fileUris values must be URLs for Azure blobs.."
+              }
+            },
+            "storageAccountKey": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The access key of the storage account."
+              }
+            },
+            "managedIdentityResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The managed identity for downloading files. Must not be used in conjunction with the `storageAccountName` or `storageAccountKey` property. If you want to use the VM's system assigned identity, set the `value` to an empty string."
+              }
+            },
+            "fileUris": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. URLs for files to be downloaded."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`."
+          }
+        },
+        "supressFailures": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`."
+          }
+        },
+        "enableAutomaticUpgrade": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+            },
+            "description": "Optional. Tags of the resource."
+          },
+          "nullable": true
+        },
+        "protectedSettingsFromKeyVault": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+            },
+            "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+          },
+          "nullable": true
+        },
+        "provisionAfterExtensions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+            },
+            "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a 'CustomScriptExtension' extension."
+      }
+    },
     "_1.applicationGatewayBackendAddressPoolsType": {
       "type": "object",
       "properties": {
@@ -1073,6 +1227,28 @@
         }
       }
     },
+    "_2.ipTagType": {
+      "type": "object",
+      "properties": {
+        "ipTagType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IP tag type."
+          }
+        },
+        "tag": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IP tag."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+        }
+      }
+    },
     "_3.publicIPConfigurationType": {
       "type": "object",
       "properties": {
@@ -1205,12 +1381,15 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/publicIPAddresses@2024-07-01#properties/tags"
+            },
             "description": "Optional. The tags of the public IP address."
-          }
+          },
+          "nullable": true
         },
-        "zones": {
+        "availabilityZones": {
           "type": "array",
           "allowedValues": [
             1,
@@ -1220,6 +1399,16 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The zones of the public IP address."
+          }
+        },
+        "ipTags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_2.ipTagType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of tags associated with the public IP address."
           }
         },
         "enableTelemetry": {
@@ -1480,10 +1669,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/networkInterfaces@2024-07-01#properties/tags"
+            },
             "description": "Optional. The tags of the public IP address."
-          }
+          },
+          "nullable": true
         },
         "enableTelemetry": {
           "type": "bool",
@@ -1711,7 +1903,7 @@
     },
     "encryptionAtHost": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
       }
@@ -2081,13 +2273,10 @@
       }
     },
     "extensionCustomScriptConfig": {
-      "type": "object",
-      "defaultValue": {
-        "enabled": false,
-        "fileData": []
-      },
+      "$ref": "#/definitions/extensionCustomScriptConfigType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The configuration for the [Custom Script] extension. Must at least contain the [\"enabled\": true] property to be executed."
+        "description": "Optional. The configuration for the [Custom Script] extension."
       }
     },
     "extensionNvidiaGpuDriverWindows": {
@@ -2122,13 +2311,6 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled."
-      }
-    },
-    "extensionCustomScriptProtectedSetting": {
-      "type": "secureObject",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. An object that contains the extension specific protected settings."
       }
     },
     "extensionGuestConfigurationExtensionProtectedSettings": {
@@ -2177,20 +2359,6 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
-      }
-    },
-    "baseTime": {
-      "type": "string",
-      "defaultValue": "[utcNow('u')]",
-      "metadata": {
-        "description": "Generated. Do not provide a value! This date value is used to generate a registration token."
-      }
-    },
-    "sasTokenValidityLength": {
-      "type": "string",
-      "defaultValue": "PT8H",
-      "metadata": {
-        "description": "Optional. SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours."
       }
     },
     "osType": {
@@ -2384,13 +2552,6 @@
       "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), variables('additionalUnattendContentFormatted'))]",
       "winRM": "[if(not(empty(parameters('winRMListeners'))), createObject('listeners', parameters('winRMListeners')), null())]"
     },
-    "accountSasProperties": {
-      "signedServices": "b",
-      "signedPermission": "r",
-      "signedExpiry": "[dateTimeAdd(parameters('baseTime'), parameters('sasTokenValidityLength'))]",
-      "signedResourceTypes": "o",
-      "signedProtocol": "https"
-    },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(if(parameters('extensionAadJoinConfig').enabled, true(), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -2474,11 +2635,7 @@
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
-        "securityProfile": {
-          "encryptionAtHost": "[if(parameters('encryptionAtHost'), parameters('encryptionAtHost'), null())]",
-          "securityType": "[parameters('securityType')]",
-          "uefiSettings": "[if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null())]"
-        },
+        "securityProfile": "[shallowMerge(createArray(if(parameters('encryptionAtHost'), createObject('encryptionAtHost', parameters('encryptionAtHost')), createObject()), createObject('securityType', parameters('securityType'), 'uefiSettings', if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null()))))]",
         "storageProfile": {
           "copy": [
             {
@@ -2631,10 +2788,19 @@
         "vm_azureMonitorAgentExtension"
       ]
     },
+    "cseIdentity": {
+      "condition": "[not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), 'managedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "subscriptionId": "[split(parameters('extensionCustomScriptConfig').protectedSettings.managedIdentityResourceId, '/')[2]]",
+      "resourceGroup": "[split(parameters('extensionCustomScriptConfig').protectedSettings.managedIdentityResourceId, '/')[4]]",
+      "name": "[last(split(parameters('extensionCustomScriptConfig').protectedSettings.managedIdentityResourceId, '/'))]"
+    },
     "AzureWindowsBaseline": {
       "condition": "[not(empty(parameters('guestConfiguration')))]",
       "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
-      "apiVersion": "2020-06-25",
+      "apiVersion": "2024-04-05",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('guestConfiguration'), 'name'), 'AzureWindowsBaseline')]",
       "location": "[parameters('location')]",
@@ -2742,7 +2908,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6455227088215120171"
+              "templateHash": "774019590280042559"
             }
           },
           "definitions": {
@@ -2878,12 +3044,15 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/publicIPAddresses@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. The tags of the public IP address."
-                  }
+                  },
+                  "nullable": true
                 },
-                "zones": {
+                "availabilityZones": {
                   "type": "array",
                   "allowedValues": [
                     1,
@@ -2893,6 +3062,16 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The zones of the public IP address."
+                  }
+                },
+                "ipTags": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ipTagType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of tags associated with the public IP address."
                   }
                 },
                 "enableTelemetry": {
@@ -3029,10 +3208,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/networkInterfaces@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. The tags of the public IP address."
-                  }
+                  },
+                  "nullable": true
                 },
                 "enableTelemetry": {
                   "type": "bool",
@@ -3841,11 +4023,14 @@
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'tags'), parameters('tags'))]"
                   },
-                  "zones": {
-                    "value": "[tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'zones')]"
+                  "availabilityZones": {
+                    "value": "[tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'availabilityZones')]"
                   },
                   "enableTelemetry": {
                     "value": "[coalesce(coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'enableTelemetry'), tryGet(parameters('ipConfigurations')[copyIndex()], 'enableTelemetry')), parameters('enableTelemetry'))]"
+                  },
+                  "ipTags": {
+                    "value": "[tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'ipTags')]"
                   }
                 },
                 "template": {
@@ -3855,8 +4040,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "5168739580767459761"
+                      "version": "0.36.177.2456",
+                      "templateHash": "14921988046704902194"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address."
@@ -4208,7 +4393,7 @@
                         "description": "Optional. The public IP address allocation method."
                       }
                     },
-                    "zones": {
+                    "availabilityZones": {
                       "type": "array",
                       "items": {
                         "type": "int"
@@ -4366,7 +4551,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4392,7 +4577,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
+                      "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -4580,7 +4765,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.34.44.8038",
-                      "templateHash": "8196054567469390015"
+                      "templateHash": "10218370167882238860"
                     },
                     "name": "Network Interface",
                     "description": "This module deploys a Network Interface."
@@ -5004,7 +5189,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type for the network interface IP configuration output."
                       }
                     },
                     "diagnosticSettingFullType": {
@@ -5400,7 +5586,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5428,7 +5614,7 @@
                             "name": "ipConfigurations",
                             "count": "[length(parameters('ipConfigurations'))]",
                             "input": {
-                              "name": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'name'), format('ipconfig0{0}', add(copyIndex('ipConfigurations'), 1)))]",
+                              "name": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'name'), format('ipconfig{0}', padLeft(add(copyIndex('ipConfigurations'), 1), 2, '0')))]",
                               "properties": {
                                 "primary": "[if(equals(copyIndex('ipConfigurations'), 0), true(), false())]",
                                 "privateIPAllocationMethod": "[tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'privateIPAllocationMethod')]",
@@ -5660,7 +5846,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5711,21 +5897,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -5745,22 +5931,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -5770,10 +5979,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -5804,7 +6015,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -5864,7 +6075,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5915,21 +6126,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -5949,22 +6160,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -5974,10 +6208,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -6008,7 +6244,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -6071,7 +6307,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6122,21 +6358,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -6156,22 +6392,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -6181,10 +6440,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -6215,7 +6476,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -6273,7 +6534,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6324,21 +6585,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -6358,22 +6619,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -6383,10 +6667,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -6417,7 +6703,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -6480,7 +6766,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6531,21 +6817,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -6565,22 +6851,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -6590,10 +6899,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -6624,7 +6935,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -6682,7 +6993,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6733,21 +7044,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -6767,22 +7078,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -6792,10 +7126,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -6826,7 +7162,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -6892,7 +7228,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6943,21 +7279,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -6977,22 +7313,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -7002,10 +7361,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -7036,7 +7397,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -7047,7 +7408,7 @@
       ]
     },
     "vm_customScriptExtension": {
-      "condition": "[parameters('extensionCustomScriptConfig').enabled]",
+      "condition": "[not(empty(parameters('extensionCustomScriptConfig')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-VM-CustomScriptExtension', uniqueString(deployment().name, parameters('location')))]",
@@ -7077,16 +7438,11 @@
           "enableAutomaticUpgrade": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), false())]"
           },
-          "settings": {
-            "value": {
-              "copy": [
-                {
-                  "name": "fileUris",
-                  "count": "[length(parameters('extensionCustomScriptConfig').fileData)]",
-                  "input": "[if(contains(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')], 'storageAccountId'), format('{0}?{1}', parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri, listAccountSas(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].storageAccountId, '2019-04-01', variables('accountSasProperties')).accountSasToken), parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri)]"
-                }
-              ]
-            }
+          "forceUpdateTag": {
+            "value": "[tryGet(parameters('extensionCustomScriptConfig'), 'forceUpdateTag')]"
+          },
+          "provisionAfterExtensions": {
+            "value": "[tryGet(parameters('extensionCustomScriptConfig'), 'provisionAfterExtensions')]"
           },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'supressFailures'), false())]"
@@ -7094,8 +7450,14 @@
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'tags'), parameters('tags'))]"
           },
+          "protectedSettingsFromKeyVault": {
+            "value": "[tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettingsFromKeyVault')]"
+          },
+          "settings": {
+            "value": "[shallowMerge(createArray(if(not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'settings'), 'commandToExecute'))), createObject('commandToExecute', tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'settings'), 'commandToExecute')), createObject()), if(not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'settings'), 'fileUris'))), createObject('fileUris', tryGet(parameters('extensionCustomScriptConfig'), 'settings', 'fileUris')), createObject())))]"
+          },
           "protectedSettings": {
-            "value": "[parameters('extensionCustomScriptProtectedSetting')]"
+            "value": "[shallowMerge(createArray(if(not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), 'commandToExecute'))), createObject('commandToExecute', tryGet(parameters('extensionCustomScriptConfig').protectedSettings, 'commandToExecute')), createObject()), if(not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), 'storageAccountName'))), createObject('storageAccountName', parameters('extensionCustomScriptConfig').protectedSettings.storageAccountName), createObject()), if(not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), 'storageAccountKey'))), createObject('storageAccountKey', parameters('extensionCustomScriptConfig').protectedSettings.storageAccountKey), createObject()), if(not(empty(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), 'fileUris'))), createObject('fileUris', parameters('extensionCustomScriptConfig').protectedSettings.fileUris), createObject()), if(not(equals(tryGet(tryGet(parameters('extensionCustomScriptConfig'), 'protectedSettings'), 'managedIdentityResourceId'), null())), createObject('managedIdentity', if(not(empty(tryGet(parameters('extensionCustomScriptConfig').protectedSettings, 'managedIdentityResourceId'))), createObject('clientId', reference('cseIdentity').clientId), createObject())), createObject())))]"
           }
         },
         "template": {
@@ -7106,7 +7468,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7157,21 +7519,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -7191,22 +7553,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -7216,10 +7601,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -7250,12 +7637,13 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
       },
       "dependsOn": [
+        "cseIdentity",
         "vm",
         "vm_desiredStateConfigurationExtension"
       ]
@@ -7314,7 +7702,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7365,21 +7753,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -7399,22 +7787,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -7424,10 +7835,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -7458,7 +7871,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -7518,7 +7931,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7569,21 +7982,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -7603,22 +8016,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -7628,10 +8064,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -7662,7 +8100,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -7731,7 +8169,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7782,21 +8220,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -7816,22 +8254,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -7841,10 +8302,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -7875,7 +8338,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -7940,7 +8403,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6217357228885380185"
+              "templateHash": "13125609748815648088"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7991,21 +8454,21 @@
             },
             "forceUpdateTag": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
               }
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
             },
             "protectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific protected settings."
               }
@@ -8025,22 +8488,45 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "protectedSettingsFromKeyVault": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/protectedSettingsFromKeyVault"
+                },
+                "description": "Optional. The extensions protected settings that are passed by reference, and consumed from key vault."
+              },
+              "nullable": true
+            },
+            "provisionAfterExtensions": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/properties/properties/provisionAfterExtensions"
+                },
+                "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('virtualMachineName')]"
             },
             "extension": {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -8050,10 +8536,12 @@
                 "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
                 "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
                 "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "settings": "[parameters('settings')]",
+                "protectedSettings": "[parameters('protectedSettings')]",
+                "suppressFailures": "[parameters('supressFailures')]",
+                "protectedSettingsFromKeyVault": "[parameters('protectedSettingsFromKeyVault')]",
+                "provisionAfterExtensions": "[parameters('provisionAfterExtensions')]"
               }
             }
           },
@@ -8084,7 +8572,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
+              "value": "[reference('extension', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -8135,7 +8623,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "15351204491407089805"
+              "templateHash": "13700395772485726477"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -8200,7 +8688,7 @@
           "resources": [
             {
               "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2025-02-01",
               "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {

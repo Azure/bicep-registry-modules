@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.8.0' = [
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.0' = [
   for (ipConfiguration, index) in ipConfigurations: if (!empty(ipConfiguration.?pipConfiguration) && empty(ipConfiguration.?pipConfiguration.?publicIPAddressResourceId)) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
@@ -48,13 +48,14 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       skuName: ipConfiguration.?pipConfiguration.?skuName
       skuTier: ipConfiguration.?pipConfiguration.?skuTier
       tags: ipConfiguration.?tags ?? tags
-      zones: ipConfiguration.?pipConfiguration.?zones
+      availabilityZones: ipConfiguration.?pipConfiguration.?availabilityZones
       enableTelemetry: ipConfiguration.?pipConfiguration.?enableTelemetry ?? ipConfiguration.?enableTelemetry ?? enableTelemetry
+      ipTags: ipConfiguration.?pipConfiguration.?ipTags
     }
   }
 ]
 
-module networkInterface 'br/public:avm/res/network/network-interface:0.5.1' = {
+module networkInterface 'br/public:avm/res/network/network-interface:0.5.2' = {
   name: '${deployment().name}-NetworkInterface'
   params: {
     name: networkInterfaceName
@@ -158,10 +159,13 @@ type publicIPConfigurationType = {
   skuTier: ('Regional' | 'Global')?
 
   @description('Optional. The tags of the public IP address.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2024-07-01'>.tags?
 
   @description('Optional. The zones of the public IP address.')
-  zones: (1 | 2 | 3)[]?
+  availabilityZones: (1 | 2 | 3)[]?
+
+  @description('Optional. The list of tags associated with the public IP address.')
+  ipTags: ipTagType[]?
 
   @description('Optional. Enable/Disable usage telemetry for the module.')
   enableTelemetry: bool?
@@ -220,7 +224,7 @@ type ipConfigurationType = {
   diagnosticSettings: diagnosticSettingFullType[]?
 
   @description('Optional. The tags of the public IP address.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/networkInterfaces@2024-07-01'>.tags?
 
   @description('Optional. Enable/Disable usage telemetry for the module.')
   enableTelemetry: bool?
