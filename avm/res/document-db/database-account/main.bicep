@@ -851,3 +851,5 @@ type defaultIdentityUserAssignedType = {
   @description('Required. The resource ID of the user assigned identity to use as the default identity.')
   resourceId: string
 }
+
+output temp string? = !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null

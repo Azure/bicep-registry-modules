@@ -74,3 +74,5 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output temp string? = testDeployment[0].outputs.temp
