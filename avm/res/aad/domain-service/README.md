@@ -75,6 +75,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     lock: {
       kind: 'None'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock for the deployment'
     }
     name: 'aaddswaf001'
     pfxCertificate: '<pfxCertificate>'
@@ -153,7 +154,8 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     "lock": {
       "value": {
         "kind": "None",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock for the deployment"
       }
     },
     "name": {
@@ -229,6 +231,7 @@ param location = '<location>'
 param lock = {
   kind: 'None'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock for the deployment'
 }
 param name = 'aaddswaf001'
 param pfxCertificate = '<pfxCertificate>'
@@ -294,7 +297,7 @@ param tags = {
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
 | [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
+| [`tlsV1`](#parameter-tlsv1) | string | TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025. |
 
 ### Parameter: `domainName`
 
@@ -893,7 +896,7 @@ Tags of the resource.
 
 ### Parameter: `tlsV1`
 
-The value is to enable clients making request using TLSv1.
+TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025.
 
 - Required: No
 - Type: string
@@ -902,7 +905,6 @@ The value is to enable clients making request using TLSv1.
   ```Bicep
   [
     'Disabled'
-    'Enabled'
   ]
   ```
 
@@ -921,8 +923,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 

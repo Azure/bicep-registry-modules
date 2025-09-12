@@ -186,7 +186,7 @@ $([Environment]::NewLine)
 
     $issuesFound = $body -ne ''
 
-    $title = '[AVM core] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
+    $title = '[AVM CI Environment Issue] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
     $label = 'Type: AVM :a: :v: :m:,Type: Hygiene :broom:'
     $issues = gh issue list --state open --limit 500 --label $label --json 'title,url' --repo $Repo | ConvertFrom-Json -Depth 100
 

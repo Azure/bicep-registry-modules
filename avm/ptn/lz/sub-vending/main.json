@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "18227739879857491478"
+      "templateHash": "5494231954358076282"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -2135,7 +2135,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "9930983297015493660"
+              "templateHash": "12401292448057438105"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -47434,7 +47434,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('vhc-{0}-{1}', parameters('additionalVirtualNetworks')[copyIndex()].name, substring(guid(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked'))), 0, 5))]"
+                    "value": "[format('vhc-{0}-{1}', parameters('additionalVirtualNetworks')[copyIndex()].name, substring(guid(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), parameters('additionalVirtualNetworks')[copyIndex()].name, parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, parameters('additionalVirtualNetworks')[copyIndex()].location, parameters('subscriptionId')), 0, 5))]"
                   },
                   "virtualHubName": {
                     "value": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[8]]"

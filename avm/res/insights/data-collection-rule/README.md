@@ -3635,6 +3635,8 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoints` | object | The endpoints of the dataCollectionRule, if created. |
+| `immutableId` | string | The ImmutableId of the dataCollectionRule. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the dataCollectionRule. |
 | `resourceGroupName` | string | The name of the resource group the dataCollectionRule was created in. |
