@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8866143385796944744"
+      "templateHash": "12316241274330066622"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -1516,21 +1516,21 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account"
+        "description": "Optional. Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account."
       }
     },
     "enablePartitionMerge": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account"
+        "description": "Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account."
       }
     },
     "enableCassandraConnector": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enables the cassandra connector on the Cosmos DB C* account"
+        "description": "Optional. Enables the cassandra connector on the Cosmos DB C* account."
       }
     },
     "cors": {

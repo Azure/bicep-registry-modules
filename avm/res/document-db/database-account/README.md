@@ -3129,11 +3129,11 @@ param zoneRedundant = true
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
-| [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account |
+| [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
-| [`enablePartitionMerge`](#parameter-enablepartitionmerge) | bool | Flag to indicate enabling/disabling of Partition Merge feature on the account |
-| [`enablePerRegionPerPartitionAutoscale`](#parameter-enableperregionperpartitionautoscale) | bool | Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account |
+| [`enablePartitionMerge`](#parameter-enablepartitionmerge) | bool | Flag to indicate enabling/disabling of Partition Merge feature on the account. |
+| [`enablePerRegionPerPartitionAutoscale`](#parameter-enableperregionperpartitionautoscale) | bool | Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
@@ -3723,7 +3723,7 @@ Enable automatic failover for regions. Defaults to true.
 
 ### Parameter: `enableCassandraConnector`
 
-Enables the cassandra connector on the Cosmos DB C* account
+Enables the cassandra connector on the Cosmos DB C* account.
 
 - Required: No
 - Type: bool
@@ -3747,7 +3747,7 @@ Enables the account to write in multiple locations. Periodic backup must be used
 
 ### Parameter: `enablePartitionMerge`
 
-Flag to indicate enabling/disabling of Partition Merge feature on the account
+Flag to indicate enabling/disabling of Partition Merge feature on the account.
 
 - Required: No
 - Type: bool
@@ -3755,7 +3755,7 @@ Flag to indicate enabling/disabling of Partition Merge feature on the account
 
 ### Parameter: `enablePerRegionPerPartitionAutoscale`
 
-Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account
+Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account.
 
 - Required: No
 - Type: bool

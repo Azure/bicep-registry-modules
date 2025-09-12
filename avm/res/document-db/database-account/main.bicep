@@ -176,13 +176,13 @@ param networkRestrictions networkRestrictionType = {
 @description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
-@description('Optional. Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account')
+@description('Optional. Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account.')
 param enablePerRegionPerPartitionAutoscale bool = false
 
-@description('Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account')
+@description('Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account.')
 param enablePartitionMerge bool = false
 
-@description('Optional. Enables the cassandra connector on the Cosmos DB C* account')
+@description('Optional. Enables the cassandra connector on the Cosmos DB C* account.')
 param enableCassandraConnector bool = false
 
 @description('Optional. The CORS policy for the Cosmos DB database account.')
