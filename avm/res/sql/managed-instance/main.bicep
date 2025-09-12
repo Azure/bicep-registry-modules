@@ -112,7 +112,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
+@description('Conditional. The resource ID of a user assigned identity to be used by default. Required if `userAssignedIdentities` is not empty.')
 param primaryUserAssignedIdentityResourceId string?
 
 @description('Optional. Databases to create in this server.')
