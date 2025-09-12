@@ -306,8 +306,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
     cors: cors
-    connectorOffer: enableCassandraConnector ? 'Small' : null
-    enableCassandraConnector: enableCassandraConnector
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
 
@@ -339,6 +337,12 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
+    ...(contains(capabilitiesToAdd ?? [], 'EnableCassandra')
+      ? {
+          connectorOffer: enableCassandraConnector ? 'Small' : null
+          enableCassandraConnector: enableCassandraConnector
+        }
+      : {})
     ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
       ? {
           // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
