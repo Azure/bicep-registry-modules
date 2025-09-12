@@ -26,11 +26,6 @@ param subscriptionId string = '#_subscriptionId_#'
 // Dependencies //
 // ============ //
 
-resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
-  scope: tenant()
-  name: '${uniqueString(deployment().name)}-additional-mg'
-}
-
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
   scope: subscription(subscriptionId)
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
@@ -52,6 +47,11 @@ module nestedDependencies 'dependencies.bicep' = {
   ]
 }
 
+resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
+  scope: tenant()
+  name: '${uniqueString(deployment().name)}-additional-mg'
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -69,6 +69,15 @@ module testDeployment '../../../mg-scope/main.bicep' = {
     identity: 'SystemAssigned'
     userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     location: resourceLocation
+    additionalManagementGroupsIDsToAssignRbacTo: [
+      additionalMg.name
+    ]
+    additionalSubscriptionIDsToAssignRbacTo: [
+      subscriptionId
+    ]
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      resourceGroup.outputs.resourceId
+    ]
     metadata: {
       category: 'Security'
       version: '1.0'

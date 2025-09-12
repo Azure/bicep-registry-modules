@@ -4,7 +4,7 @@ metadata description = 'This module deploys a Policy Assignment at a Management 
 targetScope = 'managementGroup'
 
 @sys.description('Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope.')
-@maxLength(64)
+@maxLength(24)
 param name string
 
 @sys.description('Optional. This message will be part of response in case of policy violation.')
@@ -65,6 +65,15 @@ param definitionVersion string?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
+param additionalManagementGroupsIDsToAssignRbacTo string[] = []
+
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalSubscriptionIDsToAssignRbacTo string[] = []
+
+@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+param additionalResourceGroupResourceIDsToAssignRbacTo string[] = []
+
 var identityVar = identity == 'SystemAssigned'
   ? {
       type: identity
@@ -117,14 +126,38 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
   identity: identityVar
 }
 
-// TODO: Clarify if coupled enough to justify it being part of a resource modile
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
-    name: guid(managementGroup().id, roleDefinitionId, location, name)
-    properties: {
+module managementGroupRoleAssignments 'modules/mg-additional-rbac-asi-outer-def-loop.bicep' = [
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
       roleDefinitionId: roleDefinitionId
-      principalId: policyAssignment.identity.principalId
-      principalType: 'ServicePrincipal'
+      managementGroupsIDsToAssignRbacTo: union(additionalManagementGroupsIDsToAssignRbacTo, [managementGroup().name])
+    }
+  }
+]
+
+module additionalSubscriptionRoleAssignments 'modules/sub-additional-rbac-asi-outer-def-loop.bicep' = [
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      subscriptionIDsToAssignRbacTo: additionalSubscriptionIDsToAssignRbacTo
+    }
+  }
+]
+
+module additionalResourceGroupRoleAssignments 'modules/rg-additional-rbac-asi-outer-def-loop.bicep' = [
+  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: roleDefinitionId
+      resourceGroupResourceIDsToAssignRbacTo: additionalResourceGroupResourceIDsToAssignRbacTo
     }
   }
 ]
