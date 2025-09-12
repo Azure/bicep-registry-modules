@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11170606057895390115"
+      "templateHash": "104531576357519039"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -1555,9 +1555,11 @@
     },
     "defaultIdentity": {
       "$ref": "#/definitions/defaultIdentityType",
-      "nullable": true,
+      "defaultValue": {
+        "name": "FirstPartyIdentity"
+      },
       "metadata": {
-        "description": "Conditional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty."
+        "description": "Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users."
       }
     },
     "customerManagedKey": {

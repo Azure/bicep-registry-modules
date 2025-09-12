@@ -191,8 +191,10 @@ param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.pro
 @description('Optional. Analytical storage specific properties.')
 param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
 
-@description('Conditional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty.')
-param defaultIdentity defaultIdentityType?
+@description('Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users.')
+param defaultIdentity defaultIdentityType = {
+  name: 'FirstPartyIdentity'
+}
 
 @description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')
 param customerManagedKey customerManagedKeyType?

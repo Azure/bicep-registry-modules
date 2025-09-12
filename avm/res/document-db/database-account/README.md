@@ -3101,12 +3101,6 @@ param zoneRedundant = true
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the account. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -3124,6 +3118,7 @@ param zoneRedundant = true
 | [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
 | [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
+| [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
@@ -3157,102 +3152,6 @@ param zoneRedundant = true
 ### Parameter: `name`
 
 The name of the account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `defaultIdentity`
-
-The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty.
-
-- Required: No
-- Type: object
-- Discriminator: `name`
-
-<h4>The available variants are:</h4>
-
-| Variant | Description |
-| :-- | :-- |
-| [`FirstPartyIdentity`](#variant-defaultidentityname-firstpartyidentity) |  |
-| [`SystemAssignedIdentity`](#variant-defaultidentityname-systemassignedidentity) |  |
-| [`UserAssignedIdentity`](#variant-defaultidentityname-userassignedidentity) |  |
-
-### Variant: `defaultIdentity.name-FirstPartyIdentity`
-
-
-To use this variant, set the property `name` to `FirstPartyIdentity`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-defaultidentityname-firstpartyidentityname) | string | The type of default identity to use. |
-
-### Parameter: `defaultIdentity.name-FirstPartyIdentity.name`
-
-The type of default identity to use.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'FirstPartyIdentity'
-  ]
-  ```
-
-### Variant: `defaultIdentity.name-SystemAssignedIdentity`
-
-
-To use this variant, set the property `name` to `SystemAssignedIdentity`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-defaultidentityname-systemassignedidentityname) | string | The type of default identity to use. |
-
-### Parameter: `defaultIdentity.name-SystemAssignedIdentity.name`
-
-The type of default identity to use.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'SystemAssignedIdentity'
-  ]
-  ```
-
-### Variant: `defaultIdentity.name-UserAssignedIdentity`
-
-
-To use this variant, set the property `name` to `UserAssignedIdentity`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-defaultidentityname-userassignedidentityname) | string | The type of default identity to use. |
-| [`resourceId`](#parameter-defaultidentityname-userassignedidentityresourceid) | string | The resource ID of the user assigned identity to use as the default identity. |
-
-### Parameter: `defaultIdentity.name-UserAssignedIdentity.name`
-
-The type of default identity to use.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'UserAssignedIdentity'
-  ]
-  ```
-
-### Parameter: `defaultIdentity.name-UserAssignedIdentity.resourceId`
-
-The resource ID of the user assigned identity to use as the default identity.
 
 - Required: Yes
 - Type: string
@@ -3542,6 +3441,108 @@ The default consistency level of the account. Defaults to "Session".
     'Strong'
   ]
   ```
+
+### Parameter: `defaultIdentity`
+
+The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      name: 'FirstPartyIdentity'
+  }
+  ```
+- Discriminator: `name`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`FirstPartyIdentity`](#variant-defaultidentityname-firstpartyidentity) |  |
+| [`SystemAssignedIdentity`](#variant-defaultidentityname-systemassignedidentity) |  |
+| [`UserAssignedIdentity`](#variant-defaultidentityname-userassignedidentity) |  |
+
+### Variant: `defaultIdentity.name-FirstPartyIdentity`
+
+
+To use this variant, set the property `name` to `FirstPartyIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-firstpartyidentityname) | string | The type of default identity to use. |
+
+### Parameter: `defaultIdentity.name-FirstPartyIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FirstPartyIdentity'
+  ]
+  ```
+
+### Variant: `defaultIdentity.name-SystemAssignedIdentity`
+
+
+To use this variant, set the property `name` to `SystemAssignedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-systemassignedidentityname) | string | The type of default identity to use. |
+
+### Parameter: `defaultIdentity.name-SystemAssignedIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssignedIdentity'
+  ]
+  ```
+
+### Variant: `defaultIdentity.name-UserAssignedIdentity`
+
+
+To use this variant, set the property `name` to `UserAssignedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-userassignedidentityname) | string | The type of default identity to use. |
+| [`resourceId`](#parameter-defaultidentityname-userassignedidentityresourceid) | string | The resource ID of the user assigned identity to use as the default identity. |
+
+### Parameter: `defaultIdentity.name-UserAssignedIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'UserAssignedIdentity'
+  ]
+  ```
+
+### Parameter: `defaultIdentity.name-UserAssignedIdentity.resourceId`
+
+The resource ID of the user assigned identity to use as the default identity.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
