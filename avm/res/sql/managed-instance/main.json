@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14525350685699411600"
+      "templateHash": "135679907745844811"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -1059,7 +1059,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if \"userAssignedIdentities\" is not empty."
+        "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if `userAssignedIdentities` is not empty."
       }
     },
     "databases": {
