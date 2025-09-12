@@ -24,7 +24,7 @@ Note: The 'Catalogue' validation method may take longer to complete than the 'Or
 .EXAMPLE
 Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -Verbose
 
-Check if module 'key-vault/vault' has been published with version '0.2.0 using the default validation method
+Check if module 'key-vault/vault' has been published with version '0.2.0 using Oras, the default validation method
 
 .EXAMPLE
 Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -ValidationMethod 'Catalogue' -Verbose
