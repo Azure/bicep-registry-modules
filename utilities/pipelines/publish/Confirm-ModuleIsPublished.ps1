@@ -16,7 +16,7 @@ Mandatory. The tag name of the module's git tag to check for. For example: 'avm/
 
 .PARAMETER ValidationMethod
 Optional. Define how a successful publish should be validated.
-- Oras: A tool to restore repositories directly from a registry endpoint
+- Oras: A tool to restore repositories directly from a registry endpoint (default)
 - Catalogue: A method to ping the MCR data, that is, the Tags-Lists
 
 Note: The 'Catalogue' validation method may take longer to complete than the 'Oras' method.
