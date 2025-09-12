@@ -74,7 +74,8 @@ function Confirm-ModuleIsPublished {
                 oras pull $registryReference --format 'json' 2>$null
 
                 if (Test-Path (Join-Path -Path $PWD 'Compiled ARM template')) {
-                    # A very simple check
+                    # Checking if the file "Compiled ARM template" returned by the oras cmdlet is valid
+                    # Rename the file to "main.json", import it and check it has the property $schema
                     $null = Rename-Item 'Compiled ARM template' 'main.json'
                     $template = Get-Content 'main.json' | ConvertFrom-Json -AsHashtable
                     if ($template.Keys -notcontains '$schema') {
