@@ -66,13 +66,13 @@ param definitionVersion string?
 param enableTelemetry bool = true
 
 @sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
-param additionalManagementGroupsIDsToAssignRbacTo string[] = []
+param additionalManagementGroupsIDsToAssignRbacTo string[]?
 
 @sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
-param additionalSubscriptionIDsToAssignRbacTo string[] = []
+param additionalSubscriptionIDsToAssignRbacTo string[]?
 
 @sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
-param additionalResourceGroupResourceIDsToAssignRbacTo string[] = []
+param additionalResourceGroupResourceIDsToAssignRbacTo string[]?
 
 var identityVar = identity == 'SystemAssigned'
   ? {
@@ -126,26 +126,54 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
   identity: identityVar
 }
 
-module managementGroupRoleAssignments 'modules/mg-rbac-outerLoop-defs.bicep' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo)) {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
+// Management-Group-Scope: Create all permutations of management group scopes & role definition Ids
+var expandedMgRoleAssignments = reduce(
+  union(additionalManagementGroupsIDsToAssignRbacTo ?? [], [managementGroup().name]),
+  [],
+  (currMangementGroupId, nextMangementGroupId) =>
+    concat(
+      currMangementGroupId,
+      map(roleDefinitionIds ?? [], definitionId => {
+        managementGroupId: nextMangementGroupId
+        definitionId: definitionId
+      })
+    )
+)
+// Management-Group-Scope: Deploy permutations
+module managementGroupRoleAssignments 'modules/mg-rbac-outerLoop-defs-innerLoop-mgIds.bicep' = [
+  for assignment in (expandedMgRoleAssignments ?? []): {
+    scope: managementGroup(assignment.managementGroupId)
+    name: '${uniqueString(deployment().name, assignment.managementGroupId, assignment.definitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
-      roleDefinitionId: roleDefinitionId
-      managementGroupsIDsToAssignRbacTo: union(additionalManagementGroupsIDsToAssignRbacTo, [managementGroup().name])
+      roleDefinitionId: assignment.definitionId
     }
   }
 ]
 
-module additionalSubscriptionRoleAssignments 'modules/sub-rbac-outerLoop-defs.bicep' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo)) {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+// Subscription-Group-Scope: Create all permutations of management group scopes & role definition Ids
+var expandedSubRoleAssignments = reduce(
+  additionalSubscriptionIDsToAssignRbacTo ?? [],
+  [],
+  (currSubscriptionId, nextSubscriptionId) =>
+    concat(
+      currSubscriptionId,
+      map(roleDefinitionIds ?? [], definitionId => {
+        subscriptionId: nextSubscriptionId
+        definitionId: definitionId
+      })
+    )
+)
+// Subscription-Group-Scope: Deploy permutations
+module additionalSubscriptionRoleAssignments 'modules/sub-rbac-outerLoop-defs-innerLoop-subIds.bicep' = [
+  for assignment in (expandedSubRoleAssignments ?? []): {
+    scope: subscription(assignment.subscriptionId)
+    name: '${uniqueString(deployment().name, location, assignment.definitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
-      roleDefinitionId: roleDefinitionId
-      subscriptionIDsToAssignRbacTo: additionalSubscriptionIDsToAssignRbacTo
+      roleDefinitionId: assignment.definitionId
     }
   }
 ]
