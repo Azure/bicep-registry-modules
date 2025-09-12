@@ -1757,7 +1757,7 @@ module createAdditionalLzVirtualWanConnection 'hubVirtualNetworkConnections.bice
       split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[4]
     )
     params: {
-      name: 'vhc-${vnet.name}-${substring(guid(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked), 0, 5)}'
+      name: 'vhc-${vnet.name}-${substring(guid(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, vnet.name, vnet.resourceGroupName, vnet.location, subscriptionId), 0, 5)}'
       virtualHubName: split(vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked, '/')[8]
       remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${vnet.resourceGroupName}/providers/Microsoft.Network/virtualNetworks/${vnet.name}'
       enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity

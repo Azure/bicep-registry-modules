@@ -14,11 +14,11 @@ param approvalRequired bool = false
 @sys.description('Optional. Product description. May include HTML formatting tags.')
 param description string = ''
 
-@sys.description('Optional. Array of Product APIs.')
-param apis array = []
+@sys.description('Optional. Names of Product APIs.')
+param apis string[]?
 
-@sys.description('Optional. Array of Product Groups.')
-param groups array = []
+@sys.description('Optional. Names of Product Groups.')
+param groups string[]?
 
 @sys.description('Required. Product Name.')
 param name string
@@ -35,11 +35,35 @@ param subscriptionsLimit int = 1
 @sys.description('Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process.')
 param terms string = ''
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry bool = false
+
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-product.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource product 'Microsoft.ApiManagement/service/products@2024-05-01' = {
   name: name
   parent: service
   properties: {
@@ -54,23 +78,25 @@ resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
 }
 
 module product_apis 'api/main.bicep' = [
-  for (api, index) in apis: {
+  for (api, index) in (apis ?? []): {
     name: '${deployment().name}-Api-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
-      name: api.name
+      name: api
       productName: name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module product_groups 'group/main.bicep' = [
-  for (group, index) in groups: {
+  for (group, index) in (groups ?? []): {
     name: '${deployment().name}-Group-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
-      name: group.name
+      name: group
       productName: name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -85,7 +111,7 @@ output name string = product.name
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The Resources IDs of the API management service product APIs.')
-output apiResourceIds array = [for index in range(0, length(apis)): product_apis[index].outputs.resourceId]
+output apiResourceIds array = [for index in range(0, length(apis ?? [])): product_apis[index].outputs.resourceId]
 
 @sys.description('The Resources IDs of the API management service product groups.')
-output groupResourceIds array = [for index in range(0, length(groups)): product_groups[index].outputs.resourceId]
+output groupResourceIds array = [for index in range(0, length(groups ?? [])): product_groups[index].outputs.resourceId]

@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: enforcedLocation
-      name: '${namePrefix}${serviceShort}'
+      name: take('h${namePrefix}${serviceShort}', 15)
       adminUsername: 'localAdminUser'
       managedIdentities: {
         systemAssigned: true
@@ -93,6 +93,9 @@ module testDeployment '../../../main.bicep' = [
       adminPassword: password
       extensionAadJoinConfig: {
         enabled: true
+        settings: {
+          mdmId: '' // '0000000a-0000-0000-c000-000000000000'
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

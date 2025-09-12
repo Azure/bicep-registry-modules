@@ -9,6 +9,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -5259,6 +5260,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.25.1` | Remote reference |
+
+## Notes
+
+- The `Microsoft.Subscription/aliases/write` action is required at the `/` (tenant) scope as this is where the API operates, as per [Microsoft.Subscription aliases template reference documentation](https://learn.microsoft.com/azure/templates/microsoft.subscription/aliases?pivots=deployment-language-bicep#bicep-resource-definition)
+  - You may need to elevate to User Access Administrator role to be able to assign the relevant role to the identity you wish to be able to create the subscription at the `/` (tenant) scope, as per [Elevate access to manage all Azure subscriptions and management groups](https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin)
 
 ## Data Collection
 

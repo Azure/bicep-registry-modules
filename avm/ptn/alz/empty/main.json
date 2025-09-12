@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15459647895931484424"
+      "templateHash": "791094728781649833"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
@@ -680,20 +680,22 @@
       "Support Request Contributor": "[managementGroupResourceId('Microsoft.Authorization/roleDefinitions', 'cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e')]",
       "User Access Administrator": "[managementGroupResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
+    "deploymentNameIndexSuffixReserve": 4,
+    "deploymentNameBaseMax": "[sub(64, variables('deploymentNameIndexSuffixReserve'))]",
     "deploymentNames": {
-      "mg": "[format('{0}-alz-mg-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgSubPlacement": "[format('{0}-alz-sub-place-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgSubPlacementWait": "[format('{0}-alz-sub-place-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgRoleAssignments": "[format('{0}-alz-mg-rbac-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgRoleDefinitions": "[format('{0}-alz-mg-rbac-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgRoleDefinitionsWait": "[format('{0}-alz-rbac-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgRoleAssignmentsWait": "[format('{0}-alz-rbac-asi-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgCustomPolicyDefinitionsWait": "[format('{0}-alz-pol-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgCustomPolicySetDefinitionsWait": "[format('{0}-alz-pol-init-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgPolicyDefinitions": "[format('{0}-alz-mg-pol-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgPolicySetDefinitions": "[format('{0}-alz-mg-pol-init-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgPolicyAssignments": "[format('{0}-alz-mg-pol-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgPolicyAssignmentsWait": "[format('{0}-alz-pol-asi-wait{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]"
+      "mg": "[take(format('{0}-alz-mg-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgSubPlacement": "[take(format('{0}-alz-sub-place-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgSubPlacementWait": "[take(format('{0}-alz-sub-place-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgRoleAssignments": "[take(format('{0}-alz-mg-rbac-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgRoleDefinitions": "[take(format('{0}-alz-mg-rbac-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgRoleDefinitionsWait": "[take(format('{0}-alz-rbac-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgRoleAssignmentsWait": "[take(format('{0}-alz-rbac-asi-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgCustomPolicyDefinitionsWait": "[take(format('{0}-alz-pol-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgCustomPolicySetDefinitionsWait": "[take(format('{0}-alz-pol-init-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgPolicyDefinitions": "[take(format('{0}-alz-mg-pol-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgPolicySetDefinitions": "[take(format('{0}-alz-mg-pol-init-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgPolicyAssignments": "[take(format('{0}-alz-mg-pol-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgPolicyAssignmentsWait": "[take(format('{0}-alz-pol-asi-wait{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]"
     },
     "filteredManagementGroupPolicyAssignments": "[filter(coalesce(parameters('managementGroupPolicyAssignments'), createArray()), lambda('polAsi', not(contains(parameters('managementGroupExcludedPolicyAssignments'), lambdaVariables('polAsi').name))))]"
   },
