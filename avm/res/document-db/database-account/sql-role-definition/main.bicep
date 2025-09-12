@@ -19,6 +19,34 @@ param assignableScopes string[]?
 @description('Optional. An array of SQL Role Assignments to be created for the SQL Role Definition.')
 param sqlRoleAssignments sqlRoleAssignmentType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
+// ============== //
+// Resources      //
+// ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-sqlroledefinition.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
@@ -48,6 +76,7 @@ module databaseAccount_sqlRoleAssignments '../sql-role-assignment/main.bicep' = 
       roleDefinitionId: sqlRoleDefinition.id
       principalId: sqlRoleAssignment.principalId
       name: sqlRoleAssignment.?name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

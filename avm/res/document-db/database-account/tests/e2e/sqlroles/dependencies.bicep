@@ -7,7 +7,7 @@ param appName string
 @description('Required. The name of the App Service Plan to create.')
 param appServicePlanName string
 
-resource plan 'Microsoft.Web/serverfarms@2022-03-01' = {
+resource plan 'Microsoft.Web/serverfarms@2024-11-01' = {
   name: appServicePlanName
   location: location
   kind: 'linux'
@@ -19,7 +19,7 @@ resource plan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-resource app 'Microsoft.Web/sites@2022-09-01' = {
+resource app 'Microsoft.Web/sites@2024-11-01' = {
   name: appName
   location: location
   identity: {

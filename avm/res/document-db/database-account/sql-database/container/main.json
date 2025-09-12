@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5467755913632158534"
+      "version": "0.37.4.10188",
+      "templateHash": "1789954443166349986"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
