@@ -121,6 +121,9 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     name: 'rapargmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      '<id>'
+    ]
     definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the subscription scope'
     displayName: '[Display Name] Policy Assignment at the subscription scope'
@@ -210,6 +213,11 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
     },
     // Non-required parameters
+    "additionalResourceGroupResourceIDsToAssignRbacTo": {
+      "value": [
+        "<id>"
+      ]
+    },
     "definitionVersion": {
       "value": "1.*.*-preview"
     },
@@ -321,6 +329,9 @@ using 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>'
 param name = 'rapargmax001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
 // Non-required parameters
+param additionalResourceGroupResourceIDsToAssignRbacTo = [
+  '<id>'
+]
 param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the subscription scope'
 param displayName = '[Display Name] Policy Assignment at the subscription scope'
@@ -479,6 +490,7 @@ param metadata = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`additionalResourceGroupResourceIDsToAssignRbacTo`](#parameter-additionalresourcegroupresourceidstoassignrbacto) | array | An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity. |
 | [`definitionVersion`](#parameter-definitionversion) | string | The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview. |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
@@ -508,6 +520,13 @@ Specifies the ID of the policy definition or policy set definition being assigne
 
 - Required: Yes
 - Type: string
+
+### Parameter: `additionalResourceGroupResourceIDsToAssignRbacTo`
+
+An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity.
+
+- Required: No
+- Type: array
 
 ### Parameter: `definitionVersion`
 
