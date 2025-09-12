@@ -17,6 +17,9 @@ param serviceShort string = 'dddaencr'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'eastus2'
@@ -27,7 +30,7 @@ var enforcedLocation = 'eastus2'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -58,7 +61,10 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
+      defaultIdentity: {
+        name: 'UserAssignedIdentity'
+        resourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       managedIdentities: {
         userAssignedResourceIds: [

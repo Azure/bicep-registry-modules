@@ -176,7 +176,7 @@ param networkRestrictions networkRestrictionType = {
 @description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
-@description('Optional Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account')
+@description('Optional. Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account')
 param enablePerRegionPerPartitionAutoscale bool = false
 
 @description('Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account')
@@ -190,6 +190,12 @@ param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.pro
 
 @description('Optional. Analytical storage specific properties.')
 param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
+
+@description('Conditional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty.')
+param defaultIdentity defaultIdentityType?
+
+@description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')
+param customerManagedKey customerManagedKeyType?
 
 var enableReferencedModulesTelemetry = false
 
@@ -272,6 +278,18 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
   }
 }
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
+  name: last(split((customerManagedKey!.keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey!.keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
+    name: customerManagedKey!.keyName
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   name: name
   location: location
@@ -281,8 +299,10 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   properties: {
     databaseAccountOfferType: databaseAccountOfferType
     analyticalStorageConfiguration: analyticalStorageConfiguration
-    defaultIdentity:
-    keyVaultKeyUri:
+    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
+      ? defaultIdentity!.name
+      : 'UserAssignedIdentity=${defaultIdentity!.resourceId}'
+    keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
     cors: cors
     connectorOffer: enableCassandraConnector ? 'Small' : null
     enableCassandraConnector: enableCassandraConnector
@@ -792,4 +812,37 @@ type networkRestrictionType = {
 
   @description('Optional. An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.')
   networkAclBypassResourceIds: string[]?
+}
+
+@export()
+@description('The type of a customer-managed key configuration.')
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+}
+
+@export()
+@discriminator('name')
+@description('The type for the default identity.')
+type defaultIdentityType =
+  | defaultIdentityFirstPartyType
+  | defaultIdentitySystemAssignedType
+  | defaultIdentityUserAssignedType
+type defaultIdentityFirstPartyType = {
+  @description('Required. The type of default identity to use.')
+  name: 'FirstPartyIdentity'
+}
+type defaultIdentitySystemAssignedType = {
+  @description('Required. The type of default identity to use.')
+  name: 'SystemAssignedIdentity'
+}
+type defaultIdentityUserAssignedType = {
+  @description('Required. The type of default identity to use.')
+  name: 'UserAssignedIdentity'
+
+  @description('Required. The resource ID of the user assigned identity to use as the default identity.')
+  resourceId: string
 }

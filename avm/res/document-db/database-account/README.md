@@ -17,7 +17,7 @@ This module deploys an Azure Cosmos DB account. The API used for the account is 
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases)</li></ul> |
@@ -28,8 +28,8 @@ This module deploys an Azure Cosmos DB account. The API used for the account is 
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -42,16 +42,17 @@ The following section provides usage examples for the module, which were used to
 - [Using analytical storage](#example-1-using-analytical-storage)
 - [Using bounded consistency](#example-2-using-bounded-consistency)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Gremlin Database](#example-4-gremlin-database)
-- [Deploying with Managed identities](#example-5-deploying-with-managed-identities)
-- [Mongo Database](#example-6-mongo-database)
-- [Deploying multiple regions](#example-7-deploying-multiple-regions)
-- [Plain](#example-8-plain)
-- [Public network restricted access with ACL](#example-9-public-network-restricted-access-with-acl)
-- [SQL Database](#example-10-sql-database)
-- [Deploying with a sql role definition and assignment](#example-11-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-12-api-for-table)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Using encryption with Customer-Managed-Key](#example-4-using-encryption-with-customer-managed-key)
+- [Gremlin Database](#example-5-gremlin-database)
+- [Deploying with Managed identities](#example-6-deploying-with-managed-identities)
+- [Mongo Database](#example-7-mongo-database)
+- [Deploying multiple regions](#example-8-deploying-multiple-regions)
+- [Plain](#example-9-plain)
+- [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
+- [SQL Database](#example-11-sql-database)
+- [Deploying with a sql role definition and assignment](#example-12-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-13-api-for-table)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -299,7 +300,116 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 4: _Gremlin Database_
+### Example 4: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddaencr001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddaencr001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddaencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 5: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -523,7 +633,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 5: _Deploying with Managed identities_
+### Example 6: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
 
@@ -663,7 +773,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 6: _Mongo Database_
+### Example 7: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -1287,7 +1397,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 7: _Deploying multiple regions_
+### Example 8: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
@@ -1303,11 +1413,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'multi-region'
     // Non-required parameters
-    automaticFailover: true
     backupIntervalInMinutes: 300
     backupPolicyType: 'Periodic'
     backupRetentionIntervalInHours: 16
     backupStorageRedundancy: 'Geo'
+    enableAutomaticFailover: true
     enableMultipleWriteLocations: true
     failoverLocations: [
       {
@@ -1347,9 +1457,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "multi-region"
     },
     // Non-required parameters
-    "automaticFailover": {
-      "value": true
-    },
     "backupIntervalInMinutes": {
       "value": 300
     },
@@ -1361,6 +1468,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "backupStorageRedundancy": {
       "value": "Geo"
+    },
+    "enableAutomaticFailover": {
+      "value": true
     },
     "enableMultipleWriteLocations": {
       "value": true
@@ -1403,11 +1513,11 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'multi-region'
 // Non-required parameters
-param automaticFailover = true
 param backupIntervalInMinutes = 300
 param backupPolicyType = 'Periodic'
 param backupRetentionIntervalInHours = 16
 param backupStorageRedundancy = 'Geo'
+param enableAutomaticFailover = true
 param enableMultipleWriteLocations = true
 param failoverLocations = [
   {
@@ -1431,7 +1541,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 8: _Plain_
+### Example 9: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -1556,7 +1666,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 9: _Public network restricted access with ACL_
+### Example 10: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -1678,7 +1788,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 10: _SQL Database_
+### Example 11: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2499,7 +2609,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 11: _Deploying with a sql role definition and assignment_
+### Example 12: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
 
@@ -2639,7 +2749,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 12: _API for Table_
+### Example 13: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
@@ -2746,7 +2856,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2762,7 +2872,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddawaf001'
     // Non-required parameters
-    automaticFailover: true
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2773,6 +2882,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
+    enableAutomaticFailover: true
     failoverLocations: [
       {
         failoverPriority: 0
@@ -2835,9 +2945,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddawaf001"
     },
     // Non-required parameters
-    "automaticFailover": {
-      "value": true
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -2852,6 +2959,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": true
     },
     "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAutomaticFailover": {
       "value": true
     },
     "failoverLocations": {
@@ -2926,7 +3036,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddawaf001'
 // Non-required parameters
-param automaticFailover = true
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2937,6 +3046,7 @@ param diagnosticSettings = [
 ]
 param disableKeyBasedMetadataWriteAccess = true
 param disableLocalAuthentication = true
+param enableAutomaticFailover = true
 param failoverLocations = [
   {
     failoverPriority: 0
@@ -2991,17 +3101,25 @@ param zoneRedundant = true
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the account. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
+| [`analyticalStorageConfiguration`](#parameter-analyticalstorageconfiguration) | object | Analytical storage specific properties. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous". |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
+| [`cors`](#parameter-cors) | array | The CORS policy for the Cosmos DB database account. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
 | [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
 | [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
@@ -3010,8 +3128,12 @@ param zoneRedundant = true
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
+| [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
+| [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
+| [`enablePartitionMerge`](#parameter-enablepartitionmerge) | bool | Flag to indicate enabling/disabling of Partition Merge feature on the account |
+| [`enablePerRegionPerPartitionAutoscale`](#parameter-enableperregionperpartitionautoscale) | bool | Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
@@ -3039,13 +3161,108 @@ The name of the account.
 - Required: Yes
 - Type: string
 
-### Parameter: `automaticFailover`
+### Parameter: `defaultIdentity`
 
-Enable automatic failover for regions. Defaults to true.
+The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. Required if `customerManagedKey` is not empty.
 
 - Required: No
-- Type: bool
-- Default: `True`
+- Type: object
+- Discriminator: `name`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`FirstPartyIdentity`](#variant-defaultidentityname-firstpartyidentity) |  |
+| [`SystemAssignedIdentity`](#variant-defaultidentityname-systemassignedidentity) |  |
+| [`UserAssignedIdentity`](#variant-defaultidentityname-userassignedidentity) |  |
+
+### Variant: `defaultIdentity.name-FirstPartyIdentity`
+
+
+To use this variant, set the property `name` to `FirstPartyIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-firstpartyidentityname) | string | The type of default identity to use. |
+
+### Parameter: `defaultIdentity.name-FirstPartyIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FirstPartyIdentity'
+  ]
+  ```
+
+### Variant: `defaultIdentity.name-SystemAssignedIdentity`
+
+
+To use this variant, set the property `name` to `SystemAssignedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-systemassignedidentityname) | string | The type of default identity to use. |
+
+### Parameter: `defaultIdentity.name-SystemAssignedIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssignedIdentity'
+  ]
+  ```
+
+### Variant: `defaultIdentity.name-UserAssignedIdentity`
+
+
+To use this variant, set the property `name` to `UserAssignedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-userassignedidentityname) | string | The type of default identity to use. |
+| [`resourceId`](#parameter-defaultidentityname-userassignedidentityresourceid) | string | The resource ID of the user assigned identity to use as the default identity. |
+
+### Parameter: `defaultIdentity.name-UserAssignedIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'UserAssignedIdentity'
+  ]
+  ```
+
+### Parameter: `defaultIdentity.name-UserAssignedIdentity.resourceId`
+
+The resource ID of the user assigned identity to use as the default identity.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `analyticalStorageConfiguration`
+
+Analytical storage specific properties.
+
+- Required: No
+- Type: object
 
 ### Parameter: `backupIntervalInMinutes`
 
@@ -3134,6 +3351,41 @@ A list of Azure Cosmos DB specific capabilities for the account.
     'EnableTable'
   ]
   ```
+
+### Parameter: `cors`
+
+The CORS policy for the Cosmos DB database account.
+
+- Required: No
+- Type: array
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `databaseAccountOfferType`
 
@@ -3461,6 +3713,22 @@ Flag to indicate whether to enable storage analytics. Defaults to false.
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableAutomaticFailover`
+
+Enable automatic failover for regions. Defaults to true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableCassandraConnector`
+
+Enables the cassandra connector on the Cosmos DB C* account
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableFreeTier`
 
 Flag to indicate whether "Free Tier" is enabled. Defaults to false.
@@ -3472,6 +3740,22 @@ Flag to indicate whether "Free Tier" is enabled. Defaults to false.
 ### Parameter: `enableMultipleWriteLocations`
 
 Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePartitionMerge`
+
+Flag to indicate enabling/disabling of Partition Merge feature on the account
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePerRegionPerPartitionAutoscale`
+
+Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account
 
 - Required: No
 - Type: bool
@@ -3675,6 +3959,7 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
 | :-- | :-- | :-- |
 | [`ipRules`](#parameter-networkrestrictionsiprules) | array | A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`. |
 | [`networkAclBypass`](#parameter-networkrestrictionsnetworkaclbypass) | string | Specifies the network ACL bypass for Azure services. Default to "None". |
+| [`networkAclBypassResourceIds`](#parameter-networkrestrictionsnetworkaclbypassresourceids) | array | An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account. |
 | [`publicNetworkAccess`](#parameter-networkrestrictionspublicnetworkaccess) | string | Whether requests from the public network are allowed. Default to "Disabled". |
 | [`virtualNetworkRules`](#parameter-networkrestrictionsvirtualnetworkrules) | array | List of virtual network access control list (ACL) rules configured for the account. |
 
@@ -3698,6 +3983,13 @@ Specifies the network ACL bypass for Azure services. Default to "None".
     'None'
   ]
   ```
+
+### Parameter: `networkRestrictions.networkAclBypassResourceIds`
+
+An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.
+
+- Required: No
+- Type: array
 
 ### Parameter: `networkRestrictions.publicNetworkAccess`
 
@@ -4532,7 +4824,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
