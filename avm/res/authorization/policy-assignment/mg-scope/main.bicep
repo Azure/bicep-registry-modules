@@ -126,7 +126,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
   identity: identityVar
 }
 
-module managementGroupRoleAssignments 'modules/mg-additional-rbac-asi-outer-def-loop.bicep' = [
+module managementGroupRoleAssignments 'modules/mg-rbac-outerLoop-defs.bicep' = [
   for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo)) {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
@@ -138,7 +138,7 @@ module managementGroupRoleAssignments 'modules/mg-additional-rbac-asi-outer-def-
   }
 ]
 
-module additionalSubscriptionRoleAssignments 'modules/sub-additional-rbac-asi-outer-def-loop.bicep' = [
+module additionalSubscriptionRoleAssignments 'modules/sub-rbac-outerLoop-defs.bicep' = [
   for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo)) {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
@@ -150,7 +150,7 @@ module additionalSubscriptionRoleAssignments 'modules/sub-additional-rbac-asi-ou
   }
 ]
 
-module additionalResourceGroupRoleAssignments 'modules/rg-additional-rbac-asi-outer-def-loop.bicep' = [
+module additionalResourceGroupRoleAssignments 'modules/rg-rbac-outerLoop-defs.bicep' = [
   for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo)) {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
     params: {
