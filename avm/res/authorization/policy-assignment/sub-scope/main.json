@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17633020299488581590"
+      "templateHash": "6435981580530158805"
     },
     "name": "Policy Assignments (Subscription scope)",
     "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -181,8 +181,8 @@
   },
   "variables": {
     "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityResourceId')), createObject())), null()))]",
-    "expandedSubRoleAssignments": "[reduce(union(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(subscription().id)), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('definitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'definitionId', lambdaVariables('definitionId')))))))]",
-    "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('definitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'definitionId', lambdaVariables('definitionId')))))))]"
+    "expandedSubRoleAssignments": "[reduce(union(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(subscription().id)), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
+    "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -233,7 +233,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].definitionId, parameters('name')))]",
+      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
       "subscriptionId": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].subscriptionId]",
       "location": "[deployment().location]",
       "properties": {
@@ -249,7 +249,7 @@
             "value": "[reference('policyAssignment', '2025-03-01', 'full').identity.principalId]"
           },
           "roleDefinitionId": {
-            "value": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].definitionId]"
+            "value": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
           }
         },
         "template": {

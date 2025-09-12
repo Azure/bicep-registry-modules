@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13179958328574078478"
+      "templateHash": "17799962947188428142"
     },
     "name": "Policy Assignments (Management Group scope)",
     "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -191,9 +191,9 @@
   },
   "variables": {
     "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityResourceId')), createObject())), null()))]",
-    "expandedMgRoleAssignments": "[reduce(union(coalesce(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray()), createArray(managementGroup().name)), createArray(), lambda('currMangementGroupId', 'nextMangementGroupId', concat(lambdaVariables('currMangementGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('definitionId', createObject('managementGroupId', lambdaVariables('nextMangementGroupId'), 'definitionId', lambdaVariables('definitionId')))))))]",
-    "expandedSubRoleAssignments": "[reduce(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('definitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'definitionId', lambdaVariables('definitionId')))))))]",
-    "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('definitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'definitionId', lambdaVariables('definitionId')))))))]"
+    "expandedMgRoleAssignments": "[reduce(union(coalesce(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray()), createArray(managementGroup().name)), createArray(), lambda('currMangementGroupId', 'nextMangementGroupId', concat(lambdaVariables('currMangementGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('managementGroupId', lambdaVariables('nextMangementGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
+    "expandedSubRoleAssignments": "[reduce(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
+    "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -244,7 +244,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].managementGroupId, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].definitionId, parameters('name')))]",
+      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].managementGroupId, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].managementGroupId)]",
       "location": "[deployment().location]",
       "properties": {
@@ -260,7 +260,7 @@
             "value": "[reference('policyAssignment', '2025-03-01', 'full').identity.principalId]"
           },
           "roleDefinitionId": {
-            "value": "[coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].definitionId]"
+            "value": "[coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
           }
         },
         "template": {
@@ -319,7 +319,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].definitionId, parameters('name')))]",
+      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
       "subscriptionId": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].subscriptionId]",
       "location": "[deployment().location]",
       "properties": {
@@ -335,7 +335,7 @@
             "value": "[reference('policyAssignment', '2025-03-01', 'full').identity.principalId]"
           },
           "roleDefinitionId": {
-            "value": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].definitionId]"
+            "value": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
           }
         },
         "template": {

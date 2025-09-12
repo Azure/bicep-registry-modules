@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "103803124486572236"
+      "templateHash": "16723486528789780250"
     },
     "name": "Policy Assignments (Resource Group scope)",
     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -171,7 +171,7 @@
   },
   "variables": {
     "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityResourceId')), createObject())), null()))]",
-    "expandedRgRoleAssignments": "[reduce(union(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(resourceGroup().id)), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('definitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'definitionId', lambdaVariables('definitionId')))))))]"
+    "expandedRgRoleAssignments": "[reduce(union(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(resourceGroup().id)), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
   },
   "resources": {
     "avmTelemetry": {

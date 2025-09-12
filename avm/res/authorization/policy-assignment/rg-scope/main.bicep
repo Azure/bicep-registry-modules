@@ -126,9 +126,9 @@ var expandedRgRoleAssignments = reduce(
   (currResourceGroupId, nextResourceGroupId) =>
     concat(
       currResourceGroupId,
-      map(roleDefinitionIds ?? [], definitionId => {
+      map(roleDefinitionIds ?? [], roleDefinitionId => {
         resourceGroupId: nextResourceGroupId
-        definitionId: definitionId
+        roleDefinitionId: roleDefinitionId
       })
     )
 )

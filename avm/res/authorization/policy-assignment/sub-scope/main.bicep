@@ -132,9 +132,9 @@ var expandedSubRoleAssignments = reduce(
   (currSubscriptionId, nextSubscriptionId) =>
     concat(
       currSubscriptionId,
-      map(roleDefinitionIds ?? [], definitionId => {
+      map(roleDefinitionIds ?? [], roleDefinitionId => {
         subscriptionId: nextSubscriptionId
-        definitionId: definitionId
+        roleDefinitionId: roleDefinitionId
       })
     )
 )
@@ -142,11 +142,11 @@ var expandedSubRoleAssignments = reduce(
 module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
   for assignment in (expandedSubRoleAssignments ?? []): {
     scope: subscription(assignment.subscriptionId)
-    name: '${uniqueString(deployment().name, location, assignment.definitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
-      roleDefinitionId: assignment.definitionId
+      roleDefinitionId: assignment.roleDefinitionId
     }
   }
 ]
@@ -160,9 +160,9 @@ var expandedRgRoleAssignments = reduce(
   (currResourceGroupId, nextResourceGroupId) =>
     concat(
       currResourceGroupId,
-      map(roleDefinitionIds ?? [], definitionId => {
+      map(roleDefinitionIds ?? [], roleDefinitionId => {
         resourceGroupId: nextResourceGroupId
-        definitionId: definitionId
+        roleDefinitionId: roleDefinitionId
       })
     )
 )
