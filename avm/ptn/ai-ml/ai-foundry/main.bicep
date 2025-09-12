@@ -89,6 +89,7 @@ module foundryAccount 'modules/account.bicep' = {
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
     sku: !empty(aiFoundryConfiguration.?sku) ? aiFoundryConfiguration!.sku! : 'S0'
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
+    disableLocalAuth: aiFoundryConfiguration.?disableLocalAuth ?? true
     aiModelDeployments: aiModelDeployments
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     agentSubnetResourceId: aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId
@@ -329,6 +330,9 @@ type foundryConfigurationType = {
 
   @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
   allowProjectManagement: bool?
+
+  @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons. When set to true, local authentication via API keys is disabled. Note: If using Capability Hosts, this may need to be set to false for compatibility. Defaults to true.')
+  disableLocalAuth: bool?
 
   @description('Optional. Values to establish private networking for the AI Foundry account and project.')
   networking: foundryNetworkConfigurationType?
