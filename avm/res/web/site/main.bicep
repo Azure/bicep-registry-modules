@@ -280,7 +280,9 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
       : null
     storageAccountRequired: storageAccountRequired
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
-    virtualNetworkSubnetId: virtualNetworkSubnetResourceId
+    virtualNetworkSubnetId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
+      ? null
+      : virtualNetworkSubnetResourceId
     siteConfig: siteConfig
     functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
