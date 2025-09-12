@@ -126,7 +126,9 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
   identity: identityVar
 }
 
-// Management-Group-Scope: Create all permutations of management group scopes & role definition Ids
+// Management-Group-Scope
+// ========================
+// Create all permutations of management group scopes & role definition Ids
 var expandedMgRoleAssignments = reduce(
   union(additionalManagementGroupsIDsToAssignRbacTo ?? [], [managementGroup().name]),
   [],
@@ -139,8 +141,8 @@ var expandedMgRoleAssignments = reduce(
       })
     )
 )
-// Management-Group-Scope: Deploy permutations
-module managementGroupRoleAssignments 'modules/mg-rbac-outerLoop-defs-innerLoop-mgIds.bicep' = [
+// Deploy permutations
+module managementGroupRoleAssignments 'modules/mg-scope-rbac.bicep' = [
   for assignment in (expandedMgRoleAssignments ?? []): {
     scope: managementGroup(assignment.managementGroupId)
     name: '${uniqueString(deployment().name, assignment.managementGroupId, assignment.definitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
@@ -152,7 +154,9 @@ module managementGroupRoleAssignments 'modules/mg-rbac-outerLoop-defs-innerLoop-
   }
 ]
 
-// Subscription-Group-Scope: Create all permutations of management group scopes & role definition Ids
+// Subscription-Scope
+// ==================
+// Create all permutations of management group scopes & role definition Ids
 var expandedSubRoleAssignments = reduce(
   additionalSubscriptionIDsToAssignRbacTo ?? [],
   [],
@@ -165,8 +169,8 @@ var expandedSubRoleAssignments = reduce(
       })
     )
 )
-// Subscription-Group-Scope: Deploy permutations
-module additionalSubscriptionRoleAssignments 'modules/sub-rbac-outerLoop-defs-innerLoop-subIds.bicep' = [
+// Deploy permutations
+module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
   for assignment in (expandedSubRoleAssignments ?? []): {
     scope: subscription(assignment.subscriptionId)
     name: '${uniqueString(deployment().name, location, assignment.definitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
@@ -178,14 +182,30 @@ module additionalSubscriptionRoleAssignments 'modules/sub-rbac-outerLoop-defs-in
   }
 ]
 
-module additionalResourceGroupRoleAssignments 'modules/rg-rbac-outerLoop-defs.bicep' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo)) {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
+// Resource-Group-Scope
+// ====================
+// Create all permutations of management group scopes & role definition Ids
+var expandedRgRoleAssignments = reduce(
+  additionalResourceGroupResourceIDsToAssignRbacTo ?? [],
+  [],
+  (currResourceGroupId, nextResourceGroupId) =>
+    concat(
+      currResourceGroupId,
+      map(roleDefinitionIds ?? [], definitionId => {
+        resourceGroupId: nextResourceGroupId
+        definitionId: definitionId
+      })
+    )
+)
+// Deploy permutations
+module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope-rbac.bicep' = [
+  for assignment in expandedRgRoleAssignments: {
+    name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name, assignment.resourceGroupId)}-PolicyAssignment-MG-Module-RBAC-RG-Sub-${substring(split(assignment.resourceGroupId, '/')[2], 0, 8)}'
+    scope: resourceGroup(split(assignment.resourceGroupId, '/')[2], split(assignment.resourceGroupId, '/')[4])
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
-      roleDefinitionId: roleDefinitionId
-      resourceGroupResourceIDsToAssignRbacTo: additionalResourceGroupResourceIDsToAssignRbacTo
+      roleDefinitionId: assignment.roleDefinitionId
     }
   }
 ]
