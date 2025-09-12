@@ -68,10 +68,10 @@ param enableTelemetry bool = true
 @sys.description('Optional. An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalManagementGroupsIDsToAssignRbacTo string[]?
 
-@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalSubscriptionIDsToAssignRbacTo string[]?
 
-@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments.')
+@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalResourceGroupResourceIDsToAssignRbacTo string[]?
 
 var identityVar = identity == 'SystemAssigned'
@@ -126,8 +126,8 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
   identity: identityVar
 }
 
-// Management-Group-Scope
-// ========================
+// RBAC: Management-Group-Scope
+// ============================
 // Create all permutations of management group scopes & role definition Ids
 var expandedMgRoleAssignments = reduce(
   union(additionalManagementGroupsIDsToAssignRbacTo ?? [], [managementGroup().name]),
@@ -154,9 +154,9 @@ module managementGroupRoleAssignments 'modules/mg-scope-rbac.bicep' = [
   }
 ]
 
-// Subscription-Scope
-// ==================
-// Create all permutations of management group scopes & role definition Ids
+// RBAC: Subscription-Scope
+// ========================
+// Create all permutations of subscription scopes & role definition Ids
 var expandedSubRoleAssignments = reduce(
   additionalSubscriptionIDsToAssignRbacTo ?? [],
   [],
@@ -182,9 +182,9 @@ module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
   }
 ]
 
-// Resource-Group-Scope
-// ====================
-// Create all permutations of management group scopes & role definition Ids
+// RBAC: Resource-Group-Scope
+// ==========================
+// Create all permutations of resource group scopes & role definition Ids
 var expandedRgRoleAssignments = reduce(
   additionalResourceGroupResourceIDsToAssignRbacTo ?? [],
   [],

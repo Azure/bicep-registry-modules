@@ -63,6 +63,9 @@ module testDeployment '../../../rg-scope/main.bicep' = {
     enforcementMode: 'DoNotEnforce'
     identity: 'UserAssigned'
     location: resourceLocation
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      resourceGroup.id
+    ]
     metadata: {
       category: 'Security'
       version: '1.0'

@@ -65,6 +65,12 @@ param definitionVersion string?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@sys.description('Optional. An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity.')
+param additionalSubscriptionIDsToAssignRbacTo string[]?
+
+@sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity.')
+param additionalResourceGroupResourceIDsToAssignRbacTo string[]?
+
 var identityVar = identity == 'SystemAssigned'
   ? {
       type: identity
@@ -117,14 +123,58 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
   identity: identityVar
 }
 
-// TODO: Clarify if coupled enough to justify it being part of a resource modile
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for roleDefinitionId in (roleDefinitionIds ?? []): if (!empty(roleDefinitionIds) && identity == 'SystemAssigned') {
-    name: guid(subscription().id, roleDefinitionId, location, name)
-    properties: {
-      roleDefinitionId: roleDefinitionId
-      principalId: policyAssignment.identity.principalId
-      principalType: 'ServicePrincipal'
+// RBAC: Subscription-Scope
+// ========================
+// Create all permutations of subscription scopes & role definition Ids
+var expandedSubRoleAssignments = reduce(
+  union(additionalSubscriptionIDsToAssignRbacTo ?? [], [subscription().id]),
+  [],
+  (currSubscriptionId, nextSubscriptionId) =>
+    concat(
+      currSubscriptionId,
+      map(roleDefinitionIds ?? [], definitionId => {
+        subscriptionId: nextSubscriptionId
+        definitionId: definitionId
+      })
+    )
+)
+// Deploy permutations
+module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
+  for assignment in (expandedSubRoleAssignments ?? []): {
+    scope: subscription(assignment.subscriptionId)
+    name: '${uniqueString(deployment().name, location, assignment.definitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: assignment.definitionId
+    }
+  }
+]
+
+// RBAC: Resource-Group-Scope
+// ==========================
+// Create all permutations of resource-group scopes & role definition Ids
+var expandedRgRoleAssignments = reduce(
+  additionalResourceGroupResourceIDsToAssignRbacTo ?? [],
+  [],
+  (currResourceGroupId, nextResourceGroupId) =>
+    concat(
+      currResourceGroupId,
+      map(roleDefinitionIds ?? [], definitionId => {
+        resourceGroupId: nextResourceGroupId
+        definitionId: definitionId
+      })
+    )
+)
+// Deploy permutations
+module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope-rbac.bicep' = [
+  for assignment in expandedRgRoleAssignments: {
+    name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name, assignment.resourceGroupId)}-PolicyAssignment-MG-Module-RBAC-RG-Sub-${substring(split(assignment.resourceGroupId, '/')[2], 0, 8)}'
+    scope: resourceGroup(split(assignment.resourceGroupId, '/')[2], split(assignment.resourceGroupId, '/')[4])
+    params: {
+      name: name
+      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      roleDefinitionId: assignment.roleDefinitionId
     }
   }
 ]

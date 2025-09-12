@@ -63,6 +63,12 @@ module testDeployment '../../../sub-scope/main.bicep' = {
     enforcementMode: 'DoNotEnforce'
     identity: 'UserAssigned'
     location: resourceLocation
+    additionalSubscriptionIDsToAssignRbacTo: [
+      subscriptionId
+    ]
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      resourceGroup.id
+    ]
     metadata: {
       category: 'Security'
       version: '1.0'
