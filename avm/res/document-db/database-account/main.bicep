@@ -288,6 +288,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     enableCassandraConnector: enableCassandraConnector
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
+
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
       type: backupPolicyType
@@ -514,7 +515,7 @@ module databaseAccount_tables 'table/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(
