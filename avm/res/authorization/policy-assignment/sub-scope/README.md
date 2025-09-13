@@ -125,7 +125,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
       '<id>'
     ]
     additionalSubscriptionIDsToAssignRbacTo: [
-      '<subscriptionId>'
+      '<id>'
     ]
     definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the subscription scope'
@@ -224,7 +224,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
     },
     "additionalSubscriptionIDsToAssignRbacTo": {
       "value": [
-        "<subscriptionId>"
+        "<id>"
       ]
     },
     "definitionVersion": {
@@ -341,7 +341,7 @@ param additionalResourceGroupResourceIDsToAssignRbacTo = [
   '<id>'
 ]
 param additionalSubscriptionIDsToAssignRbacTo = [
-  '<subscriptionId>'
+  '<id>'
 ]
 param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the subscription scope'
@@ -432,7 +432,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
     additionalSubscriptionIDsToAssignRbacTo: [
-      '<subscriptionId>'
+      '<id>'
     ]
     metadata: {
       assignedBy: 'Bicep'
@@ -463,7 +463,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
     // Non-required parameters
     "additionalSubscriptionIDsToAssignRbacTo": {
       "value": [
-        "<subscriptionId>"
+        "<id>"
       ]
     },
     "metadata": {
@@ -490,7 +490,7 @@ param name = 'rapasubwaf001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
 // Non-required parameters
 param additionalSubscriptionIDsToAssignRbacTo = [
-  '<subscriptionId>'
+  '<id>'
 ]
 param metadata = {
   assignedBy: 'Bicep'

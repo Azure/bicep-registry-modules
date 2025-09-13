@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13648631807447006523"
+      "templateHash": "10504192479357101046"
     },
     "name": "Policy Assignments (Resource Group scope)",
     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -259,7 +259,7 @@
             "value": "[parameters('name')]"
           },
           "principalId": {
-            "value": "[coalesce(reference('policyAssignment', '2025-03-01', 'full').identity.principalId, tryGet(if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), reference('userAssignedIdentity', '2024-11-30', 'full'), null()), 'properties', 'principalId'))]"
+            "value": "[coalesce(tryGet(reference('policyAssignment', '2025-03-01', 'full').identity, 'principalId'), tryGet(if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), reference('userAssignedIdentity', '2024-11-30', 'full'), null()), 'properties', 'principalId'))]"
           },
           "roleDefinitionId": {
             "value": "[variables('expandedRgRoleAssignments')[copyIndex()].roleDefinitionId]"

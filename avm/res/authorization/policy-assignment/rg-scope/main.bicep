@@ -141,7 +141,7 @@ module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope
     scope: resourceGroup(split(assignment.resourceGroupId, '/')[2], split(assignment.resourceGroupId, '/')[4])
     params: {
       name: name
-      principalId: policyAssignment.identity.principalId ?? userAssignedIdentity.?properties.principalId
+      principalId: policyAssignment.identity.?principalId ?? userAssignedIdentity.?properties.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }

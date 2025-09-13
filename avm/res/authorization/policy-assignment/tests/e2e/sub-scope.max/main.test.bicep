@@ -20,9 +20,6 @@ param serviceShort string = 'rapasubmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
-param subscriptionId string = '#_subscriptionId_#'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -36,15 +33,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 }
 
 module nestedDependencies 'dependencies.bicep' = {
-  scope: az.resourceGroup(subscriptionId, resourceGroupName)
+  scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
-  dependsOn: [
-    resourceGroup
-  ]
 }
 
 // ============== //
@@ -63,7 +57,7 @@ module testDeployment '../../../sub-scope/main.bicep' = {
     enforcementMode: 'DoNotEnforce'
     location: resourceLocation
     additionalSubscriptionIDsToAssignRbacTo: [
-      subscriptionId
+      subscription().id
     ]
     additionalResourceGroupResourceIDsToAssignRbacTo: [
       resourceGroup.id
