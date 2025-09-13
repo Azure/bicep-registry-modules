@@ -148,7 +148,7 @@ module managementGroupRoleAssignments 'modules/mg-scope-rbac.bicep' = [
     name: '${uniqueString(deployment().name, assignment.managementGroupId, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
       name: name
-      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      principalId: policyAssignment.identity.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }
@@ -176,7 +176,7 @@ module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
     name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
       name: name
-      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      principalId: policyAssignment.identity.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }
@@ -204,7 +204,7 @@ module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope
     scope: resourceGroup(split(assignment.resourceGroupId, '/')[2], split(assignment.resourceGroupId, '/')[4])
     params: {
       name: name
-      policyAssignmentIdentityId: policyAssignment.identity.principalId
+      principalId: policyAssignment.identity.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }

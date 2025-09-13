@@ -9,13 +9,13 @@ param location string = resourceGroup().location
 param name string
 
 @description('Required. The managed identity principal ID associated with the policy assignment.')
-param policyAssignmentIdentityId string
+param principalId string
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, roleDefinitionId, location, name)
   properties: {
     roleDefinitionId: roleDefinitionId
-    principalId: policyAssignmentIdentityId
+    principalId: principalId
     principalType: 'ServicePrincipal'
   }
 }
