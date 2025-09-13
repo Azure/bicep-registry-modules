@@ -1,7 +1,6 @@
 name: "avm.res.authorization.policy-assignment"
 
 on:
-  pull_request: # todo: Remove after testing <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   workflow_dispatch:
     inputs:
       staticValidation:
