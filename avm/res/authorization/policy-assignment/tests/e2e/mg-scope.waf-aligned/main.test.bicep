@@ -13,6 +13,15 @@ param serviceShort string = 'rapamgwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// ============ //
+// Dependencies //
+// ============ //
+
+resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
+  scope: tenant()
+  name: '${uniqueString(deployment().name)}-additional-mg'
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -26,5 +35,8 @@ module testDeployment '../../../mg-scope/main.bicep' = {
     metadata: {
       assignedBy: 'Bicep'
     }
+    additionalManagementGroupsIDsToAssignRbacTo: [
+      additionalMg.name
+    ]
   }
 }

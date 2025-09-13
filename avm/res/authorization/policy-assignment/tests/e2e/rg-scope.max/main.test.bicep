@@ -61,7 +61,6 @@ module testDeployment '../../../rg-scope/main.bicep' = {
     description: '[Description] Policy Assignment at the subscription scope'
     displayName: '[Display Name] Policy Assignment at the subscription scope'
     enforcementMode: 'DoNotEnforce'
-    identity: 'UserAssigned'
     location: resourceLocation
     additionalResourceGroupResourceIDsToAssignRbacTo: [
       resourceGroup.id
@@ -124,6 +123,8 @@ module testDeployment '../../../rg-scope/main.bicep' = {
         ]
       }
     ]
-    userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    managedIdentities: {
+      userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    }
   }
 }

@@ -45,5 +45,8 @@ module testDeployment '../../../rg-scope/main.bicep' = {
     metadata: {
       assignedBy: 'Bicep'
     }
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      resourceGroup.id
+    ]
   }
 }

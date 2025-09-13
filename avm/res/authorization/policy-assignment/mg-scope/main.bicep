@@ -20,17 +20,6 @@ param policyDefinitionId string
 @sys.description('Optional. Parameters for the policy assignment if needed.')
 param parameters resourceInput<'Microsoft.Authorization/policyAssignments@2025-03-01'>.properties.parameters?
 
-@sys.description('Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning \'Modify\' policy definitions.')
-@allowed([
-  'SystemAssigned'
-  'UserAssigned'
-  'None'
-])
-param identity string = 'SystemAssigned'
-
-@sys.description('Optional. The Resource ID for the user assigned identity to assign to the policy assignment.')
-param userAssignedIdentityResourceId string?
-
 @sys.description('Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition.')
 param roleDefinitionIds string[]?
 
@@ -74,18 +63,30 @@ param additionalSubscriptionIDsToAssignRbacTo string[]?
 @sys.description('Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity.')
 param additionalResourceGroupResourceIDsToAssignRbacTo string[]?
 
-var identityVar = identity == 'SystemAssigned'
+@sys.description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityType = {
+  systemAssigned: true
+}
+
+var identity = !empty(managedIdentities)
   ? {
-      type: identity
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? 'SystemAssigned'
+        : (!empty(managedIdentities.?userAssignedResourceId) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(managedIdentities.?userAssignedResourceId)
+        ? { '${managedIdentities!.userAssignedResourceId!}': {} }
+        : null
     }
-  : identity == 'UserAssigned'
-      ? {
-          type: identity
-          userAssignedIdentities: {
-            '${userAssignedIdentityResourceId}': {}
-          }
-        }
-      : null
+  : null
+
+// Create reference to existing managed identity if user assigned
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(managedIdentities.?userAssignedResourceId)) {
+  name: last(split((managedIdentities.?userAssignedResourceId!), '/'))
+  scope: resourceGroup(
+    split(managedIdentities.?userAssignedResourceId!, '/')[2],
+    split(managedIdentities.?userAssignedResourceId!, '/')[4]
+  )
+}
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -123,7 +124,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
     resourceSelectors: resourceSelectors
     definitionVersion: definitionVersion
   }
-  identity: identityVar
+  identity: identity
 }
 
 // RBAC: Management-Group-Scope
@@ -143,7 +144,7 @@ var expandedMgRoleAssignments = reduce(
 )
 // Deploy permutations
 module managementGroupRoleAssignments 'modules/mg-scope-rbac.bicep' = [
-  for assignment in (expandedMgRoleAssignments ?? []): {
+  for assignment in (expandedMgRoleAssignments ?? []): if (!empty(managedIdentities)) {
     scope: managementGroup(assignment.managementGroupId)
     name: '${uniqueString(deployment().name, assignment.managementGroupId, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
@@ -171,7 +172,7 @@ var expandedSubRoleAssignments = reduce(
 )
 // Deploy permutations
 module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
-  for assignment in (expandedSubRoleAssignments ?? []): {
+  for assignment in (expandedSubRoleAssignments ?? []): if (!empty(managedIdentities)) {
     scope: subscription(assignment.subscriptionId)
     name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
@@ -199,7 +200,7 @@ var expandedRgRoleAssignments = reduce(
 )
 // Deploy permutations
 module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope-rbac.bicep' = [
-  for assignment in expandedRgRoleAssignments: {
+  for assignment in expandedRgRoleAssignments: if (!empty(managedIdentities)) {
     name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name, assignment.resourceGroupId)}-PolicyAssignment-MG-Module-RBAC-RG-Sub-${substring(split(assignment.resourceGroupId, '/')[2], 0, 8)}'
     scope: resourceGroup(split(assignment.resourceGroupId, '/')[2], split(assignment.resourceGroupId, '/')[4])
     params: {
@@ -221,3 +222,17 @@ output resourceId string = policyAssignment.id
 
 @sys.description('The location the resource was deployed into.')
 output location string = policyAssignment.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@sys.description('An AVM-aligned type for a managed identity configuration.')
+type managedIdentityType = {
+  @sys.description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @sys.description('Optional. The resource ID of the user-assigned identity to assign to the resource..')
+  userAssignedResourceId: string?
+}

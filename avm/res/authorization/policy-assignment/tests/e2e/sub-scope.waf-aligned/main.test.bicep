@@ -13,6 +13,9 @@ param serviceShort string = 'rapasubwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
+param subscriptionId string = '#_subscriptionId_#'
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -26,5 +29,8 @@ module testDeployment '../../../sub-scope/main.bicep' = {
     metadata: {
       assignedBy: 'Bicep'
     }
+    additionalSubscriptionIDsToAssignRbacTo: [
+      subscriptionId
+    ]
   }
 }

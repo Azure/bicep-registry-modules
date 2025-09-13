@@ -6,10 +6,35 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17799962947188428142"
+      "templateHash": "6506246167461262150"
     },
     "name": "Policy Assignments (Management Group scope)",
     "description": "This module deploys a Policy Assignment at a Management Group scope."
+  },
+  "definitions": {
+    "managedIdentityType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the user-assigned identity to assign to the resource.."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a managed identity configuration."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -49,25 +74,6 @@
         "description": "Optional. Parameters for the policy assignment if needed."
       },
       "nullable": true
-    },
-    "identity": {
-      "type": "string",
-      "defaultValue": "SystemAssigned",
-      "allowedValues": [
-        "SystemAssigned",
-        "UserAssigned",
-        "None"
-      ],
-      "metadata": {
-        "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions."
-      }
-    },
-    "userAssignedIdentityResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The Resource ID for the user assigned identity to assign to the policy assignment."
-      }
     },
     "roleDefinitionIds": {
       "type": "array",
@@ -187,15 +193,33 @@
       "metadata": {
         "description": "Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity."
       }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityType",
+      "defaultValue": {
+        "systemAssigned": true
+      },
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
     }
   },
   "variables": {
-    "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityResourceId')), createObject())), null()))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', parameters('managedIdentities').userAssignedResourceId), createObject()), null())), null())]",
     "expandedMgRoleAssignments": "[reduce(union(coalesce(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray()), createArray(managementGroup().name)), createArray(), lambda('currMangementGroupId', 'nextMangementGroupId', concat(lambdaVariables('currMangementGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('managementGroupId', lambdaVariables('nextMangementGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
     "expandedSubRoleAssignments": "[reduce(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
     "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
   },
   "resources": {
+    "userAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "subscriptionId": "[split(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), '/'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -235,13 +259,14 @@
         "resourceSelectors": "[parameters('resourceSelectors')]",
         "definitionVersion": "[parameters('definitionVersion')]"
       },
-      "identity": "[variables('identityVar')]"
+      "identity": "[variables('identity')]"
     },
     "managementGroupRoleAssignments": {
       "copy": {
         "name": "managementGroupRoleAssignments",
         "count": "[length(coalesce(variables('expandedMgRoleAssignments'), createArray()))]"
       },
+      "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].managementGroupId, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
@@ -256,7 +281,7 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "policyAssignmentIdentityId": {
+          "principalId": {
             "value": "[reference('policyAssignment', '2025-03-01', 'full').identity.principalId]"
           },
           "roleDefinitionId": {
@@ -270,7 +295,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "11505309243116321942"
+              "templateHash": "13813165544404512288"
             }
           },
           "parameters": {
@@ -287,7 +312,7 @@
                 "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
               }
             },
-            "policyAssignmentIdentityId": {
+            "principalId": {
               "type": "string",
               "metadata": {
                 "description": "Required. The managed identity principal ID associated with the policy assignment."
@@ -301,7 +326,7 @@
               "name": "[guid(managementGroup().id, parameters('roleDefinitionId'), parameters('name'))]",
               "properties": {
                 "roleDefinitionId": "[parameters('roleDefinitionId')]",
-                "principalId": "[parameters('policyAssignmentIdentityId')]",
+                "principalId": "[parameters('principalId')]",
                 "principalType": "ServicePrincipal"
               }
             }
@@ -317,6 +342,7 @@
         "name": "additionalSubscriptionRoleAssignments",
         "count": "[length(coalesce(variables('expandedSubRoleAssignments'), createArray()))]"
       },
+      "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
@@ -331,7 +357,7 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "policyAssignmentIdentityId": {
+          "principalId": {
             "value": "[reference('policyAssignment', '2025-03-01', 'full').identity.principalId]"
           },
           "roleDefinitionId": {
@@ -345,7 +371,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "3858413328521914948"
+              "templateHash": "7233473995757164172"
             }
           },
           "parameters": {
@@ -369,7 +395,7 @@
                 "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
               }
             },
-            "policyAssignmentIdentityId": {
+            "principalId": {
               "type": "string",
               "metadata": {
                 "description": "Required. The managed identity principal ID associated with the policy assignment."
@@ -383,7 +409,7 @@
               "name": "[guid(subscription().id, parameters('roleDefinitionId'), parameters('location'), parameters('name'))]",
               "properties": {
                 "roleDefinitionId": "[parameters('roleDefinitionId')]",
-                "principalId": "[parameters('policyAssignmentIdentityId')]",
+                "principalId": "[parameters('principalId')]",
                 "principalType": "ServicePrincipal"
               }
             }
@@ -399,6 +425,7 @@
         "name": "additionalResourceGroupResourceIDsRoleAssignmentsPerSub",
         "count": "[length(variables('expandedRgRoleAssignments'))]"
       },
+      "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), variables('expandedRgRoleAssignments')[copyIndex()].roleDefinitionId, parameters('name'), variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId), substring(split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2], 0, 8))]",
@@ -413,7 +440,7 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "policyAssignmentIdentityId": {
+          "principalId": {
             "value": "[reference('policyAssignment', '2025-03-01', 'full').identity.principalId]"
           },
           "roleDefinitionId": {
@@ -427,7 +454,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2244198828379535633"
+              "templateHash": "12181669984624391484"
             }
           },
           "parameters": {
@@ -451,7 +478,7 @@
                 "description": "Required. Specifies the name of the policy assignment. Maximum length is 24 characters for management group scope."
               }
             },
-            "policyAssignmentIdentityId": {
+            "principalId": {
               "type": "string",
               "metadata": {
                 "description": "Required. The managed identity principal ID associated with the policy assignment."
@@ -465,7 +492,7 @@
               "name": "[guid(resourceGroup().id, parameters('roleDefinitionId'), parameters('location'), parameters('name'))]",
               "properties": {
                 "roleDefinitionId": "[parameters('roleDefinitionId')]",
-                "principalId": "[parameters('policyAssignmentIdentityId')]",
+                "principalId": "[parameters('principalId')]",
                 "principalType": "ServicePrincipal"
               }
             }

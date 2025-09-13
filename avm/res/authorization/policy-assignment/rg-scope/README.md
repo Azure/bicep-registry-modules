@@ -128,8 +128,10 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     description: '[Description] Policy Assignment at the subscription scope'
     displayName: '[Display Name] Policy Assignment at the subscription scope'
     enforcementMode: 'DoNotEnforce'
-    identity: 'UserAssigned'
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceId: '<userAssignedResourceId>'
+    }
     metadata: {
       assignedBy: 'Bicep'
       category: 'Security'
@@ -188,7 +190,6 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     roleDefinitionIds: [
       '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
     ]
-    userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
   }
 }
 ```
@@ -230,11 +231,13 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     "enforcementMode": {
       "value": "DoNotEnforce"
     },
-    "identity": {
-      "value": "UserAssigned"
-    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceId": "<userAssignedResourceId>"
+      }
     },
     "metadata": {
       "value": {
@@ -307,9 +310,6 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
       "value": [
         "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
       ]
-    },
-    "userAssignedIdentityResourceId": {
-      "value": "<userAssignedIdentityResourceId>"
     }
   }
 }
@@ -336,8 +336,10 @@ param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the subscription scope'
 param displayName = '[Display Name] Policy Assignment at the subscription scope'
 param enforcementMode = 'DoNotEnforce'
-param identity = 'UserAssigned'
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceId: '<userAssignedResourceId>'
+}
 param metadata = {
   assignedBy: 'Bicep'
   category: 'Security'
@@ -396,7 +398,6 @@ param resourceSelectors = [
 param roleDefinitionIds = [
   '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
 ]
-param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 ```
 
 </details>
@@ -419,6 +420,9 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
     name: 'rapargwaf001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
+    additionalResourceGroupResourceIDsToAssignRbacTo: [
+      '<id>'
+    ]
     metadata: {
       assignedBy: 'Bicep'
     }
@@ -446,6 +450,11 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-sc
       "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
     },
     // Non-required parameters
+    "additionalResourceGroupResourceIDsToAssignRbacTo": {
+      "value": [
+        "<id>"
+      ]
+    },
     "metadata": {
       "value": {
         "assignedBy": "Bicep"
@@ -469,6 +478,9 @@ using 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>'
 param name = 'rapargwaf001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
 // Non-required parameters
+param additionalResourceGroupResourceIDsToAssignRbacTo = [
+  '<id>'
+]
 param metadata = {
   assignedBy: 'Bicep'
 }
@@ -496,8 +508,8 @@ param metadata = {
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enforcementMode`](#parameter-enforcementmode) | string | The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce. |
-| [`identity`](#parameter-identity) | string | The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`metadata`](#parameter-metadata) | object | The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs. |
 | [`nonComplianceMessages`](#parameter-noncompliancemessages) | array | The messages that describe why a resource is non-compliant with the policy. |
 | [`notScopes`](#parameter-notscopes) | array | The policy excluded scopes. |
@@ -505,7 +517,6 @@ param metadata = {
 | [`parameters`](#parameter-parameters) | object | Parameters for the policy assignment if needed. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
 | [`roleDefinitionIds`](#parameter-roledefinitionids) | array | The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition. |
-| [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The Resource ID for the user assigned identity to assign to the policy assignment. |
 
 ### Parameter: `name`
 
@@ -572,22 +583,6 @@ The policy assignment enforcement mode. Possible values are Default and DoNotEnf
   ]
   ```
 
-### Parameter: `identity`
-
-The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions.
-
-- Required: No
-- Type: string
-- Default: `'SystemAssigned'`
-- Allowed:
-  ```Bicep
-  [
-    'None'
-    'SystemAssigned'
-    'UserAssigned'
-  ]
-  ```
-
 ### Parameter: `location`
 
 Location for all resources.
@@ -595,6 +590,40 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      systemAssigned: true
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceId`](#parameter-managedidentitiesuserassignedresourceid) | string | The resource ID of the user-assigned identity to assign to the resource.. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceId`
+
+The resource ID of the user-assigned identity to assign to the resource..
+
+- Required: No
+- Type: string
 
 ### Parameter: `metadata`
 
@@ -644,13 +673,6 @@ The IDs Of the Azure Role Definition list that is used to assign permissions to 
 
 - Required: No
 - Type: array
-
-### Parameter: `userAssignedIdentityResourceId`
-
-The Resource ID for the user assigned identity to assign to the policy assignment.
-
-- Required: No
-- Type: string
 
 ## Outputs
 

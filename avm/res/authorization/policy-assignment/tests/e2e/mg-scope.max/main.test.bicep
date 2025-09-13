@@ -66,8 +66,9 @@ module testDeployment '../../../mg-scope/main.bicep' = {
     description: '[Description] Policy Assignment at the management group scope'
     displayName: '[Display Name] Policy Assignment at the management group scope'
     enforcementMode: 'DoNotEnforce'
-    identity: 'SystemAssigned'
-    userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    managedIdentities: {
+      userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    }
     location: resourceLocation
     additionalManagementGroupsIDsToAssignRbacTo: [
       additionalMg.name
