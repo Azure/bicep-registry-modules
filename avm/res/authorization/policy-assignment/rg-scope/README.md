@@ -680,9 +680,9 @@ The IDs Of the Azure Role Definition list that is used to assign permissions to 
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | Policy Assignment Name. |
-| `principalId` | string | Policy Assignment principal ID. |
 | `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `resourceId` | string | Policy Assignment resource ID. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Data Collection
 

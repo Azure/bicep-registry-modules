@@ -76,7 +76,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-// Create reference to existing managed identity if user assigned
+// Reference to existing managed identity if user assigned
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(managedIdentities.?userAssignedResourceId)) {
   name: last(split((managedIdentities.?userAssignedResourceId!), '/'))
   scope: resourceGroup(
@@ -183,8 +183,8 @@ module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope
 @sys.description('Policy Assignment Name.')
 output name string = policyAssignment.name
 
-@sys.description('Policy Assignment principal ID.')
-output principalId string? = policyAssignment.?identity.?principalId
+@sys.description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = policyAssignment.?identity.?principalId
 
 @sys.description('Policy Assignment resource ID.')
 output resourceId string = policyAssignment.id

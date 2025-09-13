@@ -79,7 +79,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-// Create reference to existing managed identity if user assigned
+// Reference to existing managed identity if user assigned
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(managedIdentities.?userAssignedResourceId)) {
   name: last(split((managedIdentities.?userAssignedResourceId!), '/'))
   scope: resourceGroup(
@@ -149,7 +149,7 @@ module managementGroupRoleAssignments 'modules/mg-scope-rbac.bicep' = [
     name: '${uniqueString(deployment().name, assignment.managementGroupId, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
       name: name
-      principalId: policyAssignment.identity.principalId
+      principalId: policyAssignment.identity.principalId ?? userAssignedIdentity.?properties.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }
@@ -177,7 +177,7 @@ module additionalSubscriptionRoleAssignments 'modules/sub-scope-rbac.bicep' = [
     name: '${uniqueString(deployment().name, location, assignment.roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
     params: {
       name: name
-      principalId: policyAssignment.identity.principalId
+      principalId: policyAssignment.identity.principalId ?? userAssignedIdentity.?properties.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }
@@ -205,7 +205,7 @@ module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope
     scope: resourceGroup(split(assignment.resourceGroupId, '/')[2], split(assignment.resourceGroupId, '/')[4])
     params: {
       name: name
-      principalId: policyAssignment.identity.principalId
+      principalId: policyAssignment.identity.principalId ?? userAssignedIdentity.?properties.principalId
       roleDefinitionId: assignment.roleDefinitionId
     }
   }
@@ -214,8 +214,8 @@ module additionalResourceGroupResourceIDsRoleAssignmentsPerSub 'modules/rg-scope
 @sys.description('Policy Assignment Name.')
 output name string = policyAssignment.name
 
-@sys.description('Policy Assignment principal ID.')
-output principalId string? = policyAssignment.?identity.?principalId
+@sys.description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = policyAssignment.?identity.?principalId
 
 @sys.description('Policy Assignment resource ID.')
 output resourceId string = policyAssignment.id

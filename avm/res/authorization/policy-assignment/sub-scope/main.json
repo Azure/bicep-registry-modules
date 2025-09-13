@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7964046177662150532"
+      "templateHash": "18384687109079673010"
     },
     "name": "Policy Assignments (Subscription scope)",
     "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -427,11 +427,11 @@
       },
       "value": "[parameters('name')]"
     },
-    "principalId": {
+    "systemAssignedMIPrincipalId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Policy Assignment principal ID."
+        "description": "The principal ID of the system assigned identity."
       },
       "value": "[tryGet(tryGet(reference('policyAssignment', '2025-03-01', 'full'), 'identity'), 'principalId')]"
     },

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14142613851696918321"
+      "templateHash": "13648631807447006523"
     },
     "name": "Policy Assignments (Resource Group scope)",
     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -331,11 +331,11 @@
       },
       "value": "[parameters('name')]"
     },
-    "principalId": {
+    "systemAssignedMIPrincipalId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Policy Assignment principal ID."
+        "description": "The principal ID of the system assigned identity."
       },
       "value": "[tryGet(tryGet(reference('policyAssignment', '2025-03-01', 'full'), 'identity'), 'principalId')]"
     },
