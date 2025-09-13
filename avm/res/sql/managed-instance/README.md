@@ -1159,7 +1159,7 @@ param vulnerabilityAssessment = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`administrators`](#parameter-administrators) | object | The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided. |
-| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
+| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if `userAssignedIdentities` is not empty. |
 
 **Optional parameters**
 
@@ -1293,7 +1293,7 @@ Tenant ID of the administrator.
 
 ### Parameter: `primaryUserAssignedIdentityResourceId`
 
-The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.
+The resource ID of a user assigned identity to be used by default. Required if `userAssignedIdentities` is not empty.
 
 - Required: No
 - Type: string
